@@ -1,28 +1,25 @@
 <?php
 
-require_once 'Swat/SwatUIObject.php';
-require_once 'Swat/exceptions/SwatException.php';
-
 /**
  * Container for package wide static methods
  *
- * @package   Swat
- * @copyright 2005-2006 silverorange
+ * @package   Site
+ * @copyright 2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class Swat
+class Site
 {
 	/**
-	 * The gettext domain for Swat
+	 * The gettext domain for Site
 	 *
 	 * This is used to support multiple locales.
 	 */
-	const GETTEXT_DOMAIN = 'swat';
+	const GETTEXT_DOMAIN = 'site';
 
 	/**
 	 * Translates a phrase
 	 *
-	 * This is an alias for {@link Swat::gettext()}.
+	 * This is an alias for {@link Site::gettext()}.
 	 *
 	 * @param string $message the phrase to be translated.
 	 *
@@ -30,7 +27,7 @@ class Swat
 	 */
 	public static function _($message)
 	{
-		return Swat::gettext($message);
+		return Site::gettext($message);
 	}
 
 	/**
@@ -45,7 +42,7 @@ class Swat
 	 */
 	public static function gettext($message)
 	{
-		return dgettext(Swat::GETTEXT_DOMAIN, $message);
+		return dgettext(Site::GETTEXT_DOMAIN, $message);
 	}
 
 	/**
@@ -70,7 +67,7 @@ class Swat
 	 */
 	public static function ngettext($singular_message, $plural_message, $number)
 	{
-		return dngettext(Swat::GETTEXT_DOMAIN,
+		return dngettext(Site::GETTEXT_DOMAIN,
 			$singular_message, $plural_message, $number);
 	}
 
@@ -83,7 +80,7 @@ class Swat
 	 */
 	public static function displayMethods($object)
 	{
-		echo sprintf(Swat::_('Methods for class %s:'), get_class($object));
+		echo sprintf(Site::_('Methods for class %s:'), get_class($object));
 		echo '<ul>';
 
 		foreach (get_class_methods(get_class($object)) as $method_name)
@@ -103,7 +100,7 @@ class Swat
 	{
 		$class = get_class($object);
 
-		echo sprintf(Swat::_('Properties for class %s:'), $class);
+		echo sprintf(Site::_('Properties for class %s:'), $class);
 		echo '<ul>';
 
 		foreach (get_class_vars($class) as $property_name => $value) {
@@ -112,21 +109,6 @@ class Swat
 		}
 
 		echo '</ul>';
-	}
-
-	/**
-	 * Displays an object's properties and values recursively
-	 *
-	 * Note:
-	 *
-	 * If the object being printed is a UI object then its parent property
-	 * is temporarily set to null to prevent recursing up the widget tree.
-	 *
-	 * @param mixed $object the object to display.
-	 */
-	public static function printObject($object)
-	{
-		echo '<pre>'.print_r($object, true).'</pre>';
 	}
 }
 
