@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swat/SwatPage.php';
+require_once 'Site/SitePage.php';
 require_once 'XML/RPC2/Server.php';
 
 /**
@@ -9,14 +9,14 @@ require_once 'XML/RPC2/Server.php';
  * The XML-RPC server acts as a regular page in an application. This means
  * all the regular page security features work for XML-RPC servers.
  *
- * Swat XML-RPC server pages use the PEAR::XML_RPC2 package to service
+ * Site XML-RPC server pages use the PEAR::XML_RPC2 package to service
  * requests.
  *
- * @package   Swat
- * @copyright 2005 silverorange
+ * @package   Site
+ * @copyright 2005-2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SwatXMLRPCServer extends SwatPage
+abstract class SiteXMLRPCServer extends SitePage
 {
 	/**
 	 * Process the request
@@ -45,7 +45,7 @@ abstract class SwatXMLRPCServer extends SwatPage
 
 	protected function createLayout()
 	{
-		return new SwatLayout('Swat/layouts/xmlrpcserver.php');
+		return new SiteLayout('Site/layouts/xmlrpcserver.php');
 	}
 }
 

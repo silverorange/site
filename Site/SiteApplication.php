@@ -1,16 +1,17 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-require_once 'Swat/SwatApplicationModule.php';
+require_once 'Site/SiteObject.php';
+require_once 'Site/SitePage.php';
+require_once 'Site/SiteApplicationModule.php';
 
 /**
  * Base class for a web application
  *
- * @package   Swat
- * @copyright 2004-2005 silverorange
+ * @package   Site
+ * @copyright 2004-2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SwatApplication extends SwatObject
+class SiteApplication extends SiteObject
 {
 	// {{{ class constants
 
@@ -39,7 +40,7 @@ class SwatApplication extends SwatObject
 	/**
 	 * The current page of this application
 	 *
-	 * @var SwatPage
+	 * @var SitePage
 	 */
 	protected $page = null;
 
@@ -85,7 +86,7 @@ class SwatApplication extends SwatObject
 	// {{{ public function __construct()
 
 	/**
-	 * Creates a new Swat application
+	 * Creates a new Site application
 	 *
 	 * @param string $id a unique identifier for this application.
 	 */
@@ -102,7 +103,7 @@ class SwatApplication extends SwatObject
 	 * Initializes this application
 	 *
 	 * Subclasses should implement all application level initialization here
-	 * and call whichever SwatApplication::init* methods are necessary.
+	 * and call whichever SiteApplication::init* methods are necessary.
 	 */
 	public function init()
 	{
@@ -186,11 +187,11 @@ class SwatApplication extends SwatObject
 	 * application specific code. Subclasses should implement logic here to
 	 * decide which page sub-class to instantiate.
 	 *
-	 * @param SwatPage the page to load as a replacement of the current page.
+	 * @param SitePage the page to load as a replacement of the current page.
 	 *
-	 * @see SwatPage
+	 * @see SitePage
 	 */
-	public function setPage(SwatPage $page)
+	public function setPage(SitePage $page)
 	{
 		$this->page = $page;
 
@@ -204,12 +205,12 @@ class SwatApplication extends SwatObject
 	/**
 	 * Resolves a page for this application
 	 *
-	 * This method is called if no {@link SwatPage} is provided to the
-	 * {@link SwatApplication::setPage()} method.
+	 * This method is called if no {@link SitePage} is provided to the
+	 * {@link SiteApplication::setPage()} method.
 	 */
 	protected function resolvePage()
 	{
-		return new SwatPage($this);
+		return new SitePage($this);
 	}
 	
 	// }}}
@@ -271,7 +272,7 @@ class SwatApplication extends SwatObject
 	/**
 	 * Add a module to the application
 	 */
-	public function addModule(SwatApplicationModule $module)
+	public function addModule(SiteApplicationModule $module)
 	{
 		$this->modules[get_class($module)] = $module;
 	}
