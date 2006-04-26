@@ -1,16 +1,16 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-require_once 'Swat/exceptions/SwatInvalidPropertyException.php';
+require_once 'Site/SiteObject.php';
+require_once 'Site/exceptions/SiteInvalidPropertyException.php';
 
 /**
  * Base class for a layout
  *
- * @package   Swat
- * @copyright 2005 silverorange
+ * @package   Site
+ * @copyright 2005-2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SwatLayout extends SwatObject
+class SiteLayout extends SiteObject
 {
 	// {{{ private properties
 
@@ -29,12 +29,12 @@ class SwatLayout extends SwatObject
 	// {{{ public function __get()
 
 	/**
-	 * @throws SwatInvalidPropertyException
+	 * @throws SiteInvalidPropertyException
 	 */
 	public function __get($name)
 	{
 		if (!isset($this->_properties[$name]))
-			throw new SwatInvalidPropertyException(
+			throw new SiteInvalidPropertyException(
 				"There is no content available for '{$name}'.",
 				0, $this, $name);
 

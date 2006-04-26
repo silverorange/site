@@ -1,40 +1,40 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-require_once 'Swat/SwatLayout.php';
+require_once 'Site/SiteObject.php';
+require_once 'Site/SiteLayout.php';
 
 /**
  * Base class for a page
  *
- * @package   Swat
- * @copyright 2004-2005 silverorange
+ * @package   Site
+ * @copyright 2004-2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SwatPage extends SwatObject
+class SitePage extends SiteObject
 {
 	// {{{ public properties
 
 	/**
 	 * Layout object to use to display this page
 	 *
-	 * @var SwatLayout
+	 * @var SiteLayout
 	 */
 	public $layout = null;
 
 	/**
 	 * Application object
 	 * 
-	 * A reference to the {@link SwatApplication} object that created
+	 * A reference to the {@link SiteApplication} object that created
 	 * this page.
 	 *
-	 * @var SwatApplication
+	 * @var SiteApplication
 	 */
 	public $app = null;
 
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SwatApplication $app)
+	public function __construct(SiteApplication $app)
 	{
 		$this->app = $app;
 		$this->layout = $this->createLayout();
@@ -53,7 +53,7 @@ class SwatPage extends SwatObject
 
 	protected function createLayout()
 	{
-		return new SwatLayout('../layouts/default.php');
+		return new SiteLayout('../layouts/default.php');
 	}
 
 	// }}}

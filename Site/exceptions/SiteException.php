@@ -1,16 +1,16 @@
 <?php
 
 /**
- * An exception in Swat
+ * An exception in Site
  *
- * Exceptions in Swat have handy methods for outputting nicely formed error
+ * Exceptions in Site have handy methods for outputting nicely formed error
  * messages.
  *
- * @package   Swat
+ * @package   Site
  * @copyright 2004-2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SwatException extends Exception
+class SiteException extends Exception
 {
 	/**
 	 * Processes this exception
@@ -120,11 +120,11 @@ class SwatException extends Exception
 
 		$this->displayStyleSheet();
 
-		echo '<div class="swat-exception">';
+		echo '<div class="site-exception">';
 
 		printf('<h3>Uncaught Exception: %s</h3>'.
-				'<div class="swat-exception-body">'.
-				'Message:<div class="swat-exception-message">%s</div>'.
+				'<div class="site-exception-body">'.
+				'Message:<div class="site-exception-message">%s</div>'.
 				'Thrown in file <strong>%s</strong> '.
 				'on line <strong>%s</strong>.<br /><br />',
 				get_class($this),
@@ -163,14 +163,14 @@ class SwatException extends Exception
 	/**
 	 * Handles an exception
 	 *
-	 * Runs the process() method on SwatException exceptions and displays all
+	 * Runs the process() method on SiteException exceptions and displays all
 	 * other exceptions.
 	 *
 	 * @param Exception $e the exception to handle.
 	 */
 	public static function handle($e)
 	{
-		if ($e instanceof SwatException)
+		if ($e instanceof SiteException)
 			$e->process();
 		else
 			echo $e;
@@ -212,12 +212,12 @@ class SwatException extends Exception
 	private function displayStyleSheet()
 	{
 		echo '<style>';
-		echo ".swat-exception { border: 1px solid #d43; margin: 1em; font-family: sans-serif; }\n";
-		echo ".swat-exception h3 { background: #e65; margin: 0; padding: 5px; border-bottom: 2px solid #d43; color: #fff; }\n";
-		echo ".swat-exception-body { padding: 0.8em; }\n";
-		echo ".swat-exception-message { margin-left: 2em; padding: 1em; }\n";
-		echo ".swat-exception dt { float: left; margin-left: 1em; }\n";
-		echo ".swat-exception dd { margin-bottom: 1em; }\n";
+		echo ".site-exception { border: 1px solid #3d4; margin: 1em; font-family: sans-serif; }\n";
+		echo ".site-exception h3 { background: #5e6; margin: 0; padding: 5px; border-bottom: 2px solid #3d4; color: #fff; }\n";
+		echo ".store-exception-body { padding: 0.8em; }\n";
+		echo ".store-exception-message { margin-left: 2em; padding: 1em; }\n";
+		echo ".store-exception dt { float: left; margin-left: 1em; }\n";
+		echo ".store-exception dd { margin-bottom: 1em; }\n";
 		echo '</style>';
 	}
 }
@@ -225,6 +225,6 @@ class SwatException extends Exception
 /**
  * Set the PHP5 exception handler to out cutom function
  */
-set_exception_handler(array('SwatException', 'handle'));
+set_exception_handler(array('SiteException', 'handle'));
 
 ?>

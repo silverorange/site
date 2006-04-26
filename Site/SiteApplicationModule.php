@@ -1,30 +1,30 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-require_once 'Swat/SwatApplication.php';
+require_once 'Site/SiteObject.php';
+require_once 'Site/SiteApplication.php';
 
 /**
  * Base class for an application module
  *
- * @package   Swat
- * @copyright 2005 silverorange
+ * @package   Site
+ * @copyright 2005-2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SwatApplicationModule extends SwatObject
+abstract class SiteApplicationModule extends SiteObject
 {
 	// {{{ private properties
 
 	/**
 	 * Reference to the application object that contains this module
 	 *
-	 * @var SwatApplication
+	 * @var SiteApplication
 	 */
 	protected $app;
 
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SwatApplication $app)
+	public function __construct(SiteApplication $app)
 	{
 		$this->app = $app;
 	}
