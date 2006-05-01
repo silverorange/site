@@ -308,10 +308,10 @@ class SiteApplication extends SiteObject
 	 * from one of the PHP global arrays.
 	 *
 	 * @param string $name the name of the variable to lookup.
-	 *
 	 * @param integer $types a bitwise combination of self::VAR_*
-	 *                    constants.
-	 *
+	 *                        constants. Defaults to
+	 *                        {@link SiteApplication::VAR_POST} |
+	 *                        {@link SiteApplication::VAR_GET}.
 	 * @param mixed $default the value to return if variable is not found in
 	 *                        the super-global arrays.
 	 *
