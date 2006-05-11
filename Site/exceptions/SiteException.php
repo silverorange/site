@@ -69,7 +69,7 @@ class SiteException extends SwatException
 	 *
 	 * @todo separate this into a separate file
 	 */
-	private function displayStyleSheet()
+	protected function displayStyleSheet()
 	{
 		echo '<style>';
 		echo ".site-exception { border: 1px solid #3d4; margin: 1em; font-family: sans-serif; }\n";
