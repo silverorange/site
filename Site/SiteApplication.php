@@ -115,54 +115,6 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ protected function initModules()
-
-	/**
-	 * Initializes the modules
-	 */
-	protected function initModules()
-	{
-		foreach ($this->modules as $module)
-			$module->init();
-	}
-
-	// }}}
-	// {{{ protected function initBaseHref()
-
-	/**
-	 * Initializes the base href
-	 */
-	protected function initBaseHref($prefix_length = 0, $secure = false)
-	{
-		$this->uri = $_SERVER['REQUEST_URI'];
-
-		$uri_array = explode('/', $this->uri);
-
-		$base_uri = implode('/',
-			array_slice($uri_array, 0, $prefix_length + 1)).'/';
-
-		$protocol = ($secure) ? 'https://' : 'http://';
-
-		$this->base_href = $protocol.$this->getServerName().$base_uri;
-	}
-
-	// }}}
-	// {{{ protected function initPage()
-
-	/**
-	 * Initializes the page
-	 */
-	protected function initPage()
-	{
-		if ($this->page === null)
-			$this->page = $this->resolvePage();
-
-		$this->page->init();
-
-		$this->page_initialized = true;
-	}
-
-	// }}}
 	// {{{ public function getPage()
 
 	/**
@@ -199,20 +151,6 @@ class SiteApplication extends SiteObject
 			$this->page->init();
 	}
 
-	// }}}
-	// {{{ protected function resolvePage()
-
-	/**
-	 * Resolves a page for this application
-	 *
-	 * This method is called if no {@link SitePage} is provided to the
-	 * {@link SiteApplication::setPage()} method.
-	 */
-	protected function resolvePage()
-	{
-		return new SitePage($this);
-	}
-	
 	// }}}
 	// {{{ public function getBaseHref()
 
@@ -251,19 +189,6 @@ class SiteApplication extends SiteObject
 	public function getExecutionTime()
 	{
 		return microtime(true) - $this->start_time;
-	}
-
-	// }}}
-	// {{{ protected function getServerName()
-
-	/**
-	 * Gets the servername
-	 *
-	 * @return string the servername
-	 */
-	protected function getServerName()
-	{
-		return $_SERVER['HTTP_HOST'];
 	}
 
 	// }}}
@@ -357,6 +282,81 @@ class SiteApplication extends SiteObject
 				$var = $_ENV[$name];
 
 		return $var;
+	}
+
+	// }}}
+	// {{{ protected function initModules()
+
+	/**
+	 * Initializes the modules
+	 */
+	protected function initModules()
+	{
+		foreach ($this->modules as $module)
+			$module->init();
+	}
+
+	// }}}
+	// {{{ protected function initBaseHref()
+
+	/**
+	 * Initializes the base href
+	 */
+	protected function initBaseHref($prefix_length = 0, $secure = false)
+	{
+		$this->uri = $_SERVER['REQUEST_URI'];
+
+		$uri_array = explode('/', $this->uri);
+
+		$base_uri = implode('/',
+			array_slice($uri_array, 0, $prefix_length + 1)).'/';
+
+		$protocol = ($secure) ? 'https://' : 'http://';
+
+		$this->base_href = $protocol.$this->getServerName().$base_uri;
+	}
+
+	// }}}
+	// {{{ protected function initPage()
+
+	/**
+	 * Initializes the page
+	 */
+	protected function initPage()
+	{
+		if ($this->page === null)
+			$this->page = $this->resolvePage();
+
+		$this->page->init();
+
+		$this->page_initialized = true;
+	}
+
+	// }}}
+	// {{{ protected function resolvePage()
+
+	/**
+	 * Resolves a page for this application
+	 *
+	 * This method is called if no {@link SitePage} is provided to the
+	 * {@link SiteApplication::setPage()} method.
+	 */
+	protected function resolvePage()
+	{
+		return new SitePage($this);
+	}
+	
+	// }}}
+	// {{{ protected function getServerName()
+
+	/**
+	 * Gets the servername
+	 *
+	 * @return string the servername
+	 */
+	protected function getServerName()
+	{
+		return $_SERVER['HTTP_HOST'];
 	}
 
 	// }}}
