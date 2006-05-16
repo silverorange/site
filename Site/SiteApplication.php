@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/SitePage.php';
 require_once 'Site/SiteApplicationModule.php';
@@ -61,7 +62,16 @@ class SiteApplication extends SiteObject
 	/**
 	 * Application modules
 	 *
+	 * Application modules are pieces of code that add specific functionality
+	 * to an application such as database connectivity, session handling or
+	 * configuration.
+	 *
+	 * This is an associative array of modules loaded in this application. The
+	 * array is of the form 'module identifier' => 'module'.
+	 *
 	 * @var array
+	 * @see SiteApplication::getDefaultModuleList(),
+	 *      SiteApplication::addModule()
 	 */
 	protected $modules = array();
 
@@ -88,12 +98,32 @@ class SiteApplication extends SiteObject
 	/**
 	 * Creates a new Site application
 	 *
+	 * When the application is created, the default modules are loaded. See
+	 * {@link SiteApplication::getDefaultModuleList()}.
+	 *
 	 * @param string $id a unique identifier for this application.
 	 */
 	public function __construct($id)
 	{
 		$this->id = $id;
 		$this->start_time = microtime(true);
+
+		// load default modules
+		foreach ($this->getDefaultModuleList() as $module_id => $module_class)
+			$this->addModule(new $module_class($this), $module_id);
+	}
+
+	// }}}
+	// {{{ private function __get()
+
+	private function __get($name)
+	{
+		if (isset($this->modules[$name]))
+			return $this->modules[$name];
+
+		throw new SiteException('Application does not have a property with '.
+			"the name '{$name}', and no application module with the ".
+			"identifier '{$name}' is loaded.");
 	}
 
 	// }}}
@@ -195,11 +225,21 @@ class SiteApplication extends SiteObject
 	// {{{ public function addModule()
 
 	/**
-	 * Add a module to the application
+	 * Adds a module to this application
+	 *
+	 * @param SiteApplicationModule $module the module to add to this
+	 *                                       applicaiton.
+	 * @param string $id an identifier for this module. If a module with the
+	 *                    given identifier already exists in this application,
+	 *                    an exception is thrown.
 	 */
-	public function addModule(SiteApplicationModule $module)
+	public function addModule(SiteApplicationModule $module, $id)
 	{
-		$this->modules[get_class($module)] = $module;
+		if (isset($this->modules[$id]))
+			throw new SiteException("A module with the identifier '{$id}' ".
+				'already exists in this applicaiton.');
+
+		$this->modules[$id] = $module;
 	}
 
 	// }}}
@@ -285,10 +325,36 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ protected function getDefaultModuleList()
+
+	/**
+	 * Gets the list of modules to load for this application
+	 *
+	 * The list of modules is an associative array of the form
+	 * 'module identifier' => 'module class name'. After instantiation, loaded
+	 * modules are accessible as read-only properties of this application.
+	 * The public property names correspond directly to the module identifiers
+	 * specified in the module list array.
+	 *
+	 * The modules are loaded in the order they are specified in this list. If
+	 * there are module dependencies, the order of the returned array should
+	 * reflect this.
+	 *
+	 * No modules are loaded by default. Subclasses of SiteApplication may
+	 * specify their own list of modules to load by overriding this method.
+	 *
+	 * @return array the list of modules to load for this application.
+	 */
+	protected function getDefaultModuleList()
+	{
+		return array();
+	}
+
+	// }}}
 	// {{{ protected function initModules()
 
 	/**
-	 * Initializes the modules
+	 * Initializes the modules currently loaded by this application
 	 */
 	protected function initModules()
 	{
