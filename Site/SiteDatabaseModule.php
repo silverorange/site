@@ -24,12 +24,16 @@ class SiteDatabaseModule extends SiteApplicationModule
 	 */
 	public $name;
 
+	// }}}
+	// {{{ protected properties
+
 	/**
 	 * The database object
 	 *
-	 * @var MDB2_Connection Database connection object (readonly)
+	 * @var MDB2_Connection database connection object. This property is 
+	 *                       readonly publically accessible as 'mdb2'.
 	 */
-	public $mdb2 = null;
+	protected $connection = null;
 
     // }}}
     // {{{ public function init()
@@ -38,14 +42,28 @@ class SiteDatabaseModule extends SiteApplicationModule
 	{
 		// TODO: change to array /form of DSN and move parts to a secure include file.
 		$dsn = 'pgsql://php:test@zest/'.$this->name;
-		$this->mdb2 = MDB2::connect($dsn);
-		$this->mdb2->options['debug'] = true;
+		$this->connection = MDB2::connect($dsn);
+		$this->connection->options['debug'] = true;
 
-		if (MDB2::isError($this->mdb2))
-			throw new SwatDBException($this->mdb2);
+		if (MDB2::isError($this->connection))
+			throw new SwatDBException($this->connection);
 	}
 
     // }}}
+	// {{{ private function __get()
+
+	/**
+	 * Allows readonly access to the database connection object
+	 */
+	private function __get($name)
+	{
+		if (strcmp($name, 'mdb2') == 0)
+			return $this->connection;
+
+		throw new SiteException("No property with the name '{$name}' exists.");
+	}
+
+	// }}}
 }
 
 ?>
