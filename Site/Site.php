@@ -1,5 +1,8 @@
 <?php
 
+require_once 'Site/SiteError.php';
+require_once 'Site/exceptions/SiteException.php';
+
 /**
  * Container for package wide static methods
  *
@@ -134,5 +137,11 @@ if (!function_exists("dgettext")) {
 		return $messageid;
 	}
 }
+
+/*
+ * Setup custom exception and error handlers.
+ */
+SiteError::setupHandler();
+SiteException::setupHandler();
 
 ?>

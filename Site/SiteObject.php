@@ -1,9 +1,7 @@
 <?php
 
 require_once 'Swat/SwatObject.php';
-
 require_once 'Site/Site.php';
-require_once 'Site/exceptions/SiteException.php';
 
 /**
  * The base object type for the site package
