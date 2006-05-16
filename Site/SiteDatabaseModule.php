@@ -51,12 +51,12 @@ class SiteDatabaseModule extends SiteApplicationModule
 	}
 
     // }}}
-	// {{{ private function __get()
+	// {{{ public function getConnection()
 
 	/**
 	 * Retrieve the MDB2 connection object
 	 */
-	public function getMDB2Connection()
+	public function getConnection()
 	{
 		return $this->connection;
 	}
