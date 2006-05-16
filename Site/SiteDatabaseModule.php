@@ -54,14 +54,11 @@ class SiteDatabaseModule extends SiteApplicationModule
 	// {{{ private function __get()
 
 	/**
-	 * Allows readonly access to the database connection object
+	 * Retrieve the MDB2 connection object
 	 */
-	private function __get($name)
+	public function getMDB2Connection()
 	{
-		if (strcmp($name, 'mdb2') == 0)
-			return $this->connection;
-
-		throw new SiteException("No property with the name '{$name}' exists.");
+		return $this->connection;
 	}
 
 	// }}}
