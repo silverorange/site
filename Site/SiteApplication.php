@@ -239,6 +239,12 @@ class SiteApplication extends SiteObject
 			throw new SiteException("A module with the identifier '{$id}' ".
 				'already exists in this applicaiton.');
 
+		$properties = get_object_vars($this);
+		if (array_key_exists($id, $properties))
+			throw new SiteException("Invalid module identifier '{$id}'. ".
+				'Module identifiers must not be the same as any of the '.
+				'property names of this application object.');
+
 		$this->modules[$id] = $module;
 	}
 
