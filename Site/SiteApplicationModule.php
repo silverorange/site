@@ -12,7 +12,7 @@ require_once 'Site/SiteApplication.php';
  */
 abstract class SiteApplicationModule extends SiteObject
 {
-	// {{{ private properties
+	// {{{ protected properties
 
 	/**
 	 * Reference to the application object that contains this module
