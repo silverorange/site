@@ -67,8 +67,9 @@ class SiteExceptionPage extends SitePage
 
 	private function getHttpStatusCode()
 	{
-		if ($this->exception === null)
-			return 500;
+		if ($this->exception === null ||
+			!($this->exception instanceof SiteException))
+				return 500;
 
 		return $this->exception->http_status_code;
 	}
@@ -80,10 +81,11 @@ class SiteExceptionPage extends SitePage
 	{
 		if ($this->exception === null)
 			$title = 'Unknown Error';
-		elseif ($this->exception->title === null)
-			$title = get_class($this->exception);
+		elseif ($this->exception instanceof SiteException && 
+			$this->exception->title !== null)
+				$title = $this->exception->title;
 		else
-			$title = $this->exception->title;
+			$title = 'Error';
 
 		return $title;
 	}
