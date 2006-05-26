@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Site/SiteObject.php';
-require_once 'Site/SiteLayout.php';
+require_once 'Site/layouts/SiteLayout.php';
 
 /**
  * Base class for a page
@@ -15,13 +15,6 @@ class SitePage extends SiteObject
 	// {{{ public properties
 
 	/**
-	 * Layout object to use to display this page
-	 *
-	 * @var SiteLayout
-	 */
-	public $layout = null;
-
-	/**
 	 * Application object
 	 * 
 	 * A reference to the {@link SiteApplication} object that created
@@ -30,6 +23,12 @@ class SitePage extends SiteObject
 	 * @var SiteApplication
 	 */
 	public $app = null;
+	public $layout = null;
+
+	// }}}
+	// {{{ protected properties
+
+	protected $source = null;
 
 	// }}}
 	// {{{ public function __construct()
@@ -37,7 +36,22 @@ class SitePage extends SiteObject
 	public function __construct(SiteApplication $app)
 	{
 		$this->app = $app;
-		$this->layout = $this->createLayout();
+	}
+
+	// }}}
+	// {{{ public function setSource()
+
+	public function setSource($source)
+	{
+		$this->source = $source;
+	}
+
+	// }}}
+	// {{{ public function getSource()
+
+	public function getSource()
+	{
+		return $this->source;
 	}
 
 	// }}}
@@ -45,17 +59,23 @@ class SitePage extends SiteObject
 
 	public function init()
 	{
-
 	}
 
 	// }}}
-	// {{{ protected function createLayout()
+	// {{{ public function process()
 
-	protected function createLayout()
+	public function process()
 	{
-		return new SiteLayout('../layouts/default.php');
+	}
+
+	// }}}
+	// {{{ public function build()
+
+	public function build()
+	{
 	}
 
 	// }}}
 }
+
 ?>

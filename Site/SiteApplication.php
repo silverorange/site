@@ -2,7 +2,7 @@
 
 require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/SiteObject.php';
-require_once 'Site/SitePage.php';
+require_once 'Site/pages/SitePage.php';
 require_once 'Site/SiteApplicationModule.php';
 
 /**
@@ -34,16 +34,12 @@ class SiteApplication extends SiteObject
 	 * @var string
 	 */
 	public $id;
+	public $uri_prefix_length = 0;
+	public $exception_page_source = 'exception';
+	public $secure = false;
 
 	// }}}
 	// {{{ protected properties
-
-	/**
-	 * The current page of this application
-	 *
-	 * @var SitePage
-	 */
-	protected $page = null;
 
 	/**
 	 * The base value for all of this application's anchor hrefs
@@ -79,11 +75,11 @@ class SiteApplication extends SiteObject
 	// {{{ private properties
 
 	/**
-	 * Whether init() has been run on this->page
+	 * The current page of this application
 	 *
-	 * @var boolean
+	 * @var SitePage
 	 */
-	private $page_initialized = false;
+	private $page = null;
 
 	/**
 	 * The execution start time of this application
@@ -114,6 +110,70 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function run()
+
+	/**
+	 * Run the application.
+	 */
+	public function run()
+	{
+		$this->initModules();
+		$this->parseURI();
+
+		try {
+			$this->loadPage();
+			$this->page->layout->init();
+			$this->page->init();
+			$this->page->process();
+			$this->page->layout->process();
+			$this->page->build();
+			$this->page->layout->build();
+		}
+		catch (Exception $e) {
+			$this->replacePage($this->exception_page_source);
+			$this->page->setException($e);
+			$this->page->build();
+			$this->page->layout->build();
+		}
+
+		$this->page->layout->display();
+	}
+
+	// }}}
+	// {{{ protected function parseURI()
+
+	/**
+	 * Initializes the base href and URI
+	 */
+	protected function parseURI()
+	{
+		$this->uri = $_SERVER['REQUEST_URI'];
+
+		$uri_array = explode('/', $this->uri);
+
+		$base_uri = implode('/',
+			array_slice($uri_array, 0, $this->uri_prefix_length + 1)).'/';
+
+		$protocol = ($this->secure) ? 'https://' : 'http://';
+
+		$this->base_href = $protocol.$this->getServerName().$base_uri;
+	}
+
+	// }}}
+
+	// module methods
+	// {{{ protected function initModules()
+
+	/**
+	 * Initializes the modules currently loaded by this application
+	 */
+	protected function initModules()
+	{
+		foreach ($this->modules as $module)
+			$module->init();
+	}
+
+	// }}}
 	// {{{ private function __get()
 
 	private function __get($name)
@@ -127,21 +187,72 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ public function init()
+	// {{{ public function addModule()
 
 	/**
-	 * Initializes this application
+	 * Adds a module to this application
 	 *
-	 * Subclasses should implement all application level initialization here
-	 * and call whichever SiteApplication::init* methods are necessary.
+	 * @param SiteApplicationModule $module the module to add to this
+	 *                                       applicaiton.
+	 * @param string $id an identifier for this module. If a module with the
+	 *                    given identifier already exists in this application,
+	 *                    an exception is thrown.
 	 */
-	public function init()
+	public function addModule(SiteApplicationModule $module, $id)
 	{
-		$this->initBaseHref();
-		$this->initModules();
+		if (isset($this->modules[$id]))
+			throw new SiteException("A module with the identifier '{$id}' ".
+				'already exists in this applicaiton.');
 
-		// call this last
-		$this->initPage();
+		$properties = get_object_vars($this);
+		if (array_key_exists($id, $properties))
+			throw new SiteException("Invalid module identifier '{$id}'. ".
+				'Module identifiers must not be the same as any of the '.
+				'property names of this application object.');
+
+		$this->modules[$id] = $module;
+	}
+
+	// }}}
+	// {{{ protected function getDefaultModuleList()
+
+	/**
+	 * Gets the list of modules to load for this application
+	 *
+	 * The list of modules is an associative array of the form
+	 * 'module identifier' => 'module class name'. After instantiation, loaded
+	 * modules are accessible as read-only properties of this application.
+	 * The public property names correspond directly to the module identifiers
+	 * specified in the module list array.
+	 *
+	 * The modules are loaded in the order they are specified in this list. If
+	 * there are module dependencies, the order of the returned array should
+	 * reflect this.
+	 *
+	 * No modules are loaded by default. Subclasses of SiteApplication may
+	 * specify their own list of modules to load by overriding this method.
+	 *
+	 * @return array the list of modules to load for this application.
+	 */
+	protected function getDefaultModuleList()
+	{
+		return array();
+	}
+
+	// }}}
+
+	// page methods
+	// {{{ protected function loadPage()
+
+	/**
+	 * Loads the page
+	 */
+	protected function loadPage()
+	{
+		if ($this->page === null) {
+			$source = self::initVar('source');
+			$this->page = $this->resolvePage($source);
+		}
 	}
 
 	// }}}
@@ -176,12 +287,44 @@ class SiteApplication extends SiteObject
 	public function setPage(SitePage $page)
 	{
 		$this->page = $page;
-
-		if ($this->page_initialized)
-			$this->page->init();
+		$this->page->layout->init();
+		$this->page->init();
 	}
 
 	// }}}
+	// {{{ protected function resolvePage()
+
+	/**
+	 * Resolves a page for a particular source
+	 *
+	 * @return SitePage An instance of a SitePage is returned.
+	 */
+	protected function resolvePage($source)
+	{
+		$page = new SitePage($this);
+		$page->layout = new SiteLayout('../layouts/default.php');
+		return $page;
+	}
+	
+	// }}}
+	// {{{ public function replacePage()
+
+	/**
+	 * Replace the page object
+	 *
+	 * This method can be used to load another page to replace the current 
+	 * page. For example, this is used to load a confirmation page when 
+	 * processing an admin index page.
+	 */
+	public function replacePage($source)
+	{
+		$new_page = $this->resolvePage($source);
+		$this->setPage($new_page);
+	}
+
+	// }}}
+
+	// accessor methods
 	// {{{ public function getBaseHref()
 
 	/**
@@ -222,33 +365,21 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ public function addModule()
+	// {{{ protected function getServerName()
 
 	/**
-	 * Adds a module to this application
+	 * Gets the servername
 	 *
-	 * @param SiteApplicationModule $module the module to add to this
-	 *                                       applicaiton.
-	 * @param string $id an identifier for this module. If a module with the
-	 *                    given identifier already exists in this application,
-	 *                    an exception is thrown.
+	 * @return string the servername
 	 */
-	public function addModule(SiteApplicationModule $module, $id)
+	protected function getServerName()
 	{
-		if (isset($this->modules[$id]))
-			throw new SiteException("A module with the identifier '{$id}' ".
-				'already exists in this applicaiton.');
-
-		$properties = get_object_vars($this);
-		if (array_key_exists($id, $properties))
-			throw new SiteException("Invalid module identifier '{$id}'. ".
-				'Module identifiers must not be the same as any of the '.
-				'property names of this application object.');
-
-		$this->modules[$id] = $module;
+		return $_SERVER['HTTP_HOST'];
 	}
 
 	// }}}
+
+	//
 	// {{{ public function relocate()
 
 	/**
@@ -270,6 +401,8 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+
+	// static convenience methods
 	// {{{ public static function initVar()
 
 	/**
@@ -328,107 +461,6 @@ class SiteApplication extends SiteObject
 				$var = $_ENV[$name];
 
 		return $var;
-	}
-
-	// }}}
-	// {{{ protected function getDefaultModuleList()
-
-	/**
-	 * Gets the list of modules to load for this application
-	 *
-	 * The list of modules is an associative array of the form
-	 * 'module identifier' => 'module class name'. After instantiation, loaded
-	 * modules are accessible as read-only properties of this application.
-	 * The public property names correspond directly to the module identifiers
-	 * specified in the module list array.
-	 *
-	 * The modules are loaded in the order they are specified in this list. If
-	 * there are module dependencies, the order of the returned array should
-	 * reflect this.
-	 *
-	 * No modules are loaded by default. Subclasses of SiteApplication may
-	 * specify their own list of modules to load by overriding this method.
-	 *
-	 * @return array the list of modules to load for this application.
-	 */
-	protected function getDefaultModuleList()
-	{
-		return array();
-	}
-
-	// }}}
-	// {{{ protected function initModules()
-
-	/**
-	 * Initializes the modules currently loaded by this application
-	 */
-	protected function initModules()
-	{
-		foreach ($this->modules as $module)
-			$module->init();
-	}
-
-	// }}}
-	// {{{ protected function initBaseHref()
-
-	/**
-	 * Initializes the base href
-	 */
-	protected function initBaseHref($prefix_length = 0, $secure = false)
-	{
-		$this->uri = $_SERVER['REQUEST_URI'];
-
-		$uri_array = explode('/', $this->uri);
-
-		$base_uri = implode('/',
-			array_slice($uri_array, 0, $prefix_length + 1)).'/';
-
-		$protocol = ($secure) ? 'https://' : 'http://';
-
-		$this->base_href = $protocol.$this->getServerName().$base_uri;
-	}
-
-	// }}}
-	// {{{ protected function initPage()
-
-	/**
-	 * Initializes the page
-	 */
-	protected function initPage()
-	{
-		if ($this->page === null)
-			$this->page = $this->resolvePage();
-
-		$this->page->init();
-
-		$this->page_initialized = true;
-	}
-
-	// }}}
-	// {{{ protected function resolvePage()
-
-	/**
-	 * Resolves a page for this application
-	 *
-	 * This method is called if no {@link SitePage} is provided to the
-	 * {@link SiteApplication::setPage()} method.
-	 */
-	protected function resolvePage()
-	{
-		return new SitePage($this);
-	}
-	
-	// }}}
-	// {{{ protected function getServerName()
-
-	/**
-	 * Gets the servername
-	 *
-	 * @return string the servername
-	 */
-	protected function getServerName()
-	{
-		return $_SERVER['HTTP_HOST'];
 	}
 
 	// }}}
