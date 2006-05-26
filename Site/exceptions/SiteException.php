@@ -12,6 +12,9 @@ require_once 'PEAR.php';
  */
 class SiteException extends SwatException
 {
+	public $title = null;
+	public $http_status_code = 500;
+
 	public function __construct($message = null, $code = 0)
 	{
 		if (is_object($message) && ($message instanceof PEAR_Error)) {
