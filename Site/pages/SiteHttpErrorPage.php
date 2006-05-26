@@ -16,11 +16,11 @@ class SiteHttpErrorPage extends SitePage
 	// }}}
 
 	// init phase
-	// {{{ protected function initInternal()
+	// {{{ public function init()
 
-	protected function initInternal()
+	public function init()
 	{
-		parent::initInternal();
+		parent::init();
 		$this->http_status_code = isset($_GET['status']) ? $_GET['status'] : 500;
 
 		$exp = explode('/', $this->app->getBaseHref());
@@ -40,11 +40,11 @@ class SiteHttpErrorPage extends SitePage
 	// }}}
 
 	// build phase
-	// {{{ protected function buildInternal()
+	// {{{ public function build()
 
-	protected function buildInternal()
+	public function build()
 	{
-		parent::buildInternal();
+		parent::build();
 
 		$this->layout->addHtmlHeadEntry(
 			new SwatHtmlHeadEntry('styles/http-error.css', 
