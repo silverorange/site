@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/SitePage.php';
+require_once 'Site/pages/SitePage.php';
 require_once 'XML/RPC2/Server.php';
 
 /**

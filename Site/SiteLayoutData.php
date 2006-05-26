@@ -4,34 +4,33 @@ require_once 'Site/SiteObject.php';
 require_once 'Site/exceptions/SiteInvalidPropertyException.php';
 
 /**
- * Base class for a layout
+ * Container for layout properties
  *
  * @package   Site
  * @copyright 2005-2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteLayout extends SiteObject
+class SiteLayoutData extends SiteObject
 {
 	// {{{ private properties
 
 	private $_properties = array();
-	private $_filename = null;
 	
 	// }}}
-	// {{{ public function __construct()
+	// {{{ public function display()
 
-	public function __construct($filename)
+	public function display($filename)
 	{
-		$this->_filename = $filename;
+		require_once $filename;
 	}
 
 	// }}}
-	// {{{ public function __get()
+	// {{{ private function __get()
 
 	/**
 	 * @throws SiteInvalidPropertyException
 	 */
-	public function __get($name)
+	private function __get($name)
 	{
 		if (!isset($this->_properties[$name]))
 			throw new SiteInvalidPropertyException(
@@ -42,27 +41,11 @@ class SiteLayout extends SiteObject
 	}
 
 	// }}}
-	// {{{ public function __set()
+	// {{{ private function __set()
 
-	public function __set($name, $content)
+	private function __set($name, $content)
 	{
 		$this->_properties[$name] = $content;
-	}
-
-	// }}}
-	// {{{ public function setFilename()
-
-	public function setFilename($filename)
-	{
-		$this->_filename = $filename;
-	}
-
-	// }}}
-	// {{{ public function display()
-
-	public function display()
-	{
-		require_once $this->_filename;
 	}
 
 	// }}}
