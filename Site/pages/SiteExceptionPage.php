@@ -24,11 +24,11 @@ class SiteExceptionPage extends SitePage
 	// }}}
 
 	// build phase
-	// {{{ protected function buildInternal()
+	// {{{ public function build()
 
-	protected function buildInternal()
+	public function build()
 	{
-		parent::buildInternal();
+		parent::build();
 
 		$title  = $this->getTitle();
 
