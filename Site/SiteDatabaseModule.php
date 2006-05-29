@@ -9,7 +9,7 @@ require_once 'MDB2.php';
  * Application module for database connectivity
  *
  * @package   Site
- * @copyright 2004-2006 silverorange
+ * @copyright 2005-2006 silverorange
  */
 class SiteDatabaseModule extends SiteApplicationModule
 {
