@@ -19,12 +19,16 @@ class SiteLayout extends SiteObject
 	public $data = null;
 	
 	// }}}
+	// {{{ protected properties
+
+	protected $html_head_entries;
+
+	// }}}
 	// {{{ private properties
 
 	private $filename = null;
 	private $current_capture = null;
 	private $capture_prepend = false;
-	private $html_head_entries = array();
 
 	// }}}
 	// {{{ public function __construct()
@@ -32,6 +36,7 @@ class SiteLayout extends SiteObject
 	public function __construct($app, $filename = null)
 	{
 		$this->app = $app;
+		$this->html_head_entries = new SwatHtmlHeadEntrySet();
 
 		if ($filename === null)
 			$filename = 'Site/layouts/xhtml/default.php';
@@ -81,7 +86,7 @@ class SiteLayout extends SiteObject
 	public function build()
 	{
 		$this->startCapture('html_head_entries');
-		$this->displayHtmlHeadEntries();
+		$this->html_head_entries->display();
 		$this->endCapture();
 	}
 
@@ -120,49 +125,22 @@ class SiteLayout extends SiteObject
 	}
 
 	// }}}
-	// {{{ public function getHtmlHeadEntries()
-
-	public function getHtmlHeadEntries()
-	{
-		return $this->html_head_entries;
-	}
-
-	// }}}
 	// {{{ public function addHtmlHeadEntry()
 
 	public function addHtmlHeadEntry(SwatHtmlHeadEntry $entry)
 	{
-		$this->html_head_entries =
-			array_merge($this->html_head_entries,
-				array($entry->getUri() => $entry));
+		$this->html_head_entries->addEntry($entry);
 	}
 
 	// }}}
-	// {{{ public function addHtmlHeadEntries()
+	// {{{ public function addHtmlHeadEntrySet()
 
-	public function addHtmlHeadEntries($entries)
+	public function addHtmlHeadEntrySet(SwatHtmlHeadEntrySet $set)
 	{
-		if (is_array($entries))
-			$this->html_head_entries =
-				array_merge($this->html_head_entries, $entries);
-	}
-
-	// }}}
-	// {{{ private function displayHtmlHeadEntries()
-
-	private function displayHtmlHeadEntries()
-	{
-		$html_head_entries = $this->getHtmlHeadEntries();
-
-		// sort array by display order
-		usort($html_head_entries, array('SwatHtmlHeadEntry', 'compare'));
-
-		foreach ($html_head_entries as $head_entry) {
-			$head_entry->display();
-			echo "\n";
-		}
+		$this->html_head_entries->addEntrySet($set);
 	}
 
 	// }}}
 }
+
 ?>
