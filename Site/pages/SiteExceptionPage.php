@@ -4,7 +4,7 @@ require_once 'Site/pages/SitePage.php';
 
 /**
  * @package   veseys2
- * @copyright 2005 silverorange
+ * @copyright 2006 silverorange
  */
 class SiteExceptionPage extends SitePage
 {
