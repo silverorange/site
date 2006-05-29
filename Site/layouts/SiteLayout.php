@@ -154,6 +154,9 @@ class SiteLayout extends SiteObject
 	{
 		$html_head_entries = $this->getHtmlHeadEntries();
 
+		// sort array by display order
+		usort($html_head_entries, array('SwatHtmlHeadEntry', 'compare'));
+
 		foreach ($html_head_entries as $head_entry) {
 			$head_entry->display();
 			echo "\n";
