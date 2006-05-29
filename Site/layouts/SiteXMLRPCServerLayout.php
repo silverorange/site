@@ -9,11 +9,11 @@ require_once 'Site/layouts/SiteLayout.php';
  * @copyright 2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteLayout extends SiteObject
+class SiteXMLRPCServerLayout extends SiteLayout
 {
 	// {{{ public function __construct()
 
-	public function __construct($app, $filename)
+	public function __construct($app, $filename = null)
 	{
 		parent::__construct($app, 'Site/layouts/xhtml/xmlrpcserver.php');
 	}

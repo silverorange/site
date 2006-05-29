@@ -31,9 +31,9 @@ abstract class SiteXMLRPCServer extends SitePage
 	{
 		$server = XML_RPC2_Server::create($this);
 
-		ob_start();
+		$this->layout->startCapture('response');
 		$server->handleCall();
-		$this->layout->response = ob_get_clean();
+		$this->layout->endCapture();
 	}
 
 	/**
