@@ -49,5 +49,13 @@ class SiteLayoutData extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function exists()
+
+	public function exists($name)
+	{
+		return isset($this->_properties[$name]);
+	}
+
+	// }}}
 }
 ?>

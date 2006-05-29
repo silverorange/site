@@ -113,7 +113,7 @@ class SiteLayout extends SiteObject
 
 		$name = $this->current_capture;
 
-		if (isset($this->data->$name))
+		if ($this->data->exists($name))
 			if ($this->capture_prepend)
 				$this->data->$name = ob_get_clean().$this->data->$name;
 			else
