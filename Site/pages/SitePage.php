@@ -36,6 +36,7 @@ class SitePage extends SiteObject
 	public function __construct(SiteApplication $app)
 	{
 		$this->app = $app;
+		$this->layout = $this->createLayout();
 	}
 
 	// }}}
@@ -52,6 +53,14 @@ class SitePage extends SiteObject
 	public function getSource()
 	{
 		return $this->source;
+	}
+
+	// }}}
+	// {{{ protected function createLayout()
+
+	protected function createLayout()
+	{
+		return new SiteLayout($this->app, 'Site/layouts/xhtml/default.php');
 	}
 
 	// }}}
