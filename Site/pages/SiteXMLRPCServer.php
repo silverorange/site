@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/pages/SitePage.php';
+require_once 'Site/layouts/SiteXMLRPCServerLayout.php';
 require_once 'XML/RPC2/Server.php';
 
 /**
@@ -43,9 +44,12 @@ abstract class SiteXMLRPCServer extends SitePage
 	{
 	}
 
+	/**
+	 * @xmlrpc.hidden
+	 */
 	protected function createLayout()
 	{
-		return new SiteLayout('Site/layouts/xmlrpcserver.php');
+		return new SiteXMLRPCServerLayout($this->app);
 	}
 }
 

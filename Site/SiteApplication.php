@@ -301,9 +301,7 @@ class SiteApplication extends SiteObject
 	 */
 	protected function resolvePage($source)
 	{
-		$page = new SitePage($this);
-		$page->layout = new SiteLayout('../layouts/default.php');
-		return $page;
+		return new SitePage($this);
 	}
 	
 	// }}}
