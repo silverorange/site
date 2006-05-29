@@ -33,10 +33,14 @@ class SitePage extends SiteObject
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app)
+	public function __construct(SiteApplication $app, SiteLayout $layout = null)
 	{
 		$this->app = $app;
-		$this->layout = $this->createLayout();
+
+		if ($layout === null)
+			$this->layout = $this->createLayout();
+		else
+			$this->layout = $layout;
 	}
 
 	// }}}
