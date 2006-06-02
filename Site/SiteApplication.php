@@ -71,15 +71,15 @@ class SiteApplication extends SiteObject
 	 */
 	protected $modules = array();
 
-	// }}}
-	// {{{ private properties
-
 	/**
 	 * The current page of this application
 	 *
 	 * @var SitePage
 	 */
-	private $page = null;
+	protected $page = null;
+
+	// }}}
+	// {{{ private properties
 
 	/**
 	 * The execution start time of this application
