@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/SiteObject.php';
+require_once 'Site/SiteApplication.php';
 require_once 'Site/layouts/SiteLayout.php';
 
 /**
