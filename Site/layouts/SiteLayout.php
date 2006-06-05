@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/SiteObject.php';
+require_once 'Site/SiteApplication.php';
 require_once 'Site/SiteLayoutData.php';
 require_once 'Site/exceptions/SiteInvalidPropertyException.php';
 
@@ -33,7 +34,7 @@ class SiteLayout extends SiteObject
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct($app, $filename = null)
+	public function __construct(SiteApplication $app, $filename = null)
 	{
 		$this->app = $app;
 		$this->html_head_entries = new SwatHtmlHeadEntrySet();
