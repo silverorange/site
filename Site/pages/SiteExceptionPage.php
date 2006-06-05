@@ -8,9 +8,9 @@ require_once 'Site/pages/SitePage.php';
  */
 class SiteExceptionPage extends SitePage
 {
-	// {{{ private properties
+	// {{{ protected properties
 
-	private $exception = null;
+	protected $exception = null;
 
 	// }}}
 	// {{{ public function setException()
