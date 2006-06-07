@@ -126,6 +126,18 @@ class SiteLayout extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function clear()
+
+	public function clear($name)
+	{
+		if (!$this->data->exists($name))
+			throw new SiteException("Layout data property '{$name}' does not ".
+				'exist and cannot be cleared.');
+
+		$this->data->$name = '';
+	}
+
+	// }}}
 	// {{{ public function addHtmlHeadEntry()
 
 	public function addHtmlHeadEntry(SwatHtmlHeadEntry $entry)
