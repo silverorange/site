@@ -89,6 +89,7 @@ class SiteApplication extends SiteObject
 	private $start_time = null;
 
 	// }}}
+
 	// {{{ public function __construct()
 
 	/**
@@ -161,43 +162,6 @@ class SiteApplication extends SiteObject
 	// }}}
 
 	// module methods
-	// {{{ protected function initModules()
-
-	/**
-	 * Initializes the modules currently loaded by this application
-	 */
-	protected function initModules()
-	{
-		foreach ($this->modules as $module)
-			$module->init();
-	}
-
-	// }}}
-	// {{{ private function __get()
-
-	private function __get($name)
-	{
-		if (isset($this->modules[$name]))
-			return $this->modules[$name];
-
-		throw new SiteException('Application does not have a property with '.
-			"the name '{$name}', and no application module with the ".
-			"identifier '{$name}' is loaded.");
-	}
-
-	// }}}
-	// {{{ private function __isset()
-
-	private function __isset($name)
-	{
-		$isset = isset($this->$name);
-		if (!$isset)
-			$isset = isset($this->modules[$name]);
-
-		return $isset;
-	}
-
-	// }}}
 	// {{{ public function addModule()
 
 	/**
@@ -222,6 +186,18 @@ class SiteApplication extends SiteObject
 				'property names of this application object.');
 
 		$this->modules[$id] = $module;
+	}
+
+	// }}}
+	// {{{ protected function initModules()
+
+	/**
+	 * Initializes the modules currently loaded by this application
+	 */
+	protected function initModules()
+	{
+		foreach ($this->modules as $module)
+			$module->init();
 	}
 
 	// }}}
@@ -251,22 +227,33 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ private function __get()
 
-	// page methods
-	// {{{ protected function loadPage()
-
-	/**
-	 * Loads the page
-	 */
-	protected function loadPage()
+	private function __get($name)
 	{
-		if ($this->page === null) {
-			$source = self::initVar('source');
-			$this->page = $this->resolvePage($source);
-		}
+		if (isset($this->modules[$name]))
+			return $this->modules[$name];
+
+		throw new SiteException('Application does not have a property with '.
+			"the name '{$name}', and no application module with the ".
+			"identifier '{$name}' is loaded.");
 	}
 
 	// }}}
+	// {{{ private function __isset()
+
+	private function __isset($name)
+	{
+		$isset = isset($this->$name);
+		if (!$isset)
+			$isset = isset($this->modules[$name]);
+
+		return $isset;
+	}
+
+	// }}}
+
+	// page methods
 	// {{{ public function getPage()
 
 	/**
@@ -275,6 +262,22 @@ class SiteApplication extends SiteObject
 	public function getPage()
 	{
 		return $this->page;
+	}
+
+	// }}}
+	// {{{ public function replacePage()
+
+	/**
+	 * Replace the page object
+	 *
+	 * This method can be used to load another page to replace the current 
+	 * page. For example, this is used to load a confirmation page when 
+	 * processing an admin index page.
+	 */
+	public function replacePage($source)
+	{
+		$new_page = $this->resolvePage($source);
+		$this->setPage($new_page);
 	}
 
 	// }}}
@@ -303,6 +306,20 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ protected function loadPage()
+
+	/**
+	 * Loads the page
+	 */
+	protected function loadPage()
+	{
+		if ($this->page === null) {
+			$source = self::initVar('source');
+			$this->page = $this->resolvePage($source);
+		}
+	}
+
+	// }}}
 	// {{{ protected function resolvePage()
 
 	/**
@@ -315,22 +332,6 @@ class SiteApplication extends SiteObject
 		return new SitePage($this);
 	}
 	
-	// }}}
-	// {{{ public function replacePage()
-
-	/**
-	 * Replace the page object
-	 *
-	 * This method can be used to load another page to replace the current 
-	 * page. For example, this is used to load a confirmation page when 
-	 * processing an admin index page.
-	 */
-	public function replacePage($source)
-	{
-		$new_page = $this->resolvePage($source);
-		$this->setPage($new_page);
-	}
-
 	// }}}
 
 	// accessor methods
@@ -388,7 +389,7 @@ class SiteApplication extends SiteObject
 
 	// }}}
 
-	//
+	// HTTP methods
 	// {{{ public function relocate()
 
 	/**
