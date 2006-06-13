@@ -10,6 +10,9 @@ class SiteExceptionPage extends SitePage
 {
 	// {{{ protected properties
 
+	/**
+	 * @var SwatException
+	 */
 	protected $exception = null;
 
 	// }}}
