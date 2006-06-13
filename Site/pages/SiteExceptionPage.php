@@ -17,6 +17,9 @@ class SiteExceptionPage extends SitePage
 
 	public function setException($e)
 	{
+		if (!($e instanceof SwatException))
+			$e = new SwatException($e);
+
 		$this->exception = $e;
 	}
 
