@@ -186,6 +186,18 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ private function __isset()
+
+	private function __isset($name)
+	{
+		$isset = isset($this->$name);
+		if (!$isset)
+			$isset = isset($this->modules[$name]);
+
+		return $isset;
+	}
+
+	// }}}
 	// {{{ public function addModule()
 
 	/**
