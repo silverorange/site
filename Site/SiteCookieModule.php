@@ -33,7 +33,8 @@ class SiteCookieModule extends SiteApplicationModule
 	 *
 	 * @param string $name the name of the cookie to set.
 	 * @param mixed $value the value of the cookie.
-	 * @param integer $expiry the expiry date as a UNIX timestamp.
+	 * @param mixed $expiry the expiry date as a UNIX timestamp or a
+	                         string parsable by strtotime().
 	 * @param string $path the URL path this cookie is valid for.
 	 * @param string $domain the domain this cookie is valid for.
 	 */
@@ -42,6 +43,8 @@ class SiteCookieModule extends SiteApplicationModule
 	{
 		if ($expiry === null)
 			$expiry = strtotime('+90 days');
+		elseif (is_string($expiry))
+			$expiry = strtotime($expiry);
 
 		// TODO: get domain from application
 		//if ($domain = null)
