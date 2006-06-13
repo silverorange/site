@@ -33,10 +33,22 @@ class SiteCookieModule extends SiteApplicationModule
 	 *
 	 * @param string $name the name of the cookie to set.
 	 * @param mixed $value the value of the cookie.
+	 * @param integer $expiry the expiry date as a UNIX timestamp.
+	 * @param string $path the URL path this cookie is valid for.
+	 * @param string $domain the domain this cookie is valid for.
 	 */
-	public function setCookie($name, $value)
+	public function setCookie($name, $value, $expiry = null,
+		$path = '/', $domain = null)
 	{
+		if ($expiry === null)
+			$expiry = strtotime('+90 days');
 
+		// TODO: get domain from application
+		//if ($domain = null)
+		//	$domain = 
+
+		setcookie($name, $value, $expiry, $path);
+		//setcookie($name, $value, $expiry, $path, $domain);
 	}
 
 	// }}}
