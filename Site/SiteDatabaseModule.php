@@ -48,6 +48,9 @@ class SiteDatabaseModule extends SiteApplicationModule
 
 		if (MDB2::isError($this->connection))
 			throw new SwatDBException($this->connection);
+
+		// TODO: fixme
+		$this->app->db = $this->getConnection();
 	}
 
     // }}}
