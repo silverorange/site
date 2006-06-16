@@ -19,6 +19,8 @@ require_once 'XML/RPC2/Server.php';
  */
 abstract class SiteXMLRPCServer extends SitePage
 {
+	// {{{ public function process()
+
 	/**
 	 * Process the request
 	 *
@@ -37,12 +39,18 @@ abstract class SiteXMLRPCServer extends SitePage
 		$this->layout->endCapture();
 	}
 
+	// }}}
+	// {{{ public function build()
+
 	/**
 	 * @xmlrpc.hidden
 	 */
 	public function build()
 	{
 	}
+
+	// }}}
+	// {{{ protected function createLayout()
 
 	/**
 	 * @xmlrpc.hidden
@@ -51,6 +59,8 @@ abstract class SiteXMLRPCServer extends SitePage
 	{
 		return new SiteXMLRPCServerLayout($this->app);
 	}
+
+	// }}}
 }
 
 ?>
