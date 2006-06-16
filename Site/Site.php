@@ -19,6 +19,8 @@ class Site
 	 */
 	const GETTEXT_DOMAIN = 'site';
 
+	// {{{ public static function _()
+
 	/**
 	 * Translates a phrase
 	 *
@@ -32,6 +34,9 @@ class Site
 	{
 		return Site::gettext($message);
 	}
+
+	// }}}
+	// {{{ public static function gettext()
 
 	/**
 	 * Translates a phrase
@@ -47,6 +52,9 @@ class Site
 	{
 		return dgettext(Site::GETTEXT_DOMAIN, $message);
 	}
+
+	// }}}
+	// {{{ public static function ngettext()
 
 	/**
 	 * Translates a plural phrase
@@ -74,6 +82,9 @@ class Site
 			$singular_message, $plural_message, $number);
 	}
 
+	// }}}
+	// {{{ public static function displayMethods()
+
 	/**
 	 * Displays the methods of an object
 	 *
@@ -91,6 +102,9 @@ class Site
 
 		echo '</ul>';
 	}
+
+	// }}}
+	// {{{ public static function displayProperties()
 
 	/**
 	 * Displays the properties of an object
@@ -113,7 +127,11 @@ class Site
 
 		echo '</ul>';
 	}
+
+	// }}}
 }
+
+// {{{ dummy dngettext()
 
 /*
  * Define a dummy dngettext() for when gettext is not available.
@@ -128,6 +146,9 @@ if (!function_exists("dngettext")) {
     }
 }
 
+// }}}
+// {{{ dummy dgettext()
+
 /*
  * Define a dummy dgettext() for when gettext is not available.
  */
@@ -137,6 +158,8 @@ if (!function_exists("dgettext")) {
 		return $messageid;
 	}
 }
+
+// }}}
 
 /*
  * Setup custom exception and error handlers.
