@@ -11,6 +11,8 @@ require_once 'Site/exceptions/SiteException.php';
  */
 class SiteInvalidPropertyException extends SiteException
 {
+	// {{{ protected properties
+
 	/**
 	 * The name of the property that is invalid
 	 *
@@ -24,6 +26,9 @@ class SiteInvalidPropertyException extends SiteException
 	 * @var mixed
 	 */
 	protected $object = null;
+
+	// }}}
+	// {{{ public function __construct()
 
 	/**
 	 * Creates a new invalid property exception
@@ -41,6 +46,9 @@ class SiteInvalidPropertyException extends SiteException
 		$this->property = $property;
 	}
 
+	// }}}
+	// {{{ public function getObject()
+
 	/**
 	 * Gets the object the property is invalid for
 	 *
@@ -51,6 +59,9 @@ class SiteInvalidPropertyException extends SiteException
 		return $this->object;
 	}
 
+	// }}}
+	// {{{ public function getProperty()
+
 	/**
 	 * Gets the name of the property that is invalid
 	 *
@@ -60,6 +71,8 @@ class SiteInvalidPropertyException extends SiteException
 	{
 		return $this->property;
 	}
+
+	// }}}
 }
 
 ?>
