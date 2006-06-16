@@ -23,9 +23,6 @@ class SiteServerConfigModule extends SiteApplicationModule
 	protected $config = null;
 
 	// }}}
-
-	// }}}
-
 	// {{{ public function init()
 
 	public function init()
@@ -64,7 +61,6 @@ class SiteServerConfigModule extends SiteApplicationModule
 	}
 
     // }}}
-
 }
 
 ?>
