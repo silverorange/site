@@ -12,8 +12,13 @@ require_once 'PEAR.php';
  */
 class SiteException extends SwatException
 {
+	// {{{ public properties
+
 	public $title = null;
 	public $http_status_code = 500;
+
+	// }}}
+	// {{{ public function __construct()
 
 	public function __construct($message = null, $code = 0)
 	{
@@ -26,6 +31,8 @@ class SiteException extends SwatException
 
 		parent::__construct($message, $code);
 	}
+
+	// }}}
 }
 
 ?>
