@@ -12,6 +12,8 @@ require_once 'Site/exceptions/SiteException.php';
  */
 class Site
 {
+	// {{{ constants
+
 	/**
 	 * The gettext domain for Site
 	 *
@@ -19,6 +21,7 @@ class Site
 	 */
 	const GETTEXT_DOMAIN = 'site';
 
+	// }}}
 	// {{{ public static function _()
 
 	/**
