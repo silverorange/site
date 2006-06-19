@@ -14,7 +14,7 @@ require_once 'Site/SiteApplicationModule.php';
  */
 class SiteApplication extends SiteObject
 {
-	// {{{ class constants
+	// {{{ constants
 
 	const VAR_POST    = 1;
 	const VAR_GET     = 2;
