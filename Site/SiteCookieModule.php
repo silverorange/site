@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/exceptions/SiteCookieException.php';
 
 /**
  * Web application module for cookies
@@ -15,6 +16,11 @@ class SiteCookieModule extends SiteApplicationModule
 	public $cookie_prefix;
 
 	// }}}
+	// {{{ private properties
+
+	public $salt = '';
+
+	// }}}
 	// {{{ public function init()
 
 	/**
@@ -26,7 +32,18 @@ class SiteCookieModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function setCookie()
+	// {{{ public function setSalt()
+
+	/**
+	 * Set salt
+	 */
+	public function setSalt($salt)
+	{
+		$this->salt = $salt;
+	}
+
+	// }}}
+	// {{{ public functhion setCookie()
 
 	/**
 	 * Sets a cookie
@@ -48,26 +65,39 @@ class SiteCookieModule extends SiteApplicationModule
 		elseif (is_string($expiry))
 			$expiry = strtotime($expiry);
 
+		$cookie_value = $this->saltValue($value);
+
 		// TODO: get domain from application
 		//if ($domain = null)
 		//	$domain = 
 
-		setcookie($name, $value, $expiry, $path);
+		setcookie($name, $cookie_value, $expiry, $path);
 		//setcookie($name, $value, $expiry, $path, $domain);
 	}
 
 	// }}}
-	// {{{ private function __isset()
+	// {{{ public functhion removeCookie()
 
 	/**
-	 * Checks the existence of a cookie
+	 * Remove a cookie
 	 *
-	 * @param string $name the name of the cookie to check.
+	 * @param string $name the name of the cookie to set.
+	 * @param string $path the URL path this cookie is valid for.
+	 * @param string $domain the domain this cookie is valid for.
 	 */
-	private function __isset($name)
+	public function removeCookie($name, $path = '/', $domain = null)
 	{
 		$name = $this->cookie_prefix.'_'.$name;
-		return isset($_COOKIE[$name]);
+		$expiry = time() - 3600;
+
+		// TODO: get domain from application
+		//if ($domain = null)
+		//	$domain = 
+
+		setcookie($name, 0, $expiry, $path);
+		//setcookie($name, 0, $expiry, $path, $domain);
+
+		unset($_COOKIE[$name]);
 	}
 
 	// }}}
@@ -85,9 +115,63 @@ class SiteCookieModule extends SiteApplicationModule
 		$name = $this->cookie_prefix.'_'.$name;
 
 		if (!isset($_COOKIE[$name]))
-			throw new SiteException("Cookie '$name' is not set.");
+			throw new SiteCookieException("Cookie '$name' is not set.");
 
-		return $_COOKIE[$name];
+		$value = $this->unsaltValue($_COOKIE[$name]);
+		return $value;
+	}
+
+	// }}}
+	// {{{ private function saltValue()
+
+	private function saltValue($value)
+	{
+		$package = array();
+		$package['value'] = $value;
+		$package['hash'] = $this->getHash($value);
+		return serialize($package);
+	}
+
+	// }}}
+	// {{{ private function unsaltValue()
+
+	private function unsaltValue($value)
+	{
+		$package = unserialize($value);
+
+		if (!is_array($package) ||
+			!isset($package['value']) ||
+			!isset($package['hash']))
+				throw new SiteCookieException("Corrupt cookie data");
+
+		$value = $package['value'];
+
+		if ($package['hash'] !== $this->getHash($value))
+			throw new SiteCookieException("Invalid hash");
+
+		return $value;
+	}
+
+	// }}}
+	// {{{ private function getHash()
+
+	private function getHash($value)
+	{
+		return md5($this->salt.serialize($value));
+	}
+
+	// }}}
+	// {{{ private function __isset()
+
+	/**
+	 * Checks the existence of a cookie
+	 *
+	 * @param string $name the name of the cookie to check.
+	 */
+	private function __isset($name)
+	{
+		$name = $this->cookie_prefix.'_'.$name;
+		return isset($_COOKIE[$name]);
 	}
 
 	// }}}
