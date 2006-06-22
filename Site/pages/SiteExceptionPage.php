@@ -57,11 +57,6 @@ class SiteExceptionPage extends SitePage
 	{
 		printf('<p>%s</p>', $this->getSummary($status));
 
-		echo '<ul class="spaced">
-				<li>If you followed a link from our site or elsewhere, please contact us and let us know where you came from so we can do our best to fix it.</li>
-				<li>If you typed in the address, please double check the spelling.</li>
-			</ul>';
-
 		if ($this->exception !== null)
 			$this->exception->process(false);
 	}
