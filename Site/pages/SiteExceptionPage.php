@@ -67,9 +67,9 @@ class SiteExceptionPage extends SitePage
 	}
 
 	// }}}
-	// {{{ private function getHttpStatusCode()
+	// {{{ protected function getHttpStatusCode()
 
-	private function getHttpStatusCode()
+	protected function getHttpStatusCode()
 	{
 		if ($this->exception === null ||
 			!($this->exception instanceof SiteException))
@@ -79,9 +79,9 @@ class SiteExceptionPage extends SitePage
 	}
 
 	// }}}
-	// {{{ private function getTitle()
+	// {{{ protected function getTitle()
 
-	private function getTitle()
+	protected function getTitle()
 	{
 		if ($this->exception === null)
 			$title = 'Unknown Error';
@@ -95,9 +95,9 @@ class SiteExceptionPage extends SitePage
 	}
 
 	// }}}
-	// {{{ private function getSummary()
+	// {{{ protected function getSummary()
 
-	private function getSummary($status)
+	protected function getSummary($status)
 	{
 		switch($status) {
 		case 404:
@@ -111,9 +111,9 @@ class SiteExceptionPage extends SitePage
 	}
 
 	// }}}
-	// {{{ private function setHttpStatusHeader()
+	// {{{ protected function setHttpStatusHeader()
 
-	private function setHttpStatusHeader($status)
+	protected function setHttpStatusHeader($status)
 	{
 		switch ($status) {
 		case 403:
