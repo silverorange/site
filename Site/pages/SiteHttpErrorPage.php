@@ -63,20 +63,48 @@ class SiteHttpErrorPage extends SitePage
 	protected function display()
 	{
 		printf('<p>%s</p>', $this->getSummary());
-
-		$output = '<ul class="spaced">'.
-			'<li>If you followed a link from our site or elsewhere, '.
-			'please <a href="ca/en/about/contact">contact us</a> and '.
-			'let us know where you came from so we can do our best to '.
-			'fix it.</li><li>If you typed in the address, please '.
-			'double check the spelling.</li><li>Get started browsing '.
-			'our site by visiting the <a href="."><strong>Veseys.com '.
-			'home page</strong></a>.</li></ul>';
-
-		echo $output;
-
+		$this->displaySuggestions();
 		printf('HTTP status code: %s<br />', $this->http_status_code);
 		printf('URI: %s<br />', $this->uri);
+	}
+
+	// }}}
+	// {{{ protected function displaySuggestions()
+
+	protected function displaySuggestions()
+	{
+		$suggestions = $this->getSuggestions();
+
+		if (count($suggestions) == 0)
+			return;
+
+		echo '<ul class="spaced">';
+		$li_tag = new SwatHtmlTag('li');
+
+		foreach ($suggestions as $suggestion) {
+			$li_tag->setContent($suggestion, 'text/xml');
+			$li_tag->display();
+		}
+
+		echo '</ul>';
+	}
+
+	// }}}
+	// {{{ protected function getSuggestions()
+
+	protected function getSuggestions()
+	{
+		$suggestions = array();
+
+		$suggestions['contact'] =
+			'If you followed a link from our site or elsewhere, please '.
+			'contact us and let us know where you came from so we can do our '.
+			'best to fix it.';
+
+		$suggestions['typo'] =
+			'If you typed in the address, please double check the spelling.';
+
+		return $suggestions;
 	}
 
 	// }}}
