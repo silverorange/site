@@ -64,14 +64,14 @@ class SiteHttpErrorPage extends SitePage
 	{
 		printf('<p>%s</p>', $this->getSummary());
 
-		$output = '<ul class="spaced">';
-		$output.= '<li>If you followed a link from our site or elsewhere, ';
-		$output.= 'please <a href="ca/en/about/contact">contact us</a> and ';
-		$output.= 'let us know where you came from so we can do our best to ';
-		$output.= 'fix it.</li><li>If you typed in the address, please ';
-		$output.= 'double check the spelling.</li><li>Get started browsing ';
-		$output.= 'our site by visiting the <a href="."><strong>Veseys.com ';
-		$output.= 'home page</strong></a>.</li></ul>';
+		$output = '<ul class="spaced">'.
+			'<li>If you followed a link from our site or elsewhere, '.
+			'please <a href="ca/en/about/contact">contact us</a> and '.
+			'let us know where you came from so we can do our best to '.
+			'fix it.</li><li>If you typed in the address, please '.
+			'double check the spelling.</li><li>Get started browsing '.
+			'our site by visiting the <a href="."><strong>Veseys.com '.
+			'home page</strong></a>.</li></ul>';
 
 		echo $output;
 
