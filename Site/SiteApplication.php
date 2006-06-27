@@ -131,7 +131,10 @@ class SiteApplication extends SiteObject
 			$this->page->layout->build();
 		} catch (Exception $e) {
 			$this->replacePage($this->exception_page_source);
-			$this->page->setException($e);
+
+			if ($this->page instanceof SiteExceptionPage)
+				$this->page->setException($e);
+
 			$this->page->build();
 			$this->page->layout->build();
 		}
