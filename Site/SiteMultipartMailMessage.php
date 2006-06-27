@@ -86,8 +86,12 @@ class SiteMultipartMailMessage extends SiteObject
 		if (PEAR::isError($mailer))
 			throw new SiteException($mailer);
 
-		$headers['From'] = sprintf('"%s" <%s>', $this->from_name, $this->from_address);
-		$headers['To'] = sprintf('"%s" <%s>', $this->to_name, $this->to_address);
+		$headers['From'] =
+			sprintf('"%s" <%s>', $this->from_name, $this->from_address);
+
+		$headers['To'] =
+			sprintf('"%s" <%s>', $this->to_name, $this->to_address);
+
 		$headers['Subject'] = $this->subject;
 
 		$mime_params = array();
@@ -107,4 +111,5 @@ class SiteMultipartMailMessage extends SiteObject
 
 	// }}}
 }
+
 ?>
