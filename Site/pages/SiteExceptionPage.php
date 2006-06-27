@@ -56,9 +56,41 @@ class SiteExceptionPage extends SitePage
 	protected function display($status)
 	{
 		printf('<p>%s</p>', $this->getSummary($status));
+		$this->displaySuggestions();
 
 		if ($this->exception !== null)
 			$this->exception->process(false);
+	}
+
+	// }}}
+	// {{{ protected function displaySuggestions()
+
+	protected function displaySuggestions()
+	{
+		$suggestions = $this->getSuggestions();
+
+		if (count($suggestions) == 0)
+			return;
+
+		echo '<ul class="spaced">';
+		$li_tag = new SwatHtmlTag('li');
+
+		foreach ($suggestions as $suggestion) {
+			$li_tag->setContent($suggestion, 'text/xml');
+			$li_tag->display();
+		}
+
+		echo '</ul>';
+	}
+
+	// }}}
+	// {{{ protected function getSuggestions()
+
+	protected function getSuggestions()
+	{
+		$suggestions = array();
+
+		return $suggestions;
 	}
 
 	// }}}
