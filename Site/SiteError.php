@@ -51,8 +51,8 @@ class SiteError extends SwatError
 	public static function setupHandler()
 	{
 		/*
-		 * All run-time errors except for forwards compatibility (E_STRICT) are handled
-		 * by default.
+		 * All run-time errors except for forwards compatibility
+		 * (E_STRICT) are handled by default.
 		 */
 		set_error_handler(array('SiteError', 'handle'),
 			E_USER_ERROR | E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE);
