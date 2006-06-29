@@ -160,3 +160,5 @@ class SiteHttpErrorPage extends SitePage
 
 	// }}}
 }
+
+?>

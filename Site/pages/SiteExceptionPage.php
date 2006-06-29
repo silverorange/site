@@ -158,3 +158,5 @@ class SiteExceptionPage extends SitePage
 
 	// }}}
 }
+
+?>
