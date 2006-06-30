@@ -133,7 +133,7 @@ class SiteSessionModule extends SiteApplicationModule
 			throw new SiteException('Session is  not active.');
 
 		if (!isset($_SESSION[$name]))
-			throw new SiteException("Session variable '$name' is not set.");
+			throw new SiteException("Session variable '{$name}' is not set.");
 
 		unset($_SESSION[$name]);
 	}
@@ -154,7 +154,7 @@ class SiteSessionModule extends SiteApplicationModule
 			throw new SiteException('Session is not active.');
 
 		if (!isset($_SESSION[$name]))
-			throw new SiteException("Session variable '$name' is not set.");
+			throw new SiteException("Session variable '{$name}' is not set.");
 
 		return $_SESSION[$name];
 	}
