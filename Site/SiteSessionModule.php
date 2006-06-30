@@ -109,14 +109,13 @@ class SiteSessionModule extends SiteApplicationModule
 	/**
 	 * Checks the existence of a session variable
 	 *
+	 * If the session is not active this method always returns false.
+	 *
 	 * @param string $name the name of the session variable to check.
 	 */
 	private function __isset($name)
 	{
-		if (!$this->isActive())
-			throw new SiteException('Session is  not active.');
-
-		return isset($_SESSION[$name]);
+		return ($this->isActive() && isset($_SESSION[$name]));
 	}
 
 	// }}}
