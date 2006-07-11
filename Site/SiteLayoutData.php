@@ -58,4 +58,5 @@ class SiteLayoutData extends SiteObject
 
 	// }}}
 }
+
 ?>
