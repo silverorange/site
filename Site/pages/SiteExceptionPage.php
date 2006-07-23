@@ -3,7 +3,9 @@
 require_once 'Site/pages/SitePage.php';
 
 /**
- * @package   veseys2
+ * A page to display exceptions
+ *
+ * @package   Site
  * @copyright 2006 silverorange
  */
 class SiteExceptionPage extends SitePage
