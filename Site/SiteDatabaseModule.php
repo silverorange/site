@@ -16,14 +16,15 @@ class SiteDatabaseModule extends SiteApplicationModule
     // {{{ public properties
 	
 	/**
-	 * Name of the database
+	 * DSN of database
 	 *
-	 * This is the name of the database to connect to.  Set this before calling
-	 * {@link SiteApplication::init()}, afterwords consider it readonly.
+	 * A DSN string specifying the database to connect to.  Set this before
+	 * calling {@link SiteApplication::init()}, afterwords consider it
+	 * readonly.
 	 *
 	 * @var string
 	 */
-	public $name;
+	public $dsn;
 
 	// }}}
 	// {{{ protected properties
@@ -41,9 +42,7 @@ class SiteDatabaseModule extends SiteApplicationModule
 
 	public function init()
 	{
-		// TODO: change to array /form of DSN and move parts to a secure include file.
-		$dsn = 'pgsql://php:test@zest/'.$this->name;
-		$this->connection = MDB2::connect($dsn);
+		$this->connection = MDB2::connect($this->dsn);
 		$this->connection->options['debug'] = true;
 
 		if (MDB2::isError($this->connection))
