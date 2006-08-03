@@ -18,7 +18,7 @@ class SiteCookieModule extends SiteApplicationModule
 	// }}}
 	// {{{ private properties
 
-	public $salt = '';
+	private $salt = '';
 
 	// }}}
 	// {{{ public function init()
