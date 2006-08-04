@@ -421,6 +421,19 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function isSecure()
+
+	/**
+	 * Whether the current page is being accessed securely
+	 *
+	 * @return boolean whether the current page access is secure.
+	 */
+	public function isSecure()
+	{
+		return $this->secure;
+	}
+
+	// }}}
 	// {{{ public function getBaseHref()
 
 	/**
