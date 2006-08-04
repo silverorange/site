@@ -154,8 +154,8 @@ class SiteApplication extends SiteObject
 		$this->uri = $_SERVER['REQUEST_URI'];
 
 		if (substr($this->base_uri, 0, 1) == '/') {
-			$pattern = sprintf('|%s|', $this->base_uri);
-			if (preg_match($pattern, $this->uri, $matches)) {
+			$regexp = sprintf('|%s|u', $this->base_uri);
+			if (preg_match($regexp, $this->uri, $matches)) {
 				$this->base_uri = $matches[0];
 				$this->secure_base_uri = $matches[0];
 			} 
