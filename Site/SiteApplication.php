@@ -105,7 +105,7 @@ class SiteApplication extends SiteObject
 	{
 		$this->id = $id;
 		$this->secure_sources = array();
-		$this->start_time = microtime(true);
+		$this->startExecutionTimer();
 
 		// load default modules
 		foreach ($this->getDefaultModuleList() as $module_id => $module_class)
@@ -339,52 +339,7 @@ class SiteApplication extends SiteObject
 	
 	// }}}
 
-	// accessor methods
-	// {{{ public function getBaseHref()
-
-	/**
-	 * Gets the base value for all application anchor hrefs
-	 *
-	 * @param boolean whether the base href should be a secure URI. The default
-	 *                 null maintains the same security as the current page.
-	 *
-	 * @return string the base value for all application anchor hrefs.
-	 */
-	public function getBaseHref($secure = null)
-	{
-		if ($secure === null)
-			$secure = $this->secure;
-
-		if ($secure) {
-			$protocol = 'https://';
-			$base_uri = $this->secure_base_uri;
-		} else {
-			$protocol = 'http://';
-			$base_uri = $this->base_uri;
-		}
-
-		if (substr($base_uri, 0, 1) == '/')
-			$base_href = $protocol.$this->getServerName().$base_uri;
-		else
-			$base_href = $base_uri;
-		
-		return $base_href;
-	}
-
-	// }}}
-	// {{{ public function getUri()
-
-	/**
-	 * Gets the URI of the current page request
-	 *
-	 * @return string the URI of the current page request.
-	 */
-	public function getUri()
-	{
-		return $this->uri;
-	}
-
-	// }}}
+	// timing methods
 	// {{{ public function getExecutionTime()
 
 	/**
@@ -399,19 +354,16 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ protected function getServerName()
+	// {{{ protected function startExecutionTimer()
 
-	/**
-	 * Gets the servername
-	 *
-	 * @return string the servername
-	 */
-	protected function getServerName()
+	protected function startExecutionTimer()
 	{
-		return $_SERVER['HTTP_HOST'];
+		$this->start_time = microtime(true);
 	}
 
 	// }}}
+
+	// URI methods
 	// {{{ public function setBaseUri()
 
 	/**
@@ -434,8 +386,6 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
-
-	// HTTP methods
 	// {{{ public function registerSecureSource()
 
 	/**
@@ -474,6 +424,51 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function getUri()
+
+	/**
+	 * Gets the URI of the current page request
+	 *
+	 * @return string the URI of the current page request.
+	 */
+	public function getUri()
+	{
+		return $this->uri;
+	}
+
+	// }}}
+	// {{{ public function getBaseHref()
+
+	/**
+	 * Gets the base value for all application anchor hrefs
+	 *
+	 * @param boolean whether the base href should be a secure URI. The default
+	 *                 null maintains the same security as the current page.
+	 *
+	 * @return string the base value for all application anchor hrefs.
+	 */
+	public function getBaseHref($secure = null)
+	{
+		if ($secure === null)
+			$secure = $this->secure;
+
+		if ($secure) {
+			$protocol = 'https://';
+			$base_uri = $this->secure_base_uri;
+		} else {
+			$protocol = 'http://';
+			$base_uri = $this->base_uri;
+		}
+
+		if (substr($base_uri, 0, 1) == '/')
+			$base_href = $protocol.$this->getServerName().$base_uri;
+		else
+			$base_href = $base_uri;
+		
+		return $base_href;
+	}
+
+	// }}}
 	// {{{ protected function checkSecure()
 
 	/**
@@ -497,6 +492,19 @@ class SiteApplication extends SiteObject
 			$this->relocate($source, false);
 	}
 	
+	// }}}
+	// {{{ protected function getServerName()
+
+	/**
+	 * Gets the servername
+	 *
+	 * @return string the servername
+	 */
+	protected function getServerName()
+	{
+		return $_SERVER['HTTP_HOST'];
+	}
+
 	// }}}
 
 	// static convenience methods
