@@ -47,7 +47,6 @@ class SiteApplication extends SiteObject
 	protected $base_uri = null;
 	protected $secure_base_uri = null;
 	protected $secure = false;
-	protected $secure_sources;
 
 	/**
 	 * The uri of the current page request
@@ -104,7 +103,6 @@ class SiteApplication extends SiteObject
 	public function __construct($id)
 	{
 		$this->id = $id;
-		$this->secure_sources = array();
 		$this->startExecutionTimer();
 
 		// load default modules
@@ -386,20 +384,6 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ public function registerSecureSource()
-
-	/**
-	 * Register a source to be only accessible with SSL
-	 *
-	 * @param $source string A source string or a pattern that matches
-	 *                        multiple source strings.
-	 */
-	public function registerSecureSource($source)
-	{
-		$this->secure_sources[] = $source;
-	}
-	
-	// }}}
 	// {{{ public function relocate()
 
 	/**
@@ -469,6 +453,22 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ protected function getSecureSourceList()
+
+	/**
+	 * Gets the list of pages sources that should be secure
+	 *
+	 * The list of page sources is an array of source strings.
+	 * Entries are regular expressions.
+	 *
+	 * @return array the list of sources that should be secure.
+	 */
+	protected function getSecureSourceList()
+	{
+		return array();
+	}
+
+	// }}}
 	// {{{ protected function checkSecure()
 
 	/**
@@ -478,7 +478,7 @@ class SiteApplication extends SiteObject
 	 */
 	protected function checkSecure($source)
 	{
-		foreach ($this->secure_sources as $pattern) {
+		foreach ($this->getSecureSourceList() as $pattern) {
 			$regexp = '|'.$pattern.'|u';
 			if (preg_match($regexp, $source) === 1) {
 				if ($this->secure)
