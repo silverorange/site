@@ -445,7 +445,7 @@ class SiteApplication extends SiteObject
 		}
 
 		if (substr($base_uri, 0, 1) == '/')
-			$base_href = $protocol.$this->getServerName().$base_uri;
+			$base_href = $protocol.$this->getServerName($secure).$base_uri;
 		else
 			$base_href = $base_uri;
 		
@@ -500,9 +500,25 @@ class SiteApplication extends SiteObject
 	 *
 	 * @return string the servername
 	 */
-	protected function getServerName()
+	protected function getServerName($secure = null)
 	{
-		return $_SERVER['HTTP_HOST'];
+		$server_name = $_SERVER['HTTP_HOST'];
+
+		if ($secure !== null && $this->secure !== $secure) {
+			/* Need to mangle servername for browsers tunnelling on
+			 * non-standard ports.
+			 */
+			$regexp = '/localhost:[0-9]+/u';
+
+			if (preg_match($regexp,  $server_name)) {
+				if ($secure)
+					$server_name = 'localhost:8443';
+				else
+					$server_name = 'localhost:8080';
+			}
+		}
+
+		return $server_name;
 	}
 
 	// }}}
