@@ -34,9 +34,7 @@ class SiteApplication extends SiteObject
 	 * @var string
 	 */
 	public $id;
-	public $uri_prefix_length = 0;
 	public $exception_page_source = 'exception';
-	public $secure = false;
 
 	// }}}
 	// {{{ protected properties
@@ -46,7 +44,9 @@ class SiteApplication extends SiteObject
 	 *
 	 * @var string
 	 */
-	protected $base_href = null;
+	protected $base_uri = null;
+	protected $secure_base_uri = null;
+	protected $secure = false;
 
 	/**
 	 * The uri of the current page request
@@ -150,16 +150,16 @@ class SiteApplication extends SiteObject
 	 */
 	protected function parseURI()
 	{
+		$this->secure = isset($_SERVER['HTTPS']);
 		$this->uri = $_SERVER['REQUEST_URI'];
 
-		$uri_array = explode('/', $this->uri);
-
-		$base_uri = implode('/',
-			array_slice($uri_array, 0, $this->uri_prefix_length + 1)).'/';
-
-		$protocol = ($this->secure) ? 'https://' : 'http://';
-
-		$this->base_href = $protocol.$this->getServerName().$base_uri;
+		if (substr($this->base_uri, 0, 1) == '/') {
+			$pattern = sprintf('|%s|', $this->base_uri);
+			if (preg_match($pattern, $this->uri, $matches)) {
+				$this->base_uri = $matches[0];
+				$this->secure_base_uri = $matches[0];
+			} 
+		}
 	}
 
 	// }}}
@@ -343,11 +343,30 @@ class SiteApplication extends SiteObject
 	/**
 	 * Gets the base value for all application anchor hrefs
 	 *
+	 * @param boolean whether the base href should be a secure URI. The default
+	 *                 null maintains the same security as the current page.
+	 *
 	 * @return string the base value for all application anchor hrefs.
 	 */
-	public function getBaseHref()
+	public function getBaseHref($secure = null)
 	{
-		return $this->base_href;
+		if ($secure === null)
+			$secure = $this->secure;
+
+		if ($secure) {
+			$protocol = 'https://';
+			$base_uri = $this->secure_base_uri;
+		} else {
+			$protocol = 'http://';
+			$base_uri = $this->base_uri;
+		}
+
+		if (substr($base_uri, 0, 1) == '/')
+			$base_href = $protocol.$this->getServerName().$base_uri;
+		else
+			$base_href = $base_uri;
+		
+		return $base_href;
 	}
 
 	// }}}
@@ -391,6 +410,28 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function setBaseUri()
+
+	/**
+	 * Sets the base URI
+	 */
+	public function setBaseUri($uri)
+	{
+		$this->base_uri = $uri;
+	}
+
+	// }}}
+	// {{{ public function setSecureBaseUri()
+
+	/**
+	 * Sets the base URI for secure pages
+	 */
+	public function setSecureBaseUri($uri)
+	{
+		$this->secure_base_uri = $uri;
+	}
+
+	// }}}
 
 	// HTTP methods
 	// {{{ public function relocate()
@@ -403,11 +444,14 @@ class SiteApplication extends SiteObject
 	 * function just to be sure execution does not continue.
 	 *
 	 * @param string $uri the URI to relocate to.
+	 *
+	 * @param boolean whether the base href should be a secure URI. The default
+	 *                 null maintains the same security as the current page.
 	 */
-	public function relocate($uri)
+	public function relocate($uri, $secure = null)
 	{
 		if (substr($uri, 0, 1) != '/' && strpos($uri, '://') === false)
-			$uri = $this->getBaseHref().$uri;
+			$uri = $this->getBaseHref($secure).$uri;
 
 		header('Location: '.$uri);
 		exit();
