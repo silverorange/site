@@ -47,6 +47,7 @@ class SiteApplication extends SiteObject
 	protected $base_uri = null;
 	protected $secure_base_uri = null;
 	protected $secure = false;
+	protected $secure_sources;
 
 	/**
 	 * The uri of the current page request
@@ -103,6 +104,7 @@ class SiteApplication extends SiteObject
 	public function __construct($id)
 	{
 		$this->id = $id;
+		$this->secure_sources = array();
 		$this->start_time = microtime(true);
 
 		// load default modules
@@ -434,6 +436,20 @@ class SiteApplication extends SiteObject
 	// }}}
 
 	// HTTP methods
+	// {{{ public function registerSecureSource()
+
+	/**
+	 * Register a source to be only accessible with SSL
+	 *
+	 * @param $source string A source string or a pattern that matches
+	 *                        multiple source strings.
+	 */
+	public function registerSecureSource($source)
+	{
+		$this->secure_sources[] = $source;
+	}
+	
+	// }}}
 	// {{{ public function relocate()
 
 	/**
@@ -457,6 +473,30 @@ class SiteApplication extends SiteObject
 		exit();
 	}
 
+	// }}}
+	// {{{ protected function checkSecure()
+
+	/**
+	 * Checks if this page should be redirected in/out of SSL
+	 *
+	 * @param string The source string of this page.
+	 */
+	protected function checkSecure($source)
+	{
+		foreach ($this->secure_sources as $pattern) {
+			$regexp = '|'.$pattern.'|u';
+			if (preg_match($regexp, $source) === 1) {
+				if ($this->secure)
+					return;
+				else
+					$this->relocate($source, true);
+			}
+		}
+
+		if ($this->secure)
+			$this->relocate($source, false);
+	}
+	
 	// }}}
 
 	// static convenience methods
