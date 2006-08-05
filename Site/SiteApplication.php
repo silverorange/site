@@ -439,8 +439,9 @@ class SiteApplication extends SiteObject
 	/**
 	 * Gets the base value for all application anchor hrefs
 	 *
-	 * @param boolean whether the base href should be a secure URI. The default
-	 *                 null maintains the same security as the current page.
+	 * @param boolean $secure whether or not the base href should be a secure
+	 *                         URI. The default value of null maintains the
+	 *                         same security as the current page.
 	 *
 	 * @return string the base value for all application anchor hrefs.
 	 */
