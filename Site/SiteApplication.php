@@ -394,9 +394,9 @@ class SiteApplication extends SiteObject
 	 * function just to be sure execution does not continue.
 	 *
 	 * @param string $uri the URI to relocate to.
-	 *
-	 * @param boolean whether the base href should be a secure URI. The default
-	 *                 null maintains the same security as the current page.
+	 * @param boolean $secure whether or not the base href should be a secure
+	 *                         URI. The default value of null maintains the
+	 *                         same security as the current page.
 	 */
 	public function relocate($uri, $secure = null)
 	{
