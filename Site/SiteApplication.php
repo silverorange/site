@@ -492,6 +492,10 @@ class SiteApplication extends SiteObject
 	 */
 	protected function checkSecure($source)
 	{
+		// never relocate an exception page
+		if ($source === $this->exception_page_source)
+			return;
+
 		foreach ($this->getSecureSourceList() as $pattern) {
 			$regexp = '|'.$pattern.'|u';
 			if (preg_match($regexp, $source) === 1) {
