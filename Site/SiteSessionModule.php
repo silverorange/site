@@ -131,10 +131,8 @@ class SiteSessionModule extends SiteApplicationModule
 		if (!$this->isActive())
 			throw new SiteException('Session is  not active.');
 
-		if (!isset($_SESSION[$name]))
-			throw new SiteException("Session variable '{$name}' is not set.");
-
-		unset($_SESSION[$name]);
+		if (isset($_SESSION[$name]))
+			unset($_SESSION[$name]);
 	}
 
 	// }}}
