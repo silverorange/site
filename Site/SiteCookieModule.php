@@ -43,7 +43,7 @@ class SiteCookieModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public functhion setCookie()
+	// {{{ public function setCookie()
 
 	/**
 	 * Sets a cookie
@@ -76,7 +76,7 @@ class SiteCookieModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public functhion removeCookie()
+	// {{{ public function removeCookie()
 
 	/**
 	 * Remove a cookie
