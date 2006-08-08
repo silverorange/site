@@ -137,17 +137,23 @@ class SiteCookieModule extends SiteApplicationModule
 
 	private function unsaltValue($value)
 	{
-		$package = unserialize($value);
+		$package = @unserialize($value);
 
+		// serialized value is broken
+		if ($package === false && strcmp($value, serialize(false)) != 0)
+			throw new SiteCookieException('Could not unserialize cookie.');
+
+		// serialized data is not how we expected
 		if (!is_array($package) ||
 			!isset($package['value']) ||
 			!isset($package['hash']))
-				throw new SiteCookieException("Corrupt cookie data");
+				throw new SiteCookieException('Corrupt cookie data.');
 
 		$value = $package['value'];
 
+		// hash does not match, cookie was tampered with
 		if ($package['hash'] !== $this->getHash($value))
-			throw new SiteCookieException("Invalid hash");
+			throw new SiteCookieException('Invalid cookie hash.');
 
 		return $value;
 	}
