@@ -38,8 +38,11 @@ class SiteError extends SwatError
 	 */
 	public static function handle($errno, $errstr, $errfile, $errline)
 	{
-		$error = new SiteError($errno, $errstr, $errfile, $errline);
-		$error->process();
+		// only handle error if error reporting is not suppressed
+		if (ini_get('error_reporting') != 0) {
+			$error = new SiteError($errno, $errstr, $errfile, $errline);
+			$error->process();
+		}
 	}
 
 	// }}}
