@@ -499,17 +499,64 @@ class SiteApplication extends SiteObject
 		foreach ($this->getSecureSourceList() as $pattern) {
 			$regexp = '|'.$pattern.'|u';
 			if (preg_match($regexp, $source) === 1) {
-				if ($this->secure)
+				if ($this->secure) {
 					return;
-				else
-					$this->relocate($source, true);
+				} else {
+					$new_uri = $this->getAbsoluteUri(true);
+					$this->relocate($new_uri);
+				}
 			}
 		}
 
-		if ($this->secure)
-			$this->relocate($source, false);
+		if ($this->secure) {
+			$new_uri = $this->getAbsoluteUri(false);
+			$this->relocate($new_uri);
+		}
 	}
 	
+	// }}}
+	// {{{ protected function getBaseHrefRelativeUri()
+
+	protected function getBaseHrefRelativeUri($secure = null)
+	{
+		if ($secure === null)
+			$secure = $this->secure;
+
+		$base_uri = $this->secure ? $this->secure_base_uri : $this->base_uri;
+		$uri = str_replace($base_uri, '', $this->uri);
+
+		return $uri;
+	}
+
+	// }}}
+	// {{{ protected function getAbsoluteUri()
+
+	protected function getAbsoluteUri($secure = null)
+	{
+		$uri = $this->getBaseHref($secure).
+			$this->getBaseHrefRelativeUri($secure);
+
+		return $uri;
+	}
+
+	// }}}
+	// {{{ protected function getQueryString()
+
+	/**
+	 * Gets the query string of the request
+	 *
+	 * @return string the query string
+	 */
+	protected function getQueryString()
+	{
+		$query_string = $_SERVER['QUERY_STRING'];
+
+		if (strlen($query_string) === 0)
+			$query_string = null;
+
+		return $query_string;
+	}
+
 	// }}}
 	// {{{ protected function getServerName()
 
