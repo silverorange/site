@@ -79,16 +79,6 @@ class SiteApplication extends SiteObject
 	protected $page = null;
 
 	// }}}
-	// {{{ private properties
-
-	/**
-	 * The execution start time of this application
-	 *
-	 * @var double 
-	 */
-	private $start_time = null;
-
-	// }}}
 
 	// {{{ public function __construct()
 
@@ -103,7 +93,6 @@ class SiteApplication extends SiteObject
 	public function __construct($id)
 	{
 		$this->id = $id;
-		$this->startExecutionTimer();
 
 		// load default modules
 		foreach ($this->getDefaultModuleList() as $module_id => $module_class)
@@ -335,30 +324,6 @@ class SiteApplication extends SiteObject
 		return new SitePage($this);
 	}
 	
-	// }}}
-
-	// timing methods
-	// {{{ public function getExecutionTime()
-
-	/**
-	 * Gets the current execution time of this application in milliseconds
-	 *
-	 * @return double the current execution time of this application in
-	 *                 milliseconds.
-	 */
-	public function getExecutionTime()
-	{
-		return microtime(true) - $this->start_time;
-	}
-
-	// }}}
-	// {{{ protected function startExecutionTimer()
-
-	protected function startExecutionTimer()
-	{
-		$this->start_time = microtime(true);
-	}
-
 	// }}}
 
 	// URI methods
