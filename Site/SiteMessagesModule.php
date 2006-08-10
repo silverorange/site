@@ -51,8 +51,9 @@ class SiteMessagesModule extends SiteApplicationModule
 	 */
 	public function init()
 	{
-		if (!isset($this->app->session->messages) ||
-			!is_array($this->app->session->messages))
+		if ($this->app->session->isActive() &&
+			(!isset($this->app->session->messages) ||
+			!is_array($this->app->session->messages)))
 			$this->app->session->messages = array();
 	}
 
@@ -81,8 +82,13 @@ class SiteMessagesModule extends SiteApplicationModule
 	 */
 	public function &getAll()
 	{
-		$messages = $this->app->session->messages;
-		$this->app->session->messages = array();
+		$messages = array();
+
+		if ($this->app->session->isActive()) {
+			$messages = $this->app->session->messages;
+			$this->app->session->messages = array();
+		}
+
 		return $messages;
 	}
 
