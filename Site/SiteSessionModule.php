@@ -76,6 +76,18 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function clear()
+
+	/**
+	 * Clears all session variables while maintaining the current session
+	 */
+	public function clear()
+	{
+		if (!$this->isActive())
+			$_SESSION = array();
+	}
+
+	// }}}
 	// {{{ protected function startSession()
 
 	/**
