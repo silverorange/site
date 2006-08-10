@@ -129,7 +129,7 @@ class SiteSessionModule extends SiteApplicationModule
 	private function __unset($name)
 	{
 		if (!$this->isActive())
-			throw new SiteException('Session is  not active.');
+			throw new SiteException('Session is not active.');
 
 		if (isset($_SESSION[$name]))
 			unset($_SESSION[$name]);
