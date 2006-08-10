@@ -4,12 +4,16 @@ require_once 'Site/SiteApplicationModule.php';
 require_once 'Swat/SwatMessage.php';
 
 /**
- * Web application module for admin messages
+ * Web application module for site messages
  *
- * @package Admin
- * @copyright silverorange 2004
+ * This module works by adding {@link SwatMessage} objects to the session. As
+ * such, it depends on the {@link SiteSessionModule}.
+ *
+ * @package   Site
+ * @copyright 2004-2006
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class AdminMessagesModule extends SiteApplicationModule
+class SiteMessagesModule extends SiteApplicationModule
 {
     // {{{ public function init()
 
