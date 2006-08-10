@@ -15,6 +15,32 @@ require_once 'Swat/SwatMessage.php';
  */
 class SiteMessagesModule extends SiteApplicationModule
 {
+	// {{{ public function __construct()
+
+	/**
+	 * Creates a new site messages module
+	 *
+	 * @param SiteApplication $app the application this module belongs to.
+	 *
+	 * @throws SiteException if there is no session module loaded the messages
+	 *                        module throws an exception.
+	 *
+	 */
+	public function __construct(SiteApplication $app)
+	{
+		if (!(isset($app->session) &&
+			$app->session instanceof SiteSessionModule))
+			throw new SiteException('The SiteMessagesModule requires a '.
+				'SiteSessionModule to be loaded. Please either explicitly '.
+				'add a session module to the application before '.
+				'instantiating the messages module, or specify the session '.
+				'module before the messages module in the application\'s '.
+				'getDefaultModuleList() method.');
+
+		parent::__construct($app);
+	}
+
+	// }}}
     // {{{ public function init()
 
 	/**
