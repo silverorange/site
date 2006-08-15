@@ -88,6 +88,47 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function appendSessionID()
+
+	/**
+	 * Appends the session ID to a URI
+	 *
+	 * Appends the session identifier (SID) to the URI if necessary.
+	 * This method is called by SiteApplication::relocate() before relocating
+	 * to the URI.
+	 *
+	 * @param string $uri the URI to be relocated to.
+	 * @param boolean $append_sid whether to append sid to URI. If null, this
+	 *                             is determined internally.
+	 */
+	public function appendSessionID($uri, $append_sid = null)
+	{
+		if ($this->isActive()) {
+
+			if ($append_sid === null) {
+				$is_relative_uri = (strpos($uri, '://') === false);
+				$has_cookie = isset($_COOKIE[$this->app->id]);
+				$append_sid = $is_relative_uri && !$has_cookie;
+			}
+
+			if ($append_sid) {
+				$sid = sprintf('%s=%s', $this->app->id, $this->getSessionID());
+
+				if (strpos($uri, $sid) === false) {
+					if (strpos($uri, '?') === false)
+						$uri.= '?';
+					else
+						$uri.= '&';
+
+					$uri.= sprintf('%s=%s', $this->app->id, $this->getSessionID());
+				}
+			}
+		}
+
+		return $uri;
+	}
+
+	// }}}
 	// {{{ protected function startSession()
 
 	/**
