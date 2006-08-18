@@ -36,6 +36,23 @@ class SiteApplication extends SiteObject
 	public $id;
 	public $exception_page_source = 'exception';
 
+	/**
+	 * Default time zone
+	 *
+	 * This time zone may be used to display dates that have no time zone
+	 * information.
+	 *
+	 * Time zones are specified as {@link Date_TimeZone} objects and it is
+	 * recommended to use the continent/city time zone format. For example,
+	 * if this application is based in Halifax, Canada, use 'America/Halifax'
+	 * as the time zone.
+	 *
+	 * If unspecified, the default time zone is set to 'UTC'.
+	 *
+	 * @var Date_TimeZone
+	 */
+	public $default_time_zone = null;
+
 	// }}}
 	// {{{ protected properties
 
@@ -97,6 +114,8 @@ class SiteApplication extends SiteObject
 		// load default modules
 		foreach ($this->getDefaultModuleList() as $module_id => $module_class)
 			$this->addModule(new $module_class($this), $module_id);
+
+		$this->default_time_zone = new Date_TimeZone('UTC');
 	}
 
 	// }}}
