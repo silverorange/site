@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Date/TimeZone.php';
 require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/pages/SitePage.php';
