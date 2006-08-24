@@ -47,7 +47,8 @@ class SiteHttpErrorPage extends SitePage
 		parent::build();
 
 		$this->layout->addHtmlHeadEntry(
-			new SwatStyleSheetHtmlHeadEntry('styles/http-error.css'));
+			new SwatStyleSheetHtmlHeadEntry('styles/http-error.css',
+			Site::PACKAGE_ID));
 
 		$this->sendHttpStatusHeader();
 		$this->layout->data->title  = $this->getTitle();
