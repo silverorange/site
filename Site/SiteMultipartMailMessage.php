@@ -16,6 +16,7 @@ require_once 'Mail/mime.php';
 class SiteMultipartMailMessage extends SiteObject
 {
 	// {{{ public variables
+
 	/**
 	 * Email Subject 
 	 *
@@ -59,10 +60,26 @@ class SiteMultipartMailMessage extends SiteObject
 	public $smtp_server = null;
 
 	// }}}
+	// {{{ protected variables
+
+	/**
+	 * The application sending mail
+	 *
+	 * @var SiteApplication 
+	 */
+	protected $app = null;
+
+	// }}}
 	// {{{ public function __construct()
 
-	public function __construct()
+	/**
+	 * Creates a new multipart mail message
+	 *
+	 * @param SiteApplication $app the application sending this mail message.
+	 */
+	public function __construct(SiteApplication $app)
 	{
+		$this->app = $app;
 	}
 
 	// }}}
