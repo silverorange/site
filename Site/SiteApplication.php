@@ -5,6 +5,7 @@ require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Swat/SwatDate.php';
 
 /**
  * Base class for a web application
@@ -134,18 +135,20 @@ class SiteApplication extends SiteObject
 			$this->loadPage();
 			$this->page->layout->init();
 			$this->page->init();
-			$this->page->process();
 			$this->page->layout->process();
-			$this->page->build();
+			$this->page->process();
 			$this->page->layout->build();
+			$this->page->build();
+			$this->page->layout->finalize();
 		} catch (Exception $e) {
 			$this->replacePage($this->exception_page_source);
 
 			if ($this->page instanceof SiteExceptionPage)
 				$this->page->setException($e);
 
-			$this->page->build();
 			$this->page->layout->build();
+			$this->page->build();
+			$this->page->layout->finalize();
 		}
 
 		$this->page->layout->display();

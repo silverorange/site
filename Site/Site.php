@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swat/Swat.php';
 require_once 'Site/SiteError.php';
 require_once 'Site/exceptions/SiteException.php';
 
@@ -13,6 +14,11 @@ require_once 'Site/exceptions/SiteException.php';
 class Site
 {
 	// {{{ constants
+
+	/**
+	 * The package identifier
+	 */
+	const PACKAGE_ID = 'Site';
 
 	/**
 	 * The gettext domain for Site
@@ -129,6 +135,19 @@ class Site
 		}
 
 		echo '</ul>';
+	}
+
+	// }}}
+	// {{{ public static function getDependencies()
+
+	/**
+	 * Gets the packages this package depends on
+	 *
+	 * @return array an array of package IDs that this package depends on.
+	 */
+	public static function getDependencies()
+	{
+		return array(Swat::PACKAGE_ID);
 	}
 
 	// }}}

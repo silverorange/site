@@ -86,6 +86,13 @@ class SiteLayout extends SiteObject
 
 	public function build()
 	{
+	}
+
+	// }}}
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
 		$this->startCapture('html_head_entries');
 		$this->html_head_entries->display();
 		$this->endCapture();
