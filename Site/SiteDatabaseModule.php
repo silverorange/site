@@ -43,12 +43,11 @@ class SiteDatabaseModule extends SiteApplicationModule
 	public function init()
 	{
 		$this->connection = MDB2::connect($this->dsn);
-		$this->connection->options['debug'] = true;
 
 		if (MDB2::isError($this->connection))
 			throw new SwatDBException($this->connection);
 
-		// TODO: fixme
+		// Set up convenience reference
 		$this->app->db = $this->getConnection();
 	}
 
