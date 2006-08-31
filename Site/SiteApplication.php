@@ -121,6 +121,17 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function init()
+
+	/**
+	 * Initializes the application without running it
+	 */
+	public function init()
+	{
+		$this->initModules();
+	}
+
+	// }}}
 	// {{{ public function run()
 
 	/**
