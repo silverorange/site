@@ -2,9 +2,9 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.9.2';
+$version = '0.9.3';
 $notes = <<<EOT
-- RC2
+- RC3
 EOT;
 
 $description =<<<EOT
@@ -55,6 +55,7 @@ $package->addPackageDepWithChannel('required', 'Date', 'pear.silverorange.com', 
 $package->addPackageDepWithChannel('required', 'MDB2', 'pear.php.net', '2.2.2');
 $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10');
 $package->addPackageDepWithChannel('required', 'Mail_mime', 'pear.silverorange.com', '1.3.0so1');
+$package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.silverorange.com', '0.0.7so1');
 $package->generateContents();
 
 if (isset($_GET['make']) || (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {
