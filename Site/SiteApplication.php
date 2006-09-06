@@ -355,9 +355,18 @@ class SiteApplication extends SiteObject
 	 */
 	protected function resolvePage($source)
 	{
-		return new SitePage($this);
+		$layout = $this->resolveLayout($source);
+		return new SitePage($this, $layout);
 	}
 	
+	// }}}
+	// {{{ protected function resolveLayout()
+
+	protected function resolveLayout($source)
+	{
+		return null;
+	}
+
 	// }}}
 
 	// URI methods
