@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Site/SiteObject.php';
-require_once 'Site/exceptions/SiteException.php';
+require_once 'Site/exceptions/SiteMailException.php';
 
 require_once 'Mail.php';
 require_once 'Mail/mime.php';
@@ -53,6 +53,27 @@ class SiteMultipartMailMessage extends SiteObject
 	public $from_name = '';
 
 	/**
+	 * Sender's Reply-To Address
+	 *
+	 * @var string
+	 */
+	public $reply_to_address = null;
+
+	/**
+	 * Text body
+	 *
+	 * @var string
+	 */
+	public $text_body = '';
+
+	/**
+	 * HTML body
+	 *
+	 * @var string
+	 */
+	public $html_body = '';
+
+	/**
 	 * SMTP Server Address
 	 *
 	 * @var string
@@ -101,10 +122,13 @@ class SiteMultipartMailMessage extends SiteObject
 		$mailer = Mail::factory('smtp', $email_params);
 
 		if (PEAR::isError($mailer))
-			throw new SiteException($mailer);
+			throw new SiteMailException($mailer);
 
 		$headers['From'] =
 			sprintf('"%s" <%s>', $this->from_name, $this->from_address);
+
+		if ($this->reply_to_address !== null)
+			$headers['Reply-To'] = $this->reply_to_address;
 
 		$headers['To'] =
 			sprintf('"%s" <%s>', $this->to_name, $this->to_address);
@@ -123,7 +147,7 @@ class SiteMultipartMailMessage extends SiteObject
 		$result = $mailer->Send($this->to_address, $headers, $body);
 
 		if (PEAR::isError($result))
-			throw new SiteException($result);
+			throw new SiteMailException($result);
 	}
 
 	// }}}
