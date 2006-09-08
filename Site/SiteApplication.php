@@ -358,7 +358,7 @@ class SiteApplication extends SiteObject
 		$layout = $this->resolveLayout($source);
 		return new SitePage($this, $layout);
 	}
-	
+
 	// }}}
 	// {{{ protected function resolveLayout()
 
@@ -467,16 +467,14 @@ class SiteApplication extends SiteObject
 		if ($secure === null)
 			$secure = $this->secure;
 
-		if ($secure) {
-			$protocol = 'https://';
+		if ($secure)
 			$base_uri = $this->secure_base_uri;
-		} else {
-			$protocol = 'http://';
+		else
 			$base_uri = $this->base_uri;
-		}
 
 		if (substr($base_uri, 0, 1) == '/')
-			$base_href = $protocol.$this->getServerName($secure).$base_uri;
+			$base_href = $this->getProtocol($secure).
+				$this->getServerName($secure).$base_uri;
 		else
 			$base_href = $base_uri;
 		
@@ -540,7 +538,19 @@ class SiteApplication extends SiteObject
 			$secure = $this->secure;
 
 		$base_uri = $this->secure ? $this->secure_base_uri : $this->base_uri;
-		$uri = str_replace($base_uri, '', $this->uri);
+		$protocol = $this->getProtocol();
+		$protocol_length = strlen($protocol);
+
+		if (strncmp($base_uri, $protocol, $protocol_length) === 0) {
+			$pos = strpos($base_uri, '/', $protocol_length);
+
+			if ($pos !== false)
+				$base_uri = substr($base_uri, $pos);
+		}
+
+		$base_uri_length = strlen($base_uri);
+		if (strncmp($base_uri, $this->uri, $base_uri_length) === 0)
+			$uri = substr($this->uri, $base_uri_length);
 
 		return $uri;
 	}
@@ -550,8 +560,9 @@ class SiteApplication extends SiteObject
 
 	protected function getAbsoluteUri($secure = null)
 	{
-		$uri = $this->getBaseHref($secure).
-			$this->getBaseHrefRelativeUri($secure);
+		$base_href = $this->getBaseHref($secure);
+		$relative_uri = $this->getBaseHrefRelativeUri($secure);
+		$uri = $base_href.$relative_uri;
 
 		return $uri;
 	}
@@ -601,6 +612,27 @@ class SiteApplication extends SiteObject
 		}
 
 		return $server_name;
+	}
+
+	// }}}
+	// {{{ protected function getProtocol()
+
+	/**
+	 * Gets the protocol
+	 *
+	 * @return string the protocol
+	 */
+	protected function getProtocol($secure = null)
+	{
+		if ($secure === null)
+			$secure = $this->secure;
+
+		if ($secure)
+			$protocol = 'https://';
+		else
+			$protocol = 'http://';
+
+		return $protocol;
 	}
 
 	// }}}
