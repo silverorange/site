@@ -47,6 +47,10 @@ class SiteDatabaseModule extends SiteApplicationModule
 		if (MDB2::isError($this->connection))
 			throw new SwatDBException($this->connection);
 
+		$this->connection->options['portability'] =
+			$this->connection->options['portability'] ^
+				MDB2_PORTABILITY_EMPTY_TO_NULL;
+
 		// Set up convenience reference
 		$this->app->db = $this->getConnection();
 	}
