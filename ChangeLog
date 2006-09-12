@@ -1,0 +1,572 @@
+2006-09-11  nrf
+
+	* [r10816] site/trunk/Site/SiteDatabaseModule.php:
+	  Prevent MDB2 from converting an empty string to NULL when
+	  quoting it. If this causes breakage we may revert it.
+
+2006-09-09  gauthierm
+
+	* [r10742] site/trunk/Site/SiteSearchIndexer.php:
+	  - document for the site package
+	  - license
+
+2006-09-08  nrf
+
+	* [r10713] site/trunk/package.php:
+	  prepare for release
+	* [r10712] site/trunk/Site/SiteApplication.php:
+	  Better URI handling that fixes bugs that were exposed on nova.
+
+2006-09-07  nrf
+
+	* [r10657] site/trunk/Site/SiteMultipartMailMessage.php,
+	  site/trunk/Site/exceptions/SiteMailException.php:
+	  New exception for mail problems.
+
+2006-09-06  nrf
+
+	* [r10625] site/trunk/Site/SiteApplication.php:
+	  Add resolveLayout() method to make more sub-classable.
+
+2006-09-05  nrf
+
+	* [r10594] site/trunk/package.php:
+	  prepare for release
+	* [r10569] site/trunk/package.php:
+	  prepare for release
+	* [r10537] site/trunk/package.php:
+	  prepare for release
+
+2006-08-31  nrf
+
+	* [r10491] site/trunk/Site/SiteApplication.php:
+	  Add SiteApplication::init() to initialize an app without running
+	  it. This makes SiteApplication usuable in very simple
+	  applications (one-file CLI apps) that don't require the page
+	  framework of SiteApplication.
+
+2006-08-28  nrf
+
+	* [r10315] site/trunk/Site/SiteDatabaseModule.php:
+	  Remove debug
+
+2006-08-24  nrf
+
+	* [r10164] site/trunk/Site/Site.php,
+	  site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/layouts/SiteLayout.php,
+	  site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  - Use new package identifying and dependency mechanism.
+	  - Reorder method calls in SiteApplication::run()
+
+2006-08-24  gauthierm
+
+	* [r10159] site/trunk/Site/SiteMultipartMailMessage.php:
+	  added require SiteApplication paramater to multipart mail message
+
+2006-08-20  gauthierm
+
+	* [r9964] site/trunk/Site/SiteApplication.php:
+	  require Date_TimeZone
+
+2006-08-18  gauthierm
+
+	* [r9920] site/trunk/Site/SiteApplication.php:
+	  move default_time_zone upstream.
+
+2006-08-15  nrf
+
+	* [r9670] site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/SiteSessionModule.php:
+	  Make relocation in Site session aware.
+	  Also only append SID when it is needed.
+
+2006-08-11  gauthierm
+
+	* [r9501] site/trunk/Site/SiteTimerCheckpoint.php,
+	  site/trunk/Site/SiteTimerModule.php:
+	  A better timer module that supports checkpoints.
+
+2006-08-10  gauthierm
+
+	* [r9448] site/trunk/Site/SiteSessionModule.php:
+	  added clear() method.
+	* [r9445] site/trunk/Site/SiteSessionModule.php:
+	  fix typo
+	* [r9443] site/trunk/Site/SiteMessagesModule.php:
+	  Don't die when the session is not active.
+
+2006-08-10  nrf
+
+	* [r9429] site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/SiteTimerModule.php:
+	  Move timing out of SiteApplication and into a new timer module.
+
+2006-08-10  gauthierm
+
+	* [r9420] site/trunk/Site/SiteMessagesModule.php:
+	  make sure we have a session module first
+	* [r9418] site/trunk/Site/SiteMessagesModule.php:
+	  use SiteSessionModule
+	* [r9413] site/trunk/Site/SiteMessagesModule.php:
+	  site packageify
+	* [r9412] admin/trunk/Admin/AdminMessagesModule.php,
+	  site/trunk/Site/SiteMessagesModule.php:
+	  Move this module to site.
+
+2006-08-09  nrf
+
+	* [r9361] site/trunk/Site/SiteApplication.php:
+	  Preserve query strings when bumping in/out of secure.
+
+2006-08-08  gauthierm
+
+	* [r9313] site/trunk/Site/SiteCookieModule.php:
+	  - suppress unserialize error when unserializeing cookie
+	  - check for unserialize error and throw bad cookie exception
+	  - tidy exception strings
+	  - add comments
+	* [r9312] site/trunk/Site/SiteError.php:
+	  only handle error if error reporting is not suppressed
+	* [r9303] site/trunk/Site/SiteCookieModule.php:
+	  fix folding
+
+2006-08-08  nrf
+
+	* [r9236] site/trunk/Site/SiteSessionModule.php:
+	  Make unset fail silently if the variable is not set. Same as
+	  normal PHP unset() behavior.
+
+2006-08-07  nrf
+
+	* [r9197] site/trunk/Site/SiteApplication.php:
+	  never relocate an exception page
+
+2006-08-05  gauthierm
+
+	* [r9114] site/trunk/Site/SiteApplication.php:
+	  Same as my last commit. Fix docblock.
+	* [r9113] site/trunk/Site/SiteApplication.php:
+	  Fix docblock. So close.
+
+2006-08-04  nrf
+
+	* [r9093] site/trunk/Site/SiteApplication.php:
+	  Add an accessor method.
+	* [r9090] site/trunk/Site/SiteApplication.php:
+	  Add special case for SSH tunnelers.
+	* [r9087] site/trunk/Site/SiteApplication.php:
+	  Change the API for specifing secure pages.
+	* [r9081] site/trunk/Site/SiteApplication.php:
+	  Reorder methods.
+	* [r9079] site/trunk/Site/SiteApplication.php:
+	  Add API for registering sources that should load securely.
+	* [r9078] site/trunk/Site/SiteApplication.php:
+	  Unicode!
+	* [r9077] site/trunk/Site/SiteApplication.php:
+	  Refactor URI parsing, base href generating, and SSL stuff.
+
+2006-08-03  nrf
+
+	* [r9036] site/trunk/Site/SiteServerConfigModule.php:
+	  Remove obsolete code.
+	* [r9029] site/trunk/Site/SiteConfigModule.php:
+	  New SiteConfigModule based on the ZendFramework Config module.
+	* [r9028] site/trunk/Site/SiteDatabaseModule.php:
+	  Change pubic property $name to $dsn.
+	* [r9016] site/trunk/Site/SiteCookieModule.php:
+	  Best to keep your salt private.
+	* [r9014] site/trunk/Site/SiteConfigModule.php:
+	  Start of a site config module.
+
+2006-07-23  gauthierm
+
+	* [r8343] site/trunk/Site/pages/SiteExceptionPage.php:
+	  Fix package name.
+
+2006-07-11  dave
+
+	* [r7887] site/trunk/Site/SiteLayoutData.php:
+	  fixed white space
+
+2006-06-30  gauthierm
+
+	* [r7710] site/trunk/Site/SiteSessionModule.php:
+	  Return false instead of throwning an exception when checking
+	  isset on
+	  non-active session.
+	* [r7709] site/trunk/Site/SiteSessionModule.php:
+	  Use coding conventions
+
+2006-06-29  gauthierm
+
+	* [r7675] site/trunk/Site/pages/SiteExceptionPage.php,
+	  site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  Close PHP files.
+
+2006-06-28  dave
+
+	* [r7637] site/trunk/package.php:
+	  basic pear package build script - not sure why this wasn't
+	  committed a long time ago
+
+2006-06-27  nrf
+
+	* [r7614] site/trunk/Site/pages/SiteExceptionPage.php:
+	  Make more sub-classable.
+	* [r7610] site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  - Make more sub-classable.
+	  - Remove Veseys-specific text.
+
+2006-06-27  dave
+
+	* [r7607] site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  follow convention
+	* [r7585] site/trunk/Site/SiteError.php,
+	  site/trunk/Site/SiteMultipartMailMessage.php,
+	  site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  wrap long lines
+
+2006-06-26  nrf
+
+	* [r7537] site/trunk/Site/SitePageFactory.php,
+	  site/trunk/Site/SiteXMLRPCServerFactory.php,
+	  site/trunk/Site/exceptions/SiteNotFoundException.php:
+	  Push up from Store to Site.
+
+2006-06-22  nick
+
+	* [r7352] site/trunk/Site/pages/SiteExceptionPage.php:
+	  Simplify the message even further
+
+2006-06-22  nrf
+
+	* [r7347] site/trunk/Site/pages/SiteExceptionPage.php:
+	  Make all these protected.
+
+2006-06-22  nick
+
+	* [r7338] site/trunk/Site/pages/SiteExceptionPage.php:
+	  Simpler more generic error message
+
+2006-06-21  nrf
+
+	* [r7312] site/trunk/Site/exceptions/SiteCookieException.php:
+	  New exception for cookies.
+	* [r7309] site/trunk/Site/SiteCookieModule.php:
+	  Add cookie salting.
+	  Add removeCookie() method.
+
+2006-06-19  dave
+
+	* [r7194] site/trunk/Site/Site.php,
+	  site/trunk/Site/SiteApplication.php:
+	  be consistant with constant folding
+
+2006-06-16  dave
+
+	* [r7153] site/trunk/Site/pages/SiteXMLRPCServer.php:
+	  folding added
+	* [r7152] site/trunk/Site/exceptions/SiteException.php,
+	  site/trunk/Site/exceptions/SiteInvalidPropertyException.php:
+	  folding added
+	* [r7151] site/trunk/Site/Site.php,
+	  site/trunk/Site/SiteServerConfigModule.php:
+	  folding added
+
+2006-06-15  nrf
+
+	* [r7120] site/trunk/Site/SiteCookieModule.php:
+	  Prefix cookies.
+
+2006-06-15  nick
+
+	* [r7077] site/trunk/Site/SiteMultipartMailMessage.php:
+	  A wrapper class for sending multipart html and txt email
+	  messages.
+	  
+	  Note! This is somewhat broken in PHP5. The message sends, but a
+	  reference error
+	  is thrown. We're going to look into what the pass-by-reference
+	  problem is and
+	  try to fix it.
+
+2006-06-14  gauthierm
+
+	* [r7056] site/trunk/Site/SiteDatabaseModule.php:
+	  Set up database convenience reference here so other modules can
+	  use it.
+
+2006-06-13  gauthierm
+
+	* [r7045] site/trunk/Site/pages/SiteExceptionPage.php:
+	  At least document what class this is.
+
+2006-06-13  nrf
+
+	* [r7038] site/trunk/Site/SiteCookieModule.php:
+	  Make expiry param more flexible.
+	* [r7037] site/trunk/Site/SiteCookieModule.php:
+	  Actually set cookies
+	* [r7035] site/trunk/Site/SiteCookieModule.php:
+	  Start of a SiteCookieModule
+	* [r7033] site/trunk/Site/SiteSessionModule.php:
+	  Move half of StoreSessionModule to SiteSessionModule.
+	* [r7032] site/trunk/Site/pages/SiteExceptionPage.php:
+	  If not a SwatException, wrap it in one.
+
+2006-06-13  gauthierm
+
+	* [r7031] site/trunk/Site/SiteApplication.php:
+	  Put public before protected, protected before private.
+	* [r7029] site/trunk/Site/SiteApplication.php:
+	  Added magic isset method.
+
+2006-06-07  gauthierm
+
+	* [r6864] site/trunk/Site/layouts/SiteLayout.php:
+	  Method to clear a data property.
+
+2006-06-05  nrf
+
+	* [r6747] site/trunk/Site/layouts/SiteLayout.php,
+	  site/trunk/Site/pages/SitePage.php:
+	  Fix requires, add type hinting
+	* [r6746] site/trunk/Site/pages/SiteExceptionPage.php:
+	  Make $exception property protected so subclasses can use it.
+
+2006-06-02  nrf
+
+	* [r6603] site/trunk/Site/SiteApplication.php:
+	  Make page protected.
+
+2006-05-29  nrf
+
+	* [r6314] site/trunk/Site/Site.php,
+	  site/trunk/Site/SiteDatabaseModule.php,
+	  site/trunk/Site/SiteLayoutData.php,
+	  site/trunk/Site/pages/SiteExceptionPage.php:
+	  Update copyright tags from SVN logs.
+
+2006-05-29  gauthierm
+
+	* [r6310] site/trunk/Site/SiteApplication.php:
+	  Formatting fix.
+
+2006-05-29  nrf
+
+	* [r6296] site/trunk/Site/SiteLayoutData.php,
+	  site/trunk/Site/layouts/SiteLayout.php:
+	  Fix appending to layout properties
+
+2006-05-29  gauthierm
+
+	* [r6285] site/trunk/Site/layouts/SiteLayout.php:
+	  Changes to go along with Swat HTML head entries changes. The
+	  layout class
+	  now contains its own HTML head entry collection object.
+	  
+	  - The getHtmlHeadEntries() has been removed as the layout should
+	  be the top
+	  level for getting HTML head entries.
+	  - The displayHtmlHeadEntries() method was removed as we can use
+	  html_head_entries->display().
+	  - addHtmlHeadEntry() and addHtmlHeadEntrySet() remain so they
+	  can be used by
+	  pages.
+
+2006-05-29  nrf
+
+	* [r6273] site/trunk/Site/pages/SitePage.php:
+	  Allow layout object to optionally be passed into page
+	  constructor.
+	* [r6270] site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  Mike missed this
+	* [r6267] site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/pages/SitePage.php,
+	  site/trunk/Site/pages/SiteXMLRPCServer.php:
+	  Instantiate layout in page constructor.
+
+2006-05-29  gauthierm
+
+	* [r6261] site/trunk/Site/layouts/SiteLayout.php:
+	  Sort html head entries before displaying them.
+
+2006-05-29  nrf
+
+	* [r6260] site/trunk/Site/layouts/SiteXMLRPCServerLayout.php,
+	  site/trunk/Site/pages/SiteXMLRPCServer.php:
+	  A few leftovers from Friday's layout refactoring
+
+2006-05-26  nrf
+
+	* [r6182] site/trunk/Site/pages/SiteExceptionPage.php:
+	  remove unused require
+	* [r6181] site/trunk/Site/exceptions/SiteException.php,
+	  site/trunk/Site/pages/SiteExceptionPage.php:
+	  - Move class vars from Store up to Site
+	  - Make SiteExceptionPage handle any type of Exception
+	* [r6179] site/trunk/Site/pages/SiteExceptionPage.php,
+	  site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  Missed in previous commits
+	* [r6176] site/trunk/Site/layouts/SiteXMLRPCServerLayout.php:
+	  This file was missed in previous commits.
+	* [r6168] site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/SiteLayout.php,
+	  site/trunk/Site/SiteLayoutData.php,
+	  site/trunk/Site/SitePage.php,
+	  site/trunk/Site/SiteXMLRPCServer.php,
+	  site/trunk/Site/layouts/SiteLayout.php,
+	  site/trunk/Site/layouts/xhtml,
+	  site/trunk/Site/layouts/xhtml/default.php,
+	  site/trunk/Site/layouts/xhtml/xmlrpcserver.php,
+	  site/trunk/Site/layouts/xmlrpcserver.php, site/trunk/Site/pages,
+	  site/trunk/Site/pages/SiteExceptionPage.php,
+	  site/trunk/Site/pages/SiteHttpErrorPage.php,
+	  site/trunk/Site/pages/SitePage.php,
+	  site/trunk/Site/pages/SiteXMLRPCServer.php:
+	  Major refactoring of the site framework across all packages.
+	  This is still a bit rough, but both the Veseys frontend and the
+	  admin are running on it. While the Admin package was changed
+	  heavily to work with the new Site package, its interface did not
+	  change much so admin site code requires minimal changes to work.
+	  
+	  - Go upstream! Site package does more now.
+	  - Remove duplicated functionality form Store and Admin packages.
+	  - SiteLayout and subclasses are now responsible for the "site
+	  trim".
+	  - HtmlHeadEntry API moved to SiteLayout and now used by Admin
+	  too.
+	  - Single point of page sub-classing from StorePage to VeseysPage
+	  is gone allowing other base page subclasses in Store.
+	  - The *Internal() methods are gone from Store,
+	  init()/proccess()/build() are now sub-classed directly.
+
+2006-05-22  gauthierm
+
+	* [r5922] site/trunk/Site/SiteApplicationModule.php:
+	  Documentation fix.
+
+2006-05-18  gauthierm
+
+	* [r5771] site/trunk/Site/SiteApplication.php:
+	  Throw an exception if trying to add a module with the id of a
+	  class property.
+
+2006-05-16  nrf
+
+	* [r5689] site/trunk/Site/Site.php, site/trunk/Site/SiteError.php,
+	  site/trunk/Site/SiteObject.php,
+	  site/trunk/Site/exceptions/SiteException.php:
+	  - Reflect changes to SwatError and SwatException APIs.
+	  - Add SiteError class.
+	  - Register exception and error handlers by default.
+	* [r5679] site/trunk/Site/SiteDatabaseModule.php:
+	  better name
+	* [r5677] site/trunk/Site/SiteDatabaseModule.php:
+	  make a real acessor method
+
+2006-05-16  gauthierm
+
+	* [r5672] site/trunk/Site/SiteDatabaseModule.php:
+	  Require exception class.
+	* [r5671] site/trunk/Site/SiteDatabaseModule.php:
+	  Make mdb2 reference actually read-only.
+	* [r5670] site/trunk/Site/SiteDatabaseModule.php:
+	  Small cleanups and class rename.
+	* [r5669] site/trunk/Site/SiteDatabaseModule.php:
+	  This database module is generic enough to go in the site package
+	  instead of
+	  admin.
+
+2006-05-16  nrf
+
+	* [r5666] site/trunk/Site/SiteServerConfigModule.php:
+	  new server config module
+
+2006-05-16  gauthierm
+
+	* [r5665] site/trunk/Site/SiteApplication.php:
+	  Better loading and manipulation of modules. Modules are now
+	  instantiated
+	  automatically in the constructor and subclasses can cleanly
+	  override the list
+	  of modules to load by default wit the new getDefaultModuleList()
+	  method.
+	* [r5663] site/trunk/Site/SiteApplication.php:
+	  Protected after public.
+
+2006-05-11  gauthierm
+
+	* [r5568] site/trunk/Site/exceptions/SiteException.php:
+	  Respect API changes in Swat.
+
+2006-05-01  gauthierm
+
+	* [r5151] site/trunk/Site/SiteApplication.php:
+	  Documentation updates.
+
+2006-04-26  gauthierm
+
+	* [r5021]
+	  site/trunk/Site/exceptions/SiteInvalidPropertyException.php:
+	  Fix require path.
+
+2006-04-26  nrf
+
+	* [r5019] site/trunk/Site/Site.php,
+	  site/trunk/Site/SiteObject.php,
+	  site/trunk/Site/exceptions/SiteException.php:
+	  getting closer to working
+	* [r5017] site/trunk/Site/Site.php:
+	  copy a file
+
+2006-04-26  gauthierm
+
+	* [r5016] site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/SiteApplicationModule.php,
+	  site/trunk/Site/SiteLayout.php, site/trunk/Site/SitePage.php,
+	  site/trunk/Site/SiteXMLRPCServer.php,
+	  site/trunk/Site/exceptions/SiteException.php,
+	  site/trunk/Site/exceptions/SiteInvalidPropertyException.php:
+	  - Renamed classes:
+	  s/Swat/Site
+	  s/swat/site
+	  
+	  - Modified CSS of exception
+	  - Added SiteInvalidPropertyException
+
+2006-04-26  nrf
+
+	* [r5012] site/trunk/Site/exceptions/SiteException.php:
+	  copy a file
+	* [r5011] site/trunk/Site/layouts, swat/trunk/Swat/layouts:
+	  move a dir
+	* [r5010] site/trunk/Site/exceptions:
+	  new dir
+	* [r5009] site/trunk/Site/SiteObject.php:
+	  copy a file
+	* [r5008] site/trunk/Site/SiteLayout.php,
+	  swat/trunk/Swat/SwatLayout.php:
+	  move a file
+	* [r5007] site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/SwatApplication.php:
+	  move a file
+	* [r5006] site/trunk/Site/SiteXMLRPCServer.php,
+	  swat/trunk/Swat/SwatXMLRPCServer.php:
+	  move a file
+	* [r5005] site/trunk/Site/SiteApplicationModule.php,
+	  swat/trunk/Swat/SwatApplicationModule.php:
+	  move a file
+	* [r5004] site/trunk/Site/SitePage.php,
+	  swat/trunk/Swat/SwatPage.php:
+	  move a file
+	* [r5003] site/trunk/Site/SwatApplication.php,
+	  swat/trunk/Swat/SwatApplication.php:
+	  move a file
+	* [r5001] site/trunk/Site:
+	  new dir
+	* [r5000] site/trunk:
+	  new dir
+
