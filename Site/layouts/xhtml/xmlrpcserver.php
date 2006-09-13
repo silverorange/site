@@ -1,6 +1,6 @@
 <?php
 // Set content type to XML
-header('Content-type: text/xml');
+header('Content-type: text/xml; charset=UTF-8');
 
 // Disable any caching with HTTP headers
 // Any date in the past will do here
