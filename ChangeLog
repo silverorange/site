@@ -1,3 +1,20 @@
+2006-09-13  gauthierm
+
+	* [r10964] site/trunk/Site/exceptions/SiteExceptionLogger.php:
+	  a custom exception logger that puts exception details into html
+	  files
+	* [r10953] site/trunk/Site/layouts/xhtml/xmlrpcserver.php:
+	  Send XML_-RPC responses in UTF-8
+
+2006-09-12  nrf
+
+	* [r10855] site/trunk/package.php:
+	  prepare for release
+	* [r10853] site/trunk/package.php:
+	  prepare for release
+	* [r10851] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release
+
 2006-09-11  nrf
 
 	* [r10816] site/trunk/Site/SiteDatabaseModule.php:
