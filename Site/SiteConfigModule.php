@@ -84,6 +84,21 @@ class SiteConfigModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ private function __isset()
+
+	/**
+	 * Checks for existence of a config value
+	 *
+	 * @param string $name the name of the config value to check.
+	 *
+	 * @return boolean whether the config setting exists.
+	 */
+	private function __isset($name)
+	{
+		return isset($this->zend_config->$name);
+	}
+
+	// }}}
 }
 
 ?>
