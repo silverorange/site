@@ -51,10 +51,8 @@ class SiteMessagesModule extends SiteApplicationModule
 	 */
 	public function init()
 	{
-		if ($this->app->session->isActive() &&
-			(!isset($this->app->session->messages) ||
-			!is_array($this->app->session->messages)))
-			$this->app->session->messages = array();
+		if ($this->app->session->isActive())
+			$this->initSession();
 	}
 
     // }}}
@@ -67,6 +65,11 @@ class SiteMessagesModule extends SiteApplicationModule
 	 */
 	public function add(SwatMessage $message)
 	{
+		if (!$this->app->session->isActive()) {
+			$this->app->session->activate();
+			$this->initSession();
+		}
+
 		$this->app->session->messages[] = $message;
 	}
 
@@ -90,6 +93,19 @@ class SiteMessagesModule extends SiteApplicationModule
 		}
 
 		return $messages;
+	}
+
+    // }}}
+    // {{{ private function initSession()
+
+	/**
+	 * Initializes session variables
+	 */
+	public function initSession()
+	{
+		if (!isset($this->app->session->messages) ||
+			!is_array($this->app->session->messages))
+			$this->app->session->messages = array();
 	}
 
     // }}}
