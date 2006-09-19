@@ -54,12 +54,28 @@ class SiteExceptionLogger extends SwatExceptionLogger
 
 		if (($log_file = fopen($log_filepath, 'w')) !== false) {
 			fwrite($log_file, '<table>');
-			fwrite($log_file,
-				'<tr><th>Time:</th><td>'.date('c', time()).'</td></tr>');
+			fwrite($log_file, '<tr><th>Exeception Time:</th><td>'.
+				date('c', time()).'</td></tr>');
 
 			if (isset($_SERVER['REQUEST_URI']))
 				fwrite($log_file, '<tr><th>Request URI:</th><td>'.
 					$_SERVER['REQUEST_URI'].'</td></tr>');
+
+			if (isset($_SERVER['REQUEST_TIME']))
+				fwrite($log_file, '<tr><th>Request Time:</th><td>'.
+					date('c', $_SERVER['REQUEST_TIME']).'</td></tr>');
+
+			if (isset($_SERVER['HTTP_REFERER']))
+				fwrite($log_file, '<tr><th>HTTP Referer:</th><td>'.
+					$_SERVER['HTTP_REFERER'].'</td></tr>');
+
+			if (isset($_SERVER['HTTP_USER_AGENT']))
+				fwrite($log_file, '<tr><th>HTTP User Agent:</th><td>'.
+					$_SERVER['HTTP_USER_AGENT'].'</td></tr>');
+
+			if (isset($_SERVER['REMOTE_ADDR']))
+				fwrite($log_file, '<tr><th>Remote Address:</th><td>'.
+					$_SERVER['REMOTE_ADDR'].'</td></tr>');
 
 			fwrite($log_file, '</table>');
 			fwrite($log_file, $e->toXHTML());
