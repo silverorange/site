@@ -302,6 +302,8 @@ class SiteApplication extends SiteObject
 	 */
 	public function replacePage($source)
 	{
+		$source = $this->normalizeSource($source);
+		$this->checkSecure($source);
 		$new_page = $this->resolvePage($source);
 		$this->setPage($new_page);
 	}
@@ -332,6 +334,23 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ protected function normalizeSource()
+
+	protected function normalizeSource($source)
+	{
+		$path = explode('/', $source);
+
+		// remove trailing slash
+		if (strlen(end($path)) == 0)
+			array_pop($path);
+
+		// normalize $source, never end with a slash
+		$source = implode('/', $path);
+
+		return $source;
+	}
+
+	// }}}
 	// {{{ protected function loadPage()
 
 	/**
@@ -340,7 +359,8 @@ class SiteApplication extends SiteObject
 	protected function loadPage()
 	{
 		if ($this->page === null) {
-			$source = self::initVar('source');
+			$source = $this->normalizeSource(self::initVar('source'));
+			$this->checkSecure($source);
 			$this->page = $this->resolvePage($source);
 		}
 	}
