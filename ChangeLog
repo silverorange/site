@@ -1,3 +1,18 @@
+2006-09-19  gauthierm
+
+	* [r11106] site/trunk/Site/exceptions/SiteExceptionLogger.php:
+	  store more information with logged exceptions
+
+2006-09-18  nrf
+
+	* [r11075] site/trunk/ChangeLog:
+	  test commit
+	* [r11061] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.1
+	* [r11060] site/trunk/Site/SiteMessagesModule.php:
+	  The SiteMessagesModule depends on the SiteSessionModule and
+	  already checks for it's existence in __construct(). This makes
+	  the message module activate the session module when it needs it.
 
 2006-09-14  nrf
 
