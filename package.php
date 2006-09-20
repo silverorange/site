@@ -46,7 +46,7 @@ $package->setNotes($notes);
 $package->addIgnore('package.php');
 
 $package->addMaintainer('lead', 'nrf', 'Nathan Fredrickson', 'nathan@silverorange.com');
-$package->addMaintainer('lead', 'gauthierm', 'Mike Gauthier', 'mike@silverorange.com');
+$package->addMaintainer('developer', 'gauthierm', 'Mike Gauthier', 'mike@silverorange.com');
 
 $package->setPhpDep('5.1.5');
 $package->setPearinstallerDep('1.4.0');
