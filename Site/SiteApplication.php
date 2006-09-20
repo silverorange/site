@@ -351,6 +351,19 @@ class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ protected function explodeSource()
+
+	protected function explodeSource($source)
+	{
+		if (strlen($source) === 0)
+			$path = array();
+		else
+			$path = explode('/', $source);
+
+		return $path;
+	}
+
+	// }}}
 	// {{{ protected function loadPage()
 
 	/**
