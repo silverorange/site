@@ -20,7 +20,6 @@ class SiteSessionModule extends SiteApplicationModule
 		$session_name = $this->app->id;
 
 		session_cache_limiter('');
-		session_save_path('/so/phpsessions/'.$this->app->id);
 		session_name($session_name);
 
 		if (isset($_GET[$session_name]) ||
@@ -126,6 +125,17 @@ class SiteSessionModule extends SiteApplicationModule
 		}
 
 		return $uri;
+	}
+
+	// }}}
+	// {{{ public function setSavePath()
+
+	/**
+	 * Set the session save path
+	 */
+	public function setSavePath($path)
+	{
+		session_save_path($path);
 	}
 
 	// }}}
