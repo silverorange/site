@@ -1,3 +1,19 @@
+2006-09-20  nrf
+
+	* [r11172] site/trunk/Site/SiteApplication.php:
+	  Add a convience method for subclasses.
+	* [r11167] site/trunk/Site/SiteApplication.php:
+	  Refactor to push upstream and make more subclassable for
+	  StoreApplication.
+	* [r11166] site/trunk/package.php:
+	  The pear channel server is lame and I think two leads might be
+	  confusing it.
+	* [r11124] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.2
+	* [r11116] site/trunk/Site/SiteSessionModule.php:
+	  Remove silverorange specific path and replace with a setter
+	  method.
+
 2006-09-19  gauthierm
 
 	* [r11106] site/trunk/Site/exceptions/SiteExceptionLogger.php:
