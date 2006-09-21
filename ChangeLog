@@ -1,3 +1,15 @@
+2006-09-21  nick
+
+	* [r11282] site/trunk/Site/SiteAtomFeedServer.php:
+	  Whoops! Forgot to commit this.
+
+2006-09-21  nrf
+
+	* [r11227] site/trunk/Site/SitePageFactory.php:
+	  Add ability to load page classes from packages.
+	* [r11196] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.3
+
 2006-09-20  nrf
 
 	* [r11172] site/trunk/Site/SiteApplication.php:
