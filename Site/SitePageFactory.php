@@ -10,6 +10,19 @@ abstract class SitePageFactory
 {
 	// {{{ protected properties
 
+	/**
+	 * An array that maps other package classes to filenames
+	 *
+	 * The array is of the form:
+	 *    package_prefix => path
+	 * Where package prefix is the classname prefix used in this package and 
+	 * path is the relative path where the source files for this package may 
+	 * be included from.
+	 *
+	 * @var array
+	 */
+	protected $class_map = array('Swat' => 'Swat/pages');
+
 	protected $page_class_path = '../include/pages';
 
 	// }}}
@@ -32,8 +45,21 @@ abstract class SitePageFactory
 
 	public function instantiatePage($class, $params)
 	{
-		$class_file = sprintf('%s/%s.php', $this->page_class_path, $class);
-		require_once $class_file;
+		if (!class_exists($class)) {
+			$class_file = null;
+
+			foreach ($this->class_map as $package_prefix => $path) {
+				if (strncmp($class, $package_prefix, strlen($package_prefix)) == 0) {
+					$class_file = "{$path}/{$class}.php";
+					break;
+				}
+			}
+
+			if ($class_file === null)
+				$class_file = sprintf('%s/%s.php', $this->page_class_path, $class);
+
+			require_once $class_file;
+		}
 
 		$page = call_user_func_array(
 			array(new ReflectionClass($class), 'newInstance'), $params);
