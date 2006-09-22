@@ -113,12 +113,12 @@ class SiteExceptionPage extends SitePage
 	protected function getTitle()
 	{
 		if ($this->exception === null)
-			$title = 'Unknown Error';
+			$title = Site::_('Unknown Error');
 		elseif ($this->exception instanceof SiteException && 
 			$this->exception->title !== null)
 				$title = $this->exception->title;
 		else
-			$title = 'Error';
+			$title = Site::_('Error');
 
 		return $title;
 	}
@@ -130,12 +130,12 @@ class SiteExceptionPage extends SitePage
 	{
 		switch($status) {
 		case 404:
-			return 'Sorry, we couldn&#8217;t find the page you were looking for.';
+			return Site::_('Sorry, we couldn’t find the page you were looking for.');
 		case 403:
-			return 'Sorry, the page you requested is not accessible.';
+			return Site::_('Sorry, the page you requested is not accessible.');
 		default:
 		case 500:
-			return 'Sorry, there was a problem loading the  page you requested.';
+			return Site::_('Sorry, there was a problem loading the  page you requested.');
 		}
 	}
 
