@@ -15,6 +15,17 @@ require_once 'Swat/SwatMessage.php';
  */
 class SiteMessagesModule extends SiteApplicationModule
 {
+	// {{{ protected properties
+
+	/**
+	 * Whether or not this messages module has been initialized with an active
+	 * session
+	 *
+	 * @var boolean
+	 */
+	protected $session_is_initialized = false;
+
+	// }}}
 	// {{{ public function __construct()
 
 	/**
@@ -65,10 +76,11 @@ class SiteMessagesModule extends SiteApplicationModule
 	 */
 	public function add(SwatMessage $message)
 	{
-		if (!$this->app->session->isActive()) {
+		if (!$this->app->session->isActive())
 			$this->app->session->activate();
+
+		if (!$this->session_is_initialized)
 			$this->initSession();
-		}
 
 		$this->app->session->messages[] = $message;
 	}
@@ -96,16 +108,19 @@ class SiteMessagesModule extends SiteApplicationModule
 	}
 
     // }}}
-    // {{{ private function initSession()
+    // {{{ protected function initSession()
 
 	/**
-	 * Initializes session variables
+	 * Initializes session variables used by this module
 	 */
-	public function initSession()
+	protected function initSession()
 	{
-		if (!isset($this->app->session->messages) ||
-			!is_array($this->app->session->messages))
+		if (!$this->session_is_initialized &&
+			(!isset($this->app->session->messages) ||
+			!is_array($this->app->session->messages))) {
 			$this->app->session->messages = array();
+			$this->session_is_initialized = true;
+		}
 	}
 
     // }}}
