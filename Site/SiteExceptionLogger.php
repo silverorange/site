@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swat/exceptions/SwatExceptionLogger.php';
+require_once 'Swat/SwatExceptionLogger.php';
 require_once 'Swat/exceptions/SwatException.php';
 
 /**
