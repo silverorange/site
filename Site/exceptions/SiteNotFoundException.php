@@ -22,7 +22,7 @@ class SiteNotFoundException extends SiteException
 	public function __construct($message = null, $code = 0)
 	{
 		parent::__construct($message, $code);
-		$this->title = _('Not Found');
+		$this->title = Site::_('Not Found');
 		$this->http_status_code = 404;
 	}
 
