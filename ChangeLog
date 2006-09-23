@@ -1,3 +1,26 @@
+2006-09-22  nrf
+
+	* [r11361] site/trunk/Site/SiteExceptionLogger.php:
+	  Reflect file move in Swat.
+	* [r11357] site/trunk/Site/exceptions/SiteNotFoundException.php,
+	  site/trunk/Site/pages/SiteExceptionPage.php:
+	  Make translatable.
+
+2006-09-22  gauthierm
+
+	* [r11340] site/trunk/Site/SiteMessagesModule.php:
+	  Fix a bug that occurred if session was started outside the
+	  session module after module init time but before a message was
+	  added.
+	* [r11332] site/trunk/Site/SiteExceptionLogger.php,
+	  site/trunk/Site/exceptions/SiteExceptionLogger.php:
+	  move exception logger into the correct folder
+
+2006-09-21  nrf
+
+	* [r11283] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.4
+
 2006-09-21  nick
 
 	* [r11282] site/trunk/Site/SiteAtomFeedServer.php:
