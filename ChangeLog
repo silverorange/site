@@ -1,3 +1,13 @@
+2006-09-24  gauthierm
+
+	* [r11394] site/trunk/Site/SiteErrorLogger.php:
+	  a custom error logger that puts error details into html files
+
+2006-09-23  nrf
+
+	* [r11375] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.5
+
 2006-09-22  nrf
 
 	* [r11361] site/trunk/Site/SiteExceptionLogger.php:
