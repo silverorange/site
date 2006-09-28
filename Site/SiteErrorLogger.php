@@ -82,9 +82,10 @@ class SiteErrorLogger extends SwatErrorLogger
 		}
 
 		if ($this->base_uri === null)
-			$summary = $e->getClass().': '.$log_filepath;
+			$summary = $e->getSummary().': '.$log_filepath;
 		else
-			$summary = $e->getClass().': '.$this->base_uri.'/'.$log_filename;
+			$summary = $e->getSummary().': '.
+				$this->base_uri.'/'.$log_filename;
 
 		error_log($summary, 0);
 	}
