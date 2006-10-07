@@ -1,3 +1,13 @@
+2006-10-07  nrf
+
+	* [r11855] site/trunk/Site/SiteApplication.php:
+	  Add an else case to always define the returned variable.
+
+2006-09-28  nrf
+
+	* [r11623] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.7
+
 2006-09-28  gauthierm
 
 	* [r11621] site/trunk/Site/SiteErrorLogger.php:
