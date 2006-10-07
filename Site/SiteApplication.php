@@ -584,6 +584,8 @@ class SiteApplication extends SiteObject
 		$base_uri_length = strlen($base_uri);
 		if (strncmp($base_uri, $this->uri, $base_uri_length) === 0)
 			$uri = substr($this->uri, $base_uri_length);
+		else
+			$uri = $this->uri;
 
 		return $uri;
 	}
