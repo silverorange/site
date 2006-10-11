@@ -37,7 +37,7 @@ class SiteExceptionPage extends SitePage
 	{
 		parent::build();
 
-		$title  = $this->getTitle();
+		$title = $this->getTitle();
 
 		if (isset($this->layout->navbar))
 			$this->layout->navbar->createEntry($title);
