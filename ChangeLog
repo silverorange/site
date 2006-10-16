@@ -1,5 +1,19 @@
+2006-10-12  gauthierm
+
+	* [r11909] site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/SiteWebApplication.php:
+	  abstract SiteApplication and create a SiteWebApplication that
+	  contains page/request/layout logic
+
+2006-10-11  gauthierm
+
+	* [r11871] site/trunk/Site/pages/SiteExceptionPage.php:
+	  whitespace
+
 2006-10-07  nrf
 
+	* [r11856] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.8
 	* [r11855] site/trunk/Site/SiteApplication.php:
 	  Add an else case to always define the returned variable.
 
