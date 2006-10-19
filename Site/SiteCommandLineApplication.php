@@ -10,6 +10,9 @@ require_once 'Site/SiteCommandLineArgument.php';
  * This class handles the creating and parsing of command line arguments and
  * has the ability to display usage information.
  *
+ * Command line applications must implement the {@link SiteApplication::run()}
+ * method.
+ *
  * @package   Site
  * @copyright 2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
