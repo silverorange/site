@@ -43,6 +43,17 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	protected $documentation;
 
 	/**
+	 * The level of verbosity to use
+	 *
+	 * This controls the output of {@link SiteCommandLineApplication::output()}.
+	 *
+	 * @var integer 
+	 *
+	 * @see SiteCommandLineApplication::setVerbosity()
+	 */
+	protected $verbosity = self::VERBOSITY_ERRORS;
+
+	/**
 	 * Creates a new command line application
 	 *
 	 * By default, a 'help' command line argument is added. This argument is
@@ -95,6 +106,16 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	public function addCommandLineArgument(SiteCommandLineArgument $argument)
 	{
 		$this->arguments[] = $argument;
+	}
+
+	/**
+	 * Sets the level of verbosity to use for this application
+	 *
+	 * @param integer $verbosity the level of verbosity to use.
+	 */
+	public function setVerbosity($verbosity)
+	{
+		$this->verbosity = (integer)$verbosity;
 	}
 
 	/**
@@ -196,6 +217,20 @@ abstract class SiteCommandLineApplication extends SiteApplication
 				exit(1);
 			}
 		}
+	}
+
+	/**
+	 * Displays a string based on the verbosity level of this application
+	 *
+	 * @param string $string the string to display.
+	 * @param integer $verbosity the verbosity level to display at. If this
+	 *                            application's verbosity is less than this
+	 *                            level, the string is not displayed.
+	 */
+	protected function output($string, $verbosity)
+	{
+		if ($verbosity <= $this->verbosity)
+			echo $string;
 	}
 }
 
