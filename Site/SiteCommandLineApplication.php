@@ -16,6 +16,8 @@ require_once 'Site/SiteCommandLineArgument.php';
  */
 abstract class SiteCommandLineApplication extends SiteApplication
 {
+	// {{{ protected properties
+
 	/**
 	 * An array of {@link SiteCommandLineArgument} objects used by this
 	 * application
@@ -53,6 +55,9 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 */
 	protected $verbosity = 0;
 
+	// }}}
+	// {{{ public function __construct()
+
 	/**
 	 * Creates a new command line application
 	 *
@@ -84,6 +89,9 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		$this->addCommandLineArgument($help_argument);
 	}
 
+	// }}}
+	// {{{ public function addCommandLineArgument()
+
 	/**
 	 * Adds a command line argument to this application
 	 *
@@ -108,6 +116,9 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		$this->arguments[] = $argument;
 	}
 
+	// }}}
+	// {{{ public function setVerbosity()
+
 	/**
 	 * Sets the level of verbosity to use for this application
 	 *
@@ -117,6 +128,9 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	{
 		$this->verbosity = (integer)$verbosity;
 	}
+
+	// }}}
+	// {{{ public function displayUsage()
 
 	/**
 	 * Displays usage information for this command line application
@@ -136,6 +150,9 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		exit(0);
 	}
 
+	// }}}
+	// {{{ public function displayArgumentUsage()
+
 	/**
 	 * Displays usage information for a single command line argument
 	 *
@@ -148,6 +165,9 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		echo implode(', ', $argument->getNames()), "\n",
 			"   ", $argument->getDocumentation(), "\n\n";
 	}
+
+	// }}}
+	// {{{ protected function parseCommandLineArguments()
 
 	/**
 	 * Automatically parses and interprets command line arguments of this
@@ -219,6 +239,9 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		}
 	}
 
+	// }}}
+	// {{{ protected function output()
+
 	/**
 	 * Displays a string based on the verbosity level of this application
 	 *
@@ -232,6 +255,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		if ($verbosity <= $this->verbosity)
 			echo $string;
 	}
+
+	// }}}
 }
 
 ?>
