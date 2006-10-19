@@ -92,6 +92,15 @@ class Site
 	}
 
 	// }}}
+	// {{{ public static function setupGettext()
+
+	public static function setupGettext()
+	{
+		bindtextdomain(Site::GETTEXT_DOMAIN, '@DATA-DIR@/Site/locale');
+		bind_textdomain_codeset(Site::GETTEXT_DOMAIN, 'UTF-8');
+	}
+
+	// }}}
 	// {{{ public static function displayMethods()
 
 	/**
@@ -182,6 +191,8 @@ if (!function_exists("dgettext")) {
 }
 
 // }}}
+
+Site::setupGettext();
 
 /*
  * Setup custom exception and error handlers.

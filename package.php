@@ -48,6 +48,8 @@ $package->addIgnore('package.php');
 $package->addMaintainer('lead', 'nrf', 'Nathan Fredrickson', 'nathan@silverorange.com');
 $package->addMaintainer('developer', 'gauthierm', 'Mike Gauthier', 'mike@silverorange.com');
 
+$package->addReplacement('Site/Site.php', 'pear-config', '@DATA-DIR@', 'data_dir');
+
 $package->setPhpDep('5.1.5');
 $package->setPearinstallerDep('1.4.0');
 $package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.0.0');
