@@ -51,7 +51,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 *
 	 * @see SiteCommandLineApplication::setVerbosity()
 	 */
-	protected $verbosity = self::VERBOSITY_ERRORS;
+	protected $verbosity = 0;
 
 	/**
 	 * Creates a new command line application
