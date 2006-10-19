@@ -2,7 +2,7 @@
 
 require_once 'Site/SiteApplication.php';
 require_once 'Site/exceptions/SiteException.php';
-// require_once 'Site/SiteCommandLineArgument.php';
+require_once 'Site/SiteCommandLineArgument.php';
 
 /**
  * An application designed to run on the command line
@@ -109,10 +109,23 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		echo Site::_('OPTIONS'), "\n";
 
 		foreach ($this->arguments as $argument) {
-			$argument->displayUsage();
+			$argument->displayArgumentUsage($argument);
 		}
 
 		exit(0);
+	}
+
+	/**
+	 * Displays usage information for a single command line argument
+	 *
+	 * @param SiteCommandLineArgument $argument the command line argument for
+	 *                                           which to display usage
+	 *                                           information.
+	 */
+	public function displayArgumentUsage(SiteCommandLineArgument $argument)
+	{
+		echo implode(', ', $argument->getNames()), "\n",
+			"   ", $argument->getDocumentation(), "\n\n";
 	}
 
 	/**
@@ -130,40 +143,43 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		for ($i = 1; $i < $num_args; $i++) {
 			$found_argument = false;
 			foreach ($this->arguments as $argument) {
-				$argument_arguments = array();
+				$argument_parameters = array();
 				if (in_array($args[$i], $argument->getNames())) {
-					foreach ($argument->getArguments() as $argument_argument) {
+					foreach ($argument->getParameters() as $parameter) {
 						if (isset($args[$i + 1]) && $args[$i + 1][0] !== '-') {
 							$i++;
-							if ($argument_argument->validate($args[$i])) {
-								$argument_arguments[] = $args[$i];
+							if ($parameter->validate($args[$i])) {
+								$argument_parameters[] = $args[$i];
 							} else {
-								echo $this->title, ": ",
-									$argument_argument->getErrorMessage(), "\n";
+								printf(Site::_('%s: %s'),
+									$this->title,
+									$parameter->getErrorMessage());
 
+								echo "\n";
 								exit(1);
 							}
-						} elseif ($argument_argument->hasDefault()) {
-							$argument_arguments[] =
-								$argument_argument->getDefault();
+						} elseif ($parameter->hasDefault()) {
+							$argument_parameters[] = $parameter->getDefault();
 						} else {
-							echo $this->title, ": ",
-								$argument_argument->getErrorMessage(), "\n";
+							printf(Site::_('%s: %s'),
+								$this->title, $parameter->getErrorMessage());
 
+							echo "\n";
 							exit(1);
 						}
 					}
 
 					if (!$reflector->hasMethod($argument->getMethod()))
-						throw new SiteException('Application argument calls '.
-							'undefined method.');
+						throw new SiteException(sprintf('Application '.
+							"argument calls undefined method '%s'.",
+							$argument->getMethod()));
 
 					$method = $reflector->getMethod($argument->getMethod());
-					if ($argument->hasArgument()) {
-						$method->invokeArgs($this, $argument_arguments);
+					if ($argument->hasParameter()) {
+						$method->invokeArgs($this, $argument_parameters);
 					} else {
 						if ($method->getNumberOfRequiredParameters() > 0)
-							$method->invoke($this, 'true');
+							$method->invoke($this, true);
 						else
 							$method->invoke($this);
 					}
@@ -180,122 +196,6 @@ abstract class SiteCommandLineApplication extends SiteApplication
 				exit(1);
 			}
 		}
-	}
-}
-
-require_once 'Site/SiteObject.php';
-// require_once 'Site/SiteCommandLineArgumentArgument.php';
-
-class SiteCommandLineArgument extends SiteObject
-{
-	protected $documentation;
-	protected $names = array();
-	protected $arguments = array();
-
-	public function __construct($names, $method, $documentation)
-	{
-		$this->names = $names;
-		$this->method = $method;
-		$this->documentation = $documentation;
-	}
-
-	public function &getNames()
-	{
-		return $this->names;
-	}
-
-	public function &getArguments()
-	{
-		return $this->arguments;
-	}
-
-	public function hasArgument()
-	{
-		return (count($this->arguments) > 0);
-	}
-
-	public function addArgument($type, $error_message, $default = null)
-	{
-		$this->arguments[] = new SiteCommandLineArgumentArgument($type,
-			$error_message, $default);
-	}
-
-	public function getMethod()
-	{
-		return $this->method;
-	}
-
-	public function getDocumentation()
-	{
-		return $this->documentation;
-	}
-
-	public function displayUsage()
-	{
-		echo implode(', ', $this->names), "\n",
-			"   ", $this->documentation, "\n\n";
-	}
-}
-
-require_once 'Site/SiteObject.php';
-
-class SiteCommandLineArgumentArgument extends SiteObject
-{
-	protected $error_message;
-	protected $type;
-	protected $default;
-
-	public function __construct($type, $error_message, $default)
-	{
-		$this->type = $type;
-		$this->error_message = $error_message;
-		$this->default = $default;
-	}
-
-	public function getErrorMessage()
-	{
-		return $this->error_message;
-	}
-
-	public function hasDefault()
-	{
-		return ($this->default !== null);
-	}
-
-	public function getDefault()
-	{
-		return $this->default;
-	}
-
-	public function getType()
-	{
-		return $this->type;
-	}
-
-	public function validate($value)
-	{
-		$valid = false;
-
-		switch ($this->type) {
-		case 'integer':
-		case 'int':
-			if (is_numeric($value) && strcmp((int)$value, $value) == 0)
-				$valid = true;
-
-			break;
-		case 'double':
-		case 'float':
-			if (is_numeric($value))
-				$valid = true;
-
-			break;
-		case 'string':
-		default:
-			$valid = true;
-			break;
-		}
-
-		return $valid;
 	}
 }
 
