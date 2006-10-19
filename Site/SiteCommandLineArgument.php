@@ -100,8 +100,9 @@ class SiteCommandLineArgument extends SiteObject
 	 * @param string $type the type of the parameter. Must be one of 'int',
 	 *                      'integer', 'double', 'float', or 'string'.
 	 * @param string $error_message a message displayed when the user omits a
-	 *                               required parameter or the user specifies
-	 *                               a parameter value of the wrong type.
+	 *                               required parameter or when the user
+	 *                               specified a parameter value of the wrong
+	 *                               type.
 	 * @param mixed $default optional default value. If a default value is
 	 *                        specified and the user does not specify the
 	 *                        parameter value, the default value is used.
