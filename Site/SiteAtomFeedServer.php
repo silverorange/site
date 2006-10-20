@@ -24,12 +24,12 @@ abstract class SiteAtomFeedServer extends SiteApplication
 	public $db;
 
 	// }}}
-	// {{{ public function display()
+	// {{{ public function run()
 
 	/**
 	 * Displays the Atom feed
 	 */
-	public function display()
+	public function run()
 	{
 		$this->initModules();
 		$this->db = $this->database->getConnection();
