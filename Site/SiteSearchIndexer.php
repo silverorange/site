@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/SiteApplication.php';
+require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteDatabaseModule.php';
 require_once 'Site/SiteConfigModule.php';
 require_once 'SwatDB/SwatDB.php';
@@ -12,7 +12,7 @@ require_once 'SwatDB/SwatDB.php';
  * @copyright 2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SiteSearchIndexer extends SiteApplication
+abstract class SiteSearchIndexer extends SiteCommandLineApplication
 {
 	// {{{ public properties
 
@@ -22,27 +22,6 @@ abstract class SiteSearchIndexer extends SiteApplication
 	 * @var MDB2_Driver
 	 */
 	public $db;
-
-	// }}}
-	// {{{ public function init()
-
-	/**
-	 * Initializes the modules of this application and sets up the database
-	 * convenience reference
-	 */
-	public function init()
-	{
-		$this->initModules();
-		$this->db = $this->database->getConnection();
-	}
-
-	// }}}
-	// {{{ public abstract function index()
-
-	/**
-	 * Indexes search data intended to be indexed by this indexer
-	 */
-	public abstract function index();
 
 	// }}}
 	// {{{ protected function getDefaultModuleList()
