@@ -27,7 +27,7 @@ abstract class SiteAtomFeedServer extends SiteApplication
 	// {{{ public function run()
 
 	/**
-	 * Displays the Atom feed
+	 * Serves the Atom feed
 	 */
 	public function run()
 	{
