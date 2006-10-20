@@ -147,7 +147,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		echo Site::_('OPTIONS'), "\n";
 
 		foreach ($this->arguments as $argument) {
-			$argument->displayArgumentUsage($argument);
+			$this->displayArgumentUsage($argument);
 		}
 
 		exit(0);
