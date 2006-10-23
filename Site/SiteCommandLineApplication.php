@@ -58,17 +58,6 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 */
 	protected $verbosity = 0;
 
-	/**
-	 * The application directory
-	 *
-	 * If set, the current dir is changed to this dir before running.
-	 *
-	 * @var string
-	 *
-	 * @see SiteCommandLineApplication::setApplicationDirectory()
-	 */
-	protected $application_directory = null;
-
 	// }}}
 	// {{{ public function __construct()
 
@@ -101,18 +90,6 @@ abstract class SiteCommandLineApplication extends SiteApplication
 			Site::_('Displays this usage information and exits.'));
 
 		$this->addCommandLineArgument($help_argument);
-	}
-
-	// }}}
-	// {{{ public function run()
-
-	/**
-	 * Run the application.
-	 */
-	public function run()
-	{
-		if ($this->application_directory !== null)
-			chdir($this->application_directory);
 	}
 
 	// }}}
@@ -165,7 +142,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 */
 	public function setApplicationDirectory($directory)
 	{
-		$this->application_directory = $directory;
+		chdir($directory);
 	}
 
 	// }}}
