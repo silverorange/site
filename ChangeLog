@@ -1,3 +1,70 @@
+2006-10-20  gauthierm
+
+	* [r12189] site/trunk/Site/SiteAtomFeedServer.php:
+	  doc update
+	* [r12187] site/trunk/Site/SiteAtomFeedServer.php:
+	  respect SiteApplication API changes
+	* [r12184] site/trunk/Site/SiteSearchIndexer.php:
+	  Make search indexer a command line application
+	* [r12179] site/trunk/Site/SiteCommandLineApplication.php:
+	  call display method on correct object
+
+2006-10-19  nrf
+
+	* [r12176] site/trunk/Site/Site.php, site/trunk/locale,
+	  site/trunk/locale/en_CA, site/trunk/locale/en_CA/LC_MESSAGES,
+	  site/trunk/locale/en_CA/LC_MESSAGES/site.mo,
+	  site/trunk/locale/en_GB, site/trunk/locale/en_GB/LC_MESSAGES,
+	  site/trunk/locale/en_GB/LC_MESSAGES/site.mo,
+	  site/trunk/locale/en_US, site/trunk/locale/en_US/LC_MESSAGES,
+	  site/trunk/locale/en_US/LC_MESSAGES/site.mo,
+	  site/trunk/package.php, site/trunk/po, site/trunk/po/Makefile,
+	  site/trunk/po/en_CA.po, site/trunk/po/en_GB.po,
+	  site/trunk/po/en_US.po, site/trunk/po/potfiles.in,
+	  site/trunk/po/preprocess.php:
+	  Setup gettext translation for Site package.
+
+2006-10-19  gauthierm
+
+	* [r12166] site/trunk/Site/SiteCommandLineApplication.php:
+	  added docs
+	* [r12165] site/trunk/Site/SiteCommandLineArgumentParameter.php:
+	  add folding
+	* [r12164] site/trunk/Site/SiteCommandLineArgument.php:
+	  add folding
+	* [r12163] site/trunk/Site/SiteCommandLineApplication.php:
+	  add folding
+	* [r12162] site/trunk/Site/SiteCommandLineApplication.php:
+	  fix default value
+	* [r12161] site/trunk/Site/SiteCommandLineApplication.php:
+	  add verbosity level functions for SiteCommandLineApplication.
+	* [r12158] site/trunk/Site/SiteCommandLineArgument.php:
+	  doc fix
+	* [r12157] site/trunk/Site/SiteCommandLineArgumentParameter.php:
+	  split command line argument parameter into its own file.
+	* [r12156] site/trunk/Site/SiteCommandLineApplication.php:
+	  - remove extra classes
+	  - translate some more strings
+	  - added displayArugmentUsage() method
+	  - arguments have parameters instead of more arguments
+	* [r12155] site/trunk/Site/SiteCommandLineArgument.php:
+	  Split command line argument into a separate file from
+	  application.
+	* [r12152] site/trunk/Site/SiteCommandLineApplication.php:
+	  First draft of base class for a command line application. This
+	  needs to be split into three files and needs additional
+	  documentation.
+
+2006-10-18  gauthierm
+
+	* [r12100] site/trunk/Site/SiteDatabaseModule.php:
+	  documentation fixes and improvements
+
+2006-10-16  nrf
+
+	* [r11978] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.9
+
 2006-10-12  gauthierm
 
 	* [r11909] site/trunk/Site/SiteApplication.php,
