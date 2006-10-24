@@ -1,3 +1,14 @@
+2006-10-23  nrf
+
+	* [r12234] site/trunk/Site/SiteCommandLineApplication.php:
+	  this is simpler, runs sooner, and doesn't require implementing
+	  run()
+	* [r12232] site/trunk/Site/SiteCommandLineApplication.php:
+	  Add optional application directory. This makes it easier to
+	  write CLI applications that can be run from anywhere.
+	* [r12225] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.10
+
 2006-10-20  gauthierm
 
 	* [r12189] site/trunk/Site/SiteAtomFeedServer.php:
