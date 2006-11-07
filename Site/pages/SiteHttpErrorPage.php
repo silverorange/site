@@ -65,8 +65,8 @@ class SiteHttpErrorPage extends SitePage
 	{
 		printf('<p>%s</p>', $this->getSummary());
 		$this->displaySuggestions();
-		printf('HTTP status code: %s<br />', $this->http_status_code);
-		printf('URI: %s<br />', $this->uri);
+		printf(Store::_('HTTP status code: %s').'<br />', $this->http_status_code);
+		printf(Store::_('URI: %s').'<br />', $this->uri);
 	}
 
 	// }}}
@@ -97,13 +97,13 @@ class SiteHttpErrorPage extends SitePage
 	{
 		$suggestions = array();
 
-		$suggestions['contact'] =
+		$suggestions['contact'] = Site::_(
 			'If you followed a link from our site or elsewhere, please '.
 			'contact us and let us know where you came from so we can do our '.
-			'best to fix it.';
+			'best to fix it.');
 
-		$suggestions['typo'] =
-			'If you typed in the address, please double check the spelling.';
+		$suggestions['typo'] = Site::_(
+			'If you typed in the address, please double check the spelling.');
 
 		return $suggestions;
 	}
@@ -120,8 +120,8 @@ class SiteHttpErrorPage extends SitePage
 		case 404:
 			header('HTTP/1.0 404 Not Found');
 			break;
-		default:
 		case 500:
+		default:
 			header('HTTP/1.0 500 Internal Server Error');
 			break;
 		}
@@ -134,12 +134,12 @@ class SiteHttpErrorPage extends SitePage
 	{
 		switch($this->http_status_code) {
 		case 404:
-			return 'Page Not Found';
+			return Site::_('Page Not Found');
 		case 403:
-			return 'Forbidden';
-		default:
+			return Site::_('Forbidden');
 		case 500:
-			return 'Internal Server Error';
+		default:
+			return Site::_('Internal Server Error');
 		}
 	}
 
@@ -150,12 +150,13 @@ class SiteHttpErrorPage extends SitePage
 	{
 		switch($this->http_status_code) {
 		case 404:
-			return 'Sorry, we couldn&#8217;t find the page you were looking for.';
+			return Site::_('Sorry, we couldn’t find the page you were looking for.');
 		case 403:
-			return 'Sorry, the page you requested is not accessible.';
-		default:
+			return Site::_('Sorry, the page you requested is not accessible.');
 		case 500:
-			return 'Sorry, there was a problem loading the  page you requested.';
+		default:
+			return Site::_('Sorry, there was a problem loading the page you '.
+				'requested.');
 		}
 	}
 
