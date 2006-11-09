@@ -21,7 +21,10 @@ class SiteHttpErrorPage extends SitePage
 	public function init()
 	{
 		parent::init();
-		$this->http_status_code = isset($_GET['status']) ? $_GET['status'] : 500;
+		if (isset($_SERVER['REDIRECT_STATUS']))
+			$this->http_status_code = intval($_SERVER['REDIRECT_STATUS']);
+		else
+			$this->http_status_code = 500;
 
 		$exp = explode('/', $this->app->getBaseHref());
 		// shift off the 'http://server' part
