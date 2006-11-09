@@ -57,14 +57,14 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function getSessionID()
+	// {{{ public function getSessionId()
 
 	/**
 	 * Retrieves the current session ID
 	 *
 	 * @return integer the current session ID, or null if no active session.
 	 */
-	public function getSessionID()
+	public function getSessionId()
 	{
 		if (!$this->isActive())
 			return null;
@@ -85,7 +85,7 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function appendSessionID()
+	// {{{ public function appendSessionId()
 
 	/**
 	 * Appends the session ID to a URI
@@ -98,7 +98,7 @@ class SiteSessionModule extends SiteApplicationModule
 	 * @param boolean $append_sid whether to append sid to URI. If null, this
 	 *                             is determined internally.
 	 */
-	public function appendSessionID($uri, $append_sid = null)
+	public function appendSessionId($uri, $append_sid = null)
 	{
 		if ($this->isActive()) {
 
@@ -109,7 +109,7 @@ class SiteSessionModule extends SiteApplicationModule
 			}
 
 			if ($append_sid) {
-				$sid = sprintf('%s=%s', $this->app->id, $this->getSessionID());
+				$sid = sprintf('%s=%s', $this->app->id, $this->getSessionId());
 
 				if (strpos($uri, $sid) === false) {
 					if (strpos($uri, '?') === false)
@@ -117,7 +117,7 @@ class SiteSessionModule extends SiteApplicationModule
 					else
 						$uri.= '&';
 
-					$uri.= sprintf('%s=%s', $this->app->id, $this->getSessionID());
+					$uri.= sprintf('%s=%s', $this->app->id, $this->getSessionId());
 				}
 			}
 		}

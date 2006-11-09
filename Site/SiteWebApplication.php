@@ -319,7 +319,7 @@ class SiteWebApplication extends SiteApplication
 		// check for session module
 		if (isset($this->session) &&
 			$this->session instanceof SiteSessionModule)
-				$uri = $this->session->appendSessionID($uri, $append_sid);
+				$uri = $this->session->appendSessionId($uri, $append_sid);
 
 		if (substr($uri, 0, 1) != '/' && strpos($uri, '://') === false)
 			$uri = $this->getBaseHref($secure).$uri;
