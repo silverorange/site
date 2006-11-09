@@ -17,15 +17,13 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	public function init()
 	{
-		$session_name = $this->app->id;
+		$session_name = $this->getSessionName();
 
 		session_cache_limiter('');
 		session_name($session_name);
 
-		if (isset($_GET[$session_name]) ||
-			isset($_POST[$session_name]) ||
-			isset($_COOKIE[$session_name]))
-				$this->activate();
+		if ($this->shouldAutoActivateSession())
+			$this->activate();
 	}
 
 	// }}}
@@ -139,6 +137,33 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ protected function shouldAutoActivateSession()
+
+	/**
+	 * Whether to auto activate a session during module init
+	 */
+	protected function shouldAutoActivateSession()
+	{
+		if (isset($_SERVER['REDIRECT_STATUS'])) {
+			switch ($_SERVER['REDIRECT_STATUS']) {
+			case '403':
+			case '504':
+			case '500':
+				return false;
+			}
+		}
+
+		$session_name = $this->getSessionName();
+
+		if (isset($_GET[$session_name]) ||
+			isset($_POST[$session_name]) ||
+			isset($_COOKIE[$session_name]))
+				return true;
+
+		return false;
+	}
+
+	// }}}
 	// {{{ protected function startSession()
 
 	/**
@@ -147,6 +172,19 @@ class SiteSessionModule extends SiteApplicationModule
 	protected function startSession()
 	{
 		session_start();
+	}
+
+	// }}}
+	// {{{ public function getSessionName()
+
+	/**
+	 * Retrieves the session name
+	 *
+	 * @return string the name to use for the session.
+	 */
+	public function getSessionName()
+	{
+		return $this->app->id;
 	}
 
 	// }}}
