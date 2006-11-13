@@ -88,12 +88,6 @@ abstract class SitePageFactory
 	 */
 	public function instantiatePage($class, $params)
 	{
-		if (strcmp($class, 'SitePage') != 0 &&
-			!is_subclass_of($class, 'SitePage')) {
-			throw new SiteClassNotFoundException(sprintf('The provided class '.
-				'parameter ‘%s’ is not a SitePage.', $class), 0, $class);
-		}
-
 		if (!class_exists($class)) {
 			$class_file = null;
 
@@ -115,6 +109,11 @@ abstract class SitePageFactory
 		if (!class_exists($class))
 			throw new SiteClassNotFoundException(sprintf('No class definition '.
 				'found for ‘%s’', $class), 0, $class);
+
+		if (strcmp($class, 'SitePage') != 0 &&
+			!is_subclass_of($class, 'SitePage'))
+			throw new SiteClassNotFoundException(sprintf('The provided class '.
+				'parameter ‘%s’ is not a SitePage.', $class), 0, $class);
 
 		$page = call_user_func_array(
 			array(new ReflectionClass($class), 'newInstance'), $params);
