@@ -131,9 +131,9 @@ abstract class SitePageFactory
 	 *
 	 *   source expression => page class
 	 *
-	 * The source expression is an unescaped regular expression using PREG
-	 * syntax omitting the start and end markers. The page class is the class
-	 * name of the page to be resolved.
+	 * The <i>source expression</i> is an regular expression using PREG syntax
+	 * sans-delimiters. The <i>page class</i> is the class name of the page to
+	 * be resolved.
 	 *
 	 * For example, the following mapping array will match the source
 	 * 'about/content' to the class 'ContactPage':
