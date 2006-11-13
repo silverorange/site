@@ -108,6 +108,7 @@ abstract class SitePageFactory
 			if ($class_file === null)
 				$class_file = "{$this->page_class_path}/{$class}.php";
 
+			// TODO: ensure file exists so we can throw an exception
 			require_once $class_file;
 		}
 
