@@ -1,3 +1,51 @@
+2006-11-13  gauthierm
+
+	* [r12969] site/trunk/Site/SitePageFactory.php:
+	  check if class is correct after we know it is defined
+	* [r12967] site/trunk/Site/SitePageFactory.php:
+	  add todo
+	* [r12966] site/trunk/Site/SitePageFactory.php:
+	  doc fix
+	* [r12965] site/trunk/Site/SitePageFactory.php:
+	  - add lots of api documentation
+	  - throw exceptions in instantiatePage() if the class is not
+	  found or is incorrect
+	  - add type hinting
+	  - make constructor protected (this somewhat violates singleton
+	  but subclasses are already extending the constructor)
+	* [r12964]
+	  site/trunk/Site/exceptions/SiteClassNotFoundException.php:
+	  a class not found exception for site package
+	* [r12963]
+	  site/trunk/Site/exceptions/SiteInvalidClassException.php:
+	  an invalid class exception for the site package
+
+2006-11-09  gauthierm
+
+	* [r12808] site/trunk/Site/SiteSessionModule.php,
+	  site/trunk/Site/SiteWebApplication.php:
+	  rename *SessionID as *SessionId in SiteSessionModule.
+
+2006-11-09  nrf
+
+	* [r12802] site/trunk/Site/SiteSessionModule.php:
+	  - Refactor logic to decide whether to auto-activate session.
+	  - Never auto-activate session for bad HTTP status codes (403,
+	  404, 500).
+	* [r12801] site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  Retrieve HTTP status code from server variables instead of GET
+	  var.
+
+2006-11-07  gauthierm
+
+	* [r12759] site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  translate strings on error page
+
+2006-10-24  nrf
+
+	* [r12273] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.11
+
 2006-10-23  nrf
 
 	* [r12234] site/trunk/Site/SiteCommandLineApplication.php:
