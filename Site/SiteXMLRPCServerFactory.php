@@ -12,7 +12,7 @@ abstract class SiteXMLRPCServerFactory extends SitePageFactory
 {
 	// {{{ public function resolvePage()
 
-	public function resolvePage($app, $source)
+	public function resolvePage(SiteWebApplication $app, $source)
 	{
 		$layout = $this->resolveLayout($app, $source);
 		$map = $this->getPageMap();
