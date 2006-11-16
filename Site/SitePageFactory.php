@@ -86,6 +86,8 @@ abstract class SitePageFactory
 	 *                                     resolved or if the given class is
 	 *                                     neither SitePage nor a subclass of
 	 *                                     SitePage.
+	 * @throws SiteNotFoundException if no file could be resolved for the given
+	 *                                class and the given class is undefined.
 	 */
 	public function instantiatePage($class, $params)
 	{
