@@ -1,6 +1,8 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/exceptions/SiteClassNotFoundException.php';
+require_once 'Site/exceptions/SiteInvalidClassException.php';
 require_once 'Swat/SwatMessage.php';
 
 /**
@@ -67,6 +69,40 @@ class SiteMessagesModule extends SiteApplicationModule
 	}
 
     // }}}
+	// {{{ public function registerMessageClass()
+
+	/**
+	 * Registers a custom message class with this module
+	 *
+	 * @param string $class_name the name of the custom message class.
+	 * @param string $filename an optional filename of the file containing the
+	 *                          class definition of the custom message class.
+	 *
+	 * @throws SiteClassNotFoundException if the the custom message class is
+	 *                                     undefined and not found in the
+	 *                                     optional class definition file.
+	 * @throws SiteInvalidClassException if the custom message class is not
+	 *                                    a {@link SwatMessage} or a subclass
+	 *                                    of SwatMessage.
+	 */
+	public function registerMessageClass($class_name, $filename = null)
+	{
+		if (!class_exists($class_name) && $filename !== null)
+			require_once $filename;
+
+		if (!class_exists($class_name))
+			throw new SiteClassNotFoundException(sprintf('Class ‘%s’ is not '.
+				'defined and cannot be registered in this message module.',
+				$class), 0, $class);
+
+		if (strcmp($class_name, 'SwatMessage') != 0 &&
+			!is_subclass_of($class_name, 'SwatMessage'))
+			throw new SiteInvalidClassException(sprintf('Class ‘%s’ is not '.
+				'a SwatMessage and cannot be registered in this message '.
+				'module.', $class), 0, null);
+	}
+
+	// }}}
     // {{{ public function add()
 
 	/**
