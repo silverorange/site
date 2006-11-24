@@ -153,8 +153,8 @@ class SiteMessagesModule extends SiteApplicationModule
 	{
 		if (!$this->session_is_initialized &&
 			(!isset($this->app->session->messages) ||
-			!is_array($this->app->session->messages))) {
-			$this->app->session->messages = array();
+			get_class($this->app->session->messages) !== 'ArrayObject')) {
+			$this->app->session->messages = new ArrayObject();
 			$this->session_is_initialized = true;
 		}
 	}
