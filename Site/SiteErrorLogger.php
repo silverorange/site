@@ -48,8 +48,11 @@ class SiteErrorLogger extends SwatErrorLogger
 	public function log(SwatError $e)
 	{
 		$hash = time();
+		$today = date("Y-m-d");
 		$log_filename = 'error-'.$hash.'.html';
-		$log_filepath = $this->log_location.'/'.$log_filename;
+		$log_filepath = $this->log_location.'/'.$today.'/'.$log_filename;
+
+		mkdir($this->log_location.'/'.$today, 0770);
 
 		if (($log_file = fopen($log_filepath, 'w')) !== false) {
 			fwrite($log_file, '<table>');
@@ -85,7 +88,7 @@ class SiteErrorLogger extends SwatErrorLogger
 			$summary = $e->getSummary().': '.$log_filepath;
 		else
 			$summary = $e->getSummary().': '.
-				$this->base_uri.'/'.$log_filename;
+				$this->base_uri.'/'.$today.'/'.$log_filename;
 
 		error_log($summary, 0);
 	}
