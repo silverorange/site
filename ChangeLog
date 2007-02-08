@@ -1,3 +1,28 @@
+2007-02-08  nrf
+
+	* [r14818] site/trunk/Site/SiteWebApplication.php:
+	  Add new method SiteWebApplication::getReplacementPage().
+	  Modifiy SiteWebApplication::replacePage() to use the new method.
+
+2007-02-07  nrf
+
+	* [r14742] site/trunk/Site/SiteErrorLogger.php,
+	  site/trunk/Site/SiteExceptionLogger.php:
+	  Rename local variable, use single quotes instead of doubles.
+
+2007-02-07  dave
+
+	* [r14739] site/trunk/Site/SiteErrorLogger.php,
+	  site/trunk/Site/SiteExceptionLogger.php:
+	  write exceptions and errors to date specific sub-directories so
+	  that we can more easily keep them around for longer periods of
+	  time without getting millions of files in a single directory
+
+2006-11-24  nrf
+
+	* [r13295] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.15
+
 2006-11-24  gauthierm
 
 	* [r13274] site/trunk/Site/SiteMessagesModule.php:
