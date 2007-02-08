@@ -51,10 +51,11 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		$hash = time();
 		$log_directory = date('Y-m-d');
 		$log_filename = 'exception-'.$hash.'.html';
-		$log_filepath =
-			$this->log_location.'/'.$log_directory.'/'.$log_filename;
+		$log_directory_path = $this->log_location.'/'.$log_directory;
+		$log_filepath = $log_directory_path.'/'.$log_filename;
 
-		mkdir($this->log_location.'/'.$log_directory, 0770);
+		if (!file_exists($log_directory_path))
+			mkdir($log_directory_path, 0770);
 
 		if (($log_file = fopen($log_filepath, 'w')) !== false) {
 			fwrite($log_file, '<table>');
