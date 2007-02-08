@@ -143,13 +143,43 @@ class SiteWebApplication extends SiteApplication
 	 * @param string $source the source of the page with which to replace the
 	 *                        current page. The source will be passed to the
 	 *                        {@link SiteWebApplication::resolvePage()} method.
+	 *
+	 * @see SiteWebApplication::getReplacementPage()
 	 */
 	public function replacePage($source)
+	{
+		$new_page = $this->getReplacementPage($source);
+		$this->setPage($new_page);
+	}
+
+	// }}}
+	// {{{ public function getReplacementPage()
+
+	/**
+	 * Gets a page object to replaces the current page given a source
+	 *
+	 * This method can be used to instantiate another page to replace the
+	 * current page. For example, this is used to load a confirmation page when
+	 * processing an admin index page. The returned page object should be passed
+	 * to {@link SiteWebApplication::setPage()} to actually use it. Use
+	 * {@link SiteWebApplication::replacePage()} instead of this method if
+	 * access to the page object before init() is run on it is not necessary.
+	 *
+	 * @param string $source the source of the page with which to replace the
+	 *                        current page. The source will be passed to the
+	 *                        {@link SiteWebApplication::resolvePage()} method.
+	 *
+	 * @return SitePage the replacement page.
+	 *
+	 * @see SiteWebApplication::replacePage()
+	 */
+	public function getReplacementPage($source)
 	{
 		$source = $this->normalizeSource($source);
 		$this->checkSecure($source);
 		$new_page = $this->resolvePage($source);
-		$this->setPage($new_page);
+
+		return $new_page;
 	}
 
 	// }}}
