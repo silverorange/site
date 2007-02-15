@@ -21,7 +21,7 @@ class SiteLayoutData extends SiteObject
 
 	public function display($filename)
 	{
-		require_once $filename;
+		require $filename;
 	}
 
 	// }}}
