@@ -47,7 +47,7 @@ class SiteErrorLogger extends SwatErrorLogger
 	 */
 	public function log(SwatError $e)
 	{
-		$hash = time();
+		$hash = md5(uniqid());
 		$log_directory = date('Y-m-d');
 		$log_filename = 'error-'.$hash.'.html';
 		$log_directory_path = $this->log_location.'/'.$log_directory;
