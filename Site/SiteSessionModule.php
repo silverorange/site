@@ -115,12 +115,13 @@ class SiteSessionModule extends SiteApplicationModule
 
 			if ($append_sid === null) {
 				$is_relative_uri = (strpos($uri, '://') === false);
-				$has_cookie = isset($_COOKIE[$this->app->id]);
+				$has_cookie = isset($_COOKIE[$this->getSessionName()]);
 				$append_sid = $is_relative_uri && !$has_cookie;
 			}
 
 			if ($append_sid) {
-				$sid = sprintf('%s=%s', $this->app->id, $this->getSessionId());
+				$sid = sprintf('%s=%s', $this->getSessionName(),
+					$this->getSessionId());
 
 				if (strpos($uri, $sid) === false) {
 					if (strpos($uri, '?') === false)
@@ -128,7 +129,8 @@ class SiteSessionModule extends SiteApplicationModule
 					else
 						$uri.= '&';
 
-					$uri.= sprintf('%s=%s', $this->app->id, $this->getSessionId());
+					$uri.= sprintf('%s=%s', $this->getSessionName(),
+						$this->getSessionId());
 				}
 			}
 		}
