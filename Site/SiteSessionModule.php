@@ -39,7 +39,7 @@ class SiteSessionModule extends SiteApplicationModule
 	 *
 	 * Subsequent calls to the {@link isActive()} method will return true.
 	 */
-	public function activate($passive_activation = false)
+	public function activate()
 	{
 		if ($this->isActive())
 			return;
@@ -150,7 +150,7 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function activate()
+	// {{{ public function autoActivate()
 
 	/**
 	 * Activates the current user's session
