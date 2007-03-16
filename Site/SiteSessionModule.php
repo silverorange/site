@@ -23,7 +23,7 @@ class SiteSessionModule extends SiteApplicationModule
 		session_name($session_name);
 
 		if ($this->shouldAutoActivateSession())
-			$this->activate();
+			$this->autoActivate();
 	}
 
 	// }}}
@@ -34,12 +34,18 @@ class SiteSessionModule extends SiteApplicationModule
 	 *
 	 * Subsequent calls to the {@link isActive()} method will return true.
 	 */
-	public function activate()
+	public function activate($passive_activation = false)
 	{
 		if ($this->isActive())
 			return;
 
 		$this->startSession();
+
+		/*
+		 * Store the user agent in the session to mitigate the risk of session
+		 * hi-jacking. See the autoActivate() method for details.
+		 */
+		$this->_user_agent = $_SERVER['HTTP_USER_AGENT'];
 	}
 
 	// }}}
@@ -134,6 +140,41 @@ class SiteSessionModule extends SiteApplicationModule
 	public function setSavePath($path)
 	{
 		session_save_path($path);
+	}
+
+	// }}}
+	// {{{ public function activate()
+
+	/**
+	 * Activates the current user's session
+	 *
+	 * Subsequent calls to the {@link isActive()} method will return true.
+	 */
+	public function autoActivate()
+	{
+		if ($this->isActive())
+			return;
+
+		$this->startSession();
+
+		/*
+		 * The user agent is stored in the session to mitigate the risk of
+		 * session hi-jacking. When a future request presents this session's ID
+		 * to us we will only activate the session if the user agent matches.
+		 * While this is not fool-proof it does mitigate the most common
+		 * accidently and malicous session hi-jacking attempts.
+		 */
+		/*
+		 * TODO: after some period of phase-in time swicth to this stricter
+		 *       conditional statement:
+		if (!isset($this->_user_agent) ||
+			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
+		 */
+		if (isset($this->_user_agent) &&
+			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
+
+			throw new SiteException('Possible session hi-jacking attempt thwarted.');
+		}
 	}
 
 	// }}}
