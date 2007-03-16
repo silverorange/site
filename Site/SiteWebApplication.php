@@ -454,6 +454,13 @@ class SiteWebApplication extends SiteApplication
 					return;
 				} else {
 					$new_uri = $this->getAbsoluteUri(true);
+
+					// check for session module
+					if (isset($this->session) &&
+						$this->session instanceof SiteSessionModule &&
+						$this->session->isActive())
+							$this->session->regenerateId();
+
 					$this->relocate($new_uri, null, true);
 				}
 			}
