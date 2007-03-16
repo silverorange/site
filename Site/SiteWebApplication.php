@@ -464,10 +464,19 @@ class SiteWebApplication extends SiteApplication
 			$regexp = '|'.$pattern.'|u';
 			if (preg_match($regexp, $source) === 1) {
 				if ($this->secure) {
+					// regenerate the session ID after entering SSL
+					if ($this->hasSession() && isset($this->session->_regenerate_id)) {
+						$this->session->regenerateId();
+						unset($this->session->_regenerate_id);
+					}
 					return;
 				} else {
 					$new_uri = $this->getAbsoluteUri(true);
-					$this->regenerateSessionId();
+
+					// set a flag to regenerate session ID on next request when we'll be in SSL
+					if ($this->hasSession())
+						$this->session->_regenerate_id = true;
+
 					$this->relocate($new_uri, null, true);
 				}
 			}
@@ -475,7 +484,10 @@ class SiteWebApplication extends SiteApplication
 
 		if ($this->secure) {
 			$new_uri = $this->getAbsoluteUri(false);
-			$this->regenerateSessionId();
+
+			if ($this->hasSession())
+				$this->session->regenerateId();
+
 			$this->relocate($new_uri, null, true);
 		}
 	}
@@ -589,15 +601,14 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
-	// {{{ private function regenerateSessionId()
+	// {{{ private function hasSession()
 
-	private function regenerateSessionId()
+	private function hasSession()
 	{
 		// check for session module
-		if (isset($this->session) &&
+		return (isset($this->session) &&
 			$this->session instanceof SiteSessionModule &&
-			$this->session->isActive())
-				$this->session->regenerateId();
+			$this->session->isActive());
 	}
 	
 	// }}}
