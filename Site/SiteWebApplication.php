@@ -454,13 +454,7 @@ class SiteWebApplication extends SiteApplication
 					return;
 				} else {
 					$new_uri = $this->getAbsoluteUri(true);
-
-					// check for session module
-					if (isset($this->session) &&
-						$this->session instanceof SiteSessionModule &&
-						$this->session->isActive())
-							$this->session->regenerateId();
-
+					$this->regenerateSessionId();
 					$this->relocate($new_uri, null, true);
 				}
 			}
@@ -468,6 +462,7 @@ class SiteWebApplication extends SiteApplication
 
 		if ($this->secure) {
 			$new_uri = $this->getAbsoluteUri(false);
+			$this->regenerateSessionId();
 			$this->relocate($new_uri, null, true);
 		}
 	}
@@ -580,6 +575,18 @@ class SiteWebApplication extends SiteApplication
 		return $protocol;
 	}
 
+	// }}}
+	// {{{ private function regenerateSessionId()
+
+	private function regenerateSessionId()
+	{
+		// check for session module
+		if (isset($this->session) &&
+			$this->session instanceof SiteSessionModule &&
+			$this->session->isActive())
+				$this->session->regenerateId();
+	}
+	
 	// }}}
 }
 
