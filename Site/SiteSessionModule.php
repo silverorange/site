@@ -10,6 +10,11 @@ require_once 'Site/SiteApplicationModule.php';
  */
 class SiteSessionModule extends SiteApplicationModule
 {
+	// {{{ protected properties
+
+	protected $regenerate_id_callbacks = array();
+
+	// }}}
 	// {{{ public function init()
 
 	/**
@@ -174,6 +179,50 @@ class SiteSessionModule extends SiteApplicationModule
 			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
 
 			throw new SiteException('Possible session hi-jacking attempt thwarted.');
+		}
+	}
+
+	// }}}
+	// {{{ public function registerRegenerateIdCallback()
+
+	/**
+	 * Registers a callback function that is executed when the session ID
+	 * is regenerated
+	 *
+	 * @param callback $callback the callback to call when regenerating session
+	 *                            ID.
+	 * @param array $parameters the paramaters to pass to the callback. Use an
+	 *                           empty array for no parameters.
+	 */
+	public function registerRegenerateIdCallback($callback, $parameters = array())
+	{
+		if (!is_callable($callback))
+			throw new SiteException('Cannot register invalid callback.');
+
+		if (!is_array($parameters))
+			throw new SiteException('Callback parameters must be specified '.
+				'in an array.');
+
+		$this->regenerate_id_callbacks[] = array(
+			'callback' => $callback,
+			'parameters' => $parameters
+		);
+	}
+
+	// }}}
+	// {{{ public function regenerateId()
+
+	public function regenerateId()
+	{
+		$old_id = $this->getSessionId();
+		session_regenerate_id();
+		$new_id = $this->getSessionId();
+
+		foreach ($this->regenerate_id_callbacks as $callback) {
+			$function = $callback['callback'];
+			$parameters = $callback['parameters'];
+			array_unshift($parameters, $old_id, $new_id);
+			call_user_func_array($function, $parameters);
 		}
 	}
 
