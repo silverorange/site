@@ -106,7 +106,20 @@ class SiteWebApplication extends SiteApplication
 	protected function parseURI()
 	{
 		$this->secure = isset($_SERVER['HTTPS']);
-		$this->uri = $_SERVER['REQUEST_URI'];
+
+		// check for session module
+		if (isset($this->session) &&
+			$this->session instanceof SiteSessionModule &&
+			$this->session->isActive()) {
+
+			// remove session ID from URI since it will be added back where necessary
+			$regexp = sprintf('|%s=[^&]*&?|u',
+				$this->session->getSessionName());
+
+			$this->uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
+		} else {
+			$this->uri = $_SERVER['REQUEST_URI'];
+		}
 
 		if (substr($this->base_uri, 0, 1) == '/') {
 			$regexp = sprintf('|%s|u', $this->base_uri);
