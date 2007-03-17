@@ -171,12 +171,6 @@ class SiteSessionModule extends SiteApplicationModule
 		 * While this is not fool-proof it does mitigate the most common
 		 * accidently and malicous session hi-jacking attempts.
 		 */
-		/*
-		 * TODO: after some period of phase-in time swicth to this stricter
-		 *       conditional statement:
-		if (!isset($this->_user_agent) ||
-			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
-		 */
 		if (isset($this->_user_agent) &&
 			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
 
