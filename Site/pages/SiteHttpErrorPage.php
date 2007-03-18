@@ -68,8 +68,8 @@ class SiteHttpErrorPage extends SitePage
 	{
 		printf('<p>%s</p>', $this->getSummary());
 		$this->displaySuggestions();
-		printf(Store::_('HTTP status code: %s').'<br />', $this->http_status_code);
-		printf(Store::_('URI: %s').'<br />', $this->uri);
+		printf(Site::_('HTTP status code: %s').'<br />', $this->http_status_code);
+		printf(Site::_('URI: %s').'<br />', $this->uri);
 	}
 
 	// }}}
