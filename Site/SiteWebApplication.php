@@ -481,15 +481,6 @@ class SiteWebApplication extends SiteApplication
 				}
 			}
 		}
-
-		if ($this->secure) {
-			$new_uri = $this->getAbsoluteUri(false);
-
-			if ($this->hasSession())
-				$this->session->regenerateId();
-
-			$this->relocate($new_uri, null, true);
-		}
 	}
 	
 	// }}}
