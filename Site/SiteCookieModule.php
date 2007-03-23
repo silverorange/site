@@ -126,6 +126,10 @@ class SiteCookieModule extends SiteApplicationModule
 			// this will be removed in future versions of Site
 			try {
 				$value = $this->unsaltValue($COOKIE[$name]);
+
+				// If we unserilaized an old cookie value successfully,
+				// reserialize it using the newer, safer method.
+				$this->setCookie($name, $value);
 			} catch (SiteCookieException $e) {
 				throw new SiteCookieException(
 					sprintf('Invalid cookie data: %s.',
