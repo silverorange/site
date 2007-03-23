@@ -50,7 +50,8 @@ class SiteSessionModule extends SiteApplicationModule
 		 * Store the user agent in the session to mitigate the risk of session
 		 * hi-jacking. See the autoActivate() method for details.
 		 */
-		$this->_user_agent = $_SERVER['HTTP_USER_AGENT'];
+		if (isset($_SERVER['HTTP_USER_AGENT']))
+			$this->_user_agent = $_SERVER['HTTP_USER_AGENT'];
 	}
 
 	// }}}
@@ -171,7 +172,7 @@ class SiteSessionModule extends SiteApplicationModule
 		 * While this is not fool-proof it does mitigate the most common
 		 * accidently and malicous session hi-jacking attempts.
 		 */
-		if (isset($this->_user_agent) &&
+		if (isset($_SERVER['HTTP_USER_AGENT']) && isset($this->_user_agent) &&
 			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
 
 			throw new SiteException('Possible session hi-jacking attempt thwarted.');
