@@ -1,5 +1,87 @@
+2007-03-23  gauthierm
+
+	* [r16149] site/trunk/Site/SiteCookieModule.php:
+	  Reserialize old values using new serialization method as we
+	  encounter them. Part of ticket #729.
+	* [r16148] site/trunk/Site/SiteCookieModule.php:
+	  Do #729: phase-in of serialized cookie data.
+
+2007-03-21  nrf
+
+	* [r16089] site/trunk/Site/SiteWebApplication.php:
+	  Since an SSL browsing experience is no longer noticable slower
+	  than a non-SSL one, stop bumping out of SSL on pages that do not
+	  require security. This will reduce redirects (expecially for
+	  fileloaders) and reduce session id regeneration.
+
+2007-03-18  nick
+
+	* [r16003] site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  Wrong package name for translations
+
+2007-03-17  nrf
+
+	* [r15978] site/trunk/Site/SiteSessionModule.php:
+	  On further thought, we'll never be able to be this strict.
+
+2007-03-16  nrf
+
+	* [r15976] site/trunk/Site/SiteWebApplication.php:
+	  Regenerate the session ID after we enter SSL to prevent exposing
+	  the new ID.
+	* [r15975] site/trunk/Site/SiteSessionModule.php:
+	  Fix doc, remove mistakenly committed param.
+	* [r15970] site/trunk/Site/SiteSessionModule.php:
+	  Use getSessionName()
+	* [r15969] site/trunk/Site/SiteWebApplication.php:
+	  Remove session ID from URI since it is added where necessary by
+	  PHP and reloacte()
+	* [r15968] site/trunk/Site/SiteWebApplication.php:
+	  Regenerate session ID when entering and exiting a secure (SSL)
+	  area.
+	* [r15965] site/trunk/Site/SiteWebApplication.php:
+	  Regenerate session IDs whenever entering a secure (SSL) area.
+	* [r15964] site/trunk/Site/SiteSessionModule.php:
+	  Add ability to regenerate a session ID to the session module.
+	* [r15953] site/trunk/Site/SiteSessionModule.php:
+	  Store the user agent in the session to mitigate the risk of
+	  session hi-jacking.
+	  When a future request presents this session's ID to us we will
+	  only activate
+	  the session if the user agent matches. While this is not
+	  fool-proof it does
+	  mitigate the most common accidently and malicous session
+	  hi-jacking attempts.
+
+2007-03-14  nrf
+
+	* [r15861] site/trunk/Site/SiteErrorLogger.php,
+	  site/trunk/Site/SiteExceptionLogger.php:
+	  Use a truely unique identifier so we stop losing stack traces
+	  that happen in the same second.
+
+2007-02-15  nick
+
+	* [r15029] site/trunk/Site/SiteLayoutData.php:
+	  There's no reason this should be a require_once and it messes up
+	  something like
+	  the MassMailing if a layout is used and looped to display.
+
+2007-02-09  gauthierm
+
+	* [r14880] site/trunk/Site/SiteCookieModule.php:
+	  Make SiteCookieModule use SwatString::signed(Un)?Serialize().
+	  Fixes ticket #578.
+
 2007-02-08  nrf
 
+	* [r14825] site/trunk/package.php:
+	  prepare for release of 1.0.17
+	* [r14824] site/trunk/Site/SiteErrorLogger.php,
+	  site/trunk/Site/SiteExceptionLogger.php:
+	  Only create dir if it doesn't exist.
+	* [r14820] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.16
 	* [r14818] site/trunk/Site/SiteWebApplication.php:
 	  Add new method SiteWebApplication::getReplacementPage().
 	  Modifiy SiteWebApplication::replacePage() to use the new method.
