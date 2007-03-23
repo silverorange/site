@@ -116,14 +116,21 @@ class SiteCookieModule extends SiteApplicationModule
 		$name = $this->cookie_prefix.'_'.$name;
 
 		if (!isset($_COOKIE[$name]))
-			throw new SiteCookieException("Cookie '$name' is not set.");
+			throw new SiteCookieException("Cookie '{$name}' is not set.");
 
 		try {
 			$value =
 				SwatString::signedUnserialize($_COOKIE[$name], $this->salt);
 		} catch (SwatInvalidSerializedDataException $e) {
-			throw new SiteCookieException(sprintf('Invalid cookie data: %s.',
-				$e->getData()));
+			// Try old unsalt technique for backwards compatibility
+			// this will be removed in future versions of Site
+			try {
+				$value = $this->unsaltValue($COOKIE[$name]);
+			} catch (SiteCookieException $e) {
+				throw new SiteCookieException(
+					sprintf('Invalid cookie data: %s.',
+					$e->getData()));
+			}
 		}
 
 		return $value;
@@ -141,6 +148,58 @@ class SiteCookieModule extends SiteApplicationModule
 	{
 		$name = $this->cookie_prefix.'_'.$name;
 		return isset($_COOKIE[$name]);
+	}
+
+	// }}}
+	// {{{ private function unsaltValue()
+
+	/**
+	 * Unsalts and verifies a cookie value
+	 *
+	 * This method is unsafe because the value is unserialized before its
+	 * signature is checked. This method exists to provide backwards
+	 * compatibility and will be removed in later versions of Site.
+	 *
+	 * @throws SiteCookieException if the cookie data was tampered with by the
+	 *                              user.
+	 *
+	 * @deprecated This method only exists for backwards compatibility with
+	 *             the old, less secure data-signing technique. It will be
+	 *             removed in future versions of SiteCookieModule.
+	 */
+	private function unsaltValue($value)
+	{
+		$package = @unserialize($value);
+
+		// serialized value is broken
+		if ($package === false && strcmp($value, serialize(false)) != 0)
+			throw new SiteCookieException('Could not unserialize cookie.');
+
+		// serialized data is not how we expected
+		if (!is_array($package) || !isset($package['value']) ||
+			!isset($package['hash']))
+				throw new SiteCookieException('Corrupt cookie data.');
+
+		$value = $package['value'];
+
+		// hash does not match, cookie was tampered with
+		if ($package['hash'] !== $this->getHash($value))
+			throw new SiteCookieException('Invalid cookie hash.');
+	}
+
+	// }}}
+	// {{{ private function getHash()
+
+	/**
+	 * Gets the hash value for a cookie value
+	 *
+	 * @deprecated This method only exists for backwards compatibility with
+	 *             the old, less secure data-signing technique. It will be
+	 *             removed in future versions of SiteCookieModule.
+	 */
+	private function getHash($value)
+	{
+		return md5($this->salt.serialize($value));
 	}
 
 	// }}}
