@@ -124,7 +124,7 @@ class SiteCookieModule extends SiteApplicationModule
 		} catch (SwatInvalidSerializedDataException $e) {
 			// Try old unsalt technique for backwards compatibility
 			// this will be removed in future versions of Site
-			$value = $this->unsaltValue($COOKIE[$name]);
+			$value = $this->unsaltValue($_COOKIE[$name]);
 
 			// If we unserilaized an old cookie value successfully,
 			// reserialize it using the newer, safer method.
