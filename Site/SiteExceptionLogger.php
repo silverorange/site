@@ -2,6 +2,7 @@
 
 require_once 'Swat/SwatExceptionLogger.php';
 require_once 'Swat/exceptions/SwatException.php';
+require_once 'Site/exceptions/SiteNotFoundException.php';
 
 /**
  * An exception logger that creates HTML files containing exception details
@@ -48,6 +49,10 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	 */
 	public function log(SwatException $e)
 	{
+		// don't bother logging exceptions due to 404s
+		if ($e instanceof SiteNotFoundException)
+			return;
+
 		$hash = md5(uniqid());
 		$log_directory = date('Y-m-d');
 		$log_filename = 'exception-'.$hash.'.html';
