@@ -1,3 +1,21 @@
+2007-03-28  nrf
+
+	* [r16281] site/trunk/Site/SiteExceptionLogger.php:
+	  Don't log exceptions due to 404s
+
+2007-03-23  nrf
+
+	* [r16165] site/trunk/package.php:
+	  prepare for release of 1.0.21
+	* [r16164] site/trunk/Site/SiteSessionModule.php:
+	  Check if HTTP_USER_AGENT exists.
+	* [r16158] site/trunk/package.php:
+	  prepare for release of 1.0.20
+	* [r16157] site/trunk/Site/SiteCookieModule.php:
+	  Missing underscore
+	* [r16155] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.19
+
 2007-03-23  gauthierm
 
 	* [r16154] site/trunk/Site/SiteCookieModule.php:
