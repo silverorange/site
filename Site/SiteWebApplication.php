@@ -431,6 +431,18 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
+	// {{{ public function getAbsoluteUri()
+
+	public function getAbsoluteUri($secure = null)
+	{
+		$base_href = $this->getBaseHref($secure);
+		$relative_uri = $this->getBaseHrefRelativeUri($secure);
+		$uri = $base_href.$relative_uri;
+
+		return $uri;
+	}
+
+	// }}}
 	// {{{ protected function getSecureSourceList()
 
 	/**
@@ -507,18 +519,6 @@ class SiteWebApplication extends SiteApplication
 			$uri = substr($this->uri, $base_uri_length);
 		else
 			$uri = $this->uri;
-
-		return $uri;
-	}
-
-	// }}}
-	// {{{ protected function getAbsoluteUri()
-
-	protected function getAbsoluteUri($secure = null)
-	{
-		$base_href = $this->getBaseHref($secure);
-		$relative_uri = $this->getBaseHrefRelativeUri($secure);
-		$uri = $base_href.$relative_uri;
 
 		return $uri;
 	}
