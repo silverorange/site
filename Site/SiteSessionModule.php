@@ -178,7 +178,8 @@ class SiteSessionModule extends SiteApplicationModule
 
 			$session_name = $this->getSessionName();
 			if (isset($_GET[$session_name])) {
-				$uri = $this->app->getAbsoluteUri();
+				$regexp = sprintf('|%s=[^&]*&?|u', $session_name);
+				$uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
 				$this->app->relocate($uri, null, false);
 			}
 
