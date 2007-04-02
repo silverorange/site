@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/exceptions/SiteSessionHijackException.php';
 
 /**
  * Web application module for sessions
@@ -48,7 +49,7 @@ class SiteSessionModule extends SiteApplicationModule
 
 		/*
 		 * Store the user agent in the session to mitigate the risk of session
-		 * hi-jacking. See the autoActivate() method for details.
+		 * hijacking. See the autoActivate() method for details.
 		 */
 		if (isset($_SERVER['HTTP_USER_AGENT']))
 			$this->_user_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -167,15 +168,19 @@ class SiteSessionModule extends SiteApplicationModule
 
 		/*
 		 * The user agent is stored in the session to mitigate the risk of
-		 * session hi-jacking. When a future request presents this session's ID
+		 * session hijacking. When a future request presents this session's ID
 		 * to us we will only activate the session if the user agent matches.
 		 * While this is not fool-proof it does mitigate the most common
-		 * accidently and malicous session hi-jacking attempts.
+		 * accidently and malicous session hijacking attempts.
 		 */
 		if (isset($_SERVER['HTTP_USER_AGENT']) && isset($this->_user_agent) &&
 			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
 
-			throw new SiteException('Possible session hi-jacking attempt thwarted.');
+			$session_name = $this->getSessionName();
+			if (isset($_GET[$session_name]))
+				$this->app->relocate($this->app->getUri(), null, false);
+
+			throw new SiteSessionHijackException($this->_user_agent);
 		}
 	}
 
