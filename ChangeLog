@@ -1,3 +1,28 @@
+2007-04-02  nrf
+
+	* [r16515] site/trunk/Site/SiteSessionModule.php,
+	  site/trunk/Site/exceptions/SiteSessionHijackException.php:
+	  Better exception for session hijacking, and relocation when
+	  possible instead of a fatal exception.
+
+2007-04-01  nrf
+
+	* [r16442] site/trunk/package.php:
+	  prepare for release of 1.0.24
+	* [r16441] site/trunk/Site/SiteErrorLogger.php,
+	  site/trunk/Site/SiteExceptionLogger.php:
+	  Set permissions in a way that does not rely on the current umsak.
+
+2007-03-30  nrf
+
+	* [r16371] site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  Add missing require
+
+2007-03-29  nrf
+
+	* [r16301] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.23
+
 2007-03-28  nrf
 
 	* [r16281] site/trunk/Site/SiteExceptionLogger.php:
