@@ -177,8 +177,10 @@ class SiteSessionModule extends SiteApplicationModule
 			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
 
 			$session_name = $this->getSessionName();
-			if (isset($_GET[$session_name]))
-				$this->app->relocate($this->app->getUri(), null, false);
+			if (isset($_GET[$session_name])) {
+				$uri = $this->app->getAbsoluteUri();
+				$this->app->relocate($uri, null, false);
+			}
 
 			throw new SiteSessionHijackException($this->_user_agent);
 		}
