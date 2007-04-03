@@ -176,6 +176,11 @@ class SiteSessionModule extends SiteApplicationModule
 		if (isset($_SERVER['HTTP_USER_AGENT']) && isset($this->_user_agent) &&
 			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
 
+			/*
+			 * Clean and relocate to the current URI if it has a session ID
+			 * in it. SwatWebApplication::getUri() can not be used here since
+			 * this runs before SwatWebApplication::parseUri().
+			 */
 			$session_name = preg_quote($this->getSessionName(), '/');
 			if (isset($_GET[$session_name])) {
 				$regexp = sprintf('/%s=[^&]*&?/u', $session_name);
