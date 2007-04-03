@@ -181,9 +181,11 @@ class SiteSessionModule extends SiteApplicationModule
 			 * in it. SwatWebApplication::getUri() can not be used here since
 			 * this runs before SwatWebApplication::parseUri().
 			 */
-			$session_name = preg_quote($this->getSessionName(), '/');
+			$session_name = $this->getSessionName();
 			if (isset($_GET[$session_name])) {
-				$regexp = sprintf('/%s=[^&]*&?/u', $session_name);
+				$regexp = sprintf('/%s=[^&]*&?/u',
+					preg_quote($session_name, '/'));
+
 				$uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
 				$this->app->relocate($uri, null, false);
 			}
