@@ -176,9 +176,9 @@ class SiteSessionModule extends SiteApplicationModule
 		if (isset($_SERVER['HTTP_USER_AGENT']) && isset($this->_user_agent) &&
 			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
 
-			$session_name = $this->getSessionName();
+			$session_name = preg_quote($this->getSessionName(), '/');
 			if (isset($_GET[$session_name])) {
-				$regexp = sprintf('|%s=[^&]*&?|u', $session_name);
+				$regexp = sprintf('/%s=[^&]*&?/u', $session_name);
 				$uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
 				$this->app->relocate($uri, null, false);
 			}
