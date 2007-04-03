@@ -113,8 +113,8 @@ class SiteWebApplication extends SiteApplication
 			$this->session->isActive()) {
 
 			// remove session ID from URI since it will be added back where necessary
-			$regexp = sprintf('|%s=[^&]*&?|u',
-				$this->session->getSessionName());
+			$regexp = sprintf('/%s=[^&]*&?/u',
+				preg_quote($this->getSessionName(), '/'));
 
 			$this->uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
 		} else {
