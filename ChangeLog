@@ -1,5 +1,43 @@
+2007-04-06  nrf
+
+	* [r16665] site/trunk/Site/SiteSessionModule.php:
+	  Strip spaces before comparing user agent strings.
+
+2007-04-03  nrf
+
+	* [r16536] site/trunk/Site/SiteWebApplication.php:
+	  wrong object
+	* [r16535] site/trunk/Site/SiteWebApplication.php:
+	  The regexp was copied from here, improve this one too.
+	* [r16534] site/trunk/Site/SiteSessionModule.php:
+	  preg_quote only for the using in preg function
+	* [r16533] site/trunk/Site/SiteSessionModule.php:
+	  Add a comment
+
+2007-04-03  gauthierm
+
+	* [r16532] site/trunk/Site/SiteSessionModule.php:
+	  Use conventional PERL regular expression delimiters and escape
+	  the $session_name value before it is sprintf'd into the
+	  expression.
+
 2007-04-02  nrf
 
+	* [r16529] site/trunk/Site/SiteWebApplication.php:
+	  make protected again
+	* [r16527] site/trunk/package.php:
+	  prepare for release of 1.0.27
+	* [r16526] site/trunk/Site/SiteSessionModule.php:
+	  Can't get URI from app since SiteWebApplication::parseURI() runs
+	  after module init.
+	* [r16524] site/trunk/package.php:
+	  prepare for release of 1.0.26
+	* [r16523] site/trunk/Site/SiteSessionModule.php,
+	  site/trunk/Site/SiteWebApplication.php:
+	  Make SiteWebApplication::getAbsoluteUri() public.
+	  Use to relocate on a session hijack.
+	* [r16516] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.25
 	* [r16515] site/trunk/Site/SiteSessionModule.php,
 	  site/trunk/Site/exceptions/SiteSessionHijackException.php:
 	  Better exception for session hijacking, and relocation when
