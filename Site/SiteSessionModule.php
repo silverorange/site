@@ -171,10 +171,13 @@ class SiteSessionModule extends SiteApplicationModule
 		 * session hijacking. When a future request presents this session's ID
 		 * to us we will only activate the session if the user agent matches.
 		 * While this is not fool-proof it does mitigate the most common
-		 * accidently and malicous session hijacking attempts.
+		 * accidently and malicous session hijacking attempts. Spaces are 
+		 * stripped before comparing to workaround browsers which provide a
+		 * slightly different user agent to scripts.
 		 */
 		if (isset($_SERVER['HTTP_USER_AGENT']) && isset($this->_user_agent) &&
-			$this->_user_agent !== $_SERVER['HTTP_USER_AGENT']) {
+			str_replace(' ', '', $this->_user_agent) !==
+				str_replace(' ', '', $_SERVER['HTTP_USER_AGENT'])) {
 
 			/*
 			 * Clean and relocate to the current URI if it has a session ID
