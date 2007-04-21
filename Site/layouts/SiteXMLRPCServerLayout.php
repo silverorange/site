@@ -20,4 +20,5 @@ class SiteXMLRPCServerLayout extends SiteLayout
 
 	// }}}
 }
+
 ?>
