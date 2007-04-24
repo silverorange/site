@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/exceptions/SiteSessionHijackException.php';
 
 /**
  * Web application module for sessions
@@ -167,13 +166,10 @@ class SiteSessionModule extends SiteApplicationModule
 		$this->startSession();
 
 		/*
-		 * The user agent is stored in the session to mitigate the risk of
-		 * session hijacking. When a future request presents this session's ID
-		 * to us we will only activate the session if the user agent matches.
-		 * While this is not fool-proof it does mitigate the most common
-		 * accidently and malicous session hijacking attempts. Spaces are 
-		 * stripped before comparing to workaround browsers which provide a
-		 * slightly different user agent to scripts.
+		 * The user agent is stored in the session to reduce accidental session
+		 * sharing due to copy/pasting/sending of links with session IDs.
+		 * Spaces are stripped before comparing to workaround browsers which
+		 * provide a slightly different user agent to scripts.
 		 */
 		if (isset($_SERVER['HTTP_USER_AGENT']) && isset($this->_user_agent) &&
 			str_replace(' ', '', $this->_user_agent) !==
@@ -192,8 +188,6 @@ class SiteSessionModule extends SiteApplicationModule
 				$uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
 				$this->app->relocate($uri, null, false);
 			}
-
-			throw new SiteSessionHijackException($this->_user_agent);
 		}
 	}
 
