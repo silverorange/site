@@ -71,6 +71,12 @@ class SitePage extends SiteObject
 	// }}}
 	// {{{ public function init()
 
+	/**
+	 * The first page method that is run by a {@link SiteWebAPplication}.
+	 * Always runs before {@link SiteLayout::init()}. This method is intended
+	 * to initialize objects used by the {@link SitePage::process()} and
+	 * {@link SitePage::build()} methods.
+	 */
 	public function init()
 	{
 	}
@@ -78,6 +84,11 @@ class SitePage extends SiteObject
 	// }}}
 	// {{{ public function process()
 
+	/**
+	 * Always runs after {@link SitePage::init()} and before
+	 * {@link SiteLayout::process()}. This method is intended to process
+	 * data entered by the user.
+	 */
 	public function process()
 	{
 	}
@@ -85,7 +96,23 @@ class SitePage extends SiteObject
 	// }}}
 	// {{{ public function build()
 
+	/**
+	 * Always runs after {@link SitePage::process()} and before
+	 * {@link SiteLayout::build()}. This method is intended to build page
+	 * content and add it to the layout.
+	 */
 	public function build()
+	{
+	}
+
+	// }}}
+	// {{{ public function finalize()
+
+	/**
+	 * Always runs after {@link SitePage::build()} but runs before
+	 * {@link SiteLayout::build()}.
+	 */
+	public function finalize()
 	{
 	}
 
