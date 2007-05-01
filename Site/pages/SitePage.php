@@ -72,7 +72,7 @@ class SitePage extends SiteObject
 	// {{{ public function init()
 
 	/**
-	 * The first page method that is run by a {@link SiteWebAPplication}.
+	 * The first page method that is run by a {@link SiteWebApplication}.
 	 * Always runs before {@link SiteLayout::init()}. This method is intended
 	 * to initialize objects used by the {@link SitePage::process()} and
 	 * {@link SitePage::build()} methods.
