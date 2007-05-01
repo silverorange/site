@@ -82,6 +82,7 @@ class SiteWebApplication extends SiteApplication
 			$this->page->process();
 			$this->page->layout->build();
 			$this->page->build();
+			$this->page->finalize();
 			$this->page->layout->finalize();
 		} catch (Exception $e) {
 			$this->replacePage($this->exception_page_source);
