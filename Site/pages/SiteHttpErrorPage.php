@@ -5,7 +5,7 @@ require_once 'Swat/SwatHtmlTag.php';
 
 /**
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2007 silverorange
  */
 class SiteHttpErrorPage extends SitePage
 {
@@ -158,18 +158,6 @@ class SiteHttpErrorPage extends SitePage
 			return Site::_('Sorry, there was a problem loading the page you '.
 				'requested.');
 		}
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		$this->layout->addHtmlHeadEntry(
-			new SwatStyleSheetHtmlHeadEntry('styles/http-error.css',
-			Site::PACKAGE_ID));
 	}
 
 	// }}}
