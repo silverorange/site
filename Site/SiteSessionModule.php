@@ -6,13 +6,21 @@ require_once 'Site/SiteApplicationModule.php';
  * Web application module for sessions
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2007 silverorange
  */
 class SiteSessionModule extends SiteApplicationModule
 {
 	// {{{ protected properties
 
+	/**
+	 * @var array
+	 */
 	protected $regenerate_id_callbacks = array();
+
+	/**
+	 * @var array
+	 */
+	protected $activate_callbacks = array();
 
 	// }}}
 	// {{{ public function init()
@@ -52,6 +60,12 @@ class SiteSessionModule extends SiteApplicationModule
 		 */
 		if (isset($_SERVER['HTTP_USER_AGENT']))
 			$this->_user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+		foreach ($this->activate_callbacks as $callback) {
+			$function = $callback['callback'];
+			$parameters = $callback['parameters'];
+			call_user_func_array($function, $parameters);
+		}
 	}
 
 	// }}}
@@ -69,6 +83,30 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function registerActivateCallback()
+
+	/**
+	 * Registers a callback function that is executed when the session is
+	 * activated
+	 *
+	 * @param callback $callback the callback to call when the session is
+	 *                            activated.
+	 * @param array $parameters optional. The paramaters to pass to the
+	 *                           callback. Use an empty array for no parameters.
+	 */
+	public function registerActivateCallback($callback,
+		array $parameters = array())
+	{
+		if (!is_callable($callback))
+			throw new SiteException('Cannot register invalid callback.');
+
+		$this->activate_callbacks[] = array(
+			'callback' => $callback,
+			'parameters' => $parameters
+		);
+	}
+
+	// }}}
 	// {{{ public function getSessionId()
 
 	/**
@@ -82,6 +120,19 @@ class SiteSessionModule extends SiteApplicationModule
 			return null;
 
 		return session_id();
+	}
+
+	// }}}
+	// {{{ public function getSessionName()
+
+	/**
+	 * Retrieves the session name
+	 *
+	 * @return string the name to use for the session.
+	 */
+	public function getSessionName()
+	{
+		return $this->app->id;
 	}
 
 	// }}}
@@ -192,33 +243,6 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function registerRegenerateIdCallback()
-
-	/**
-	 * Registers a callback function that is executed when the session ID
-	 * is regenerated
-	 *
-	 * @param callback $callback the callback to call when regenerating session
-	 *                            ID.
-	 * @param array $parameters the paramaters to pass to the callback. Use an
-	 *                           empty array for no parameters.
-	 */
-	public function registerRegenerateIdCallback($callback, $parameters = array())
-	{
-		if (!is_callable($callback))
-			throw new SiteException('Cannot register invalid callback.');
-
-		if (!is_array($parameters))
-			throw new SiteException('Callback parameters must be specified '.
-				'in an array.');
-
-		$this->regenerate_id_callbacks[] = array(
-			'callback' => $callback,
-			'parameters' => $parameters
-		);
-	}
-
-	// }}}
 	// {{{ public function regenerateId()
 
 	public function regenerateId()
@@ -230,9 +254,45 @@ class SiteSessionModule extends SiteApplicationModule
 		foreach ($this->regenerate_id_callbacks as $callback) {
 			$function = $callback['callback'];
 			$parameters = $callback['parameters'];
-			array_unshift($parameters, $old_id, $new_id);
+
+			// if there are no parameters, use old_id and new_id as parameters
+			if ($parameters == null)
+				$parameters = array($old_id, $new_id);
+
 			call_user_func_array($function, $parameters);
 		}
+	}
+
+	// }}}
+	// {{{ public function registerRegenerateIdCallback()
+
+	/**
+	 * Registers a callback function that is executed when the session ID
+	 * is regenerated
+	 *
+	 * @param callback $callback the callback to call when regenerating session
+	 *                            ID.
+	 * @param array $parameters optional. The paramaters to pass to the
+	 *                           callback. If no parameters or null is
+	 *                           specified, the old session id and new session
+	 *                           id are used as parameters. Explicitly use an
+	 *                           empty array to specify no parameters. Use a
+	 *                           single-element array containing null to
+	 *                           specify null as a parameter.
+	 */
+	public function registerRegenerateIdCallback($callback, $parameters = null)
+	{
+		if (!is_callable($callback))
+			throw new SiteException('Cannot register invalid callback.');
+
+		if ($parameters !== null && !is_array($parameters))
+			throw new SiteException('Callback parameters must be specified '.
+				'in an array.');
+
+		$this->regenerate_id_callbacks[] = array(
+			'callback' => $callback,
+			'parameters' => $parameters
+		);
 	}
 
 	// }}}
@@ -271,19 +331,6 @@ class SiteSessionModule extends SiteApplicationModule
 	protected function startSession()
 	{
 		session_start();
-	}
-
-	// }}}
-	// {{{ public function getSessionName()
-
-	/**
-	 * Retrieves the session name
-	 *
-	 * @return string the name to use for the session.
-	 */
-	public function getSessionName()
-	{
-		return $this->app->id;
 	}
 
 	// }}}
