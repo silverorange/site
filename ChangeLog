@@ -1,5 +1,50 @@
+2007-05-08  gauthierm
+
+	* [r17422] site/trunk/Site/SiteSessionModule.php:
+	  Code cleanup:
+	  - public methods before protected methods
+	  - documentation fixes
+	  - don't always pass old_id and new_id to regerate id callbacks,
+	  do pass them by default
+	  - type hinting (allows removal of exception code)
+	  Also, added activate callback mechanism.
+
+2007-05-03  gauthierm
+
+	* [r17352] site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  Remove reference to site-level styles from Site package
+	  HttpErrorPage. Ticket #978.
+
+2007-05-01  gauthierm
+
+	* [r17289] site/trunk/Site/SiteWebApplication.php:
+	  Finalize exception pages in SiteWebApplication.
+	* [r17288] site/trunk/Site/pages/SiteHttpErrorPage.php:
+	  Use finalize method of http error page.
+	* [r17286] site/trunk/Site/pages/SitePage.php:
+	  Fix typo.
+	* [r17285] site/trunk/Site/SiteWebApplication.php,
+	  site/trunk/Site/pages/SitePage.php:
+	  Add SitePage::finalize() and add some rudimentary docs to the
+	  main SitePage methods.
+
+2007-04-24  nrf
+
+	* [r17146] site/trunk/Site/SiteSessionModule.php,
+	  site/trunk/Site/exceptions/SiteSessionHijackException.php:
+	  Only check user agents for detecting possible shared sessions
+	  and removing session IDs in GET variables. No longer throw any
+	  exceptions.
+
+2007-04-21  gauthierm
+
+	* [r17068] site/trunk/Site/layouts/SiteXMLRPCServerLayout.php:
+	  Whitespace
+
 2007-04-06  nrf
 
+	* [r16666] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.28
 	* [r16665] site/trunk/Site/SiteSessionModule.php:
 	  Strip spaces before comparing user agent strings.
 
