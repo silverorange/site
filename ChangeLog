@@ -1,3 +1,16 @@
+2007-05-16  nick
+
+	* [r17552] site/trunk/Site/SiteNateGoSearchIndexer.php:
+	  Refactored StoreNateGoSearch to move most of the functionality
+	  up to Site.
+	  Mike/Nathan - this seems too obvious, is there a reason it
+	  wasn't done before?
+
+2007-05-09  nrf
+
+	* [r17430] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.29
+
 2007-05-08  gauthierm
 
 	* [r17422] site/trunk/Site/SiteSessionModule.php:
