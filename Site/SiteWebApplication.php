@@ -311,7 +311,7 @@ class SiteWebApplication extends SiteApplication
 	 *
 	 * @param string $source the source to use to resolve the layout.
 	 *
-	 * @return SitePage the page corresponding the given layout or null if the
+	 * @return SiteLayout The layout corresponding the given source or null if the
 	 *                   default layout is to be used.
 	 *
 	 * @see SiteWebApplication::resolvePage()
