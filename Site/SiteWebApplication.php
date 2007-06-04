@@ -159,12 +159,15 @@ class SiteWebApplication extends SiteApplication
 	 *                        current page. The source will be passed to the
 	 *                        {@link SiteWebApplication::resolvePage()} method.
 	 *
+	 * @return SitePage the new page that replaced the current page.
+	 *
 	 * @see SiteWebApplication::getReplacementPage()
 	 */
 	public function replacePage($source)
 	{
 		$new_page = $this->getReplacementPage($source);
 		$this->setPage($new_page);
+		return $new_page;
 	}
 
 	// }}}
