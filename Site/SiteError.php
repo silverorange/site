@@ -11,28 +11,6 @@ require_once 'Swat/SwatError.php';
  */
 class SiteError extends SwatError
 {
-	// {{{ public static function handle()
-
-	/**
-	 * Handles an error 
-	 *
-	 * When an error occurs, a SiteError object is created and processed.
-	 *
-	 * @param integer $errno the severity code of the handled error.
-	 * @param string $errstr the message of the handled error.
-	 * @param string $errfile the file ther handled error occurred in.
-	 * @param integer $errline the line the handled error occurred at.
-	 */
-	public static function handle($errno, $errstr, $errfile, $errline)
-	{
-		// only handle error if error reporting is not suppressed
-		if (ini_get('error_reporting') != 0) {
-			$error = new SiteError($errno, $errstr, $errfile, $errline);
-			$error->process();
-		}
-	}
-
-	// }}}
 	// {{{ public static function setupHandler()
 
 	/**
@@ -44,7 +22,7 @@ class SiteError extends SwatError
 		 * All run-time errors except for forwards compatibility
 		 * (E_STRICT) are handled by default.
 		 */
-		set_error_handler(array('SiteError', 'handle'),
+		set_error_handler(array('SwatError', 'handle'),
 			E_USER_ERROR | E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE);
 	}
 
