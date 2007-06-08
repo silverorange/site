@@ -11,19 +11,6 @@ require_once 'Swat/SwatError.php';
  */
 class SiteError extends SwatError
 {
-	// {{{ public function log()
-
-	/**
-	 * Logs this error 
-	 *
-	 * The error is logged to the webserver error log.
-	 */
-	public function log()
-	{
-		parent::log();
-	}
-
-	// }}}
 	// {{{ public static function handle()
 
 	/**
