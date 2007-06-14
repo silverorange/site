@@ -1,3 +1,37 @@
+2007-06-08  gauthierm
+
+	* [r17952] site/trunk/Site/SiteError.php:
+	  Remove handle() method from SiteError since SwatError now does
+	  the exact same thing.
+	* [r17949] site/trunk/Site/SiteError.php:
+	  Remove useless method that just calls parent.
+
+2007-06-04  nick
+
+	* [r17874] site/trunk/Site/SiteWebApplication.php:
+	  This method returns a SiteLayout, not a SitePage
+
+2007-06-04  gauthierm
+
+	* [r17864] site/trunk/Site/SiteWebApplication.php:
+	  Return the new page when using
+	  SiteWebApplication::replacePage(). This means we can do:
+	  = ->app->replacePage('Photo/Delete');
+	  ->setItems(->getSelection());
+	  instead of:
+	  ->app->replacePage('Photo/Delete');
+	  ->app->getPage()->setItems(->getSelection());
+
+2007-05-28  nick
+
+	* [r17729] site/trunk/Site/SiteSearchForm.php:
+	  Moved from store to site
+
+2007-05-17  nrf
+
+	* [r17575] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.30
+
 2007-05-16  nick
 
 	* [r17552] site/trunk/Site/SiteNateGoSearchIndexer.php:
