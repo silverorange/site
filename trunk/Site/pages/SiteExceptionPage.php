@@ -1,0 +1,164 @@
+<?php
+
+require_once 'Site/pages/SitePage.php';
+
+/**
+ * A page to display exceptions
+ *
+ * @package   Site
+ * @copyright 2006 silverorange
+ */
+class SiteExceptionPage extends SitePage
+{
+	// {{{ protected properties
+
+	/**
+	 * @var SwatException
+	 */
+	protected $exception = null;
+
+	// }}}
+	// {{{ public function setException()
+
+	public function setException($e)
+	{
+		if (!($e instanceof SwatException))
+			$e = new SwatException($e);
+
+		$this->exception = $e;
+	}
+
+	// }}}
+
+	// build phase
+	// {{{ public function build()
+
+	public function build()
+	{
+		parent::build();
+
+		$title = $this->getTitle();
+
+		if (isset($this->layout->navbar))
+			$this->layout->navbar->createEntry($title);
+
+		$status = $this->getHttpStatusCode();
+		$this->setHttpStatusHeader($status);
+
+		$this->layout->data->title = $title;
+
+		$this->layout->startCapture('content');
+		$this->display($status);
+		$this->layout->endCapture();
+	}
+
+	// }}}
+	// {{{ protected function display()
+
+	protected function display($status)
+	{
+		printf('<p>%s</p>', $this->getSummary($status));
+		$this->displaySuggestions();
+
+		if ($this->exception !== null)
+			$this->exception->process(false);
+	}
+
+	// }}}
+	// {{{ protected function displaySuggestions()
+
+	protected function displaySuggestions()
+	{
+		$suggestions = $this->getSuggestions();
+
+		if (count($suggestions) == 0)
+			return;
+
+		echo '<ul class="spaced">';
+		$li_tag = new SwatHtmlTag('li');
+
+		foreach ($suggestions as $suggestion) {
+			$li_tag->setContent($suggestion, 'text/xml');
+			$li_tag->display();
+		}
+
+		echo '</ul>';
+	}
+
+	// }}}
+	// {{{ protected function getSuggestions()
+
+	protected function getSuggestions()
+	{
+		$suggestions = array();
+
+		return $suggestions;
+	}
+
+	// }}}
+	// {{{ protected function getHttpStatusCode()
+
+	protected function getHttpStatusCode()
+	{
+		if ($this->exception === null ||
+			!($this->exception instanceof SiteException))
+				return 500;
+
+		return $this->exception->http_status_code;
+	}
+
+	// }}}
+	// {{{ protected function getTitle()
+
+	protected function getTitle()
+	{
+		if ($this->exception === null)
+			$title = Site::_('Unknown Error');
+		elseif ($this->exception instanceof SiteException && 
+			$this->exception->title !== null)
+				$title = $this->exception->title;
+		else
+			$title = Site::_('Error');
+
+		return $title;
+	}
+
+	// }}}
+	// {{{ protected function getSummary()
+
+	protected function getSummary($status)
+	{
+		switch($status) {
+		case 404:
+			return Site::_('Sorry, we couldn’t find the page you were looking for.');
+		case 403:
+			return Site::_('Sorry, the page you requested is not accessible.');
+		default:
+		case 500:
+			return Site::_('Sorry, there was a problem loading the  page you requested.');
+		}
+	}
+
+	// }}}
+	// {{{ protected function setHttpStatusHeader()
+
+	protected function setHttpStatusHeader($status)
+	{
+		switch ($status) {
+		case 403:
+			header('HTTP/1.0 403 Forbidden');
+			break;
+		case 404:
+			header('HTTP/1.0 404 Not Found');
+			break;
+		default:
+		case 500:
+			header('HTTP/1.0 500 Internal Server Error');
+			break;
+		}
+	}
+
+	// }}}
+}
+
+?>
