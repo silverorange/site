@@ -7,7 +7,7 @@ require_once 'Mail.php';
 require_once 'Mail/mime.php';
 
 /**
- * A class for sending multipart html/txt emails
+ * Multipart text/html email message
  *
  * @package   Site
  * @copyright 2004-2007 silverorange
@@ -18,56 +18,56 @@ class SiteMultipartMailMessage extends SiteObject
 	// {{{ public variables
 
 	/**
-	 * Email Subject 
+	 * Email subject 
 	 *
 	 * @var string
 	 */
 	public $subject = '';
 
 	/**
-	 * Recipient's Email Address
+	 * Recipient's email address
 	 *
 	 * @var string
 	 */
 	public $to_address = null;
 
 	/**
-	 * Recipient's Name
+	 * Recipient's name
 	 *
 	 * @var string
 	 */
 	public $to_name = '';
 
 	/**
-	 * Sender's Email Address
+	 * Sender's email address
 	 *
 	 * @var string
 	 */
 	public $from_address = null;
 
 	/**
-	 * Sender's Name
+	 * Sender's name
 	 *
 	 * @var string
 	 */
 	public $from_name = '';
 
 	/**
-	 * Addresses to which to Carbon-Copy (CC) the email
+	 * Addresses to which to carbon-copy (CC) this mail message
 	 *
 	 * @var array
 	 */
 	public $cc_list = array();
 
 	/**
-	 * Addresses to which to Blind-Carbon-Copy (BCC) the email
+	 * Addresses to which to blind-carbon-copy (BCC) this mail message
 	 *
 	 * @var array
 	 */
 	public $bcc_list = array();
 
 	/**
-	 * Sender's Reply-To Address
+	 * Sender's reply-to address
 	 *
 	 * @var string
 	 */
