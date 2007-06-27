@@ -10,7 +10,7 @@ require_once 'Mail/mime.php';
  * A class for sending multipart html/txt emails
  *
  * @package   Site
- * @copyright 2004-2006 silverorange
+ * @copyright 2004-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMultipartMailMessage extends SiteObject
@@ -51,6 +51,20 @@ class SiteMultipartMailMessage extends SiteObject
 	 * @var string
 	 */
 	public $from_name = '';
+
+	/**
+	 * Addresses to which to Carbon-Copy (CC) the email
+	 *
+	 * @var array
+	 */
+	public $cc_list = array();
+
+	/**
+	 * Addresses to which to Blind-Carbon-Copy (BCC) the email
+	 *
+	 * @var array
+	 */
+	public $bcc_list = array();
 
 	/**
 	 * Sender's Reply-To Address
@@ -111,12 +125,24 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	public function send()
 	{
+		// create multipart-mime message
 		$crlf = "\n";
 		$mime = new Mail_mime($crlf);
+
+		$mime->setSubject($this->subject);
+		$mime->setFrom(sprintf('"%s" <%s>',
+			$this->from_name, $this->from_address));
 
 		$mime->setTXTBody($this->text_body);
 		$mime->setHTMLBody($this->html_body);
 
+		foreach ($this->cc_list as $address)
+			$mime->addCc($address);
+
+		foreach ($this->bcc_list as $address)
+			$mime->addBcc($address);
+
+		// create mailer
 		$email_params = array();
 		$email_params['host'] = $this->smtp_server;
 		$mailer = Mail::factory('smtp', $email_params);
@@ -124,8 +150,8 @@ class SiteMultipartMailMessage extends SiteObject
 		if (PEAR::isError($mailer))
 			throw new SiteMailException($mailer);
 
-		$headers['From'] =
-			sprintf('"%s" <%s>', $this->from_name, $this->from_address);
+		// create additional mail headers
+		$headers = array();
 
 		if ($this->reply_to_address !== null)
 			$headers['Reply-To'] = $this->reply_to_address;
@@ -133,8 +159,7 @@ class SiteMultipartMailMessage extends SiteObject
 		$headers['To'] =
 			sprintf('"%s" <%s>', $this->to_name, $this->to_address);
 
-		$headers['Subject'] = $this->subject;
-
+		// create email body and headers
 		$mime_params = array();
 		$mime_params['head_charset'] = 'UTF-8';
 		$mime_params['text_charset'] = 'UTF-8';
@@ -144,6 +169,7 @@ class SiteMultipartMailMessage extends SiteObject
 		$body = $mime->get($mime_params);
 		$headers = $mime->headers($headers);
 
+		// send email
 		$result = $mailer->Send($this->to_address, $headers, $body);
 
 		if (PEAR::isError($result))
