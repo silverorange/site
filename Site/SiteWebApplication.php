@@ -124,8 +124,12 @@ class SiteWebApplication extends SiteApplication
 			$this->uri = $_SERVER['REQUEST_URI'];
 		}
 
+		// if URI starts with a '/' treat it like a SVN working-copy on a
+		// staging server
 		if (substr($this->base_uri, 0, 1) == '/') {
-			$regexp = sprintf('/%s/u', preg_quote($this->base_uri, '/'));
+			// don't preg_quote because base_uri could contain embedded regular
+			// expression syntax
+			$regexp = sprintf('|%s|u', $this->base_uri, '/');
 			if (preg_match($regexp, $this->uri, $matches)) {
 				$this->base_uri = $matches[0];
 				$this->secure_base_uri = $matches[0];
