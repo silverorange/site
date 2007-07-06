@@ -72,7 +72,7 @@ class SiteWebApplication extends SiteApplication
 	public function run()
 	{
 		$this->initModules();
-		$this->parseURI();
+		$this->parseUri();
 
 		try {
 			$this->loadPage();
@@ -100,12 +100,12 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
-	// {{{ protected function parseURI()
+	// {{{ protected function parseUri()
 
 	/**
 	 * Initializes the base href and URI from the request URI
 	 */
-	protected function parseURI()
+	protected function parseUri()
 	{
 		$this->secure = isset($_SERVER['HTTPS']);
 
