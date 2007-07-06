@@ -125,7 +125,7 @@ class SiteWebApplication extends SiteApplication
 		}
 
 		if (substr($this->base_uri, 0, 1) == '/') {
-			$regexp = sprintf('|%s|u', $this->base_uri);
+			$regexp = sprintf('/%s/u', preg_quote($this->base_uri, '/'));
 			if (preg_match($regexp, $this->uri, $matches)) {
 				$this->base_uri = $matches[0];
 				$this->secure_base_uri = $matches[0];
