@@ -1,3 +1,29 @@
+2007-07-06  gauthierm
+
+	* [r18301] site/trunk/Site/SiteWebApplication.php:
+	  Base URI can have embedded regular expressions so preg_quoting
+	  it breaks things. I added a note explaining why this is not
+	  preg_quote()'d.
+	* [r18300] site/trunk/Site/SiteWebApplication.php:
+	  Properly quote string substituted into preg expression.
+	* [r18299] site/trunk/Site/SiteWebApplication.php:
+	  Wrap long line.
+	* [r18298] site/trunk/Site/SiteWebApplication.php:
+	  s/parseURI/parseUri/g to match other URI methods.
+	* [r18285] site/trunk/Site/SiteSessionModule.php:
+	  Fix nasty bug that made it impossible get null values from the
+	  session. Note to future selves: always use array_key_exists()
+	  instead of isset() to check if a key-value is in an array.
+
+2007-06-27  nrf
+
+	* [r18211] site/trunk/package.php:
+	  prepare for release of 1.0.34
+	* [r18209] site/trunk/ChangeLog:
+	  prepare for release of 1.0.33
+	* [r18206] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.33
+
 2007-06-27  gauthierm
 
 	* [r18189] site/trunk/Site/SiteMultipartMailMessage.php:
