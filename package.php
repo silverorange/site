@@ -2,7 +2,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '1.0.34';
+$version = '1.0.35';
 $notes = <<<EOT
 see ChangeLog
 EOT;
@@ -52,7 +52,7 @@ $package->addReplacement('Site/Site.php', 'pear-config', '@DATA-DIR@', 'data_dir
 
 $package->setPhpDep('5.1.5');
 $package->setPearinstallerDep('1.4.0');
-$package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.2.20');
+$package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.2.23');
 $package->addPackageDepWithChannel('required', 'Date', 'pear.silverorange.com', '1.4.7so1');
 $package->addPackageDepWithChannel('required', 'MDB2', 'pear.php.net', '2.2.2');
 $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10');
