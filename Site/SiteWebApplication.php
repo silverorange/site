@@ -124,16 +124,20 @@ class SiteWebApplication extends SiteApplication
 			$this->uri = $_SERVER['REQUEST_URI'];
 		}
 
-		// if URI starts with a '/' treat it like a SVN working-copy on a
-		// staging server
+		// if base URI starts with a forward-slash, it might be an SVN
+		// working-copy on the staging server
 		if (substr($this->base_uri, 0, 1) == '/') {
-			// don't preg_quote because base_uri could contain embedded regular
-			// expression syntax
-			$regexp = sprintf('|%s|u', $this->base_uri, '/');
-			if (preg_match($regexp, $this->uri, $matches)) {
-				$this->base_uri = $matches[0];
-				$this->secure_base_uri = $matches[0];
-			} 
+			// check for '/trunk/' in the base URI and replace with the current
+			// working directory if found
+			$base_uri = preg_quote($this->base_uri);
+			$base_uri = preg_replace('|/trunk/|', '/[^/]*/', $base_uri, 1, $count);
+			if ($count == 1) {
+				$regexp = sprintf('|%s|u', $base_uri);
+				if (preg_match($regexp, $this->uri, $matches)) {
+					$this->base_uri = $matches[0];
+					$this->secure_base_uri = $matches[0];
+				}
+			}
 		}
 	}
 
