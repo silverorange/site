@@ -128,9 +128,10 @@ class SiteWebApplication extends SiteApplication
 		// working-copy on the staging server
 		if (substr($this->base_uri, 0, 1) == '/') {
 			// check for '/trunk/' in the base URI and replace with the current
-			// working directory if found
+			// working directory if found; also allow for instance names in the
+			// working-copy URIs
 			$base_uri = preg_quote($this->base_uri);
-			$base_uri = preg_replace('|/trunk/|', '-?[^/]*/[^/]*/', $base_uri, 1, $count);
+			$base_uri = str_replace('|/trunk/|', '-?[^/]*/[^/]*/', $base_uri, $count);
 			if ($count == 1) {
 				$regexp = sprintf('|%s|u', $base_uri);
 				if (preg_match($regexp, $this->uri, $matches)) {
