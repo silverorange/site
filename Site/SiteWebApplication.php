@@ -130,7 +130,7 @@ class SiteWebApplication extends SiteApplication
 			// check for '/trunk/' in the base URI and replace with the current
 			// working directory if found
 			$base_uri = preg_quote($this->base_uri);
-			$base_uri = preg_replace('|/trunk/|', '/[^/]*/', $base_uri, 1, $count);
+			$base_uri = preg_replace('|/trunk/|', '-?[^/]*/[^/]*/', $base_uri, 1, $count);
 			if ($count == 1) {
 				$regexp = sprintf('|%s|u', $base_uri);
 				if (preg_match($regexp, $this->uri, $matches)) {
