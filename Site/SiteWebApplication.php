@@ -131,7 +131,7 @@ class SiteWebApplication extends SiteApplication
 			// working directory if found; also allow for instance names in the
 			// working-copy URIs
 			$base_uri = preg_quote($this->base_uri);
-			$base_uri = str_replace('|/trunk/|', '-?[^/]*/[^/]*/', $base_uri, $count);
+			$base_uri = str_replace('/trunk/', '-?[^/]*/[^/]*/', $base_uri, $count);
 			if ($count == 1) {
 				$regexp = sprintf('|%s|u', $base_uri);
 				if (preg_match($regexp, $this->uri, $matches)) {
