@@ -1,3 +1,22 @@
+2007-07-17  nrf
+
+	* [r18534] site/trunk/Site/SiteWebApplication.php:
+	  (04:20:08 PM) mike: str_replace() doesn't need delimiters.
+	* [r18533] site/trunk/Site/SiteWebApplication.php:
+	  Use str_replace instead of preg_replace
+	* [r18530] site/trunk/Site/SiteMultipleInstanceModule.php,
+	  site/trunk/Site/SiteWebApplication.php:
+	  Add a site module for multiple instances.
+	* [r18519] site/trunk/Site/SiteWebApplication.php:
+	  Handle working copies better. No more regexp in the INI files
+	  and no more getting a basehref set to a regexp in some cases
+	  (like 404s).
+
+2007-07-13  nrf
+
+	* [r18392] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.35
+
 2007-07-06  gauthierm
 
 	* [r18301] site/trunk/Site/SiteWebApplication.php:
