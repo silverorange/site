@@ -9,7 +9,7 @@ require_once 'Site/pages/SitePage.php';
  * Web-applicaitions are set up to resolve pages and handle page requests.
  *
  * @package   Site
- * @copyright 2004-2006 silverorange
+ * @copyright 2006-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteWebApplication extends SiteApplication

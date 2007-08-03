@@ -7,7 +7,7 @@ require_once 'Site/exceptions/SiteInvalidPropertyException.php';
  * Container for layout properties
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteLayoutData extends SiteObject
