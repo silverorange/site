@@ -8,7 +8,7 @@ require_once 'Site/exceptions/SiteCookieException.php';
  * Web application module for cookies
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2007 silverorange
  */
 class SiteCookieModule extends SiteApplicationModule
 {

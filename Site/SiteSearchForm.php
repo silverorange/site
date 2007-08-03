@@ -9,7 +9,7 @@ require_once 'Swat/SwatForm.php';
  * This is useful if the form's method is set to HTTP GET.
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see SwatForm::setMethod()
  */

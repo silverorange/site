@@ -6,7 +6,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Thrown when an object is of the wrong class
  *
  * @package   Site
- * @copyright 2005-2006 silverorange
+ * @copyright 2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteInvalidClassException extends SiteException

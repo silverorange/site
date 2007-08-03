@@ -8,7 +8,7 @@ require_once 'Site/layouts/SiteLayout.php';
  * Base class for a page
  *
  * @package   Site
- * @copyright 2004-2006 silverorange
+ * @copyright 2004-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SitePage extends SiteObject

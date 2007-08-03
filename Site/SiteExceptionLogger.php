@@ -9,7 +9,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * and puts a link in the system error log to the details file
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteExceptionLogger extends SwatExceptionLogger
