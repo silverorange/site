@@ -88,11 +88,18 @@ class SiteMultipartMailMessage extends SiteObject
 	public $html_body = '';
 
 	/**
-	 * SMTP Server Address
+	 * smtp server address
 	 *
 	 * @var string
 	 */
 	public $smtp_server = null;
+
+	/**
+	 * Files to attach to this mail message
+	 *
+	 * @var array
+	 */
+	public $attachments = array();
 
 	// }}}
 	// {{{ protected variables
@@ -141,6 +148,9 @@ class SiteMultipartMailMessage extends SiteObject
 
 		foreach ($this->bcc_list as $address)
 			$mime->addBcc($address);
+
+		foreach ($this->attachments as $attachment)
+			$mime->addAttachment($attachment);
 
 		// create mailer
 		$email_params = array();
