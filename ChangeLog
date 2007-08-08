@@ -1,3 +1,15 @@
+2007-08-08  nrf
+
+	* [r19241] site/branches/1.0.x:
+	  make a branch
+
+2007-07-23  nrf
+
+	* [r18662] site/tags/release-1.0.36:
+	  tag release 1.0.36
+	* [r18661] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.36
+
 2007-07-17  nrf
 
 	* [r18534] site/trunk/Site/SiteWebApplication.php:
