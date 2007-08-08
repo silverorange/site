@@ -15,7 +15,7 @@ require_once 'Mail/mime.php';
  */
 class SiteMultipartMailMessage extends SiteObject
 {
-	// {{{ public variables
+	// {{{ public properties 
 
 	/**
 	 * Email subject 
@@ -88,7 +88,7 @@ class SiteMultipartMailMessage extends SiteObject
 	public $html_body = '';
 
 	/**
-	 * smtp server address
+	 * SMTP server address
 	 *
 	 * @var string
 	 */
@@ -102,7 +102,7 @@ class SiteMultipartMailMessage extends SiteObject
 	public $attachments = array();
 
 	// }}}
-	// {{{ protected variables
+	// {{{ protected properties 
 
 	/**
 	 * The application sending mail
