@@ -92,8 +92,10 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 	{
 		$article = null;
 
-		if ($page->path !== null) {
-			$path_entry = $page->path->getLast();
+		$path = $page->getPath();
+
+		if ($path !== null) {
+			$path_entry = $path->getLast();
 			if ($path_entry !== null) {
 				$article_id = $path_entry->id;
 
