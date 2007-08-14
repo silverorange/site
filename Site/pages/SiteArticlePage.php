@@ -19,11 +19,6 @@ require_once 'SwatDB/SwatDBClassMap.php';
  */
 class SiteArticlePage extends SitePathPage
 {
-	// {{{ public properties
-
-	public $article_id;
-
-	// }}}
 	// {{{ protected properties
 
 	/**
@@ -48,6 +43,19 @@ class SiteArticlePage extends SitePathPage
 	}
 
 	// }}}
+	// {{{ public function setArticle()
+
+	/**
+	 * Sets the article for this page to display
+	 *
+	 * @param SiteArticle $article the article to display.
+	 */
+	public function setArticle($article)
+	{
+		$this->article = $article;
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ public function init()
@@ -55,24 +63,7 @@ class SiteArticlePage extends SitePathPage
 	public function init()
 	{
 		parent::init();
-		$this->initArticle();
 		$this->layout->selected_article_id = $this->article->id;
-	}
-
-	// }}}
-	// {{{ protected function initArticle()
-
-	protected function initArticle()
-	{
-		// don't try to resolve articles that are deeper than the max depth
-		if (count($this->path) > SiteArticle::MAX_DEPTH)
-			throw new SiteNotFoundException(
-				sprintf('Article page not found for path ‘%s’', $this->path));
-
-		if (($this->article = $this->queryArticle($this->article_id)) === null)
-			throw new SiteNotFoundException(
-				sprintf('Article dataobject failed to load for article id ‘%s’',
-				$this->article_id));
 	}
 
 	// }}}
@@ -91,7 +82,6 @@ class SiteArticlePage extends SitePathPage
 
 	protected function buildArticle()
 	{
-		$sub_articles = $this->querySubArticles($this->article->id);
 		$this->layout->data->title =
 			SwatString::minimizeEntities((string)$this->article->title);
 
@@ -101,7 +91,7 @@ class SiteArticlePage extends SitePathPage
 
 		$this->layout->startCapture('content');
 		$this->displayArticle($this->article);
-		$this->displaySubArticles($sub_articles);
+		$this->displaySubArticles($this->article->sub_articles);
 		$this->layout->endCapture();
 
 		$this->buildNavBar();
@@ -127,29 +117,6 @@ class SiteArticlePage extends SitePathPage
 				$navbar->createEntry($path_entry->title, $link);
 			}
 		}
-	}
-
-	// }}}
-	// {{{ protected function queryArticle()
-
-	/**
-	 * Gets an article object from the database
-	 *
-	 * @param integer $id the database identifier of the article to get.
-	 *
-	 * @return SiteArticle the specified article or null if no such article
-	 *                       exists.
-	 */
-	protected function queryArticle($article_id)
-	{
-		$sql = 'select * from Article where id = %s';
-
-		$sql = sprintf($sql,
-			$this->app->db->quote($article_id, 'integer'));
-
-		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
-		$articles = SwatDB::query($this->app->db, $sql, $wrapper);
-		return $articles->getFirst();
 	}
 
 	// }}}
@@ -222,34 +189,6 @@ class SiteArticlePage extends SitePathPage
 
 		if (strlen($article->description) > 0)
 			echo ' - ', $article->description;
-	}
-
-	// }}}
-	// {{{ protected function querySubArticles()
-
-	/**
-	 * Gets sub-articles of an article
-	 *
-	 * @param integer $id the database identifier of the article from which to
-	 *                     get sub-articles.
-	 *
-	 * @return SiteArticleWrapper a recordset of sub-articles of the
-	 *                              specified article.
-	 */
-	protected function querySubArticles($article_id)
-	{
-		$sql = 'select id, title, shortname, description from Article
-			where parent %s %s and id in 
-			(select id from VisibleArticleView where region = %s)
-			order by displayorder, title';
-
-		$sql = sprintf($sql,
-			SwatDB::equalityOperator($article_id),
-			$this->app->db->quote($article_id, 'integer'),
-			$this->app->db->quote($this->app->getRegion()->id, 'integer'));
-
-		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
-		return SwatDB::query($this->app->db, $sql, $wrapper);
 	}
 
 	// }}}
