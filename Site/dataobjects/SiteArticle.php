@@ -247,6 +247,29 @@ class SiteArticle extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function loadSubArticles()
+
+	/**
+	 * Loads the sub-articles of this article
+	 *
+	 * @return SiteArticleWrapper a recordset of sub-articles of the
+	 *                              specified article.
+	 */
+	protected function loadSubArticles()
+	{
+		$sql = 'select id, title, shortname, description from Article
+			where parent = %s and id in 
+			(select id from VisibleArticleView)
+			order by displayorder, title';
+
+		$sql = sprintf($sql,
+			$this->db->quote($this->id, 'integer'));
+
+		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
+		return SwatDB::query($this->db, $sql, $wrapper);
+	}
+
+	// }}}
 }
 
 ?>

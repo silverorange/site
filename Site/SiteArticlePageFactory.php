@@ -75,6 +75,7 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 
 		$page->article_id = $article_id;
 		$page->setPath($article_path);
+		$page->setArticle($this->getArticle($app, $article_id, $article_path));
 
 		if (!$this->checkVisibilty($page)) {
 			$page = $this->instantiateNotVisiblePage($app, $layout);
@@ -143,6 +144,47 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 
 		$article_id = SwatDB::queryOne($app->db, $sql);
 		return $article_id;
+	}
+
+	// }}}
+	// {{{ protected function getArticle()
+
+	/**
+	 * Gets an article object from the database
+	 *
+	 * @param integer $id the database identifier of the article to get.
+	 *
+	 * @return SiteArticle the specified article or null if no such article
+	 *                       exists.
+	 */
+	protected function getArticle($app, $article_id, $path)
+	{
+		// don't try to resolve articles that are deeper than the max depth
+		if (count($path) > SiteArticle::MAX_DEPTH)
+			throw new SiteNotFoundException(
+				sprintf('Article not found for path ‘%s’', $path));
+
+		if (($article = $this->queryArticle($app->db, $article_id)) === null)
+			throw new SiteNotFoundException(
+				sprintf('Article dataobject failed to load for article id ‘%s’',
+				$article_id));
+
+		return $article;
+	}
+
+	// }}}
+	// {{{ protected function queryArticle()
+
+	protected function queryArticle($db, $article_id)
+	{
+		$sql = 'select * from Article where id = %s';
+
+		$sql = sprintf($sql,
+			$db->quote($article_id, 'integer'));
+
+		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
+		$articles = SwatDB::query($db, $sql, $wrapper);
+		return $articles->getFirst();
 	}
 
 	// }}}
