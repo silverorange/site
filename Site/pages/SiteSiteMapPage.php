@@ -15,16 +15,25 @@ class SiteSiteMapPage extends SiteArticlePage
 	{
 		parent::build();
 
+		$this->layout->startCapture('content');
+		$this->displaySubArticles($this->queryArticles());
+		$this->layout->endCapture();
+	}
+
+	// }}}
+	// {{{ protected function queryArticles()
+
+	protected function queryArticles()
+	{
 		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
-		$sql =
-			'select id, title, shortname from Article where parent is null';
+		$sql = 'select id, title, shortname from Article
+			where parent is null
+			order by displayorder, title';
 
 		$articles = SwatDB::query($this->app->db, $sql, $wrapper);
 		$articles->setRegion($this->app->getRegion());
 
-		$this->layout->startCapture('content');
-		$this->displaySubArticles($articles);
-		$this->layout->endCapture();
+		return $articles;
 	}
 
 	// }}}
