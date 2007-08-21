@@ -158,8 +158,13 @@ class SiteSessionModule extends SiteApplicationModule
 	 * to the URI.
 	 *
 	 * @param string $uri the URI to be relocated to.
-	 * @param boolean $append_sid whether to append sid to URI. If null, this
-	 *                             is determined internally.
+	 * @param boolean $append_sid optional. Whether or not to append the
+	 *                             session identifier to the URI. If null, this
+	 *                             is determined automatically. Automatic
+	 *                             determination works as follows: If the
+	 *                             <i>$uri</i> is relative and no session
+	 *                             cookie exists, the session identifier is
+	 *                             appended to the URI.
 	 */
 	public function appendSessionId($uri, $append_sid = null)
 	{
