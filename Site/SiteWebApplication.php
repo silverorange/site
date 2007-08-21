@@ -363,14 +363,19 @@ class SiteWebApplication extends SiteApplication
 	 *
 	 * Calls the PHP header() function to relocate this application to another
 	 * URI. This function does not return and in fact calls the PHP exit()
-	 * function just to be sure execution does not continue.
+	 * function to be sure execution does not continue.
 	 *
 	 * @param string $uri the URI to relocate to.
-	 * @param boolean $secure whether or not the base href should be a secure
-	 *                         URI. The default value of null maintains the
-	 *                         same security as the current page.
-	 * @param boolean $append_sid whether to append sid to URI. If null, this
-	 *                             is determined internally.
+	 * @param boolean $secure optional. Whether or not the base href should be
+	 *                         a secure URI. The default value of null
+	 *                         maintains the same security as the current page.
+	 *                         This parameter only has an effect if the
+	 *                         <i>$uri</i> is relative.
+	 * @param boolean $append_sid optional. Whether or not to append the
+	 *                             session identifier to the URI. If null, this
+	 *                             is determined automatically by the
+	 *                             {@link SiteSessionModule::appendSessionId()}
+	 *                             method.
 	 */
 	public function relocate($uri, $secure = null, $append_sid = null)
 	{
