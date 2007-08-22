@@ -6,11 +6,11 @@ require_once 'SwatDB/SwatDB.php';
 /**
  * Order page for Articles
  *
- * @package   Store
+ * @package   Site
  * @copyright 2005-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class StoreArticleOrder extends AdminDBOrder
+class SiteArticleOrder extends AdminDBOrder
 {
 	// {{{ private properties
 
@@ -50,7 +50,7 @@ class StoreArticleOrder extends AdminDBOrder
 		parent::buildInternal();
 
 		$frame = $this->ui->getWidget('order_frame');
-		$frame->title = Store::_('Order Articles');
+		$frame->title = Site::_('Order Articles');
 	}
 
 	// }}}
@@ -78,7 +78,7 @@ class StoreArticleOrder extends AdminDBOrder
 	protected function buildNavBar()
 	{
 		$this->navbar->popEntry();
-		$this->navbar->addEntry(new SwatNavBarEntry(Store::_('Articles'),
+		$this->navbar->addEntry(new SwatNavBarEntry(Site::_('Articles'),
 			'Article'));
 
 		if ($this->parent !== null) {
