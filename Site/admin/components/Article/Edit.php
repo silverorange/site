@@ -22,7 +22,7 @@ class SiteArticleEdit extends AdminDBEdit
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/Article/admin-article-edit.xml';
+	protected $ui_xml = 'Site/admin/components/Article/edit.xml';
 
 	// }}}
 
