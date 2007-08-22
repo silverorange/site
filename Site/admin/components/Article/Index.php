@@ -25,7 +25,7 @@ class SiteArticleIndex extends AdminIndex
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/Article/index.xml';
+	protected $ui_xml = 'Site/admin/components/Article/admin-article-index.xml';
 
 	// }}}
 
