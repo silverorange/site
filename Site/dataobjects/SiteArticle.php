@@ -180,9 +180,7 @@ class SiteArticle extends SwatDBDataObject
 
 		$sql = 'select %1$s from
 				findArticle(%2$s)
-			inner join %3$s on findArticle = %3$s.%4$s
-			inner join VisibleArticleView on
-				findArticle = VisibleArticleView.id';
+			inner join %3$s on findArticle = %3$s.%4$s';
 
 		$sql = sprintf($sql,
 			implode(', ', $fields),
@@ -258,8 +256,7 @@ class SiteArticle extends SwatDBDataObject
 	protected function loadSubArticles()
 	{
 		$sql = 'select id, title, shortname, description from Article
-			where parent = %s and id in 
-			(select id from VisibleArticleView)
+			where parent = %s
 			order by displayorder, title';
 
 		$sql = sprintf($sql,
