@@ -102,7 +102,8 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 				$article_id = $path_entry->id;
 
 				$sql = sprintf(
-					'select id from EnabledArticleView where id = %s',
+					'select id from Article where show = %s and id = %s',
+					$page->app->db->quote(true, 'boolean'),
 					$page->app->db->quote($article_id, 'integer'));
 
 				$article = SwatDB::queryOne($page->app->db, $sql);
