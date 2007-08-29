@@ -1,5 +1,6 @@
 <?php
 
+require_once 'SwatDB/SwatDB.php';
 require_once 'Site/SitePageFactory.php';
 require_once 'Site/SiteArticlePath.php';
 
