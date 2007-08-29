@@ -74,6 +74,8 @@ abstract class SitePageFactory
 	/**
 	 * Instantiates a page object
 	 *
+	 * @param SiteWebApplication $app the web application for which the page is
+	 *                                 being resolved.
 	 * @param string $class the name of the page class to resolve. This must be
 	 *                       either {@link SitePage} or a subclass of
 	 *                       SitePage.
@@ -89,7 +91,7 @@ abstract class SitePageFactory
 	 * @throws SiteNotFoundException if no file could be resolved for the given
 	 *                                class and the given class is undefined.
 	 */
-	public function instantiatePage($class, $params)
+	public function instantiatePage(SiteWebApplication $app, $class, $params)
 	{
 		if (!class_exists($class)) {
 			$class_file = "{$this->page_class_path}/{$class}.php";
