@@ -89,16 +89,14 @@ class SiteConfigModule extends SiteApplicationModule
 
 	/**
 	 * Loads configuration from ini file
+	 *
+	 * @throws SwatException if any of the ini file key names are invalid.
 	 */
 	public function load()
 	{
-		try{
 		$ini_array = parse_ini_file($this->filename, true);
 		$ini_array = $ini_array[$this->section];
 		$this->config = $this->parseIniArray($ini_array);
-		} catch (Exception $e) {
-			$e->process();
-		}
 	}
 
 	// }}}
@@ -141,6 +139,8 @@ class SiteConfigModule extends SiteApplicationModule
 	 * @param array $ini_array the ini file array to parse.
 	 *
 	 * @return stdClass the parsed ini array object.
+	 *
+	 * @throws SwatException if any of the ini array key names are invalid.
 	 */
 	protected function parseIniArray(array $ini_array)
 	{
