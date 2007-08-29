@@ -54,7 +54,11 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 				array_unshift($regs, $layout);
 				array_unshift($regs, $app);
 
-				$page = $this->instantiatePage($class, $regs);
+				foreach ($regs as &$reg)
+					if (strlen($reg) === 0)
+						$reg = null;
+
+				$page = $this->instantiatePage($app, $class, $regs);
 				break;
 			}
 		}
@@ -62,7 +66,7 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 		if ($page === null) {
 			// not found in page map so instantiate default page
 			$params = array($app, $layout);
-			$page = $this->instantiatePage($this->default_page_class, $params);
+			$page = $this->instantiatePage($app, $this->default_page_class, $params);
 		}
 
 		$article_id = $this->findArticle($app, $article_path);
