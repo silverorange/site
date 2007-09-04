@@ -65,6 +65,9 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		}
 
 		if (($log_file = fopen($log_filepath, 'w')) !== false) {
+			fwrite($log_file, '<html><head><meta http-equiv="Content-Type" '.
+				'content="text/html; charset=UTF-8" /></head><body>');
+
 			fwrite($log_file, '<table>');
 			fwrite($log_file, '<tr><th>Exeception Time:</th><td>'.
 				date('c', time()).'</td></tr>');
@@ -91,6 +94,7 @@ class SiteExceptionLogger extends SwatExceptionLogger
 
 			fwrite($log_file, '</table>');
 			fwrite($log_file, $e->toXHTML());
+			fwrite($log_file, '</body></html>');
 			fclose($log_file);
 		}
 
