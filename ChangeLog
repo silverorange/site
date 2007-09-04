@@ -1,3 +1,13 @@
+2007-09-04  nick
+
+	* [r19875] site/trunk/Site/SiteXMLRPCServerFactory.php:
+	  A new parameter was added to instansiatePage()
+
+2007-09-04  nrf
+
+	* [r19872] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.1.2
+
 2007-09-04  gauthierm
 
 	* [r19871] site/trunk/Site/SiteConfigModule.php,
