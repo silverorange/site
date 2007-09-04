@@ -1,3 +1,192 @@
+2007-09-04  gauthierm
+
+	* [r19831] site/trunk/Site/SiteApplication.php,
+	  site/trunk/Site/SiteApplicationModule.php,
+	  site/trunk/Site/SiteMessagesModule.php:
+	  Ticket #1242: Make site modules dependency aware so they load
+	  themselves in the correct order.
+
+2007-08-29  nrf
+
+	* [r19769] site/trunk/Site/SiteArticlePageFactory.php,
+	  site/trunk/Site/SitePageFactory.php:
+	  Add new param to instantiatePage() method.
+	  Turn empty string params into nulls.
+
+2007-08-29  gauthierm
+
+	* [r19768] site/trunk/Site/SiteConfigModule.php:
+	  Add @throws tags to documentation and remove debug code.
+	* [r19766] site/trunk/Site/SiteConfigModule.php:
+	  New SiteConfigurationModule that uses parse_ini_file() instead
+	  of Zend_Config. This is a drop-in replacement for the old
+	  configuration module. This also removes the only Zend Framework
+	  dependency from Site.
+
+2007-08-29  nrf
+
+	* [r19754] site/trunk/Site/SiteArticlePageFactory.php:
+	  EnabledArticleView is no longer part of Site
+	* [r19750] site/trunk/Site/SiteArticlePageFactory.php:
+	  Missing require.
+
+2007-08-23  nrf
+
+	* [r19597] site/trunk/sql/views/EnabledArticleView.sql:
+	  Remove this view from the Site package since Nick removed it
+	  from the queries in the article dataobject in Site.
+
+2007-08-22  nick
+
+	* [r19583] site/trunk/Site/dataobjects/SiteArticle.php:
+	  VisibleArticleView is a Store-specific view that checks region
+	  visibility.
+	  StoreArticle dataobject already overrides the two affected
+	  methods.
+
+2007-08-22  gauthierm
+
+	* [r19581] site/trunk/Site/admin/components/Article/Edit.php,
+	  site/trunk/Site/admin/components/Article/Index.php,
+	  site/trunk/Site/admin/components/Article/Search.php,
+	  site/trunk/Site/admin/components/Article/admin-article-edit.xml,
+	  site/trunk/Site/admin/components/Article/admin-article-index.xml,
+	  
+	  site/trunk/Site/admin/components/Article/admin-article-search.xml,
+	  site/trunk/Site/admin/components/Article/edit.xml,
+	  site/trunk/Site/admin/components/Article/index.xml,
+	  site/trunk/Site/admin/components/Article/search.xml:
+	  Undo r19574.
+
+2007-08-22  nick
+
+	* [r19578] site/trunk/Site/admin/components/Article/Order.php:
+	  Store => Site
+
+2007-08-22  charles
+
+	* [r19574] site/trunk/Site/admin/components/Article/Edit.php,
+	  site/trunk/Site/admin/components/Article/Index.php,
+	  site/trunk/Site/admin/components/Article/Search.php,
+	  site/trunk/Site/admin/components/Article/admin-article-edit.xml,
+	  site/trunk/Site/admin/components/Article/admin-article-index.xml,
+	  
+	  site/trunk/Site/admin/components/Article/admin-article-search.xml,
+	  site/trunk/Site/admin/components/Article/edit.xml,
+	  site/trunk/Site/admin/components/Article/index.xml,
+	  site/trunk/Site/admin/components/Article/search.xml:
+	  Change the name scheme for the xml.
+
+2007-08-21  nick
+
+	* [r19567] site/trunk/Site/admin,
+	  site/trunk/Site/admin/components,
+	  site/trunk/Site/admin/components/Article,
+	  site/trunk/Site/admin/components/Article/Delete.php,
+	  site/trunk/Site/admin/components/Article/Edit.php,
+	  site/trunk/Site/admin/components/Article/Index.php,
+	  site/trunk/Site/admin/components/Article/Search.php,
+	  site/trunk/Site/admin/components/Article/edit.xml,
+	  site/trunk/Site/admin/components/Article/include/SiteArticleActionsProcessor.php,
+	  
+	  site/trunk/Site/admin/components/Article/include/SiteArticleVisibilityCellRenderer.php,
+	  site/trunk/Site/admin/components/Article/index.xml,
+	  site/trunk/Site/admin/components/Article/search.xml:
+	  Moved Article admin component from Store back to Site. Tested
+	  for both Veseys
+	  and Uppermost.
+
+2007-08-21  gauthierm
+
+	* [r19561] site/trunk/Site/SiteSessionModule.php,
+	  site/trunk/Site/SiteWebApplication.php:
+	  Documentation cleanups.
+	* [r19560] site/trunk/Site/SiteWebApplication.php:
+	  Quote base uri before placing it inside regular expression.
+	* [r19559] site/trunk/Site/SiteWebApplication.php:
+	  Rever accidental commit.
+	* [r19558] site/trunk/Site/SiteWebApplication.php:
+	  There is no parent implementation of relocate() in
+	  SiteWebApplicaiton and the previous line is an exit() statement
+	  so if there was a parent implementation it would never get
+	  called.
+
+2007-08-14  nrf
+
+	* [r19411] site/trunk/Site/pages/SiteSiteMapPage.php:
+	  Make more subclassable, order the articles.
+	* [r19405] site/trunk/Site/pages/SiteSiteMapPage.php:
+	  Fix site map page. Use new SiteArticle API
+	* [r19401] site/trunk/Site/SiteArticlePageFactory.php,
+	  site/trunk/Site/dataobjects/SiteArticle.php,
+	  site/trunk/Site/pages/SiteArticlePage.php:
+	  Move article querying out of page and into the page factory.
+	  Move sub-article querying out of page and into article
+	  dataobject.
+
+2007-08-13  nick
+
+	* [r19378] site/trunk/Site/SiteArticlePageFactory.php:
+	  Path is protected, so you the getPath() method. This was never a
+	  problem before
+	  because all sites have extended StoreArticlePageFactory which
+	  overrides this
+	  method.
+
+2007-08-08  gauthierm
+
+	* [r19209] site/trunk/Site/SiteMultipartMailMessage.php:
+	  Fix folding and SMPT is an acronym and should be all uppercase.
+
+2007-08-07  nick
+
+	* [r19193] site/trunk/Site/SiteMultipartMailMessage.php:
+	  Add attachments method to the multipart mailing
+
+2007-08-06  nrf
+
+	* [r19163] site/trunk/sql, site/trunk/sql/functions,
+	  site/trunk/sql/functions/findArticle.sql,
+	  site/trunk/sql/functions/getArticleNavBar.sql,
+	  site/trunk/sql/functions/getArticlePath.sql,
+	  site/trunk/sql/functions/getArticlePathInfo.sql,
+	  site/trunk/sql/tables, site/trunk/sql/tables/Article.sql,
+	  site/trunk/sql/views,
+	  site/trunk/sql/views/ArticleChildCountView.sql,
+	  site/trunk/sql/views/EnabledArticleView.sql:
+	  push Article sql up to Site
+
+2007-08-03  nrf
+
+	* [r19122] site/trunk/Site/SiteCookieModule.php,
+	  site/trunk/Site/SiteError.php,
+	  site/trunk/Site/SiteErrorLogger.php,
+	  site/trunk/Site/SiteExceptionLogger.php,
+	  site/trunk/Site/SiteLayoutData.php,
+	  site/trunk/Site/SiteMultipartMailMessage.php,
+	  site/trunk/Site/SiteSearchForm.php,
+	  site/trunk/Site/SiteWebApplication.php,
+	  site/trunk/Site/exceptions/SiteClassNotFoundException.php,
+	  site/trunk/Site/exceptions/SiteInvalidClassException.php,
+	  site/trunk/Site/layouts/SiteXMLRPCServerLayout.php,
+	  site/trunk/Site/pages/SitePage.php:
+	  Update copyright dates from SVN logs.
+	* [r19113] site/trunk/Site/SiteArticlePageFactory.php,
+	  site/trunk/Site/SiteArticlePath.php,
+	  site/trunk/Site/SitePath.php, site/trunk/Site/SitePathEntry.php,
+	  site/trunk/Site/dataobjects,
+	  site/trunk/Site/dataobjects/SiteArticle.php,
+	  site/trunk/Site/dataobjects/SiteArticleWrapper.php,
+	  site/trunk/Site/pages/SiteArticlePage.php,
+	  site/trunk/Site/pages/SitePathPage.php,
+	  site/trunk/Site/pages/SiteSiteMapPage.php:
+	  Push article system up from Store package to Site package.
+
+2007-07-23  nrf
+
+	* [r18661] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.0.36
+
 2007-07-17  nrf
 
 	* [r18534] site/trunk/Site/SiteWebApplication.php:
