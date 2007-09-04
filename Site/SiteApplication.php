@@ -10,12 +10,12 @@ require_once 'Swat/SwatDate.php';
  * Base class for an application
  *
  * @package   Site
- * @copyright 2004-2006 silverorange
+ * @copyright 2004-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteApplication extends SiteObject
 {
-	// {{{ constants
+	// {{{ class constants
 
 	const VAR_POST    = 1;
 	const VAR_GET     = 2;
@@ -57,23 +57,35 @@ abstract class SiteApplication extends SiteObject
 	// {{{ protected properties
 
 	/**
-	 * Application modules
+	 * Modules of this application
 	 *
 	 * Application modules are pieces of code that add specific functionality
 	 * to an application such as database connectivity, session handling or
 	 * configuration.
 	 *
-	 * This is an associative array of modules loaded in this application. The
+	 * This is an associative array of the modules of this application. The
 	 * array is of the form 'module identifier' => 'module'.
 	 *
 	 * @var array
-	 * @see SiteApplication::getDefaultModuleList(),
-	 *      SiteApplication::addModule()
+	 *
+	 * @see SiteApplication::getDefaultModuleList()
+	 * @see SiteApplication::addModule()
 	 */
 	protected $modules = array();
 
-	// }}}
+	/**
+	 * Modules of this application indexed by provided features
+	 *
+	 * This array may contain a single module multiple times if the module
+	 * provides multiple features.
+	 *
+	 * @var array
+	 *
+	 * @see SiteApplicationModule::provides()
+	 */
+	protected $modules_by_provides = array();
 
+	// }}}
 	// {{{ public function __construct()
 
 	/**
@@ -87,11 +99,7 @@ abstract class SiteApplication extends SiteObject
 	public function __construct($id)
 	{
 		$this->id = $id;
-
-		// load default modules
-		foreach ($this->getDefaultModuleList() as $module_id => $module_class)
-			$this->addModule(new $module_class($this), $module_id);
-
+		$this->addDefaultModules();
 		$this->default_time_zone = new Date_TimeZone('UTC');
 	}
 
@@ -112,36 +120,245 @@ abstract class SiteApplication extends SiteObject
 	 * Adds a module to this application
 	 *
 	 * @param SiteApplicationModule $module the module to add to this
-	 *                                       applicaiton.
-	 * @param string $id an identifier for this module. If a module with the
-	 *                    given identifier already exists in this application,
-	 *                    an exception is thrown.
+	 *                                       application.
+	 * @param string $id an identifier for this module.
+	 *
+	 * @throws SiteException if a module with the given identifier already
+	 *                       exists in this application.
+	 * @throws SiteException if the module identifier collides with a property
+	 *                       of this application.
+	 * @throws SiteException if the module depends on a feature that no module
+	 *                       in this application provides.
+	 * @throws SiteException if the module provides a feature already provided
+	 *                       by an existing module in this application.
 	 */
 	public function addModule(SiteApplicationModule $module, $id)
 	{
+		// check identifier against other modules
 		if (isset($this->modules[$id]))
-			throw new SiteException("A module with the identifier '{$id}' ".
-				'already exists in this applicaiton.');
+			throw new SiteException(sprintf(
+				"A module with the identifier '%s' already exists in this ".
+				"applicaiton.", $id));
 
+		// check identifier against properties
 		$properties = get_object_vars($this);
 		if (array_key_exists($id, $properties))
-			throw new SiteException("Invalid module identifier '{$id}'. ".
-				'Module identifiers must not be the same as any of the '.
-				'property names of this application object.');
+			throw new SiteException(sprintf(
+				"Invalid module identifier '%s'. Module identifiers must ".
+				"not be the same as any of the property names of this ".
+				"application object.", $id));
 
+		// check module dependencies
+		foreach ($module->depends() as $depend) {
+			if (!isset($this->modules_by_provides[$depend])) {
+				throw new SiteException(sprintf(
+					"Module %s depends on feature '%s' which is not provided ".
+					"by any module in this application.",
+					get_class($module), $depend));
+			}
+		}
+
+		// check module against provides list
+		foreach ($module->provides() as $provide) {
+			if (isset($this->modules_by_provides[$provide])) {
+				throw new SiteException(sprintf(
+					"Module feature '%s' already provided by %s.",
+					$provide,
+					get_class($this->modules_by_provides[$provide])));
+			}
+		}
+
+		// add module provides
+		foreach ($module->provides() as $provide)
+			$this->modules_by_provides[$provide] = $module;
+
+		// add module
 		$this->modules[$id] = $module;
+	}
+
+	// }}}
+	// {{{ public function getModule()
+
+	/**
+	 * Gets a module of this application by a provided feature
+	 *
+	 * This method is useful for getting modules of this application without
+	 * needing to know the module identifier. For example, you can get a
+	 * session module of this application using:
+	 * <code>
+	 * <?php
+	 * $session = $app->getModule('SiteSessionModule');
+	 * ?>
+	 * </code>
+	 * This use is encouraged for module developers. For site-level code, use
+	 * the magic get and set methods provided by this application to access
+	 * modules by module identifiers.
+	 *
+	 * @param string $feature the provided feature.
+	 *
+	 * @return SiteApplicationModule the module of this application that
+	 *                                provides the given feature.
+	 *
+	 * @throws SiteException if no module in this application provides the
+	 *                       given feature.
+	 */
+	public function getModule($feature)
+	{
+		if (!isset($this->modules_by_provides[$feature]))
+			throw new SiteException(sprintf(
+				"Application does not have a module that provides '%s'",
+				$feature));
+
+		return $this->modules_by_provides[$feature];
 	}
 
 	// }}}
 	// {{{ protected function initModules()
 
 	/**
-	 * Initializes the modules currently loaded by this application
+	 * Initializes all modules in this application
 	 */
 	protected function initModules()
 	{
 		foreach ($this->modules as $module)
 			$module->init();
+	}
+
+	// }}}
+	// {{{ protected function addDefaultModules()
+
+	/**
+	 * Adds the default modules used by this application to this application
+	 *
+	 * Modules listed in the default module list are automatically added in
+	 * their dependent order.
+	 *
+	 * @see SiteApplication::getDefaultModuleList()
+	 *
+	 * @throws SiteException if a circular module dependency is detected.
+	 * @throws SiteException if a module with the given identifier already
+	 *                       exists in this application.
+	 * @throws SiteException if the module identifier collides with a property
+	 *                       of this application.
+	 * @throws SiteException if the module depends on a feature that no module
+	 *                       in this application provides.
+	 * @throws SiteException if the module provides a feature already provided
+	 *                       by an existing module in this application.
+	 */
+	protected function addDefaultModules()
+	{
+		$modules = array();
+		$module_ids = array();
+		$modules_by_provides = array();
+		$dependent_stack = array();
+		$added_modules = array();
+
+		// instantiate default modules
+		foreach ($this->getDefaultModuleList() as $module_id => $module_class) {
+			$module = new $module_class($this);
+			$modules[] = $module;
+			$module_ids[spl_object_hash($module)] = $module_id;
+			foreach ($module->provides() as $provide)
+				$modules_by_provides[$provide] = $module;
+		}
+
+		// add existing modules to array so dependency resolution can use
+		// existing modules of this application
+		foreach ($this->modules as $module)
+			$added_modules[spl_object_hash($module)] = true;
+
+		// add existing provides to array so dependency resolution can use
+		// existing modules of this application
+		$modules_by_provides += $this->modules_by_provides;
+
+		// add default modules to this application
+		foreach ($modules as $module) {
+			if (!array_key_exists(spl_object_hash($module), $added_modules)) {
+				$this->addDefaultModule($module_ids, $modules_by_provides,
+					$added_modules, $module, $dependent_stack);
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function addDefaultModule()
+
+	/**
+	 * Adds a default module to this application
+	 *
+	 * Default module dependencies of the module are added recursively.
+	 *
+	 * @param array $module_ids a reference to the array of module identifiers.
+	 *                           The array is indexed by the module object
+	 *                           hash and the module identifier is the value.
+	 * @param array $modules_by_provides a refrerence to the array of modules
+	 *                                    available indexed by features the
+	 *                                    modules provide.
+	 * @param array $added_modules a reference to the array of modules already
+	 *                              added to this application. The array is
+	 *                              keyed with module object hashes and has
+	 *                              true values.
+	 * @param SiteApplicationModule $module the module to add to this
+	 *                                       application.
+	 * @param array $depdendency_stack a reference to the stack of modules
+	 *                                  depending on the specified module to
+	 *                                  be added. This is used to detect
+	 *                                  circular dependencies.
+	 *
+	 * @throws SiteException if a circular module dependency is detected.
+	 * @throws SiteException if a module with the given identifier already
+	 *                       exists in this application.
+	 * @throws SiteException if the module identifier collides with a property
+	 *                       of this application.
+	 * @throws SiteException if the module depends on a feature that no module
+	 *                       in this application provides.
+	 * @throws SiteException if the module provides a feature already provided
+	 *                       by an existing module in this application.
+	 */
+	protected function addDefaultModule(array &$module_ids,
+		array &$modules_by_provides, array &$added_modules,
+		SiteApplicationModule $module, array &$dependent_stack)
+	{
+		// check for circular dependency
+		if (array_key_exists(spl_object_hash($module), $dependent_stack)) {
+			$circular_dependency = '';
+			foreach ($dependent_stack as $dependency)
+				$circular_dependency.= get_class($dependency). ' => ';
+
+			$circular_dependency.= get_class($module);
+			throw new SiteException(sprintf(
+				"Circular module dependency detected:\n%s",
+				$circular_dependency));
+		}
+
+		// module object is value only so we can get nice error messages
+		$dependent_stack[spl_object_hash($module)] = $module;
+
+		// add module dependencies 
+		foreach ($module->depends() as $depend) {
+
+			if (!isset($modules_by_provides[$depend]))
+				throw new SiteException(sprintf(
+					"Module %s depends on '%s' but no module provides this ".
+					"feature.",
+					get_class($module), $depend));
+
+			$depend_module = $modules_by_provides[$depend];
+
+			if (!array_key_exists(spl_object_hash($depend_module),
+				$added_modules)) {
+				$this->addDefaultModule($module_ids, $modules_by_provides,
+					$added_modules, $depend_module, $dependent_stack);
+			}
+
+		}
+
+		// all dependencies loaded, pop dependent stack
+		array_pop($dependent_stack);
+
+		// add module
+		$added_modules[spl_object_hash($module)] = true;
+		$this->addModule($module, $module_ids[spl_object_hash($module)]);
 	}
 
 	// }}}
@@ -152,18 +369,14 @@ abstract class SiteApplication extends SiteObject
 	 *
 	 * The list of modules is an associative array of the form
 	 * 'module identifier' => 'module class name'. After instantiation, loaded
-	 * modules are accessible as read-only properties of this application.
-	 * The public property names correspond directly to the module identifiers
-	 * specified in the module list array.
-	 *
-	 * The modules are loaded in the order they are specified in this list. If
-	 * there are module dependencies, the order of the returned array should
-	 * reflect this.
+	 * modules are accessible as public, read-only properties of this
+	 * application. The public property names correspond directly to the module
+	 * identifiers specified in the module list array.
 	 *
 	 * No modules are loaded by default. Subclasses of SiteApplication may
 	 * specify their own list of modules to load by overriding this method.
 	 *
-	 * @return array the list of modules to load for this application.
+	 * @return array the default list of modules to load for this application.
 	 */
 	protected function getDefaultModuleList()
 	{

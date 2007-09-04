@@ -12,7 +12,7 @@ require_once 'Swat/SwatMessage.php';
  * such, it depends on the {@link SiteSessionModule}.
  *
  * @package   Site
- * @copyright 2004-2006
+ * @copyright 2004-2007
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMessagesModule extends SiteApplicationModule
@@ -26,32 +26,6 @@ class SiteMessagesModule extends SiteApplicationModule
 	 * @var boolean
 	 */
 	protected $session_is_initialized = false;
-
-	// }}}
-	// {{{ public function __construct()
-
-	/**
-	 * Creates a new site messages module
-	 *
-	 * @param SiteApplication $app the application this module belongs to.
-	 *
-	 * @throws SiteException if there is no session module loaded the messages
-	 *                        module throws an exception.
-	 *
-	 */
-	public function __construct(SiteApplication $app)
-	{
-		if (!(isset($app->session) &&
-			$app->session instanceof SiteSessionModule))
-			throw new SiteException('The SiteMessagesModule requires a '.
-				'SiteSessionModule to be loaded. Please either explicitly '.
-				'add a session module to the application before '.
-				'instantiating the messages module, or specify the session '.
-				'module before the messages module in the application\'s '.
-				'getDefaultModuleList() method.');
-
-		parent::__construct($app);
-	}
 
 	// }}}
     // {{{ public function init()
@@ -69,6 +43,21 @@ class SiteMessagesModule extends SiteApplicationModule
 	}
 
     // }}}
+	// {{{ public function depends()
+
+	/**
+	 * Gets the module features this module depends on
+	 *
+	 * The messages module depends on the SiteSessionModule feature.
+	 *
+	 * @return array an array of features this module depends on.
+	 */
+	public function depends()
+	{
+		return array('SiteSessionModule');
+	}
+
+	// }}}
 	// {{{ public function registerMessageClass()
 
 	/**
