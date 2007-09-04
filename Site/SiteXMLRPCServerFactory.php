@@ -20,7 +20,7 @@ abstract class SiteXMLRPCServerFactory extends SitePageFactory
 		if (isset($map[$source])) {
 			$class = $map[$source];
 			$params = array($app, $layout);
-			$page = $this->instantiatePage($class, $params);
+			$page = $this->instantiatePage($app, $class, $params);
 			return $page;
 		}
 
