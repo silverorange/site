@@ -1,3 +1,19 @@
+2007-09-04  nick
+
+	* [r19856]
+	  site/trunk/Site/admin/components/Article/include/StoreArticleActionsProcessor.php,
+	  
+	  site/trunk/Site/admin/components/Article/include/StoreArticleRegionAction.php,
+	  
+	  site/trunk/Site/admin/components/Article/include/StoreArticleVisibilityCellRenderer.php:
+	  
+	  These have been replaced already, they just needed to be deleted.
+
+2007-09-04  nrf
+
+	* [r19851] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.1.0
+
 2007-09-04  gauthierm
 
 	* [r19831] site/trunk/Site/SiteApplication.php,
