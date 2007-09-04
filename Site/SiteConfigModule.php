@@ -2,6 +2,7 @@
 
 require_once 'Swat/exceptions/SwatException.php';
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/SiteConfigModuleConfig.php';
 
 /**
  * Web application module for site configuration
@@ -66,7 +67,7 @@ class SiteConfigModule extends SiteApplicationModule
 	/**
 	 * The parsed configuration of this configuration module
 	 *
-	 * @var stdObject
+	 * @var SiteConfigModuleConfig
 	 */
 	private $config;
 
@@ -138,13 +139,13 @@ class SiteConfigModule extends SiteApplicationModule
 	 *
 	 * @param array $ini_array the ini file array to parse.
 	 *
-	 * @return stdClass the parsed ini array object.
+	 * @return SiteConfigModuleConfig the parsed ini array object.
 	 *
 	 * @throws SwatException if any of the ini array key names are invalid.
 	 */
 	protected function parseIniArray(array $ini_array)
 	{
-		$config = new stdClass();
+		$config = new SiteConfigModuleConfig();
 
 		foreach ($ini_array as $key => $value) {
 			$object = $config;
@@ -161,7 +162,7 @@ class SiteConfigModule extends SiteApplicationModule
 
 				// create key if it doesn't exist
 				if (!isset($object->$key))
-					$object->$key = new stdClass();
+					$object->$key = new SiteConfigModuleConfig();
 
 				// set up next object 
 				$object = $object->$key;
