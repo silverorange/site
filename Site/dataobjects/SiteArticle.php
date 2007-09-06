@@ -255,7 +255,9 @@ class SiteArticle extends SwatDBDataObject
 	 */
 	protected function loadSubArticles()
 	{
-		$sql = 'select id, title, shortname, description from Article
+		$sql = 'select id, title, shortname, description,
+				createdate
+			from Article
 			where parent = %s
 			order by displayorder, title';
 
