@@ -91,7 +91,7 @@ class SiteArticlePage extends SitePathPage
 
 		$this->layout->startCapture('content');
 		$this->displayArticle($this->article);
-		$this->displaySubArticles($this->article->sub_articles);
+		$this->displaySubArticles($this->article->getVisibleSubArticles());
 		$this->layout->endCapture();
 
 		$this->buildNavBar();

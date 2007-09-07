@@ -153,6 +153,34 @@ class SiteArticle extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getVisibileSubArticles()
+
+	/**
+	 * Get the sub-articles of this article that are both shown and enabled
+	 *
+	 * @return SiteArticleWrapper a recordset of sub-articles of the
+	 *                              specified article.
+	 */
+	public function getVisibleSubArticles()
+	{
+		$sql = 'select id, title, shortname, description,
+				createdate
+			from Article
+			where parent = %s
+				and show = %s
+				and enabled = %s
+			order by displayorder, title';
+
+		$sql = sprintf($sql,
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(true, 'boolean'),
+			$this->db->quote(true, 'boolean'));
+
+		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
+		return SwatDB::query($this->db, $sql, $wrapper);
+	}
+
+	// }}}
 	// {{{ public function loadWithPath()
 
 	/**
@@ -258,12 +286,11 @@ class SiteArticle extends SwatDBDataObject
 		$sql = 'select id, title, shortname, description,
 				createdate
 			from Article
-			where parent = %s and show = %s
+			where parent = %s
 			order by displayorder, title';
 
 		$sql = sprintf($sql,
-			$this->db->quote($this->id, 'integer'),
-			$this->db->quote(true, 'boolean'));
+			$this->db->quote($this->id, 'integer'));
 
 		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
 		return SwatDB::query($this->db, $sql, $wrapper);
