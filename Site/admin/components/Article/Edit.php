@@ -41,6 +41,7 @@ class SiteArticleEdit extends AdminDBEdit
 			'shortname',
 			'description',
 			'bodytext',
+			'boolean:enabled',
 			'boolean:show',
 			'boolean:searchable',
 			'date:modified_date',
@@ -107,7 +108,7 @@ class SiteArticleEdit extends AdminDBEdit
 	protected function saveDBData()
 	{
 		$values = $this->ui->getValues(array('title', 'shortname', 'bodytext',
-			'description', 'show', 'searchable'));
+			'description', 'enabled', 'show', 'searchable'));
 
 		$now = new SwatDate();
 		$now->toUTC();
