@@ -22,6 +22,12 @@
 			<widget class="SwatFieldset">
 				<property name="title" translatable="yes">Article Visibility</property>
 				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Enabled?</property>
+					<widget class="SwatCheckbox" id="enabled">
+						<property name="value" type="boolean">true</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField">
 					<property name="title" translatable="yes">Show in menu?</property>
 					<widget class="SwatCheckbox" id="show">
 						<property name="value" type="boolean">true</property>
