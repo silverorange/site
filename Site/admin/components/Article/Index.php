@@ -166,7 +166,7 @@ class SiteArticleIndex extends AdminIndex
 
 		$details_frame->title = Site::_('Article');
 		$details_frame->subtitle = $article->title;
-		$details_view->data = &$article;
+		$details_view->data = $article;
 
 		// set link id
 		$this->ui->getWidget('details_toolbar')->setToolLinkValues($this->id);
