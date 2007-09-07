@@ -258,11 +258,12 @@ class SiteArticle extends SwatDBDataObject
 		$sql = 'select id, title, shortname, description,
 				createdate
 			from Article
-			where parent = %s
+			where parent = %s and show = %s
 			order by displayorder, title';
 
 		$sql = sprintf($sql,
-			$this->db->quote($this->id, 'integer'));
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(true, 'boolean'));
 
 		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
 		return SwatDB::query($this->db, $sql, $wrapper);
