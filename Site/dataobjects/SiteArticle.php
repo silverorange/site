@@ -69,6 +69,13 @@ class SiteArticle extends SwatDBDataObject
 	public $createdate;
 
 	/**
+	 * Modified date
+	 *
+	 * @var Date
+	 */
+	public $modified_date;
+
+	/**
 	 * Order of display
 	 *
 	 * @var integer
@@ -236,6 +243,7 @@ class SiteArticle extends SwatDBDataObject
 			SwatDBClassMap::get('SiteArticle'));
 
 		$this->registerDateProperty('createdate');
+		$this->registerDateProperty('modified_date');
 
 		$this->table = 'Article';
 		$this->id_field = 'integer:id';
