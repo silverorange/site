@@ -16,6 +16,7 @@ class SiteArticleVisibilityCellRenderer extends SwatCellRenderer
 	public $article = false;
 	public $db = false;
 
+	public $enabled = false;
 	public $searchable = false;
 	public $show_in_menu = false;
 
@@ -28,6 +29,11 @@ class SiteArticleVisibilityCellRenderer extends SwatCellRenderer
 	public function render()
 	{
 		$messages = array();
+
+		if ($this->enabled)
+			$messages[] = Site::_('not enabled');
+		elseif ($this->display_positive_states)
+			$messages[] = Site::_('enabled');
 
 		if (!$this->searchable)
 			$messages[] = Site::_('not searchable');

@@ -107,8 +107,7 @@ class SiteArticleEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		$values = $this->ui->getValues(array('title', 'shortname', 'bodytext',
-			'description', 'enabled', 'show', 'searchable'));
+		$values = $this->getUIValues();
 
 		$now = new SwatDate();
 		$now->toUTC();
@@ -155,6 +154,15 @@ class SiteArticleEdit extends AdminDBEdit
 			$this->app->db->quote(1, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
+	}
+
+	// }}}
+	// {{{ protected function getUIValues()
+
+	protected function getUIValues()
+	{
+		return $this->ui->getValues(array('title', 'shortname', 'bodytext',
+			'description', 'enabled', 'show', 'searchable'));
 	}
 
 	// }}}

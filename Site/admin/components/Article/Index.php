@@ -4,6 +4,7 @@ require_once 'Admin/pages/AdminIndex.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatString.php';
+require_once 'Site/dataobjects/SiteArticle.php';
 
 require_once 'include/SiteArticleActionsProcessor.php';
 require_once 'include/SiteArticleVisibilityCellRenderer.php';
@@ -61,6 +62,7 @@ class SiteArticleIndex extends AdminIndex
 		$sql = 'select Article.id,
 					Article.title, 
 					Article.show,
+					Article.enabled,
 					Article.searchable,
 					ArticleChildCountView.child_count
 				from Article
@@ -144,28 +146,27 @@ class SiteArticleIndex extends AdminIndex
 		$details_view->getField('visibility')->getFirstRenderer()->db =
 			$this->app->db;
 
-		$fields = array('id', 'title', 'shortname', 'description', 'bodytext',
-			'show', 'parent', 'createdate', 'modified_date', 'searchable');
+		$class = SwatDBClassMap::get('StoreArticle');
+		$article = new $class();
+		$article->setDatabase($this->app->db);
+		$found = $article->load($this->id);
 
-		$row = SwatDB::queryRowFromTable($this->app->db, 'Article', $fields, 
-			'id' , $this->id);
-
-		if ($row === null)
+		if (!$found)
 			throw new AdminNotFoundException(
 				sprintf(Site::_('Article with id ‘%s’ not found.'),
 					$this->id));
 
-		if ($row->bodytext !== null)
-			$row->bodytext = SwatString::condense(SwatString::toXHTML(
-				$row->bodytext));
+		if ($article->bodytext !== null)
+			$article->bodytext = SwatString::condense(SwatString::toXHTML(
+				$article->bodytext));
 
-		if ($row->description !== null)
-			$row->description = SwatString::condense(SwatString::toXHTML(
-				$row->description));
+		if ($article->description !== null)
+			$article->description = SwatString::condense(SwatString::toXHTML(
+				$article->description));
 
 		$details_frame->title = Site::_('Article');
-		$details_frame->subtitle = $row->title;
-		$details_view->data = &$row;
+		$details_frame->subtitle = $article->title;
+		$details_view->data = &$article;
 
 		// set link id
 		$this->ui->getWidget('details_toolbar')->setToolLinkValues($this->id);
@@ -175,16 +176,16 @@ class SiteArticleIndex extends AdminIndex
 		$this->navbar->addEntry(new SwatNavBarEntry(Site::_('Articles'),
 			'Article'));
 
-		if ($row->parent != null) {
+		if ($article->parent != null) {
 			$navbar_rs = SwatDB::executeStoredProc($this->app->db, 
-				'getArticleNavBar', array($row->parent));
+				'getArticleNavBar', array($article->parent->id));
 
 			foreach ($navbar_rs as $elem)
 				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,
 					'Article/Index?id='.$elem->id));
 		}
 
-		$this->navbar->addEntry(new SwatNavBarEntry($row->title));
+		$this->navbar->addEntry(new SwatNavBarEntry($article->title));
 	}
 
 	// }}}
