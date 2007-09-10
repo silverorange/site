@@ -1,0 +1,328 @@
+<?php
+
+require_once 'SwatDB/SwatDB.php';
+require_once 'Swat/SwatString.php';
+require_once 'Site/SiteResetPasswordMailMessage.php';
+require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Site/dataobjects/SiteAccountWrapper.php';
+
+/**
+ * A account for a web application
+ *
+ * SiteAccount objects contain data like name and email that correspond
+ * directly to database fields.
+ *
+ * There are three typical ways to use a SiteAccount object:
+ *
+ * - Create a new SiteAccount object with a blank constructor. Modify some
+ *   properties of the account object and call the SiteAccount::save()
+ *   method. A new row is inserted into the database.
+ *
+ * <code>
+ * $new_account = new SiteAccount();
+ * $new_account->email = 'account@example.com';
+ * $new_account->setPassword('secretpassword');
+ * $new_account->save();
+ * </code>
+ *
+ * - Create a new SiteAccount object with a blank constructor. Call the
+ *   {@link SiteAccount::load()} or {@link SiteAccount::loadWithCredentials}
+ *   method on the object instance. Modify some properties and call the save()
+ *   method. The modified properties are updated in the database.
+ *
+ * <code>
+ * // using regular data-object load() method
+ * $account = new SiteAccount();
+ * $account->load(123);
+ * echo 'Hello ' . $account->fullname;
+ * $account->email = 'new_address@example.com';
+ * $account->save();
+ *
+ * // using loadWithCredentials()
+ * $account = new SiteAccount();
+ * if ($account->loadWithCredentials('test@example.com', 'secretpassword')) {
+ *     echo 'Hello ' . $account->fullname;
+ *     $account->email = 'new_address@example.com';
+ *     $account->save();
+ * }
+ * </code>
+ *
+ * - Create a new SiteAccount object passing a record set into the
+ *   constructor. The first row of the record set will be loaded as the data
+ *   for the object instance. Modify some properties and call the
+ *   SiteAccount::save() method. The modified properties are updated
+ *   in the database.
+ *
+ * Example usage as an MDB2 wrapper:
+ *
+ * <code>
+ * $sql = '-- select an account here';
+ * $account = $db->query($sql, null, true, 'Account');
+ * echo 'Hello ' . $account->fullname;
+ * $account->email = 'new_address@example.com';
+ * $account->save();
+ * </code>
+ *
+ * @package   Site
+ * @copyright 2005-2007 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @see       SiteAccountWrapper
+ */
+class SiteAccount extends SwatDBDataObject
+{
+	// {{{ class constants
+
+	/**
+	 * Length of salt value used to protect accounts's passwords from
+	 * dictionary attacks
+	 */
+	const PASSWORD_SALT_LENGTH = 16;
+
+	// }}}
+	// {{{ public properties
+
+	/**
+	 * The database id of this account 
+	 *
+	 * If this property is null or 0 when SiteAccount::save() method is
+	 * called, a new account is inserted in the database.
+	 *
+	 * @var string
+	 */
+	public $id;
+
+	/**
+	 * The full name of this account
+	 *
+	 * @var string
+	 */
+	public $fullname;
+
+	/**
+	 * The email address of this account
+	 *
+	 * @var string
+	 */
+	public $email;
+
+	/**
+	 * Hashed version of this account's salted password
+	 *
+	 * By design, there is no way to get the actual password of this account
+	 * through the SiteAccount object.
+	 *
+	 * @var string
+	 *
+	 * @see SiteAccount::setPassword()
+	 */
+	public $password;
+
+	/**
+	 * The salt value used to protect this account's password
+	 *
+	 * @var string
+	 */
+	public $password_salt;
+
+	/**
+	 * Hashed password tag for reseting the account password
+	 *
+	 * @var text
+	 */
+	public $password_tag;
+
+	/**
+	 * The date this account was created on
+	 *
+	 * @var Date
+	 */
+	public $createdate;
+
+	/**
+	 * The last date on which this account was logged into
+	 *
+	 * @var Date
+	 */
+	public $last_login;
+
+	// }}}
+	// {{{ public function loadWithCredentials()
+
+	/**
+	 * Loads an acount from the database with account credentials
+	 *
+	 * @param string $email the email address of the account.
+	 * @param string $password the password of the account.
+	 *
+	 * @return boolean true if the loading was successful and false if it was
+	 *                  not.
+	 */
+	public function loadWithCredentials($email, $password)
+	{
+		$this->checkDB();
+		$sql = sprintf('select password_salt from %s
+			where lower(email) = lower(%s)',
+			$this->table,
+			$this->db->quote($email, 'text'));
+
+		$salt = SwatDB::queryOne($this->db, $sql);
+
+		if ($salt === null)
+			return false;
+
+		$sql = sprintf('select id from %s
+			where lower(email) = lower(%s) and password = %s',
+			$this->table,
+			$this->db->quote($email, 'text'),
+			$this->db->quote(md5($password.$salt), 'text'));
+
+		$id = SwatDB::queryOne($this->db, $sql);
+
+		if ($id === null)
+			return false;
+
+		return $this->load($id);
+	}
+
+	// }}}
+	// {{{ protected function init()
+
+	protected function init()
+	{
+		$this->table = 'Account';
+		$this->id_field = 'integer:id';
+
+		$this->registerDateProperty('createdate');
+	}
+
+	// }}}
+
+	// password methods
+	// {{{ public function setPassword()
+
+	/**
+	 * Sets this account's password
+	 *
+	 * The password is salted with a 16-byte salt and encrypted with one-way
+	 * encryption.
+	 *
+	 * @param string $password the password for this account.
+	 */
+	public function setPassword($password)
+	{
+		$this->password_salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
+		$this->password = md5($password.$this->password_salt);
+	}
+
+	// }}}
+	// {{{ public function resetPassword()
+
+	/**
+	 * Resets this account's password
+	 *
+	 * Creates a unique tag and emails this account's holder a tagged URL to
+	 * update his or her password.
+	 *
+	 * @param SiteApplication $app the application resetting this account's
+	 *                              password.
+	 *
+	 * @return string $password_tag a hashed tag to verify the account
+	 */
+	public function resetPassword(SiteApplication $app)
+	{
+		$this->checkDB();
+
+		$password_tag = SwatString::hash(uniqid(rand(), true));
+
+		/*
+		 * Update the database with new password tag. Don't use the regular
+		 * dataobject saving here in case other fields have changed.
+		 */
+		$id_field = new SwatDBField($this->id_field, 'integer');
+		$sql = sprintf('update %s set password_tag = %s where %s = %s',
+			$this->table,
+			$this->db->quote($password_tag, 'text'),
+			$id_field->name,
+			$this->db->quote($this->{$id_field->name}, $id_field->type));
+
+		SwatDB::exec($this->db, $sql);
+
+		return $password_tag;
+	}
+
+	// }}}
+	// {{{ public static function generateNewPassword()
+
+	/**
+	 * Generates a new password for this account, saves it, and emails it to
+	 * this account's holder
+	 *
+	 * @param SiteApplication $app the application generating the new password.
+	 *
+	 * @see SiteAccount::resetPassword()
+	 */
+	public function generateNewPassword(SiteApplication $app)
+	{
+		require_once 'Text/Password.php';
+
+		$new_password = Text_Password::Create();
+		$new_password_salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
+
+		/*
+		 * Update the database with new password. Don't use the regular
+		 * dataobject saving here in case other fields have changed.
+		 */
+		$id_field = new SwatDBField($this->id_field, 'integer');
+		$sql = sprintf('update %s set password = %s, password_salt = %s
+			where %s = %s',
+			$this->table,
+			$app->db->quote(md5($new_password.$new_password_salt), 'text'),
+			$app->db->quote($new_password_salt, 'text'),
+			$id_field->name,
+			$this->db->quote($this->{$id_field->name}, $id_field->type));
+
+		SwatDB::exec($app->db, $sql);
+
+		// email the new password to the account holder 
+		$this->sendNewPasswordMailMessage($app, $new_password);
+	}
+
+	// }}}
+	// {{{ public function sendResetPasswordMailMessage()
+
+	/**
+	 * Emails this account's holder with instructions on how to finish
+	 * resetting his or her password
+	 *
+	 * @param SiteApplication $app the application sending mail.
+	 * @param string $password_link a URL indicating the page at which the
+	 *                               account holder may complete the reset-
+	 *                               password process.
+	 *
+	 * @see StoreAccount::resetPassword()
+	 */
+	public function sendResetPasswordMailMessage(
+		SiteApplication $app, $password_link)
+	{
+	}
+
+	// }}}
+	// {{{ protected function sendNewPasswordMailMessage()
+
+	/**
+	 * Emails this account's holder with his or her new generated password
+	 *
+	 * @param SiteApplication $app the application sending mail.
+	 * @param string $new_password this account's new password.
+	 *
+	 * @see StoreAccount::generateNewPassword()
+	 */
+	protected function sendNewPasswordMailMessage(
+		SiteApplication $app, $new_password)
+	{
+	}
+
+	// }}}
+}
+
+?>
