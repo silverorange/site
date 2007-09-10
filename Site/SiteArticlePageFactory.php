@@ -143,6 +143,10 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 	 */
 	protected function findArticle(SiteWebApplication $app, $path)
 	{
+		if (!mb_check_encoding($path, 'UTF-8'))
+			throw new SiteException(
+				sprintf('Path is not valid UTF-8: ‘%s’', $path));
+
 		// trim at 254 to prevent database errors
 		$path = substr($path, 0, 254);
 		$sql = sprintf('select findArticle(%s)',
