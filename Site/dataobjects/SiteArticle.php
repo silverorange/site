@@ -170,18 +170,16 @@ class SiteArticle extends SwatDBDataObject
 	 */
 	public function getVisibleSubArticles()
 	{
-		$sql = 'select id, title, shortname, description,
-				createdate
+		$sql = 'select Article.id, Article.title, Article.shortname,
+				Article.description, Article.createdate
 			from Article
+			inner join VisibleArticleView on
+				VisibleArticleView.id = Article.id
 			where parent = %s
-				and show = %s
-				and enabled = %s
 			order by displayorder, title';
 
 		$sql = sprintf($sql,
-			$this->db->quote($this->id, 'integer'),
-			$this->db->quote(true, 'boolean'),
-			$this->db->quote(true, 'boolean'));
+			$this->db->quote($this->id, 'integer'));
 
 		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
 		return SwatDB::query($this->db, $sql, $wrapper);
@@ -215,7 +213,9 @@ class SiteArticle extends SwatDBDataObject
 
 		$sql = 'select %1$s from
 				findArticle(%2$s)
-			inner join %3$s on findArticle = %3$s.%4$s';
+			inner join %3$s on findArticle = %3$s.%4$s
+			inner join VisibleArticleView on
+				findArticle = VisibleArticleView.id';
 
 		$sql = sprintf($sql,
 			implode(', ', $fields),
