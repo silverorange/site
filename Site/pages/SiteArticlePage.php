@@ -214,6 +214,8 @@ class SiteArticlePage extends SitePathPage
 	/**
 	 * Replaces markers in article with dynamic content
 	 *
+	 * Markers are created using the syntax: &lt;!-- [marker --&gt;
+	 *
 	 * @param string $text the bodytext of the article.
 	 *
 	 * @return string the article bodytext with markers replaced by dynamic
