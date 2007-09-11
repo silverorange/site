@@ -1,0 +1,30 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="search_frame">
+		<property name="title" translatable="yes">Search Accounts</property>
+		<widget class="SwatToolbar" id="index_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Add an Account</property>
+				<property name="link">Account/Edit</property>
+				<property name="stock_id">create</property>
+			</widget>
+		</widget>
+		<widget class="SwatForm" id="search_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Name</property>
+				<widget class="SwatEntry" id="search_fullname" />
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Email Address</property>
+				<widget class="SwatEntry" id="search_email" />
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button">
+					<property name="title">Search</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>
