@@ -128,32 +128,10 @@ class SiteArticleEdit extends AdminDBEdit
 				$values, 'integer:id', $this->id);
 		}
 
-		$this->addToSearchQueue();
-
 		$message = new SwatMessage(
 			sprintf(Site::_('“%s” has been saved.'), $values['title']));
 
 		$this->app->messages->add($message);
-	}
-
-	// }}}
-	// {{{ protected function addToSearchQueue()
-
-	protected function addToSearchQueue()
-	{
-		$sql = sprintf('delete from NateGoSearchQueue
-			where document_id = %s and document_type = %s',
-			$this->app->db->quote($this->id, 'integer'),
-			$this->app->db->quote(1, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
-
-		$sql = sprintf('insert into NateGoSearchQueue
-			(document_id, document_type) values (%s, %s)',
-			$this->app->db->quote($this->id, 'integer'),
-			$this->app->db->quote(1, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
 	}
 
 	// }}}
