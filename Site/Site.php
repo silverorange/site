@@ -193,6 +193,7 @@ if (!function_exists("dgettext")) {
 // }}}
 
 Site::setupGettext();
+SwatUI::mapClassPrefixToPath('Site', 'Site');
 
 /*
  * Setup custom exception and error handlers.
