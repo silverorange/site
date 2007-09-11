@@ -123,9 +123,19 @@ class SiteArticlePage extends SitePathPage
 	// {{{ protected function displayArticle()
 
 	/**
-	 * Displays an article
+	 * Displays an article on this page
+	 *
+	 * Article boydtext is displayed inside a containing div element. Article
+	 * bodytext may contain special markers that are replaced with content
+	 * specified by SiteArticlePage subclasses.
+	 *
+	 * Markers are created using the following syntax inside article bodytext:
+	 * <code>&lt;!-- [marker] --&gt;</code>
 	 *
 	 * @param SiteArticle $article the article to display.
+	 *
+	 * @see SiteArticlePage::getReplacementMarkerText()
+	 * @see SiteArticlePage::replaceMarkers()
 	 */
 	protected function displayArticle(SiteArticle $article)
 	{
@@ -213,8 +223,6 @@ class SiteArticlePage extends SitePathPage
 
 	/**
 	 * Replaces markers in article with dynamic content
-	 *
-	 * Markers are created using the syntax: &lt;!-- [marker --&gt;
 	 *
 	 * @param string $text the bodytext of the article.
 	 *
