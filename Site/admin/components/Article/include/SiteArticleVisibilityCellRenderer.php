@@ -30,7 +30,7 @@ class SiteArticleVisibilityCellRenderer extends SwatCellRenderer
 	{
 		$messages = array();
 
-		if ($this->enabled)
+		if (!$this->enabled)
 			$messages[] = Site::_('not enabled');
 		elseif ($this->display_positive_states)
 			$messages[] = Site::_('enabled');
