@@ -146,7 +146,7 @@ class SiteArticleIndex extends AdminIndex
 		$details_view->getField('visibility')->getFirstRenderer()->db =
 			$this->app->db;
 
-		$class = SwatDBClassMap::get('StoreArticle');
+		$class = SwatDBClassMap::get('SiteArticle');
 		$article = new $class();
 		$article->setDatabase($this->app->db);
 		$found = $article->load($this->id);
