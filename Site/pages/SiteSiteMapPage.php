@@ -31,7 +31,6 @@ class SiteSiteMapPage extends SiteArticlePage
 			order by displayorder, title';
 
 		$articles = SwatDB::query($this->app->db, $sql, $wrapper);
-		$articles->setRegion($this->app->getRegion());
 
 		return $articles;
 	}
