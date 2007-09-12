@@ -1,4 +1,3 @@
--- renamed from customers
 create table Account (
 	id serial,
 	fullname varchar(255),
