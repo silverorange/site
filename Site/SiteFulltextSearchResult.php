@@ -11,7 +11,7 @@ interface SiteFulltextSearchResult
 	// {{{ public function getJoinClause()
 
 	/**
-	 * Get an SQL join clause to use to query with this fulltext result
+	 * Get an SQL JOIN clause to use to query with this fulltext result
 	 *
 	 * @param string $id_field_name name of the id field to join with.
 	 * @param string $type document type to join with.
@@ -24,7 +24,7 @@ interface SiteFulltextSearchResult
 	// {{{ public function getOrderByClause()
 
 	/**
-	 * Perform a full text searche and returns the result
+	 * Get an SQL ORDER BY clause to use to query with this fulltext result
 	 *
 	 * @param string $default_clause a default order by clause to use in
 	 *                                addition to the fulltext clause.
@@ -32,6 +32,16 @@ interface SiteFulltextSearchResult
 	 * @return string
 	 */
 	public function getOrderByClause($default_clause);
+
+	// }}}
+	// {{{ public function getMisspellings()
+
+	/**
+	 * Retrieve possible misspellings of keywords
+	 *
+	 * @return array an array of possible misspellings.
+	 */
+	public function getMisspellings();
 
 	// }}}
 }

@@ -193,6 +193,58 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		$fulltext_result = $this->searchFulltext();
 		$this->buildArticles($fulltext_result);
+
+		if ($fulltext_result !== null)
+			$this->buildMisspellings($fulltext_result);
+	}
+
+	// }}}
+	// {{{ protected function buildMisspellings()
+
+	/**
+	 * Build suggested spelling message
+	 *
+	 * @param SiteFullTextResult $fulltext_result a fulltext result object
+	 */
+	protected function buildMisspellings($fulltext_result)
+	{
+		$misspellings = $fulltext_result->getMisspellings();
+
+		if (count($misspellings) > 0 ) {
+			$corrected_phrase = ' '.$this->getSearchDataValue('keywords').' ';
+			$corrected_string = SwatString::minimizeEntities($corrected_phrase);
+
+			foreach ($misspellings as $misspelling => $correction) {
+				// for URL
+				$corrected_phrase = str_replace(' '.$misspelling.' ',
+					' '.$correction.' ', $corrected_phrase);
+
+				// for display
+				$corrected_string = str_replace(
+					' '.SwatString::minimizeEntities($misspelling).' ',
+					' <strong>'.SwatString::minimizeEntities($correction).
+					'</strong> ',
+					$corrected_string);
+			}
+
+			$corrected_phrase = trim($corrected_phrase);
+			$corrected_string = trim($corrected_string);
+
+			$misspellings_link = new SwatHtmlTag('a');
+			$misspellings_link->href = sprintf('search?keywords=%s',
+				urlencode($corrected_phrase));
+
+			$misspellings_link->setContent($corrected_string, 'text/xml');
+
+			$misspellings_message = new SwatMessage(sprintf(
+				Store::_('Did you mean “%s”?'),
+				$misspellings_link->toString()));
+
+			$misspellings_message->content_type = 'text/xml';
+
+			$messages = $this->results_ui->getWidget('results_message');
+			$messages->add($misspellings_message);
+		}
 	}
 
 	// }}}
