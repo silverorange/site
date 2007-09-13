@@ -13,7 +13,7 @@ interface SiteFulltextSearchEngine
 	/**
 	 * Perform a full text searche and returns the result
 	 *
-	 * @param string $keywords the keywords to search with
+	 * @param string $keywords the keywords to search with.
 	 *
 	 * @return SiteFulltextSearchResult
 	 */
