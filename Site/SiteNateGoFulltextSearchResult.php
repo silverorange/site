@@ -76,6 +76,14 @@ class SiteNateGoFulltextSearchResult extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function getMisspellings()
+
+	public function getMisspellings()
+	{
+		return $this->nate_go_result->getMisspellings();
+	}
+
+	// }}}
 }
 
 ?>
