@@ -25,11 +25,27 @@ class SiteSearchForm extends SwatForm
 	}
 
 	// }}}
+	// {{{ public function isSubmitted()
+
+	public function isSubmitted()
+	{
+		/*
+		 * Search forms do not output an hidden field to determine if they
+		 * have been submitted.  Instead they are always assummed to be
+		 * submitted.
+		 */
+		return true;
+	}
+
+	// }}}
 	// {{{ protected function displayHiddenFields()
 
 	protected function displayHiddenFields()
 	{
-		// override to not output any hidden fields
+		/*
+		 * Override to not output any hidden fields since search forms use the
+		 * HTTP GET method.
+		 */
 	}
 
 	// }}}
