@@ -213,12 +213,9 @@ class SiteSearchResultsPage extends SiteArticlePage
 	/**
 	 * Get the no-results message for this search page
 	 *
-	 * @param string $type an optional type indicating the content type
-	 *                      for which there are no results.
-	 *
 	 * @return SwatMessage the no-results message.
 	 */
-	protected function getNoResultsMessage($type = null)
+	protected function getNoResultsMessage()
 	{
 		$message = new SwatMessage(Site::_('No results found.'));
 
