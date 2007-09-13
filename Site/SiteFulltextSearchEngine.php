@@ -11,7 +11,7 @@ interface SiteFulltextSearchEngine
 	// {{{ public function search()
 
 	/**
-	 * Perform a full text searche and returns the result
+	 * Perform a fulltext search and return the result
 	 *
 	 * @param string $keywords the keywords to search with.
 	 *
