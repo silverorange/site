@@ -269,31 +269,25 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected function getNoResultsMessage()
 	{
-		$tips = array();
-
 		if ($this->hasSearchDataValue('keywords')) {
 			$keywords = $this->getSearchDataValue('keywords');
 			$title = sprintf(Site::_('No results found for “%s”.'),
 				SwatString::minimizeEntities($keywords));
-
-			$tips[] = Site::_('Try using less specific keywords');
 		} else {
 			$title = Site::_('No results found.');
-			$tips[] = Site::_('Try broadening your search');
 		}
 
 		$message = new SwatMessage($title);
-		$tips[] = Site::_('You can search by an item’s number');
 
 		ob_start();
 		echo '<ul>';
 
-		foreach ($tips as $tip)
+		foreach ($this->getSearchTips() as $tip)
 			printf('<li>%s</li>', $tip);
 
 		printf('<li>%s<ul>', Site::_('Your search:'));
 
-		foreach ($this->getQuerySummary() as $summary)
+		foreach ($this->getSearchSummary() as $summary)
 			printf('<li>%s</li>', $summary);
 
 		echo '</ul></li></ul>';
@@ -304,14 +298,34 @@ class SiteSearchResultsPage extends SiteArticlePage
 	}
 
 	// }}}
-	// {{{ protected function getQuerySummary()
+	// {{{ protected function getSearchTips()
+
+	/**
+	 * Get array of search tips to display when there are no results
+	 *
+	 * @return array an array of tip strings.
+	 */
+	protected function getSearchTips()
+	{
+		$tips = array();
+
+		if ($this->hasSearchDataValue('keywords'))
+			$tips[] = Site::_('Try using less specific keywords');
+		else
+			$tips[] = Site::_('Try broadening your search');
+
+		return $tips;
+	}
+
+	// }}}
+	// {{{ protected function getSearchSummary()
 
 	/**
 	 * Get a summary of the criteria that was used to perform the search
 	 *
 	 * @return array an array of summary strings.
 	 */
-	protected function getQuerySummary()
+	protected function getSearchSummary()
 	{
 		$summary = array();
 
