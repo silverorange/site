@@ -1,0 +1,23 @@
+ul.site-search-results {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+ul.site-search-results li {
+	list-style-type: none;
+}
+
+ul.site-search-results div.navbar {
+	margin-bottom: 0.2em;
+}
+
+.site-search-result-title {
+	font-weight: bold;
+}
+
+#article_results_frame p {
+	margin: 0 0 1em 0;
+	line-height: 1.2;
+}
+

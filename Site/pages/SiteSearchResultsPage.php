@@ -441,7 +441,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected function displayArticles(SiteArticleWrapper $articles)
 	{
-		echo '<ul class="search-results">';
+		echo '<ul class="site-search-results">';
 		$paragraph_tag = new SwatHtmlTag('p');
 
 		foreach ($articles as $article) {
@@ -450,7 +450,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 
 			$anchor_tag = new SwatHtmlTag('a');
 			$anchor_tag->href = $navbar->getLastEntry()->link;
-			$anchor_tag->class = 'search-result-title';
+			$anchor_tag->class = 'site-search-result-title';
 
 			echo '<li>';
 			$anchor_tag->setContent($article->title);
