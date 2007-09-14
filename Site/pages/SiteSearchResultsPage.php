@@ -178,8 +178,10 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		parent::build();
 
-		$this->buildResults();
-		$this->buildMessages();
+		if (count($this->getSearchDataValues()) > 0) {
+			$this->buildResults();
+			$this->buildMessages();
+		}
 
 		$this->layout->startCapture('content');
 		$this->ui->display();
@@ -237,7 +239,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 			$misspellings_link->setContent($corrected_string, 'text/xml');
 
 			$misspellings_message = new SwatMessage(sprintf(
-				Store::_('Did you mean “%s”?'),
+				Site::_('Did you mean “%s”?'),
 				$misspellings_link->toString()));
 
 			$misspellings_message->content_type = 'text/xml';
