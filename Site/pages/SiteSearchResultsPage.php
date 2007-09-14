@@ -269,18 +269,34 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected function getNoResultsMessage()
 	{
-		$message = new SwatMessage(Site::_('No results found.'));
+		$tips = array();
+
+		if ($this->hasSearchDataValue('keywords')) {
+			$keywords = $this->getSearchDataValue('keywords');
+			$title = sprintf(Site::_('No results found for “%s”.'),
+				SwatString::minimizeEntities($keywords));
+
+			$tips[] = Site::_('Try using less specific keywords');
+		} else {
+			$title = Site::_('No results found.');
+			$tips[] = Site::_('Try broadening your search');
+		}
+
+		$message = new SwatMessage($title);
+		$tips[] = Site::_('You can search by an item’s number');
 
 		ob_start();
 		echo '<ul>';
 
-		printf('<li>%s</li>',
-			Site::_('Try broadening your search of using less specific keywords'));
+		foreach ($tips as $tip)
+			printf('<li>%s</li>', $tip);
+
+		printf('<li>%s<ul>', Site::_('Your search:'));
 
 		foreach ($this->getQuerySummary() as $summary)
-			echo '<li>', $summary, '</li>';
+			printf('<li>%s</li>', $summary);
 
-		echo '</ul>';
+		echo '</ul></li></ul>';
 		$message->secondary_content = ob_get_clean();
 		$message->content_type = 'text/xml';
 
