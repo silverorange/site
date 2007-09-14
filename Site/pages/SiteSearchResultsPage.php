@@ -26,14 +26,14 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 *
 	 * @var SwatUI
 	 */
-	protected $results_ui;
+	protected $ui;
 
 	/**
 	 * The SwatML file to load the search results user-interface from
 	 *
 	 * @var string
 	 */
-	protected $results_ui_xml = 'Site/pages/search-results.xml';
+	protected $ui_xml = 'Site/pages/search-results.xml';
 
 	/**
 	 * The fulltext result object
@@ -136,9 +136,9 @@ class SiteSearchResultsPage extends SiteArticlePage
 		$this->addSearchDataField('keywords');
 		$this->initSearchData();
 
-		$this->results_ui = new SwatUI();
-		$this->results_ui->loadFromXML($this->results_ui_xml);
-		$this->results_ui->init();
+		$this->ui = new SwatUI();
+		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->init();
 	}
 
 	// }}}
@@ -166,7 +166,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		parent::process();
 
-		$this->results_ui->process();
+		$this->ui->process();
 	}
 
 	// }}}
@@ -182,7 +182,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 		$this->buildMessages();
 
 		$this->layout->startCapture('content');
-		$this->results_ui->display();
+		$this->ui->display();
 		$this->layout->endCapture();
 	}
 
@@ -242,7 +242,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 
 			$misspellings_message->content_type = 'text/xml';
 
-			$messages = $this->results_ui->getWidget('results_message');
+			$messages = $this->ui->getWidget('results_message');
 			$messages->add($misspellings_message);
 		}
 	}
@@ -254,7 +254,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		if (count($this->has_results) == 0) {
 			$message = $this->getNoResultsMessage();
-			$messages = $this->results_ui->getWidget('results_message');
+			$messages = $this->ui->getWidget('results_message');
 			$messages->add($message);
 		}
 	}
@@ -362,7 +362,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected function buildArticles($fulltext_result)
 	{
-		$pager = $this->results_ui->getWidget('article_pager');
+		$pager = $this->ui->getWidget('article_pager');
 		$engine = $this->instantiateArticleSearchEngine();
 		$engine->setFulltextResult($fulltext_result);
 		$articles = $engine->search($pager->page_size, $pager->current_record);
@@ -373,8 +373,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		if (count($articles) > 0) {
 			$this->has_results[] = 'article';
 
-			$frame = $this->results_ui->getWidget('article_results_frame');
-			$results = $this->results_ui->getWidget('article_results');
+			$frame = $this->ui->getWidget('article_results_frame');
+			$results = $this->ui->getWidget('article_results');
 			$frame->visible = true;
 
 			ob_start();
@@ -444,7 +444,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		parent::finalize();
 		$this->layout->addHtmlHeadEntrySet(
-			$this->results_ui->getRoot()->getHtmlHeadEntrySet());
+			$this->ui->getRoot()->getHtmlHeadEntrySet());
 
 		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
 			'packages/site/styles/site-search-results-page.css', Site::PACKAGE_ID));
