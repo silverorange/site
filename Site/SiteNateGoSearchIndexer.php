@@ -7,14 +7,14 @@ require_once 'NateGoSearch/NateGoSearchIndexer.php';
 /**
  * Site search indexer application for NateGoSearch
  *
- * This indexer indexed products, categories and articles by default.
+ * This indexer indexes articles by default.
  * Subclasses may change how and what gets indexed.
  *
  * @package   Site
  * @copyright 2006-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SiteNateGoSearchIndexer extends SiteSearchIndexer
+class SiteNateGoSearchIndexer extends SiteSearchIndexer
 {
 	// {{{ class constants
 
@@ -62,12 +62,15 @@ abstract class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	}
 
 	// }}}
-	// {{{ abstract public function queue()
+	// {{{ public function queue()
 	
 	/**
 	 * Repopulates the entire search queue
 	 */
-	abstract public function queue();
+	public function queue()
+	{
+		$this->queueArticles();
+	}
 
 	// }}}
 	// {{{ public function run()
@@ -107,7 +110,7 @@ abstract class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	}
 
 	// }}}
-	// {{{ abstract protected function index()
+	// {{{ protected function index()
 
 	/**
 	 * Indexes documents
@@ -115,7 +118,10 @@ abstract class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	 * Subclasses should override this method to add or remove additional
 	 * indexed tables.
 	 */
-	abstract protected function index();
+	protected function index()
+	{
+		$this->indexArticles();
+	}
 
 	// }}}
 	// {{{ protected function clearCache()
@@ -135,6 +141,97 @@ abstract class SiteNateGoSearchIndexer extends SiteSearchIndexer
 			$this->output(Site::_('done')."\n",
 				self::VERBOSITY_ALL);
 		}
+	}
+
+	// }}}
+	// {{{ protected function queueArticles()
+
+	/**
+	 * Repopulates the articles queue
+	 */
+	protected function queueArticles()
+	{
+		$this->output(Site::_('Repopulating article search queue ... '),
+			self::VERBOSITY_ALL);
+
+		$type = NateGoSearch::getDocumentType($this->db, 'article');
+
+		// clear queue 
+		$sql = sprintf('delete from NateGoSearchQueue
+			where document_type = %s',
+			$this->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
+
+		// fill queue 
+		$sql = sprintf('insert into NateGoSearchQueue
+			(document_type, document_id) select %s, id from Article',
+			$this->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
+
+		$this->output(Site::_('done')."\n", self::VERBOSITY_ALL);
+	}
+
+	// }}}
+	// {{{ protected function indexArticles()
+
+	/**
+	 * Indexes articles
+	 *
+	 * Articles are visible if they are enabled. Articles may not be shown in
+	 * the menu but are still visible. Articles also have an explicit
+	 * searchable field.
+	 */
+	protected function indexArticles()
+	{
+		$indexer = new NateGoSearchIndexer('article', $this->db);
+
+		$indexer->addTerm(new NateGoSearchTerm('title', 5));
+		$indexer->addTerm(new NateGoSearchTerm('bodytext'));
+		$indexer->setMaximumWordLength(32);
+		$indexer->addUnindexedWords(
+			NateGoSearchIndexer::getDefaultUnindexedWords());
+
+		$type = NateGoSearch::getDocumentType($this->db, 'article');
+
+		$sql = sprintf('select id, shortname, title, bodytext from Article
+			inner join NateGoSearchQueue
+				on Article.id = NateGoSearchQueue.document_id
+				and NateGoSearchQueue.document_type = %s',
+			$this->db->quote($type, 'integer'));
+
+		$this->output(Site::_('Indexing articles ... ').'   ',
+			self::VERBOSITY_ALL);
+
+		$articles = SwatDB::query($this->db, $sql);
+		$total = count($articles);
+		$count = 0;
+		foreach ($articles as $article) {
+
+			if ($count % 10 == 0) {
+				$indexer->commit();
+				$this->output(str_repeat(chr(8), 3), self::VERBOSITY_ALL);
+				$this->output(sprintf('%2d%%', ($count / $total) * 100),
+					self::VERBOSITY_ALL);
+			}
+
+			$document = new NateGoSearchDocument($article, 'id');
+			$indexer->index($document);
+
+			$count++;
+		}
+
+		$this->output(str_repeat(chr(8), 3).Site::_('done')."\n",
+			self::VERBOSITY_ALL);
+
+		$indexer->commit();
+		unset($indexer);
+
+		$sql = sprintf('delete from NateGoSearchQueue where document_type = %s',
+			$this->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
 	}
 
 	// }}}
