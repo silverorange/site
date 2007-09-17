@@ -83,8 +83,14 @@ class SiteSearchPagination extends SwatPagination
 		else
 			$link = $this->link.'?';
 
-		foreach($vars as $name => $value)
-			$link .= $name.'='.urlencode($value).'&';
+		foreach($vars as $name => $value) {
+			if (is_array($value)) {
+				foreach ($value as $sub_value)
+					$link .= $name.'[]='.urlencode($sub_value).'&';
+			} elseif (strlen($value) > 0) {
+				$link .= $name.'='.urlencode($value).'&';
+			}
+		}
 
 		if ($this->type !== null)
 			$link.= sprintf('type=%s&', $this->type);
