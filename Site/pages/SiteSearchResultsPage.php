@@ -152,8 +152,9 @@ class SiteSearchResultsPage extends SiteArticlePage
 			$value = SiteApplication::initVar($field,
 					null, SiteApplication::VAR_GET);
 
-			if ($value !== null && strlen($value) > 0)
-				$this->search_data_values[$field] = $value;
+			if ($value !== null && 
+				(is_array($value) || strlen($value) > 0))
+					$this->search_data_values[$field] = $value;
 		}
 	}
 
