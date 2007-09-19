@@ -1,6 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDB.php';
+require_once 'Swat/SwatString.php';
 require_once 'Site/SitePageFactory.php';
 require_once 'Site/SiteArticlePath.php';
 
@@ -143,7 +144,7 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 	 */
 	protected function findArticle(SiteWebApplication $app, $path)
 	{
-		if (!mb_check_encoding($path, 'UTF-8'))
+		if (!SwatString::validateUtf8($path, 'UTF-8'))
 			throw new SiteException(
 				sprintf('Path is not valid UTF-8: ‘%s’', $path));
 
