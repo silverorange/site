@@ -144,7 +144,7 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 	 */
 	protected function findArticle(SiteWebApplication $app, $path)
 	{
-		if (!SwatString::validateUtf8($path, 'UTF-8'))
+		if (!SwatString::validateUtf8($path))
 			throw new SiteException(
 				sprintf('Path is not valid UTF-8: ‘%s’', $path));
 
