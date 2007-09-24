@@ -94,13 +94,16 @@ class SiteArticleSearch extends AdminSearch
 			// keywords are included in the where clause if fulltext searching
 			// is turned off
 			if ($this->getArticleSearchType() === null) {
-				$where.= ' and (';
+				// since AdminSearchClause returns null when the value passed in
+				// is null, the 1 = 0 below is required to not cause invalid sql
+				// on a blank search
+				$where.= ' and ( 1 = 0';
 
 				$clause = new AdminSearchClause('title');
 				$clause->table = 'Article';
 				$clause->value = $this->ui->getWidget('search_keywords')->value;
 				$clause->operator = AdminSearchClause::OP_CONTAINS;
-				$where.= $clause->getClause($this->app->db, '');
+				$where.= $clause->getClause($this->app->db, 'or');
 
 				$clause = new AdminSearchClause('bodytext');
 				$clause->table = 'Article';
