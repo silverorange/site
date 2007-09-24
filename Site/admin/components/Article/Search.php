@@ -96,7 +96,7 @@ class SiteArticleSearch extends AdminSearch
 			if ($this->getArticleSearchType() === null) {
 				// since AdminSearchClause returns null when the value passed in
 				// is null, the 1 = 0 below is required to not cause invalid sql
-				// on a blank search
+				// on a search where keywords is blank
 				$where.= ' and ( 1 = 0';
 
 				$clause = new AdminSearchClause('title');
@@ -147,7 +147,7 @@ class SiteArticleSearch extends AdminSearch
 		$pager->total_records = SwatDB::queryOne($this->app->db, $sql);
 
 		$sql = 'select Article.id,
-					Article.title, 
+					Article.title,
 					Article.show,
 					Article.searchable
 				from Article
