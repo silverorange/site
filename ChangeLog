@@ -1,3 +1,29 @@
+2007-10-05  gauthierm
+
+	* [r21142] site/trunk/Site/SiteWebApplication.php,
+	  site/trunk/Site/layouts/SiteLayout.php,
+	  site/trunk/Site/pages/SitePage.php:
+	  Add an extra hook to SiteLayout so we can perform actions after
+	  the page is built but before the layout is completed.
+
+2007-10-05  nrf
+
+	* [r21109] site/trunk/package.php:
+	  prepare for release of 1.1.7
+	* [r21103] site/trunk/package.php:
+	  prepare for release of 1.1.6
+	* [r21093] site/trunk/package.php:
+	  prepare for release of 1.1.5
+	* [r21090] site/trunk/Site/SiteNateGoFulltextSearchEngine.php:
+	  New spellchecker doesn't need mispelling lists
+	* [r21089] site/trunk/Site/SiteNateGoFulltextSearchEngine.php,
+	  site/trunk/Site/pages/SiteSearchResultsPage.php:
+	  Pass locale to spell checker
+	* [r21087] site/trunk/Site/SiteNateGoFulltextSearchEngine.php:
+	  Use new spellchecker
+	* [r21019] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.1.4
+
 2007-09-24  isaac
 
 	* [r20509] site/trunk/Site/admin/components/Article/Search.php:
