@@ -24,6 +24,13 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	protected $db;
 
 	/**
+	 * The locale to use for spell checking
+	 *
+	 * @var string
+	 */
+	protected $locale;
+
+	/**
 	 * The document types to search
 	 *
 	 * @var array
@@ -40,9 +47,10 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	 *
 	 * @param MDB2_Driver_Common $db
 	 */
-	public function __construct($db)
+	public function __construct($db, $locale)
 	{
 		$this->db = $db;
+		$this->locale = $locale;
 	}
 
 	// }}}
@@ -71,7 +79,7 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	 */
 	public function search($keywords)
 	{
-		$spell_checker = new NateGoSearchPSpellSpellChecker();
+		$spell_checker = new NateGoSearchPSpellSpellChecker($this->locale);
 		$spell_checker->loadMisspellingsFromFile(
 			$spell_checker->getDefaultMisspellingsFilename());
 

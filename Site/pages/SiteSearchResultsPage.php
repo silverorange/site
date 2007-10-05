@@ -357,8 +357,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		if ($this->hasSearchDataValue('keywords')) {
 			$keywords = $this->getSearchDataValue('keywords');
 
-			$fulltext_engine =
-				new SiteNateGoFulltextSearchEngine($this->app->db);
+			$fulltext_engine = new SiteNateGoFulltextSearchEngine(
+				$this->app->db, $this->app->getLocale());
 
 			$types = $this->getFulltextTypes();
 			$fulltext_engine->setTypes($types);
