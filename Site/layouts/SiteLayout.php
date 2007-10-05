@@ -18,7 +18,7 @@ class SiteLayout extends SiteObject
 
 	public $app = null;
 	public $data = null;
-	
+
 	// }}}
 	// {{{ protected properties
 
@@ -92,6 +92,13 @@ class SiteLayout extends SiteObject
 	// {{{ public function finalize()
 
 	public function finalize()
+	{
+	}
+
+	// }}}
+	// {{{ public function complete()
+
+	public function complete()
 	{
 		$this->startCapture('html_head_entries');
 		$this->html_head_entries->display();

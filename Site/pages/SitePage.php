@@ -109,8 +109,10 @@ class SitePage extends SiteObject
 	// {{{ public function finalize()
 
 	/**
-	 * Always runs after {@link SitePage::build()} but runs before
-	 * {@link SiteLayout::build()}.
+	 * Always runs after {@link SitePage::build()} and before
+	 * {@link SiteLayout::complete()}. This method is indented to add HTML head
+	 * entries or perform other actions that should happen after the page has
+	 * been built.
 	 */
 	public function finalize()
 	{
