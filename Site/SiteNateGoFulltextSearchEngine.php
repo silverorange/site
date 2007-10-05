@@ -3,7 +3,7 @@
 require_once 'Site/SiteFulltextSearchEngine.php';
 require_once 'Site/SiteNateGoFulltextSearchResult.php';
 require_once 'NateGoSearch/NateGoSearchQuery.php';
-require_once 'NateGoSearch/NateGoSearchSpellChecker.php';
+require_once 'NateGoSearch/NateGoSearchPSpellSpellChecker.php';
 
 /**
  * A fulltext search engine that uses NateGoSearch
@@ -71,7 +71,7 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	 */
 	public function search($keywords)
 	{
-		$spell_checker = new NateGoSearchSpellChecker();
+		$spell_checker = new NateGoSearchPSpellSpellChecker();
 		$spell_checker->loadMisspellingsFromFile(
 			$spell_checker->getDefaultMisspellingsFilename());
 
