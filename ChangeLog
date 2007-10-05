@@ -1,3 +1,231 @@
+2007-09-24  isaac
+
+	* [r20509] site/trunk/Site/admin/components/Article/Search.php:
+	  ws
+	* [r20505] site/trunk/Site/admin/components/Article/Search.php:
+	  when no search type is set, we fall back to AdminSearchClause -
+	  without the added 1=0, this was broken when we did a search
+	  without keywords
+
+2007-09-19  gauthierm
+
+	* [r20429] site/trunk/Site/SiteArticlePageFactory.php:
+	  Remove extra argument from method call.
+
+2007-09-19  nrf
+
+	* [r20428] site/trunk/Site/SiteArticlePageFactory.php:
+	  Use new UTF-8 validation
+
+2007-09-18  nrf
+
+	* [r20371] site/trunk/Site/SiteSearchCheckboxList.php:
+	  A checkbox list widget for search forms which does not check
+	  hidden fields to determine if it was submitted.
+
+2007-09-17  nrf
+
+	* [r20321] site/trunk/Site/SiteSearchPagination.php:
+	  Handle array GET vars and only output non-empty GET vars in link.
+	* [r20317] site/trunk/Site/pages/SiteSearchResultsPage.php:
+	  Accept arrays from GET vars.
+
+2007-09-14  nrf
+
+	* [r20300] site/trunk/Site/SiteKeywordEntry.php:
+	  Push keyword entry widget up to Site.
+	* [r20292] site/trunk/Site/pages/SiteSearchResultsPage.php,
+	  site/trunk/www, site/trunk/www/styles,
+	  site/trunk/www/styles/site-search-results-page.css:
+	  Push search results styles into Site with Steven's help
+	* [r20283] site/trunk/Site/pages/SiteSearchPage.php,
+	  site/trunk/Site/pages/search-form.xml:
+	  Add a fully functional search form page to Site.
+	* [r20282] site/trunk/Site/pages/SiteSearchResultsPage.php:
+	  Only display results if some search criteria was supplied.
+	  Remove Store-ism.
+	* [r20280] site/trunk/Site/SiteNateGoSearchIndexer.php:
+	  Push article indexing up into Site.
+	* [r20276] site/trunk/Site/SiteUnnamedButton.php:
+	  Push up from Store to Site.
+	* [r20270] site/trunk/Site/pages/SiteSearchResultsPage.php:
+	  Further cleanup messages
+	* [r20269] site/trunk/Site/pages/SiteSearchResultsPage.php:
+	  Cleanup messages
+	* [r20256] site/trunk/Site/pages/SiteSearchResultsPage.php:
+	  Rename $ui class variable
+
+2007-09-13  nrf
+
+	* [r20241] site/trunk/Site/SiteFulltextSearchResult.php,
+	  site/trunk/Site/SiteNateGoFulltextSearchResult.php,
+	  site/trunk/Site/pages/SiteSearchResultsPage.php:
+	  Add misspellings.
+	* [r20236] site/trunk/Site/pages/SiteSearchResultsPage.php:
+	  Remove unused param
+	* [r20234] site/trunk/Site/pages/SiteSearchResultsPage.php,
+	  site/trunk/Site/pages/search-results.xml:
+	  A page that performs a search and displays the results.
+	  - driven by GET variables
+	  - uses new *SearchEngine objects
+	* [r20233] site/trunk/Site/SiteSearchPagination.php:
+	  A pagination widget for GET-based search result pages.
+	* [r20232] site/trunk/Site/SiteSearchForm.php:
+	  Override isSubmitted() for search forms and cleanup comments.
+	* [r20223] site/trunk/Site/SiteArticleSearchEngine.php:
+	  A search engine for articles.
+	* [r20222] site/trunk/Site/SiteSearchEngine.php:
+	  A base class for search engines.
+	  - independent of search pages
+	  - will be sub-classed for searching different type of content
+	  - can optionally use a SiteFulltextSearchResult
+	  - could be used in the admin
+	* [r20217] site/trunk/Site/SiteNateGoFulltextSearchEngine.php,
+	  site/trunk/Site/SiteNateGoFulltextSearchResult.php:
+	  An implementation of SiteFulltextSearchEngine and
+	  SiteFulltextSearchResult which use NateGoSearch.
+	* [r20215] site/trunk/Site/SiteFulltextSearchEngine.php:
+	  typo
+	* [r20214] site/trunk/Site/SiteFulltextSearchEngine.php,
+	  site/trunk/Site/SiteFulltextSearchResult.php:
+	  Add docs
+	* [r20212] site/trunk/Site/SiteFulltextSearchEngine.php,
+	  site/trunk/Site/SiteFulltextSearchResult.php:
+	  New interface for a fulltext search engine.
+
+2007-09-12  nick
+
+	* [r20147] site/trunk/sql/tables/Account.sql:
+	  Old unnecessary note.
+	* [r20144] site/trunk/Site/SiteArticlePageFactory.php,
+	  site/trunk/sql/views/EnabledArticleView.sql:
+	  Handle enabled articles properly (show doesn't have to be true,
+	  and handling it
+	  in a view makes it more flexible - and parallel to Store).
+	* [r20143] site/trunk/sql/tables/Account.sql:
+	  Account shouldn't have phone number (this is part of Store)
+
+2007-09-11  nrf
+
+	* [r20123] site/trunk/Site/pages/SiteSiteMapPage.php:
+	  remove storeism
+
+2007-09-11  gauthierm
+
+	* [r20118] site/trunk/Site/pages/SiteArticlePage.php:
+	  Additional documentation Nick started.
+
+2007-09-11  nick
+
+	* [r20115] site/trunk/Site/pages/SiteArticlePage.php:
+	  Helpful documentation for how to create markers
+	* [r20102] site/trunk/Site/admin/components/Account,
+	  site/trunk/Site/admin/components/Account/AddressDelete.php,
+	  site/trunk/Site/admin/components/Account/AddressEdit.php,
+	  site/trunk/Site/admin/components/Account/Details.php,
+	  site/trunk/Site/admin/components/Account/Edit.php,
+	  site/trunk/Site/admin/components/Account/EmailPassword.php,
+	  site/trunk/Site/admin/components/Account/Index.php,
+	  site/trunk/Site/admin/components/Account/PaymentMethodDelete.php,
+	  site/trunk/Site/admin/components/Account/PaymentMethodEdit.php,
+	  site/trunk/Site/admin/components/Account/addressedit.xml,
+	  site/trunk/Site/admin/components/Account/details.xml,
+	  site/trunk/Site/admin/components/Account/edit.xml,
+	  site/trunk/Site/admin/components/Account/index.xml,
+	  site/trunk/Site/admin/components/Account/payment-method-edit.xml:
+	  
+	  Account admin components for Site
+	* [r20092] site/trunk/Site/admin/components/Article/Edit.php:
+	  Undo commit 20091
+	* [r20091]
+	  site/trunk/Site/admin/components/Article/include/SiteArticleVisibilityCellRenderer.php:
+	  
+	  Whoops, reverse logic
+	* [r20089] site/trunk/Site/admin/components/Article/Edit.php:
+	  Move NateGoSearch references back to Store.
+	* [r20088] site/trunk/Site/admin/components/Article/Index.php:
+	  Fix old Store reference
+
+2007-09-11  nrf
+
+	* [r20083] site/trunk/Site/Site.php:
+	  Add the Site package to the SwatUI class map.
+
+2007-09-10  nick
+
+	* [r20075] site/trunk/Site/SiteAccountSessionModule.php,
+	  site/trunk/Site/SiteNewPasswordMailMessage.php,
+	  site/trunk/Site/SiteResetPasswordMailMessage.php,
+	  site/trunk/Site/dataobjects/SiteAccount.php,
+	  site/trunk/Site/dataobjects/SiteAccountWrapper.php:
+	  Move all account dataobjects and session tools into Site. I
+	  still need to do a
+	  little work with the two MailMessage classes.
+	* [r20057] site/trunk/Site/dataobjects/SiteArticle.php,
+	  site/trunk/sql/views/VisibleArticleView.sql:
+	  Respect enabled field for Articles
+
+2007-09-10  nrf
+
+	* [r20046] site/trunk/Site/SiteArticlePageFactory.php:
+	  Thwart potential invalid UTF-8 attacks against our database.
+
+2007-09-07  gauthierm
+
+	* [r20030] site/trunk/Site/admin/components/Article/Index.php:
+	  Article is an object and is already assigned by reference.
+
+2007-09-07  nick
+
+	* [r20026] site/trunk/Site/admin/components/Article/Edit.php,
+	  site/trunk/Site/admin/components/Article/Index.php,
+	  site/trunk/Site/admin/components/Article/include/SiteArticleActionsProcessor.php,
+	  
+	  site/trunk/Site/admin/components/Article/include/SiteArticleVisibilityCellRenderer.php,
+	  site/trunk/Site/admin/components/Article/index.xml:
+	  Add enabled to the Article edit page, and include methods to
+	  remove them for
+	  the Store package.
+	* [r20025] site/trunk/Site/dataobjects/SiteArticle.php:
+	  Add modified_date to the dataobject (not sure why this was
+	  missing, but it was
+	  never used before)
+	* [r20013] site/trunk/Site/admin/components/Article/Edit.php,
+	  site/trunk/Site/admin/components/Article/edit.xml:
+	  Add enabled flag to Site admin Article editor
+	* [r20011] site/trunk/Site/dataobjects/SiteArticle.php,
+	  site/trunk/Site/pages/SiteArticlePage.php:
+	  Add a new method to retrieve visible sub-articles rather than
+	  all sub-articles.
+	* [r20009] site/trunk/sql/tables/Article.sql:
+	  Add an 'enabled' field for articles in the Site package to allow
+	  disabling
+	  articles. Store package sites don't need this because they have
+	  region bindings
+	  that take care of it. I'll commit changes to Store next.
+	* [r20004] site/trunk/Site/dataobjects/SiteArticle.php:
+	  Nathan/Mike: doesn't this make sense? Only visible articles
+	  should be loaded as
+	  sub-articles, right? Or do we need two methods, one to load all
+	  subarticles,
+	  and another to load only visible ones (or make it a method with
+	  an optional
+	  property)?
+
+2007-09-06  nick
+
+	* [r19964] site/trunk/Site/dataobjects/SiteArticle.php:
+	  Add createdate to loading of sub articles
+
+2007-09-04  nrf
+
+	* [r19910] site/trunk/Site/SiteExceptionLogger.php:
+	  this is what i meant to do in the last commit
+	* [r19907] site/trunk/Site/SiteExceptionLogger.php:
+	  Make XHTML log files proper XHTML docs and set the charset.
+	* [r19877] site/trunk/ChangeLog, site/trunk/package.php:
+	  prepare for release of 1.1.3
+
 2007-09-04  nick
 
 	* [r19875] site/trunk/Site/SiteXMLRPCServerFactory.php:
