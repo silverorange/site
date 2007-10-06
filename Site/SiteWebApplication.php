@@ -93,8 +93,9 @@ class SiteWebApplication extends SiteApplication
 
 			$this->page->layout->build();
 			$this->page->build();
-			$this->page->finalize();
 			$this->page->layout->finalize();
+			$this->page->finalize();
+			$this->page->layout->complete();
 		}
 
 		$this->page->layout->display();
