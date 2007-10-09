@@ -63,7 +63,7 @@ class SiteAccountIndex extends AdminSearch
 
 	protected function getWhereClause()
 	{
-		/** 
+		/**
 		 * The only way an account fullname can be null is if we've cleared the
 		 * data from it with the privacy scripts - we don't ever want to display
 		 * these accounts in the search results
