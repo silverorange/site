@@ -11,7 +11,7 @@ require_once 'include/SiteArticleVisibilityCellRenderer.php';
 /**
  * Search page for Articles
  *
- * @package  Site 
+ * @package  Site
  * @copyright 2005-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
@@ -75,7 +75,7 @@ class SiteArticleSearch extends AdminSearch
 	// build phase
 	// {{{ protected function buildInternal()
 
-	protected function buildInternal() 
+	protected function buildInternal()
 	{
 		parent::buildInternal();
 
@@ -93,11 +93,10 @@ class SiteArticleSearch extends AdminSearch
 
 			// keywords are included in the where clause if fulltext searching
 			// is turned off
-			if ($this->getArticleSearchType() === null) {
-				// since AdminSearchClause returns null when the value passed in
-				// is null, the 1 = 0 below is required to not cause invalid sql
-				// on a search where keywords is blank
-				$where.= ' and ( 1 = 0';
+			if ($this->getArticleSearchType() === null &&
+				$this->ui->getWidget('search_keywords')->value != null) {
+
+				$where.= ' and ( ';
 
 				$clause = new AdminSearchClause('title');
 				$clause->table = 'Article';
@@ -170,7 +169,7 @@ class SiteArticleSearch extends AdminSearch
 
 		if (count($rs) > 0)
 			$this->ui->getWidget('results_message')->content =
-				$pager->getResultsMessage(Site::_('result'), 
+				$pager->getResultsMessage(Site::_('result'),
 					Site::_('results'));
 
 		return $rs;
@@ -223,6 +222,7 @@ class SiteArticleSearch extends AdminSearch
 	protected function getArticleSearchType()
 	{
 		return null;
+		//return NateGoSearch::getDocumentType($this->app->db, 'article');
 	}
 
 	// }}}

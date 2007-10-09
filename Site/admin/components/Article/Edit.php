@@ -75,7 +75,7 @@ class SiteArticleEdit extends AdminDBEdit
 
 		} elseif (!$this->validateShortname($shortname)) {
 			$message = new SwatMessage(
-				Site::_('Shortname already exists and must be unique.'), 
+				Site::_('Shortname already exists and must be unique.'),
 				SwatMessage::ERROR);
 
 			$this->ui->getWidget('shortname')->addMessage($message);
@@ -124,8 +124,8 @@ class SiteArticleEdit extends AdminDBEdit
 			$this->id = SwatDB::insertRow($this->app->db, 'Article',
 				$this->fields, $values, 'integer:id');
 		} else {
-			SwatDB::updateRow($this->app->db, 'Article', $this->fields, 
-				$values, 'integer:id', $this->id);
+			SwatDB::updateRow($this->app->db, 'Article', $this->fields, $values,
+				'integer:id', $this->id);
 		}
 
 		$this->addToSearchQueue();
