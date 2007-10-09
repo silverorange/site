@@ -102,7 +102,7 @@ class SiteArticleSearch extends AdminSearch
 				$clause->table = 'Article';
 				$clause->value = $this->ui->getWidget('search_keywords')->value;
 				$clause->operator = AdminSearchClause::OP_CONTAINS;
-				$where.= $clause->getClause($this->app->db, 'or');
+				$where.= $clause->getClause($this->app->db, '');
 
 				$clause = new AdminSearchClause('bodytext');
 				$clause->table = 'Article';
