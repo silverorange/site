@@ -116,7 +116,7 @@ class SiteAccountIndex extends AdminSearch
 
 	protected function getSQL()
 	{
-		return 'select Account.id, Account.fullname, Account.email	
+		return 'select Account.id, Account.fullname, Account.email
 			from Account
 			where %s
 			order by %s';

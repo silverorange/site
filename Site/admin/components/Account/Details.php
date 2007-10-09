@@ -73,7 +73,7 @@ class SiteAccountDetails extends AdminIndex
 	// build phase
 	// {{{ protected function buildInternal()
 
-	public function buildInternal() 
+	public function buildInternal()
 	{
 		parent::buildInternal();
 
@@ -96,7 +96,7 @@ class SiteAccountDetails extends AdminIndex
 	// }}}
 	// {{{ protected function buildAccountDetails()
 
-	protected function buildAccountDetails() 
+	protected function buildAccountDetails()
 	{
 		$ds = $this->getAccountDetailsStore();
 
