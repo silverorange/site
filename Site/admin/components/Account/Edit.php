@@ -138,7 +138,7 @@ class SiteAccountEdit extends AdminDBEdit
 		} else {
 			$account_fullname = SwatDB::queryOneFromTable($this->app->db,
 				'Account', 'text:fullname', 'id', $this->id);
-	
+
 			$this->navbar->addEntry(new SwatNavBarEntry($account_fullname,
 				sprintf('Account/Details?id=%s', $this->id)));
 			$this->navbar->addEntry(new SwatNavBarEntry(Site::_('Edit')));
