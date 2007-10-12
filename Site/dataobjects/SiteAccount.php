@@ -82,7 +82,7 @@ class SiteAccount extends SwatDBDataObject
 	// {{{ public properties
 
 	/**
-	 * The database id of this account 
+	 * The database id of this account
 	 *
 	 * If this property is null or 0 when SiteAccount::save() method is
 	 * called, a new account is inserted in the database.
@@ -283,7 +283,7 @@ class SiteAccount extends SwatDBDataObject
 
 		SwatDB::exec($app->db, $sql);
 
-		// email the new password to the account holder 
+		// email the new password to the account holder
 		$this->sendNewPasswordMailMessage($app, $new_password);
 	}
 
