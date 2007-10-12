@@ -185,6 +185,22 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getFullName()
+
+	/**
+	 * Gets the full name of the person who owns this account
+	 *
+	 * Having this method allows subclasses to split the full name into an
+	 * arbitrary number of fields. For example, first name and last name.
+	 *
+	 * @return string the full name of the person who owns this account.
+	 */
+	public function getFullName()
+	{
+		return $this->fullname;
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
