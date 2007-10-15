@@ -32,7 +32,7 @@ abstract class SiteXMLRPCServer extends SitePage
 	 */
 	public function process()
 	{
-		$server = XML_RPC2_Server::create($this);
+		$server = XML_RPC2_Server::create($this, array('encoding' => 'UTF-8'));
 
 		$this->layout->startCapture('response');
 		$server->handleCall();
