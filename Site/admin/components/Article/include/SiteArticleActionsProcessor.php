@@ -68,7 +68,7 @@ class SiteArticleActionsProcessor
 					'One article has been shown in the menu.',
 					'%d articles have been shown in the menu.', $num),
 					SwatString::numberFormat($num)));
-				
+
 				break;
 
 			case 'hide_from_menu':
@@ -90,7 +90,7 @@ class SiteArticleActionsProcessor
 					'One article has been made searchable.',
 					'%d articles have been made searchable.', $num),
 					SwatString::numberFormat($num)));
-				
+
 				break;
 
 			case 'hide_from_search':
