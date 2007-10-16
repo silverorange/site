@@ -75,7 +75,7 @@ class SiteArticleDelete extends AdminDBDelete
 		parent::buildInternal();
 
 		$item_list = $this->getItemList('integer');
-		
+
 		$dep = new AdminListDependency();
 		$dep->setTitle(Site::_('article'), Site::_('articles'));
 		$dep->entries = AdminListDependency::queryEntries($this->app->db,
@@ -106,7 +106,7 @@ class SiteArticleDelete extends AdminDBDelete
 		$dep_subarticles->entries = AdminListDependency::queryEntries(
 			$this->app->db, 'Article', 'integer:id', 'integer:parent',
 			'title', 'title', 'parent in ('.$item_list.')',
-			AdminDependency::DELETE); 
+			AdminDependency::DELETE);
 
 		$dep->addDependency($dep_subarticles);
 
@@ -129,7 +129,7 @@ class SiteArticleDelete extends AdminDBDelete
 		$this->navbar->popEntry();
 
 		if ($this->single_delete) {
-			$navbar_rs = SwatDB::executeStoredProc($this->app->db, 
+			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
 				'getArticleNavBar', array($this->getFirstItem()));
 
 			foreach ($navbar_rs as $elem)
