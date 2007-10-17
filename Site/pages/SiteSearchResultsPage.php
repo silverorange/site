@@ -171,7 +171,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	}
 
 	// }}}
-	
+
 	// build phase
 	// {{{ public function build()
 
