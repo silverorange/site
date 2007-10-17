@@ -68,10 +68,11 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 * in this search data field.
 	 *
 	 * @param string $name the name of the search data field.
+	 * @param boolean $is_array whether to expect array values in this field.
 	 */
-	protected function addSearchDataField($name)
+	protected function addSearchDataField($name, $is_array = false)
 	{
-		$this->search_data_fields[] = $name;
+		$this->search_data_fields[$name] = $is_array;
 	}
 
 	// }}}
@@ -148,13 +149,24 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		$search_data_values = array();
 
-		foreach ($this->search_data_fields as $field) {
+		foreach ($this->search_data_fields as $field => $is_array) {
 			$value = SiteApplication::initVar($field,
 					null, SiteApplication::VAR_GET);
 
-			if ($value !== null && 
-				(is_array($value) || strlen($value) > 0))
-					$this->search_data_values[$field] = $value;
+			if ($value !== null) {
+				if ($is_array) {
+					if (is_array($value)) {
+						$this->search_data_values[$field] = $value;
+					} elseif (strlen($value) > 0) {
+						// got string, make into an array
+						$this->search_data_values[$field] = array($value);
+						$_GET[$field] = array($value);
+					}
+				} else {
+					if (strlen($value) > 0)
+						$this->search_data_values[$field] = $value;
+				}
+			}
 		}
 	}
 
