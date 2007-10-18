@@ -13,6 +13,11 @@ require_once 'Swat/SwatCheckboxList.php';
  */
 class SiteSearchCheckboxList extends  SwatCheckboxList
 {
+	// {{{ public properties
+
+	public $highlight_values = array();
+
+	// }}}
 	// {{{ public function process()
 
 	/**
@@ -32,6 +37,19 @@ class SiteSearchCheckboxList extends  SwatCheckboxList
 			$this->values = $data[$this->id];
 		else
 			$this->values = array();
+	}
+
+	// }}}
+	// {{{ protected function getLiTag()
+
+	protected function getLiTag($option)
+	{
+		$tag = parent::getLiTag($option);
+
+		if (in_array($option->value, $this->highlight_values))
+			$tag->class = 'highlight';
+
+		return $tag;
 	}
 
 	// }}}
