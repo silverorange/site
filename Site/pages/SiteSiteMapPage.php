@@ -27,8 +27,10 @@ class SiteSiteMapPage extends SiteArticlePage
 	{
 		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
 		$sql = 'select id, title, shortname from Article
-			where parent is null
+			where parent is null and enabled = %1$s and show = %1$s
 			order by displayorder, title';
+
+		$sql = sprintf($sql, $this->app->db->quote(true, 'boolean'));
 
 		$articles = SwatDB::query($this->app->db, $sql, $wrapper);
 
