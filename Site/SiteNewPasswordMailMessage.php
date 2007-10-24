@@ -89,13 +89,13 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 				'generate new password. Make sure email is loaded on the '.
 				'account object.');
 
-		if ($this->account->fullname === null)
+		if ($this->account->getFullname() === null)
 			throw new SiteException('Account requires a fullname to '.
-				'generate new password. Make sure fullname is loaded on the '.
-				'account object.');
+				'generate new password. Make sure the getFullname() method '.
+				'returns a fullname.');
 
 		$this->to_address = $this->account->email;
-		$this->to_name = $this->account->fullname;
+		$this->to_name = $this->account->getFullname();
 		$this->text_body = $this->getTextBody();
 		$this->html_body = $this->getHtmlBody();
 
@@ -105,13 +105,13 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 	// }}}
 	// {{{ protected function getTextBody()
 
-	/** 
+	/**
 	 * Gets the plain-text content of this mail message
 	 *
 	 * @return string the plain-text content of this mail message.
 	 */
 	protected function getTextBody()
-	{	
+	{
 		return $this->getFormattedBody(
 			"%s\n\n%s\n\n%s",
 			$this->new_password);
@@ -120,7 +120,7 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 	// }}}
 	// {{{ protected function getHtmlBody()
 
-	/** 
+	/**
 	 * Gets the HTML content of this mail message
 	 *
 	 * @return string the HTML content of this mail message.
@@ -141,7 +141,7 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 			sprintf(Site::_('This email is in response to your recent '.
 			'request for a new password for your %s account. Your new '.
 			'password is:'), $this->application_title),
-			
+
 			$formatted_password,
 
 			Site::_('After logging into your account, you can set a new '.
