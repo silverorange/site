@@ -87,13 +87,13 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 				'reset password. Make sure email is loaded on the account '.
 				'object.');
 
-		if ($this->account->fullname === null)
+		if ($this->account->getFullname() === null)
 			throw new SiteException('Account requires a fullname to reset '.
-				'password. Make sure fullname is loaded on the account '.
-				'object.');
+				'password. Make sure the getFullname() method returns a '.
+				'fullname.');
 
 		$this->to_address = $this->account->email;
-		$this->to_name = $this->account->fullname;
+		$this->to_name = $this->account->getFullname();
 		$this->text_body = $this->getTextBody();
 		$this->html_body = $this->getHtmlBody();
 
