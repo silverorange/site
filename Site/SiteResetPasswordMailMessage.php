@@ -139,7 +139,7 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 			sprintf(Site::_('This email is in response to your recent '.
 			'request for a new password for your %s account. Your password '.
 			'has not yet been changed. Please click on the following link '.
-			'and follow the outlined steps to change your account password.'),
+			'and follow the steps to change your account password.'),
 				$this->application_title),
 
 			$formatted_link,
