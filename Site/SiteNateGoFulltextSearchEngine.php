@@ -34,18 +34,17 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	 * The document types to search
 	 *
 	 * @var array
-	 *
 	 */
 	protected $types = array();
 
 	// }}}
-
 	// {{{ public function __construct()
 
 	/**
 	 * Creates a new nate-go fulltext search engine
 	 *
 	 * @param MDB2_Driver_Common $db
+	 * @param string $locale
 	 */
 	public function __construct($db, $locale)
 	{
