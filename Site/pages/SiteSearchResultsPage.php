@@ -470,7 +470,12 @@ class SiteSearchResultsPage extends SiteArticlePage
 			$anchor_tag->display();
 			$navbar->display();
 			$paragraph_tag->open();
-			echo SwatString::condense($article->bodytext, 150).'&nbsp;';
+
+			if (strlen($article->description))
+				echo SwatString::condense($article->description, 150).'&nbsp;';
+			else
+				echo SwatString::condense($article->bodytext, 150).'&nbsp;';
+
 			$anchor_tag->setContent(Site::_('more').'&nbsp;»');
 			$anchor_tag->display();
 			$paragraph_tag->close();
