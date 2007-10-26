@@ -135,11 +135,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 			// save last login date
 			$now = new SwatDate();
 			$now->toUTC();
-			$sql = sprintf('update Account set last_login = %s where id = %s',
-				$this->app->db->quote($now->getDate(), 'date'),
-				$this->app->db->quote($account->id, 'integer'));
-
-			SwatDB::exec($this->app->db, $sql);
+			$this->account->updateLastLoginDate($now);
 		}
 
 		return $this->isLoggedIn();
