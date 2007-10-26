@@ -60,7 +60,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 	/**
 	 * Gets the module features this module depends on
 	 *
-	 * The store session module depends on the SiteDatabaseModule feature.
+	 * The site account session module depends on the SiteDatabaseModule
+	 * feature.
 	 *
 	 * @return array an array of features this module depends on.
 	 */
