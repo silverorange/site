@@ -201,6 +201,29 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function updateLastLoginDate()
+
+	/**
+	 * Sets the last login date of this account in the database to the
+	 * specified date
+	 *
+	 * @param SwatDate $date the last login date of this account.
+	 */
+	public function updateLastLoginDate(SwatDate $date)
+	{
+		$this->checkDB();
+
+		$id_field = new SwatDBField($this->id_field, 'integer');
+		$sql = sprintf('update %s set last_login = %s where %s = %s',
+			$this->table,
+			$this->db->quote($date->getDate(), 'date'),
+			$id_field->name,
+			$this->db->quote($this->getId(), $id_field->type));
+
+		SwatDB::exec($this->db, $sql);
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
