@@ -164,15 +164,13 @@ class SiteArticlePage extends SitePathPage
 		if (count($articles) == 0)
 			return;
 
-		echo '<ul class="sub-articles">';
+		echo '<dl class="sub-articles">';
 
 		foreach($articles as $article) {
-			echo '<li>';
 			$this->displaySubArticle($article, $path);
-			echo '</li>';
 		}
 
-		echo '</ul>';
+		echo '</dl>';
 	}
 
 	// }}}
@@ -195,10 +193,13 @@ class SiteArticlePage extends SitePathPage
 		$anchor_tag->href = $path.'/'.$article->shortname;
 		$anchor_tag->class = 'sub-article';
 		$anchor_tag->setContent($article->title);
+
+		echo '<dt>';
 		$anchor_tag->display();
+		echo '</dt>';
 
 		if (strlen($article->description) > 0)
-			echo ' - ', $article->description;
+			echo '<dd>', $article->description, '</dd>';
 	}
 
 	// }}}
