@@ -38,6 +38,26 @@ class SiteSiteMapPage extends SiteArticlePage
 	}
 
 	// }}}
+	// {{{ protected function displaySubArticles()
+
+	protected function displaySubArticles(SiteArticleWrapper $articles,
+		$path = null)
+	{
+		if (count($articles) == 0)
+			return;
+
+		echo '<ul class="site-map-list">';
+
+		foreach($articles as $article) {
+			echo '<li>';
+			$this->displaySubArticle($article, $path);
+			echo '</li>';
+		}
+
+		echo '</ul>';
+	}
+
+	// }}}
 	// {{{ protected function displaySubArticle()
 
 	protected function displaySubArticle($article, $path = null)
