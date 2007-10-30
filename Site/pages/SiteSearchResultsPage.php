@@ -291,6 +291,10 @@ class SiteSearchResultsPage extends SiteArticlePage
 			$misspellings_link->href = sprintf('search?keywords=%s',
 				urlencode($corrected_phrase));
 
+			$query_string = $this->getQueryString('keywords');
+			if (strlen($query_string) > 0)
+				$misspellings_link->href.= '&'.$query_string;
+
 			$misspellings_link->setContent($corrected_string, 'text/xml');
 
 			$misspellings_message = new SwatMessage(sprintf(
