@@ -108,6 +108,27 @@ abstract class SiteSearchEngine extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function getSearchSummary()
+
+	/**
+	 * Get a summary of the criteria that was used to perform the search
+	 *
+	 * @return array an array of summary strings.
+	 */
+	public function getSearchSummary()
+	{
+		$summary = array();
+
+		if ($this->fulltext_result !== null) {
+			$keywords = implode(' ', $this->fulltext_result->getSearchedWords());
+			$summary[] = sprintf('Keywords: <b>%s</b>',
+				SwatString::minimizeEntities($keywords));
+		}
+
+		return $summary;
+	}
+
+	// }}}
 	// {{{ protected function queryResults()
 
 	/**
