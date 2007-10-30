@@ -63,7 +63,7 @@ class SiteSearchPage extends SiteSearchResultsPage
 	}
 
 	// }}}
-	
+
 	// build phase
 	// {{{ public function build()
 
