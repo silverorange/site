@@ -84,6 +84,19 @@ class SiteNateGoFulltextSearchResult extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function &getSearchedWords()
+
+	/**
+	 * Gets words that were entered and were searched for
+	 *
+	 * @return array words that were entered and were searched for.
+	 */
+	public function &getSearchedWords()
+	{
+		return $this->nate_go_result->getSearchedWords();
+	}
+
+	// }}}
 }
 
 ?>

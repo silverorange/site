@@ -56,8 +56,10 @@ class SiteSearchResultsPage extends SiteArticlePage
 
 	private $search_data_fields = array();
 	private $search_data_values;
+	private $search_engines = array();
 
 	// }}}
+
 	// {{{ protected function addSearchDataField()
 
 	/**
@@ -165,6 +167,33 @@ class SiteSearchResultsPage extends SiteArticlePage
 		}
 
 		return $string;
+	}
+
+	// }}}
+	// {{{ protected function setSearchEngine()
+
+	protected function setSearchEngine($name, $engine)
+	{
+		$this->search_engines[$name] = $engine;
+	}
+
+	// }}}
+	// {{{ protected function hasSearchEngine()
+
+	protected function hasSearchEngine($name)
+	{
+		return isset($this->search_engines[$name]);
+	}
+
+	// }}}
+	// {{{ protected function getSearchEngine()
+
+	protected function getSearchEngine($name)
+	{
+		if (isset($this->search_engines[$name]))
+			return $this->search_engines[$name];
+		else
+			throw new SiteException('Search engine does not exist.');
 	}
 
 	// }}}
@@ -390,10 +419,9 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		$summary = array();
 
-		if ($this->hasSearchDataValue('keywords')) {
-			$keywords = $this->getSearchDataValue('keywords');
-			$summary[] = sprintf('Keywords: <b>%s</b>',
-				SwatString::minimizeEntities($keywords));
+		if ($this->hasSearchEngine('article')) {
+			$engine = $this->getSearchEngine('article');
+			$summary = $engine->getSearchSummary();
 		}
 
 		return $summary;
@@ -415,6 +443,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 		if ($this->hasSearchDataValue('keywords')) {
 			$keywords = $this->getSearchDataValue('keywords');
 
+			// TODO: remove refernce to StoreApplication::getLocale()
 			$fulltext_engine = new SiteNateGoFulltextSearchEngine(
 				$this->app->db, $this->app->getLocale());
 
@@ -485,6 +514,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	protected function instantiateArticleSearchEngine()
 	{
 		$engine = new SiteArticleSearchEngine($this->app);
+		$this->setSearchEngine('article', $engine);
 
 		return $engine;
 	}
