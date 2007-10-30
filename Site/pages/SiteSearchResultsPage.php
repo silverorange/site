@@ -126,6 +126,48 @@ class SiteSearchResultsPage extends SiteArticlePage
 	}
 
 	// }}}
+	// {{{ protected function getQueryString()
+
+	/**
+	 * Retrieve a query string containing all search data fields
+	 *
+	 * @param mixed $exclude name of the search data field to exclude from the
+	 *                        returned string or an array of names to exclude.
+	 *
+	 * @return string the query sting.
+	 */
+	protected function getQueryString($exclude = null)
+	{
+		$string = '';
+
+		$first = true;
+		foreach ($this->getSearchDataValues() as $name => $value) {
+			if ($exclude !== null) {
+				if (!is_array($exclude))
+					$exclude = array($exclude);
+
+				if (in_array($name, $exclude))
+					continue;
+			}
+
+			if ($first)
+				$first = false;
+			else
+				$string.= '&';
+
+			if (is_array($value)) {
+				$name.= '[]';
+				foreach ($value as $subvalue)
+					$string.= sprintf('%s=%s', $name, $subvalue);
+			} else {
+				$string.= sprintf('%s=%s', $name, $value);
+			}
+		}
+
+		return $string;
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ public function init
