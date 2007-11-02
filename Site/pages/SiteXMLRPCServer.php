@@ -50,6 +50,28 @@ abstract class SiteXMLRPCServer extends SitePage
 	}
 
 	// }}}
+	// {{{ public function finalize()
+
+	/**
+	 * @xmlrpc.hidden
+	 */
+	public function finalize()
+	{
+		parent::finalize();
+	}
+
+	// }}}
+	// {{{ public function __toString()
+
+	/**
+	 * @xmlrpc.hidden
+	 */
+	public function __toString()
+	{
+		parent::__toString();
+	}
+
+	// }}}
 	// {{{ protected function createLayout()
 
 	/**
