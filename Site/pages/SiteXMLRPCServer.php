@@ -79,7 +79,7 @@ abstract class SiteXMLRPCServer extends SitePage
 	 */
 	public function __toString()
 	{
-		parent::__toString();
+		return parent::__toString();
 	}
 
 	// }}}
