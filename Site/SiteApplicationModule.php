@@ -59,7 +59,7 @@ abstract class SiteApplicationModule extends SiteObject
 	public function provides()
 	{
 		static $provides = null;
-		
+
 		if ($provides === null) {
 			$provides = array();
 			$reflector = new ReflectionObject($this);
