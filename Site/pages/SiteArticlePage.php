@@ -90,7 +90,8 @@ class SiteArticlePage extends SitePathPage
 				SwatString::minimizeEntities(SwatString::condense(
 				SwatString::stripXHTMLTags($this->article->bodytext, 400)));
 		} else {
-			$this->layout->data->meta_description = $this->article->description;
+			$this->layout->data->meta_description =
+				SwatString::minimizeEntities($this->article->description);
 		}
 
 		$this->buildContent();
