@@ -89,12 +89,19 @@ class SiteArticlePage extends SitePathPage
 			SwatString::minimizeEntities(SwatString::condense(
 			SwatString::stripXHTMLTags($this->article->bodytext, 400)));
 
+		$this->buildContent();
+		$this->buildNavBar();
+	}
+
+	// }}}
+	// {{{ protected function buildContent()
+
+	protected function buildContent()
+	{
 		$this->layout->startCapture('content');
 		$this->displayArticle($this->article);
 		$this->displaySubArticles($this->article->getVisibleSubArticles());
 		$this->layout->endCapture();
-
-		$this->buildNavBar();
 	}
 
 	// }}}
