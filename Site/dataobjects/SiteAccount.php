@@ -185,6 +185,36 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function loadWithEmail()
+
+	/**
+	 * Loads an acount from the database with just an email address
+	 *
+	 * This is useful for password recovery and email address verification.
+	 *
+	 * @param string $email the email address of the account.
+	 *
+	 * @return boolean true if the loading was successful and false if it was
+	 *                  not.
+	 */
+	public function loadWithEmail($email)
+	{
+		$this->checkDB();
+
+		$sql = sprintf('select id from %s
+			where lower(email) = lower(%s)',
+			$this->table,
+			$this->db->quote($email, 'text'));
+
+		$id = SwatDB::queryOne($this->db, $sql);
+
+		if ($id === null)
+			return false;
+
+		return $this->load($id);
+	}
+
+	// }}}
 	// {{{ public function getFullName()
 
 	/**
