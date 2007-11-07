@@ -213,6 +213,32 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function hasModule()
+
+	/**
+	 * Checks if this application has a module that provides the specified
+	 * feature
+	 *
+	 * This method is useful for checking if an application provides certain
+	 * featured. For example, you can see if an application supports session
+	 * features using:
+	 * <code>
+	 * <?php
+	 * if ($app->hasModule('SiteSessionModule')) {  ... session code ... }
+	 * ?>
+	 * </code>
+	 *
+	 * @param string $feature the provided feature.
+	 *
+	 * @return boolean true if this applicaiton has a module that provides the
+	 *                  specified feature and false if it does not.
+	 */
+	public function hasModule($feature)
+	{
+		return array_key_exists($feature, $this->modules_by_provides);
+	}
+
+	// }}}
 	// {{{ protected function initModules()
 
 	/**
