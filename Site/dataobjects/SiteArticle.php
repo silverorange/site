@@ -10,7 +10,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  * contain content.
  *
  * SiteArticle objects themselves may represent a tree structure by accessing
- * the {@link SiteArticle::$parent} property. 
+ * the {@link SiteArticle::$parent} property.
  *
  * @package   Site
  * @copyright 2006-2007 silverorange
