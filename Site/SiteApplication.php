@@ -442,7 +442,7 @@ abstract class SiteApplication extends SiteObject
 	/**
 	 * Initializes a variable
 	 *
-	 * Static convenience method to initialize a local variable with a value 
+	 * Static convenience method to initialize a local variable with a value
 	 * from one of the PHP global arrays.
 	 *
 	 * @param string $name the name of the variable to lookup.
