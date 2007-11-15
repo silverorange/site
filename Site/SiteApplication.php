@@ -462,37 +462,41 @@ abstract class SiteApplication extends SiteObject
 		if ($types == 0)
 			$types = self::VAR_POST | self::VAR_GET;
 
-		if (($types & self::VAR_POST) != 0
-			&& isset($_POST[$name]))
+		if (($types & self::VAR_POST) != 0 &&
+			array_key_exists($name, $_POST)) {
 				$var = $_POST[$name];
 
-		elseif (($types & self::VAR_GET) != 0
-			&& isset($_GET[$name]))
+		} elseif (($types & self::VAR_GET) != 0 &&
+			array_key_exists($name, $_GET)) {
 				$var = $_GET[$name];
 
-		elseif (($types & self::VAR_REQUEST) != 0
-			&& isset($_REQUEST[$name]))
+		} elseif (($types & self::VAR_REQUEST) != 0 &&
+			array_key_exists($name, $_REQUEST)) {
 				$var = $_REQUEST[$name];
 
-		elseif (($types & self::VAR_COOKIE) != 0
-			&& isset($_COOKIE[$name]))
+		} elseif (($types & self::VAR_COOKIE) != 0 &&
+			array_key_exists($name, $_COOKIE)) {
 				$var = $_COOKIE[$name];
 
-		elseif (($types & self::VAR_SERVER) != 0
-			&& isset($_SERVER[$name]))
+		} elseif (($types & self::VAR_SERVER) != 0 &&
+			array_key_exists($name, $_SERVER)) {
 				$var = $_SERVER[$name];
 
-		elseif (($types & self::VAR_SESSION) != 0
-			&& isset($_SESSION[$name]))
+		} elseif (($types & self::VAR_SESSION) != 0	&&
+			array_key_exists($name, $_SESSION)) {
 				$var = $_SESSION[$name];
 
-		elseif (($types & self::VAR_FILES) != 0
-			&& isset($_FILES[$name]))
+		} elseif (($types & self::VAR_FILES) != 0 &&
+			array_key_exists($name, $_FILES)) {
 				$var = $_FILES[$name];
 
-		elseif (($types & self::VAR_ENV != 0)
-			&& isset($_ENV[$name]))
-				$var = $_ENV[$name];
+		} elseif (($types & self::VAR_ENV) != 0) {
+			// Use getenv() instead of $_ENV so we can load environment
+			// variables that were set after the script started running.
+			$value = getenv($name);
+			if ($value !== false)
+				$var = $value;
+		}
 
 		return $var;
 	}
