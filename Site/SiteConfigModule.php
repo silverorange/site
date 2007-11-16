@@ -41,15 +41,6 @@ class SiteConfigModule extends SiteApplicationModule
 	// {{{ private properties
 
 	/**
-	 * The filename of the ini file to use for this configuration module
-	 *
-	 * @var string
-	 *
-	 * @see SiteConfigurationModule::setFilename()
-	 */
-	private $filename;
-
-	/**
 	 * The sections of this configuration
 	 *
 	 * This array is indexed by section names and contains SiteConfigSection
@@ -96,11 +87,14 @@ class SiteConfigModule extends SiteApplicationModule
 	/**
 	 * Loads configuration from ini file
 	 *
-	 * @throws SwatException if any of the ini file key names are invalid.
+	 * @param string $filename the filename of the ini file to load.
+	 *
+	 * @throws SwatException if any of the ini file setting names are not
+	 *                       defined.
 	 */
-	public function load()
+	public function load($filename)
 	{
-		$ini_array = parse_ini_file($this->filename, true);
+		$ini_array = parse_ini_file($filename, true);
 		foreach ($ini_array as $section_name => $section_values) {
 
 			if (!array_key_exists($section_name, $this->definitions)) {
@@ -123,19 +117,6 @@ class SiteConfigModule extends SiteApplicationModule
 			$this->sections[$section_name] = $section;
 		}
 		$this->loaded = true;
-	}
-
-	// }}}
-	// {{{ public function setFilename()
-
-	/**
-	 * Sets the configuration filename
-	 *
-	 * @param string $name the path and name of the confuration file.
-	 */
-	public function setFilename($filename)
-	{
-		$this->filename = $filename;
 	}
 
 	// }}}
@@ -248,10 +229,11 @@ class SiteConfigModule extends SiteApplicationModule
 	 */
 	private function __get($name)
 	{
-		if (!array_key_exists($name, $this->sections))
+		if (!array_key_exists($name, $this->sections)) {
 			throw new SiteException(sprintf(
-				"Section '%s' does no exist in this config module.",
+				"Section '%s' does not exist in this config module.",
 				$name));
+		}
 
 		return $this->sections[$name];
 	}
