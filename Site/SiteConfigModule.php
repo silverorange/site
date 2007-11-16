@@ -102,6 +102,23 @@ class SiteConfigModule extends SiteApplicationModule
 	{
 		$ini_array = parse_ini_file($this->filename, true);
 		foreach ($ini_array as $section_name => $section_values) {
+
+			if (!array_key_exists($section_name, $this->definitions)) {
+				throw new SiteException(sprintf(
+					"Cannot load configuration because a section with the ".
+					"name '%s' is not defined.", $section_name));
+			}
+
+			foreach ($section_values as $name => $value) {
+				if (!array_key_exists($name,
+					$this->definitions[$section_name])) {
+					throw new SiteException(sprintf(
+						"Cannot load configuration because the section '%s' ".
+						"does not define a setting with a name of '%s'.",
+						$section_name, $name));
+				}
+			}
+
 			$section = new SiteConfigSection($section_name, $section_values);
 			$this->sections[$section_name] = $section;
 		}
@@ -200,7 +217,7 @@ class SiteConfigModule extends SiteApplicationModule
 		if (!array_key_exists($section, $this->definitions))
 			$this->definitions[$section] = array();
 
-		if (!array_key_exists($name, $this->definitions[$section])
+		if (!array_key_exists($name, $this->definitions[$section]))
 			$this->definitions[$section] = array();
 
 		$this->definitions[$section][$name] = $default_value;
