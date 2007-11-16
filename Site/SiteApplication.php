@@ -89,18 +89,39 @@ abstract class SiteApplication extends SiteObject
 	// {{{ public function __construct()
 
 	/**
-	 * Creates a new Site application
+	 * Creates a new application
 	 *
-	 * When the application is created, the default modules are loaded. See
+	 * When this application is created, the default modules are loaded. See
 	 * {@link SiteApplication::getDefaultModuleList()}.
 	 *
+	 * If a configuration filename is specified when this application is
+	 * created, a configuration module is created and loaded before the other
+	 * application modules are initialized. SiteConfigurableApplication
+	 * provides a hook to configure modules before initModules() is called in
+	 * the {@link SiteApplication::config()} method.
+	 *
 	 * @param string $id a unique identifier for this application.
+	 * @param string $config_filename optional. The filename of the
+	 *                                 configuration file. If not specified,
+	 *                                 no configuration module is created and
+	 *                                 no special configuration is performed.
 	 */
-	public function __construct($id)
+	public function __construct($id, $config_filename = null)
 	{
 		$this->id = $id;
+
+		if ($config_filename !== null) {
+			$this->addModule(new SiteConfigModule($this), 'config');
+		}
+
 		$this->addDefaultModules();
 		$this->default_time_zone = new Date_TimeZone('UTC');
+
+		if ($config_filename !== null) {
+			$this->addConfigDefinitions();
+			$this->config->load($config_filename);
+			$this->configure();
+		}
 	}
 
 	// }}}
@@ -407,6 +428,36 @@ abstract class SiteApplication extends SiteObject
 	protected function getDefaultModuleList()
 	{
 		return array();
+	}
+
+	// }}}
+	// {{{ protected function configure()
+
+	/**
+	 * Configures modules of this application
+	 *
+	 * This method is run after the configuration has been loaded. Developers
+	 * should add module-specific configuration here.
+	 */
+	protected function configure()
+	{
+	}
+
+	// }}}
+	// {{{ protected function addConfigDefinitions()
+
+	/**
+	 * Adds configuration definitions to the config module of this application
+	 *
+	 * This method runs before the configuration is loaded. Developers should
+	 * add configuration definitions for every setting that will be loaded
+	 * by the config module.
+	 *
+	 * Packages may provide a convenient list of configuration definitions
+	 * in the static package class.
+	 */
+	protected function addConfigDefinitions()
+	{
 	}
 
 	// }}}

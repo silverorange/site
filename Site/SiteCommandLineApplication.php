@@ -68,6 +68,10 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 * set to display usage information.
 	 *
 	 * @param string $id a unique identifier for this application.
+	 * @param string $config_filename the filename of the configuration file.
+	 *                                 If specified as null, no configuration
+	 *                                 module is created and no special
+	 *                                 configuration is performed.
 	 * @param string $title the title of this application.
 	 * @param string $documentation optional text describing the purpose of
 	 *                               this application.
@@ -75,13 +79,14 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 * @throws SiteException if this application is not created in a command-
 	 *                        line environment.
 	 */
-	public function __construct($id, $title, $documentation = null)
+	public function __construct($id, $config_filename, $title,
+		$documentation = null)
 	{
 		if (!isset($_SERVER['argv']))
 			throw new SiteException('Command line applications must be run '.
-				'the command line.');
+				'from the command line.');
 
-		parent::__construct($id);
+		parent::__construct($id, $config_filename);
 
 		$this->title = $title;
 		$this->documentation = $documentation;
