@@ -166,13 +166,13 @@ class SiteConfigModule extends SiteApplicationModule
 	public function addDefinitions(array $definitions)
 	{
 		foreach ($definitions as $qualified_name => $default_value) {
-			if (strpos('.', $qualified_name) === false) {
+			if (strpos($qualified_name, '.') === false) {
 				throw new SiteException(sprintf(
 					"Qualified name of configuration definition '%s' must be ".
 					"of the form section.name.", $qualified_name));
 			}
 
-			list($name, $section) = explode('.', $qualified_name, 2);
+			list($section, $name) = explode('.', $qualified_name, 2);
 			$this->addDefinition($section, $name, $default_value);
 		}
 	}
