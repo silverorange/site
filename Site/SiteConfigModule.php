@@ -2,24 +2,20 @@
 
 require_once 'Swat/exceptions/SwatException.php';
 require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/SiteConfigModuleConfig.php';
+require_once 'Site/SiteConfigSection.php';
 
 /**
  * Web application module for site configuration
  *
  * The site configuration module loads an ini file of application settings.
- * By default, only settings from the "default" section are loaded. This may
- * be changed using the {@link SiteConfigModule::setScope()} method.
- *
- * Settings in the ini file may use a "dot notation". Properties with dot
- * notation are treated as sub-objects of the config module. For example, the
+ * Settings in the ini file are grouped into sections. Properties within
+ * sections are treated as sub-objects of the config module. For example, the
  * following section:
  *
  * <code>
- * [default]
- * database.dsn = test@test.com
- * database.user = test
- * time_zone = 'America/Halifax'
+ * [database]
+ * dsn = test@test.com
+ * user = test
  * </code>
  *
  * Will parse into to following config structure:
@@ -27,14 +23,14 @@ require_once 'Site/SiteConfigModuleConfig.php';
  * <?php
  * $config->database->dsn = 'test@test.com';
  * $config->database->user = 'test';
- * $config->time_zone = 'America/Halifax';
  * ?>
+ * </code>
  *
  * Because of the way the site configuration module parses ini properties into
- * PHP properties, all property names must be valid PHP variable names.
+ * PHP properties, all ini settings names must be valid PHP variable names.
  *
- * If a non-existant configuration property is accessed, its value will be
- * null.
+ * If a non-existant configuration property is accessed, an exception will be
+ * thrown.
  *
  * @package   Site
  * @copyright 2006-2007 silverorange
@@ -54,22 +50,21 @@ class SiteConfigModule extends SiteApplicationModule
 	private $filename;
 
 	/**
-	 * The ini section from which to load site configuration
+	 * The sections of this configuration
 	 *
-	 * Defaults to "default".
+	 * This array is indexed by section names and contains SiteConfigSection
+	 * objects as parsed from the ini file.
 	 *
-	 * @var string
-	 *
-	 * @see SiteConfigurationModule::setScope()
+	 * @var array
 	 */
-	private $section = 'default';
+	private $sections = array();
 
 	/**
-	 * The parsed configuration of this configuration module
+	 * Whether or not this config module has been loaded
 	 *
-	 * @var SiteConfigModuleConfig
+	 * @var boolean
 	 */
-	private $config;
+	private $loaded = false;
 
 	// }}}
 	// {{{ public function init()
@@ -81,7 +76,7 @@ class SiteConfigModule extends SiteApplicationModule
 	 */
 	public function init()
 	{
-		if ($this->config === null)
+		if (!$this->loaded)
 			$this->load();
 	}
 
@@ -96,8 +91,11 @@ class SiteConfigModule extends SiteApplicationModule
 	public function load()
 	{
 		$ini_array = parse_ini_file($this->filename, true);
-		$ini_array = $ini_array[$this->section];
-		$this->config = $this->parseIniArray($ini_array);
+		foreach ($ini_array as $section_name => $section_values) {
+			$section = new SiteConfigSection($section_name, $section_values);
+			$this->sections[$section_name] = $section;
+		}
+		$this->loaded = true;
 	}
 
 	// }}}
@@ -111,76 +109,6 @@ class SiteConfigModule extends SiteApplicationModule
 	public function setFilename($filename)
 	{
 		$this->filename = $filename;
-	}
-
-	// }}}
-	// {{{ public function setScope()
-
-	/**
-	 * Sets the configuration section
-	 *
-	 * @param string $section the section to load from the config file.
-	 */
-	public function setScope($section)
-	{
-		$this->section = $section;
-	}
-
-	// }}}
-	// {{{ protected function parseIniArray()
-
-	/**
-	 * Parses an array of ini file key-value pairs into a complex object
-	 * based on dot notation of ini array keys
-	 *
-	 * Each dot in the ini file key indicates a sub-object in the complex
-	 * object. For example, 'email.server.address' => 'test.com' parses to
-	 * $config->email->server->address = 'test.com'.
-	 *
-	 * @param array $ini_array the ini file array to parse.
-	 *
-	 * @return SiteConfigModuleConfig the parsed ini array object.
-	 *
-	 * @throws SwatException if any of the ini array key names are invalid.
-	 */
-	protected function parseIniArray(array $ini_array)
-	{
-		$config = new SiteConfigModuleConfig();
-
-		foreach ($ini_array as $key => $value) {
-			$object = $config;
-
-			$key_list = explode('.', $key);
-			while (count($key_list) > 1) {
-				// get key
-				$key = array_shift($key_list);
-
-				if (!$this->isValidKey($key))
-					throw new SwatException(sprintf(
-						"Invalid configuration key '%s' in file '%s'.",
-						$key, $this->filename));
-
-				// create key if it doesn't exist
-				if (!isset($object->$key))
-					$object->$key = new SiteConfigModuleConfig();
-
-				// set up next object 
-				$object = $object->$key;
-			}
-
-			if (count($key_list) > 0)
-				$key = array_shift($key_list);
-
-			if (!$this->isValidKey($key))
-				throw new SwatException(sprintf(
-					"Invalid configuration key '%s' in file '%s'.",
-					$key, $this->filename));
-
-			// assign value to current key
-			$object->$key = $value;
-		}
-
-		return $config;
 	}
 
 	// }}}
@@ -203,36 +131,36 @@ class SiteConfigModule extends SiteApplicationModule
 	// {{{ private function __get()
 
 	/**
-	 * Gets a config value
+	 * Gets a section of this config module
 	 *
-	 * @param string $name the name of the config value to get.
+	 * @param string $name the name of the config section to get.
 	 *
-	 * @return string the value of the config setting or null if the config
-	 *                 setting is not set.
+	 * @return SiteConfigSection the config section.
 	 */
 	private function __get($name)
 	{
-		$value = null;
-		if (isset($this->config->$name))
-			$value = $this->config->$name;
+		if (!array_key_exists($name, $this->sections))
+			throw new SiteException(sprintf(
+				"Section '%s' does no exist in this config module.",
+				$name));
 
-		return $value;
+		return $this->sections[$name];
 	}
 
 	// }}}
 	// {{{ private function __isset()
 
 	/**
-	 * Checks for existence of a configuration value
+	 * Checks for existence of a section within this config module
 	 *
-	 * @param string $name the name of the configuration value to check.
+	 * @param string $name the name of the section value to check.
 	 *
-	 * @return boolean true if the configuration value exists and false if it
-	 *                  does not.
+	 * @return boolean true if the section exists in this config module and
+	 *                  false if it does not.
 	 */
 	private function __isset($name)
 	{
-		return isset($this->config->$name);
+		return array_key_exists($name, $this->sections);
 	}
 
 	// }}}
