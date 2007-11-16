@@ -217,9 +217,6 @@ class SiteConfigModule extends SiteApplicationModule
 		if (!array_key_exists($section, $this->definitions))
 			$this->definitions[$section] = array();
 
-		if (!array_key_exists($name, $this->definitions[$section]))
-			$this->definitions[$section] = array();
-
 		$this->definitions[$section][$name] = $default_value;
 	}
 
