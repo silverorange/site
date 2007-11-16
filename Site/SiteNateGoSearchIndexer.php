@@ -63,7 +63,7 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 
 	// }}}
 	// {{{ public function queue()
-	
+
 	/**
 	 * Repopulates the entire search queue
 	 */
@@ -74,7 +74,7 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 
 	// }}}
 	// {{{ public function run()
-	
+
 	public function run()
 	{
 		$this->initModules();
@@ -156,14 +156,14 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 
 		$type = NateGoSearch::getDocumentType($this->db, 'article');
 
-		// clear queue 
+		// clear queue
 		$sql = sprintf('delete from NateGoSearchQueue
 			where document_type = %s',
 			$this->db->quote($type, 'integer'));
 
 		SwatDB::exec($this->db, $sql);
 
-		// fill queue 
+		// fill queue
 		$sql = sprintf('insert into NateGoSearchQueue
 			(document_type, document_id) select %s, id from Article',
 			$this->db->quote($type, 'integer'));
