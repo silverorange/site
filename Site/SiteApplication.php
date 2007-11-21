@@ -96,32 +96,36 @@ abstract class SiteApplication extends SiteObject
 	 *
 	 * If a configuration filename is specified when this application is
 	 * created, a configuration module is created and loaded before the other
-	 * application modules are initialized. SiteConfigurableApplication
-	 * provides a hook to configure modules before initModules() is called in
+	 * application modules are initialized. SiteApplication provides a hook to
+	 * configure modules before initModules() is called in
 	 * the {@link SiteApplication::config()} method.
 	 *
 	 * @param string $id a unique identifier for this application.
 	 * @param string $config_filename optional. The filename of the
 	 *                                 configuration file. If not specified,
-	 *                                 no configuration module is created and
 	 *                                 no special configuration is performed.
 	 */
 	public function __construct($id, $config_filename = null)
 	{
 		$this->id = $id;
 
-		if ($config_filename !== null) {
-			require_once 'Site/SiteConfigModule.php';
-			$this->addModule(new SiteConfigModule($this), 'config');
-		}
-
 		$this->addDefaultModules();
+
 		$this->default_time_zone = new Date_TimeZone('UTC');
 
 		if ($config_filename !== null) {
-			$this->addConfigDefinitions();
-			$this->config->load($config_filename);
-			$this->configure();
+
+			try {
+				$config_module = $this->getModule('SiteConfigModule');
+			} catch (SiteException $e) {
+				require_once 'Site/SiteConfigModule.php';
+				$config_module = new SiteConfigModule($this);
+				$this->addModule($config_module, 'config');
+			}
+
+			$this->addConfigDefinitions($config_module);
+			$config_module->load($config_filename);
+			$this->configure($config_module);
 		}
 	}
 
@@ -439,10 +443,14 @@ abstract class SiteApplication extends SiteObject
 	 *
 	 * This method is run after the configuration has been loaded. Developers
 	 * should add module-specific configuration here.
+	 *
+	 * @param SiteConfigModule $config the config module of this application
+	 *                                  to use for configuring the other
+	 *                                  modules.
 	 */
-	protected function configure()
+	protected function configure(SiteConfigModule $config)
 	{
-		$this->config->configure();
+		$config->configure();
 	}
 
 	// }}}
@@ -457,8 +465,11 @@ abstract class SiteApplication extends SiteObject
 	 *
 	 * Packages may provide a convenient list of configuration definitions
 	 * in the static package class.
+	 *
+	 * @param SiteConfigModule $config the config module of this application to
+	 *                                  witch to add the config definitions.
 	 */
-	protected function addConfigDefinitions()
+	protected function addConfigDefinitions(SiteConfigModule $config)
 	{
 	}
 
