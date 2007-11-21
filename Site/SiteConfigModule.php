@@ -202,6 +202,22 @@ class SiteConfigModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function config()
+
+	/**
+	 * Configures other modules of the application
+	 *
+	 * This method is run by the application after the configuration has been
+	 * loaded and other modules have been added. Developers may add
+	 * module-specific configuration here. Alternatively, module-specific
+	 * configuration may be added to the {@link SiteApplication::configure()}
+	 * method().
+	 */
+	public function configure()
+	{
+	}
+
+	// }}}
 	// {{{ private function isValidKey()
 
 	/**

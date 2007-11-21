@@ -442,6 +442,7 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected function configure()
 	{
+		$this->config->configure();
 	}
 
 	// }}}
