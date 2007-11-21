@@ -226,8 +226,12 @@ class SiteSearchResultsPage extends SiteArticlePage
 
 			if ($value !== null) {
 				if ($is_array) {
-					if (is_array($value))
+					if (is_array($value)) {
 						$this->search_data_values[$field] = $value;
+					} elseif (strlen($value) > 0) {
+						// got string, make into an array
+						$this->search_data_values[$field] = array($value);
+					}
 				} else {
 					if (strlen($value) > 0)
 						$this->search_data_values[$field] = $value;
