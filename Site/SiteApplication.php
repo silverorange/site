@@ -111,6 +111,7 @@ abstract class SiteApplication extends SiteObject
 		$this->id = $id;
 
 		if ($config_filename !== null) {
+			require_once 'Site/SiteConfigModule.php';
 			$this->addModule(new SiteConfigModule($this), 'config');
 		}
 
