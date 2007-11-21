@@ -33,10 +33,7 @@ class SiteSearchCheckboxList extends  SwatCheckboxList
 
 		$data = &$form->getFormData();
 
-		if (isset($data[$this->id]))
-			$this->values = $data[$this->id];
-		else
-			$this->values = array();
+		$this->processValues();
 	}
 
 	// }}}
