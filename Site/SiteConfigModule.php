@@ -113,9 +113,22 @@ class SiteConfigModule extends SiteApplicationModule
 				}
 			}
 
+			// merge default fields and values with loaded values
+			$section_values = array_merge($this->definitions[$section_name],
+				$section_values);
+
 			$section = new SiteConfigSection($section_name, $section_values);
 			$this->sections[$section_name] = $section;
 		}
+
+		// create default sections with default values
+		foreach ($this->definitions as $section_name => $default_values) {
+			if (!array_key_exists($section_name, $this->sections)) {
+				$this->sections[$section_name] = new SiteConfigSection(
+					$section_name, $default_values);
+			}
+		}
+
 		$this->loaded = true;
 	}
 
