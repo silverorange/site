@@ -102,7 +102,7 @@ class SiteConfigSection extends SwatObject
 	 */
 	private function __isset($name)
 	{
-		return array_key_exists($name, $this->values);
+		return (isset($this->values[$name]));
 	}
 
 	// }}}
