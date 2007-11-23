@@ -231,6 +231,25 @@ class SiteConfigModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function __toString()
+
+	/**
+	 * Gets a string representation of this config module
+	 *
+	 * This gets the loaded config values split into the loaded sections.
+	 *
+	 * @return string a string representation of this config module.
+	 */
+	public function __toString()
+	{
+		ob_start();
+		foreach ($this->sections as $section) {
+			echo $section, "\n";
+		}
+		return ob_get_clean();
+	}
+
+	// }}}
 	// {{{ private function isValidKey()
 
 	/**

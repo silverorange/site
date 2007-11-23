@@ -43,6 +43,27 @@ class SiteConfigSection extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function __toString()
+
+	/**
+	 * Gets a string representation of this config section
+	 *
+	 * This gets the name value pairs of this section with the section name as
+	 * the header.
+	 *
+	 * @return string a string representation of this config section.
+	 */
+	public function __toString()
+	{
+		ob_start();
+		echo "[", $this->name, "]\n";
+		foreach ($this->values as $name => $value) {
+			echo $name, " = ", $value, "\n";
+		}
+		return ob_get_clean();
+	}
+
+	// }}}
 	// {{{ private function __set()
 
 	/**
