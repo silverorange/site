@@ -76,7 +76,7 @@ class SiteCommandLineArgument extends SiteObject
 		return $this->names;
 	}
 
-	// }}
+	// }}}
 	// {{{ public function getParameters()
 
 	/**
