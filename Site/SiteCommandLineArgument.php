@@ -15,7 +15,7 @@ class SiteCommandLineArgument extends SiteObject
 {
 	// {{{ protected properties
 
-	/** 
+	/**
 	 * Text explaining how to use this argument
 	 *
 	 * @var string
@@ -133,7 +133,7 @@ class SiteCommandLineArgument extends SiteObject
 	// }}}
 	// {{{ public function getMethod()
 
-	/** 
+	/**
 	 * Gets the name of the method this argument calls on its application
 	 *
 	 * @return string the name of the method this argument calls on its
@@ -147,7 +147,7 @@ class SiteCommandLineArgument extends SiteObject
 	// }}}
 	// {{{ public function getDocumentation()
 
-	/** 
+	/**
 	 * Gets text explaining how to use this argument
 	 *
 	 * @return string text explaining how to use this argument.
