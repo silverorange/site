@@ -14,7 +14,7 @@ require_once 'Swat/SwatDate.php';
  */
 class SiteArticleEdit extends AdminDBEdit
 {
-	// {{{ protected properties 
+	// {{{ protected properties
 
 	protected $fields;
 	protected $parent;
@@ -116,11 +116,11 @@ class SiteArticleEdit extends AdminDBEdit
 		if ($this->id === null) {
 			$this->fields[] = 'date:createdate';
 			$values['createdate'] = $now->getDate();
-			
+
 			$this->fields[] = 'integer:parent';
-			$values['parent'] = 
+			$values['parent'] =
 				$this->ui->getWidget('edit_form')->getHiddenField('parent');
-			
+
 			$this->id = SwatDB::insertRow($this->app->db, 'Article',
 				$this->fields, $values, 'integer:id');
 		} else {
