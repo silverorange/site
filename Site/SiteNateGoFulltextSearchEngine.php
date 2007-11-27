@@ -44,12 +44,16 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	 * Creates a new nate-go fulltext search engine
 	 *
 	 * @param MDB2_Driver_Common $db
-	 * @param string $locale
+	 * @param string $locale optional.
 	 */
-	public function __construct($db, $locale)
+	public function __construct($db, $locale = null)
 	{
 		$this->db = $db;
-		$this->locale = $locale;
+		if ($locale === null) {
+			$this->locale = setlocale(LC_ALL, '0');
+		} else {
+			$this->locale = $locale;
+		}
 	}
 
 	// }}}
