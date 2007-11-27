@@ -3,7 +3,6 @@
 require_once 'Admin/pages/AdminSearch.php';
 require_once 'Admin/AdminSearchClause.php';
 require_once 'SwatDB/SwatDB.php';
-require_once 'NateGoSearch/NateGoSearch.php';
 require_once 'Site/SiteNateGoFulltextSearchEngine.php';
 
 require_once 'include/SiteArticleActionsProcessor.php';
