@@ -52,7 +52,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 *
 	 * This controls the output of {@link SiteCommandLineApplication::output()}.
 	 *
-	 * @var integer 
+	 * @var integer
 	 *
 	 * @see SiteCommandLineApplication::setVerbosity()
 	 */
