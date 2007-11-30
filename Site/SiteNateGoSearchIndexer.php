@@ -3,6 +3,7 @@
 require_once 'Site/SiteSearchIndexer.php';
 require_once 'Site/Site.php';
 require_once 'NateGoSearch/NateGoSearchIndexer.php';
+require_once 'NateGoSearch/NateGoSearchPSpellChecker.php';
 
 /**
  * Site search indexer application for NateGoSearch
@@ -185,8 +186,13 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	 */
 	protected function indexArticles()
 	{
+		$spell_checker = new NateGoSearchPSpellSpellChecker('en');
+		$spell_checker->setCustomWordList($this->getCustomWordList());
+		$spell_checker->loadCustomContent();
+
 		$indexer = new NateGoSearchIndexer('article', $this->db);
 
+		$indexer->setSpellChecker($spell_checker);
 		$indexer->addTerm(new NateGoSearchTerm('title', 5));
 		$indexer->addTerm(new NateGoSearchTerm('bodytext'));
 		$indexer->setMaximumWordLength(32);
@@ -232,6 +238,21 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 			$this->db->quote($type, 'integer'));
 
 		SwatDB::exec($this->db, $sql);
+	}
+
+	// }}}
+	// {{{ protected function getCustomWordlist()
+
+	/**
+	 * Get the custom word list
+	 *
+	 * Get the custom word list that is used by this fulltext search engine.
+	 *
+	 * @return string the path to the custom word list
+	 */
+	protected function getCustomWordList()
+	{
+		return './custom-wordlist.pws';
 	}
 
 	// }}}
