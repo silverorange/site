@@ -83,6 +83,9 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	public function search($keywords)
 	{
 		$spell_checker = new NateGoSearchPSpellSpellChecker($this->locale);
+		$spell_checker->setCustomWordList($this->getCustomWordList());
+		$spell_checker->loadCustomContent();
+
 		$query = new NateGoSearchQuery($this->db);
 		$query->addBlockedWords(NateGoSearchQuery::getDefaultBlockedWords());
 		$query->setSpellChecker($spell_checker);
@@ -93,6 +96,21 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 		$result = $query->query($keywords);
 
 		return new SiteNateGoFulltextSearchResult($this->db, $result);
+	}
+
+	// }}}
+	// {{{ protected function getCustomWordList()
+
+	/**
+	 * Get the custom word list
+	 *
+	 * Get the custom word list that is used by this fulltext search engine.
+	 *
+	 * @return string the path to the custom word list
+	 */
+	protected function getCustomWordList()
+	{
+		return './../system/search/custom-wordlist.pws';
 	}
 
 	// }}}
