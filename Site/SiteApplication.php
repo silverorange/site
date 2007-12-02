@@ -85,6 +85,31 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected $modules_by_provides = array();
 
+	/**
+	 * The current locale of this application
+	 *
+	 * This must be a two-letter ISO 639 langauge code followed by an
+	 * underscore then followed by a two-letter ISO 3166 country code.
+	 * Additional locale specifiers such as character encoding and currency
+	 * may optionally follow, separated by a period character. Example of valid
+	 * locale strings are:
+	 *
+	 *  - en_CA
+	 *  - fr_FR
+	 *  - en_CA.utf8
+	 *  - fr_FR.euro
+	 *
+	 * The following locale strings are used on some systems and are not valid:
+	 *
+	 *  - Brazillian
+	 *  - en
+	 *  - C
+	 *  - POSIX
+	 *
+	 * @var string
+	 */
+	protected $locale;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -136,6 +161,48 @@ abstract class SiteApplication extends SiteObject
 	 * Run the application.
 	 */
 	abstract public function run();
+
+	// }}}
+	// {{{ public function getLocale()
+
+	/**
+	 * Gets the current locale of this application
+	 *
+	 * @return string the locale of this application. This will be a two-letter
+	 *                 ISO 639 langauge code followed by an underscore followed
+	 *                 by a two-letter ISO 3166 country code. Additional locale
+	 *                 specifiers such as character encoding and currency may
+	 *                 optionally follow, separated by a period character.
+	 */
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+
+	// }}}
+	// {{{ public function getCountry()
+
+	/**
+	 * Gets the country of this application
+	 *
+	 * @param string $locale optional. If specified, the coutnry code for the
+	 *                        specified locale is returned. Otherwise, the
+	 *                        current locale of this application is used.
+	 *
+	 * @return string the two-letter ISO 3166 country code of this application.
+	 */
+	public function getCountry($locale = null)
+	{
+		$country = null;
+
+		if ($locale === null)
+			$locale = $this->locale;
+
+		if ($locale !== null)
+			$country = substr($locale, 3, 2);
+
+		return $country;
+	}
 
 	// }}}
 
