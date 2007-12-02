@@ -185,7 +185,7 @@ abstract class SiteApplication extends SiteObject
 	/**
 	 * Gets the country of this application
 	 *
-	 * @param string $locale optional. If specified, the coutnry code for the
+	 * @param string $locale optional. If specified, the country code for the
 	 *                        specified locale is returned. Otherwise, the
 	 *                        current locale of this application is used.
 	 *
