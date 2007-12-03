@@ -3,7 +3,7 @@
 require_once 'Site/SiteSearchIndexer.php';
 require_once 'Site/Site.php';
 require_once 'NateGoSearch/NateGoSearchIndexer.php';
-require_once 'NateGoSearch/NateGoSearchPSpellChecker.php';
+require_once 'NateGoSearch/NateGoSearchPSpellSpellChecker.php';
 
 /**
  * Site search indexer application for NateGoSearch
