@@ -145,7 +145,7 @@ class SiteArticleEdit extends AdminDBEdit
 		// this is automatically wrapped in a transaction because it is
 		// called in saveDBData()
 
-		$type = NateGoSearch::getDocumentType('article');
+		$type = NateGoSearch::getDocumentType($this->db, 'article');
 
 		$sql = sprintf('delete from NateGoSearchQueue
 			where document_id = %s and document_type = %s',
