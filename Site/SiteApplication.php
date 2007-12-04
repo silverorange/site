@@ -453,7 +453,7 @@ abstract class SiteApplication extends SiteObject
 		// module object is value only so we can get nice error messages
 		$dependent_stack[spl_object_hash($module)] = $module;
 
-		// add module dependencies 
+		// add module dependencies
 		foreach ($module->depends() as $depend) {
 
 			if (!isset($modules_by_provides[$depend]))
