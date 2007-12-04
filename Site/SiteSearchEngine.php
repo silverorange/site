@@ -23,7 +23,7 @@ abstract class SiteSearchEngine extends SwatObject
 	/**
 	 * A fulltext result object
 	 *
-	 * @var SiteFulltextSearchResult 
+	 * @var SiteFulltextSearchResult
 	 */
 	protected $fulltext_result;
 
@@ -34,8 +34,18 @@ abstract class SiteSearchEngine extends SwatObject
 	 */
 	protected $result_count;
 
-	// }}}
+	/**
+	 * Order by fields of this search engine
+	 *
+	 * This array is sorted with the highest priority order first.
+	 *
+	 * @var array
+	 *
+	 * @see SiteSearchEngine::addOrderByField()
+	 */
+	protected $order_by_fields = array();
 
+	// }}}
 	// {{{ public function __construct()
 
 	/**
@@ -129,6 +139,25 @@ abstract class SiteSearchEngine extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function addOrderByField()
+
+	/**
+	 * Adds an order by field to the order by clause
+	 *
+	 * Added fields take priority over previous added fields. For example, if
+	 * the field id is added and then the field displayorder is added, results
+	 * will be ordered by displayorder and then id.
+	 *
+	 * @param string $field the order by field. Example fields are:
+	 *                      'Product.id desc', 'shortname', and
+	 *                      'Category.displayorder'.
+	 */
+	public function addOrderByField($field)
+	{
+		array_unshift($this->order_by_fields, $field);
+	}
+
+	// }}}
 	// {{{ protected function queryResults()
 
 	/**
@@ -216,13 +245,19 @@ abstract class SiteSearchEngine extends SwatObject
 	// {{{ protected function getOrderByClause()
 
 	/**
-	 * Retrieve the SQL ORDER BY clause to query results with
+	 * Gets the SQL order by clause to query results with
 	 *
-	 * @return string the SQL clause.
+	 * @return string the SQL order by clause.
+	 *
+	 * @see SiteSearchEngine::addOrderByField()
 	 */
 	protected function getOrderByClause()
 	{
-		$clause = '';
+		if (count($this->order_by_fields) == 0) {
+			$clause = '';
+		} else {
+			$clause = 'order by '.implode(', ', $this->order_by_fields);
+		}
 
 		return $clause;
 	}
