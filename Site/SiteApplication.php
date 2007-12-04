@@ -313,7 +313,7 @@ abstract class SiteApplication extends SiteObject
 	 * feature
 	 *
 	 * This method is useful for checking if an application provides certain
-	 * featured. For example, you can see if an application supports session
+	 * features. For example, you can see if an application supports session
 	 * features using:
 	 * <code>
 	 * <?php
