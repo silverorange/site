@@ -118,7 +118,7 @@ class SiteAccount extends SwatDBDataObject
 	public $password;
 
 	/**
-	 * The salt value used to protect this account's password
+	 * The salt value used to protect this account's password base-64 encoded
 	 *
 	 * @var string
 	 */
@@ -169,6 +169,11 @@ class SiteAccount extends SwatDBDataObject
 
 		if ($salt === null)
 			return false;
+
+		// salt might be base-64 encoded
+		$decoded_salt = base64_decode($salt, true);
+		if ($decoded_salt !== false)
+			$salt = $decoded_salt;
 
 		$sql = sprintf('select id from %s
 			where lower(email) = lower(%s) and password = %s',
@@ -273,14 +278,15 @@ class SiteAccount extends SwatDBDataObject
 	 * Sets this account's password
 	 *
 	 * The password is salted with a 16-byte salt and encrypted with one-way
-	 * encryption.
+	 * encryption.  The salt is stored separately and is base-64 encoded.
 	 *
 	 * @param string $password the password for this account.
 	 */
 	public function setPassword($password)
 	{
-		$this->password_salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
-		$this->password = md5($password.$this->password_salt);
+		$salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
+		$this->password_salt = base64_encode($salt);
+		$this->password = md5($password.$salt);
 	}
 
 	// }}}
@@ -346,7 +352,7 @@ class SiteAccount extends SwatDBDataObject
 			where %s = %s',
 			$this->table,
 			$app->db->quote(md5($new_password.$new_password_salt), 'text'),
-			$app->db->quote($new_password_salt, 'text'),
+			$app->db->quote(base64_encode($new_password_salt), 'text'),
 			$id_field->name,
 			$this->db->quote($this->{$id_field->name}, $id_field->type));
 
