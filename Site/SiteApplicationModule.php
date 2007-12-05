@@ -2,9 +2,17 @@
 
 require_once 'Site/SiteObject.php';
 require_once 'Site/SiteApplication.php';
+require_once 'Site/SiteApplicationModuleDependency.php';
 
 /**
  * Base class for an application module
+ *
+ * Modules provide specific features to an application. For example, a session
+ * module provides the ability to use sessions. Features are expressed as
+ * strings and are usually the name of the class of an application module. For
+ * example, a SiteSessionModule module would provide the 'SiteSessionModule'
+ * feature. Other modules that depend on a session module can ask the
+ * application if any modules provide the 'SiteSessionModule' feature.
  *
  * @package   Site
  * @copyright 2005-2007 silverorange
