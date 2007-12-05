@@ -50,8 +50,9 @@ class SiteMessagesModule extends SiteApplicationModule
 	 *
 	 * The messages module depends on the SiteSessionModule feature.
 	 *
-	 * @return array an array of {@link SiteModuleDependency} objects defining
-	 *                        the features this module depends on.
+	 * @return array an array of {@link SiteApplicationModuleDependency}
+	 *                        objects defining the features this module
+	 *                        depends on.
 	 */
 	public function depends()
 	{

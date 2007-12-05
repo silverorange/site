@@ -45,8 +45,9 @@ abstract class SiteApplicationModule extends SiteObject
 	 *
 	 * By default, modules do not depend on other module features.
 	 *
-	 * @return array an array of {@link SiteModuleDependency} objects defining
-	 *                        the features this module depends on.
+	 * @return array an array of {@link SiteApplicationModuleDependency}
+	 *                        objects defining the features this module
+	 *                        depends on.
 	 */
 	public function depends()
 	{
