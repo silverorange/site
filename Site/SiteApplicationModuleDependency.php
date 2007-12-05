@@ -16,7 +16,7 @@ require_once 'Swat/SwatObject.php';
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteApplicationModule
  */
-class SiteModuleDependency extends SwatObject
+class SiteApplicationModuleDependency extends SwatObject
 {
 	// {{{ protected properties
 
