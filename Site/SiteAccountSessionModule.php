@@ -2,6 +2,7 @@
 
 require_once 'Site/SiteSessionModule.php';
 require_once 'Site/SiteDatabaseModule.php';
+require_once 'Site/SiteModuleDependency.php';
 require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/dataobjects/SiteAccount.php';
 require_once 'SwatDB/SwatDBClassMap.php';
@@ -67,7 +68,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	public function depends()
 	{
-		return array('SiteDatabaseModule');
+		$depends = parent::depends();
+		$depends[] = new SiteModuleDependency('SiteDatabaseModule');
+
+		return $depends;
 	}
 
 	// }}}
@@ -90,7 +94,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 		$account = $this->getNewAccountObject();
 
-		if ($account->loadWithCredentials($email, $password)) {
+		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
+			$this->app->instance->getInstance() : null;
+
+		if ($account->loadWithCredentials($email, $password, $instance)) {
 			$this->activate();
 			$this->account = $account;
 

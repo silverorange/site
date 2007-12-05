@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/SiteModuleDependency.php';
 
 /**
  * Web application module for sessions
@@ -35,8 +36,35 @@ class SiteSessionModule extends SiteApplicationModule
 		session_cache_limiter('');
 		session_name($session_name);
 
+		if ($this->app->hasModule('instance')) {
+			$this->setSavePath($this->app->config->sessions->path.
+				'/'.$session_name);
+		} else {
+			$this->setSavePath($this->app->config->sessions->path);
+		}
+
 		if ($this->shouldAutoActivateSession())
 			$this->autoActivate();
+	}
+
+	// }}}
+	// {{{ public function depends()
+
+	/**
+	 * Gets the module features this module depends on
+	 *
+	 * The site account session module depends on the SiteDatabaseModule
+	 * feature.
+	 *
+	 * @return array an array of features this module depends on.
+	 */
+	public function depends()
+	{
+		$depends = parent::depends();
+		$depends[] = new SiteModuleDependency(
+			'SiteMultipleInstanceModule', false);
+
+		return $depends;
 	}
 
 	// }}}
@@ -132,7 +160,10 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	public function getSessionName()
 	{
-		return $this->app->id;
+		if ($this->app->hasModule('SiteMultipleInstanceModule'))
+			return $this->app->instance->getInstance()->shortname;
+		else
+			return $this->app->id;
 	}
 
 	// }}}
