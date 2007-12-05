@@ -243,11 +243,11 @@ abstract class SiteApplication extends SiteObject
 
 		// check module dependencies
 		foreach ($module->depends() as $depend) {
-			if (!isset($this->modules_by_provides[$depend])) {
+			if (!isset($this->modules_by_provides[$depend->class_name])) {
 				throw new SiteException(sprintf(
 					"Module %s depends on feature '%s' which is not provided ".
 					"by any module in this application.",
-					get_class($module), $depend));
+					get_class($module), $depend->class_name));
 			}
 		}
 
@@ -455,14 +455,15 @@ abstract class SiteApplication extends SiteObject
 
 		// add module dependencies
 		foreach ($module->depends() as $depend) {
-
-			if (!isset($modules_by_provides[$depend]))
+			if ($depend->required &&
+				!isset($modules_by_provides[$depend->class_name])) {
 				throw new SiteException(sprintf(
 					"Module %s depends on '%s' but no module provides this ".
 					"feature.",
-					get_class($module), $depend));
+					get_class($module), $depend->class_name));
+			}
 
-			$depend_module = $modules_by_provides[$depend];
+			$depend_module = $modules_by_provides[$depend->class_name];
 
 			if (!array_key_exists(spl_object_hash($depend_module),
 				$added_modules)) {
