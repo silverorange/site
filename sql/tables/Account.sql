@@ -1,5 +1,6 @@
 create table Account (
 	id serial,
+	instance integer references Instance(id);
 	fullname varchar(255),
 	email varchar(255),
 	password varchar(255),
@@ -9,3 +10,5 @@ create table Account (
 	last_login timestamp,
 	primary key (id)
 );
+
+CREATE INDEX Account_instance_index ON Account(instance);

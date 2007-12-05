@@ -153,17 +153,26 @@ class SiteAccount extends SwatDBDataObject
 	 *
 	 * @param string $email the email address of the account.
 	 * @param string $password the password of the account.
+	 * @param SiteInstance $instance Optional site instance for this account.
+	 *                               Used when the site implements
+	 *                               {@link SiteMultipleInstanceModule}.
 	 *
 	 * @return boolean true if the loading was successful and false if it was
 	 *                  not.
 	 */
-	public function loadWithCredentials($email, $password)
+	public function loadWithCredentials($email, $password,
+		SiteInstance $instance = null)
 	{
 		$this->checkDB();
+
 		$sql = sprintf('select password_salt from %s
 			where lower(email) = lower(%s)',
 			$this->table,
 			$this->db->quote($email, 'text'));
+
+		if ($instance !== null)
+			$sql.= sprintf(' and instance = %s',
+				$this->db->quote($instance->id, 'integer'));
 
 		$salt = SwatDB::queryOne($this->db, $sql);
 
@@ -180,6 +189,10 @@ class SiteAccount extends SwatDBDataObject
 			$this->table,
 			$this->db->quote($email, 'text'),
 			$this->db->quote(md5($password.$salt), 'text'));
+
+		if ($instance !== null)
+			$sql.= sprintf(' and instance = %s',
+				$this->db->quote($instance->id, 'integer'));
 
 		$id = SwatDB::queryOne($this->db, $sql);
 
@@ -198,11 +211,14 @@ class SiteAccount extends SwatDBDataObject
 	 * This is useful for password recovery and email address verification.
 	 *
 	 * @param string $email the email address of the account.
+	 * @param SiteInstance $instance Optional site instance for this account.
+	 *                               Used when the site implements
+	 *                               {@link SiteMultipleInstanceModule}.
 	 *
 	 * @return boolean true if the loading was successful and false if it was
 	 *                  not.
 	 */
-	public function loadWithEmail($email)
+	public function loadWithEmail($email, SiteInstance $instance = null)
 	{
 		$this->checkDB();
 
@@ -210,6 +226,10 @@ class SiteAccount extends SwatDBDataObject
 			where lower(email) = lower(%s)',
 			$this->table,
 			$this->db->quote($email, 'text'));
+
+		if ($instance !== null)
+			$sql.= sprintf(' and instance = %s',
+				$this->db->quote($instance->id, 'integer'));
 
 		$id = SwatDB::queryOne($this->db, $sql);
 
@@ -267,6 +287,9 @@ class SiteAccount extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 
 		$this->registerDateProperty('createdate');
+
+		$this->registerInternalProperty('instance',
+			SwatDBClassMap::get('SiteInstance'));
 	}
 
 	// }}}
