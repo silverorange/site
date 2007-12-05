@@ -2,7 +2,6 @@
 
 require_once 'Site/SiteSessionModule.php';
 require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteModuleDependency.php';
 require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/dataobjects/SiteAccount.php';
 require_once 'SwatDB/SwatDBClassMap.php';
@@ -64,13 +63,13 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * The site account session module depends on the SiteDatabaseModule
 	 * feature.
 	 *
-	 * @return array an array of features this module depends on.
+	 * @return array an array of {@link SiteModuleDependency} objects defining
+	 *                        the features this module depends on.
 	 */
 	public function depends()
 	{
 		$depends = parent::depends();
-		$depends[] = new SiteModuleDependency('SiteDatabaseModule');
-
+		$depends[] = new SiteApplicationModuleDependency('SiteDatabaseModule');
 		return $depends;
 	}
 
