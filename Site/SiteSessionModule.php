@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/SiteModuleDependency.php';
 
 /**
  * Web application module for sessions
@@ -53,15 +52,16 @@ class SiteSessionModule extends SiteApplicationModule
 	/**
 	 * Gets the module features this module depends on
 	 *
-	 * The site account session module depends on the SiteDatabaseModule
-	 * feature.
+	 * The site session module optionally depends on the
+	 * SiteMultipleInstanceModule feature.
 	 *
-	 * @return array an array of features this module depends on.
+	 * @return array an array of {@link SiteModuleDependency} objects defining
+	 *                        the features this module depends on.
 	 */
 	public function depends()
 	{
 		$depends = parent::depends();
-		$depends[] = new SiteModuleDependency(
+		$depends[] = new SiteApplicationModuleDependency(
 			'SiteMultipleInstanceModule', false);
 
 		return $depends;

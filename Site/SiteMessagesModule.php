@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/SiteModuleDependency.php';
 require_once 'Site/exceptions/SiteClassNotFoundException.php';
 require_once 'Site/exceptions/SiteInvalidClassException.php';
 require_once 'Swat/SwatMessage.php';
@@ -51,11 +50,12 @@ class SiteMessagesModule extends SiteApplicationModule
 	 *
 	 * The messages module depends on the SiteSessionModule feature.
 	 *
-	 * @return array an array of features this module depends on.
+	 * @return array an array of {@link SiteModuleDependency} objects defining
+	 *                        the features this module depends on.
 	 */
 	public function depends()
 	{
-		return array(new SiteModuleDependency('SiteDatabaseModule'));
+		return array(new SiteApplicationModuleDependency('SiteSessionModule'));
 	}
 
 	// }}}
