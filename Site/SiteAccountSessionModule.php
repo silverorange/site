@@ -63,8 +63,9 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * The site account session module depends on the SiteDatabaseModule
 	 * feature.
 	 *
-	 * @return array an array of {@link SiteModuleDependency} objects defining
-	 *                        the features this module depends on.
+	 * @return array an array of {@link SiteApplicationModuleDependency}
+	 *                        objects defining the features this module
+	 *                        depends on.
 	 */
 	public function depends()
 	{
