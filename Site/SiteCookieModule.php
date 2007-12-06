@@ -12,11 +12,6 @@ require_once 'Site/exceptions/SiteCookieException.php';
  */
 class SiteCookieModule extends SiteApplicationModule
 {
-	// {{{ public properties
-
-	public $cookie_prefix;
-
-	// }}}
 	// {{{ private properties
 
 	private $salt = '';
@@ -25,11 +20,9 @@ class SiteCookieModule extends SiteApplicationModule
 	// {{{ public function init()
 
 	/**
-	 * Initializes this module
+	 *
 	 */
-	public function init()
-	{
-		$this->cookie_prefix = $this->app->id;
+	public function init() {
 	}
 
 	// }}}
@@ -59,7 +52,7 @@ class SiteCookieModule extends SiteApplicationModule
 	public function setCookie($name, $value, $expiry = null,
 		$path = '/', $domain = null)
 	{
-		$name = $this->cookie_prefix.'_'.$name;
+		$name = $this->getPrefix().'_'.$name;
 
 		if ($expiry === null)
 			$expiry = strtotime('+90 days');
@@ -88,7 +81,7 @@ class SiteCookieModule extends SiteApplicationModule
 	 */
 	public function removeCookie($name, $path = '/', $domain = null)
 	{
-		$name = $this->cookie_prefix.'_'.$name;
+		$name = $this->getPrefix().'_'.$name;
 		$expiry = time() - 3600;
 
 		// TODO: get domain from application
@@ -99,6 +92,42 @@ class SiteCookieModule extends SiteApplicationModule
 		//setcookie($name, 0, $expiry, $path, $domain);
 
 		unset($_COOKIE[$name]);
+	}
+
+	// }}}
+	// {{{ public function depends()
+
+	/**
+	 * Gets the module features this module depends on
+	 *
+	 * @return array an array of {@link SiteModuleDependency} objects defining
+	 *                        the features this module depends on.
+	 */
+	public function depends()
+	{
+		$depends = parent::depends();
+
+		if ($this->app->hasModule('SiteMutipleInstanceModule'))
+			$depends[] = new SiteApplicationModuleDependency(
+				'SiteMultipleInstanceModule');
+
+		return $depends;
+	}
+
+	// }}}
+	// {{{ protected function getPrefix()
+
+	/**
+	 * Gets the prefix for the cookie name
+	 *
+	 * @return string Cookie prefix
+	 */
+	protected function getPrefix()
+	{
+		if ($this->app->hasModule('SiteMutipleInstanceModule'))
+			return $this->app->instance->getInstance()->shortname;
+		else
+			return $this->app->id;
 	}
 
 	// }}}
@@ -113,7 +142,7 @@ class SiteCookieModule extends SiteApplicationModule
 	 */
 	private function &__get($name)
 	{
-		$name = $this->cookie_prefix.'_'.$name;
+		$name = $this->getPrefix().'_'.$name;
 
 		if (!isset($_COOKIE[$name]))
 			throw new SiteCookieException("Cookie '{$name}' is not set.");
@@ -144,7 +173,7 @@ class SiteCookieModule extends SiteApplicationModule
 	 */
 	private function __isset($name)
 	{
-		$name = $this->cookie_prefix.'_'.$name;
+		$name = $this->getPrefix().'_'.$name;
 		return isset($_COOKIE[$name]);
 	}
 
