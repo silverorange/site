@@ -1,6 +1,6 @@
 create table Account (
 	id serial,
-	instance integer references Instance(id);
+	instance integer references Instance(id),
 	fullname varchar(255),
 	email varchar(255),
 	password varchar(255),
