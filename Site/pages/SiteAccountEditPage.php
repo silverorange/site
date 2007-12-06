@@ -15,6 +15,7 @@ class SiteAccountEditPage extends SiteAccountPage
 	// {{{ protected properties
 
 	protected $ui;
+	protected $ui_xml = 'Site/pages/account-edit.xml';
 
 	// }}}
 
@@ -26,7 +27,7 @@ class SiteAccountEditPage extends SiteAccountPage
 		parent::init();
 
 		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->getUiXml());
+		$this->ui->loadFromXML($this->ui_xml);
 
 		$form = $this->ui->getWidget('edit_form');
 		$form->action = $this->source;
@@ -38,14 +39,6 @@ class SiteAccountEditPage extends SiteAccountPage
 		$confirm_email->email_widget = $this->ui->getWidget('email');;
 
 		$this->ui->init();
-	}
-
-	// }}}
-	// {{{ protected function getUiXml()
-
-	protected function getUiXml()
-	{
-		return 'Site/pages/account-edit.xml';
 	}
 
 	// }}}
