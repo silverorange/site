@@ -1,0 +1,45 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="login_frame">
+		<widget class="SwatForm" id="login_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Email Address</property>
+				<widget class="SwatEmailEntry" id="email_address">
+					<property name="maxlength" type="integer">255</property>
+					<property name="size" type="integer">40</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Password</property>
+				<widget class="SwatPasswordEntry" id="password">
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="login_button">
+					<property name="title" translatable="yes">Login</property>
+				</widget>
+				<widget class="SwatContentBlock">
+					<property name="content" translatable="yes"><![CDATA[ <a href="account/forgotpassword">Forgot your password?</a>]]></property>
+					<property name="content_type">text/xml</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+	<widget class="SwatFrame" id="new_customers_frame">
+		<property name="title" translatable="yes">Don’t Have an Account?</property>
+		<widget class="SwatContentBlock">
+			<property name="content" translatable="yes"><![CDATA[<p>Creating an account will make it quicker and easier to order again when you return.</p>]]></property>
+			<property name="content_type">text/xml</property>
+		</widget>
+		<widget class="SwatForm" id="create_account_form">
+			<widget class="SwatFormField">
+				<widget class="SwatButton">
+					<property name="title" translatable="yes">Create an Account</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>

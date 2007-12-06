@@ -1,0 +1,28 @@
+/* Account Login page */
+
+#login_frame {
+	width: 55%;
+	float: left;
+	margin-right: 4%;
+}
+
+#new_customers_frame {
+	width: 38%;
+	float: left;
+}
+
+#new_customers_frame p {
+	margin: 0 0 1em 0;
+}
+
+#login_frame #email_address {
+	width: 98%;
+}
+
+.swat-footer-form-field {
+	clear: left;
+}
+
+#login_frame .swat-footer-form-field .swat-button {
+	vertical-align: middle;
+}
