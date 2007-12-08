@@ -301,11 +301,11 @@ class SiteSearchResultsPage extends SiteArticlePage
 
 			foreach ($misspellings as $misspelling => $correction) {
 				// for URL
-				$corrected_phrase = str_replace(' '.$misspelling.' ',
+				$corrected_phrase = str_ireplace(' '.$misspelling.' ',
 					' '.$correction.' ', $corrected_phrase);
 
 				// for display
-				$corrected_string = str_replace(
+				$corrected_string = str_ireplace(
 					' '.SwatString::minimizeEntities($misspelling).' ',
 					' <strong>'.SwatString::minimizeEntities($correction).
 					'</strong> ',
