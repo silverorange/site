@@ -29,7 +29,6 @@ class SiteNateGoFulltextSearchResult extends SwatObject
 	protected $nate_go_result;
 
 	// }}}
-
 	// {{{ public function __construct()
 
 	/**
@@ -38,7 +37,8 @@ class SiteNateGoFulltextSearchResult extends SwatObject
 	 * @param MDB2_Driver_Common $db the database.
 	 * @param NateGoSearchResult $result a NateGoSearchResult object.
 	 */
-	public function __construct($db, $result)
+	public function __construct(MDB2_Driver_Common $db,
+		NateGoSearchResult $result)
 	{
 		$this->db = $db;
 		$this->nate_go_result = $result;
