@@ -113,7 +113,7 @@ abstract class SiteSearchEngine extends SwatObject
 		if ($this->result_count === null)
 			throw new SiteException('Unable to retrieve result count. '.
 				'Results must be retrieved first by calling '.
-				'SiteNateGoSearchEngine::getResults().');
+				'SiteSearchEngine::search().');
 
 		return $this->result_count;
 	}
