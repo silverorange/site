@@ -91,7 +91,8 @@ abstract class SiteSearchEngine extends SwatObject
 		$limit_clause = $this->getLimitClause($limit);
 		$offset_clause = $this->getOffsetClause($offset);
 
-		$this->result_count = $this->queryResultCount($from_clause, $where_clause);
+		$this->result_count = $this->queryResultCount($from_clause,
+			$where_clause);
 
 		$results = $this->queryResults($select_clause, $from_clause,
 			$where_clause, $order_by_clause, $limit_clause, $offset_clause);
