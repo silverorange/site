@@ -5,20 +5,27 @@ require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatMessage.php';
-require_once 'Store/dataobjects/StoreAd.php';
+require_once 'Site/dataobjects/SiteAd.php';
 
 /**
  * Edit page for Ads
  *
- * @package   Store
- * @copyright 2006 silverorange
+ * @package   Site
+ * @copyright 2006-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class StoreAdEdit extends AdminDBEdit
+class SiteAdEdit extends AdminDBEdit
 {
 	// {{{ protected properties
 
-	protected $fields;
+	/**
+	 * @var string
+	 */
+	protected $ui_xml = 'Site/admin/components/Ad/edit.xml';
+
+	/**
+	 * @var SiteAd
+	 */
 	protected $ad;
 
 	// }}}
@@ -30,11 +37,7 @@ class StoreAdEdit extends AdminDBEdit
 	{
 		parent::initInternal();
 		$this->initAd();
-
-		$this->ui->mapClassPrefixToPath('Store', 'Store');
-		$this->ui->loadFromXML(dirname(__FILE__).'/edit.xml');
-
-		$this->fields = array('title', 'shortname');
+		$this->ui->loadFromXML($this->ui_xml);
 	}
 
 	// }}}
@@ -42,14 +45,13 @@ class StoreAdEdit extends AdminDBEdit
 
 	protected function initAd()
 	{
-		$class_name = SwatDBClassMap::get('StoreAd');
+		$class_name = SwatDBClassMap::get('SiteAd');
 		$this->ad = new $class_name();
 		$this->ad->setDatabase($this->app->db);
 
 		if ($this->id !== null) {
-				throw new AdminNotFoundException(
-					sprintf(Admin::_('You aren\'t allowed to edit Ads.'),
-						$this->id));
+			throw new AdminNotFoundException(
+				Site::_('Editing ads is not allowed.'));
 		}
 	}
 
@@ -64,12 +66,12 @@ class StoreAdEdit extends AdminDBEdit
 
 		if ($this->id === null && $shortname === null) {
 			$shortname = $this->generateShortname(
-				$this->ui->getWidget('title')->value, $this->id);
-			$this->ui->getWidget('shortname')->value = $shortname;
+				$this->ui->getWidget('title')->value, $this->ad->id);
 
-		} elseif (!$this->validateShortname($shortname, $this->id)) {
+			$this->ui->getWidget('shortname')->value = $shortname;
+		} elseif (!$this->validateShortname($shortname, $this->ad->id)) {
 			$message = new SwatMessage(
-				Store::_('Short name already exists and must be unique.'),
+				Site::_('Ad %s already exists and must be unique.'),
 				SwatMessage::ERROR);
 
 			$this->ui->getWidget('shortname')->addMessage($message);
@@ -82,12 +84,12 @@ class StoreAdEdit extends AdminDBEdit
 	protected function validateShortname($shortname)
 	{
 		$sql = 'select shortname from Ad
-				where shortname = %s and id %s %s';
+			where shortname = %s and id %s %s';
 
 		$sql = sprintf($sql,
 			$this->app->db->quote($shortname, 'text'),
-			SwatDB::equalityOperator($this->id, true),
-			$this->app->db->quote($this->id, 'integer'));
+			SwatDB::equalityOperator($this->ad->id, true),
+			$this->app->db->quote($this->ad->id, 'integer'));
 
 		$query = SwatDB::query($this->app->db, $sql);
 
@@ -99,24 +101,18 @@ class StoreAdEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		if ($this->id === null) {
-			$date = new SwatDate();
-			$date->toUTC();
-			$this->ad->createdate = $date->getDate();
-			$this->saveAd();
-
-			// create ad locale bindings
-			$sql = sprintf('insert into AdLocaleBinding (ad, locale)
-				select %s, Locale.id as locale from Locale',
-				$this->app->db->quote($this->ad->id, 'integer'));
-
-			SwatDB::exec($this->app->db, $sql);
-		} else {
-			$this->saveAd();
+		if ($this->id !== null) {
+			throw new AdminNotFoundException(
+				Site::_('Editing ads is not allowed.'));
 		}
 
+		$this->ad->createdate = new SwatDate();
+		$this->ad->createdate->toUTC();
+		$this->saveAd();
+		$this->saveAdLocaleBinding();
+
 		$message = new SwatMessage(
-			sprintf(Store::_('“%s” has been saved.'), $this->ad->title));
+			sprintf(Site::_('“%s” has been saved.'), $this->ad->title));
 
 		$this->app->messages->add($message);
 	}
@@ -134,12 +130,26 @@ class StoreAdEdit extends AdminDBEdit
 	}
 
 	// }}}
+	// {{{ protected function saveAdLocaleBinding()
+
+	protected function saveAdLocaleBinding()
+	{
+		// create ad locale bindings
+		$sql = sprintf('insert into AdLocaleBinding (ad, locale)
+			select %s, Locale.id as locale from Locale',
+			$this->app->db->quote($this->ad->id, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
+	}
+
+	// }}}
 
 	// build phase
 	// {{{ protected function loadDBData()
 
 	protected function loadDBData()
 	{
+		// ads cannot be edited
 	}
 
 	// }}}

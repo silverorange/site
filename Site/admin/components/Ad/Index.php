@@ -2,27 +2,33 @@
 
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'SwatDB/SwatDB.php';
-
-require_once 'include/StoreConversionRateCellRenderer.php';
+require_once 'SwatDB/SwatDBClassMap.php';
 
 /**
  * Report page for Ad
  *
- * @package   Store
+ * @package   Site
  * @copyright 2006-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class StoreAdIndex extends AdminIndex
+class SiteAdIndex extends AdminIndex
 {
+	// {{{ protected properties
+
+	/**
+	 * @var string
+	 */
+	protected $ui_xml = 'Site/admin/components/Ad/index.xml';
+
+	// }}}
+
 	// init phase
 	// {{{ protected function initInternal()
 
 	protected function initInternal()
 	{
 		parent::initInternal();
-
-		$this->ui->mapClassPrefixToPath('Store', 'Store');
-		$this->ui->loadFromXML(dirname(__FILE__).'/index.xml');
+		$this->ui->loadFromXML($this->ui_xml);
 	}
 
 	// }}}
@@ -49,17 +55,14 @@ class StoreAdIndex extends AdminIndex
 
 	protected function getTableModel(SwatView $view)
 	{
-		$sql = sprintf('select Ad.id, Ad.title, Ad.shortname,
-				Ad.total_referrers, OrderCountByAdView.order_count,
-				cast(OrderCountByAdView.conversion_rate as numeric(5,2))
-			from Ad
-				inner join OrderCountByAdView on OrderCountByAdView.ad = Ad.id
+		$sql = sprintf('select * from Ad
 			order by %s',
 			$this->getOrderByClause($view, 'createdate desc'));
 
-		$rs = SwatDB::query($this->app->db, $sql);
+		$ads = SwatDB::query($this->app->db, $sql,
+			SwatDBClassMap::get('SiteAdWrapper'));
 
-		return $rs;
+		return $ads;
 	}
 
 	// }}}

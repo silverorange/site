@@ -21,15 +21,5 @@
 				</object>
 			</widget>
 		</widget>
-		<widget class="SwatFieldset">
-			<property name="title" translatable="yes">Orders in the Last</property>
-			<widget class="SwatTableView" id="orders_view">
-				<object class="SwatTableViewColumn">
-					<object class="SwatTextCellRenderer">
-						<property name="text" type="data">period</property>
-					</object>
-				</object>
-			</widget>
-		</widget>
 	</widget>
 </swatml>
