@@ -57,7 +57,7 @@ class SiteAd extends SwatDBDataObject
 	 *
 	 * @var integer
 	 */
-	public $total_referers;
+	public $total_referrers;
 
 	// }}}
 	// {{{ protected function init()
