@@ -31,6 +31,17 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $inbound_tracking_id = 'ad';
 
+	/**
+	 * Whether or not to automaticlaly clean the inbound tracking id from URIs
+	 *
+	 * Defaults to false.
+	 *
+	 * @var boolean
+	 *
+	 * @see SiteAnalyticsModule::setAutoCleanUri()
+	 */
+	protected $clean_inbound_tracking_uri = false;
+
 	// }}}
 	// {{{ public function init()
 
@@ -110,6 +121,23 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function setAutoCleanUri()
+
+	/**
+	 * Sets whether or not inbound tracking ids should be automatically cleaned
+	 * from URIs
+	 *
+	 * @param boolean $clean optional. True if inbound tracking ids should be
+	 *                        automatically cleaned from URIs and false if they
+	 *                        should not. If set to true, the ad tracking id is
+	 *                        removed from the URI and a relocate is performed.
+	 */
+	public function setAutoCleanUri($clean = true)
+	{
+		$this->clean_inbound_tracking_uri = (booelan)$clean;
+	}
+
+	// }}}
 	// {{{ protected function initAd()
 
 	/**
@@ -133,8 +161,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$ad->setDatabase($db);
 		if ($ad->loadFromShortname($shortname)) {
 			$session = $this->app->getModule('SiteSessionModule');
-			if (!$session->isActive())
+			if (!$session->isActive()) {
 				$session->activate();
+			}
 
 			$session->ad = $ad;
 
@@ -152,6 +181,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 					if ($attempt > 5)
 						throw $e;
 				}
+			}
+
+			if ($this->clean_inbound_tracking_uri) {
+				$this->cleanInboundTrackingUri($ad);
 			}
 		}
 	}
