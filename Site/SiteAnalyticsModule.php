@@ -45,6 +45,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function init()
 
+	/**
+	 * Initializes this analytics module
+	 *
+	 * Stores ad object in the session module and initializes ad database
+	 * reference.
+	 */
 	public function init()
 	{
 		$this->initAd();
