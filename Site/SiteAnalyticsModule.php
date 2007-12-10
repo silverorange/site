@@ -134,7 +134,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	public function setAutoCleanUri($clean = true)
 	{
-		$this->clean_inbound_tracking_uri = (booelan)$clean;
+		$this->clean_inbound_tracking_uri = (boolean)$clean;
 	}
 
 	// }}}
