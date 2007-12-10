@@ -32,7 +32,7 @@ class SiteAdDetails extends AdminIndex
 	 */
 	protected $periods;
 
-	// }}}}
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
