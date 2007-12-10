@@ -102,6 +102,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			preg_quote($this->inbound_tracking_id, '/'),
 			preg_quote($ad->shortname, '/'));
 
+		// Site URI may not have been parsed yet if autocleaning is used. This
+		// must be a full URI as a result.
 		$uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
 		$this->app->relocate($uri);
 	}
