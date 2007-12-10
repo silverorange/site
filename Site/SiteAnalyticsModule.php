@@ -87,8 +87,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	public function clearAd()
 	{
-		$session = $this->app->clearModule('SiteSessionModule');
-		unset($session->ad);
+		// TODO: why not just use app->session?
+		$session = $this->app->getModule('SiteSessionModule');
+		$session->ad = null;
 	}
 
 	// }}}
