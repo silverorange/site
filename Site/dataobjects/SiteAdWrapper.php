@@ -1,27 +1,25 @@
 <?php
 
 require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Store/dataobjects/StoreAd.php';
+require_once 'Site/dataobjects/SiteAd.php';
 
 /**
- * A recordset wrapper class for StoreAd objects
+ * A recordset wrapper class for SiteAd objects
  *
- * @package   Store
+ * @package   Site
  * @copyright 2006-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
- * @see       StoreAd
+ * @see       SiteAd
  */
-class StoreAdWrapper extends SwatDBRecordsetWrapper
+class SiteAdWrapper extends SwatDBRecordsetWrapper
 {
 	// {{{ protected function init()
 
 	protected function init()
 	{
 		parent::init();
-
-		$this->row_wrapper_class = SwatDBClassMap::get('StoreAd');
-
 		$this->index_field = 'id';
+		$this->row_wrapper_class = SwatDBClassMap::get('SiteAd');
 	}
 
 	// }}}
