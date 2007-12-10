@@ -3,8 +3,6 @@
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatTableStore.php';
-require_once 'Swat/SwatMoneyCellRenderer.php';
-require_once 'Swat/SwatNumericCellRenderer.php';
 require_once 'Site/dataobjects/SiteAd.php';
 
 
@@ -71,7 +69,7 @@ class SiteAdDetails extends AdminIndex
 	 */
 	protected function initAd($id)
 	{
-		$class_name = SwatDBClassMap::get('StoreAd');
+		$class_name = SwatDBClassMap::get('SiteAd');
 		$this->ad = new $class_name();
 		$this->ad->setDatabase($this->app->db);
 		return $this->ad->load($id);
