@@ -48,6 +48,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	public function init()
 	{
 		$this->initAd();
+
+		// set database on ad in session if it exists
+		$ad = $this->getAd();
+		if ($ad !== null) {
+			$db = $this->app->getModule('SiteDatabaseModule')->getConnection();
+			$ad->setDatabase($db);
+		}
 	}
 
 	// }}}
