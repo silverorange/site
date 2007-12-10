@@ -109,7 +109,6 @@ class SiteAdEdit extends AdminDBEdit
 		$this->ad->createdate = new SwatDate();
 		$this->ad->createdate->toUTC();
 		$this->saveAd();
-		$this->saveAdLocaleBinding();
 
 		$message = new SwatMessage(
 			sprintf(Site::_('“%s” has been saved.'), $this->ad->title));
@@ -127,19 +126,6 @@ class SiteAdEdit extends AdminDBEdit
 		$this->ad->title = $values['title'];
 		$this->ad->shortname = $values['shortname'];
 		$this->ad->save();
-	}
-
-	// }}}
-	// {{{ protected function saveAdLocaleBinding()
-
-	protected function saveAdLocaleBinding()
-	{
-		// create ad locale bindings
-		$sql = sprintf('insert into AdLocaleBinding (ad, locale)
-			select %s, Locale.id as locale from Locale',
-			$this->app->db->quote($this->ad->id, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
 	}
 
 	// }}}
