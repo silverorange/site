@@ -38,7 +38,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var boolean
 	 *
-	 * @see SiteAnalyticsModule::setAutoCleanUri()
+	 * @see SiteAnalyticsModule::setAutocleanUri()
 	 */
 	protected $clean_inbound_tracking_uri = false;
 
@@ -121,7 +121,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function setAutoCleanUri()
+	// {{{ public function setAutocleanUri()
 
 	/**
 	 * Sets whether or not inbound tracking ids should be automatically cleaned
@@ -132,7 +132,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *                        should not. If set to true, the ad tracking id is
 	 *                        removed from the URI and a relocate is performed.
 	 */
-	public function setAutoCleanUri($clean = true)
+	public function setAutocleanUri($clean = true)
 	{
 		$this->clean_inbound_tracking_uri = (boolean)$clean;
 	}
@@ -141,13 +141,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// {{{ protected function initAd()
 
 	/**
-	 * Parses an ad shortname into an ad object and stores a row in the
-	 * ad referral table
+	 * Reads inbound tracking ids from the request URI and saves a new ad
+	 * referrer
 	 *
-	 * After the referral is logged, the ad is removed from the URL through
-	 * a relocate.
-	 *
-	 * @param string $ad_shortname the shortname of the ad.
+	 * If autoclean URI is specified, after the referral is logged, the inbound
+	 * tracking id is removed from the URI through a relocate.
 	 */
 	protected function initAd()
 	{
