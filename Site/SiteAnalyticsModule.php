@@ -80,6 +80,18 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function clearAd()
+
+	/**
+	 * Clears the tracked inbound ad from the current session
+	 */
+	public function clearAd()
+	{
+		$session = $this->app->clearModule('SiteSessionModule');
+		unset($session->ad);
+	}
+
+	// }}}
 	// {{{ public function depends()
 
 	/**
