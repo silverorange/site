@@ -22,7 +22,7 @@ class SiteCookieModule extends SiteApplicationModule
 	/**
 	 * Initializes this cookie module
 	 *
-	 * No initilization tasks are performed for the cookie module
+	 * No initilization tasks are performed for the cookie module.
 	 */
 	public function init()
 	{
