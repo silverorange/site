@@ -40,7 +40,19 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @see SiteAnalyticsModule::setAutocleanUri()
 	 */
-	protected $clean_inbound_tracking_uri = false;
+	protected $autoclean_uri = false;
+
+	/**
+	 * Whether or not to automaticlaly create Ad objects for unknown inbound
+	 * tracking ids
+	 *
+	 * Defaults to false.
+	 *
+	 * @var boolean
+	 *
+	 * @see SiteAnalyticsModule::setAutocreateAd()
+	 */
+	protected $autocreate_ad = false;
 
 	// }}}
 	// {{{ public function init()
@@ -165,6 +177,22 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function setAutocreateAd()
+
+	/**
+	 * Sets whether or not inbound ad tracking ids should automatically create
+	 * Ad objects in the database
+	 *
+	 * @param boolean $create optional. True if unknown inbound ad tracking
+	 *                         ids should automatically create an Ad object
+	 *                         in the database and false if they should not.
+	 */
+	public function setAutocreateAd($create = true)
+	{
+		$this->autocreate_ad = (boolean)$create;
+	}
+
+	// }}}
 	// {{{ protected function initAd()
 
 	/**
@@ -184,7 +212,17 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$class_name = SwatDBClassMap::get('SiteAd');
 		$ad = new $class_name();
 		$ad->setDatabase($db);
-		if ($ad->loadFromShortname($shortname)) {
+		$loaded = $ad->loadFromShortname($shortname);
+
+		// autocreate ad if ad does not exist and autocreate is on
+		if (!$loaded && $this->autocreate_ad) {
+			$ad = $this->createAd($shortname);
+			$ad->setDatabase($db);
+			$ad->save();
+			$loaded = true;
+		}
+
+		if ($loaded) {
 			$session = $this->app->getModule('SiteSessionModule');
 			if (!$session->isActive()) {
 				$session->activate();
@@ -208,7 +246,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 				}
 			}
 
-			if ($this->clean_inbound_tracking_uri) {
+			if ($this->autoclean_uri) {
 				$this->cleanInboundTrackingUri($ad);
 			}
 		}
@@ -238,6 +276,29 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$ad_referrer->ad = $ad;
 
 		$ad_referrer->save();
+	}
+
+	// }}}
+	// {{{ protected function createAd()
+
+	/**
+	 * Creates a new ad object with the given inbound tracking id
+	 *
+	 * @param string $shortname the inbound tracking id of the Ad.
+	 *
+	 * @return SiteAd the newly created ad object. The Ad is not yet saved in
+	 *                 the database.
+	 */
+	protected function createAd($shortname)
+	{
+		$class_name = SwatDBClassMap::get('SiteAd');
+		$ad = new $class_name();
+
+		$ad->shortname = (string)$shortname;
+		$ad->createdate = new SwatDate();
+		$ad->createdate->toUTC();
+
+		return $ad;
 	}
 
 	// }}}
