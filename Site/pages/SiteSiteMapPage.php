@@ -48,11 +48,8 @@ class SiteSiteMapPage extends SiteArticlePage
 
 		echo '<ul class="site-map-list">';
 
-		foreach($articles as $article) {
-			echo '<li>';
+		foreach($articles as $article)
 			$this->displaySubArticle($article, $path);
-			echo '</li>';
-		}
 
 		echo '</ul>';
 	}
@@ -67,14 +64,27 @@ class SiteSiteMapPage extends SiteArticlePage
 		else
 			$path.= '/'.$article->shortname;
 
-		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = $path;
-		$anchor_tag->class = 'sub-article';
-		$anchor_tag->setContent($article->title);
-		$anchor_tag->display();
+		if ($this->showArticle($path)) {
+			echo '<li>';
+			$anchor_tag = new SwatHtmlTag('a');
+			$anchor_tag->href = $path;
+			$anchor_tag->class = 'sub-article';
+			$anchor_tag->setContent($article->title);
+			$anchor_tag->display();
+	
+			if ($this->showSubArticles($path))
+				$this->displaySubArticles($article->sub_articles, $path);
+	
+			echo '</li>';
+		}
+	}
 
-		if ($this->showSubArticles($path))
-			$this->displaySubArticles($article->sub_articles, $path);
+	// }}}
+	// {{{ protected function showArticle()
+
+	protected function showArticle($path)
+	{
+		return true;
 	}
 
 	// }}}
