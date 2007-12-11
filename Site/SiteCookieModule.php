@@ -20,9 +20,12 @@ class SiteCookieModule extends SiteApplicationModule
 	// {{{ public function init()
 
 	/**
+	 * Initializes this cookie module
 	 *
+	 * No initilization tasks are performed for the cookie module
 	 */
-	public function init() {
+	public function init()
+	{
 	}
 
 	// }}}
@@ -107,7 +110,7 @@ class SiteCookieModule extends SiteApplicationModule
 	{
 		$depends = parent::depends();
 
-		if ($this->app->hasModule('SiteMutipleInstanceModule'))
+		if ($this->app->hasModule('SiteMultipleInstanceModule'))
 			$depends[] = new SiteApplicationModuleDependency(
 				'SiteMultipleInstanceModule');
 
@@ -124,7 +127,7 @@ class SiteCookieModule extends SiteApplicationModule
 	 */
 	protected function getPrefix()
 	{
-		if ($this->app->hasModule('SiteMutipleInstanceModule'))
+		if ($this->app->hasModule('SiteMultipleInstanceModule'))
 			return $this->app->instance->getInstance()->shortname;
 		else
 			return $this->app->id;
