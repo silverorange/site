@@ -209,45 +209,47 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$shortname = SiteApplication::initVar($this->inbound_tracking_id,
 			SiteApplication::VAR_POST | SiteApplication::VAR_GET);
 
-		$class_name = SwatDBClassMap::get('SiteAd');
-		$ad = new $class_name();
-		$ad->setDatabase($db);
-		$loaded = $ad->loadFromShortname($shortname);
-
-		// autocreate ad if ad does not exist and autocreate is on
-		if (!$loaded && $this->autocreate_ad) {
-			$ad = $this->createAd($shortname);
+		if ($shortname !== null) {
+			$class_name = SwatDBClassMap::get('SiteAd');
+			$ad = new $class_name();
 			$ad->setDatabase($db);
-			$ad->save();
-			$loaded = true;
-		}
+			$loaded = $ad->loadFromShortname($shortname);
 
-		if ($loaded) {
-			$session = $this->app->getModule('SiteSessionModule');
-			if (!$session->isActive()) {
-				$session->activate();
+			// autocreate ad if ad does not exist and autocreate is on
+			if (!$loaded && $this->autocreate_ad) {
+				$ad = $this->createAd($shortname);
+				$ad->setDatabase($db);
+				$ad->save();
+				$loaded = true;
 			}
 
-			$session->ad = $ad;
-
-			/*
-			 * Due to mass mailings, large numbers of people follow links with
-			 * ads which can lead to database deadlock when inserting the ad
-			 * referrer. Here we make five attempts before giving up and
-			 * throwing the exception.
-			 */
-			for ($attempt = 0; true; $attempt++) {
-				try {
-					$this->insertInboundTrackingReferrer($ad);
-					break;
-				} catch (SwatDBException $e) {
-					if ($attempt > 5)
-						throw $e;
+			if ($loaded) {
+				$session = $this->app->getModule('SiteSessionModule');
+				if (!$session->isActive()) {
+					$session->activate();
 				}
-			}
 
-			if ($this->autoclean_uri) {
-				$this->cleanInboundTrackingUri($ad);
+				$session->ad = $ad;
+
+				/*
+				 * Due to mass mailings, large numbers of people follow links
+				 * with ads which can lead to database deadlock when inserting
+				 * the referrer. Here we make five attempts before giving up
+				 * and throwing the exception.
+				 */
+				for ($attempt = 0; true; $attempt++) {
+					try {
+						$this->insertInboundTrackingReferrer($ad);
+						break;
+					} catch (SwatDBException $e) {
+						if ($attempt > 5)
+							throw $e;
+					}
+				}
+
+				if ($this->autoclean_uri) {
+					$this->cleanInboundTrackingUri($ad);
+				}
 			}
 		}
 	}
