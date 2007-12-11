@@ -207,7 +207,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$db = $this->app->getModule('SiteDatabaseModule')->getConnection();
 
 		$shortname = SiteApplication::initVar($this->inbound_tracking_id,
-			SiteApplication::VAR_POST | SiteApplication::VAR_GET);
+			null, SiteApplication::VAR_POST | SiteApplication::VAR_GET);
 
 		if ($shortname !== null) {
 			$class_name = SwatDBClassMap::get('SiteAd');
