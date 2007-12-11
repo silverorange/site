@@ -296,6 +296,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$class_name = SwatDBClassMap::get('SiteAd');
 		$ad = new $class_name();
 
+		$ad->title = sprintf(Site::_('Ad %s'), (string)$shortname);
 		$ad->shortname = (string)$shortname;
 		$ad->createdate = new SwatDate();
 		$ad->createdate->toUTC();
