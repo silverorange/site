@@ -349,7 +349,7 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public static function generateNewPassword()
+	// {{{ public function generateNewPassword()
 
 	/**
 	 * Generates a new password for this account, saves it, and emails it to
