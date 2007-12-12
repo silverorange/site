@@ -150,6 +150,35 @@ class SiteAccountSessionModule extends SiteSessionModule
 	}
 
 	// }}}
+	// {{{ public function loginByAccount()
+
+	/**
+	 * Logs the current session into the specified {@link SiteAccount}
+	 *
+	 * @param SiteAccount $account The account to log into.
+	 *
+	 * @return boolean true.
+	 */
+	public function loginByAccount(SiteAccount $account)
+	{
+		if ($this->isLoggedIn())
+			$this->logout();
+
+		$this->activate();
+		$this->account = $account;
+		$this->regenerateId();
+		$this->setAccountCookie();
+		$this->runLoginCallbacks();
+
+		// save last login date
+		$now = new SwatDate();
+		$now->toUTC();
+		$this->account->updateLastLoginDate($now);
+
+		return true;
+	}
+
+	// }}}
 	// {{{ public function logout()
 
 	/**
