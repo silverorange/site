@@ -15,10 +15,10 @@ require_once 'Mail/mime.php';
  */
 class SiteMultipartMailMessage extends SiteObject
 {
-	// {{{ public properties 
+	// {{{ public properties
 
 	/**
-	 * Email subject 
+	 * Email subject
 	 *
 	 * @var string
 	 */
@@ -102,12 +102,12 @@ class SiteMultipartMailMessage extends SiteObject
 	public $attachments = array();
 
 	// }}}
-	// {{{ protected properties 
+	// {{{ protected properties
 
 	/**
 	 * The application sending mail
 	 *
-	 * @var SiteApplication 
+	 * @var SiteApplication
 	 */
 	protected $app = null;
 
