@@ -216,8 +216,6 @@ abstract class SiteSearchEngine extends SwatObject
 			$from_clause,
 			$where_clause);
 
-		echo $sql, '<hr />';
-
 		$count = SwatDB::queryOne($this->app->db, $sql);
 
 		return $count;
