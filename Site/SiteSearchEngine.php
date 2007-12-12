@@ -17,6 +17,8 @@ abstract class SiteSearchEngine extends SwatObject
 	 * The application object
 	 *
 	 * @var SiteApplication
+	 *
+	 * @see SiteSearchEngine::__construct()
 	 */
 	protected $app;
 
@@ -28,13 +30,6 @@ abstract class SiteSearchEngine extends SwatObject
 	protected $fulltext_result;
 
 	/**
-	 * Total number of results
-	 *
-	 * @var integer
-	 */
-	protected $result_count;
-
-	/**
 	 * Order by fields of this search engine
 	 *
 	 * This array is sorted with the highest priority order first.
@@ -44,6 +39,18 @@ abstract class SiteSearchEngine extends SwatObject
 	 * @see SiteSearchEngine::addOrderByField()
 	 */
 	protected $order_by_fields = array();
+
+	/**
+	 * Array of cached search result counts
+	 *
+	 * Array is indexed by the search parameter hash and values are the counts.
+	 *
+	 * @var array
+	 *
+	 * @see SiteSearchEngine::getResultCount()
+	 * @see SiteSearchEngine::getSearchParameterHash()
+	 */
+	protected $result_count_cache = array();
 
 	// }}}
 	// {{{ public function __construct()
@@ -91,9 +98,6 @@ abstract class SiteSearchEngine extends SwatObject
 		$limit_clause = $this->getLimitClause($limit);
 		$offset_clause = $this->getOffsetClause($offset);
 
-		$this->result_count = $this->queryResultCount($from_clause,
-			$where_clause);
-
 		$results = $this->queryResults($select_clause, $from_clause,
 			$where_clause, $order_by_clause, $limit_clause, $offset_clause);
 
@@ -104,18 +108,23 @@ abstract class SiteSearchEngine extends SwatObject
 	// {{{ public function getResultCount()
 
 	/**
-	 * Retrieve the total number of results available
+	 * Gets the total number of results available
 	 *
 	 * @return integer the total number of results available.
 	 */
 	public function getResultCount()
 	{
-		if ($this->result_count === null)
-			throw new SiteException('Unable to retrieve result count. '.
-				'Results must be retrieved first by calling '.
-				'SiteSearchEngine::search().');
+		$hash = $this->getSearchParameterHash();
+		if (array_key_exists($hash, $this->result_count_cache)) {
+			$count = $this->result_count_cache[$hash];
+		} else {
+			$from_clause = $this->getFromClause();
+			$where_clause = $this->getWhereClause();
+			$count = $this->queryResultCount($from_clause, $where_clause);
+			$this->result_count_cache[$hash] = $count;
+		}
 
-		return $this->result_count;
+		return $count;
 	}
 
 	// }}}
@@ -162,7 +171,7 @@ abstract class SiteSearchEngine extends SwatObject
 	// {{{ protected function queryResults()
 
 	/**
-	 * Query for results
+	 * Performs a query for search results
 	 *
 	 * @param string $select_clause the SQL SELECT clause to query with.
 	 * @param string $from_clause the SQL FROM clause to query with.
@@ -194,7 +203,7 @@ abstract class SiteSearchEngine extends SwatObject
 	// {{{ protected function queryResultCount()
 
 	/**
-	 * Query for the total number of results
+	 * Performs a query for the total number of search results
 	 *
 	 * @param string $from_clause the SQL FROM clause to query with.
 	 * @param string $where_clause the SQL WHERE clause to query with.
@@ -206,6 +215,8 @@ abstract class SiteSearchEngine extends SwatObject
 		$sql = sprintf('select count(0) %s %s',
 			$from_clause,
 			$where_clause);
+
+		echo $sql, '<hr />';
 
 		$count = SwatDB::queryOne($this->app->db, $sql);
 
@@ -314,6 +325,47 @@ abstract class SiteSearchEngine extends SwatObject
 				$this->app->db->quote($limit, 'integer'));
 
 		return $clause;
+	}
+
+	// }}}
+	// {{{ protected function getSearchParameterHash()
+
+	/**
+	 * Gets a hash value for the public properties (search parameters) of this
+	 * search engine
+	 *
+	 * The hash value is used to identify cached search results.
+	 *
+	 * @return string a hash value for the public properties of this search
+	 *                 engine.
+	 */
+	protected function getSearchParameterHash()
+	{
+		$properties = $this->getPublicProperties();
+		return md5(serialize($properties));
+	}
+
+	// }}}
+	// {{{ protected function getPublicProperties()
+
+	/**
+	 * Gets all the public properties (search parameters) of this search engine
+	 *
+	 * @return array an associative array of public properties of this search
+	 *               engine. The array key is the property name and the array
+	 *               value is the property value.
+	 */
+	protected function getPublicProperties()
+	{
+		$public_properties = array();
+		$reflector = new ReflectionClass(get_class($this));
+		foreach ($reflector->getProperties() as $property) {
+			if ($property->isPublic() && !$property->isStatic()) {
+				$public_properties[$property->getName()] =
+					$property->getValue($this);
+			}
+		}
+		return $public_properties;
 	}
 
 	// }}}
