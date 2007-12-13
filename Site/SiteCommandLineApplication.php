@@ -270,11 +270,26 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 * @param integer $verbosity the verbosity level to display at. If this
 	 *                            application's verbosity is less than this
 	 *                            level, the string is not displayed.
+	 * @param boolean $bold optional. Whether or not to display the string
+	 *                       using a bold font on supported terminals. Defaults
+	 *                       to false.
 	 */
-	protected function output($string, $verbosity)
+	protected function output($string, $verbosity, $bold = false)
 	{
-		if ($verbosity <= $this->verbosity)
-			echo $string;
+		if ($verbosity <= $this->verbosity) {
+			if ($bold) {
+				$term = SiteApplication::initVar('TERM', '',
+					SiteApplication::VAR_ENV);
+
+				$bold = (strpos($term, 'xterm') !== false);
+			}
+
+			if ($bold) {
+				echo "\033[1m", $string, "\033[0m";
+			} else {
+				echo $string;
+			}
+		}
 	}
 
 	// }}}
