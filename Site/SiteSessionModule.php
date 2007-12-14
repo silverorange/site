@@ -35,12 +35,8 @@ class SiteSessionModule extends SiteApplicationModule
 		session_cache_limiter('');
 		session_name($session_name);
 
-		if ($this->app->hasModule('instance')) {
-			$this->setSavePath($this->app->config->sessions->path.
-				'/'.$session_name);
-		} else {
-			$this->setSavePath($this->app->config->sessions->path);
-		}
+		$path = $this->app->config->session->path.'/'.$session_name;
+		$this->setSavePath($path);
 
 		if ($this->shouldAutoActivateSession())
 			$this->autoActivate();
@@ -161,10 +157,9 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	public function getSessionName()
 	{
-		if ($this->app->hasModule('SiteMultipleInstanceModule'))
-			return $this->app->instance->getInstance()->shortname;
-		else
-			return $this->app->id;
+		$name = $this->app->config->session->name;
+
+		return $name;
 	}
 
 	// }}}
