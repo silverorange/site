@@ -2,6 +2,7 @@
 
 require_once 'Date/TimeZone.php';
 require_once 'Site/exceptions/SiteException.php';
+require_once 'Site/Site.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/SiteApplicationModule.php';
 require_once 'Swat/SwatDate.php';
@@ -551,6 +552,7 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected function addConfigDefinitions(SiteConfigModule $config)
 	{
+		$config->addDefinitions(Site::getConfigDefinitions());
 	}
 
 	// }}}
