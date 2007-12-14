@@ -103,13 +103,13 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 	// }}}
 	// {{{ protected function getTextBody()
 
-	/** 
+	/**
 	 * Gets the plain-text content of this mail message
 	 *
 	 * @return string the plain-text content of this mail message.
 	 */
 	protected function getTextBody()
-	{	
+	{
 		return $this->getFormattedBody(
 			"%s\n\n%s\n\n%s\n\n%s\n%s\n\n%s\n%s",
 			$this->password_link);
@@ -118,13 +118,13 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 	// }}}
 	// {{{ protected function getHtmlBody()
 
-	/** 
+	/**
 	 * Gets the HTML content of this mail message
 	 *
 	 * @return string the HTML content of this mail message.
 	 */
 	protected function getHtmlBody()
-	{	
+	{
 		return $this->getFormattedBody(
 			'<p>%s</p><p>%s</p><p>%s</p><p>%s<br />%s</p><p>%s<br />%s</p>',
 			sprintf('<a href="%1$s">%1$s</a>', $this->password_link));
