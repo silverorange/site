@@ -293,6 +293,30 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	}
 
 	// }}}
+	// {{{ protected function die()
+
+	/**
+	 * Terminates this application and displays the specified error message
+	 *
+	 * Program execution ceases after this method is run. Code present in
+	 * object destructors will still run.
+	 *
+	 * @param string $string the string to dipslay.
+	 * @param integer $verbosity the verbosity level to display at. If this
+	 *                            application's verbosity is less than this
+	 *                            level, the string is not displayed.
+	 *
+	 * @param integer $error_code optional. The error code with which to
+	 *                             terminate execution. If not specified, 1 is
+	 *                             used.
+	 */
+	protected function die($string, $verbosity, $error_code = 1)
+	{
+		$this->output($string, $verbosity);
+		exit((int)$error_code);
+	}
+
+	// }}}
 }
 
 ?>
