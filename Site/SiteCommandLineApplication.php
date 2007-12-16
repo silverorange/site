@@ -293,7 +293,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	}
 
 	// }}}
-	// {{{ protected function die()
+	// {{{ protected function terminate()
 
 	/**
 	 * Terminates this application and displays the specified error message
@@ -310,7 +310,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 *                             terminate execution. If not specified, 1 is
 	 *                             used.
 	 */
-	protected function die($string, $verbosity, $error_code = 1)
+	protected function terminate($string, $verbosity, $error_code = 1)
 	{
 		$this->output($string, $verbosity);
 		exit((int)$error_code);
