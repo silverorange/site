@@ -17,7 +17,7 @@ class SitePage extends SiteObject
 
 	/**
 	 * Application object
-	 * 
+	 *
 	 * A reference to the {@link SiteApplication} object that created
 	 * this page.
 	 *
