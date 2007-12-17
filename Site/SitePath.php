@@ -31,7 +31,7 @@ abstract class SitePath implements Iterator, Countable
 	 * @var integer
 	 */
 	private $current_index = 0;
-	
+
 	// }}}
 	// {{{ public function __construct()
 
