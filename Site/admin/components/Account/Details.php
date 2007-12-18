@@ -127,7 +127,7 @@ class SiteAccountDetails extends AdminIndex
 
 	private function buildNavBar()
 	{
-		$fullname = $this->getAccount()->fullname;
+		$fullname = $this->getAccount()->getFullname();
 		$this->navbar->addEntry(new SwatNavBarEntry($fullname));
 		$this->title = $fullname;
 	}
