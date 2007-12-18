@@ -19,7 +19,7 @@ require_once 'MDB2.php';
 class SiteDatabaseModule extends SiteApplicationModule
 {
     // {{{ public properties
-	
+
 	/**
 	 * DSN of database
 	 *
