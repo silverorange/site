@@ -246,7 +246,7 @@ class SiteArticlePage extends SitePathPage
 	 */
 	protected final function replaceMarkers($text)
 	{
-		$marker_pattern = '/<!-- \[(.*)?\] -->/uU';
+		$marker_pattern = '/<!-- \[(.*?)\] -->/u';
 		$callback = array($this, 'getReplacementMarkerTextByMatches');
 		return preg_replace_callback($marker_pattern, $callback, $text);
 	}
