@@ -1,0 +1,25 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="index_frame">
+		<property name="title" translatable="yes">Ad Details</property>
+		<widget class="AdminNote" id="ad_tag_help" />
+		<widget class="SwatFieldset">
+			<property name="title" translatable="yes">Referrers in the Last</property>
+			<widget class="SwatTableView" id="referrer_period_view">
+				<object class="SwatTableViewColumn">
+					<object class="SwatTextCellRenderer">
+						<property name="text" type="data">period</property>
+					</object>
+				</object>
+				<object class="SwatTableViewColumn">
+					<property name="title" translatable="yes">Referrers</property>
+					<object class="SwatNumericCellRenderer">
+						<property name="value" type="data">referrers</property>
+					</object>
+				</object>
+			</widget>
+		</widget>
+	</widget>
+</swatml>

@@ -1,0 +1,49 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="index_frame">
+		<property name="title" translatable="yes">Ads</property>
+		<widget class="SwatToolbar" id="index_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">New Ad</property>
+				<property name="link">Ad/Edit</property>
+				<property name="stock_id">create</property>
+			</widget>
+		</widget>
+		<widget class="SwatForm" id="index_form">
+			<widget class="SwatTableView" id="index_view">
+				<object class="SwatTableViewCheckboxColumn" id="checkbox">
+					<object class="SwatCheckboxCellRenderer" id="items">
+						<property name="value" type="data">id</property>
+					</object>
+				</object>
+				<object class="AdminTableViewOrderableColumn" id="shortname">
+					<property name="title" translatable="yes">Short Name</property>
+					<object class="AdminTitleLinkCellRenderer">
+						<property name="text" type="data">shortname</property>
+						<property name="link">Ad/Details?id=%s</property>
+						<property name="link_value" type="data">id</property>
+					</object>
+				</object>
+				<object class="AdminTableViewOrderableColumn" id="title">
+					<property name="title" translatable="yes">Title</property>
+					<object class="SwatTextCellRenderer">
+						<property name="text" type="data">title</property>
+					</object>
+				</object>
+				<object class="AdminTableViewOrderableColumn" id="total_referrers">
+					<property name="title" translatable="yes">Total Referrers</property>
+					<object class="SwatNumericCellRenderer">
+						<property name="value" type="data">total_referrers</property>
+					</object>
+				</object>
+			</widget>
+			<widget class="SwatActions" id="index_actions">
+				<widget class="SwatActionItem" id="delete">
+					<property name="title" translatable="yes">delete…</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>
