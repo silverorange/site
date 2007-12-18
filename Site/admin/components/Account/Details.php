@@ -99,6 +99,7 @@ class SiteAccountDetails extends AdminIndex
 	protected function buildAccountDetails()
 	{
 		$ds = $this->getAccountDetailsStore();
+		$ds->fullname = $this->account->getFullname();
 
 		$details_frame = $this->ui->getWidget('details_frame');
 		$details_frame->title = Site::_('Account');
