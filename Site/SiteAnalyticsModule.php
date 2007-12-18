@@ -119,8 +119,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	public function depends()
 	{
 		$depends = parent::depends();
-		$depends[] = new SiteApplicationModuleDependency('SiteDatabaseModule');
-		$depends[] = new SiteApplicationModuleDependency('SiteSessionModule');
+		$depends[] = 'SiteDatabaseModule';
+		$depends[] = 'SiteSessionModule';
 		return $depends;
 	}
 
