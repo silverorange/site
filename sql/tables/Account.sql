@@ -12,3 +12,4 @@ create table Account (
 );
 
 CREATE INDEX Account_instance_index ON Account(instance);
+CREATE INDEX Account_email_index ON Account(email);
