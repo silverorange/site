@@ -34,7 +34,8 @@ class SiteAccountEmailPassword extends AdminConfirmation
 
 		$this->id = SiteApplication::initVar('id');
 
-		$sql = sprintf('select id, fullname, email from Account where id = %s',
+		$sql = sprintf('select id, fullname, email, instance
+			from Account where id = %s',
 			$this->app->db->quote($this->id, 'integer'));
 
 		$this->account = SwatDB::query($this->app->db, $sql,
@@ -42,6 +43,11 @@ class SiteAccountEmailPassword extends AdminConfirmation
 
 		if ($this->account === null)
 			throw new AdminNoAccessException();
+		elseif ($this->app->hasModule('SiteMultipleInstanceModule') &&
+			$this->account->instance != $this->app->instance->getInstance())
+			throw new AdminNotFoundException(sprintf(
+				Store::_('Incorrect instance for account ‘%d’.'),
+					$this->id));
 	}
 
 	// }}}
