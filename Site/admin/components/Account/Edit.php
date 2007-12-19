@@ -36,7 +36,7 @@ class SiteAccountEdit extends AdminDBEdit
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
 		$this->ui->loadFromXML($this->ui_xml);
 
-		$this->fields = array('fullname', 'email');
+		$this->fields = array('fullname', 'email', 'integer:instance');
 	}
 
 	// }}}
@@ -71,6 +71,9 @@ class SiteAccountEdit extends AdminDBEdit
 	protected function saveDBData()
 	{
 		$values = $this->getUIValues();
+
+		if ($this->app->hasModule('SiteMultipleInstanceModule'))
+			$values['instance'] = $this->app->instance->getInstance()->id;
 
 		if ($this->id === null) {
 			$now = new SwatDate();
@@ -123,6 +126,11 @@ class SiteAccountEdit extends AdminDBEdit
 			throw new AdminNotFoundException(
 				sprintf(Site::_("Account with id ‘%s’ not found."),
 				$this->id));
+		elseif ($this->app->hasModule('SiteMultipleInstanceModule') &&
+			$row->instance != $this->app->instance->getInstance()->id)
+			throw new AdminNotFoundException(sprintf(
+				Store::_('Incorrect instance for account ‘%d’.'),
+					$this->id));
 
 		$this->ui->setValues(get_object_vars($row));
 	}
