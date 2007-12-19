@@ -34,20 +34,32 @@ class SiteAccountEmailPassword extends AdminConfirmation
 
 		$this->id = SiteApplication::initVar('id');
 
-		$sql = sprintf('select id, fullname, email, instance
-			from Account where id = %s',
-			$this->app->db->quote($this->id, 'integer'));
+		$this->account = $this->getAccount();
+	}
 
-		$this->account = SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('SiteAccountWrapper'))->getFirst();
+	// }}}
+	// {{{ protected function getAccount()
 
-		if ($this->account === null)
-			throw new AdminNoAccessException();
-		elseif ($this->app->hasModule('SiteMultipleInstanceModule') &&
-			$this->account->instance != $this->app->instance->getInstance())
-			throw new AdminNotFoundException(sprintf(
-				Store::_('Incorrect instance for account ‘%d’.'),
+	protected function getAccount()
+	{
+		if ($this->account === null) {
+			$account_class = SwatDBClassMap::get('SiteAccount');
+
+			$this->account = new $account_class();
+			$this->account->setDatabase($this->app->db);
+
+			if (!$this->account->load($this->id))
+				throw new AdminNotFoundException(sprintf(
+					Site::_('A account with an id of ‘%d’ does not exist.'),
 					$this->id));
+			elseif ($this->app->hasModule('SiteMultipleInstanceModule') &&
+				$this->account->instance != $this->app->instance->getInstance())
+				throw new AdminNotFoundException(sprintf(
+					Store::_('Incorrect instance for account ‘%d’.'),
+						$this->id));
+		}
+
+		return $this->account;
 	}
 
 	// }}}
@@ -65,7 +77,7 @@ class SiteAccountEmailPassword extends AdminConfirmation
 			$message = new SwatMessage(sprintf(
 				Site::_('%1$s’s password has been reset and has been emailed '.
 				'to <a href="email:%2$s">%2$s</a>.'),
-				$this->account->fullname, $this->account->email));
+				$this->account->getFullname(), $this->account->email));
 
 			$message->content_type = 'text/xml';
 
@@ -85,9 +97,9 @@ class SiteAccountEmailPassword extends AdminConfirmation
 		$form = $this->ui->getWidget('confirmation_form');
 		$form->addHiddenField('id', $this->id);
 
-		$this->title = $this->account->fullname;
+		$this->title = $this->account->getFullname();
 
-		$this->navbar->createEntry($this->account->fullname,
+		$this->navbar->createEntry($this->account->getFullname(),
 			sprintf('Account/Details?id=%s', $this->id));
 
 		$this->navbar->createEntry(Site::_('Email New Password Confirmation'));
@@ -111,7 +123,7 @@ class SiteAccountEmailPassword extends AdminConfirmation
 
 		$confirmation_title->setContent(sprintf(
 			Site::_('Are you sure you want to reset the password for %s?'),
-			$this->account->fullname));
+			$this->account->getFullname()));
 
 		$confirmation_title->display();
 
