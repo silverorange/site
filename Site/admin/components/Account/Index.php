@@ -3,6 +3,7 @@
 require_once 'Admin/pages/AdminSearch.php';
 require_once 'Admin/AdminSearchClause.php';
 require_once 'SwatDB/SwatDB.php';
+require_once 'Site/dataobjects/SiteAccountWrapper.php';
 
 /**
  * Index page for Accounts
@@ -70,6 +71,11 @@ class SiteAccountIndex extends AdminSearch
 		 */
 		$where = 'Account.fullname is not null';
 
+		if ($this->app->hasModule('SiteMultipleInstanceModule'))
+			$where.= sprintf(' and Account.instance = %s',
+				$this->app->db->quote(
+					$this->app->instance->getInstance()->id, 'integer'));
+
 		// fullname
 		$clause = new AdminSearchClause('fullname');
 		$clause->table = 'Account';
@@ -88,6 +94,13 @@ class SiteAccountIndex extends AdminSearch
 	}
 
 	// }}}
+	// {{{ protected function getFullnameWhereClause()
+
+	protected function getFullnameWhereClause()
+	{
+	}
+
+	// }}}
 	// {{{ protected function getTableModel()
 
 	protected function getTableModel(SwatView $view)
@@ -102,13 +115,20 @@ class SiteAccountIndex extends AdminSearch
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 
-		$rs = SwatDB::query($this->app->db, $sql);
+		$accounts = SwatDB::query($this->app->db, $sql, 'SiteAccountWrapper');
 
-		if (count($rs) > 0)
+		if (count($accounts) > 0)
 			$this->ui->getWidget('results_message')->content =
 				$pager->getResultsMessage('result', 'results');
 
-		return $rs;
+		$store = new SwatTableStore();
+		foreach ($accounts as $account) {
+			$ds = new SwatDetailsStore($account);
+			$ds->fullname = $account->getFullname();
+			$store->add($ds);
+		}
+
+		return $store;
 	}
 
 	// }}}
