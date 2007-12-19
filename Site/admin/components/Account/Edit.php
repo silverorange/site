@@ -17,6 +17,7 @@ class SiteAccountEdit extends AdminDBEdit
 {
 	// {{{ protected properties
 
+	protected $account;
 	protected $fields;
 
 	/**
@@ -33,10 +34,35 @@ class SiteAccountEdit extends AdminDBEdit
 	{
 		parent::initInternal();
 
+		$this->initAccount();
+
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
 		$this->ui->loadFromXML($this->ui_xml);
+	}
 
-		$this->fields = array('fullname', 'email', 'integer:instance');
+	// }}}
+	// {{{ protected function initAccount()
+
+	protected function initAccount()
+	{
+		$account_class = SwatDBClassMap::get('SiteAccount');
+
+		$this->account = new $account_class();
+		$this->account->setDatabase($this->app->db);
+
+		if ($this->id !== null) {
+			if (!$this->account->load($this->id))
+				throw new AdminNotFoundException(sprintf(
+					Site::_('A account with an id of ‘%d’ does not exist.'),
+					$this->id));
+			elseif ($this->app->hasModule('SiteMultipleInstanceModule') &&
+				$this->account->instance != $this->app->instance->getInstance())
+				throw new AdminNotFoundException(sprintf(
+					Store::_('Incorrect instance for account ‘%d’.'),
+						$this->id));
+		} elseif ($this->app->hasModule('SiteMultipleInstanceModule')) {
+			$this->account->instance = $this->app->instance->getInstance();
+		}
 	}
 
 	// }}}
@@ -50,17 +76,20 @@ class SiteAccountEdit extends AdminDBEdit
 		if ($email->hasMessage())
 			return;
 
-		$query = SwatDB::query($this->app->db, sprintf('select email
-			from Account where lower(email) = lower(%s) and id %s %s',
-			$this->app->db->quote($email->value, 'text'),
-			SwatDB::equalityOperator($this->id, true),
-			$this->app->db->quote($this->id, 'integer')));
+		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
+			$this->app->instance->getInstance() : null;
 
-		if (count($query) > 0) {
-			$message = new SwatMessage(Site::_(
-				'An account already exists with this email address.'),
+		$class_name = SwatDBClassMap::get('SiteAccount');
+		$account = new $class_name();
+		$account->setDatabase($this->app->db);
+		$found = $account->loadWithEmail($email->value, $instance);
+
+		if ($found && $this->account->id !== $account->id) {
+			$message = new SwatMessage(
+				Site::_('An account already exists with this email address.'),
 				SwatMessage::ERROR);
 
+			$message->content_type = 'text/xml';
 			$email->addMessage($message);
 		}
 	}
@@ -70,38 +99,30 @@ class SiteAccountEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		$values = $this->getUIValues();
-
-		if ($this->app->hasModule('SiteMultipleInstanceModule'))
-			$values['instance'] = $this->app->instance->getInstance()->id;
+		$this->updateAccount();
 
 		if ($this->id === null) {
 			$now = new SwatDate();
 			$now->toUTC();
-			$this->fields[] = 'date:createdate';
-			$values['createdate'] = $now->getDate();
-
-			$this->id = SwatDB::insertRow($this->app->db, 'Account',
-				$this->fields, $values, 'id');
-
-			$this->new_account = true;
-		} else {
-			SwatDB::updateRow($this->app->db, 'Account', $this->fields,
-				$values, 'id', $this->id);
+			$this->account->createdate = $now;
 		}
 
+		$this->account->save();
+
 		$message = new SwatMessage(sprintf(
-			Site::_('Account “%s” has been saved.'), $values['fullname']));
+			Site::_('Account “%s” has been saved.'),
+				$this->account->getFullname()));
 
 		$this->app->messages->add($message);
 	}
 
 	// }}}
-	// {{{ protected function getUIValues()
+	// {{{ protected function updateAccount()
 
-	protected function getUIValues()
+	protected function updateAccount()
 	{
-		return $this->ui->getValues(array('fullname', 'email'));
+		$this->account->email = $this->ui->getWidget('email')->value;
+		$this->account->fullname = $this->ui->getWidget('fullname')->value;
 	}
 
 	// }}}
@@ -119,20 +140,7 @@ class SiteAccountEdit extends AdminDBEdit
 
 	protected function loadDBData()
 	{
-		$row = SwatDB::queryRowFromTable($this->app->db, 'Account',
-			$this->fields, 'id', $this->id);
-
-		if ($row === null)
-			throw new AdminNotFoundException(
-				sprintf(Site::_("Account with id ‘%s’ not found."),
-				$this->id));
-		elseif ($this->app->hasModule('SiteMultipleInstanceModule') &&
-			$row->instance != $this->app->instance->getInstance()->id)
-			throw new AdminNotFoundException(sprintf(
-				Store::_('Incorrect instance for account ‘%d’.'),
-					$this->id));
-
-		$this->ui->setValues(get_object_vars($row));
+		$this->ui->setValues(get_object_vars($this->account));
 	}
 
 	// }}}
@@ -144,13 +152,11 @@ class SiteAccountEdit extends AdminDBEdit
 			$this->navbar->addEntry(new SwatNavBarEntry(Site::_('New Account')));
 			$this->title = Site::_('New Account');
 		} else {
-			$account_fullname = SwatDB::queryOneFromTable($this->app->db,
-				'Account', 'text:fullname', 'id', $this->id);
-
-			$this->navbar->addEntry(new SwatNavBarEntry($account_fullname,
+			$this->navbar->addEntry(new SwatNavBarEntry(
+				$this->account->getFullname(),
 				sprintf('Account/Details?id=%s', $this->id)));
 			$this->navbar->addEntry(new SwatNavBarEntry(Site::_('Edit')));
-			$this->title = $account_fullname;
+			$this->title = $this->account->getFullname();
 		}
 	}
 
