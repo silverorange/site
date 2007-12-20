@@ -90,8 +90,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 
 		$this->title = $title;
 		$this->documentation = $documentation;
-		$help_argument = new SiteCommandLineArgument(array('-?', '--help'),
-			'displayUsage',
+		$help_argument = new SiteCommandLineArgument(
+			array('-?', '-h', '--help'), 'displayUsage',
 			Site::_('Displays this usage information and exits.'));
 
 		$this->addCommandLineArgument($help_argument);
