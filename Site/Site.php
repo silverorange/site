@@ -175,7 +175,7 @@ class Site
 	public static function getConfigDefinitions()
 	{
 		return array(
-			'session.name' => null,
+			'session.name' => 'sessionid',
 			'session.path' => null,
 		);
 	}
