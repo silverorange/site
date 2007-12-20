@@ -15,9 +15,9 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 	/**
 	 * The current instance of this site
 	 *
-	 * @var string
+	 * @var SiteInstance
 	 */
-	protected $instance = 'default';
+	protected $instance = null;
 
 	// }}}
 	// {{{ public function init()
@@ -27,9 +27,21 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 	 */
 	public function init()
 	{
-		$instance = SiteApplication::initVar('instance');
-		if ($instance !== null)
-			$this->instance = $instance;
+		$config = $this->app->getModule('SiteConfigModule');
+
+		$instance_shortname = SiteApplication::initVar(
+			'instance', $config->instance->default,
+			SiteApplication::VAR_GET | SiteApplication::VAR_ENV);
+
+		$class_name = SwatDBClassMap::get('SiteInstance');
+		$this->instance = new $class_name();
+		$this->instance->setDatabase($this->app->database->getConnection());
+		if (!$this->instance->loadFromShortname($instance_shortname)) {
+			throw new SiteException(sprintf("No site instance with the ".
+				"shortname '%s' exists.", $instance_shortname));
+		}
+
+		$this->overrideConfig($config);
 	}
 
 	// }}}
@@ -38,11 +50,18 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 	/**
 	 * Gets the current instance of this site
 	 *
-	 * @return string the current instance of this site.
+	 * @return SiteInstance the current instance of this site.
 	 */
 	public function getInstance()
 	{
 		return $this->instance;
+	}
+
+	// }}}
+	// {{{ protected function overrideConfig()
+
+	protected function overrideConfig(SiteConfigModule $config)
+	{
 	}
 
 	// }}}
