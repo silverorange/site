@@ -177,6 +177,7 @@ class Site
 		return array(
 			'session.name' => 'sessionid',
 			'session.path' => null,
+			'instance.default' => 'default',
 		);
 	}
 
