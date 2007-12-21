@@ -29,6 +29,15 @@ class SiteAdReferrer extends SwatDBDataObject
 	 */
 	public $createdate;
 
+	/**
+	 * The HTTP referer of this referral
+	 *
+	 * May not exist if there was no HTTP referer.
+	 *
+	 * @var string
+	 */
+	public $http_referer;
+
 	// }}}
 	// {{{ protected function init()
 
