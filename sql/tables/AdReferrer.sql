@@ -1,7 +1,7 @@
 create table AdReferrer (
 	id serial,
 	createdate timestamp,
-	ad int not null references Ad(id),
+	ad integer not null references Ad(id) on delete set null,
 	primary key (id)
 );
 
