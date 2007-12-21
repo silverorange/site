@@ -3,6 +3,7 @@
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'SwatDB/SwatDBClassMap.php';
+require_once 'Site/dataobjects/SiteAdWrapper.php';
 
 /**
  * Report page for Ad
