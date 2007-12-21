@@ -15,6 +15,14 @@ require_once 'Site/dataobjects/SiteAd.php';
  */
 class SiteAdDetails extends AdminIndex
 {
+	// {{{ class constants
+
+	/**
+	 * Maximum number of top http referers to display
+	 */
+	const NUM_HTTP_REFERERS = 20;
+
+	// }}}
 	// {{{ protected properties
 
 	/**
@@ -155,8 +163,9 @@ class SiteAdDetails extends AdminIndex
 				from AdReferrer
 			where ad = %s and http_referer is not null
 			group by ad, uri
-			order by referer_count limit 20',
-			$this->app->db->quote($this->ad->id, 'integer'));
+			order by referer_count limit %s',
+			$this->app->db->quote($this->ad->id, 'integer'),
+			$this->app->db->quote(self::NUM_HTTP_REFERERS, 'integer'));
 
 		return SwatDB::query($this->app->db, $sql);
 	}
