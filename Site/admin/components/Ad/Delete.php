@@ -3,7 +3,6 @@
 require_once 'Admin/pages/AdminDBDelete.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Admin/AdminListDependency.php';
-require_once 'Admin/AdminSummaryDependency.php';
 
 /**
  * Delete confirmation page for Ads
@@ -21,14 +20,23 @@ class SiteAdDelete extends AdminDBDelete
 	{
 		parent::processDBData();
 
-		$item_list = $this->getItemList('integer');
-		$sql = 'delete from Ad where id in (%s)';
-		$num = SwatDB::exec($this->app->db, sprintf($sql, $item_list));
+		$sql = $this->getDeleteSql();
+		$num = SwatDB::exec($this->app->db, $sql);
 		$message = new SwatMessage(sprintf(Site::ngettext(
 			'One ad has been deleted.', '%d ads have been deleted.', $num),
 			SwatString::numberFormat($num)), SwatMessage::NOTIFICATION);
 
 		$this->app->messages->add($message);
+	}
+
+	// }}}
+	// {{{ protected function getDeleteSql()
+
+	protected function getDeleteSql()
+	{
+		$item_list = $this->getItemList('integer');
+		return sprintf('delete from Ad where id in (%s)',
+			$item_list);
 	}
 
 	// }}}
@@ -40,6 +48,21 @@ class SiteAdDelete extends AdminDBDelete
 	{
 		parent::buildInternal();
 
+		$dep = $this->getDependencies();
+
+		$message = $this->ui->getWidget('confirmation_message');
+		$message->content = $dep->getMessage();
+		$message->content_type = 'text/xml';
+
+		if ($dep->getStatusLevelCount(AdminDependency::DELETE) == 0)
+			$this->switchToCancelButton();
+	}
+
+	// }}}
+	// {{{ protected function getDependencies()
+
+	protected function getDependencies()
+	{
 		$item_list = $this->getItemList('integer');
 
 		$dep = new AdminListDependency();
@@ -48,12 +71,7 @@ class SiteAdDelete extends AdminDBDelete
 			'Ad', 'integer:id', null, 'text:title', 'id',
 			'id in ('.$item_list.')', AdminDependency::DELETE);
 
-		$message = $this->ui->getWidget('confirmation_message');
-		$message->content = $dep->getMessage();
-		$message->content_type = 'text/xml';
-
-		if ($dep->getStatusLevelCount(AdminDependency::DELETE) == 0)
-			$this->switchToCancelButton();
+		return $dep;
 	}
 
 	// }}}
