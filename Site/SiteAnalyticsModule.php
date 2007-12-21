@@ -275,6 +275,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$ad_referrer->setDatabase($db);
 		$ad_referrer->createdate = new SwatDate();
 		$ad_referrer->createdate->toUTC();
+		$ad_referrer->http_referer = SiteApplication::initVar('HTTP_REFERER',
+			null, SiteApplication::VAR_SERVER);
+
 		$ad_referrer->ad = $ad;
 
 		$ad_referrer->save();
