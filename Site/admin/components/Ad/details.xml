@@ -28,5 +28,23 @@
 				</object>
 			</widget>
 		</widget>
+		<widget class="SwatFieldset">
+			<property name="title" translatable="yes">Top HTTP Referers</property>
+			<widget class="SwatTableView" id="http_referers_view">
+				<property name="no_records_message">&lt;none&gt;</property>
+				<object class="SwatTableViewColumn">
+					<property name="title">URI</property>
+					<object class="SwatTextCellRenderer">
+						<property name="text" type="data">uri</property>
+					</object>
+				</object>
+				<object class="SwatTableViewColumn">
+					<property name="title">Number of Referrrals</property>
+					<object class="SwatNumericCellRenderer">
+						<property name="value" type="data">referer_count</property>
+					</object>
+				</object>
+			</widget>
+		</widget>
 	</widget>
 </swatml>

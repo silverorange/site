@@ -117,15 +117,17 @@ class SiteAdDetails extends AdminIndex
 	protected function getTableModel(SwatView $view)
 	{
 		switch ($view->id) {
-		case 'referrer_period_view' :
-			return $this->getRefererPeriodTableModel();
+		case 'referrer_period_view':
+			return $this->getReferrerPeriodTableModel();
+		case 'http_referers_view':
+			return $this->getHttpReferersTableModel();
 		}
 	}
 
 	// }}}
 	// {{{ protected function getRefererPeriodTableModel()
 
-	protected function getRefererPeriodTableModel()
+	protected function getReferrerPeriodTableModel()
 	{
 		$sql = sprintf('select * from AdReferrerByPeriodView where ad = %s',
 			$this->app->db->quote($this->ad->id, 'integer'));
@@ -142,6 +144,21 @@ class SiteAdDetails extends AdminIndex
 		}
 
 		return $store;
+	}
+
+	// }}}
+	// {{{ protected function getHttpReferersTableModel()
+
+	protected function getHttpReferersTableModel()
+	{
+		$sql = sprintf('select http_referer as uri, count(id) as referer_count
+				from AdReferrer
+			where ad = %s and http_referer is not null
+			group by ad, uri
+			order by referer_count limit 20',
+			$this->app->db->quote($this->ad->id, 'integer'));
+
+		return SwatDB::query($this->app->db, $sql);
 	}
 
 	// }}}
