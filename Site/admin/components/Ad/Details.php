@@ -95,10 +95,12 @@ class SiteAdDetails extends AdminIndex
 		$toolbar = $this->ui->getWidget('details_toolbar');
 		$toolbar->setToolLinkValues($this->ad->id);
 
+		$inbound_tracking_id = 'ad';
+
 		$help_note = $this->ui->getWidget('ad_tag_help');
 		$help_note->title = sprintf(Site::_(
 			'To track this ad, append the variable “%s=%s” to incoming links.'),
-			SwatString::minimizeEntities('ad'),
+			SwatString::minimizeEntities($inbound_tracking_id),
 			SwatString::minimizeEntities($this->ad->shortname));
 
 		ob_start();
@@ -106,10 +108,11 @@ class SiteAdDetails extends AdminIndex
 
 		$base_href = $this->app->getFrontendBaseHref();
 		printf(
-			'<li>%1$s<strong>?ad=%2$s</strong></li>'.
-			'<li>%1$s?othervar=otherval<strong>&ad=%2$s</strong></li>'.
-			'<li>%1$sus/en/category/product<strong>?ad=%2$s</strong></li>',
+			'<li>%1$s<strong>?%2$s=%3$s</strong></li>'.
+			'<li>%1$s?othervar=otherval<strong>&%2$s=%3$s</strong></li>'.
+			'<li>%1$sus/en/category/product<strong>?%2$s=%3$s</strong></li>',
 			SwatString::minimizeEntities($base_href),
+			SwatString::minimizeEntities($inbound_tracking_id),
 			SwatString::minimizeEntities($this->ad->shortname));
 
 		echo '</ul>';
