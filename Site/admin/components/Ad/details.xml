@@ -4,6 +4,13 @@
 	<widget class="SwatMessageDisplay" id="message_display" />
 	<widget class="SwatFrame" id="index_frame">
 		<property name="title" translatable="yes">Ad Details</property>
+		<widget class="SwatToolbar" id="details_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Delete Ad</property>
+				<property name="link">Ad/Delete?id=%s</property>
+				<property name="stock_id">delete</property>
+			</widget>
+		</widget>
 		<widget class="AdminNote" id="ad_tag_help" />
 		<widget class="SwatFieldset">
 			<property name="title" translatable="yes">Referrers in the Last</property>
