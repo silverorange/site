@@ -84,6 +84,9 @@ class SiteAdDetails extends AdminIndex
 	{
 		parent::buildInternal();
 
+		$toolbar = $this->ui->getWidget('details_toolbar');
+		$toolbar->setToolLinkValues($this->ad->id);
+
 		$help_note = $this->ui->getWidget('ad_tag_help');
 		$help_note->title = sprintf(Site::_(
 			'To track this ad, append the variable “%s=%s” to incoming links.'),
