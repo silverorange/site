@@ -1,6 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Site/dataobjects/SiteInstanceConfigSettingWrapper.php';
 
 /**
  * A dataobject class for site instances
@@ -67,6 +68,29 @@ class SiteInstance extends SwatDBDataObject
 	{
 		$this->table = 'Instance';
 		$this->id_field = 'integer:id';
+	}
+
+	// }}}
+
+	// loader methods
+	// {{{ protected function loadConfigSettings()
+
+	/**
+	 * Loads the config settings for this instance
+	 *
+	 * @return SiteInstanceConfigSettingWrapper a recordset of config settings
+	 */
+	protected function loadConfigSettings()
+	{
+		$sql = 'select id, instance, name, value
+			from InstanceConfigSetting
+			where instance = %s';
+
+		$sql = sprintf($sql,
+			$this->db->quote($this->id, 'integer'));
+
+		$wrapper = SwatDBClassMap::get('SiteInstanceConfigSettingWrapper');
+		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
 	// }}}

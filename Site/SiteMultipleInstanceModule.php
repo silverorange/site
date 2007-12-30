@@ -5,8 +5,12 @@ require_once 'Site/SiteApplicationModule.php';
 /**
  * Web application module for multiple instances
  *
+ * Configuration settings in a SiteConfigModule can be overriden on a per
+ * instance basis by adding rows to the InstanceConfigSetting table.
+ *
  * @package   Site
  * @copyright 2007 silverorange
+ * @see SiteConfigModule
  */
 class SiteMultipleInstanceModule extends SiteApplicationModule
 {
@@ -62,6 +66,22 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 
 	protected function overrideConfig(SiteConfigModule $config)
 	{
+		foreach ($this->instance->config_settings as $setting) {
+			if ($setting->value !== null) {
+				$qualified_name = $setting->name;
+
+				if (strpos($qualified_name, '.') === false) {
+					throw new SiteException(sprintf(
+						"Name of configuration setting '%s' must be ".
+						"fully qualifed and of the form section.name.",
+						$qualified_name));
+				}
+
+				list($section, $name) = explode('.', $qualified_name, 2);
+
+				$config->$section->$name = $setting->value;
+			}
+		}
 	}
 
 	// }}}
