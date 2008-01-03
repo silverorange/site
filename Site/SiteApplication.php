@@ -250,7 +250,8 @@ abstract class SiteApplication extends SiteObject
 					'SiteApplicationModuleDependency', get_class($module)));
 			}
 
-			if (!isset($this->modules_by_provides[$depend->getFeature()])) {
+			if ($depend->isRequired() &&
+				!isset($this->modules_by_provides[$depend->getFeature()])) {
 				throw new SiteException(sprintf(
 					"Module %s depends on feature '%s' which is not provided ".
 					"by any module in this application.",
@@ -468,22 +469,22 @@ abstract class SiteApplication extends SiteObject
 					'SiteApplicationModuleDependency', get_class($module)));
 			}
 
-			if ($depend->isRequired() &&
-				!isset($modules_by_provides[$depend->getFeature()])) {
+			// if dependency is provided, add it to the application first
+			if (isset($modules_by_provides[$depend->getFeature()])) {
+				$depend_module = $modules_by_provides[$depend->getFeature()];
+
+				if (!array_key_exists(spl_object_hash($depend_module),
+					$added_modules)) {
+					$this->addDefaultModule($module_ids, $modules_by_provides,
+						$added_modules, $depend_module, $dependent_stack);
+				}
+			} elseif ($depend->isRequired()) {
+				// throw exception if required dependency is missing
 				throw new SiteException(sprintf(
 					"Module %s depends on '%s' but no module provides this ".
 					"feature.",
 					get_class($module), $depend->getFeature()));
 			}
-
-			$depend_module = $modules_by_provides[$depend->getFeature()];
-
-			if (!array_key_exists(spl_object_hash($depend_module),
-				$added_modules)) {
-				$this->addDefaultModule($module_ids, $modules_by_provides,
-					$added_modules, $depend_module, $dependent_stack);
-			}
-
 		}
 
 		// all dependencies loaded, pop dependent stack
