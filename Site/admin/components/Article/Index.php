@@ -16,7 +16,7 @@ require_once 'include/SiteArticleVisibilityCellRenderer.php';
  * @copyright 2005-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteArticleIndex extends AdminIndex 
+class SiteArticleIndex extends AdminIndex
 {
 	// {{{ protected properties
 
