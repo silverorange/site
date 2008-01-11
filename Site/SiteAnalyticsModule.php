@@ -278,6 +278,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$ad_referrer->http_referer = SiteApplication::initVar('HTTP_REFERER',
 			null, SiteApplication::VAR_SERVER);
 
+		// truncate HTTP referrer to 255 characters
+		if ($ad_referrer->http_referer !== null) {
+			$ad_referrer->http_referer =
+				substr($ad_referrer->http_referer, 0, 255);
+		}
+
 		$ad_referrer->ad = $ad;
 
 		$ad_referrer->save();
