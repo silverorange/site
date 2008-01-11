@@ -110,6 +110,11 @@ class SiteExceptionLogger extends SwatExceptionLogger
 			$summary = $e->getClass().': '.$this->base_uri.
 				'/'.$log_directory.'/'.$log_filename;
 
+		$this->logSummary($summary);
+	}
+
+	protected function logSummary($summary)
+	{
 		error_log($summary, 0);
 	}
 }
