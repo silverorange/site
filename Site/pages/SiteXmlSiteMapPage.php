@@ -19,9 +19,19 @@ class SiteXmlSiteMapPage extends SitePage
 	protected $priority_paths = array();
 
 	// }}}
-	// {{{ public function displayPath()
+	// {{{ public function build()
 
-	public function displayPath($path, $last_modified = null, $frequency = null,
+	public function build()
+	{
+		$this->layout->startCapture('site_map');
+		$this->displaySiteMap();
+		$this->layout->endCapture();
+	}
+
+	// }}}
+	// {{{ protected function displayPath()
+
+	protected function displayPath($path, $last_modified = null, $frequency = null,
 		$priority = null)
 	{
 		echo "<url>\n";
@@ -45,16 +55,6 @@ class SiteXmlSiteMapPage extends SitePage
 				$this->priority_paths[$path]);
 
 		echo "</url>\n";
-	}
-
-	// }}}
-	// {{{ public function build()
-
-	public function build()
-	{
-		$this->layout->startCapture('site_map');
-		$this->displaySiteMap();
-		$this->layout->endCapture();
 	}
 
 	// }}}
