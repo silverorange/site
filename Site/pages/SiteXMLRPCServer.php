@@ -35,7 +35,7 @@ abstract class SiteXMLRPCServer extends SitePage
 	/**
 	 * Process the request
 	 *
-	 * This method is called by site code to process the page request. It creates 
+	 * This method is called by site code to process the page request. It creates
 	 * an XML-RPC server and handles a request. The XML-RPC response from the
 	 * server is output here as well.
 	 *
