@@ -41,7 +41,7 @@ class SiteXmlSiteMapPage extends SitePage
 
 		if ($last_modified !== null)
 			printf("<lastmod>%s</lastmod>\n",
-				$last_modified->getDate());
+				$last_modified->getDate(DATE_FORMAT_ISO_EXTENDED));
 
 		if ($frequency !== null)
 			printf("<changefreq>%s</changefreq>\n",
