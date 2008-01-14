@@ -70,6 +70,8 @@ class SiteXmlSiteMapPage extends SitePage
 
 	protected function displaySiteMap()
 	{
+		$this->displayPath('', null, 'daily', 1);
+
 		$articles = $this->queryArticles();
 		$this->displayArticles($articles);
 	}
