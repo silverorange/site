@@ -15,7 +15,7 @@ class SiteXmlSiteMapLayout extends SiteLayout
 
 	public function __construct($app, $filename = null)
 	{
-		parent::__construct($app, 'Site/layouts/xhtml/xmlsitemap.php');
+		parent::__construct($app, 'Site/layouts/xhtml/xml-site-map.php');
 	}
 
 	// }}}
