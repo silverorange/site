@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Swat/SwatString.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/layouts/SiteXmlSiteMapLayout.php';
 require_once 'Site/dataobjects/SiteArticleWrapper.php';
@@ -28,7 +27,7 @@ class SiteXmlSiteMapPage extends SitePage
 		echo "<url>\n";
 
 		printf("<loc>%s</loc>\n",
-			SwatString::minimizeEntities($this->app->getBaseHref().$path));
+			htmlspecialchars($this->app->getBaseHref().$path));
 
 		if ($last_modified !== null)
 			printf("<lastmod>%s</lastmod>\n",
