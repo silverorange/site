@@ -71,10 +71,10 @@ class SiteSiteMapPage extends SiteArticlePage
 			$anchor_tag->class = 'sub-article';
 			$anchor_tag->setContent($article->title);
 			$anchor_tag->display();
-	
+
 			if ($this->showSubArticles($path))
 				$this->displaySubArticles($article->sub_articles, $path);
-	
+
 			echo '</li>';
 		}
 	}
