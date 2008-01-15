@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/dataobject/SiteInstance.php';
+require_once 'Site/dataobjects/SiteInstance.php';
 
 /**
  * Web application module for multiple instances
