@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/SiteApplication.php';
+require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteDatabaseModule.php';
 require_once 'Site/SiteConfigModule.php';
 require_once 'SwatDB/SwatDB.php';
@@ -12,7 +12,7 @@ require_once 'SwatDB/SwatDB.php';
  * @copyright 2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SiteAtomFeedServer extends SiteApplication
+abstract class SiteAtomFeedServer extends SiteCommandLineApplication
 {
 	// {{{ public properties
 
@@ -32,6 +32,7 @@ abstract class SiteAtomFeedServer extends SiteApplication
 	public function run()
 	{
 		$this->initModules();
+
 		$this->db = $this->database->getConnection();
 
 		$feed = $this->getFeed();
@@ -47,7 +48,7 @@ abstract class SiteAtomFeedServer extends SiteApplication
 	/**
 	 * Instasiates an AtomFeed object
 	 *
-	 * @return AtomFeed 
+	 * @return AtomFeed
 	 */
 	protected function getFeed()
 	{
@@ -60,7 +61,7 @@ abstract class SiteAtomFeedServer extends SiteApplication
 	// {{{ protected abstract function addEntries()
 
 	/**
-	 * Abstract function to add atom entries to the feed 
+	 * Abstract function to add atom entries to the feed
 	 */
 	protected abstract function addEntries($feed);
 
