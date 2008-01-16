@@ -32,6 +32,12 @@
 						<property name="text" type="data">title</property>
 					</object>
 				</object>
+				<object class="AdminTableViewOrderableColumn" id="emails_sent">
+					<property name="title" translatable="yes">Emails Sent</property>
+					<object class="SwatNumericCellRenderer">
+						<property name="value" type="data">emails_sent</property>
+					</object>
+				</object>
 				<object class="AdminTableViewOrderableColumn" id="total_referrers">
 					<property name="title" translatable="yes">Total Referrers</property>
 					<object class="SwatNumericCellRenderer">
