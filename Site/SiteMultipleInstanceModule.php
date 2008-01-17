@@ -38,7 +38,7 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 			'instance', $config->instance->default,
 			SiteApplication::VAR_GET | SiteApplication::VAR_ENV);
 
-		if ($instance_shortname !== null)
+		if ($instance_shortname !== null) {
 			$class_name = SwatDBClassMap::get('SiteInstance');
 			$this->instance = new $class_name();
 			$this->instance->setDatabase($this->app->database->getConnection());
