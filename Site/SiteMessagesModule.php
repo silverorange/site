@@ -122,7 +122,7 @@ class SiteMessagesModule extends SiteApplicationModule
 	 *
 	 * @return array the array of SwatMessage objects in this module.
 	 */
-	public function &getAll()
+	public function getAll()
 	{
 		$messages = array();
 
