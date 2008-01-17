@@ -127,6 +127,9 @@ class SiteMessagesModule extends SiteApplicationModule
 		$messages = array();
 
 		if ($this->app->session->isActive()) {
+			if (!$this->session_is_initialized)
+				$this->initSession();
+
 			$messages = $this->app->session->messages;
 			$this->app->session->messages = array();
 		}
