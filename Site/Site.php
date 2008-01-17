@@ -216,7 +216,7 @@ class Site
 			'session.path' => null,
 
 			// Instance
-			'instance.default' => 'default',
+			'instance.default' => null,
 		);
 	}
 

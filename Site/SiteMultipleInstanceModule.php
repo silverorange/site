@@ -38,15 +38,17 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 			'instance', $config->instance->default,
 			SiteApplication::VAR_GET | SiteApplication::VAR_ENV);
 
-		$class_name = SwatDBClassMap::get('SiteInstance');
-		$this->instance = new $class_name();
-		$this->instance->setDatabase($this->app->database->getConnection());
-		if (!$this->instance->loadFromShortname($instance_shortname)) {
-			throw new SiteException(sprintf("No site instance with the ".
-				"shortname '%s' exists.", $instance_shortname));
-		}
+		if ($instance_shortname !== null)
+			$class_name = SwatDBClassMap::get('SiteInstance');
+			$this->instance = new $class_name();
+			$this->instance->setDatabase($this->app->database->getConnection());
+			if (!$this->instance->loadFromShortname($instance_shortname)) {
+				throw new SiteException(sprintf("No site instance with the ".
+					"shortname '%s' exists.", $instance_shortname));
+			}
 
-		$this->overrideConfig($config);
+			$this->overrideConfig($config);
+		}
 	}
 
 	// }}}
