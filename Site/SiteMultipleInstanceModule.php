@@ -76,7 +76,7 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 	{
 		$id = null;
 		if ($this->instance !== null)
-			$id = this->instance->id;
+			$id = $this->instance->id;
 
 		return $id;
 	}
