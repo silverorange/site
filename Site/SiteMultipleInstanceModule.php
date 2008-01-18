@@ -65,6 +65,23 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function getId()
+
+	/**
+	 * Helper method to get the id of the current instance
+	 *
+	 * @return integer the current instance id or null if no instance exists.
+	 */
+	public function getId()
+	{
+		$id = null;
+		if ($this->instance !== null)
+			$id = this->instance->id;
+
+		return $id;
+	}
+
+	// }}}
 	// {{{ protected function overrideConfig()
 
 	protected function overrideConfig(SiteConfigModule $config)
