@@ -95,7 +95,9 @@ class SiteArticlePage extends SitePathPage
 		}
 
 		$this->buildContent();
-		$this->buildNavBar();
+
+		if (property_exists($this->layout, 'navbar'))
+			$this->buildNavBar();
 	}
 
 	// }}}
