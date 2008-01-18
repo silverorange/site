@@ -184,8 +184,8 @@ class Site
 			// DSN of database
 			'database.dsn' => null,
 
-			// Default locale (defaults to 'en_CA')
-			'i18n.locale' => 'en_CA',
+			// Default locale (defaults to 'en_CA.UTF8')
+			'i18n.locale' => 'en_CA.UTF8',
 
 			// Default timezone
 			'date.time_zone' => null,
