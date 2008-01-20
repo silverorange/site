@@ -1,6 +1,7 @@
 create table ImageDimension (
 	id serial,
 	image_set integer not null references ImageSet(id),
+	default_type integer not null references ImageType(id),
 	shortname varchar(255),
 	title varchar(255),
 	max_width integer,
