@@ -204,8 +204,7 @@ class SiteImage extends SwatDBDataObject
 		$img_tag->height = $this->getHeight($shortname);
 
 		if ($this->title !== null) {
-			$img_tag->alt = sprintf(Site::_('Image of %'),
-				$this->title);
+			$img_tag->alt = sprintf(Site::_('Image of %'), $this->title);
 			$img_tag->title = $this->title;
 		} else {
 			$img_tag->alt = '';
