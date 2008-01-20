@@ -368,6 +368,10 @@ class SiteImage extends SwatDBDataObject
 		$height = $dimension->max_height;
 		$width = $dimension->max_width;
 
+		if ($imagick->getImageWidth() === $dimension->max_width &&
+			$imagick->getImageHeight() === $dimension->max_height)
+				return;
+
 		if ($imagick->getImageWidth() / $width >
 			$imagick->getImageHeight() / $height) {
 
@@ -413,7 +417,9 @@ class SiteImage extends SwatDBDataObject
 	protected function fitToDimension(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
-		if ($dimension->max_width !== null) {
+		if ($dimension->max_width !== null &&
+			$imagick->getImageWidth() > $dimension->max_width) {
+
 			$new_width = min($dimension->max_width,
 				$imagick->getImageWidth());
 
@@ -424,7 +430,9 @@ class SiteImage extends SwatDBDataObject
 				Imagick::FILTER_LANCZOS, 1);
 		}
 
-		if ($dimension->max_height !== null) {
+		if ($dimension->max_height !== null &&
+			$imagick->getImageHeight() > $dimension->max_height) {
+
 			$new_height = min($dimension->max_height,
 				$imagick->getImageHeight());
 
