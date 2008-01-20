@@ -83,22 +83,25 @@ class SiteImageDimension extends SwatDBDataObject
 	/**
 	 * Loads a dimension from the database with a shortname
 	 *
-	 * @param string $shortname the shortname of the dimension
+	 * @param string $set_shortname the shortname of the set
+	 * @param string $dimension_shortname the shortname of the dimension
 	 *
 	 * @return boolean true if a dimension was successfully loaded and false if
 	 *                  no dimension was found at the specified shortname.
 	 */
-	public function loadByShortname($shortname)
+	public function loadByShortname($set_shortname, $dimension_shortname)
 	{
 		$this->checkDB();
 
 		$found = false;
 
-		$sql = 'select * from %s where shortname = %s';
+		$sql = 'select * from %s where shortname = %s and image_set in
+			(select id from ImageSet where shortname = %s)';
 
 		$sql = sprintf($sql,
 			$this->table,
-			$this->db->quote($shortname, 'text'));
+			$this->db->quote($dimension_shortname, 'text'),
+			$this->db->quote($set_shortname, 'text'));
 
 		$row = SwatDB::queryRow($this->db, $sql);
 
