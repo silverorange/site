@@ -115,6 +115,27 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function deleteInternal()
+
+	/**
+	 * Deletes this object from the database
+	 */
+	protected function deleteInternal()
+	{
+		$this->image_set = $this->getImageSet();
+		$filenames = array();
+
+		foreach ($this->image_set->dimensions as $dimension)
+			$filenames[] = $this->getFilePath($dimension->shortname);
+
+		parent::deleteInternal();
+
+		foreach ($filenames as $filename)
+			if (file_exists($filename))
+				unlink($filename);
+	}
+
+	// }}}
 
 	// image methods
 	// {{{ public function getWidth()
@@ -490,7 +511,7 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ private function setImageSet()
+	// {{{ private function getImageSet()
 
 	private function getImageSet()
 	{
