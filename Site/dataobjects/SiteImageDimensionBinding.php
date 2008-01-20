@@ -97,6 +97,26 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function saveInternal()
+
+	/**
+	 * Saves this object to the database
+	 *
+	 * Only modified properties are updated.
+	 */
+	protected function saveInternal()
+	{
+		$sql = sprintf('delete from %s where dimension = %s and image = %s',
+			$this->table,
+			$this->db->quote($this->dimension, 'integer'),
+			$this->db->quote($this->image, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
+
+		parent::saveInternal();
+	}
+
+	// }}}
 }
 
 ?>
