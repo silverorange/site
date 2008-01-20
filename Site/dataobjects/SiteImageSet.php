@@ -71,6 +71,25 @@ class SiteImageSet extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getDimensionByShortname()
+
+	/**
+	 * Gets a dimension of this set based on its shortname
+	 *
+	 * @param string $shortname the shortname of the dimension
+	 *
+	 * @return SiteImageDimension the image dimension with the given shortname
+	 */
+	public function getDimensionByShortname($shortname)
+	{
+		foreach ($this->dimensions as $dimension)
+			if ($dimension->shortname === $shortname)
+				return $dimension;
+
+		// TODO: throw error if no dimension is found
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()

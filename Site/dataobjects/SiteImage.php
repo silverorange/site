@@ -4,6 +4,7 @@ require_once 'Swat/SwatHtmlTag.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'SwatDB/SwatDBTransaction.php';
 require_once 'Site/dataobjects/SiteImageSet.php';
+require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
 require_once 'Image/Transform.php';
 
 /**
@@ -58,60 +59,149 @@ class SiteImage extends SwatDBDataObject
 	// }}}
 	// {{{ protected properties
 
-	/**
-	 * Image base path
-	 *
-	 * @var string
-	 */
-	protected $path = 'images';
+	protected $image_set_shortname;
 
 	// }}}
 	// {{{ private properties
 
-	/**
-	 * Cached image sets
-	 *
-	 * @var array
-	 */
-	private $sets = array();
-
-	/**
-	 * Cached image dimensions
-	 *
-	 * @var array
-	 */
-	private $dimensions = array();
+	private static $image_set_cache = array();
+	private $file_base;
 
 	// }}}
 
-	// {{{ public function getURI()
+	// dataobject methods
+	// {{{ protected function init()
 
-	public function getURI($dimension_shortname)
+	protected function init()
 	{
-		$dimension = new SiteImageDimension();
-		$dimension->setDatabase($this->db);
-		$dimension->loadByShortname($dimension_shortname);
+		$this->registerInternalProperty('image_set',
+			SwatDBClassMap::get('SiteImageSet'));
 
-		return sprintf('%s/%s/%s/%s.jpg',
-			$this->path,
-			$dimension->image_set->shortname,
+		$this->table = 'Image';
+		$this->id_field = 'integer:id';
+	}
+
+	// }}}
+	// {{{ protected function hasSubDataObject()
+
+	protected function hasSubDataObject($key)
+	{
+		$found = parent::hasSubDataObject($key);
+
+		if ($key === 'image_set' && !$found) {
+			$image_set_id = $this->getInternalValue('image_set');
+
+			if ($image_set_id !== null &&
+				array_key_exists($image_set_id, self::$image_set_cache)) {
+				$this->setSubDataObject('image_set',
+					self::$image_set_cache[$image_set_id]);
+
+				$found = true;
+			}
+		}
+
+		return $found;
+	}
+
+	// }}}
+	// {{{ protected function setSubDataObject()
+
+	protected function setSubDataObject($name, $value)
+	{
+		if ($name === 'image_set')
+			self::$image_set_cache[$value->id] = $value;
+
+		parent::setSubDataObject($name, $value);
+	}
+
+	// }}}
+
+	// image methods
+	// {{{ public function getWidth()
+
+	public function getWidth($dimension_shortname)
+	{
+		$binding = $this->getDimensionBinding($dimension_shortname);
+		return $binding->width;
+	}
+
+	// }}}
+	// {{{ public function getHeight()
+
+	public function getHeight($dimension_shortname)
+	{
+		$binding = $this->getDimensionBinding($dimension_shortname);
+		return $binding->height;
+	}
+
+	// }}}
+	// {{{ public function getFilename()
+
+
+	public function getFilename(SiteImageDimension $dimension = null)
+	{
+		// get extension if it exists, otherwise get the default from dimension
+		$binding = $this->getDimensionBinding($dimension->shortname);
+		$extension = ($binding === null) ?
+			$dimension->default_type->extension :
+				$binding->image_type->extension;
+
+		if ($this->image_set->obfuscate_filename) {
+			$filename = $this->filename;
+		} else {
+			$filename = $this->id;
+		}
+
+		return sprintf('%s.%s', $filename, $extension);
+	}
+
+	// }}}
+	// {{{ public function getUri()
+
+	public function getUri($shortname, $prefix = null)
+	{
+		$dimension = $this->image_set->getDimensionByShortname(
+			$shortname);
+
+		$uri = sprintf('%s/%s/%s/%s',
+			$this->getUriBase(),
+			$this->image_set->shortname,
 			$dimension->shortname,
-			$this->getFilename());
+			$this->getFilename($dimension));
+
+		if ($prefix !== null)
+			$uri = $prefix.$uri;
+
+		return $uri;
+	}
+
+	// }}}
+	// {{{ public function getFilePath()
+
+	public function getFilePath($shortname)
+	{
+		$dimension = $this->image_set->getDimensionByShortname(
+			$shortname);
+
+		return sprintf('%s/%s/%s/%s',
+			$this->getFileBase(),
+			$this->image_set->shortname,
+			$dimension->shortname,
+			$this->getFilename($dimension));
 	}
 
 	// }}}
 	// {{{ public function getImgTag()
 
-	public function getImgTag($dimension_shortname)
+	public function getImgTag($shortname, $prefix = null)
 	{
-		$dimension = $this->getDimensionByShortname($dimension_shortname);
+		$dimension = $this->image_set->getDimensionByShortname($shortname);
 
 		$img_tag = new SwatHtmlTag('img');
-		$img_tag->src = $this->getURI($dimension_shortname);
+		$img_tag->src = $this->getUri($shortname, $prefix);
 
-		// TODO: get dimensions nicely
-		$img_tag->width = $this->width;
-		$img_tag->height = $this->height;
+		$img_tag->width = $this->getWidth($shortname);
+		$img_tag->height = $this->getHeight($shortname);
 
 		if ($this->title !== null) {
 			$img_tag->alt = sprintf(Site::_('Image of %'),
@@ -125,27 +215,66 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function init()
+	// {{{ public function setFileBase()
 
-	protected function init()
+	public function setFileBase($path)
 	{
-		$this->registerInternalProperty('image_set',
-			SwatDBClassMap::get('SiteImageSet'));
-
-		$this->table = 'Image';
-		$this->id_field = 'integer:id';
+		$this->file_base = $path;
 	}
 
 	// }}}
-	// {{{ private function getFilename()
+	// {{{ protected function getUriBase()
 
-	private function getFilename()
+	protected function getUriBase()
 	{
-		if ($this->image_set->obfuscate_filename) {
-			return $this->filename;
-		} else {
-			return $this->id;
-		}
+		return 'images';
+	}
+
+	// }}}
+	// {{{ protected function getFileBase()
+
+	protected function getFileBase()
+	{
+		if ($this->file_base === null)
+			throw new SwatException('File base has not been set on the '.
+				'dataobject. Set the path to the webroot using '.
+				'setFileBase().');
+
+		return $this->file_base;
+	}
+
+	// }}}
+	// {{{ private function getDimensionBinding()
+
+	private function getDimensionBinding($dimension_shortname)
+	{
+		$dimension = $this->image_set->getDimensionByShortname(
+			$dimension_shortname);
+
+		return $this->dimension_bindings->getByIndex($dimension->id);
+	}
+
+	// }}}
+
+	// loader methods
+	// {{{ protected function loadDimensionBindings()
+
+	/**
+	 * Loads the dimension bindings for this image
+	 *
+	 * @return SiteImageDimensionBindingWrapper a recordset of dimension
+	 *                                           bindings.
+	 */
+	protected function loadDimensionBindings()
+	{
+		$sql = 'select * from ImageDimensionBinding
+				where ImageDimensionBinding.image = %s';
+
+		$sql = sprintf($sql,
+			$this->db->quote($this->id, 'integer'));
+
+		$wrapper = SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
 	// }}}
@@ -170,8 +299,11 @@ class SiteImage extends SwatDBDataObject
 	{
 		$this->checkDB();
 
+		$this->image_set = $this->getImageSet();
+
 		// extra space is to overcome a UTF-8 problem with basename
 		$this->original_filename = ltrim(basename(' '.$image_file));
+		$this->dimension_bindings = new SiteImageDimensionBindingWrapper();
 
 		if ($this->image_set->obfuscate_filename)
 			$this->filename = sha1(uniqid(rand(), true));
@@ -213,17 +345,8 @@ class SiteImage extends SwatDBDataObject
 		SiteImageDimension $dimension)
 	{
 		$this->resizeDimension($image, $dimension);
-
-		$sql = sprintf('insert into ImageDimensionBinding
-			(image, dimension, width, height)
-			values (%s, %s, %s, %s)',
-			$this->db->quote($this->id, 'integer'),
-			$this->db->quote($dimension->id, 'integer'),
-			$this->db->quote($image->img_x, 'integer'),
-			$this->db->quote($image->img_y, 'integer'));
-		SwatDB::query($this->db, $sql);
-
-		$this->saveDimension($image, $dimension);
+		$this->saveDimensionBinding($image, $dimension);
+		$this->saveFile($image, $dimension);
 	}
 
 	// }}}
@@ -275,7 +398,31 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function saveDimension()
+	// {{{ protected function saveDimensionBinding()
+
+	/**
+	 * Saves an image dimension binding
+	 *
+	 * @param Image_Transform $image the image being resized.
+	 * @param SiteImageDimension $dimension the image's dimension.
+	 */
+	protected function saveDimensionBinding(Image_Transform $image,
+		SiteImageDimension $dimension)
+	{
+		$binding = new SiteImageDimensionBinding();
+		$binding->setDatabase($this->db);
+		$binding->image = $this->id;
+		$binding->dimension = $dimension->id;
+		$binding->image_type = $dimension->default_type->id;
+		$binding->width = $image->new_x;
+		$binding->height = $image->new_y;
+		$binding->save();
+
+		$this->dimension_bindings->add($binding);
+	}
+
+	// }}}
+	// {{{ protected function saveFile()
 
 	/**
 	 * Saves the current image
@@ -283,15 +430,36 @@ class SiteImage extends SwatDBDataObject
 	 * @param Image_Transform $image the image transformer to work with.
 	 * @param SiteImageDimension $dimension the dimension to save.
 	 */
-	protected function saveDimension(Image_Transform $image,
+	protected function saveFile(Image_Transform $image,
 		SiteImageDimension $dimension)
 	{
 		$image->setDpi($dimension->dpi,	$dimension->dpi);
 		$image->strip();
 
-		// TODO: need a way to reference the www dir
-		$file = sprintf('../%s', $this->getURI($dimension->shortname));
+		$file = $this->getFilePath($dimension->shortname);
 		$image->save($file, false, $dimension->quality);
+
+		// TODO: throw exception if file can't be saved
+	}
+
+	// }}}
+	// {{{ private function setImageSet()
+
+	private function getImageSet()
+	{
+		if ($this->image_set_shortname === null)
+			throw new SwatException('To process images, an image type '.
+				'shortname must be defined in the image dataobject.');
+
+		$image_set = new SiteImageSet();
+		$image_set->setDatabase($this->db);
+		$found = $image_set->loadByShortname($this->image_set_shortname);
+
+		if (!$found)
+			throw new SwatException(sprintf('Image set “%s” does not exist.',
+				$this->image_set_shortname));
+
+		return $image_set;
 	}
 
 	// }}}
