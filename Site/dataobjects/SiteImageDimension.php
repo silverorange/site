@@ -1,6 +1,8 @@
 <?php
 
 require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Site/dataobjects/SiteImageSet.php';
+require_once 'Site/dataobjects/SiteImageType.php';
 
 /**
  * An image dimension data object
@@ -71,6 +73,11 @@ class SiteImageDimension extends SwatDBDataObject
 	public $quality;
 
 	// }}}
+	// {{{ private properties
+
+	private static $default_type_cache = array();
+
+	// }}}
 	// {{{ public function loadByShortname()
 
 	/**
@@ -112,8 +119,44 @@ class SiteImageDimension extends SwatDBDataObject
 		$this->registerInternalProperty('image_set',
 			SwatDBClassMap::get('SiteImageSet'));
 
+		$this->registerInternalProperty('default_type',
+			SwatDBClassMap::get('SiteImageType'));
+
 		$this->table = 'ImageDimension';
 		$this->id_field = 'integer:id';
+	}
+
+	// }}}
+	// {{{ protected function hasSubDataObject()
+
+	protected function hasSubDataObject($key)
+	{
+		$found = parent::hasSubDataObject($key);
+
+		if ($key === 'default_type' && !$found) {
+			$default_type_id = $this->getInternalValue('default_type');
+
+			if ($default_type_id !== null &&
+				array_key_exists($default_type_id, self::$default_type_cache)) {
+				$this->setSubDataObject('default_type',
+					self::$default_type_cache[$default_type_id]);
+
+				$found = true;
+			}
+		}
+
+		return $found;
+	}
+
+	// }}}
+	// {{{ protected function setSubDataObject()
+
+	protected function setSubDataObject($name, $value)
+	{
+		if ($name === 'default_type')
+			self::$default_type_cache[$value->id] = $value;
+
+		parent::setSubDataObject($name, $value);
 	}
 
 	// }}}
