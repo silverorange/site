@@ -288,10 +288,7 @@ class SiteImage extends SwatDBDataObject
 	 * The image is resized for each dimension. The dataobject is automatically
 	 * saved after the image has been processed.
 	 *
-	 * @param Image_Transform $image_file the image file to process
-	 *
-	 * @return boolean true on successful processing of all dimensions, false
-	 *                 if an error has occurred.
+	 * @param string $image_file the image file to process
 	 *
 	 * @throws SwatException if the image can't be processed.
 	 */
@@ -308,24 +305,28 @@ class SiteImage extends SwatDBDataObject
 		if ($this->image_set->obfuscate_filename)
 			$this->filename = sha1(uniqid(rand(), true));
 
-		$image = Image_Transform::factory('Imagick2');
-
-		if ($image->image === null)
-			throw new SwatException(sprintf('Image “%s” can not be loaded.',
-				$image_file));
+		if (!extension_loaded('imagick') || !class_exists('Imagick'))
+			throw new SwatException(
+				'Class Imagick from extension imagick > 2.0.0 not found.');
 
 		try {
 			$transaction = new SwatDBTransaction($this->db);
 			$this->save(); // save once to set id on this object to use for filenames
 
 			foreach ($this->image_set->dimensions as $dimension) {
-				$image->load($image_file);
-				$this->processDimension($image, $dimension);
+				$imagick = new Imagick($image_file);
+				$this->processDimension($imagick, $dimension);
+				$this->saveFile($imagick, $dimension);
+				unset($imagick);
 			}
 
 			$this->save(); // save again to record dimensions
 			$transaction->commit();
 		} catch (SwatException $e) {
+			$e->process();
+			$transaction->rollback();
+		} catch (Exception $e) {
+			$e = new SwatException($e);
 			$e->process();
 			$transaction->rollback();
 		}
@@ -338,62 +339,100 @@ class SiteImage extends SwatDBDataObject
 	/**
 	 * Resizes an image for the given dimension
 	 *
-	 * @param Image_Transform $image the image transformer to work with.
+	 * @param Imagick $imagick the imagick instance to work with.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function processDimension(Image_Transform $image,
+	protected function processDimension(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
-		$this->resizeDimension($image, $dimension);
-		$this->saveDimensionBinding($image, $dimension);
-		$this->saveFile($image, $dimension);
+		if ($dimension->crop)
+			$this->cropToDimension($imagick, $dimension);
+		else
+			$this->fitToDimension($imagick, $dimension);
+
+		$this->saveDimensionBinding($imagick, $dimension);
 	}
 
 	// }}}
-	// {{{ protected function resizeDimension()
+	// {{{ protected function cropToDimension()
 
 	/**
-	 * Resizes an image for the given dimension
+	 * Resizes and crops an image to a given dimension
 	 *
-	 * @param Image_Transform $image the image transformer to work with.
+	 * @param Imagick $imagick the imagick instance to work with.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function resizeDimension(Image_Transform $image,
+	protected function cropToDimension(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
-		if ($dimension->crop) {
-			$height = $dimension->max_height;
-			$width = $dimension->max_width;
+		$height = $dimension->max_height;
+		$width = $dimension->max_width;
 
-			if ($image->img_x / $width > $image->img_y / $height) {
-				$new_y = $height;
-				$new_x = ceil(($new_y / $image->img_y) * $image->img_x);
-			} else {
-				$new_x = $width;
-				$new_y = ceil(($new_x / $image->img_x) * $image->img_y);
-			}
+		if ($imagick->getImageWidth() / $width >
+			$imagick->getImageHeight() / $height) {
 
-			$image->resize($new_x, $new_y);
+			$new_height = $height;
+			$new_width = ceil($imagick->getImageWidth() *
+				($new_height / $imagick->getImageHeight()));
 
-			// crop to fit
-			if ($image->new_x != $width || $image->new_y != $height) {
-				$offset_x = 0;
-				$offset_y = 0;
-
-				if ($image->new_x > $width)
-					$offset_x = ceil(($image->new_x - $width) / 2);
-
-				if ($image->new_y > $height)
-					$offset_y = ceil(($image->new_y - $height) / 2);
-
-				$image->crop($width, $height, $offset_x, $offset_y);
-			}
 		} else {
-			if ($dimension->max_width !== null)
-				$image->fitX($dimension->max_width);
+			$new_width = $width;
+			$new_height = ceil($imagick->getImageHeight() *
+				($new_width / $imagick->getImageWidth()));
+		}
 
-			if ($dimension->max_height !== null)
-				$image->fitY($dimension->max_height);
+		$imagick->resizeImage($new_width, $new_height,
+			Imagick::FILTER_LANCZOS, 1);
+
+		// crop to fit
+		if ($imagick->getImageWidth() != $width ||
+			$imagick->getImageHeight() != $height) {
+
+			$offset_x = 0;
+			$offset_y = 0;
+
+			if ($imagick->getImageWidth() > $width)
+				$offset_x = ceil(($imagick->getImageWidth() - $width) / 2);
+
+			if ($imagick->getImageHeight() > $height)
+				$offset_y = ceil(($imagick->getImageHeight() - $height) / 2);
+
+			$imagick->cropImage($width, $height, $offset_x, $offset_y);
+		}
+	}
+
+	// }}}
+	// {{{ protected function fitToDimension()
+
+	/**
+	 * Resizes an image to fit in a given dimension
+	 *
+	 * @param Imagick $imagick the imagick instance to work with.
+	 * @param SiteImageDimension $dimension the dimension to process.
+	 */
+	protected function fitToDimension(Imagick $imagick,
+		SiteImageDimension $dimension)
+	{
+		if ($dimension->max_width !== null) {
+			$new_width = min($dimension->max_width,
+				$imagick->getImageWidth());
+
+			$new_height = ceil($imagick->getImageHeight() *
+				($new_width / $imagick->getImageWidth()));
+
+			$imagick->resizeImage($new_width, $new_height,
+				Imagick::FILTER_LANCZOS, 1);
+		}
+
+		if ($dimension->max_height !== null) {
+			$new_height = min($dimension->max_height,
+				$imagick->getImageHeight());
+
+			$new_width = ceil($imagick->getImageWidth() *
+				($new_height / $imagick->getImageHeight()));
+
+			$imagick->resizeImage($new_width, $new_height,
+				Imagick::FILTER_LANCZOS, 1);
 		}
 	}
 
@@ -403,10 +442,10 @@ class SiteImage extends SwatDBDataObject
 	/**
 	 * Saves an image dimension binding
 	 *
-	 * @param Image_Transform $image the image being resized.
+	 * @param Imagick $imagick the imagick instance to work with.
 	 * @param SiteImageDimension $dimension the image's dimension.
 	 */
-	protected function saveDimensionBinding(Image_Transform $image,
+	protected function saveDimensionBinding(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
 		$binding = new SiteImageDimensionBinding();
@@ -414,8 +453,8 @@ class SiteImage extends SwatDBDataObject
 		$binding->image = $this->id;
 		$binding->dimension = $dimension->id;
 		$binding->image_type = $dimension->default_type->id;
-		$binding->width = $image->new_x;
-		$binding->height = $image->new_y;
+		$binding->width = $imagick->getImageWidth();
+		$binding->height = $imagick->getImageHeight();
 		$binding->save();
 
 		$this->dimension_bindings->add($binding);
@@ -427,17 +466,18 @@ class SiteImage extends SwatDBDataObject
 	/**
 	 * Saves the current image
 	 *
-	 * @param Image_Transform $image the image transformer to work with.
+	 * @param Imagick $imagick the imagick instance to work with.
 	 * @param SiteImageDimension $dimension the dimension to save.
 	 */
-	protected function saveFile(Image_Transform $image,
+	protected function saveFile(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
-		$image->setDpi($dimension->dpi,	$dimension->dpi);
-		$image->strip();
+		$imagick->setResolution($dimension->dpi, $dimension->dpi);
+		$imagick->stripImage();
+		$imagick->setCompressionQuality($dimension->quality);
 
-		$file = $this->getFilePath($dimension->shortname);
-		$image->save($file, false, $dimension->quality);
+		$filename = $this->getFilePath($dimension->shortname);
+		$imagick->writeImage($filename);
 
 		// TODO: throw exception if file can't be saved
 	}
