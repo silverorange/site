@@ -320,7 +320,9 @@ class SiteImage extends SwatDBDataObject
 
 		// extra space is to overcome a UTF-8 problem with basename
 		$this->original_filename = ltrim(basename(' '.$image_file));
-		$this->dimension_bindings = new SiteImageDimensionBindingWrapper();
+
+		$wrapper = SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+		$this->dimension_bindings = new $wrapper();
 
 		if ($this->image_set->obfuscate_filename)
 			$this->filename = sha1(uniqid(rand(), true));
