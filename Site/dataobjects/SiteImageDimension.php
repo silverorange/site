@@ -72,6 +72,13 @@ class SiteImageDimension extends SwatDBDataObject
 	 */
 	public $quality;
 
+	/**
+	 * Strip embedded image data?
+	 *
+	 * @var boolean
+	 */
+	public $strip;
+
 	// }}}
 	// {{{ private properties
 

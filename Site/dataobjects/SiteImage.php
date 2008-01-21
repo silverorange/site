@@ -503,8 +503,10 @@ class SiteImage extends SwatDBDataObject
 		SiteImageDimension $dimension)
 	{
 		$imagick->setResolution($dimension->dpi, $dimension->dpi);
-		$imagick->stripImage();
 		$imagick->setCompressionQuality($dimension->quality);
+
+		if ($dimension->strip)
+			$imagick->stripImage();
 
 		$filename = $this->getFilePath($dimension->shortname);
 		$imagick->writeImage($filename);
