@@ -129,8 +129,10 @@ class SiteCookieModule extends SiteApplicationModule
 	{
 		$prefix = $this->app->id;
 
-		if ($this->app->hasModule('SiteMultipleInstanceModule'))
+		if ($this->app->hasModule('SiteMultipleInstanceModule') &&
+			$this->app->instance->getInstance() !== null) {
 			$prefix = $this->app->instance->getInstance()->shortname;
+		}
 
 		return $prefix;
 	}
