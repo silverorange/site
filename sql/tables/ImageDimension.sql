@@ -9,5 +9,6 @@ create table ImageDimension (
 	crop boolean not null default false,
 	dpi integer not null default 72,
 	quality integer not null default 85,
+	strip boolean not null default true,
 	primary key(id)
 );
