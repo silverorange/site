@@ -9,11 +9,8 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
 /**
  * Resolves and creates article pages in a web application
  *
- * Page factories implement the singleton pattern. Create a new page factory
- * using the {@link SitePageFactory::instance()} method.
- *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SitePageFactory
@@ -43,16 +40,6 @@ abstract class SitePageFactory
 	 * @var string
 	 */
 	protected $page_class_path = '../include/pages';
-
-	// }}}
-	// {{{ abstract public static function instance()
-
-	/**
-	 * Gets the singleton instance of this factory object
-	 *
-	 * @return SitePageFactory the singleton instance.
-	 */
-	abstract public static function instance();
 
 	// }}}
 	// {{{ abstract public function resolvePage()
@@ -178,18 +165,6 @@ abstract class SitePageFactory
 	protected function resolveLayout(SiteWebApplication $app, $source)
 	{
 		return new SiteLayout($app);
-	}
-
-	// }}}
-	// {{{ protected function __construct()
-
-	/**
-	 * Creates a SitePageFactory object
-	 *
-	 * The constructor is protected as this class uses the singleton pattern.
-	 */
-	protected function __construct()
-	{
 	}
 
 	// }}}
