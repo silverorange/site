@@ -54,6 +54,14 @@ interface SiteFulltextSearchResult
 	public function &getSearchedWords();
 
 	// }}}
+	// {{{ public function saveHistory()
+
+	/**
+	 * Saves this search result for search statistics and tracking
+	 */
+	public function saveHistory();
+
+	// }}}
 }
 
 ?>

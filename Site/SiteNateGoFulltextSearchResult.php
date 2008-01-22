@@ -97,6 +97,17 @@ class SiteNateGoFulltextSearchResult extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function saveHistory()
+
+	/**
+	 * Saves this search result for search statistics and tracking
+	 */
+	public function saveHistory()
+	{
+		$this->nate_go_result->saveHistory();
+	}
+
+	// }}}
 }
 
 ?>
