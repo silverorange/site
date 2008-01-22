@@ -2,6 +2,7 @@
 
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteImageDimensionWrapper.php';
+require_once 'Swat/SwatHtmlTag.php';
 
 /**
  * An image set data object
@@ -86,7 +87,31 @@ class SiteImageSet extends SwatDBDataObject
 			if ($dimension->shortname === $shortname)
 				return $dimension;
 
-		// TODO: throw error if no dimension is found
+		throw new SwatException(sprintf('Image dimension “%s” does not exist.',
+			$shortname));
+	}
+
+	// }}}
+	// {{{ public function getPlaceholderImage()
+
+	/**
+	 * Gets a placeholder image tag for a specific dimension
+	 *
+	 * @param string $shortname the shortname of the dimension
+	 * @param string $uri the uri of the placeholder image
+	 *
+	 * @return SwatHtmlTag the placeholder image tag
+	 */
+	public function getPlaceholderImage($shortname, $uri)
+	{
+		$dimension = $this->getDimensionByShortname($shortname);
+
+		$img_tag = new SwatHtmlTag('img');
+		$img_tag->src = $uri;
+		$img_tag->width = $dimension->max_width;
+		$img_tag->height = $dimension->max_height;
+
+		return $img_tag;
 	}
 
 	// }}}
@@ -99,6 +124,8 @@ class SiteImageSet extends SwatDBDataObject
 	}
 
 	// }}}
+
+	// loader methods
 	// {{{ protected function loadDimensions()
 
 	/**
