@@ -278,8 +278,10 @@ class SiteSearchResultsPage extends SiteArticlePage
 			$fulltext_result = $this->searchFulltext();
 			$this->buildArticles($fulltext_result);
 
-			if ($fulltext_result !== null)
+			if ($fulltext_result !== null) {
 				$this->buildMisspellings($fulltext_result);
+				$fulltext_result->saveHistory();
+			}
 		}
 	}
 
