@@ -70,6 +70,31 @@ class SiteImage extends SwatDBDataObject
 	// }}}
 
 	// dataobject methods
+	// {{{ public function load()
+
+	/**
+	 * Loads this object's properties from the database given an id
+	 *
+	 * @param mixed $id the id of the database row to set this object's
+	 *               properties with.
+	 *
+	 * @return boolean whether data was sucessfully loaded.
+	 */
+	public function load($id)
+	{
+		$loaded = parent::load($id);
+
+		if ($loaded && $this->image_set_shortname !== null) {
+			if ($this->image_set->shortname != $this->image_set_shortname)
+				throw new SwatException('Trying to load image with the '.
+					'wrong image set. This may happen if the wrong wrapper '.
+					'class is used.');
+		}
+
+		return $loaded;
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
@@ -112,33 +137,6 @@ class SiteImage extends SwatDBDataObject
 			self::$image_set_cache[$value->id] = $value;
 
 		parent::setSubDataObject($name, $value);
-	}
-
-	// }}}
-	// {{{ public function load()
-
-	/**
-	 * Loads this object's properties from the database given an id
-	 *
-	 * @param mixed $id the id of the database row to set this object's
-	 *               properties with.
-	 *
-	 * @return boolean whether data was sucessfully loaded.
-	 */
-	public function load($id)
-	{
-		$loaded = parent::load($id);
-
-		if ($loaded && $this->image_set_shortname !== null) {
-			$image_set = $this->getImageSet();
-
-			if ($this->image_set != $image_set)
-				throw new SwatException('Trying to load image with the '.
-					'wrong image set. This may happen if the wrong wrapper '.
-					'class is used.');
-		}
-
-		return $loaded;
 	}
 
 	// }}}
