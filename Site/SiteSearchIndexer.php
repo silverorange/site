@@ -42,6 +42,21 @@ abstract class SiteSearchIndexer extends SiteCommandLineApplication
 	}
 
 	// }}}
+	// {{{ protected function configure()
+
+	/**
+	 * Configures modules of this application before they are initialized
+	 *
+	 * @param SiteConfigModule $config the config module of this application to
+	 *                                  use for configuration other modules.
+	 */
+	protected function configure(SiteConfigModule $config)
+	{
+		parent::configure($config);
+		$this->database->dsn = $config->database->dsn;
+	}
+
+	// }}}
 }
 
 ?>
