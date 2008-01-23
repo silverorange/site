@@ -503,7 +503,8 @@ class SiteImage extends SwatDBDataObject
 	protected function saveDimensionBinding(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
-		$binding = new SiteImageDimensionBinding();
+		$class_name = SwatDBClassMap::get('SiteImageDimensionBinding');
+		$binding = new $class_name();
 		$binding->setDatabase($this->db);
 		$binding->image = $this->id;
 		$binding->dimension = $dimension->id;
