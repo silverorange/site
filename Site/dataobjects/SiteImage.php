@@ -202,6 +202,16 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getMimeType()
+
+
+	public function getMimeType($dimension_shortname)
+	{
+		$binding = $this->getDimensionBinding($dimension_shortname);
+		return $binding->image_type->mime_type;
+	}
+
+	// }}}
 	// {{{ public function getUri()
 
 	public function getUri($shortname, $prefix = null)
@@ -343,8 +353,10 @@ class SiteImage extends SwatDBDataObject
 
 		$this->image_set = $this->getImageSet();
 
-		// extra space is to overcome a UTF-8 problem with basename
-		$this->original_filename = ltrim(basename(' '.$image_file));
+		if ($this->original_filename === null) {
+			// extra space is to overcome a UTF-8 problem with basename
+			$this->original_filename = ltrim(basename(' '.$image_file));
+		}
 
 		$wrapper = SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
 		$this->dimension_bindings = new $wrapper();
