@@ -253,7 +253,9 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	 */
 	protected function getCustomWordList()
 	{
-		return './custom-wordlist.pws';
+		$filename = $this->getScriptDirectory().'/custom-wordlist.pws';
+
+		return $filename;
 	}
 
 	// }}}
