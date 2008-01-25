@@ -50,10 +50,12 @@ abstract class SitePageFactory
 	 * @param SiteWebApplication $app the web application for which the page is
 	 *                                 being resolved.
 	 * @param string $source the source string for which to get the page.
+	 * @param SiteLayout $layout optional, the layout to use.
 	 *
 	 * @return SitePage the page for the given source string.
 	 */
-	abstract public function resolvePage(SiteWebApplication $app, $source);
+	abstract public function resolvePage(SiteWebApplication $app, $source,
+		$layout = null);
 
 	// }}}
 	// {{{ protected function instantiatePage()
