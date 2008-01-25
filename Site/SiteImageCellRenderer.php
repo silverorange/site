@@ -83,6 +83,11 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	public function getHtmlHeadEntrySet()
 	{
 		$set = parent::getHtmlHeadEntrySet();
+
+		$set->addEntry(new SwatStyleSheetHtmlHeadEntry(
+			'packages/site/styles/site-image-cell-renderer.css',
+			Site::PACKAGE_ID));
+
 		$set->addEntrySet($this->image_cell_renderer->getHtmlHeadEntrySet());
 		return $set;
 	}

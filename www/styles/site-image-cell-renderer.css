@@ -1,0 +1,61 @@
+.swat-tile-view .swat-tile {
+	width: 126px;
+	height: auto;
+	padding: 0;
+	margin: 5px;
+	float: left;
+	text-align: center;
+	border: 1px solid transparent;
+	/* IE6 Hack
+	   set an unused color to be index color
+	   then remove this indexed color */
+	_border-color: black;
+	_filter:chroma(color=black);
+}
+
+.swat-tile-view .swat-tile a {
+	padding: 10px;
+	display: block;
+	text-decoration: none;
+}
+
+.swat-tile-view .swat-tile a:hover {
+	background: #33393a;
+}
+
+.swat-tile-view .swat-tile span.title {
+	display: block;
+	height: 2em;
+	padding: 0.2em 0;
+}
+
+* html .swat-tile-view .swat-tile span.title {
+	height: 2.4em;
+}
+
+.swat-tile-view .swat-tile a span.title {
+	cursor: pointer; /* for Ie6 */
+}
+
+.swat-tile-view .swat-tile .site-image-wrapper {
+	height: 106px;
+	width: 106px;
+	display: table-cell;
+	vertical-align: middle;
+	position: relative;
+}
+
+* html .swat-tile-view .swat-tile .site-image-wrapper {
+	display: block;
+}
+
+.swat-tile-view .site-image-wrapper img {
+	display: block;
+	margin: 0 auto;
+	padding: 2px;
+	border: 1px solid #888a85;
+	background: #555753;
+}
+
+* html .swat-tile-view .site-image-wrapper img {
+}
