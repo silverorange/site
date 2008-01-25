@@ -188,6 +188,21 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	}
 
 	// }}}
+	// {{{ public function getScriptDirectory()
+
+	/**
+	 * Gets an absolute path to the directory in which the currently running
+	 * script resides
+	 *
+	 * @return string the absolute path to the directory in which the currently
+	 *                running script resides.
+	 */
+	public function getScriptDirectory()
+	{
+		return dirname(realpath($_SERVER['SCRIPT_FILENAME']));
+	}
+
+	// }}}
 	// {{{ protected function parseCommandLineArguments()
 
 	/**
