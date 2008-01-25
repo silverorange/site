@@ -9,8 +9,8 @@
 	/* IE6 Hack
 	   set an unused color to be index color
 	   then remove this indexed color */
-	_border-color: black;
-	_filter:chroma(color=black);
+	_border-color: #ccc;
+	_filter:chroma(color=#ccc);
 }
 
 .swat-tile-view .swat-tile a {
@@ -20,7 +20,7 @@
 }
 
 .swat-tile-view .swat-tile a:hover {
-	background: #33393a;
+	background: #eee;
 }
 
 .swat-tile-view .swat-tile span.title {
@@ -53,8 +53,8 @@
 	display: block;
 	margin: 0 auto;
 	padding: 2px;
-	border: 1px solid #888a85;
-	background: #555753;
+	border: 1px solid #ddd;
+	background: #ccc;
 }
 
 * html .swat-tile-view .site-image-wrapper img {
