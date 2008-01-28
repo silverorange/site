@@ -184,13 +184,16 @@ class SiteImage extends SwatDBDataObject
 	// {{{ public function getFilename()
 
 
-	public function getFilename(SiteImageDimension $dimension = null)
+	public function getFilename($shortname)
 	{
 		// get extension if it exists, otherwise get the default from dimension
-		$binding = $this->getDimensionBinding($dimension->shortname);
-		$extension = ($binding === null) ?
-			$dimension->default_type->extension :
-				$binding->image_type->extension;
+		$binding = $this->getDimensionBinding($shortname);
+		if ($binding === null) {
+			$dimension = $this->image_set->getDimensionByShortname($shortname);
+			$extension = $dimension->default_type->extension;
+		} else {
+			$extension = $binding->image_type->extension;
+		}
 
 		if ($this->image_set->obfuscate_filename) {
 			$filename = $this->filename;
@@ -223,7 +226,7 @@ class SiteImage extends SwatDBDataObject
 			$this->getUriBase(),
 			$this->image_set->shortname,
 			$dimension->shortname,
-			$this->getFilename($dimension));
+			$this->getFilename($shortname));
 
 		if ($prefix !== null)
 			$uri = $prefix.$uri;
@@ -243,7 +246,7 @@ class SiteImage extends SwatDBDataObject
 			$this->getFileBase(),
 			$this->image_set->shortname,
 			$dimension->shortname,
-			$this->getFilename($dimension));
+			$this->getFilename($shortname));
 	}
 
 	// }}}
