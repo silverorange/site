@@ -372,12 +372,7 @@ class SiteImage extends SwatDBDataObject
 			$transaction = new SwatDBTransaction($this->db);
 			$this->save(); // save once to set id on this object to use for filenames
 
-			foreach ($this->image_set->dimensions as $dimension) {
-				$imagick = new Imagick($image_file);
-				$this->processDimension($imagick, $dimension);
-				$this->saveFile($imagick, $dimension);
-				unset($imagick);
-			}
+			$this->processInternal($image_file);
 
 			$this->save(); // save again to record dimensions
 			$transaction->commit();
@@ -390,6 +385,27 @@ class SiteImage extends SwatDBDataObject
 			$transaction->rollback();
 		}
 
+	}
+
+	// }}}
+	// {{{ protected function processInternal()
+
+	/**
+	 * Processes the image
+	 *
+	 * At this point in the process, the image already has a filename and id
+	 * and is wrapped in a database transaction.
+	 *
+	 * @param string $image_file the image file to process
+	 */
+	protected function processInternal($image_file)
+	{
+		foreach ($this->image_set->dimensions as $dimension) {
+			$imagick = new Imagick($image_file);
+			$this->processDimension($imagick, $dimension);
+			$this->saveFile($imagick, $dimension);
+			unset($imagick);
+		}
 	}
 
 	// }}}
