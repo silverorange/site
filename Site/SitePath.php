@@ -10,7 +10,7 @@ require_once 'Site/SitePathEntry.php';
  * @copyright 2005-2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SitePath implements Iterator, Countable
+class SitePath implements Iterator, Countable
 {
 	// {{{ private properties
 
