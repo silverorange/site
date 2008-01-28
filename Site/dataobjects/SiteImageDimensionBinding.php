@@ -48,6 +48,16 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	public $image;
 
 	// }}}
+	// {{{ protected properties
+
+	/**
+	 * Image field name
+	 *
+	 * @var string
+	 */
+	protected $image_field;
+
+	// }}}
 	// {{{ private properties
 
 	private static $image_type_cache = array();
@@ -106,9 +116,10 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	 */
 	protected function saveInternal()
 	{
-		$sql = sprintf('delete from %s where dimension = %s and image = %s',
+		$sql = sprintf('delete from %s where dimension = %s and %s = %s',
 			$this->table,
 			$this->db->quote($this->dimension, 'integer'),
+			$this->image_field,
 			$this->db->quote($this->image, 'integer'));
 
 		SwatDB::exec($this->db, $sql);
