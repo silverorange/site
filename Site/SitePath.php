@@ -50,6 +50,19 @@ class SitePath implements Iterator, Countable
 	}
 
 	// }}}
+	// {{{ public final function appendEntry()
+
+	/**
+	 * Appends an entry to the end of this path
+	 *
+	 * @param SitePathEntry $entry the entry to append.
+	 */
+	public final function appendEntry(SitePathEntry $entry)
+	{
+		$this->path_entries[] = $entry;
+	}
+
+	// }}}
 	// {{{ public function hasId()
 
 	/**
