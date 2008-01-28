@@ -553,15 +553,16 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ private function getImageSet()
+	// {{{ protected function getImageSet()
 
-	private function getImageSet()
+	protected function getImageSet()
 	{
 		if ($this->image_set_shortname === null)
 			throw new SwatException('To process images, an image type '.
 				'shortname must be defined in the image dataobject.');
 
-		$image_set = new SiteImageSet();
+		$class_name = SwatDBClassMap::get('SiteImageSet');
+		$image_set = new $class_name();
 		$image_set->setDatabase($this->db);
 		$found = $image_set->loadByShortname($this->image_set_shortname);
 
