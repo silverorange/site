@@ -246,21 +246,6 @@ abstract class SitePath implements Iterator, Countable
 	}
 
 	// }}}
-	// {{{ protected abstract function loadFromId()
-
-	/**
-	 * Loads this path from a database id
-	 *
-	 * Sub-classes are required to implement some sort of loader here. For
-	 * example, if a sub-class accepts the id of an article, this loader should
-	 * load the path for the article with the given id.
-	 *
-	 * @param SiteWebApplication $app the application this path exists in.
-	 * @param integer $id the database id to load this path from.
-	 */
-	protected abstract function loadFromId(SiteWebApplication $app, $id);
-
-	// }}}
 }
 
 ?>
