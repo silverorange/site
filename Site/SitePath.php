@@ -63,6 +63,26 @@ class SitePath implements Iterator, Countable
 	}
 
 	// }}}
+	// {{{ public function addEntriesToNavBar()
+
+	/**
+	 * Convenience method to add path entries to a navbar
+	 *
+	 * @param SwatNavBar $navbar the navbar to append entries to
+	 */
+	public function addEntriesToNavBar(SwatNavBar $navbar)
+	{
+		foreach ($this->path_entries as $entry) {
+			if ($entry === $this->getFirst())
+				$link = $entry->shortname;
+			else
+				$link.= '/'.$entry->shortname;
+
+			$navbar->createEntry($entry->title, $link);
+		}
+	}
+
+	// }}}
 	// {{{ public function hasId()
 
 	/**
