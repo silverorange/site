@@ -55,7 +55,7 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	 *
 	 * @var string
 	 */
-	protected $image_field;
+	protected $image_field = 'image';
 
 	// }}}
 	// {{{ private properties
