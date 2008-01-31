@@ -8,8 +8,26 @@ require_once 'Site/SitePageFactory.php';
  * @package   Site
  * @copyright 2006 silverorange
  */
-abstract class SiteXMLRPCServerFactory extends SitePageFactory
+class SiteXMLRPCServerFactory extends SitePageFactory
 {
+	// {{{ public function __construct()
+
+	public function __construct()
+	{
+		$this->class_map['Site'] = 'Site/pages';
+	}
+
+	// }}}
+	// {{{ protected function getPageMap()
+
+	protected function getPageMap()
+	{
+		return array(
+			'upload-status' => 'SiteUploadStatusServer',
+		);
+	}
+
+	// }}}
 	// {{{ public function resolvePage()
 
 	public function resolvePage(SiteWebApplication $app, $source)
