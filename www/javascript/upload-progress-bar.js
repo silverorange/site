@@ -136,6 +136,9 @@ SiteUploadProgressClient = function(id, status_server, progress_bar)
 }
 
 SiteUploadProgressClient.progress_unknown_text = 'uploading ...';
+SiteUploadProgressClient.hours_text = 'hours';
+SiteUploadProgressClient.minutes_text = 'minutes';
+SiteUploadProgressClient.seconds_left_text = 'seconds left';
 
 SiteUploadProgressClient.prototype.progress = function()
 {
@@ -157,10 +160,14 @@ SiteUploadProgressClient.prototype.setStatus = function(percent, time)
 	var minutes = Math.floor(time / 60) % 60;
 	var seconds = time % 60;
 
+	var hours_text = SiteUploadProgressClient.hours_text;
+	var minutes_text = SiteUploadProgressClient.minutes_text;
+	var seconds_left_text = SiteUploadProgressClient.seconds_left_text;
+
 	var text = '';
-	text += (hours > 0) ? hours + ' hours ' : '';
-	text += (minutes > 0) ? minutes + ' minutes ' : '';
-	text += seconds + ' seconds left';
+	text += (hours > 0) ? hours + ' ' + hours_text + ' ' : '';
+	text += (minutes > 0) ? minutes + ' ' + minutes_text + ' ' : '';
+	text += seconds + ' ' + seconds_left_text;
 
 	this.progress_bar.setText(text);
 }
