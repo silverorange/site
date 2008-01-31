@@ -80,14 +80,36 @@ class SiteUploadProgressForm extends SwatForm
 	protected function getInlineJavaScript()
 	{
 		$javascript = parent::getInlineJavaScript();
+		$javascript.= $this->getInlineJavaScriptTranslations();
 
-		$progress_bar_object_id = $this->id.'_progress_bar_obj';
 		$javascript.= sprintf(
 			"%s_obj = new SiteUploadProgressClient('%s', '%s', %s);",
 			$this->id, $this->id, $this->upload_status_server,
-				$progress_bar_object_id);
+			$this->id.'_progress_bar_obj');
 
 		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getInlineJavaScriptTranslations()
+
+	/**
+	 * Gets translatable string resources for the JavaScript object for
+	 * this widget
+	 *
+	 * @return string translatable JavaScript string resources for this widget.
+	 */
+	protected function getInlineJavaScriptTranslations()
+	{
+		return sprintf(
+			"SiteUploadProgressClient.progress_unknown_text = '%s';\n".
+			"SiteUploadProgressClient.hours_text = '%s';\n".
+			"SiteUploadProgressClient.minutes_text = '%s';\n".
+			"SiteUploadProgressClient.seconds_left_text = '%s';\n",
+			Site::_('uploading…'),
+			Site::_('hours'),
+			Site::_('minutes'),
+			Site::_('seconds left'));
 	}
 
 	// }}}
