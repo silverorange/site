@@ -58,6 +58,13 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	 */
 	public $link_value = null;
 
+	/**
+	 * Display title?
+	 *
+	 * @var boolean
+	 */
+	public $display_title = true;
+
 	// }}}
 	// {{{ private properties
 
@@ -100,12 +107,6 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		if (!$this->visible)
 			return;
 
-		if ($this->image->title === null)
-			$title = null;
-		else
-			$title = SwatString::condense($this->image->title,
-				self::MAX_TITLE_LENGTH);
-
 		if ($this->link !== null) {
 			$a_tag = new SwatHtmlTag('a');
 
@@ -134,17 +135,25 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		$this->image_cell_renderer->render();
 		$image_wrapper_tag->close();
 
-		$span_tag = new SwatHtmlTag('span');
-		$span_tag->class = 'title';
-		if ($title === null)
-			$span_tag->setContent(''); // prevent self-closing span tag
-		else
-			$span_tag->setContent($title);
+		if ($this->display_title) {
+			if ($this->image->title === null)
+				$title = null;
+			else
+				$title = SwatString::condense($this->image->title,
+					self::MAX_TITLE_LENGTH);
 
-		if (strlen($this->image->title) > self::MAX_TITLE_LENGTH)
-			$span_tag->title = $this->image->title;
+			$span_tag = new SwatHtmlTag('span');
+			$span_tag->class = 'title';
+			if ($title === null)
+				$span_tag->setContent(''); // prevent self-closing span tag
+			else
+				$span_tag->setContent($title);
 
-		$span_tag->display();
+			if (strlen($this->image->title) > self::MAX_TITLE_LENGTH)
+				$span_tag->title = $this->image->title;
+
+			$span_tag->display();
+		}
 
 		if ($this->link !== null)
 			$a_tag->close();
