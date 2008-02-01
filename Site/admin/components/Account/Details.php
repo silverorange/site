@@ -64,10 +64,11 @@ class SiteAccountDetails extends AdminIndex
 					Site::_('An account with an id of ‘%d’ does not exist.'),
 					$this->id));
 			elseif ($this->app->hasModule('SiteMultipleInstanceModule') &&
-				$this->account->instance != $this->app->instance->getInstance())
-				throw new AdminNotFoundException(sprintf(
-					Store::_('Incorrect instance for account ‘%d’.'),
-						$this->id));
+				$this->account->instance->id !=
+				$this->app->instance->getInstance()->id)
+					throw new AdminNotFoundException(sprintf(
+						Store::_('Incorrect instance for account ‘%d’.'),
+							$this->id));
 		}
 
 		return $this->account;
