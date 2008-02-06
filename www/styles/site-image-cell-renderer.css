@@ -38,15 +38,9 @@
 }
 
 .swat-tile-view .swat-tile .site-image-wrapper {
-	height: 106px;
-	width: 106px;
 	display: table-cell;
 	vertical-align: middle;
 	position: relative;
-}
-
-* html .swat-tile-view .swat-tile .site-image-wrapper {
-	display: block;
 }
 
 .swat-tile-view .site-image-wrapper img {

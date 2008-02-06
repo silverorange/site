@@ -128,6 +128,11 @@ class SiteImageCellRenderer extends SwatCellRenderer
 			$this->image->getHeight($this->image_dimension);
 		$this->image_cell_renderer->alt = '';
 
+		$occupy = max($this->image->getHeight($this->image_dimension),
+			$this->image->getWidth($this->image_dimension));
+		$this->image_cell_renderer->occupy_height = $occupy;
+		$this->image_cell_renderer->occupy_width = $occupy;
+
 		$image_wrapper_tag = new SwatHtmlTag('span');
 		$image_wrapper_tag->class = 'site-image-wrapper';
 
