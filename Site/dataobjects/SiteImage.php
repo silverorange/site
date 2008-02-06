@@ -5,7 +5,6 @@ require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'SwatDB/SwatDBTransaction.php';
 require_once 'Site/dataobjects/SiteImageSet.php';
 require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
-require_once 'Image/Transform.php';
 
 /**
  * An image data object
