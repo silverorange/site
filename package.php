@@ -59,6 +59,7 @@ $package->addPackageDepWithChannel('required', 'Date', 'pear.silverorange.com', 
 $package->addPackageDepWithChannel('required', 'MDB2', 'pear.php.net', '2.2.2');
 $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10');
 $package->addPackageDepWithChannel('required', 'Mail_mime', 'pear.silverorange.com', '1.3.0so1');
+$package->addPackageDepWithChannel('required', 'Net_SMTP', 'pear.silverorange.com', '1.2.8');
 $package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.silverorange.com', '0.0.7so2');
 $package->generateContents();
 
