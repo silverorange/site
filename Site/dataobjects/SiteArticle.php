@@ -26,7 +26,7 @@ class SiteArticle extends SwatDBDataObject
 	 * Objects that interact with articles may choose not to respect articles
 	 * with a depth greater than this value.
 	 *
-	 * The root article is the zero-th level article. 
+	 * The root article is the zero-th level article.
 	 */
 	const MAX_DEPTH = 8;
 
