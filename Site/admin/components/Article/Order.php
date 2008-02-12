@@ -57,13 +57,13 @@ class SiteArticleOrder extends AdminDBOrder
 	// {{{ protected function loadData()
 
 	protected function loadData()
-	{ 
+	{
 		$where_clause = sprintf('parent %s %s',
 			SwatDB::equalityOperator($this->parent),
 			$this->app->db->quote($this->parent, 'integer'));
 
 		$order_widget = $this->ui->getWidget('order');
-		$order_widget->addOptionsByArray(SwatDB::getOptionArray($this->app->db, 
+		$order_widget->addOptionsByArray(SwatDB::getOptionArray($this->app->db,
 			'Article', 'title', 'id', 'displayorder, title', $where_clause));
 
 		$sql = 'select sum(displayorder) from Article where '.$where_clause;
@@ -82,7 +82,7 @@ class SiteArticleOrder extends AdminDBOrder
 			'Article'));
 
 		if ($this->parent !== null) {
-			$navbar_rs = SwatDB::executeStoredProc($this->app->db, 
+			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
 				'getArticleNavBar', array($this->parent));
 
 			foreach ($navbar_rs as $elem)
