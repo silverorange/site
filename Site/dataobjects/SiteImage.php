@@ -390,6 +390,27 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function processManual()
+
+	/**
+	 * Manually process one dimension of an image
+	 *
+	 * @param string $image_file the image file to process
+	 * @param string $shortname the shortname of the dimension to process
+	 */
+	public function processManual($image_file, $shortname)
+	{
+		$this->checkDB();
+		$this->image_set = $this->getImageSet();
+		$dimension = $this->image_set->getDimensionByShortname($shortname);
+		$imagick = new Imagick($image_file);
+		$this->processDimension($imagick, $dimension);
+		$this->saveFile($imagick, $dimension);
+		unset($imagick);
+		$this->save();
+	}
+
+	// }}}
 	// {{{ protected function processInternal()
 
 	/**
