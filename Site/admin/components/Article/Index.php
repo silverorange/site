@@ -37,7 +37,7 @@ class SiteArticleIndex extends AdminIndex
 	{
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
 		$this->ui->loadFromXML($this->ui_xml);
-		
+
 		$this->id = SiteApplication::initVar('id');
 	}
 
@@ -60,7 +60,7 @@ class SiteArticleIndex extends AdminIndex
 	protected function getTableModel(SwatView $view)
 	{
 		$sql = 'select Article.id,
-					Article.title, 
+					Article.title,
 					Article.show,
 					Article.enabled,
 					Article.searchable,
@@ -74,9 +74,9 @@ class SiteArticleIndex extends AdminIndex
 		$sql = sprintf($sql,
 			SwatDB::equalityOperator($this->id),
 			$this->app->db->quote($this->id, 'integer'),
-			$this->getOrderByClause($view, 
+			$this->getOrderByClause($view,
 				'Article.displayorder, Article.title', 'Article'));
-		
+
 		$rs = SwatDB::query($this->app->db, $sql);
 
 		$view = $this->ui->getWidget('index_view');
@@ -92,7 +92,7 @@ class SiteArticleIndex extends AdminIndex
 	// }}}
 	// {{{ protected function buildInternal()
 
-	protected function buildInternal() 
+	protected function buildInternal()
 	{
 		parent::buildInternal();
 
@@ -102,7 +102,7 @@ class SiteArticleIndex extends AdminIndex
 			// show the detail frame
 			$details_frame = $this->ui->getWidget('details_frame');
 			$details_frame->visible = true;
-			
+
 			// move the articles frame inside of the detail frame
 			$articles_frame->parent->remove($articles_frame);
 			$details_frame->add($articles_frame);
@@ -113,7 +113,7 @@ class SiteArticleIndex extends AdminIndex
 			$this->buildDetails();
 		}
 
-		$tool_value = ($this->id === null) ? '' : '?parent='.$this->id;	
+		$tool_value = ($this->id === null) ? '' : '?parent='.$this->id;
 		$this->ui->getWidget('articles_toolbar')->setToolLinkValues(
 			$tool_value);
 
@@ -124,7 +124,7 @@ class SiteArticleIndex extends AdminIndex
 	// }}}
 	// {{{ protected function buildDetails()
 
-	protected function buildDetails() 
+	protected function buildDetails()
 	{
 		$details_block = $this->ui->getWidget('details_block');
 		$details_view = $this->ui->getWidget('details_view');
@@ -177,7 +177,7 @@ class SiteArticleIndex extends AdminIndex
 			'Article'));
 
 		if ($article->parent != null) {
-			$navbar_rs = SwatDB::executeStoredProc($this->app->db, 
+			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
 				'getArticleNavBar', array($article->parent->id));
 
 			foreach ($navbar_rs as $elem)
