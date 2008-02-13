@@ -99,7 +99,7 @@ class SiteArticleEdit extends AdminDBEdit
 		$article = new $class_name();
 		$article->setDatabase($this->app->db);
 
-		if ($article->loadFromShortname($shortname)) {
+		if ($article->loadByShortname($shortname)) {
 			if ($article->id !== $this->edit_article->id)
 				$valid = false;
 		}
