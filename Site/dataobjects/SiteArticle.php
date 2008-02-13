@@ -235,7 +235,7 @@ class SiteArticle extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function loadFromShortname()
+	// {{{ public function loadByShortname()
 
 	/**
 	 * Loads an article from its shortname
@@ -246,7 +246,7 @@ class SiteArticle extends SwatDBDataObject
 	 *                  false if the article with the given shortname doesn't
 	 *                  exist.
 	 */
-	public function loadFromShortname($shortname)
+	public function loadByShortname($shortname)
 	{
 		$this->checkDB();
 
