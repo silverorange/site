@@ -18,7 +18,6 @@ class SiteAccountEdit extends AdminDBEdit
 	// {{{ protected properties
 
 	protected $account;
-	protected $fields;
 
 	/**
 	 * @var string
