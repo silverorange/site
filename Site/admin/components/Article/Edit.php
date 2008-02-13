@@ -5,20 +5,21 @@ require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'NateGoSearch/NateGoSearch.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatDate.php';
+require_once 'Site/dataobjects/SiteArticle.php';
 
 /**
  * Edit page for Articles
  *
  * @package   Site
- * @copyright 2005-2007 silverorange
+ * @copyright 2005-2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticleEdit extends AdminDBEdit
 {
 	// {{{ protected properties
 
-	protected $fields;
 	protected $parent;
+	protected $edit_article;
 
 	/**
 	 * @var string
@@ -37,26 +38,31 @@ class SiteArticleEdit extends AdminDBEdit
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
 		$this->ui->loadFromXML($this->ui_xml);
 
-		$this->fields = array(
-			'title',
-			'shortname',
-			'description',
-			'bodytext',
-			'boolean:enabled',
-			'boolean:show',
-			'boolean:searchable',
-			'date:modified_date',
-		);
+		$this->initArticle();
 
 		$this->parent = SiteApplication::initVar('parent');
 
-		if ($this->id === null) {
-			$this->ui->getWidget('shortname_field')->visible = false;
-		} else {
-			$sql = sprintf('select parent from Article where id = %s',
-				$this->app->db->quote($this->id, 'integer'));
+		$form = $this->ui->getWidget('edit_form');
+		$form->addHiddenField('parent', $this->parent);
 
-			$this->parent = SwatDB::queryOne($this->app->db, $sql);
+		if ($this->id === null)
+			$this->ui->getWidget('shortname_field')->visible = false;
+	}
+
+	// }}}
+	// {{{ protected function initArticle()
+
+	protected function initArticle()
+	{
+		$class_name = SwatDBClassMap::get('SiteArticle');
+		$this->edit_article = new $class_name();
+		$this->edit_article->setDatabase($this->app->db);
+
+		if ($this->id !== null) {
+			if (!$this->edit_article->load($this->id))
+				throw new AdminNotFoundException(
+					printf(Site::_('Article with id "%s" not found.'),
+						$this->id));
 		}
 	}
 
@@ -67,19 +73,18 @@ class SiteArticleEdit extends AdminDBEdit
 
 	protected function validate()
 	{
-		$shortname = $this->ui->getWidget('shortname')->value;
+		$shortname = $this->ui->getWidget('shortname');
+		$title = $this->ui->getWidget('title');
 
-		if ($this->id === null && $shortname === null) {
-			$shortname = $this->generateShortname(
-				$this->ui->getWidget('title')->value);
-			$this->ui->getWidget('shortname')->value = $shortname;
-
-		} elseif (!$this->validateShortname($shortname)) {
+		if ($this->id === null && $shortname->value === null) {
+			$new_shortname = $this->generateShortname($title->value);
+			$shortname->value = $new_shortname;
+		} elseif (!$this->validateShortname($shortname->value)) {
 			$message = new SwatMessage(
 				Site::_('Shortname already exists and must be unique.'),
 				SwatMessage::ERROR);
 
-			$this->ui->getWidget('shortname')->addMessage($message);
+			$shortname->addMessage($message);
 		}
 	}
 
@@ -88,19 +93,18 @@ class SiteArticleEdit extends AdminDBEdit
 
 	protected function validateShortname($shortname)
 	{
-		$sql = 'select shortname from Article
-			where shortname = %s and parent %s %s and id %s %s';
+		$valid = true;
 
-		$sql = sprintf($sql,
-			$this->app->db->quote($shortname, 'text'),
-			SwatDB::equalityOperator($this->parent, false),
-			$this->app->db->quote($this->parent, 'integer'),
-			SwatDB::equalityOperator($this->id, true),
-			$this->app->db->quote($this->id, 'integer'));
+		$class_name = SwatDBClassMap::get('SiteArticle');
+		$article = new $class_name();
+		$article->setDatabase($this->app->db);
 
-		$query = SwatDB::query($this->app->db, $sql);
+		if ($article->loadFromShortname($shortname)) {
+			if ($article->id !== $this->edit_article->id)
+				$valid = false;
+		}
 
-		return (count($query) == 0);
+		return $valid;
 	}
 
 	// }}}
@@ -108,31 +112,21 @@ class SiteArticleEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		$values = $this->getUIValues();
-
 		$now = new SwatDate();
 		$now->toUTC();
-		$values['modified_date'] = $now->getDate();
 
-		if ($this->id === null) {
-			$this->fields[] = 'date:createdate';
-			$values['createdate'] = $now->getDate();
+		if ($this->id === null)
+			$this->edit_article->createdate = $now->getDate();
 
-			$this->fields[] = 'integer:parent';
-			$values['parent'] =
-				$this->ui->getWidget('edit_form')->getHiddenField('parent');
+		$this->edit_article->parent        = $this->parent;
+		$this->edit_article->modified_date = $now->getDate();
 
-			$this->id = SwatDB::insertRow($this->app->db, 'Article',
-				$this->fields, $values, 'integer:id');
-		} else {
-			SwatDB::updateRow($this->app->db, 'Article', $this->fields, $values,
-				'integer:id', $this->id);
-		}
-
+		$this->saveArticle();
 		$this->addToSearchQueue();
 
 		$message = new SwatMessage(
-			sprintf(Site::_('“%s” has been saved.'), $values['title']));
+			sprintf(Site::_('“%s” has been saved.'),
+				$this->edit_article->title));
 
 		$this->app->messages->add($message);
 	}
@@ -163,41 +157,36 @@ class SiteArticleEdit extends AdminDBEdit
 	}
 
 	// }}}
-	// {{{ protected function getUIValues()
+	// {{{ protected function saveArticle()
 
-	protected function getUIValues()
+	protected function saveArticle()
 	{
-		return $this->ui->getValues(array('title', 'shortname', 'bodytext',
+		$values = $this->ui->getValues(array('title', 'shortname', 'bodytext',
 			'description', 'enabled', 'show', 'searchable'));
+
+		$this->edit_article->title         = $values['title'];
+		$this->edit_article->shortname     = $values['shortname'];
+		$this->edit_article->bodytext      = $values['bodytext'];
+		$this->edit_article->description   = $values['description'];
+		$this->edit_article->enabled       = $values['enabled'];
+		$this->edit_article->show          = $values['show'];
+		$this->edit_article->searchable    = $values['searchable'];
+
+		$this->edit_article->save();
 	}
 
 	// }}}
 
 	// build phase
-	// {{{ protected function buildInternal()
-
-	protected function buildInternal()
-	{
-		parent::buildInternal();
-
-		$form = $this->ui->getWidget('edit_form');
-		$form->addHiddenField('parent', $this->parent);
-	}
-
-	// }}}
 	// {{{ protected function loadDBData()
 
 	protected function loadDBData()
 	{
-		$row = SwatDB::queryRowFromTable($this->app->db, 'Article',
-			$this->fields, 'integer:id', $this->id);
+		$this->ui->setValues(get_object_vars($this->edit_article));
 
-		if ($row === null)
-			throw new AdminNotFoundException(
-				sprintf(Site::_('Article with id ‘%s’ not found.'),
-					$this->id));
-
-		$this->ui->setValues(get_object_vars($row));
+		$this->parent = $this->edit_article->getInternalValue('parent');
+		$form = $this->ui->getWidget('edit_form');
+		$form->addHiddenField('parent', $this->parent);
 	}
 
 	// }}}
