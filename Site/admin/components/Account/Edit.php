@@ -129,7 +129,7 @@ class SiteAccountEdit extends AdminDBEdit
 
 	protected function relocate()
 	{
-		$this->app->relocate('Account/Details?id='.$this->id);
+		$this->app->relocate('Account/Details?id='.$this->account->id);
 	}
 
 	// }}}
