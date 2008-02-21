@@ -95,7 +95,7 @@ class SiteAdDetails extends AdminIndex
 		$toolbar = $this->ui->getWidget('details_toolbar');
 		$toolbar->setToolLinkValues($this->ad->id);
 
-		$inbound_tracking_id = 'ad';
+		$inbound_tracking_id = $this->app->config->analytics->tracking_id;
 
 		$help_note = $this->ui->getWidget('ad_tag_help');
 		$help_note->title = sprintf(Site::_(
