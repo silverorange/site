@@ -223,7 +223,7 @@ SiteUploadProgressClient.prototype.createIFrame = function()
 			'src="about:blank" style="border: 0; width: 0; height: 0;">' +
 			'</iframe>';
 
-		this.container.insertBefore(div, this.container);
+		this.container.parentNode.insertBefore(div, this.container);
 	} else {
 		var iframe = document.createElement('iframe');
 		iframe.name = this.id + '_iframe';
