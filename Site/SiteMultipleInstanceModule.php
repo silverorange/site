@@ -2,6 +2,7 @@
 
 require_once 'Site/SiteApplicationModule.php';
 require_once 'Site/dataobjects/SiteInstance.php';
+require_once 'Site/exceptions/SiteNotFoundException.php';
 
 /**
  * Web application module for multiple instances
@@ -43,8 +44,9 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 			$this->instance = new $class_name();
 			$this->instance->setDatabase($this->app->database->getConnection());
 			if (!$this->instance->loadFromShortname($instance_shortname)) {
-				throw new SiteException(sprintf("No site instance with the ".
-					"shortname '%s' exists.", $instance_shortname));
+				throw new SiteNotFoundException(sprintf(
+					"No site instance with the shortname '%s' exists.",
+					$instance_shortname));
 			}
 
 			$this->overrideConfig($config);
