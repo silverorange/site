@@ -318,13 +318,43 @@ class SiteSessionModule extends SiteApplicationModule
 		}
 
 		$session_name = $this->getSessionName();
+		$found = false;
 
-		if (isset($_GET[$session_name]) ||
-			isset($_POST[$session_name]) ||
-			isset($_COOKIE[$session_name]))
-				return true;
+		if (isset($_GET[$session_name])) {
+			if ($this->isValidSessionId($_GET[$session_name]))
+				$found = true;
+			else
+				unset($_GET[$session_name]);
+		}
 
-		return false;
+		if (isset($_POST[$session_name])) {
+			if ($this->isValidSessionId($_POST[$session_name]))
+				$found = true;
+			else
+				unset($_POST[$session_name]);
+		}
+
+		if (isset($_COOKIE[$session_name])) {
+			if ($this->isValidSessionId($_COOKIE[$session_name]))
+				$found = true;
+			else
+				unset($_COOKIE[$session_name]);
+		}
+
+		return $found;
+	}
+
+	// }}}
+	// {{{ private function isValidSessionId()
+
+	private function isValidSessionId($id)
+	{
+		$valid = false;
+
+		if (preg_match('/[a-zA-Z0-9\-,]/', $id))
+			$valid = true;
+
+		return $valid;
 	}
 
 	// }}}
