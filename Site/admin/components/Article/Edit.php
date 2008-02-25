@@ -100,8 +100,10 @@ class SiteArticleEdit extends AdminDBEdit
 		$article->setDatabase($this->app->db);
 
 		if ($article->loadByShortname($shortname)) {
-			if ($article->id !== $this->edit_article->id)
+			if ($article->id !== $this->edit_article->id &&
+				$article->getInternalValue('parent') == $this->parent) {
 				$valid = false;
+			}
 		}
 
 		return $valid;
