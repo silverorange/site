@@ -95,6 +95,15 @@ class SiteAdDetails extends AdminIndex
 		$toolbar = $this->ui->getWidget('details_toolbar');
 		$toolbar->setToolLinkValues($this->ad->id);
 
+		$this->buildHelp();
+		$this->buildNavBar();
+	}
+
+	// }}}
+	// {{{ protected function buildHelp()
+
+	protected function buildHelp()
+	{
 		$inbound_tracking_id = $this->app->config->analytics->tracking_id;
 
 		$help_note = $this->ui->getWidget('ad_tag_help');
@@ -118,8 +127,6 @@ class SiteAdDetails extends AdminIndex
 		echo '</ul>';
 		$help_note->content = ob_get_clean();
 		$help_note->content_type = 'text/xml';
-
-		$this->buildNavBar();
 	}
 
 	// }}}
