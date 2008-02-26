@@ -1,4 +1,4 @@
-<?php
+?php
 
 require_once 'Site/SiteApplicationModule.php';
 
@@ -378,7 +378,7 @@ class SiteSessionModule extends SiteApplicationModule
 	{
 		$valid = false;
 
-		if (preg_match('/[a-zA-Z0-9\-,]/', $id))
+		if (strlen($id) > 0 && preg_match('/[a-zA-Z0-9\-,]/', $id))
 			$valid = true;
 
 		return $valid;
