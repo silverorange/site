@@ -84,10 +84,21 @@ class SiteAdDetails extends AdminIndex
 	{
 		parent::buildInternal();
 
+		$this->buildHelp();
+		$this->buildNavBar();
+	}
+
+	// }}}
+	// {{{ protected function buildHelp()
+
+	protected function buildHelp()
+	{
+		$inbound_tracking_id = $this->app->config->analytics->tracking_id;
+
 		$help_note = $this->ui->getWidget('ad_tag_help');
 		$help_note->title = sprintf(Site::_(
 			'To track this ad, append the variable “%s=%s” to incoming links.'),
-			SwatString::minimizeEntities('ad'),
+			SwatString::minimizeEntities($inbound_tracking_id),
 			SwatString::minimizeEntities($this->ad->shortname));
 
 		ob_start();
@@ -95,17 +106,16 @@ class SiteAdDetails extends AdminIndex
 
 		$base_href = $this->app->getFrontendBaseHref();
 		printf(
-			'<li>%1$s<strong>?ad=%2$s</strong></li>'.
-			'<li>%1$s?othervar=otherval<strong>&ad=%2$s</strong></li>'.
-			'<li>%1$sus/en/category/product<strong>?ad=%2$s</strong></li>',
+			'<li>%1$s<strong>?%2$s=%3$s</strong></li>'.
+			'<li>%1$s?othervar=otherval<strong>&%2$s=%3$s</strong></li>'.
+			'<li>%1$sus/en/category/product<strong>?%2$s=%3$s</strong></li>',
 			SwatString::minimizeEntities($base_href),
+			SwatString::minimizeEntities($inbound_tracking_id),
 			SwatString::minimizeEntities($this->ad->shortname));
 
 		echo '</ul>';
 		$help_note->content = ob_get_clean();
 		$help_note->content_type = 'text/xml';
-
-		$this->buildNavBar();
 	}
 
 	// }}}
