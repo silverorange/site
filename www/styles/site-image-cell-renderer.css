@@ -5,12 +5,6 @@
 	margin: 5px;
 	float: left;
 	text-align: center;
-	border: 1px solid transparent;
-	/* IE6 Hack
-	   set an unused color to be index color
-	   then remove this indexed color */
-	_border-color: #ccc;
-	_filter:chroma(color=#ccc);
 }
 
 .swat-tile-view .swat-tile a {
