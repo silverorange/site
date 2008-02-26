@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION findArticle (VARCHAR(255)) RETURNS INTEGER AS $$
 		-- Find the first forward slash in the source string.
 		local_source := param_source || '/';
 		local_pos := POSITION('/' IN local_source);
-		
+
 		local_id := NULL;
 
 		WHILE local_pos != 0 LOOP
@@ -26,7 +26,7 @@ CREATE OR REPLACE FUNCTION findArticle (VARCHAR(255)) RETURNS INTEGER AS $$
 				-- Get shortname from beginning of source string.
 				local_shortname := SUBSTRING(local_source FROM 0 FOR local_pos);
 				-- Get the remainder of the source string.
-				local_source := SUBSTRING(local_source FROM local_pos + 1 FOR character_length(local_source) - local_pos + 1); 
+				local_source := SUBSTRING(local_source FROM local_pos + 1 FOR character_length(local_source) - local_pos + 1);
 
 				-- Get the id of the parent
 				SELECT INTO local_id id
