@@ -1,5 +1,7 @@
 <?php
 
+require_once 'Swat/SwatNavBar.php';
+require_once 'Swat/SwatNavBarEntry.php';
 require_once 'Site/SitePathEntry.php';
 
 /**
