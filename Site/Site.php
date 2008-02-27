@@ -217,6 +217,9 @@ class Site
 
 			// Instance
 			'instance.default' => null,
+
+			// Admin
+			'admin.allow_reset_password' => 'yes',
 		);
 	}
 
