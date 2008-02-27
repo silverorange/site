@@ -61,7 +61,7 @@ class SiteArticleEdit extends AdminDBEdit
 		if ($this->id !== null) {
 			if (!$this->edit_article->load($this->id))
 				throw new AdminNotFoundException(
-					printf(Site::_('Article with id "%s" not found.'),
+					sprintf(Site::_('Article with id "%s" not found.'),
 						$this->id));
 		}
 	}
@@ -140,19 +140,18 @@ class SiteArticleEdit extends AdminDBEdit
 	{
 		// this is automatically wrapped in a transaction because it is
 		// called in saveDBData()
-
 		$type = NateGoSearch::getDocumentType($this->app->db, 'article');
 
 		$sql = sprintf('delete from NateGoSearchQueue
 			where document_id = %s and document_type = %s',
-			$this->app->db->quote($this->id, 'integer'),
+			$this->app->db->quote($this->edit_article->id, 'integer'),
 			$this->app->db->quote($type, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
 
 		$sql = sprintf('insert into NateGoSearchQueue
 			(document_id, document_type) values (%s, %s)',
-			$this->app->db->quote($this->id, 'integer'),
+			$this->app->db->quote($this->edit_article->id, 'integer'),
 			$this->app->db->quote($type, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
