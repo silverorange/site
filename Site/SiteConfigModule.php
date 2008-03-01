@@ -87,38 +87,35 @@ class SiteConfigModule extends SiteApplicationModule
 	/**
 	 * Loads configuration from ini file
 	 *
-	 * @param string $filename the filename of the ini file to load.
+	 * Only defined settings are loaded.
 	 *
-	 * @throws SwatException if any of the ini file setting names are not
-	 *                       defined.
+	 * @param string $filename the filename of the ini file to load.
 	 */
 	public function load($filename)
 	{
 		$ini_array = parse_ini_file($filename, true);
 		foreach ($ini_array as $section_name => $section_values) {
+			if (array_key_exists($section_name, $this->definitions)) {
 
-			if (!array_key_exists($section_name, $this->definitions)) {
-				throw new SiteException(sprintf(
-					"Cannot load configuration because a section with the ".
-					"name '%s' is not defined.", $section_name));
-			}
+				// only include values that are defined
+				$defined_section_values = array();
+				foreach ($section_values as $name => $value) {
+					if (array_key_exists($name,
+						$this->definitions[$section_name])) {
 
-			foreach ($section_values as $name => $value) {
-				if (!array_key_exists($name,
-					$this->definitions[$section_name])) {
-					throw new SiteException(sprintf(
-						"Cannot load configuration because the section '%s' ".
-						"does not define a setting with a name of '%s'.",
-						$section_name, $name));
+						$defined_section_values[$name] = $value;
+					}
 				}
+
+				// merge default fields and values with loaded values
+				$defined_section_values = array_merge(
+					$this->definitions[$section_name], $defined_section_values);
+
+				$section = new SiteConfigSection($section_name,
+					$defined_section_values);
+
+				$this->sections[$section_name] = $section;
 			}
-
-			// merge default fields and values with loaded values
-			$section_values = array_merge($this->definitions[$section_name],
-				$section_values);
-
-			$section = new SiteConfigSection($section_name, $section_values);
-			$this->sections[$section_name] = $section;
 		}
 
 		// create default sections with default values
@@ -137,9 +134,6 @@ class SiteConfigModule extends SiteApplicationModule
 
 	/**
 	 * Adds multiple configuration setting definitions to this config module
-	 *
-	 * Only defined settings may be loaded from an ini file. Other settings
-	 * will throw exceptions when they are loaded.
 	 *
 	 * @param array $definitions an associative array of setting definitions.
 	 *                            The array is of the form:
@@ -176,9 +170,6 @@ class SiteConfigModule extends SiteApplicationModule
 
 	/**
 	 * Adds a configuration setting definition to this config module
-	 *
-	 * Only defined settings may be loaded from an ini file. Other settings
-	 * will throw exceptions when they are loaded.
 	 *
 	 * @param string $section the section the setting belongs to.
 	 * @param string $name the name of the setting.
