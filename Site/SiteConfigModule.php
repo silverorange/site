@@ -135,6 +135,9 @@ class SiteConfigModule extends SiteApplicationModule
 	/**
 	 * Adds multiple configuration setting definitions to this config module
 	 *
+	 * Only defined settings are be loaded from an ini file. Other settings in
+	 * ini files are ignored.
+	 *
 	 * @param array $definitions an associative array of setting definitions.
 	 *                            The array is of the form:
 	 *                            qualified_name => default_value where
@@ -170,6 +173,9 @@ class SiteConfigModule extends SiteApplicationModule
 
 	/**
 	 * Adds a configuration setting definition to this config module
+	 *
+	 * Only defined settings are be loaded from an ini file. Other settings in
+	 * ini files are ignored.
 	 *
 	 * @param string $section the section the setting belongs to.
 	 * @param string $name the name of the setting.
