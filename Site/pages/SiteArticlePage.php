@@ -208,9 +208,12 @@ class SiteArticlePage extends SitePathPage
 		$anchor_tag->class = 'sub-article';
 		$anchor_tag->setContent($article->title);
 
-		echo '<dt>';
+		$dt_tag = new SwatHtmlTag('dt');
+		$dt_tag->id = sprintf('sub_article_%s', $article->shortname);
+
+		$dt_tag->open();
 		$anchor_tag->display();
-		echo '</dt>';
+		$dt_tag->close();
 
 		if (strlen($article->description) > 0)
 			echo '<dd>', $article->description, '</dd>';
