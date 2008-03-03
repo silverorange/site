@@ -176,47 +176,47 @@ class Site
 	{
 		return array(
 			// Meta description for HTML head
-			'site.meta_description' => null,
+			'site.meta_description'    => null,
 
 			// Title of the site
-			'site.title' => null,
+			'site.title'               => null,
 
 			// DSN of database
-			'database.dsn' => null,
+			'database.dsn'             => null,
 
 			// Default locale (defaults to 'en_CA.UTF8')
-			'i18n.locale' => 'en_CA.UTF8',
+			'i18n.locale'              => 'en_CA.UTF8',
 
 			// Default timezone
-			'date.time_zone' => null,
+			'date.time_zone'           => null,
 
 			// Salts
-			'swat.form_salt' => null,
-			'cookies.salt' => null,
+			'swat.form_salt'           => null,
+			'cookies.salt'             => null,
 
 			// URIs
-			'uri.base' => null,
-			'uri.secure_base' => null,
-			'uri.absolute_base' => null,
+			'uri.base'                 => null,
+			'uri.secure_base'          => null,
+			'uri.absolute_base'        => null,
 
 			// Exceptions & errors
-			'exceptions.log_location' => null,
-			'exceptions.base_uri' => null,
-			'errors.log_location' => null,
-			'errors.base_uri' => null,
+			'exceptions.log_location'  => null,
+			'exceptions.base_uri'      => null,
+			'errors.log_location'      => null,
+			'errors.base_uri'          => null,
 
 			// Analytics
 			// Google analytics account id (UA-XXXXX-XXX)
 			'analytics.google_account' => null,
 			// Tracking id in URIs
-			'analytics.tracking_id' => 'utm_source',
+			'analytics.tracking_id'    => 'utm_source',
 
 			// Session
-			'session.name' => 'sessionid',
-			'session.path' => null,
+			'session.name'             => 'sessionid',
+			'session.path'             => null,
 
 			// Instance
-			'instance.default' => null,
+			'instance.default'         => null,
 		);
 	}
 
