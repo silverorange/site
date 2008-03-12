@@ -378,7 +378,7 @@ class SiteSessionModule extends SiteApplicationModule
 	{
 		$valid = false;
 
-		if (strlen($id) > 0 && preg_match('/[a-zA-Z0-9\-,]/', $id))
+		if (preg_match('/^[a-zA-Z0-9\-,]+$/', $id) === 1)
 			$valid = true;
 
 		return $valid;
