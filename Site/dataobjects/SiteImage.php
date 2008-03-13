@@ -404,10 +404,26 @@ class SiteImage extends SwatDBDataObject
 		$this->image_set = $this->getImageSet();
 		$dimension = $this->image_set->getDimensionByShortname($shortname);
 		$imagick = new Imagick($image_file);
-		$this->processDimension($imagick, $dimension);
-		$this->saveFile($imagick, $dimension);
+
+		try {
+			$transaction = new SwatDBTransaction($this->db);
+			$this->save(); // save once to set id on this object to use for filenames
+
+			$this->processDimension($imagick, $dimension);
+			$this->saveFile($imagick, $dimension);
+
+			$this->save(); // save again to record dimensions
+			$transaction->commit();
+		} catch (SwatException $e) {
+			$e->process();
+			$transaction->rollback();
+		} catch (Exception $e) {
+			$e = new SwatException($e);
+			$e->process();
+			$transaction->rollback();
+		}
+
 		unset($imagick);
-		$this->save();
 	}
 
 	// }}}
@@ -557,11 +573,11 @@ class SiteImage extends SwatDBDataObject
 		$class_name = SwatDBClassMap::get('SiteImageDimensionBinding');
 		$binding = new $class_name();
 		$binding->setDatabase($this->db);
-		$binding->image = $this->id;
-		$binding->dimension = $dimension->id;
+		$binding->image      = $this->id;
+		$binding->dimension  = $dimension->id;
 		$binding->image_type = $dimension->default_type->id;
-		$binding->width = $imagick->getImageWidth();
-		$binding->height = $imagick->getImageHeight();
+		$binding->width      = $imagick->getImageWidth();
+		$binding->height     = $imagick->getImageHeight();
 		$binding->save();
 
 		$this->dimension_bindings->add($binding);
