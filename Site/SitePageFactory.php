@@ -78,7 +78,7 @@ abstract class SitePageFactory
 	 * @throws SiteNotFoundException if no file could be resolved for the given
 	 *                                class and the given class is undefined.
 	 */
-	public function instantiatePage(SiteWebApplication $app, $class, $params)
+	protected function instantiatePage(SiteWebApplication $app, $class, $params)
 	{
 		if (!class_exists($class)) {
 			$class_file = "{$this->page_class_path}/{$class}.php";
