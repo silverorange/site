@@ -18,16 +18,6 @@ class SiteXMLRPCServerFactory extends SitePageFactory
 	}
 
 	// }}}
-	// {{{ protected function getPageMap()
-
-	protected function getPageMap()
-	{
-		return array(
-			'upload-status' => 'SiteUploadStatusServer',
-		);
-	}
-
-	// }}}
 	// {{{ public function resolvePage()
 
 	public function resolvePage(SiteWebApplication $app, $source)
@@ -43,6 +33,16 @@ class SiteXMLRPCServerFactory extends SitePageFactory
 		}
 
 		throw new SiteNotFoundException();
+	}
+
+	// }}}
+	// {{{ protected function getPageMap()
+
+	protected function getPageMap()
+	{
+		return array(
+			'upload-status' => 'SiteUploadStatusServer',
+		);
 	}
 
 	// }}}
