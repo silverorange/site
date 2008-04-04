@@ -29,7 +29,7 @@ class SiteSearchCheckboxList extends  SwatCheckboxList
 
 		SwatOptionControl::process();
 
-		$this->check_all->process();
+		$this->getCompositeWidget('check_all')->process();
 
 		$data = &$form->getFormData();
 
