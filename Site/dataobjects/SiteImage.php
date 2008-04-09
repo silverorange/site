@@ -176,6 +176,11 @@ class SiteImage extends SwatDBDataObject
 	public function getWidth($dimension_shortname)
 	{
 		$binding = $this->getDimensionBinding($dimension_shortname);
+
+		if ($binding === null)
+			throw new SwatException(sprintf(
+				'Image dimension “%s” does not exist.',	$dimension_shortname));
+
 		return $binding->width;
 	}
 
