@@ -214,13 +214,12 @@ SiteUploadProgressClient.prototype.showProgressBar = function()
 
 SiteUploadProgressClient.prototype.createIFrame = function()
 {
-	// TODO: better browser detection
-	if (navigator.userAgent.indexOf('MSIE') > 0) {
+	if (navigator.userAgent.indexOf('MSIE') != -1) {
 		var div = document.createElement('div');
 		div.style.display = 'inline';
 		div.innerHTML = '<iframe name="' + this.id + '_iframe" ' +
 			'id="' + this.id + '_iframe" ' +
-			'src="about:blank" style="border: 0; width: 0; height: 0;">' +
+			'src="javascript:false" style="border: 0; width: 0; height: 0;">' +
 			'</iframe>';
 
 		this.container.parentNode.insertBefore(div, this.container);
