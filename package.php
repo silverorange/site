@@ -61,6 +61,7 @@ $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10')
 $package->addPackageDepWithChannel('required', 'Mail_mime', 'pear.silverorange.com', '1.3.0so1');
 $package->addPackageDepWithChannel('required', 'Net_SMTP', 'pear.php.net', '1.2.8');
 $package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.silverorange.com', '0.0.7so2');
+$package->addExtensionDep('optional', 'imagick', '2.0.0');
 $package->generateContents();
 
 if (isset($_GET['make']) || (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {
