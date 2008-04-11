@@ -118,37 +118,6 @@ abstract class SitePageFactory
 	}
 
 	// }}}
-	// {{{ protected function getPageMap()
-
-	/**
-	 * Gets an array of page mappings used to resolve pages
-	 *
-	 * The page mappings are an array of the form:
-	 *
-	 *   source expression => page class
-	 *
-	 * The <i>source expression</i> is an regular expression using PREG syntax
-	 * sans-delimiters. The <i>page class</i> is the class name of the page to
-	 * be resolved.
-	 *
-	 * For example, the following mapping array will match the source
-	 * 'about/content' to the class 'ContactPage':
-	 *
-	 * <code>
-	 * array('^(about/contact)$' => 'ContactPage');
-	 * </code>
-	 *
-	 * By default, no page mappings are defined. Subclasses may define
-	 * additional mappings by extending this method.
-	 *
-	 * @return array the page mappings of this factory.
-	 */
-	protected function getPageMap()
-	{
-		return array();
-	}
-
-	// }}}
 	// {{{ protected function resolveLayout()
 
 	/**
