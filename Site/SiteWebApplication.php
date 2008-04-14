@@ -163,8 +163,8 @@ class SiteWebApplication extends SiteApplication
 	/**
 	 * Replaces the current page with another page given a source
 	 *
-	 * This method can be used to load another page to replace the current 
-	 * page. For example, this is used to load a confirmation page when 
+	 * This method can be used to load another page to replace the current
+	 * page. For example, this is used to load a confirmation page when
 	 * processing an admin index page.
 	 *
 	 * @param string $source the source of the page with which to replace the
@@ -446,7 +446,7 @@ class SiteWebApplication extends SiteApplication
 				$this->getServerName($secure).$base_uri;
 		else
 			$base_href = $base_uri;
-		
+
 		return $base_href;
 	}
 
@@ -502,7 +502,7 @@ class SiteWebApplication extends SiteApplication
 			}
 		}
 	}
-	
+
 	// }}}
 	// {{{ protected function getBaseHrefRelativeUri()
 
@@ -621,7 +621,7 @@ class SiteWebApplication extends SiteApplication
 			$this->session instanceof SiteSessionModule &&
 			$this->session->isActive());
 	}
-	
+
 	// }}}
 }
 
