@@ -101,7 +101,10 @@ class SiteLayout extends SiteObject
 	public function complete()
 	{
 		$this->startCapture('html_head_entries');
-		$this->html_head_entries->display();
+		$base = $this->app->getBaseHref();
+		$base_exp = explode(':', $base, 2);
+		$base = (count($base_exp) > 1) ? $base_exp[1] : $base_exp[0];
+		$this->html_head_entries->display($base);
 		$this->endCapture();
 	}
 
