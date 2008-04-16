@@ -102,9 +102,10 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 	 *
 	 *   source expression => page class
 	 *
-	 * The <i>source expression</i> is an regular expression using PREG syntax
-	 * sans-delimiters. The <i>page class</i> is the class name of the page to
-	 * be resolved.
+	 * The <i>source expression</i> is an regular expression using PCRE syntax
+	 * sans-delimiters. The delimiter character is unspecified and should not
+	 * be escaped in these expressions. The <i>page class</i> is the class name
+	 * of the page to be resolved.
 	 *
 	 * For example, the following mapping array will match the source
 	 * 'about/content' to the class 'ContactPage':
