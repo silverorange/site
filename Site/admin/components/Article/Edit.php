@@ -142,6 +142,9 @@ class SiteArticleEdit extends AdminDBEdit
 		// called in saveDBData()
 		$type = NateGoSearch::getDocumentType($this->app->db, 'article');
 
+		if ($type === null)
+			return;
+
 		$sql = sprintf('delete from NateGoSearchQueue
 			where document_id = %s and document_type = %s',
 			$this->app->db->quote($this->edit_article->id, 'integer'),
