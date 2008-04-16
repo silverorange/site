@@ -206,6 +206,47 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function getInstance()
+
+	/**
+	 * Helper method to get the current instance
+	 *
+	 * @return SiteInstance the current instance of this site or null
+	 * @see SiteMultipleInstanceModule
+	 */
+	public function getInstance()
+	{
+		$instance = null;
+
+		if ($this->hasModule('SiteMultipleInstanceModule')) {
+			$module = $this->getModule('SiteMultipleInstanceModule');
+			$instance = $module->getInstance();
+		}
+
+		return $instance;
+	}
+
+	// }}}
+	// {{{ public function getInstanceId()
+
+	/**
+	 * Helper method to get the id of the current instance
+	 *
+	 * @return integer the current instance id or null if no instance exists.
+	 * @see SiteMultipleInstanceModule
+	 */
+	public function getInstanceId()
+	{
+		$id = null;
+		$instance = $this->getInstance();
+
+		if ($instance !== null)
+			$id = $instance->id;
+
+		return $id;
+	}
+
+	// }}}
 
 	// module methods
 	// {{{ public function addModule()
