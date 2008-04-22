@@ -55,8 +55,8 @@ class SiteSearchPage extends SiteSearchResultsPage
 
 		$this->form_ui->process();
 
-		/* 
-		 * Nothing else to do... 
+		/*
+		 * Nothing else to do...
 		 * the parent class result page is driven by the GET variables this
 		 * form provided.
 		 */
