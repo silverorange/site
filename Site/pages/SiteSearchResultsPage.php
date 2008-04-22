@@ -261,8 +261,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		parent::build();
 
-		$this->buildResults();
-		$this->buildMessages();
+		if ($this->buildResults())
+			$this->buildMessages();
 
 		$this->layout->startCapture('content');
 		$this->ui->display();
@@ -274,6 +274,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 
 	protected function buildResults()
 	{
+		$searched = false;
+
 		if (count($this->getSearchDataValues()) > 0) {
 			$fulltext_result = $this->searchFulltext();
 			$this->buildArticles($fulltext_result);
@@ -282,7 +284,11 @@ class SiteSearchResultsPage extends SiteArticlePage
 				$this->buildMisspellings($fulltext_result);
 				$fulltext_result->saveHistory();
 			}
+
+			$searched = true;
 		}
+
+		return $searched;
 	}
 
 	// }}}
@@ -524,7 +530,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	// {{{ protected function displayArticles()
 
 	/**
-	 * Display search results for a collection of articles 
+	 * Display search results for a collection of articles
 	 *
 	 * @param SiteArticleWrapper $articles the articles to display search
 	 *                                      results for.
