@@ -94,6 +94,19 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getTitle()
+
+	/**
+	 * Gets the title of this image
+	 *
+	 * @return string the title of this image.
+	 */
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
@@ -275,9 +288,10 @@ class SiteImage extends SwatDBDataObject
 		$img_tag->width = $this->getWidth($shortname);
 		$img_tag->height = $this->getHeight($shortname);
 
-		if ($this->title !== null) {
-			$img_tag->alt = sprintf(Site::_('Image of %'), $this->title);
-			$img_tag->title = $this->title;
+		$title = $this->getTitle();
+		if ($title !== null) {
+			$img_tag->alt = sprintf(Site::_('Image of %'), $title);
+			$img_tag->title = $title;
 		} else {
 			$img_tag->alt = '';
 		}

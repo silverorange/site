@@ -141,11 +141,10 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		$image_wrapper_tag->close();
 
 		if ($this->display_title) {
-			if ($this->image->title === null)
-				$title = null;
-			else
-				$title = SwatString::condense($this->image->title,
-					self::MAX_TITLE_LENGTH);
+			$title = $this->image->getTitle();
+
+			if ($title !== null)
+				$title = SwatString::condense($title, self::MAX_TITLE_LENGTH);
 
 			$span_tag = new SwatHtmlTag('span');
 			$span_tag->class = 'title';
@@ -154,8 +153,8 @@ class SiteImageCellRenderer extends SwatCellRenderer
 			else
 				$span_tag->setContent($title);
 
-			if (strlen($this->image->title) > self::MAX_TITLE_LENGTH)
-				$span_tag->title = $this->image->title;
+			if (strlen($title) > self::MAX_TITLE_LENGTH)
+				$span_tag->title = $title;
 
 			$span_tag->display();
 		}
