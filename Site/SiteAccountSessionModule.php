@@ -32,29 +32,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 	protected $login_callbacks = array();
 
 	// }}}
-	// {{{ public function __construct()
-
-	/**
-	 * Creates a new store session module
-	 *
-	 * @param SiteApplication $app the application this module belongs to.
-	 *
-	 * @throws SiteException if there is no database module loaded the session
-	 *                         module throws an exception.
-	 *
-	 */
-	public function __construct(SiteApplication $app)
-	{
-		$this->registerActivateCallback(
-			array($this, 'regenerateAuthenticationToken'));
-
-		$this->registerRegenerateIdCallback(
-			array($this, 'regenerateAuthenticationToken'));
-
-		parent::__construct($app);
-	}
-
-	// }}}
 	// {{{ public function depends()
 
 	/**
@@ -269,15 +246,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 			'callback' => $callback,
 			'parameters' => $parameters
 		);
-	}
-
-	// }}}
-	// {{{ protected function regenerateAuthenticationToken()
-
-	protected function regenerateAuthenticationToken()
-	{
-		$this->_authentication_token = SwatString::hash(mt_rand());
-		SwatForm::setAuthenticationToken($this->_authentication_token);
 	}
 
 	// }}}
