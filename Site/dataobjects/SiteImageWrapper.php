@@ -47,6 +47,7 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 
 			$wrapper_class =
 				SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+
 			$bindings = SwatDB::query($this->db, $sql, $wrapper_class);
 
 			if (count($bindings) == 0)
@@ -54,15 +55,19 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 
 			$last_image = null;
 			foreach ($bindings as $binding) {
+				$field = $this->binding_table_image_field;
+
 				if ($last_image === null ||
-					$last_image->id !== $binding->image) {
+					$last_image->id !== $binding->getInternalValue($field)) {
 
 					if ($last_image !== null) {
 						$wrapper->reindex();
 						$last_image->dimension_bindings = $wrapper;
 					}
 
-					$last_image = $this->getByIndex($binding->image);
+					$last_image = $this->getByIndex(
+						$binding->getInternalValue($field));
+
 					$wrapper = new $wrapper_class();
 				}
 
