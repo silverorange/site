@@ -15,7 +15,7 @@ require_once 'Swat/SwatMessage.php';
  * @copyright 2004-2007
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteMessagesModule extends SiteApplicationModule
+class SiteMessagesModule extends SiteApplicationModule implements Countable
 {
 	// {{{ protected properties
 
@@ -138,6 +138,21 @@ class SiteMessagesModule extends SiteApplicationModule
 	}
 
     // }}}
+	// {{{ public function count()
+
+	/**
+	 * Gets the number of messages in this module
+	 *
+	 * Implements countable interface.
+	 *
+	 * @return integer the number of messages in this module.
+	 */
+	public function count()
+	{
+		return count($this->app->session->messages);
+	}
+
+	// }}}
     // {{{ protected function initSession()
 
 	/**
