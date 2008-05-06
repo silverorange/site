@@ -124,6 +124,14 @@ class SiteImageSet extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getImageDimensionClassName()
+
+	protected function getImageDimensionWrapperClassName()
+	{
+		return SwatDBClassMap::get('SiteImageDimensionWrapper');
+	}
+
+	// }}}
 
 	// loader methods
 	// {{{ protected function loadDimensions()
@@ -142,7 +150,7 @@ class SiteImageSet extends SwatDBDataObject
 		$sql = sprintf($sql,
 			$this->db->quote($this->id, 'integer'));
 
-		$wrapper = SwatDBClassMap::get('SiteImageDimensionWrapper');
+		$wrapper = $this->getImageDimensionWrapperClassName();
 		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 

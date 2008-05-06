@@ -173,6 +173,22 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getImageDimensionBindingClassName()
+
+	protected function getImageDimensionBindingClassName()
+	{
+		return SwatDBClassMap::get('SiteImageDimensionBinding');
+	}
+
+	// }}}
+	// {{{ protected function getImageDimensionBindingWrapperClassName()
+
+	protected function getImageDimensionBindingWrapperClassName()
+	{
+		return SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+	}
+
+	// }}}
 
 	// image methods
 	// {{{ public function hasDimension()
@@ -358,7 +374,7 @@ class SiteImage extends SwatDBDataObject
 		$sql = sprintf($sql,
 			$this->db->quote($this->id, 'integer'));
 
-		$wrapper = SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+		$wrapper =$this->getImageDimensionBindingWrapperClassName();
 		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
@@ -388,7 +404,7 @@ class SiteImage extends SwatDBDataObject
 			$this->original_filename = ltrim(basename(' '.$image_file));
 		}
 
-		$wrapper = SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+		$wrapper = $this->getImageDimensionBindingWrapperClassName();
 		$this->dimension_bindings = new $wrapper();
 
 		if ($this->image_set->obfuscate_filename)
@@ -598,7 +614,7 @@ class SiteImage extends SwatDBDataObject
 	protected function saveDimensionBinding(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
-		$class_name = SwatDBClassMap::get('SiteImageDimensionBinding');
+		$class_name = $this->getImageDimensionBindingClassName();
 		$binding = new $class_name();
 		$binding->setDatabase($this->db);
 		$binding->image      = $this->id;
