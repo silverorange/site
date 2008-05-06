@@ -260,6 +260,17 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function getSavePath()
+
+	/**
+	 * Get the session save path
+	 */
+	public function getSavePath()
+	{
+		return session_save_path();
+	}
+
+	// }}}
 	// {{{ public function autoActivate()
 
 	/**
