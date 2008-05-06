@@ -5,6 +5,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'SwatDB/SwatDBTransaction.php';
 require_once 'Site/dataobjects/SiteImageSet.php';
 require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
+require_once 'Site/exceptions/SiteInvalidImageException.php';
 
 /**
  * An image data object
@@ -422,6 +423,9 @@ class SiteImage extends SwatDBDataObject
 
 			$this->save(); // save again to record dimensions
 			$transaction->commit();
+		} catch (SiteInvalidImageException $e) {
+			$transaction->rollback();
+			throw $e;
 		} catch (SwatException $e) {
 			$e->process();
 			$transaction->rollback();
@@ -484,7 +488,12 @@ class SiteImage extends SwatDBDataObject
 	protected function processInternal($image_file)
 	{
 		foreach ($this->image_set->dimensions as $dimension) {
-			$imagick = new Imagick($image_file);
+			try {
+				$imagick = new Imagick($image_file);
+			} catch (Exception $e) {
+				throw new SiteInvalidImageException();
+			}
+
 			$this->processDimension($imagick, $dimension);
 			$this->saveFile($imagick, $dimension);
 			unset($imagick);
@@ -647,8 +656,6 @@ class SiteImage extends SwatDBDataObject
 
 		$filename = $this->getFilePath($dimension->shortname);
 		$imagick->writeImage($filename);
-
-		// TODO: throw exception if file can't be saved
 	}
 
 	// }}}
