@@ -490,7 +490,7 @@ class SiteImage extends SwatDBDataObject
 		foreach ($this->image_set->dimensions as $dimension) {
 			try {
 				$imagick = new Imagick($image_file);
-			} catch (Exception $e) {
+			} catch (ImagickException $e) {
 				throw new SiteInvalidImageException();
 			}
 
