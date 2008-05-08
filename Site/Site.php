@@ -210,6 +210,7 @@ class Site
 			'analytics.google_account' => null,
 			// Tracking id in URIs
 			'analytics.tracking_id'    => 'utm_source',
+			'analytics.save_referer'   => '1',
 
 			// Session
 			'session.name'             => 'sessionid',

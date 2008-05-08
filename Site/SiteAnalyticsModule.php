@@ -237,13 +237,15 @@ class SiteAnalyticsModule extends SiteApplicationModule
 				 * the referrer. Here we make five attempts before giving up
 				 * and throwing the exception.
 				 */
-				for ($attempt = 0; true; $attempt++) {
-					try {
-						$this->insertInboundTrackingReferrer($ad);
-						break;
-					} catch (SwatDBException $e) {
-						if ($attempt > 5)
-							throw $e;
+				if ($this->app->config->analytics->save_referer) {
+					for ($attempt = 0; true; $attempt++) {
+						try {
+							$this->insertInboundTrackingReferrer($ad);
+							break;
+						} catch (SwatDBException $e) {
+							if ($attempt > 5)
+								throw $e;
+						}
 					}
 				}
 
