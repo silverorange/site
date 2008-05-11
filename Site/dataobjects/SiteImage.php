@@ -265,11 +265,13 @@ class SiteImage extends SwatDBDataObject
 		$dimension = $this->image_set->getDimensionByShortname(
 			$shortname);
 
-		$uri = sprintf('%s/%s/%s/%s',
-			$this->getUriBase(),
+		$uri = sprintf('%s/%s/%s',
 			$this->image_set->shortname,
 			$dimension->shortname,
 			$this->getFilename($shortname));
+
+		if ($this->getUriBase() !== null)
+			$uri = $this->getUriBase().'/'.$uri;
 
 		if ($prefix !== null)
 			$uri = $prefix.$uri;
