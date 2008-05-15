@@ -15,7 +15,7 @@ class SiteLayoutData extends SiteObject
 	// {{{ private properties
 
 	private $_properties = array();
-	
+
 	// }}}
 	// {{{ public function display()
 
