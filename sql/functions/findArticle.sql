@@ -35,6 +35,10 @@ CREATE OR REPLACE FUNCTION findArticle (VARCHAR(255)) RETURNS INTEGER AS $$
 						AND shortname = local_shortname
 						AND id != 0;
 
+				IF local_id is null THEN
+					RETURN null;
+				END IF;
+
 				-- Find next forward slash in the source string.
 				local_pos := POSITION('/' IN local_source);
 			END;
