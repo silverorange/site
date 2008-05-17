@@ -653,6 +653,9 @@ class SiteImage extends SwatDBDataObject
 		$imagick->setResolution($dimension->dpi, $dimension->dpi);
 		$imagick->setCompressionQuality($dimension->quality);
 
+		if ($dimension->interlace)
+			$imagick->setInterlaceScheme(Imagick::INTERLACE_PLANE);
+
 		if ($dimension->strip)
 			$imagick->stripImage();
 
