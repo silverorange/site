@@ -79,6 +79,13 @@ class SiteImageDimension extends SwatDBDataObject
 	 */
 	public $strip;
 
+	/**
+	 * Save interlaced (progressive)
+	 *
+	 * @var boolean
+	 */
+	public $interlace;
+
 	// }}}
 	// {{{ private properties
 
