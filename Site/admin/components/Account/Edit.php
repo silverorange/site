@@ -141,6 +141,9 @@ class SiteAccountEdit extends AdminDBEdit
 	protected function loadDBData()
 	{
 		$this->ui->setValues(get_object_vars($this->account));
+
+		// don't set the the password field to the hashed password
+		$this->ui->getWidget('password')->value = null;
 	}
 
 	// }}}
