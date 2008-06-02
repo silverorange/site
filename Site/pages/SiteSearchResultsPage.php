@@ -199,7 +199,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	// }}}
 
 	// init phase
-	// {{{ public function init
+	// {{{ public function init()
 
 	public function init()
 	{
@@ -214,7 +214,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	}
 
 	// }}}
-	// {{{ private function initSearchData
+	// {{{ private function initSearchData()
 
 	private function initSearchData()
 	{
@@ -243,7 +243,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	// }}}
 
 	// process phase
-	// {{{ public function process
+	// {{{ public function process()
 
 	public function process()
 	{
