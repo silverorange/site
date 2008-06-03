@@ -27,6 +27,13 @@ class SiteTimerCheckpoint extends SwatObject
 	 */
 	private $name;
 
+	/**
+	 * The amount of memory used when this checkpoint was set
+	 *
+	 * @var integer
+	 */
+	private $memory_use;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -35,11 +42,14 @@ class SiteTimerCheckpoint extends SwatObject
 	 *
 	 * @param string $name the name of this checkpoint.
 	 * @param double $time the current time in milliseconds.
+	 * @param integer $memory_usage the number of bytes of memory currently in
+	 *                               use.
 	 */
-	public function __construct($name, $time)
+	public function __construct($name, $time, $memory_usage)
 	{
 		$this->name = $name;
 		$this->time = $time;
+		$this->memory_usage = $memory_usage;
 	}
 
 	// }}}
@@ -66,6 +76,19 @@ class SiteTimerCheckpoint extends SwatObject
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	// }}}
+	// {{{ public function getMemoryUse()
+
+	/**
+	 * Gets the memory use of this checkpoint
+	 *
+	 * return string the memory use of this checkpoint.
+	 */
+	public function getMemoryUse()
+	{
+		return $this->memory_use;
 	}
 
 	// }}}
