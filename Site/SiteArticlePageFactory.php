@@ -52,12 +52,16 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 			if (preg_match($regexp, $source, $regs) === 1) {
 				array_shift($regs); // discard full match string
 				$article_path = array_shift($regs);
-				array_unshift($regs, $layout);
-				array_unshift($regs, $app);
 
-				foreach ($regs as &$reg)
+				// set empty regs parsed from page map expressions to null
+				foreach ($regs as &$reg) {
 					if (strlen($reg) === 0)
 						$reg = null;
+				}
+
+				// add layout and application to the argument list
+				array_unshift($regs, $layout);
+				array_unshift($regs, $app);
 
 				$page = $this->instantiatePage($app, $class, $regs);
 				break;
