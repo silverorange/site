@@ -73,6 +73,7 @@ class SiteSearchPagination extends SwatPagination
 		$this->unset_get_vars[] = 'source';
 		$this->unset_get_vars[] = 'page';
 		$this->unset_get_vars[] = 'type';
+		$this->unset_get_vars[] = 'instance';
 
 		foreach($vars as $name => $value)
 			if (in_array($name, $this->unset_get_vars))
