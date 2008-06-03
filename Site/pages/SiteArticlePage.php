@@ -27,6 +27,18 @@ class SiteArticlePage extends SitePathPage
 	protected $article;
 
 	// }}}
+	// {{{ public function __construct()
+
+	public function __construct(SiteApplication $app, SiteLayout $layout = null)
+	{
+		parent::__construct($app, $layout);
+
+		$class_name = SwatDBClassMap::get('SiteArticle');
+		$this->article = new $class_name();
+		$this->article->setDatabase($this->app->db);
+	}
+
+	// }}}
 	// {{{ public function hasParentInPath()
 
 	/**
