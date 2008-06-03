@@ -32,7 +32,7 @@ class SiteTimerCheckpoint extends SwatObject
 	 *
 	 * @var integer
 	 */
-	private $memory_use;
+	private $memory_usage;
 
 	// }}}
 	// {{{ public function __construct()
@@ -79,16 +79,16 @@ class SiteTimerCheckpoint extends SwatObject
 	}
 
 	// }}}
-	// {{{ public function getMemoryUse()
+	// {{{ public function getMemoryUsage()
 
 	/**
 	 * Gets the memory use of this checkpoint
 	 *
 	 * return string the memory use of this checkpoint.
 	 */
-	public function getMemoryUse()
+	public function getMemoryUsage()
 	{
-		return $this->memory_use;
+		return $this->memory_usage;
 	}
 
 	// }}}
