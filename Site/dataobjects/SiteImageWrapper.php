@@ -56,16 +56,14 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 				$field = $this->binding_table_image_field;
 
 				if ($last_image === null ||
-					$last_image->id !== $binding->getInternalValue($field)) {
+					$last_image->id !== $binding->$field) {
 
 					if ($last_image !== null) {
 						$wrapper->reindex();
 						$last_image->dimension_bindings = $wrapper;
 					}
 
-					$last_image = $this->getByIndex(
-						$binding->getInternalValue($field));
-
+					$last_image = $this->getByIndex($binding->$field);
 					$wrapper = new $wrapper_class();
 				}
 
