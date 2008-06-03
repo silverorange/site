@@ -92,7 +92,7 @@ class SiteTimerModule extends SiteApplicationModule
 			$time = $locale->formatNumber(
 				$checkpoint->getTime() - $last_time, 3);
 
-			$bytes = SwatString::formatBytes($checkpoint->getMemoryUsage(), 0);
+			$bytes = SwatString::byteFormat($checkpoint->getMemoryUse(), 0);
 
 			$dt_tag->setContent($checkpoint->getName());
 			$dt_tag->display();
