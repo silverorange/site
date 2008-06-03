@@ -25,11 +25,18 @@ class SiteTimerModule extends SiteApplicationModule
 	private $start_time = null;
 
 	/**
-	 * A set of timer checkpoints used by this module
+	 * A set of ended timer checkpoints used by this module
 	 *
 	 * @var array
 	 */
 	private $checkpoints = array();
+
+	/**
+	 * A set of started timer checkpoints used by this module
+	 *
+	 * @var array
+	 */
+	private $started_checkpoints = array();
 
 	// }}}
     // {{{ public function init()
@@ -57,17 +64,38 @@ class SiteTimerModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function setCheckpoint()
+	// {{{ public function startCheckpoint()
 
 	/**
 	 * Sets a timer checkpoint
 	 *
 	 * @param string $name the name of the checkpoint
 	 */
-	public function setCheckpoint($name)
+	public function startCheckpoint($name)
 	{
-		$this->checkpoints[] = new SiteTimerCheckpoint($name,
+		$this->started_checkpoints[$name] = new SiteTimerCheckpoint($name,
 			$this->getTime(), memory_get_usage());
+	}
+
+	// }}}
+	// {{{ public function endCheckpoint()
+
+	/**
+	 * Ends a timer checkpoint
+	 *
+	 * @param string $name the name of the checkpoint
+	 */
+	public function endCheckpoint($name)
+	{
+		if (array_key_exists($name, $this->started_checkpoints)) {
+			$checkpoint = $this->started_checkpoints[$name];
+			$time_delta   = $this->getTime() - $checkpoint->getTime();
+			$memory_delta = memory_get_usage() - $checkpoint->getMemoryUsage();
+			$this->checkpoints[$name] = new SiteTimerCheckpoint($name,
+				$time_delta, $memory_delta);
+
+			unset($this->started_checkpoints[$name]);
+		}
 	}
 
 	// }}}
