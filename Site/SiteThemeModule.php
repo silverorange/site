@@ -229,4 +229,3 @@ class SiteThemeModule extends SiteApplicationModule
 }
 
 ?>
-
