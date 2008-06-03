@@ -88,7 +88,7 @@ class SiteTimerModule extends SiteApplicationModule
 	public function endCheckpoint($name)
 	{
 		if (array_key_exists($name, $this->started_checkpoints)) {
-			$checkpoint = $this->started_checkpoints[$name];
+			$checkpoint   = $this->started_checkpoints[$name];
 			$time_delta   = $this->getTime() - $checkpoint->getTime();
 			$memory_delta = memory_get_usage() - $checkpoint->getMemoryUsage();
 			$this->checkpoints[$name] = new SiteTimerCheckpoint($name,
@@ -115,19 +115,14 @@ class SiteTimerModule extends SiteApplicationModule
 		$dd_tag = new SwatHtmlTag('dd');
 
 		// display checkpoints
-		$last_time = 0;
 		foreach ($this->checkpoints as $checkpoint) {
-			$time = $locale->formatNumber(
-				$checkpoint->getTime() - $last_time, 3);
-
+			$time  = $locale->formatNumber($checkpoint->getTime(), 3);
 			$bytes = SwatString::byteFormat($checkpoint->getMemoryUsage(), 0);
 
 			$dt_tag->setContent($checkpoint->getName());
 			$dt_tag->display();
 			$dd_tag->setContent(sprintf(Site::_('%s ms - %s'), $time, $bytes));
 			$dd_tag->display();
-
-			$last_time = $checkpoint->getTime();
 		}
 
 		// display total time and peak memory
