@@ -11,7 +11,7 @@ require_once 'Swat/SwatCellRenderer.php';
  */
 class SiteArticleVisibilityCellRenderer extends SwatCellRenderer
 {
-	// {{{ public properties 
+	// {{{ public properties
 
 	public $article = false;
 	public $db = false;
