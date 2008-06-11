@@ -139,7 +139,7 @@ class SiteArticleSearch extends AdminSearch
 	protected function searchArticles()
 	{
 		$keywords = $this->ui->getWidget('search_keywords')->value;
-		if (strlen(trim($keywords)) == 0 || $this->getSearchType() === null) {
+		if (trim($keywords) == '' || $this->getSearchType() === null) {
 			$this->fulltext_result = null;
 		} else {
 			$fulltext_engine = new SiteNateGoFulltextSearchEngine(
@@ -196,9 +196,7 @@ class SiteArticleSearch extends AdminSearch
 			// keywords are included in the where clause if fulltext searching
 			// is turned off
 			$keywords = $this->ui->getWidget('search_keywords')->value;
-			if (strlen(trim($keywords)) > 0 &&
-				$this->getSearchType() === null) {
-
+			if (trim($keywords) != '' && $this->getSearchType() === null) {
 				$where.= ' and ( ';
 
 				$clause = new AdminSearchClause('title');

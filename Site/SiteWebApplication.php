@@ -255,7 +255,7 @@ class SiteWebApplication extends SiteApplication
 		$path = explode('/', $source);
 
 		// remove trailing slash
-		if (strlen(end($path)) == 0)
+		if (end($path) == '')
 			array_pop($path);
 
 		// normalize $source, never end with a slash
@@ -269,7 +269,7 @@ class SiteWebApplication extends SiteApplication
 
 	protected function explodeSource($source)
 	{
-		if (strlen($source) === 0)
+		if ($source == '')
 			$path = array();
 		else
 			$path = explode('/', $source);
@@ -555,7 +555,7 @@ class SiteWebApplication extends SiteApplication
 	{
 		$query_string = $_SERVER['QUERY_STRING'];
 
-		if (strlen($query_string) === 0)
+		if ($query_string == '')
 			$query_string = null;
 
 		return $query_string;

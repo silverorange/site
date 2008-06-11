@@ -165,7 +165,7 @@ class SiteArticlePage extends SitePathPage
 	 */
 	protected function displayArticle(SiteArticle $article)
 	{
-		if (strlen($article->bodytext) > 0) {
+		if ($article->bodytext != '') {
 			$bodytext = (string)$article->bodytext;
 			$bodytext = $this->replaceMarkers($bodytext);
 			echo '<div id="article_bodytext">', $bodytext, '</div>';
@@ -227,7 +227,7 @@ class SiteArticlePage extends SitePathPage
 		$anchor_tag->display();
 		$dt_tag->close();
 
-		if (strlen($article->description) > 0)
+		if ($article->description != '')
 			echo '<dd>', $article->description, '</dd>';
 	}
 

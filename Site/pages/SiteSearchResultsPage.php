@@ -228,12 +228,12 @@ class SiteSearchResultsPage extends SiteArticlePage
 				if ($is_array) {
 					if (is_array($value)) {
 						$this->search_data_values[$field] = $value;
-					} elseif (strlen($value) > 0) {
+					} elseif ($value != '') {
 						// got string, make into an array
 						$this->search_data_values[$field] = array($value);
 					}
 				} else {
-					if (strlen($value) > 0)
+					if ($value != '')
 						$this->search_data_values[$field] = $value;
 				}
 			}
@@ -328,7 +328,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 				urlencode($corrected_phrase));
 
 			$query_string = $this->getQueryString('keywords');
-			if (strlen($query_string) > 0)
+			if ($query_string != '')
 				$misspellings_link->href.= '&'.$query_string;
 
 			$misspellings_link->setContent($corrected_string, 'text/xml');
@@ -554,10 +554,10 @@ class SiteSearchResultsPage extends SiteArticlePage
 			$navbar->display();
 			$paragraph_tag->open();
 
-			if (strlen($article->description))
-				echo SwatString::condense($article->description, 150).'&nbsp;';
-			else
+			if ($article->description == '')
 				echo SwatString::condense($article->bodytext, 150).'&nbsp;';
+			else
+				echo SwatString::condense($article->description, 150).'&nbsp;';
 
 			$anchor_tag->setContent(Site::_('more').'&nbsp;»');
 			$anchor_tag->display();

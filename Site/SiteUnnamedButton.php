@@ -30,7 +30,7 @@ class SiteUnnamedButton extends SwatButton
 		$input_tag->value = $this->title;
 		$input_tag->class = $this->getCSSClassString();
 
-		if (strlen($this->access_key) > 0)
+		if ($this->access_key != '')
 			$input_tag->accesskey = $this->access_key;
 
 		$input_tag->display();
