@@ -55,7 +55,7 @@ abstract class SiteArticlePageFactory extends SitePageFactory
 
 				// set empty regs parsed from page map expressions to null
 				foreach ($regs as &$reg) {
-					if (strlen($reg) === 0)
+					if ($reg == '')
 						$reg = null;
 				}
 

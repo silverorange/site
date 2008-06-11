@@ -130,7 +130,7 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	public function isActive()
 	{
-		return (strlen(session_id()) > 0);
+		return (session_id() != '');
 	}
 
 	// }}}
