@@ -94,7 +94,7 @@ class SiteArticle extends SwatDBDataObject
 	 *
 	 * @var boolean
 	 */
-	public $show;
+	public $visible;
 
 	/**
 	 * Weather article is included in search results

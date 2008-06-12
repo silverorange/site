@@ -37,7 +37,7 @@
 				<object class="SiteArticleVisibilityCellRenderer">
 					<property name="article" type="data">id</property>
 					<property name="enabled" type="data">enabled</property>
-					<property name="show_in_menu" type="data">show</property>
+					<property name="show_in_menu" type="data">visible</property>
 					<property name="searchable" type="data">searchable</property>
 					<property name="display_positive_states" type="boolean">true</property>
 				</object>

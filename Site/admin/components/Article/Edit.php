@@ -166,14 +166,14 @@ class SiteArticleEdit extends AdminDBEdit
 	protected function saveArticle()
 	{
 		$values = $this->ui->getValues(array('title', 'shortname', 'bodytext',
-			'description', 'enabled', 'show', 'searchable'));
+			'description', 'enabled', 'visible', 'searchable'));
 
 		$this->edit_article->title         = $values['title'];
 		$this->edit_article->shortname     = $values['shortname'];
 		$this->edit_article->bodytext      = $values['bodytext'];
 		$this->edit_article->description   = $values['description'];
 		$this->edit_article->enabled       = $values['enabled'];
-		$this->edit_article->show          = $values['show'];
+		$this->edit_article->visible       = $values['visible'];
 		$this->edit_article->searchable    = $values['searchable'];
 
 		$this->edit_article->save();

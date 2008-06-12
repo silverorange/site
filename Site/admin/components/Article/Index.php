@@ -61,7 +61,7 @@ class SiteArticleIndex extends AdminIndex
 	{
 		$sql = 'select Article.id,
 					Article.title,
-					Article.show,
+					Article.visible,
 					Article.enabled,
 					Article.searchable,
 					ArticleChildCountView.child_count

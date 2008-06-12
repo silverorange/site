@@ -103,7 +103,7 @@ class SiteXmlSiteMapPage extends SitePage
 
 		$sql = 'select id, shortname, modified_date
 			from Article
-			where parent is null and enabled = %1$s and show = %1$s
+			where parent is null and enabled = %1$s and visible = %1$s
 			order by displayorder, title';
 
 		$sql = sprintf($sql, $this->app->db->quote(true, 'boolean'));
