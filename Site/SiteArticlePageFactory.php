@@ -35,16 +35,18 @@ class SiteArticlePageFactory extends SitePageFactory
 	 * @param SiteWebApplication $app the web application for which the page is
 	 *                               being resolved.
 	 * @param string $source the source string for which to get the page.
+	 * @param SiteLayout $layout optional layout to use with this page.
 	 *
 	 * @return SiteArticlePage the page for the given source string.
 	 */
-	public function resolvePage(SiteWebApplication $app, $source)
+	public function resolvePage(SiteWebApplication $app, $source, $layout = null)
 	{
-		$layout = $this->resolveLayout($app, $source);
-		$article_path = $source;
-
 		$page = null;
 
+		if ($layout === null)
+			$layout = $this->resolveLayout($app, $source);
+
+		$article_path = $source;
 		foreach ($this->getPageMap() as $pattern => $class) {
 			$regs = array();
 			$pattern = str_replace('@', '\@', $pattern); // escape delimiters
