@@ -29,7 +29,7 @@
 				</widget>
 				<widget class="SwatFormField">
 					<property name="title" translatable="yes">Show in menu?</property>
-					<widget class="SwatCheckbox" id="show">
+					<widget class="SwatCheckbox" id="visible">
 						<property name="value" type="boolean">true</property>
 					</widget>
 				</widget>

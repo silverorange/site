@@ -62,7 +62,7 @@ class SiteArticleActionsProcessor
 			switch ($visibility->value) {
 			case 'show_in_menu':
 				SwatDB::updateColumn($this->page->app->db, 'Article',
-					'boolean:show', true, 'id', $view->checked_items);
+					'boolean:visible', true, 'id', $view->checked_items);
 
 				$message = new SwatMessage(sprintf(Site::ngettext(
 					'One article has been shown in the menu.',
@@ -73,7 +73,7 @@ class SiteArticleActionsProcessor
 
 			case 'hide_from_menu':
 				SwatDB::updateColumn($this->page->app->db, 'Article',
-					'boolean:show', false, 'id', $view->checked_items);
+					'boolean:visible', false, 'id', $view->checked_items);
 
 				$message = new SwatMessage(sprintf(Site::ngettext(
 					'One article has been hidden from the menu.',

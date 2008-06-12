@@ -104,7 +104,7 @@ class SiteArticleSearch extends AdminSearch
 
 		$sql = 'select Article.id,
 					Article.title,
-					Article.show,
+					Article.visible,
 					Article.searchable
 				from Article
 				%s
@@ -214,9 +214,9 @@ class SiteArticleSearch extends AdminSearch
 				$where.= ') ';
 			}
 
-			$clause = new AdminSearchClause('boolean:show');
+			$clause = new AdminSearchClause('boolean:visible');
 			$clause->value =
-				$this->ui->getWidget('search_show')->value;
+				$this->ui->getWidget('search_visible')->value;
 
 			$where.= $clause->getClause($this->app->db);
 
