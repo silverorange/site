@@ -6,13 +6,13 @@ require_once 'Site/SitePageFactory.php';
 require_once 'Site/SiteArticlePath.php';
 
 /**
- * Resolves and creates article pages in a store web application
+ * Resolves and creates article pages in a web application
  *
  * @package   Site
  * @copyright 2006 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SiteArticlePageFactory extends SitePageFactory
+class SiteArticlePageFactory extends SitePageFactory
 {
 	// {{{ protected properties
 
