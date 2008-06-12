@@ -162,6 +162,21 @@ class SiteThemeModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function getFaviconFile()
+
+	public function getFaviconFile()
+	{
+		$file = $this->getFile('www/favicon.ico');
+
+		if ($file !== null) {
+			// get www accessible version
+			$file = 'themes/'.$this->theme.'/favicon.ico';
+		}
+
+		return $file;
+	}
+
+	// }}}
 	// {{{ protected function getFile()
 
 	/**
