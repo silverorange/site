@@ -7,7 +7,7 @@ require_once 'Site/exceptions/SiteThemeException.php';
  * Theme for a site
  *
  * @package   Site
- * @copyright 2005-2006 silverorange
+ * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteThemeModule
  */
