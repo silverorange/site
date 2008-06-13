@@ -84,7 +84,7 @@ class SiteTheme extends SwatObject
 	 *
 	 * @var string
 	 */
-	protected $directory;
+	protected $path;
 
 	// }}}
 	// {{{ private static function normalizeFilename()
@@ -226,6 +226,14 @@ class SiteTheme extends SwatObject
 	// }}}
 
 	// file accessors
+	// {{{ public function getPath()
+
+	public function getPath()
+	{
+		return $this->path;
+	}
+
+	// }}}
 	// {{{ public function getLayoutClass()
 
 	public function getLayoutClass()
@@ -234,7 +242,7 @@ class SiteTheme extends SwatObject
 		$filename   = 'layouts/'.$class_name.'.php';
 
 		if ($this->fileExists($filename)) {
-			require_once $this->directory.'/'.$filename;
+			require_once $this->path.'/'.$filename;
 			if (!class_exists($class_name)) {
 				throw new SiteThemeException(sprintf('Theme layout file "%s" '.
 					'must contain a class named "%s"',
@@ -255,7 +263,7 @@ class SiteTheme extends SwatObject
 		$filename = 'layouts/xhtml/template.php';
 
 		if ($this->fileExists($filename)) {
-			$filename = $this->directory.'/'.$filename;
+			$filename = $this->path.'/'.$filename;
 		} else {
 			$filename = null;
 		}
@@ -305,20 +313,20 @@ class SiteTheme extends SwatObject
 	 *
 	 * @param string $filename the file to check. If the filename is not
 	 *                          absolute, it is checked relative to this theme's
-	 *                          directory.
+	 *                          path.
 	 *
 	 * @return boolean true if the file exists for this theme and false if
 	 *                 not.
 	 *
-	 * @see SiteTheme::$directory
+	 * @see SiteTheme::$path
 	 */
 	public function fileExists($filename)
 	{
 		$filename = self::normalizeFilename($filename);
 
-		// check if file is absolute or relative to the theme directory
+		// check if file is absolute or relative to the theme path
 		if ($filename[0] != '/') {
-			$filename = $this->directory.'/'.$filename;
+			$filename = $this->path.'/'.$filename;
 		}
 
 		return file_exists($filename);
@@ -365,13 +373,11 @@ class SiteTheme extends SwatObject
 		// parse manifest file
 		$theme = self::parseTheme($document);
 
-		// set theme directory
-		$directory = dirname(realpath($filename));
-		$directory = self::normalizeFilename($directory);
+		// set theme path
+		$path = dirname(realpath($filename));
+		$path = self::normalizeFilename($path);
 
-		$theme->directory = $directory;
-
-		echo $theme;
+		$theme->path = $path;
 
 		return $theme;
 	}
@@ -383,13 +389,13 @@ class SiteTheme extends SwatObject
 	 * Loads a theme from an XML string containg a theme manifest
 	 *
 	 * @param string $xml the manifest XML of the theme.
-	 * @param string $directory the directory containing theme files.
+	 * @param string $path the path containing theme files.
 	 *
 	 * @return SiteTheme the loaded theme.
 	 *
 	 * @throws SiteThemeException if the manifest XML is invalid.
 	 */
-	public static function loadXml($xml, $directory)
+	public static function loadXml($xml, $path)
 	{
 		$errors = libxml_use_internal_errors(true);
 
@@ -414,7 +420,7 @@ class SiteTheme extends SwatObject
 		}
 
 		$theme = self::parseTheme($document);
-		$theme->directory = strval($directory);
+		$theme->path = strval($path);
 
 		return $theme;
 	}
