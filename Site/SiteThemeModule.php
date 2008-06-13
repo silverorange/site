@@ -1,6 +1,8 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/exceptions/SiteThemeException.php';
+require_once 'Site/SiteTheme.php';
 
 /**
  * Web application module for handling themeing
@@ -29,7 +31,7 @@ class SiteThemeModule extends SiteApplicationModule
 	 *
 	 * Null if there is no current theme.
 	 *
-	 * @var string
+	 * @var SiteTheme
 	 */
 	protected $theme;
 
@@ -53,14 +55,74 @@ class SiteThemeModule extends SiteApplicationModule
 	 * @throws InvalidArgumentException if the theme name is not a valid theme
 	 *                                  name.
 	 */
-	public function set($theme)
+	public function set($shortname)
 	{
-		if (preg_match('/^[\d\w-\.]+$/u', $theme) === 0) {
-			throw new InvalidArgumentException(sprintf('Theme name "%s" is '.
-				'not a valid theme name.'));
+		if (preg_match('/^[a-z0-9._-]+$/u', $shortname) === 0) {
+			throw new InvalidArgumentException(sprintf('Theme shortname "%s" '.
+				'is not a valid theme shortname.'));
 		}
 
-		$this->theme = $theme;
+		$manifest = $this->findManifest($shortname);
+		if ($manifest === null) {
+			throw new SiteThemeException('No theme with the shortname "%s" '.
+				'is installed.');
+		}
+
+		$this->theme = SiteTheme::load($manifest);
+	}
+
+	// }}}
+	// {{{ public function getThemes()
+
+	/**
+	 * Gets a list of all installed themes
+	 *
+	 * @return array an array of SiteTheme objects.
+	 */
+	public function getThemes()
+	{
+		$themes = array();
+
+		// get absolute paths for all theme paths
+		$include_paths = explode(PATH_SEPARATOR, get_include_path());
+		$theme_paths  = array();
+		foreach ($this->theme_paths as $theme_path) {
+			// normalize Windows paths to UNIX format
+			$theme_path = end(explode(':', $theme_path, 2));
+			$theme_path = str_replace('\\', '/', $theme_path);
+
+			// check if path is absolute or relative to the include path
+			if ($theme_path[0] == '/') {
+				if (is_dir($theme_path)) {
+					$theme_paths[] = $theme_path;
+				}
+			} else {
+				foreach ($include_paths as $include_path) {
+					if (is_dir($include_path.'/'.$theme_path)) {
+						$theme_paths[] = $include_path.'/'.$theme_path;
+						break;
+					}
+				}
+			}
+		}
+
+		// search each theme path for theme manifest files
+		foreach ($theme_paths as $path) {
+			$dir = new DirectoryIterator($path);
+			foreach ($dir as $file) {
+				if ($file->isDir()) {
+					$theme_dir = new DirectoryIterator($dir->getRealPath());
+					foreach ($theme_dir as $file) {
+						if ($file->getFilename() === 'manifest.xml') {
+							$themes[] = SiteTheme::load($file->getRealPath());
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		return $themes;
 	}
 
 	// }}}
@@ -108,28 +170,18 @@ class SiteThemeModule extends SiteApplicationModule
 
 	public function getLayoutClass($base_layout_class)
 	{
-		$class_name = $this->getCamelCaseShortname().'Layout';
-		$file_name  = $this->getFile('layouts/'.$class_name.'.php');
+		$class = ($this->theme instanceof SiteTheme) ?
+			$this->theme->getLayoutClass() : null;
 
-		if ($file_name === null) {
-			$class_name = $base_layout_class;
-		} else {
-			require_once $file_name;
-
-			if (!class_exists($class_name)) {
-				throw new SiteException(sprintf('Layout file "%s" must '.
-					'contain a class named "%s"',
-					$file_name, $class_name));
-			}
-
-			if (!is_subclass_of($class_name, $base_layout_class)) {
-				throw new SiteException(sprintf('Layout class "%s" must '.
-					'be a subclass of %s.',
-					$class_name, $base_layout_class));
-			}
+		if ($class === null) {
+			$class = $base_layout_class;
+		} elseif (!is_subclass_of($class, $base_layout_class)) {
+			throw new SiteException(sprintf('Layout class "%s" must '.
+				'be a subclass of %s.',
+				$class, $base_layout_class));
 		}
 
-		return $class_name;
+		return $class;
 	}
 
 	// }}}
@@ -137,13 +189,14 @@ class SiteThemeModule extends SiteApplicationModule
 
 	public function getTemplateFile($default_template)
 	{
-		$file_name = $this->getFile('layouts/xhtml/template.php');
+		$filename = ($this->theme instanceof SiteTheme) ?
+			$this->theme->getTemplateFile() : null;
 
-		if ($file_name === null) {
-			$file_name = $default_template;
+		if ($filename === null) {
+			$filename = $default_template;
 		}
 
-		return $file_name;
+		return $filename;
 	}
 
 	// }}}
@@ -151,14 +204,8 @@ class SiteThemeModule extends SiteApplicationModule
 
 	public function getCssFile()
 	{
-		$file = $this->getFile('www/styles/theme.css');
-
-		if ($file !== null) {
-			// get www accessible version
-			$file = 'themes/'.$this->theme.'/styles/theme.css';
-		}
-
-		return $file;
+		return ($this->theme instanceof SiteTheme) ?
+			$this->theme->getCssFile() : null;
 	}
 
 	// }}}
@@ -166,18 +213,12 @@ class SiteThemeModule extends SiteApplicationModule
 
 	public function getFaviconFile()
 	{
-		$file = $this->getFile('www/favicon.ico');
-
-		if ($file !== null) {
-			// get www accessible version
-			$file = 'themes/'.$this->theme.'/favicon.ico';
-		}
-
-		return $file;
+		return ($this->theme instanceof SiteTheme) ?
+			$this->theme->getFaviconFile() : null;
 	}
 
 	// }}}
-	// {{{ protected function getFile()
+	// {{{ protected function findManifest()
 
 	/**
 	 * Checks whether or not a file exists for the current theme
@@ -188,10 +229,10 @@ class SiteThemeModule extends SiteApplicationModule
 	 *                theme and null if no such file exists for the current
 	 *                theme.
 	 */
-	protected function getFile($filename)
+	protected function findManifest($shortname)
 	{
-		$return_filename = null;
-		$include_paths   = explode(PATH_SEPARATOR, get_include_path());
+		$filename      = null;
+		$include_paths = explode(PATH_SEPARATOR, get_include_path());
 
 		foreach ($this->theme_paths as $theme_path) {
 			// normalize Windows paths to UNIX format
@@ -200,44 +241,25 @@ class SiteThemeModule extends SiteApplicationModule
 
 			// check if path is absolute or relative to the include path
 			if ($theme_path[0] == '/') {
-				$temp_filename = $theme_path.'/'.$this->theme.'/'.$filename;
+				$temp_filename = $theme_path.'/'.$shortname.'/manifest.xml';
 				if (file_exists($temp_filename)) {
-					$return_filename = $temp_filename;
+					$filename = $temp_filename;
 					break;
 				}
 			} else {
 				foreach ($include_paths as $include_path) {
 					$temp_filename = $include_path.'/'.$theme_path.'/'.
-						$this->theme.'/'.$filename;
+						$shortname.'/manifest.xml';
 
 					if (file_exists($temp_filename)) {
-						$return_filename = $temp_filename;
+						$filename = $temp_filename;
 						break 2;
 					}
 				}
 			}
 		}
 
-		return $return_filename;
-	}
-
-	// }}}
-	// {{{ protected function getCamelCaseShortname()
-
-	/**
-	 * Gets the camel-case variant of the theme shortname
-	 *
-	 * @return string the camel-case variant of the theme shortname.
-	 */
-	protected function getCamelCaseShortname()
-	{
-		$theme = $this->theme;
-
-		$theme = str_replace('_', ' ', $theme);
-		$theme = str_replace('.', ' ', $theme);
-		$theme = str_replace('-', ' ', $theme);
-
-		return str_replace(' ', '', ucwords($theme));
+		return $filename;
 	}
 
 	// }}}
