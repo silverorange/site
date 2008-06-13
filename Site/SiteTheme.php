@@ -92,6 +92,9 @@ class SiteTheme extends SwatObject
 	/**
 	 * Normalizes Windows filenames into UNIX format
 	 *
+	 * This strips leading drive letters and converts back-slashes to
+	 * forward-slashes.
+	 *
 	 * @param string $filename
 	 *
 	 * @return string
@@ -437,7 +440,12 @@ class SiteTheme extends SwatObject
 					break;
 
 				case 'shortname':
-					$theme->shortname = $node->nodeValue;
+					$shortname = $node->nodeValue;
+					if (preg_match('/^[a-z0-9._-]+$/u', $shortname) === 0) {
+						throw new SiteThemeException("Theme shortname '%s' ".
+							"is not a valid theme shortname.");
+					}
+					$theme->shortname = $shortname;
 					break;
 
 				case 'description':
