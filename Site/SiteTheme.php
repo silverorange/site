@@ -79,7 +79,27 @@ class SiteTheme extends SwatObject
 	 */
 	protected $license;
 
+	/**
+	 * Location of theme files
+	 *
+	 * @var string
+	 */
+	protected $directory;
+
 	// }}}
+	// {{{ private function __construct()
+
+	/**
+	 * Themes should only be instantiated through the {@link SiteTheme::load()}
+	 * and {@link SiteTheme::loadXml()} methods.
+	 */
+	private function __construct()
+	{
+	}
+
+	// }}}
+
+	// accessors
 	// {{{ public function getTitle()
 
 	/**
@@ -184,6 +204,111 @@ class SiteTheme extends SwatObject
 	}
 
 	// }}}
+
+	// file accessors
+	// {{{ public function getLayoutClass()
+
+	public function getLayoutClass()
+	{
+		$class_name = $this->getShortname(true).'Layout';
+		$filename   = 'layouts/'.$class_name.'.php';
+
+		if ($this->fileExists($filename)) {
+			require_once $this->directory.'/'.$filename;
+			if (!class_exists($class_name)) {
+				throw new SiteThemeException(sprintf('Theme layout file "%s" '.
+					'must contain a class named "%s"',
+					$filename, $class_name));
+			}
+		} else {
+			$class_name = null;
+		}
+
+		return $class_name;
+	}
+
+	// }}}
+	// {{{ public function getTemplateFile()
+
+	public function getTemplateFile()
+	{
+		$filename = 'layouts/xhtml/template.php';
+
+		if ($this->fileExists($filename)) {
+			$filename = $this->directory.'/'.$filename;
+		} else {
+			$filename = null;
+		}
+
+		return $filename;
+	}
+
+	// }}}
+	// {{{ public function getCssFile()
+
+	public function getCssFile()
+	{
+		$filename = 'www/styles/theme.css';
+
+		if ($this->fileExists($filename)) {
+			// web-accessible version
+			$filename = 'themes/'.$this->getShortname().'/styles/theme.css';
+		} else {
+			$filename = null;
+		}
+
+		return $filename;
+	}
+
+	// }}}
+	// {{{ public function getFaviconFile()
+
+	public function getFaviconFile()
+	{
+		$filename = 'www/favicon.ico';
+
+		if ($this->fileExists($filename)) {
+			// web-accessible version
+			$filename = 'themes/'.$this->getShortname().'/favicon.ico';
+		} else {
+			$filename = null;
+		}
+
+		return $filename;
+	}
+
+	// }}}
+	// {{{ public function fileExists()
+
+	/**
+	 * Checks whether or not a file exists for this theme
+	 *
+	 * @param string $filename the file to check. If the filename is not
+	 *                          absolute, it is checked relative to this theme's
+	 *                          directory.
+	 *
+	 * @return boolean true if the file exists for this theme and false if
+	 *                 not.
+	 *
+	 * @see SiteTheme::$directory
+	 */
+	public function fileExists($filename)
+	{
+		// normalize Windows paths to UNIX
+		$filename = end(explode(':', $filename, 2));
+		$filename = str_replace('\\', '/', $filename);
+
+		// check if file is absolute or relative to the theme directory
+		if ($filename[0] != '/') {
+			$filename = $this->directory.'/'.$filename;
+		}
+
+		return file_exists($filename);
+	}
+
+	// }}}
+
+	// loading
 	// {{{ public static function load()
 
 	/**
@@ -219,7 +344,21 @@ class SiteTheme extends SwatObject
 			throw new SiteThemeException("Invalid theme manifest:\n".$message);
 		}
 
-		return self::parseTheme($document);
+		// parse manifest file
+		$theme = self::parseTheme($document);
+
+		// set theme directory
+		$directory = dirname(realpath($filename));
+
+		// normalize Windows paths to UNIX format
+		$directory = end(explode(':', $directory, 2));
+		$directory = str_replace('\\', '/', $directory);
+
+		$theme->directory = $directory;
+
+		echo $theme;
+
+		return $theme;
 	}
 
 	// }}}
@@ -229,12 +368,13 @@ class SiteTheme extends SwatObject
 	 * Loads a theme from an XML string containg a theme manifest
 	 *
 	 * @param string $xml the manifest XML of the theme.
+	 * @param string $directory the directory containing theme files.
 	 *
 	 * @return SiteTheme the loaded theme.
 	 *
 	 * @throws SiteThemeException if the manifest XML is invalid.
 	 */
-	public static function loadXml($xml)
+	public static function loadXml($xml, $directory)
 	{
 		$errors = libxml_use_internal_errors(true);
 
@@ -258,7 +398,10 @@ class SiteTheme extends SwatObject
 			throw new SiteThemeException("Invalid theme manifest:\n".$message);
 		}
 
-		return self::parseTheme($document);
+		$theme = self::parseTheme($document);
+		$theme->directory = strval($directory);
+
+		return $theme;
 	}
 
 	// }}}
@@ -323,8 +466,6 @@ class SiteTheme extends SwatObject
 					$name));
 			}
 		}
-
-		echo $theme;
 
 		return $theme;
 	}
