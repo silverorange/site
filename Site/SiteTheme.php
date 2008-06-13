@@ -87,6 +87,23 @@ class SiteTheme extends SwatObject
 	protected $directory;
 
 	// }}}
+	// {{{ private static function normalizeFilename()
+
+	/**
+	 * Normalizes Windows filenames into UNIX format
+	 *
+	 * @param string $filename
+	 *
+	 * @return string
+	 */
+	private static function normalizeFilename($filename)
+	{
+		$filename = end(explode(':', $filename, 2));
+		$filename = str_replace('\\', '/', $filename);
+		return $filename;
+	}
+
+	// }}}
 	// {{{ private function __construct()
 
 	/**
@@ -294,9 +311,7 @@ class SiteTheme extends SwatObject
 	 */
 	public function fileExists($filename)
 	{
-		// normalize Windows paths to UNIX
-		$filename = end(explode(':', $filename, 2));
-		$filename = str_replace('\\', '/', $filename);
+		$filename = self::normalizeFilename($filename);
 
 		// check if file is absolute or relative to the theme directory
 		if ($filename[0] != '/') {
@@ -349,10 +364,7 @@ class SiteTheme extends SwatObject
 
 		// set theme directory
 		$directory = dirname(realpath($filename));
-
-		// normalize Windows paths to UNIX format
-		$directory = end(explode(':', $directory, 2));
-		$directory = str_replace('\\', '/', $directory);
+		$directory = self::normalizeFilename($directory);
 
 		$theme->directory = $directory;
 
