@@ -67,6 +67,27 @@ class SiteConfigModule extends SiteApplicationModule
 	 */
 	private $definitions = array();
 
+	/**
+	 * The path to the .ini of this config module.
+	 *
+	 * @var string
+	 */
+	private $config_filename;
+
+	/**
+	 *
+	 * @var array
+	 */
+	private $instance_settings = array(
+		'site.title',
+//		'site.banner_image',
+		'site.meta_description',
+		'date.time_zone',
+		'blorg.default_comment_status',
+		'blorg.akismet_key',
+		'analytics.google_account',
+	);
+
 	// }}}
 	// {{{ public function init()
 
@@ -93,6 +114,7 @@ class SiteConfigModule extends SiteApplicationModule
 	 */
 	public function load($filename)
 	{
+		$this->config_filename = $filename;
 		$ini_array = parse_ini_file($filename, true);
 		foreach ($ini_array as $section_name => $section_values) {
 			if (array_key_exists($section_name, $this->definitions)) {
@@ -127,6 +149,21 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 
 		$this->loaded = true;
+	}
+
+	// }}}
+	// {{{ public function save()
+
+	/**
+	 * Save the information contained in this module to a database or file.
+	 */
+	public function save()
+	{
+		if ($this->app->hasModule('SiteMultipleInstanceModule') &&
+			$this->app->instance->getId() !== null)
+			$this->saveToDatabase();
+		else
+			$this->saveToFile();
 	}
 
 	// }}}
@@ -212,7 +249,7 @@ class SiteConfigModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function config()
+	// {{{ public function configure()
 
 	/**
 	 * Configures other modules of the application
@@ -297,6 +334,48 @@ class SiteConfigModule extends SiteApplicationModule
 	private function __isset($name)
 	{
 		return array_key_exists($name, $this->sections);
+	}
+
+	// }}}
+	// {{{ private function saveToDatabase()
+
+	protected function saveToDatabase()
+	{
+		// save every thing on the config module to the database
+		$instance = $this->app->instance->getId();
+
+		$sql = sprintf('delete from InstanceConfigSetting where instance = %s',
+			$this->app->db->quote($instance, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		foreach ($this->instance_settings as $setting) {
+			list($section, $title) = explode('.', $setting);
+			$value = $this->sections[$section]->$title;
+
+			if ($value != '') {
+				$sql = sprintf('insert into InstanceConfigSetting
+					(name, value, instance) values (%s, %s, %s)',
+				$this->app->db->quote($setting, 'text'),
+				$this->app->db->quote($value, 'text'),
+				$this->app->db->quote($instance, 'integer'));
+
+				SwatDB::exec($this->app->db, $sql);
+			}
+		}
+
+	}
+
+	// }}}
+	// {{{ private function saveToFile()
+
+	protected function saveToFile()
+	{
+		$config_file = fopen($config_filename, 'w');
+		foreach ($this->sections as $section) {
+			fwrite($config_file, $section);
+		}
+		fclose($config_file);
 	}
 
 	// }}}

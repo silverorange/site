@@ -56,9 +56,26 @@ class SiteConfigSection extends SwatObject
 	public function __toString()
 	{
 		ob_start();
-		echo "[", $this->name, "]\n";
+
+		$is_empty = true;
 		foreach ($this->values as $name => $value) {
-			echo $name, " = ", $value, "\n";
+			if ($value !== null)
+				$is_empty = false;
+		}
+
+		if (!$is_empty) {
+			echo "[", $this->name, "]\n";
+			foreach ($this->values as $name => $value) {
+				if ($value != '') {
+					if ($value == 1)
+						$value = 'On';
+					else
+						$value = "\"".$value."\"";
+
+					echo $name, " = ", $value, "\n";
+				}
+			}
+			echo "\n";
 		}
 		return ob_get_clean();
 	}
@@ -90,7 +107,7 @@ class SiteConfigSection extends SwatObject
 	// {{{ private function __get()
 
 	/**
-	 * Gets a settion of this configuration section
+	 * Gets a setting of this configuration section
 	 *
 	 * @param string $name the name of the setting.
 	 *
