@@ -114,7 +114,8 @@ class SiteThemeModule extends SiteApplicationModule
 					$theme_dir = new DirectoryIterator($dir->getRealPath());
 					foreach ($theme_dir as $file) {
 						if ($file->getFilename() === 'manifest.xml') {
-							$themes[] = SiteTheme::load($file->getRealPath());
+							$theme = SiteTheme::load($file->getRealPath());
+							$themes[$theme->getShortname()] = $theme;
 							break;
 						}
 					}
