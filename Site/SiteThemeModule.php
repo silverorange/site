@@ -72,14 +72,14 @@ class SiteThemeModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function getAvaiable()
+	// {{{ public function getAvailable()
 
 	/**
 	 * Gets a list of all available themes
 	 *
 	 * @return array an array of SiteTheme objects.
 	 */
-	public function getAvaiable()
+	public function getAvailable()
 	{
 		$themes = array();
 
