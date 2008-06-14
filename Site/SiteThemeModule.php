@@ -72,14 +72,14 @@ class SiteThemeModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function getThemes()
+	// {{{ public function getAvaiable()
 
 	/**
-	 * Gets a list of all installed themes
+	 * Gets a list of all available themes
 	 *
 	 * @return array an array of SiteTheme objects.
 	 */
-	public function getThemes()
+	public function getAvaiable()
 	{
 		$themes = array();
 
