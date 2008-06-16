@@ -13,9 +13,6 @@ class SiteArticleVisibilityCellRenderer extends SwatCellRenderer
 {
 	// {{{ public properties
 
-	public $article = false;
-	public $db = false;
-
 	public $enabled = false;
 	public $searchable = false;
 	public $show_in_menu = false;

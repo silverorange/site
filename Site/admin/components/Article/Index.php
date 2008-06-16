@@ -79,8 +79,6 @@ class SiteArticleIndex extends AdminIndex
 		$rs = SwatDB::query($this->app->db, $sql);
 
 		$view = $this->ui->getWidget('index_view');
-		$view->getColumn('visibility')->getFirstRenderer()->db =
-			$this->app->db;
 
 		if (count($rs) < 2)
 			$this->ui->getWidget('articles_order')->sensitive = false;
