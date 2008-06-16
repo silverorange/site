@@ -344,14 +344,16 @@ class SiteConfigModule extends SiteApplicationModule
 		// save every thing on the config module to the database
 		$instance = $this->app->instance->getId();
 
-		$sql = sprintf('delete from InstanceConfigSetting where instance = %s',
-			$this->app->db->quote($instance, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
-
 		foreach ($this->instance_settings as $setting) {
 			list($section, $title) = explode('.', $setting);
 			$value = $this->sections[$section]->$title;
+
+			$sql = sprintf('delete from InstanceConfigSetting
+				where instance = %s and name = %s',
+				$this->app->db->quote($instance, 'integer'),
+				$this->app->db->quote($setting, 'text'));
+
+			SwatDB::exec($this->app->db, $sql);
 
 			if ($value != '') {
 				$sql = sprintf('insert into InstanceConfigSetting
@@ -363,7 +365,6 @@ class SiteConfigModule extends SiteApplicationModule
 				SwatDB::exec($this->app->db, $sql);
 			}
 		}
-
 	}
 
 	// }}}
