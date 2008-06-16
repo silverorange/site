@@ -68,12 +68,11 @@ class SiteArticleIndex extends AdminIndex
 				from Article
 					left outer join ArticleChildCountView on
 						ArticleChildCountView.article = Article.id
-				where Article.parent %s %s
+				where %s
 				order by %s';
 
 		$sql = sprintf($sql,
-			SwatDB::equalityOperator($this->id),
-			$this->app->db->quote($this->id, 'integer'),
+			$this->getWhereClause($view),
 			$this->getOrderByClause($view,
 				'Article.displayorder, Article.title', 'Article'));
 
@@ -87,6 +86,18 @@ class SiteArticleIndex extends AdminIndex
 			$this->ui->getWidget('articles_order')->sensitive = false;
 
 		return $rs;
+	}
+
+	// }}}
+	// {{{ protected function getWhereClause()
+
+	protected function getWhereClause(SwatView $view)
+	{
+		$sql = sprintf('Article.parent %s %s',
+			SwatDB::equalityOperator($this->id),
+			$this->app->db->quote($this->id, 'integer'));
+
+		return $sql;
 	}
 
 	// }}}
