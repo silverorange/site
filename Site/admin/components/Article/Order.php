@@ -12,9 +12,21 @@ require_once 'SwatDB/SwatDB.php';
  */
 class SiteArticleOrder extends AdminDBOrder
 {
-	// {{{ private properties
+	// {{{ protected properties
 
-	private $parent;
+	protected $parent;
+
+	// }}}
+	// {{{ protected function getWhereClause()
+
+	protected function getWhereClause()
+	{
+		$where_clause = sprintf('parent %s %s',
+			SwatDB::equalityOperator($this->parent),
+			$this->app->db->quote($this->parent, 'integer'));
+
+		return $where_clause;
+	}
 
 	// }}}
 
@@ -38,7 +50,7 @@ class SiteArticleOrder extends AdminDBOrder
 	protected function saveIndex($id, $index)
 	{
 		SwatDB::updateColumn($this->app->db, 'Article', 'integer:displayorder',
-			$index, 'integer:id', array($id));
+			$index, 'integer:id', array($id), $this->getWhereClause());
 	}
 
 	// }}}
@@ -58,15 +70,14 @@ class SiteArticleOrder extends AdminDBOrder
 
 	protected function loadData()
 	{
-		$where_clause = sprintf('parent %s %s',
-			SwatDB::equalityOperator($this->parent),
-			$this->app->db->quote($this->parent, 'integer'));
-
 		$order_widget = $this->ui->getWidget('order');
 		$order_widget->addOptionsByArray(SwatDB::getOptionArray($this->app->db,
-			'Article', 'title', 'id', 'displayorder, title', $where_clause));
+			'Article', 'title', 'id', 'displayorder, title',
+				$this->getWhereClause()));
 
-		$sql = 'select sum(displayorder) from Article where '.$where_clause;
+		$sql = 'select sum(displayorder) from Article where '.
+			$this->getWhereClause();
+
 		$sum = SwatDB::queryOne($this->app->db, $sql, 'integer');
 		$options_list = $this->ui->getWidget('options');
 		$options_list->value = ($sum == 0) ? 'auto' : 'custom';
