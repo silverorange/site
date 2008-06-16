@@ -15,7 +15,11 @@ class SiteArticleDelete extends AdminDBDelete
 {
 	// {{{ private properties
 
-	// used for custom relocate
+	/**
+	 * Used for custom relocate
+	 *
+	 * @var integer
+	 */
 	private $parent_id;
 
 	// }}}
@@ -39,8 +43,9 @@ class SiteArticleDelete extends AdminDBDelete
 		$num = SwatDB::exec($this->app->db, $sql);
 
 		$message = new SwatMessage(sprintf(Site::ngettext(
-			'One article has been deleted.', '%d articles have been deleted.',
-			$num), SwatString::numberFormat($num)), SwatMessage::NOTIFICATION);
+			'One article has been deleted.',
+			'%s articles have been deleted.', $num),
+			SwatString::numberFormat($num)));
 
 		$this->app->messages->add($message);
 	}
