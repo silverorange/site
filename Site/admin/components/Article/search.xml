@@ -46,7 +46,7 @@
 				</object>
 				<object class="SwatTableViewColumn" id="visibility">
 					<property name="title" translatable="yes">Visibility</property>
-					<object class="StoreArticleVisibilityCellRenderer">
+					<object class="SiteArticleVisibilityCellRenderer">
 						<property name="article" type="data">id</property>
 						<property name="show_in_menu" type="data">visible</property>
 						<property name="searchable" type="data">searchable</property>
