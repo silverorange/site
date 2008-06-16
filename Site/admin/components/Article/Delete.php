@@ -8,19 +8,19 @@ require_once 'Admin/AdminListDependency.php';
  * Delete confirmation page for Articles
  *
  * @package   Site
- * @copyright 2005-2006 silverorange
+ * @copyright 2005-2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticleDelete extends AdminDBDelete
 {
-	// {{{ private properties
+	// {{{ protected properties
 
 	/**
 	 * Used for custom relocate
 	 *
 	 * @var integer
 	 */
-	private $parent_id;
+	protected $parent_id;
 
 	// }}}
 
