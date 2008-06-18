@@ -1,39 +1,102 @@
 <?php
 
-require_once 'Swat/exceptions/SwatException.php';
+require_once 'SwatDB/exceptions/SwatDBException.php';
+require_once 'SwatDB/SwatDB.php';
+require_once 'SwatDB/SwatDBTransaction.php';
+require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/SiteApplicationModule.php';
 require_once 'Site/SiteConfigSection.php';
 
 /**
  * Web application module for site configuration
  *
- * The site configuration module loads an ini file of application settings.
- * Settings in the ini file are grouped into sections. Properties within
- * sections are treated as sub-objects of the config module. For example, the
- * following section:
+ * Settings are stored in section-name-value triples. Sections and names are
+ * are treated as sub-objects of this config module. Because of the way the
+ * site configuration module accesses settings as public properties, all
+ * setting sections and names must be valid PHP variable names.
  *
- * <code>
- * [database]
- * dsn = test@test.com
- * user = test
- * </code>
+ * All configuration settings must be defined before they may be used by an
+ * application. If an undefined configuration value is accessed, an exception
+ * will be thrown.
  *
- * Will parse into to following config structure:
+ * Configuration values are accessed through section and name keys on this
+ * module. For example, a section with the name 'site' and the names 'title'
+ * and 'tagline' is accessed through the config module <code>$config</code> as
+ * follows:
+ *
  * <code>
  * <?php
- * $config->database->dsn = 'test@test.com';
- * $config->database->user = 'test';
+ * $config->site->title = 'My Cool Website';
+ * $config->site->tagline = 'Supercool';
  * ?>
  * </code>
  *
- * Because of the way the site configuration module parses ini properties into
- * PHP properties, all ini settings names must be valid PHP variable names.
+ * Site configuration values come from three locations with increasing
+ * precedence. Higher precedence values override lower values when the value
+ * exists in more than one location for the same section and name.
  *
- * If a non-existant configuration property is accessed, an exception will be
- * thrown.
+ * <strong>1. INI File:</strong>
+ *
+ * The site configuration module loads an ini file containing application
+ * setting values. Settings in the ini file are grouped into sections. For
+ * example:
+ *
+ * <pre>
+ * [site]
+ * tile = My Cool Website
+ * tagline = Supercool
+ * </pre>
+ *
+ * <strong>2. ConfigSetting Table:</strong>
+ *
+ * If the application has a database and a table named <em>ConfigSetting</em>
+ * exists, settings are loaded from the table. The column <code>name</code>
+ * should contain the setting section-name in the form
+ * <code>section.name</code> and column <code>value</code> should contain the
+ * setting value.
+ *
+ * Setting values loaded from the database override values loaded from the ini
+ * file.
+ *
+ * Example settings table rows:
+ * <pre>
+ * +--------------+-----------------+
+ * | name         | value           |
+ * +--------------+-----------------+
+ * | site.title   | My Cool Website |
+ * | site.tagline | Supercool       |
+ * +--------------+-----------------+
+ * </pre>
+ *
+ * <strong>3. InstanceConfigSetting Table:</strong>
+ *
+ * If the application uses site instances, settings are loaded from the
+ * <em>InstanceConfigSetting</em> table. The format is the same as the
+ * <em>ConfigSetting</em> table; however, each setting is also bound to a site
+ * instance.
+ *
+ * Setting values loaded from the instance config setting table in the database
+ * override values loaded from both the config setting table and from the ini
+ * file.
+ *
+ * Example instance settings table rows:
+ * <pre>
+ * +--------------+-----------------+----------+
+ * | name         | value           | instance |
+ * +--------------+-----------------+----------+
+ * | site.title   | My Cool Website | 1        |
+ * | site.tagline | Supercool       | 1        |
+ * +--------------+-----------------+----------+
+ * </pre>
+ *
+ * <strong>Saving</strong>
+ *
+ * Configuration setting values may be saved using the
+ * {@link SiteConfigModule::save()} method. Settings are only ever saved in the
+ * database. File-based saving is intentioanlly excluded.
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteConfigModule extends SiteApplicationModule
@@ -99,11 +162,15 @@ class SiteConfigModule extends SiteApplicationModule
 	 * Initializes this module
 	 *
 	 * If this configuration module is not already loaded it is loaded here.
+	 * Database and instance database setting values are loaded here.
 	 */
 	public function init()
 	{
 		if (!$this->loaded)
 			$this->load();
+
+		$this->loadDatabaseValues();
+		$this->loadInstanceValues();
 	}
 
 	// }}}
@@ -159,14 +226,34 @@ class SiteConfigModule extends SiteApplicationModule
 	// {{{ public function save()
 
 	/**
-	 * Save the information contained in this module to a database or file.
+	 * Save the information contained in this module to the appropriate
+	 * database table
+	 *
+	 * If the application uses site instances, the setting values are saved in
+	 * the <em>InstanceConfigSetting</em> table. Otherwise, they are saved in
+	 * the <em>ConfigSetting</em>.
+	 *
+	 * If there is no database module, the settings values of this config
+	 * module can not be saved.
 	 */
 	public function save()
 	{
+<<<<<<< .mine
+		// if there is no database module, do nothing
+		if (!$this->app->hasModule('SiteDatabaseModule'))
+			return;
+
+		if ($this->app->getInstance() === null) {
+			$this->saveDatabaseValues();
+		} else {
+			$this->saveInstanceValues();
+		}
+=======
 		if ($this->app->getInstanceId() !== null)
 			$this->saveToDatabase();
 		else
 			$this->saveToFile();
+>>>>>>> .r33842
 	}
 
 	// }}}
@@ -252,19 +339,61 @@ class SiteConfigModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function postInitConfigure()
+
+	/**
+	 * Configures the application
+	 *
+	 * This method is run after modules have all been initialized. All
+	 * overridden config settings from the database are loaded when this method
+	 * runs. Developers may add application configuration here. Alternatively,
+	 * configuration may be added to the
+	 * {@link SiteApplication::postInitConfigure()} method().
+	 */
+	public function postInitConfigure()
+	{
+	}
+
+	// }}}
 	// {{{ public function configure()
 
 	/**
 	 * Configures other modules of the application
 	 *
-	 * This method is run by the application after the configuration has been
-	 * loaded and other modules have been added. Developers may add
+	 * This method is run by the application immediately after the
+	 * configuration has been loaded from the config file. Developers may add
 	 * module-specific configuration here. Alternatively, module-specific
 	 * configuration may be added to the {@link SiteApplication::configure()}
-	 * method().
+	 * method.
 	 */
 	public function configure()
 	{
+	}
+
+	// }}}
+	// {{{ public function depends()
+
+	/**
+	 * Gets the module features this module depends on
+	 *
+	 * The config module optionally depends on the SiteDatabaseModule and
+	 * SiteInstanceModule features.
+	 *
+	 * @return array an array of {@link SiteApplicationModuleDependency}
+	 *                        objects defining the features this module
+	 *                        depends on.
+	 */
+	public function depends()
+	{
+		$depends = parent::depends();
+
+		$depends[] = new SiteApplicationModuleDependency(
+			'SiteDatabaseModule', false);
+
+		$depends[] = new SiteApplicationModuleDependency(
+			'SiteMultipleInstanceModule', false);
+
+		return $depends;
 	}
 
 	// }}}
@@ -284,6 +413,175 @@ class SiteConfigModule extends SiteApplicationModule
 			echo $section, "\n";
 		}
 		return ob_get_clean();
+	}
+
+	// }}}
+	// {{{ protected function loadDatabaseValues()
+
+	/**
+	 * Loads config setting values from the database
+	 *
+	 * Setting values are loaded from the <em>ConfigSetting</em> table.
+	 */
+	protected function loadDatabaseValues()
+	{
+		// if there is no database module, do nothing
+		if (!$this->app->hasModule('SiteDatabaseModule'))
+			return;
+
+		$database = $this->app->getModule('SiteDatabaseModule');
+		$db = $database->getConnection();
+
+		$sql = 'select * from ConfigSetting';
+		try {
+			$rs = SwatDB::query($db, $sql, null);
+
+			do {
+				while ($row = $rs->fetchRow(MDB2_FETCHMODE_OBJECT)) {
+					if ($row->value !== null) {
+						$qualified_name = $row->name;
+
+						if (strpos($qualified_name, '.') === false) {
+							throw new SiteException(sprintf(
+								"Name of configuration setting '%s' must be ".
+								"fully qualifed and of the form section.name.",
+								$qualified_name));
+						}
+
+						list($section, $name) =
+							explode('.', $qualified_name, 2);
+
+						$this->$section->$name = $row->value;
+					}
+				}
+			} while ($rs->nextResult());
+		} catch (SwatDBException $e) {
+			// if there was a problem selecting the config values, ignore it
+		}
+	}
+
+	// }}}
+	// {{{ protected function loadInstanceValues()
+
+	/**
+	 * Loads instance config setting values from the database
+	 *
+	 * Setting values are loaded from the <em>InstanceConfigSetting</em> table.
+	 */
+	protected function loadInstanceValues()
+	{
+		$instance = $this->app->getInstance();
+
+		// if there is no instance, do nothing
+		if ($instance === null)
+			return;
+
+		foreach ($instance->config_settings as $setting) {
+			if ($setting->value !== null) {
+				$qualified_name = $setting->name;
+
+				if (strpos($qualified_name, '.') === false) {
+					throw new SiteException(sprintf(
+						"Name of configuration setting '%s' must be ".
+						"fully qualifed and of the form section.name.",
+						$qualified_name));
+				}
+
+				list($section, $name) = explode('.', $qualified_name, 2);
+
+				$this->$section->$name = $setting->value;
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function saveDatabaseValues()
+
+	/**
+	 * Saves all configuration values in this config module to the database
+	 *
+	 * Values are saved in the <em>ConfigSetting</em> table.
+	 */
+	protected function saveDatabaseValues()
+	{
+		// if there is no database module, do nothing
+		if (!$this->app->hasModule('SiteDatabaseModule'))
+			return;
+
+		$database = $this->app->getModule('SiteDatabaseModule');
+		$db = $database->getConnection();
+
+		$transaction = new SwatDBTransaction($db);
+		try {
+			foreach ($this->sections as $section_name => $section) {
+				foreach ($section as $name => $value) {
+					$qualified_name = $section_name.'.'.$name;
+
+					$sql = sprintf('delete from ConfigSetting
+						where name = %s',
+						$this->app->db->quote($qualified_name, 'text'));
+
+					SwatDB::exec($this->app->db, $sql);
+
+					if ($value != '') {
+						$sql = sprintf('insert into ConfigSetting
+							(name, value) values (%s, %s)',
+							$this->app->db->quote($qualified_name, 'text'),
+							$this->app->db->quote($value, 'text'));
+
+						SwatDB::exec($this->app->db, $sql);
+					}
+				}
+			}
+			$transaction->commit();
+		} catch (SwatDBException $e) {
+			$transaction->rollback();
+			throw $e;
+		}
+	}
+
+	// }}}
+	// {{{ protected function saveInstanceValues()
+
+	/**
+	 * Saves all configuration values in this config module to the database
+	 *
+	 * Values are saved in the <em>InstanceConfigSetting</em> table with a
+	 * binding to the current site instance.
+	 */
+	protected function saveInstanceValues()
+	{
+		$instance = $this->app->instance->getId();
+
+		$transaction = new SwatDBTransaction($db);
+		try {
+			foreach ($this->sections as $section_name => $section) {
+				foreach ($section as $name => $value) {
+					$qualified_name = $section_name.'.'.$name;
+
+					$sql = sprintf('delete from InstanceConfigSetting
+						where instance = %s and name = %s',
+						$this->app->db->quote($instance, 'integer'),
+						$this->app->db->quote($qualified_name, 'text'));
+
+					SwatDB::exec($this->app->db, $sql);
+
+					if ($value != '') {
+						$sql = sprintf('insert into InstanceConfigSetting
+							(name, value, instance) values (%s, %s, %s)',
+							$this->app->db->quote($qualified_name, 'text'),
+							$this->app->db->quote($value, 'text'),
+							$this->app->db->quote($instance, 'integer'));
+
+						SwatDB::exec($this->app->db, $sql);
+					}
+				}
+			}
+			$transaction->commit();
+		} catch (SwatDBException $e) {
+			$transaction->rollback();
+			throw $e;
+		}
 	}
 
 	// }}}
@@ -337,52 +635,6 @@ class SiteConfigModule extends SiteApplicationModule
 	private function __isset($name)
 	{
 		return array_key_exists($name, $this->sections);
-	}
-
-	// }}}
-	// {{{ private function saveToDatabase()
-
-	protected function saveToDatabase()
-	{
-		// save every thing on the config module to the database
-		$instance = $this->app->instance->getId();
-
-		foreach (self::$instance_settings as $setting) {
-			list($section, $title) = explode('.', $setting);
-			$value = $this->sections[$section]->$title;
-
-			$sql = sprintf('delete from InstanceConfigSetting
-				where instance = %s and name = %s',
-				$this->app->db->quote($instance, 'integer'),
-				$this->app->db->quote($setting, 'text'));
-
-			SwatDB::exec($this->app->db, $sql);
-
-			if ($value != '') {
-				$sql = sprintf('insert into InstanceConfigSetting
-					(name, value, instance) values (%s, %s, %s)',
-				$this->app->db->quote($setting, 'text'),
-				$this->app->db->quote($value, 'text'),
-				$this->app->db->quote($instance, 'integer'));
-
-				SwatDB::exec($this->app->db, $sql);
-			}
-		}
-	}
-
-	// }}}
-	// {{{ private function saveToFile()
-
-	protected function saveToFile()
-	{
-		// TODO: decide on a better way to do this
-		/*
-		$config_file = fopen($config_filename, 'w');
-		foreach ($this->sections as $section) {
-			fwrite($config_file, $section);
-		}
-		fclose($config_file);
-		*/
 	}
 
 	// }}}
