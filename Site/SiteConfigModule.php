@@ -38,6 +38,24 @@ require_once 'Site/SiteConfigSection.php';
  */
 class SiteConfigModule extends SiteApplicationModule
 {
+	// {{{ public properties
+
+	/**
+	 * A list of the config settings we want to save for instances.
+	 *
+	 * @var array
+	 */
+	public static $instance_settings = array(
+		'site.title',
+		'site.meta_description',
+		'date.time_zone',
+		'blorg.header_image',
+		'blorg.default_comment_status',
+		'blorg.akismet_key',
+		'analytics.google_account',
+	);
+
+	// }}}
 	// {{{ private properties
 
 	/**
@@ -73,20 +91,6 @@ class SiteConfigModule extends SiteApplicationModule
 	 * @var string
 	 */
 	private $config_filename;
-
-	/**
-	 *
-	 * @var array
-	 */
-	private $instance_settings = array(
-		'site.title',
-//		'site.banner_image',
-		'site.meta_description',
-		'date.time_zone',
-		'blorg.default_comment_status',
-		'blorg.akismet_key',
-		'analytics.google_account',
-	);
 
 	// }}}
 	// {{{ public function init()
@@ -159,8 +163,7 @@ class SiteConfigModule extends SiteApplicationModule
 	 */
 	public function save()
 	{
-		if ($this->app->hasModule('SiteMultipleInstanceModule') &&
-			$this->app->instance->getId() !== null)
+		if ($this->app->getInstanceId() !== null)
 			$this->saveToDatabase();
 		else
 			$this->saveToFile();
@@ -344,7 +347,7 @@ class SiteConfigModule extends SiteApplicationModule
 		// save every thing on the config module to the database
 		$instance = $this->app->instance->getId();
 
-		foreach ($this->instance_settings as $setting) {
+		foreach (self::$instance_settings as $setting) {
 			list($section, $title) = explode('.', $setting);
 			$value = $this->sections[$section]->$title;
 
@@ -372,11 +375,14 @@ class SiteConfigModule extends SiteApplicationModule
 
 	protected function saveToFile()
 	{
+		// TODO: decide on a better way to do this
+		/*
 		$config_file = fopen($config_filename, 'w');
 		foreach ($this->sections as $section) {
 			fwrite($config_file, $section);
 		}
 		fclose($config_file);
+		*/
 	}
 
 	// }}}
