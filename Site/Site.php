@@ -181,9 +181,6 @@ class Site
 			// Title of the site
 			'site.title'               => null,
 
-			// Banner image of the site
-			'site.banner_image'        => null,
-
 			// DSN of database
 			'database.dsn'             => null,
 
