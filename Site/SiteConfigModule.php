@@ -238,7 +238,6 @@ class SiteConfigModule extends SiteApplicationModule
 	 */
 	public function save()
 	{
-<<<<<<< .mine
 		// if there is no database module, do nothing
 		if (!$this->app->hasModule('SiteDatabaseModule'))
 			return;
@@ -248,12 +247,6 @@ class SiteConfigModule extends SiteApplicationModule
 		} else {
 			$this->saveInstanceValues();
 		}
-=======
-		if ($this->app->getInstanceId() !== null)
-			$this->saveToDatabase();
-		else
-			$this->saveToFile();
->>>>>>> .r33842
 	}
 
 	// }}}
