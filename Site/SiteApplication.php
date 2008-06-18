@@ -124,7 +124,7 @@ abstract class SiteApplication extends SiteObject
 	 * created, a configuration module is created and loaded before the other
 	 * application modules are initialized. SiteApplication provides a hook to
 	 * configure modules before initModules() is called in
-	 * the {@link SiteApplication::config()} method.
+	 * the {@link SiteApplication::configure()} method.
 	 *
 	 * @param string $id a unique identifier for this application.
 	 * @param string $config_filename optional. The filename of the
@@ -244,6 +244,28 @@ abstract class SiteApplication extends SiteObject
 			$id = $instance->id;
 
 		return $id;
+	}
+
+	// }}}
+	// {{{ protected function configure()
+
+	/**
+	 * Configures modules of this application
+	 *
+	 * This method is run immediately after the configuration has been loaded
+	 * from the config file. Developers should add module-specific configuration
+	 * here. This method does not have access to overridden configuration
+	 * values from the database.
+	 *
+	 * @param SiteConfigModule $config the config module of this application
+	 *                                  to use for configuring the other
+	 *                                  modules.
+	 *
+	 * @see SiteApplication::configure()
+	 */
+	protected function configure(SiteConfigModule $config)
+	{
+		$config->configure();
 	}
 
 	// }}}
@@ -390,6 +412,9 @@ abstract class SiteApplication extends SiteObject
 	{
 		foreach ($this->modules as $module)
 			$module->init();
+
+		$config = $this->getModule('SiteConfigModule');
+		$this->postInitConfigure($config);
 	}
 
 	// }}}
@@ -559,21 +584,17 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ protected function configure()
+	// {{{ protected function postInitConfigure()
 
 	/**
-	 * Configures modules of this application
+	 * Configures this application
 	 *
-	 * This method is run after the configuration has been loaded. Developers
-	 * should add module-specific configuration here.
-	 *
-	 * @param SiteConfigModule $config the config module of this application
-	 *                                  to use for configuring the other
-	 *                                  modules.
+	 * This method is after modules have all been initialized. All overridden
+	 * configuration settings from the database are loaded by this point.
 	 */
-	protected function configure(SiteConfigModule $config)
+	protected function postInitConfigure(SiteConfigModule $config)
 	{
-		$config->configure();
+		$config->postInitConfigure();
 	}
 
 	// }}}
