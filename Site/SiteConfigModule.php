@@ -101,24 +101,6 @@ require_once 'Site/SiteConfigSection.php';
  */
 class SiteConfigModule extends SiteApplicationModule
 {
-	// {{{ public properties
-
-	/**
-	 * A list of the config settings we want to save for instances.
-	 *
-	 * @var array
-	 */
-	public static $instance_settings = array(
-		'site.title',
-		'site.meta_description',
-		'date.time_zone',
-		'blorg.header_image',
-		'blorg.default_comment_status',
-		'blorg.akismet_key',
-		'analytics.google_account',
-	);
-
-	// }}}
 	// {{{ private properties
 
 	/**
