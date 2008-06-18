@@ -26,13 +26,6 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 */
 	private $values = array();
 
-	/**
-	 * Used by iterator interface
-	 *
-	 * @var integer
-	 */
-	private $current_index = 0;
-
 	// }}}
 	// {{{ public function __construct()
 
@@ -97,7 +90,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 */
 	public function current()
 	{
-		return $this->values[$this->current_index];
+		return current($this->values);
 	}
 
 	// }}}
@@ -110,7 +103,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 */
 	public function key()
 	{
-		return $this->current_index;
+		return key($this->values);
 	}
 
 	// }}}
@@ -121,7 +114,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 */
 	public function next()
 	{
-		$this->current_index++;
+		next($this->values);
 	}
 
 	// }}}
@@ -132,7 +125,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 */
 	public function rewind()
 	{
-		$this->current_index = 0;
+		reset($this->values);
 	}
 
 	// }}}
@@ -146,7 +139,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 */
 	public function valid()
 	{
-		return array_key_exists($this->current_index, $this->values);
+		return (key($this->values) !== null);
 	}
 
 	// }}}
@@ -163,11 +156,12 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 */
 	private function __set($name, $value)
 	{
-		if (!array_key_exists($name, $this->values))
+		if (!array_key_exists($name, $this->values)) {
 			throw new SiteException(
 				sprintf("Can not set configuration setting. Setting '%s' ".
 					"does not exist in the section '%s'.",
-				$name, $this->name));
+					$name, $this->name));
+		}
 
 		$this->values[$name] = $value;
 	}
