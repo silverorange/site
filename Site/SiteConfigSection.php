@@ -7,10 +7,10 @@ require_once 'Site/exceptions/SiteException.php';
  * Configuration section for the configuration module
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteConfigSection extends SwatObject
+class SiteConfigSection extends SwatObject implements Iterator
 {
 	// {{{ private properties
 
@@ -25,6 +25,13 @@ class SiteConfigSection extends SwatObject
 	 * Settings of this configuration section
 	 */
 	private $values = array();
+
+	/**
+	 * Used by iterator interface
+	 *
+	 * @var integer
+	 */
+	private $current_index = 0;
 
 	// }}}
 	// {{{ public function __construct()
@@ -78,6 +85,68 @@ class SiteConfigSection extends SwatObject
 			echo "\n";
 		}
 		return ob_get_clean();
+	}
+
+	// }}}
+	// {{{ public function current()
+
+	/**
+	 * Returns the current value
+	 *
+	 * @return mixed the current value.
+	 */
+	public function current()
+	{
+		return $this->values[$this->current_index];
+	}
+
+	// }}}
+	// {{{ public function key()
+
+	/**
+	 * Returns the key of the current value
+	 *
+	 * @return integer the key of the current value.
+	 */
+	public function key()
+	{
+		return $this->current_index;
+	}
+
+	// }}}
+	// {{{ public function next()
+
+	/**
+	 * Moves forward to the next value
+	 */
+	public function next()
+	{
+		$this->current_index++;
+	}
+
+	// }}}
+	// {{{ public function rewind()
+
+	/**
+	 * Rewinds this iterator to the first value
+	 */
+	public function rewind()
+	{
+		$this->current_index = 0;
+	}
+
+	// }}}
+	// {{{ public function valid()
+
+	/**
+	 * Checks is there is a current value after calls to rewind() and next()
+	 *
+	 * @return boolean true if there is a current value and false if there
+	 *                  is not.
+	 */
+	public function valid()
+	{
+		return array_key_exists($this->current_index, $this->values);
 	}
 
 	// }}}
