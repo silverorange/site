@@ -528,6 +528,9 @@ class SiteConfigModule extends SiteApplicationModule
 	{
 		$instance = $this->app->instance->getId();
 
+		$database = $this->app->getModule('SiteDatabaseModule');
+		$db = $database->getConnection();
+
 		$transaction = new SwatDBTransaction($db);
 		try {
 			foreach ($this->sections as $section_name => $section) {
@@ -536,19 +539,19 @@ class SiteConfigModule extends SiteApplicationModule
 
 					$sql = sprintf('delete from InstanceConfigSetting
 						where instance = %s and name = %s',
-						$this->app->db->quote($instance, 'integer'),
-						$this->app->db->quote($qualified_name, 'text'));
+						$db->quote($instance, 'integer'),
+						$db->quote($qualified_name, 'text'));
 
-					SwatDB::exec($this->app->db, $sql);
+					SwatDB::exec($db, $sql);
 
 					if ($value != '') {
 						$sql = sprintf('insert into InstanceConfigSetting
 							(name, value, instance) values (%s, %s, %s)',
-							$this->app->db->quote($qualified_name, 'text'),
-							$this->app->db->quote($value, 'text'),
-							$this->app->db->quote($instance, 'integer'));
+							$db->quote($qualified_name, 'text'),
+							$db->quote($value, 'text'),
+							$db->quote($instance, 'integer'));
 
-						SwatDB::exec($this->app->db, $sql);
+						SwatDB::exec($db, $sql);
 					}
 				}
 			}
