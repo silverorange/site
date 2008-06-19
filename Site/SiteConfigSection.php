@@ -2,6 +2,7 @@
 
 require_once 'Swat/SwatObject.php';
 require_once 'Site/exceptions/SiteException.php';
+require_once 'Site/SiteConfigModule.php';
 
 /**
  * Configuration section for the configuration module
@@ -26,6 +27,13 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 */
 	private $values = array();
 
+	/**
+	 * The config module of this section
+	 *
+	 * @var SiteConfigModule
+	 */
+	private $config = null;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -35,11 +43,20 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 * @param string $name the name of this configuration section.
 	 * @param array $values an associative array containing values as parsed
 	 *                       from an ini file.
+	 * @param SiteConfigModule $config the config module of this section.
+	 * @param integer $source optional. The setting source of the
+	 *                         <code>$values</code> array.
 	 */
-	public function __construct($name, array $values)
+	public function __construct($name, array $values, SiteConfigModule $config,
+		$source = SiteConfigModule::SOURCE_FILE)
 	{
 		$this->name = (string)$name;
 		$this->values = $values;
+		$this->config = $config;
+
+		foreach ($this->values as $name => $value) {
+			$this->config->setSource($this->name, $name, $source);
+		}
 	}
 
 	// }}}
@@ -164,6 +181,9 @@ class SiteConfigSection extends SwatObject implements Iterator
 		}
 
 		$this->values[$name] = $value;
+
+		$this->config->setSource($this->name, $name,
+			SiteConfigModule::SOURCE_RUNTIME);
 	}
 
 	// }}}

@@ -93,7 +93,10 @@ require_once 'Site/SiteConfigSection.php';
  *
  * Configuration setting values may be saved using the
  * {@link SiteConfigModule::save()} method. Settings are only ever saved in the
- * database. File-based saving is intentioanlly excluded.
+ * database. File-based saving is intentionally excluded.
+ *
+ * Setting values are only saved if they are set during runtime and are
+ * different than the loaded value.
  *
  * @package   Site
  * @copyright 2006-2008 silverorange
@@ -101,6 +104,35 @@ require_once 'Site/SiteConfigSection.php';
  */
 class SiteConfigModule extends SiteApplicationModule
 {
+	// {{{ class constants
+
+	/**
+	 * Value was not loaded and the default value is used.
+	 */
+	const SOURCE_DEFAULT  = 1;
+
+	/**
+	 * Value was loaded from the ini file.
+	 */
+	const SOURCE_FILE     = 2;
+
+	/**
+	 * Value was loaded from the <code>ConfigSetting</code> database table.
+	 */
+	const SOURCE_DATABASE = 3;
+
+	/**
+	 * Value was loaded from the <code>InstanceConfigSetting</code> database
+	 * table.
+	 */
+	const SOURCE_INSTANCE = 4;
+
+	/**
+	 * Value was set during runtime.
+	 */
+	const SOURCE_RUNTIME  = 5;
+
+	// }}}
 	// {{{ private properties
 
 	/**
@@ -137,6 +169,25 @@ class SiteConfigModule extends SiteApplicationModule
 	 */
 	private $config_filename;
 
+	/**
+	 * Data sources for current config settings
+	 *
+	 * The array is of the form:
+	 * <code>
+	 * <?php
+	 * array(
+	 *    'mysection' => array(
+	 *        'mysetting' => 1,
+	 *        'mysetting' => 2,
+	 *    ),
+	 * );
+	 * ?>
+	 * </code>
+	 *
+	 * @var array
+	 */
+	private $setting_sources = array();
+
 	// }}}
 	// {{{ public function init()
 
@@ -168,36 +219,14 @@ class SiteConfigModule extends SiteApplicationModule
 	public function load($filename)
 	{
 		$this->config_filename = $filename;
-		$ini_array = parse_ini_file($filename, true);
-		foreach ($ini_array as $section_name => $section_values) {
-			if (array_key_exists($section_name, $this->definitions)) {
-
-				// only include values that are defined
-				$defined_section_values = array();
-				foreach ($section_values as $name => $value) {
-					if (array_key_exists($name,
-						$this->definitions[$section_name])) {
-
-						$defined_section_values[$name] = $value;
-					}
-				}
-
-				// merge default fields and values with loaded values
-				$defined_section_values = array_merge(
-					$this->definitions[$section_name], $defined_section_values);
-
-				$section = new SiteConfigSection($section_name,
-					$defined_section_values);
-
-				$this->sections[$section_name] = $section;
-			}
-		}
+		$this->loadFileValues();
 
 		// create default sections with default values
 		foreach ($this->definitions as $section_name => $default_values) {
 			if (!array_key_exists($section_name, $this->sections)) {
 				$this->sections[$section_name] = new SiteConfigSection(
-					$section_name, $default_values);
+					$section_name, $default_values, $this,
+						self::SOURCE_DEFAULT);
 			}
 		}
 
@@ -311,6 +340,7 @@ class SiteConfigModule extends SiteApplicationModule
 			$this->definitions[$section] = array();
 
 		$this->definitions[$section][$name] = $default_value;
+		$this->setting_sources[$section][$name] = self::SOURCE_DEFAULT;
 	}
 
 	// }}}
@@ -391,6 +421,125 @@ class SiteConfigModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function getSource()
+
+	/**
+	 * Gets the source of a config setting value
+	 *
+	 * @param string $section the config setting section.
+	 * @param string $section the config setting name.
+	 *
+	 * @return integer either {@link SiteConfigModule::SOURCE_DEFAULT},
+	 *                 {@link SiteConfigModule::SOURCE_FILE},
+	 *                 {@link SiteConfigModule::SOURCE_DATABASE},
+	 *                 {@link SiteConfigModule::SOURCE_INSTANCE} or
+	 *                 {@link SiteConfigModule::SOURCE_RUNTIME}.
+	 *
+	 * @throws SiteException if there is no config setting defined for the
+	 *                       given section and name.
+	 */
+	public function getSource($section, $name)
+	{
+		if (!array_key_exists($section, $this->setting_sources)) {
+			throw new SiteException(sprintf(
+				"Section '%s' does not exist in this config module.",
+				$name));
+		}
+
+		$setting_names = $this->setting_sources[$section];
+
+		if (!array_key_exists($name, $setting_names)) {
+			throw new SiteException(sprintf(
+				"Setting '%s' does not exist in the section '%s'.",
+				$name, $section));
+		}
+
+		return $setting_names[$name];
+	}
+
+	// }}}
+	// {{{ public function setSource()
+
+	/**
+	 * Sets the source of a config setting value
+	 *
+	 * @param string $section the config setting section.
+	 * @param string $section the config setting name.
+	 * @param integer $source either {@link SiteConfigModule::SOURCE_DEFAULT},
+	 *                         {@link SiteConfigModule::SOURCE_FILE},
+	 *                         {@link SiteConfigModule::SOURCE_DATABASE},
+	 *                         {@link SiteConfigModule::SOURCE_INSTANCE} or
+	 *                         {@link SiteConfigModule::SOURCE_RUNTIME}.
+	 *
+	 * @throws SiteException if there is no config setting defined for the
+	 *                       given section and name.
+	 */
+	public function setSource($section, $name, $source)
+	{
+		if (!array_key_exists($section, $this->setting_sources)) {
+			throw new SiteException(sprintf(
+				"Section '%s' does not exist in this config module.",
+				$name));
+		}
+
+		$setting_names = $this->setting_sources[$section];
+
+		if (!array_key_exists($name, $this->setting_sources[$section])) {
+			throw new SiteException(sprintf(
+				"Setting '%s' does not exist in the section '%s'.",
+				$name, $section));
+		}
+
+		$valid_sources = array(
+			self::SOURCE_DEFAULT,
+			self::SOURCE_FILE,
+			self::SOURCE_DATABASE,
+			self::SOURCE_INSTANCE,
+			self::SOURCE_RUNTIME,
+		);
+
+		if (!in_array($source, $valid_sources)) {
+			$source = self::SOURCE_RUNTIME;
+		}
+
+		$this->setting_sources[$section][$name] = $source;
+	}
+
+	// }}}
+	// {{{ protected function loadFileValues()
+
+	/**
+	 * Loads config setting values from the ini file
+	 */
+	protected function loadFileValues()
+	{
+		$ini_array = parse_ini_file($this->config_filename, true);
+		foreach ($ini_array as $section_name => $section_values) {
+			if (array_key_exists($section_name, $this->definitions)) {
+
+				// only include values that are defined
+				$defined_section_values = array();
+				foreach ($section_values as $name => $value) {
+					if (array_key_exists($name,
+						$this->definitions[$section_name])) {
+
+						$defined_section_values[$name] = $value;
+					}
+				}
+
+				// merge default fields and values with loaded values
+				$defined_section_values = array_merge(
+					$this->definitions[$section_name], $defined_section_values);
+
+				$section = new SiteConfigSection($section_name,
+					$defined_section_values, $this);
+
+				$this->sections[$section_name] = $section;
+			}
+		}
+	}
+
+	// }}}
 	// {{{ protected function loadDatabaseValues()
 
 	/**
@@ -409,27 +558,26 @@ class SiteConfigModule extends SiteApplicationModule
 
 		$sql = 'select * from ConfigSetting';
 		try {
-			$rs = SwatDB::query($db, $sql, null);
+			$rows = SwatDB::query($db, $sql);
+			foreach ($rows as $row) {
+				if ($row->value !== null) {
+					$qualified_name = $row->name;
 
-			do {
-				while ($row = $rs->fetchRow(MDB2_FETCHMODE_OBJECT)) {
-					if ($row->value !== null) {
-						$qualified_name = $row->name;
-
-						if (strpos($qualified_name, '.') === false) {
-							throw new SiteException(sprintf(
-								"Name of configuration setting '%s' must be ".
-								"fully qualifed and of the form section.name.",
-								$qualified_name));
-						}
-
-						list($section, $name) =
-							explode('.', $qualified_name, 2);
-
-						$this->$section->$name = $row->value;
+					if (strpos($qualified_name, '.') === false) {
+						throw new SiteException(sprintf(
+							"Name of configuration setting '%s' must be ".
+							"fully qualifed and of the form section.name.",
+							$qualified_name));
 					}
+
+					list($section, $name) =
+						explode('.', $qualified_name, 2);
+
+					$this->$section->$name = $row->value;
+
+					$this->setSource($section, $name, self::SOURCE_DATABASE);
 				}
-			} while ($rs->nextResult());
+			}
 		} catch (SwatDBException $e) {
 			// if there was a problem selecting the config values, ignore it
 		}
@@ -465,6 +613,8 @@ class SiteConfigModule extends SiteApplicationModule
 				list($section, $name) = explode('.', $qualified_name, 2);
 
 				$this->$section->$name = $setting->value;
+
+				$this->setSource($section, $name, self::SOURCE_INSTANCE);
 			}
 		}
 	}
@@ -490,21 +640,26 @@ class SiteConfigModule extends SiteApplicationModule
 		try {
 			foreach ($this->sections as $section_name => $section) {
 				foreach ($section as $name => $value) {
-					$qualified_name = $section_name.'.'.$name;
+					// only save values set at runtime
+					if ($this->getSource($section, $name) ===
+						self::SOURCE_RUNTIME) {
 
-					$sql = sprintf('delete from ConfigSetting
-						where name = %s',
-						$this->app->db->quote($qualified_name, 'text'));
+						$qualified_name = $section_name.'.'.$name;
 
-					SwatDB::exec($this->app->db, $sql);
+						$sql = sprintf('delete from ConfigSetting
+							where name = %s',
+							$db->quote($qualified_name, 'text'));
 
-					if ($value != '') {
-						$sql = sprintf('insert into ConfigSetting
-							(name, value) values (%s, %s)',
-							$this->app->db->quote($qualified_name, 'text'),
-							$this->app->db->quote($value, 'text'));
+						SwatDB::exec($db, $sql);
 
-						SwatDB::exec($this->app->db, $sql);
+						if ($value != '') {
+							$sql = sprintf('insert into ConfigSetting
+								(name, value) values (%s, %s)',
+								$db->quote($qualified_name, 'text'),
+								$db->quote($value, 'text'));
+
+							SwatDB::exec($db, $sql);
+						}
 					}
 				}
 			}
@@ -535,23 +690,27 @@ class SiteConfigModule extends SiteApplicationModule
 		try {
 			foreach ($this->sections as $section_name => $section) {
 				foreach ($section as $name => $value) {
-					$qualified_name = $section_name.'.'.$name;
+					// only save values set at runtime
+					if ($this->getSource($section, $name) ===
+						self::SOURCE_RUNTIME) {
 
-					$sql = sprintf('delete from InstanceConfigSetting
-						where instance = %s and name = %s',
-						$db->quote($instance, 'integer'),
-						$db->quote($qualified_name, 'text'));
-
-					SwatDB::exec($db, $sql);
-
-					if ($value != '') {
-						$sql = sprintf('insert into InstanceConfigSetting
-							(name, value, instance) values (%s, %s, %s)',
-							$db->quote($qualified_name, 'text'),
-							$db->quote($value, 'text'),
-							$db->quote($instance, 'integer'));
+						$qualified_name = $section_name.'.'.$name;
+						$sql = sprintf('delete from InstanceConfigSetting
+							where instance = %s and name = %s',
+							$db->quote($instance, 'integer'),
+							$db->quote($qualified_name, 'text'));
 
 						SwatDB::exec($db, $sql);
+
+						if ($value != '') {
+							$sql = sprintf('insert into InstanceConfigSetting
+								(name, value, instance) values (%s, %s, %s)',
+								$db->quote($qualified_name, 'text'),
+								$db->quote($value, 'text'),
+								$db->quote($instance, 'integer'));
+
+							SwatDB::exec($db, $sql);
+						}
 					}
 				}
 			}
