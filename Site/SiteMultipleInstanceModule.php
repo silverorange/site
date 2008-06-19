@@ -7,9 +7,15 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
 /**
  * Web application module for multiple instances
  *
+ * This implementation creates a default instance dataobject and assigns it to
+ * the internal {@link SiteMultipleInstanceModule::$instance} property.
+ * Subsequent calls to <code>$this->app->instance->getInstance()</code> return
+ * the {@link SiteInstance} instance object.
+ *
  * @package   Site
  * @copyright 2007 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @see       SiteInstance
  */
 class SiteMultipleInstanceModule extends SiteApplicationModule
 {
