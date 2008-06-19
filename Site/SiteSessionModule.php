@@ -75,7 +75,7 @@ class SiteSessionModule extends SiteApplicationModule
 	 * Gets the module features this module depends on
 	 *
 	 * The site session module optionally depends on the
-	 * SiteMultipleInstanceModule feature.
+	 * SiteConfigModule and SiteMultipleInstanceModule features.
 	 *
 	 * @return array an array of {@link SiteApplicationModuleDependency}
 	 *                        objects defining the features this module
@@ -84,6 +84,7 @@ class SiteSessionModule extends SiteApplicationModule
 	public function depends()
 	{
 		$depends = parent::depends();
+		$depends[] = new SiteApplicationModuleDependency('SiteConfigModule');
 		$depends[] = new SiteApplicationModuleDependency(
 			'SiteMultipleInstanceModule', false);
 
