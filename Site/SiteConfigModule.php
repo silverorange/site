@@ -641,7 +641,7 @@ class SiteConfigModule extends SiteApplicationModule
 			foreach ($this->sections as $section_name => $section) {
 				foreach ($section as $name => $value) {
 					// only save values set at runtime
-					if ($this->getSource($section, $name) ===
+					if ($this->getSource($section_name, $name) ===
 						self::SOURCE_RUNTIME) {
 
 						$qualified_name = $section_name.'.'.$name;
@@ -691,7 +691,7 @@ class SiteConfigModule extends SiteApplicationModule
 			foreach ($this->sections as $section_name => $section) {
 				foreach ($section as $name => $value) {
 					// only save values set at runtime
-					if ($this->getSource($section, $name) ===
+					if ($this->getSource($section_name, $name) ===
 						self::SOURCE_RUNTIME) {
 
 						$qualified_name = $section_name.'.'.$name;
