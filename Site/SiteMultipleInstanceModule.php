@@ -36,22 +36,47 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 	 */
 	public function init()
 	{
+		// The config module is not yet initialized so only file-based setting
+		// values are available.
 		$config = $this->app->getModule('SiteConfigModule');
 
 		$instance_shortname = SiteApplication::initVar(
 			'instance', $config->instance->default,
 			SiteApplication::VAR_GET | SiteApplication::VAR_ENV);
 
+		$database = $this->app->getModule('SiteDatabaseModule');
+		$db = $database->getConnection();
+
 		if ($instance_shortname !== null) {
 			$class_name = SwatDBClassMap::get('SiteInstance');
 			$this->instance = new $class_name();
-			$this->instance->setDatabase($this->app->database->getConnection());
+			$this->instance->setDatabase($db);
 			if (!$this->instance->loadFromShortname($instance_shortname)) {
 				throw new SiteNotFoundException(sprintf(
 					"No site instance with the shortname '%s' exists.",
 					$instance_shortname));
 			}
 		}
+	}
+
+	// }}}
+	// {{{ public function depends()
+
+	/**
+	 * Gets the module features this module depends on
+	 *
+	 * The site session module optionally depends on the
+	 * SiteDatabaseModule feature.
+	 *
+	 * @return array an array of {@link SiteApplicationModuleDependency}
+	 *                        objects defining the features this module
+	 *                        depends on.
+	 */
+	public function depends()
+	{
+		$depends = parent::depends();
+		$depends[] = new SiteApplicationModuleDependency('SiteDatabaseModule');
+		return $depends;
 	}
 
 	// }}}
