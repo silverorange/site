@@ -7,6 +7,7 @@ require_once 'Site/SiteApplicationModule.php';
  *
  * @package   Site
  * @copyright 2006-2007 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteSessionModule extends SiteApplicationModule
 {
@@ -23,7 +24,6 @@ class SiteSessionModule extends SiteApplicationModule
 	protected $activate_callbacks = array();
 
 	// }}}
-
 	// {{{ public function __construct()
 
 	/**
