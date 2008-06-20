@@ -221,6 +221,9 @@ class Site
 
 			// Email
 			'email.smtp_server'        => null,
+
+			// from address for automated emails sent by the system
+			'email.service_address'    => null,
 		);
 	}
 
