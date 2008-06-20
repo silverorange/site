@@ -218,6 +218,9 @@ class Site
 
 			// Instance
 			'instance.default'         => null,
+
+			// Email
+			'email.smtp_server'        => null,
 		);
 	}
 
