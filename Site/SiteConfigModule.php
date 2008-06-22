@@ -570,8 +570,11 @@ class SiteConfigModule extends SiteApplicationModule
 							$qualified_name));
 					}
 
-					list($section, $name) =
-						explode('.', $qualified_name, 2);
+					list($section, $name) = explode('.', $qualified_name, 2);
+
+					// skip sections not included in the current configuration
+					if (!array_key_exists($section, $this->sections))
+						continue;
 
 					$this->$section->$name = $row->value;
 
