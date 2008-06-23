@@ -63,6 +63,10 @@ class SiteErrorLogger extends SwatErrorLogger
 			fwrite($log_file, '<tr><th>Error Time:</th><td>'.
 				date('c', time()).'</td></tr>');
 
+			if (isset($_SERVER['HTTP_HOST']))
+				fwrite($log_file, '<tr><th>HTTP Host:</th><td>'.
+					$_SERVER['HTTP_HOST'].'</td></tr>');
+
 			if (isset($_SERVER['REQUEST_URI']))
 				fwrite($log_file, '<tr><th>Request URI:</th><td>'.
 					$_SERVER['REQUEST_URI'].'</td></tr>');
