@@ -110,7 +110,7 @@ class SitePage extends SiteObject
 
 	/**
 	 * Always runs after {@link SitePage::build()} and before
-	 * {@link SiteLayout::complete()}. This method is indented to add HTML head
+	 * {@link SiteLayout::complete()}. This method is intended to add HTML head
 	 * entries or perform other actions that should happen after the page has
 	 * been built.
 	 */
