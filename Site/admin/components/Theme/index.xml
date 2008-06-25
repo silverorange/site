@@ -1,0 +1,21 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="frame">
+		<property name="title" translatable="yes">Select Theme</property>
+		<widget class="SwatToolbar" id="toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Install Theme</property>
+				<property name="sensitive" type="boolean">false</property>
+				<property name="link">Theme/Install</property>
+				<property name="stock_id">create</property>
+			</widget>
+		</widget>
+		<widget class="SwatForm" id="form">
+			<widget class="SwatReplicableContainer" id="theme_replicator">
+				<widget class="SiteThemeDisplay" id="theme" />
+			</widget>
+		</widget>
+	</widget>
+</swatml>
