@@ -70,7 +70,13 @@ class SiteLayout extends SiteObject
 		$this->data->basehref = $this->app->getBaseHref();
 		$this->data->title = '';
 		$this->data->html_title = '';
-		$this->data->meta_description = '';
+
+		if (isset($this->app->config->site->meta_description))
+			$this->data->meta_description =
+				$this->app->config->site->meta_description;
+		else
+			$this->data->meta_description = '';
+
 		$this->data->meta_keywords = '';
 	}
 
