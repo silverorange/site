@@ -1,0 +1,55 @@
+.site-theme-display {
+	border-top: 1px solid #e7ddc8;
+	min-height: 104px;
+	padding: 1em;
+}
+
+/* IE min-height hack */
+* html .site-theme-display {
+	height: 104px;
+}
+
+.site-theme-display-selected {
+	background: #f8f6f0;
+	border: 1px solid #e7ddc8;
+	margin-bottom: 10px;
+}
+
+.site-theme-display .site-theme-display-image {
+	float: left;
+	border: 1px solid #ccc;
+	padding: 2px;
+	background: #fff;
+}
+
+.site-theme-display a:hover .site-theme-display-image {
+	border: 1px solid #3F5ACE;
+}
+
+.site-theme-display .site-theme-display-content {
+	margin-left: 168px;
+}
+
+.site-theme-display .site-theme-display-controls {
+	float: right;
+}
+
+.site-theme-display .site-theme-display-title {
+	margin: 0.5em 0;
+}
+
+.site-theme-display .site-theme-display-description {
+	margin-bottom: 0.5em;
+}
+
+.site-theme-display .site-theme-display-author {
+	color: #999;
+}
+
+.site-theme-display .site-theme-display-author a {
+	color: #999;
+}
+
+.site-theme-display .site-theme-display-author a:hover {
+	color: #666;
+}
