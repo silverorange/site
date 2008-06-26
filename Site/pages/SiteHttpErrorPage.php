@@ -22,10 +22,12 @@ class SiteHttpErrorPage extends SitePage
 	public function init()
 	{
 		parent::init();
-		if (isset($_SERVER['REDIRECT_STATUS']))
+
+		if (isset($_SERVER['REDIRECT_STATUS'])) {
 			$this->http_status_code = intval($_SERVER['REDIRECT_STATUS']);
-		else
+		} else {
 			$this->http_status_code = 500;
+		}
 
 		$exp = explode('/', $this->app->getBaseHref());
 		// shift off the 'http://server' part
@@ -39,6 +41,19 @@ class SiteHttpErrorPage extends SitePage
 			$this->uri = substr($_SERVER['REQUEST_URI'], $len);
 		else
 			$this->uri = $_SERVER['REQUEST_URI'];
+	}
+
+	// }}}
+	// {{{ public function setStatus()
+
+	/**
+	 * Sets the HTTP status code for this error page
+	 *
+	 * @param integer $status the HTTP status code.
+	 */
+	public function setStatus($status)
+	{
+		$this->http_status_code = (integer)$status;
 	}
 
 	// }}}
