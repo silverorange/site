@@ -114,6 +114,9 @@ class SiteHttpErrorPage extends SitePage
 	protected function sendHttpStatusHeader()
 	{
 		switch($this->http_status_code) {
+		case 400:
+			header('HTTP/1.0 400 Bad Request');
+			break;
 		case 403:
 			header('HTTP/1.0 403 Forbidden');
 			break;
@@ -133,6 +136,8 @@ class SiteHttpErrorPage extends SitePage
 	protected function getTitle()
 	{
 		switch($this->http_status_code) {
+		case 400:
+			return Site::_('Bad Request');
 		case 404:
 			return Site::_('Page Not Found');
 		case 403:
