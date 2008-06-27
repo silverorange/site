@@ -556,8 +556,10 @@ class SiteConfigModule extends SiteApplicationModule
 		$database = $this->app->getModule('SiteDatabaseModule');
 		$db = $database->getConnection();
 
-		$sql = 'select * from ConfigSetting';
-		try {
+		$db->loadModule('Manager');
+		$tables = $db->manager->listTables();
+		if (in_array('configsetting', $tables)) {
+			$sql = 'select * from ConfigSetting';
 			$rows = SwatDB::query($db, $sql);
 			foreach ($rows as $row) {
 				if ($row->value !== null) {
@@ -581,8 +583,6 @@ class SiteConfigModule extends SiteApplicationModule
 					$this->setSource($section, $name, self::SOURCE_DATABASE);
 				}
 			}
-		} catch (SwatDBException $e) {
-			// if there was a problem selecting the config values, ignore it
 		}
 	}
 
