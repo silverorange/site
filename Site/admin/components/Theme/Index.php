@@ -49,6 +49,7 @@ class SiteThemeIndex extends AdminPage
 		$themes = $this->app->theme->getAvailable();
 
 		// sorts themes by title according to locale
+		$titles = array();
 		foreach ($themes as $theme) {
 			if ($theme->getShortname() !== $current_theme) {
 				$titles[$theme->getShortname()] = $theme->getTitle();
@@ -62,9 +63,8 @@ class SiteThemeIndex extends AdminPage
 			$current_theme => $themes[$current_theme]
 		);
 
-		foreach ($titles as $shortname => $title) {
+		foreach ($titles as $shortname => $title)
 			$this->themes[$shortname] = $themes[$shortname];
-		}
 	}
 
 	// }}}
