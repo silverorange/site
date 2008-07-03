@@ -3,6 +3,7 @@
 #login_frame {
 	width: 55%;
 	float: left;
+	display: inline; /* For IE6 */
 	margin-right: 4%;
 }
 
