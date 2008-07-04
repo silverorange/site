@@ -96,8 +96,10 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 				YAHOO.util.Event.stopEvent(e);
 				entry.createTag();
 
-			// add tag when "," is typed
-			} else if (YAHOO.util.Event.getCharCode(e) == 188) {
+			// add tag when "," or ";" is typed
+			} else if (YAHOO.util.Event.getCharCode(e) == 188 ||
+				YAHOO.util.Event.getCharCode(e) == 59) {
+
 				entry.input_element.value =
 					entry.input_element.value.slice(0, -1);
 
