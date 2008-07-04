@@ -86,18 +86,22 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 		this.addTag(this.initial_selected_tag_array[i]);
 	}
 
-	// use key-up instead of key-down to prevent annoying problem where the
-	// auto-complete container pops open after adding the tag
-	YAHOO.util.Event.addListener(this.input_element, 'keyup',
+	YAHOO.util.Event.addListener(this.input_element, 'keydown',
 		function(e, entry) {
 			// capture enter key for new tags
 			if (YAHOO.util.Event.getCharCode(e) == 13 &&
 				!entry.auto_complete.isContainerOpen()) {
 				YAHOO.util.Event.stopEvent(e);
 				entry.createTag();
+			}
+		}, this);
 
+	// use key-up instead of key-down to prevent annoying problem where the
+	// auto-complete container pops open after adding the tag
+	YAHOO.util.Event.addListener(this.input_element, 'keyup',
+		function(e, entry) {
 			// add tag when "," or ";" is typed
-			} else if (YAHOO.util.Event.getCharCode(e) == 188 ||
+			if (YAHOO.util.Event.getCharCode(e) == 188 ||
 				YAHOO.util.Event.getCharCode(e) == 59) {
 
 				entry.input_element.value =
