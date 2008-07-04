@@ -1,0 +1,42 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="index_frame">
+		<property name="title" translatable="yes">Sidebar</property>
+		<widget class="SwatToolbar" id="index_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Add Gadget</property>
+				<property name="link">Sidebar/Add</property>
+				<property name="stock_id">create</property>
+			</widget>
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Change Order</property>
+				<property name="link">Sidebar/Order</property>
+			</widget>
+		</widget>
+		<widget class="SwatForm" id="index_form">
+			<widget class="SwatTableView" id="index_view">
+				<object class="SwatTableViewCheckboxColumn" id="checkbox">
+					<object class="SwatCheckboxCellRenderer" id="items">
+						<property name="value" type="data">id</property>
+					</object>
+				</object>
+				<object class="SwatTableViewColumn">
+					<property name="title" translatable="yes">Gadget</property>
+					<object class="AdminTitleLinkCellRenderer">
+						<property name="text" type="data">title</property>
+						<property name="stock_id">edit</property>
+						<property name="link">Sidebar/Settings?id=%s</property>
+						<property name="link_value" type="data">id</property>
+					</object>
+				</object>
+			</widget>
+			<widget class="SwatActions" id="index_actions">
+				<widget class="SwatActionItem" id="delete">
+					<property name="title" translatable="yes">remove from sidebar…</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>
