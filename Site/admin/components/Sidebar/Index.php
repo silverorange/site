@@ -71,6 +71,9 @@ class SiteSidebarIndex extends AdminIndex
 			$store->add($ds);
 		}
 
+		$this->ui->getWidget('order_tool_link')->sensitive =
+			(count($gadget_instances) > 1);
+
 		return $store;
 	}
 
