@@ -280,12 +280,12 @@ abstract class SiteGadget extends SwatUIObject
 	 * Displays the title of this gadget
 	 *
 	 * The title is displayed in a h3 element with the CSS class
-	 * 'blorg-gadget-title'.
+	 * 'site-gadget-title'.
 	 */
 	protected function displayTitle()
 	{
 		$header = new SwatHtmlTag('h3');
-		$header->class = 'blorg-gadget-title';
+		$header->class = 'site-gadget-title';
 		$header->setContent($this->getTitle());
 		$header->display();
 	}
@@ -310,7 +310,7 @@ abstract class SiteGadget extends SwatUIObject
 	 * Wraps the content of this gadget in a div for final display
 	 *
 	 * If the {@link SiteGadget::displayContent()} method displays any content,
-	 * the content is wrapped in a div with the CSS class 'blorg-gadget-content'
+	 * the content is wrapped in a div with the CSS class 'site-gadget-content'
 	 * by this method.
 	 *
 	 * The default implementation frees gadget authors from having to remember
@@ -324,7 +324,7 @@ abstract class SiteGadget extends SwatUIObject
 
 		if ($content != '') {
 			$div_tag = new SwatHtmlTag('div');
-			$div_tag->class = 'blorg-gadget-content';
+			$div_tag->class = 'site-gadget-content';
 			$div_tag->open();
 			echo $content;
 			$div_tag->close();
