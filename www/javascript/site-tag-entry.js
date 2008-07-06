@@ -193,12 +193,16 @@ SiteTagEntry.prototype.addTag = function(tag_string)
 		},
 		this, true);
 
+	title = this.filterTitle(title);
+
 	if (new_tag) {
 		var hidden_tag = document.createElement('input');
 		hidden_tag.type = 'hidden';
 		hidden_tag.name = this.id + '_new[]';
 		hidden_tag.value = tag_string;
-		var title_node = document.createTextNode(title + ' (new) ');
+		var title_node = document.createTextNode(
+			title + ' ' + SiteTagEntry.new_text + ' ');
+
 		li_tag.className = 'new-tag';
 		li_tag.appendChild(hidden_tag);
 		this.new_tag_array.push(tag_string);
@@ -277,6 +281,18 @@ SiteTagEntry.prototype.removeTag = function(tag_string)
 }
 
 // }}}
+// {{{ filterTitle()
+
+SiteTagEntry.prototype.filterTitle = function(title)
+{
+	title = title.replace(/&amp;/g,  '&');
+	title = title.replace(/&lt;/g,   '<');
+	title = title.replace(/&gt;/g,   '>');
+	title = title.replace(/&quot;/g, '"');
+	return title;
+}
+
+// }}}
 // {{{ static properties
 
 /**
@@ -285,5 +301,12 @@ SiteTagEntry.prototype.removeTag = function(tag_string)
  * @var string
  */
 SiteTagEntry.remove_text = 'remove';
+
+/**
+ * New string resource
+ *
+ * @var string
+ */
+SiteTagEntry.new_text = '(new)';
 
 // }}}

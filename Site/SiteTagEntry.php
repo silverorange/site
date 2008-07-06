@@ -256,10 +256,13 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	protected function getInlineJavaScript()
 	{
 		$tag_array = array();
-		foreach ($this->tag_array as $tag => $title)
+		foreach ($this->tag_array as $tag => $title) {
 			$tag_array[] = sprintf("\n[%s, %s]",
-				SwatString::quoteJavaScriptString($title),
-				SwatString::quoteJavaScriptString($tag));
+				SwatString::quoteJavaScriptString(
+					SwatString::minimizeEntities($title)),
+				SwatString::quoteJavaScriptString(
+					SwatString::minimizeEntities($tag)));
+		}
 
 		$selected_array = array();
 		if ($this->selected_tag_array !== null) {
