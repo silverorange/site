@@ -255,6 +255,15 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 */
 	protected function getInlineJavaScript()
 	{
+		static $shown = false;
+
+		if (!$shown) {
+			$javascript = $this->getInlineJavaScriptTranslations();
+			$shown = true;
+		} else {
+			$javascript = '';
+		}
+
 		$tag_array = array();
 		foreach ($this->tag_array as $tag => $title) {
 			$tag_array[] = sprintf("\n[%s, %s]",
@@ -268,14 +277,36 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		if ($this->selected_tag_array !== null) {
 			foreach ($this->selected_tag_array as $tag)
 				$selected_array[] =
-					SwatString::quoteJavaScriptString($tag);
+					SwatString::quoteJavaScriptString(
+						SwatString::minimizeEntities($tag));
 		}
 
-		return sprintf("var %1\$s_obj = new SiteTagEntry(".
+		$javascript.= sprintf("var %1\$s_obj = new SiteTagEntry(".
 			"'%1\$s', [%2\$s], [%3\$s]);",
 			$this->id,
 			implode(',', $tag_array),
 			implode(',', $selected_array));
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getInlineJavaScriptTranslations()
+
+	/**
+	 * Gets translatable string resources for the JavaScript object for
+	 * this widget
+	 *
+	 * @return string translatable JavaScript string resources for this widget.
+	 */
+	protected function getInlineJavaScriptTranslations()
+	{
+		$remove_text = SwatString::quoteJavaScriptString(Site::_('remove'));
+		$new_text    = SwatString::quoteJavaScriptString(Site::_('(new)'));
+
+		return
+			"SiteTagEntry.remove_text = {$remove_text};\n".
+			"SiteTagEntry.new_text    = {$new_text};\n";
 	}
 
 	// }}}
