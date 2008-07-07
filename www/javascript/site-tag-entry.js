@@ -104,10 +104,14 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 			if (YAHOO.util.Event.getCharCode(e) == 188 ||
 				YAHOO.util.Event.getCharCode(e) == 59) {
 
-				entry.input_element.value =
-					entry.input_element.value.slice(0, -1);
+				var delimeter_pos = entry.input_element.value.indexOf(',');
+				if (delimeter_pos == -1)
+					delimeter_pos = entry.input_element.value.indexOf(';');
 
-				entry.createTag();
+				var tag_string =
+					entry.input_element.value.slice(0, delimeter_pos);
+
+				entry.addTag(tag_string);
 			}
 		}, this);
 }
