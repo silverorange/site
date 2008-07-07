@@ -38,7 +38,7 @@ abstract class SiteEditPage extends SitePage
 
 	protected function getForms()
 	{
-		$forms = $this->ui->getDescendantWidgets('SwatForm');
+		$forms = $this->ui->getRoot()->getDescendants('SwatForm');
 
 		return $forms;
 	}
