@@ -278,6 +278,14 @@ SiteTagEntry.prototype.removeTag = function(tag_string)
 			break;
 		}
 	}
+
+	for (i = 0; i < this.new_tag_array.length; i++) {
+		if (this.new_tag_array[i] == tag_string) {
+			// remove row from selected array
+			var element = this.new_tag_array.splice(i, 1);
+			break;
+		}
+	}
 }
 
 // }}}
