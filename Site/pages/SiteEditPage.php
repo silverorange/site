@@ -192,6 +192,53 @@ abstract class SiteEditPage extends SitePage
 	}
 
 	// }}}
+	// {{{ protected function generateShortname()
+
+	/**
+	 * Generate a shortname
+	 *
+	 * This method allows edit pages to easily generate a unique shortname by
+	 * calling this method during their processing phase. The shortname is
+	 * generated from the text provided using SwatString::condenseToName() and
+	 * validated with SiteEditPage::validateShortname().  If the initial
+	 * shortname is not valid an integer is appended and incremented until the
+	 * shortname  is valid.  Sub-classes should override validateShortname() to
+	 * perform whatever checks are necessary to validate the shortname.
+	 *
+	 * @param string $text Text to generate the shortname from.
+	 * @return string A shortname.
+	 */
+	protected function generateShortname($text)
+	{
+		$shortname_base = SwatString::condenseToName($text);
+		$count = 1;
+		$shortname = $shortname_base;
+
+		while ($this->validateShortname($shortname) === false)
+			$shortname = $shortname_base.$count++;
+
+		return $shortname;
+	}
+
+	// }}}
+	// {{{ protected function validateShortname()
+
+	/**
+	 * Validate a shortname
+	 *
+	 * This method is called by SiteEditPage::generateShortname().
+	 * Sub-classes should override this method to perform
+	 * whatever checks are necessary to validate the shortname.
+	 *
+	 * @param string $shortname The shortname to validate.
+	 * @return boolean Whether the shortname is valid.
+	 */
+	protected function validateShortname($shortname)
+	{
+		return true;
+	}
+
+	// }}}
 
 	// build phase
 	// {{{ public function build()
