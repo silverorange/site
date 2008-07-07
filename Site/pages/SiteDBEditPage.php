@@ -39,7 +39,7 @@ abstract class SiteDBEditPage extends SiteEditPage
 	protected function getRollbackMessage(SwatForm $form)
 	{
 		$message = new SwatMessage(
-			'An error has occurred. The item was not saved.',
+			Site::_('An error has occurred. The item was not saved.'),
 			SwatMessage::SYSTEM_ERROR);
 
 		return $message;
