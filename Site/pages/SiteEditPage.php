@@ -12,6 +12,7 @@ require_once 'Site/pages/SitePage.php';
  *
  * @package   Site
  * @copyright 2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteEditPage extends SitePage
 {
