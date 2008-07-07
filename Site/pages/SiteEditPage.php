@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Swat/SwatUI.php';
+require_once 'Swat/SwatString.php';
 require_once 'Swat/SwatDateEntry.php';
 require_once 'Swat/exceptions/SwatInvalidPropertyException.php';
 require_once 'SwatDB/SwatDBDataObject.php';
@@ -195,18 +196,22 @@ abstract class SiteEditPage extends SitePage
 	// {{{ protected function generateShortname()
 
 	/**
-	 * Generate a shortname
+	 * Generates a shortname
 	 *
 	 * This method allows edit pages to easily generate a unique shortname by
-	 * calling this method during their processing phase. The shortname is
-	 * generated from the text provided using SwatString::condenseToName() and
-	 * validated with SiteEditPage::validateShortname().  If the initial
-	 * shortname is not valid an integer is appended and incremented until the
-	 * shortname  is valid.  Sub-classes should override validateShortname() to
-	 * perform whatever checks are necessary to validate the shortname.
+	 * during their processing phase. The shortname is generated from the
+	 * provided text using {@link SwatString::condenseToName()} and then
+	 * validated with {@link SiteEditPage::validateShortname()}. If the initial
+	 * shortname is not valid, an integer is appended and incremented until the
+	 * shortname is valid. Subclasses should override
+	 * <code>validateShortname()</code> to perform whatever checks are
+	 * necessary to validate the shortname.
 	 *
-	 * @param string $text Text to generate the shortname from.
-	 * @return string A shortname.
+	 * @param string $text the text from which to generate the shortname.
+	 *
+	 * @return string a shortname.
+	 *
+	 * @see SiteEditPage::validateShortname()
 	 */
 	protected function generateShortname($text)
 	{
@@ -224,14 +229,18 @@ abstract class SiteEditPage extends SitePage
 	// {{{ protected function validateShortname()
 
 	/**
-	 * Validate a shortname
+	 * Validates a shortname
 	 *
-	 * This method is called by SiteEditPage::generateShortname().
-	 * Sub-classes should override this method to perform
-	 * whatever checks are necessary to validate the shortname.
+	 * This method is called by {@link SiteEditPage::generateShortname()} to
+	 * validate a generated shortname. By default, all shortnames are considered
+	 * valid. Subclasses should override this method to perform the necessary
+	 * checks to properly validate the shortname.
 	 *
-	 * @param string $shortname The shortname to validate.
-	 * @return boolean Whether the shortname is valid.
+	 * @param string $shortname the shortname to validate.
+	 *
+	 * @return boolean true if the shortname is valid and false if not.
+	 *
+	 * @see SiteEditPage::generateShortname()
 	 */
 	protected function validateShortname($shortname)
 	{
