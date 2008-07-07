@@ -23,15 +23,15 @@ abstract class SiteEditPage extends SitePage
 	 */
 	protected $ui;
 
-	/**
-	 * @var string
-	 */
-	protected $ui_xml;
-
 	// }}}
 	// {{{ abstract protected function isNew()
 
 	abstract protected function isNew(SwatForm $form);
+
+	// }}}
+	// {{{ abstract protected function getUiXml()
+
+	abstract protected function getUiXml();
 
 	// }}}
 	// {{{ protected function getForms()
@@ -53,7 +53,7 @@ abstract class SiteEditPage extends SitePage
 		parent::init();
 
 		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->initInternal();
 
