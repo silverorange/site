@@ -150,6 +150,16 @@ abstract class SiteEditPage extends SitePage
 	}
 
 	// }}}
+	// {{{ protected function isValid()
+
+	protected function isValid(SwatForm $form)
+	{
+		$valid = ($form->hasMessage() === false);
+
+		return $valid;
+	}
+
+	// }}}
 	// {{{ abstract protected function save()
 
 	abstract protected function save(SwatForm $form);
