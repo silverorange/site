@@ -258,9 +258,6 @@ abstract class SiteEditPage extends SitePage
 	{
 		parent::build();
 
-		$this->buildTitle();
-		$this->buildNavBar();
-
 		foreach ($this->getForms() as $form)
 			$this->buildForm($form);
 
@@ -269,13 +266,6 @@ abstract class SiteEditPage extends SitePage
 		$this->layout->startCapture('content');
 		$this->ui->display();
 		$this->layout->endCapture();
-	}
-
-	// }}}
-	// {{{ protected function buildTitle()
-
-	protected function buildTitle()
-	{
 	}
 
 	// }}}
