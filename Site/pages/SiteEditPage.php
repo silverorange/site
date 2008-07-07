@@ -108,11 +108,11 @@ abstract class SiteEditPage extends SitePage
 
 	protected function getInvalidMessage(SwatForm $form)
 	{
-		$message = new SwatMessage('There is a problem with '.
-			'the information submitted.', SwatMessage::ERROR);
+		$message = new SwatMessage(Site::_('There is a problem with '.
+			'the information submitted.'), SwatMessage::ERROR);
 
-		$message->secondary_content = 'Please address the '.
-			'fields highlighted below and re-submit the form.';
+		$message->secondary_content = Site::_('Please address the '.
+			'fields highlighted below and re-submit the form.');
 
 		return $message;
 	}
@@ -129,11 +129,12 @@ abstract class SiteEditPage extends SitePage
 
 		if (!$form->isAuthenticated()) {
 			$authenticated = false;
-			$message = new SwatMessage('There is a problem with the '.
-				'information submitted.', SwatMessage::WARNING);
+			$message = new SwatMessage(Site::_('There is a problem with the '.
+				'information submitted.'), SwatMessage::WARNING);
 
-			$message->secondary_content = 'In order to ensure your security, '.
-				'we were unable to process your request. Please try again.';
+			$message->secondary_content = Site::_('In order to ensure your '.
+				'security, we were unable to process your request. Please '.
+				'try again.');
 
 			$this->app->messages->add($message);
 		}
