@@ -128,7 +128,7 @@ class SiteAccountEditPage extends SiteAccountPage
 	 */
 	protected function createNewAccount()
 	{
-		$class_name = SwatDBClassMap::get('StoreAccount');
+		$class_name = SwatDBClassMap::get('SiteAccount');
 		$account = new $class_name();
 
 		if ($this->app->hasModule('SiteMultipleInstanceModule'))
