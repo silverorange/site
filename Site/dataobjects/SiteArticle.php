@@ -170,6 +170,8 @@ class SiteArticle extends SwatDBDataObject
 	 */
 	public function getVisibleSubArticles()
 	{
+		require_once 'Site/dataobjects/SiteArticleWrapper.php';
+
 		$sql = 'select Article.id, Article.title, Article.shortname,
 				Article.description, Article.createdate
 			from Article
