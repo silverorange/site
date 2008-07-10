@@ -37,14 +37,7 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 			foreach ($this->getArray() as $image)
 				$image_ids[] = $this->db->quote($image->id, 'integer');
 
-			$sql = sprintf('select %1$s.*
-				from %1$s
-				where %1$s.%2$s in (%3$s)
-				order by %2$s',
-				$this->binding_table,
-				$this->binding_table_image_field,
-				implode(',', $image_ids));
-
+			$sql = $this->getDimensionQuery($image_ids);
 			$wrapper_class = $this->getImageDimensionBindingWrapperClassName();
 			$bindings = SwatDB::query($this->db, $sql, $wrapper_class);
 
@@ -92,6 +85,22 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 	protected function getImageDimensionBindingWrapperClassName()
 	{
 		return SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+	}
+
+	// }}}
+	// {{{ protected function getDimensionQuery()
+
+	protected function getDimensionQuery($image_ids)
+	{
+		$sql = sprintf('select %1$s.*
+			from %1$s
+			where %1$s.%2$s in (%3$s)
+			order by %2$s',
+			$this->binding_table,
+			$this->binding_table_image_field,
+			implode(',', $image_ids));
+
+		return $sql;
 	}
 
 	// }}}
