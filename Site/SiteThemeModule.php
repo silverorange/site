@@ -64,8 +64,8 @@ class SiteThemeModule extends SiteApplicationModule
 
 		$manifest = $this->findManifest($shortname);
 		if ($manifest === null) {
-			throw new SiteThemeException('No theme with the shortname "%s" '.
-				'is installed.');
+			throw new SiteThemeException(sprintf('No theme with the shortname '. 
+				'"%s" is installed.', $shortname));
 		}
 
 		$this->theme = SiteTheme::load($manifest);
