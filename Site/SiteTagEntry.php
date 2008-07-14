@@ -22,6 +22,15 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 {
 	// {{{ protected properties
 
+	/*
+	 * JSON server
+	 *
+	 * A JSON server that returns an array of name => title pairs based on the
+	 * 'query' GET variable. If not specified, all tag values must be specified
+	 * using the $tag_array property.
+	 */
+	protected $json_server;
+
 	/**
 	 * An associative array of tags for the tag flydown in the form of
 	 * name => title
@@ -264,28 +273,38 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 			$javascript = '';
 		}
 
-		$tag_array = array();
-		foreach ($this->tag_array as $tag => $title) {
-			$tag_array[] = sprintf("\n[%s, %s]",
+		if ($this->json_server === null) {
+			$tag_array = array();
+			foreach ($this->tag_array as $tag => $title) {
+				$tag_array[] = sprintf("\n[%s, %s]",
+					SwatString::quoteJavaScriptString(
+						SwatString::minimizeEntities($title)),
+					SwatString::quoteJavaScriptString(
+						SwatString::minimizeEntities($tag)));
+			}
+
+			$data_store = sprintf('new YAHOO.widget.DS_JSArray([%s])',
+				implode(',', $tag_array));
+		} else {
+			$data_store = sprintf('new YAHOO.widget.DS_XHR(%s,
+				 ["ResultSet.Result", "Title", "Shortname"])',
+				SwatString::quoteJavaScriptString($this->json_server));
+		}
+
+		$selected_tag_array = array();
+		foreach ($this->selected_tag_array as $tag => $title) {
+			$selected_tag_array[] = sprintf("\n[%s, %s]",
 				SwatString::quoteJavaScriptString(
 					SwatString::minimizeEntities($title)),
 				SwatString::quoteJavaScriptString(
 					SwatString::minimizeEntities($tag)));
 		}
 
-		$selected_array = array();
-		if ($this->selected_tag_array !== null) {
-			foreach ($this->selected_tag_array as $tag)
-				$selected_array[] =
-					SwatString::quoteJavaScriptString(
-						SwatString::minimizeEntities($tag));
-		}
-
 		$javascript.= sprintf("var %1\$s_obj = new SiteTagEntry(".
-			"'%1\$s', [%2\$s], [%3\$s]);",
+			"'%1\$s', %2\$s, [%3\$s]);",
 			$this->id,
-			implode(',', $tag_array),
-			implode(',', $selected_array));
+			$data_store,
+			implode(',', $selected_tag_array));
 
 		return $javascript;
 	}
