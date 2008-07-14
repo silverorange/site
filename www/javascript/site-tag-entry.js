@@ -12,21 +12,21 @@
  * Creates a new tag entry widget
  *
  * @param string id the unique identifier of this entry object.
- * @param array tag_array an array of tag strings and titles that are possible
- *                        to select using this control
+ * @param DS_XHR|DS_JSArray The type of YUI datastore to use for values.
  * @param array initial_selected_tag_array an array of already selected tag
  *                                         strings.
+ *
+ * @see http://developer.yahoo.com/yui/autocomplete/
  */
-function SiteTagEntry(id, tag_array, initial_selected_tag_array)
+function SiteTagEntry(id, data_store, initial_selected_tag_array)
 {
 	this.id = id;
-	this.tag_array = tag_array;
+	this.data_store = data_store
 	this.initial_selected_tag_array = initial_selected_tag_array;
 
 	this.selected_tag_array = [];
 	this.new_tag_array = [];
 	this.input_element = document.getElementById(this.id + '_value');
-	this.data_store = new YAHOO.widget.DS_JSArray(this.tag_array);
 	this.array_element = document.getElementById(this.id + '_array');
 
 	YAHOO.util.Event.onContentReady(
@@ -83,7 +83,8 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 
 	// initialize values passed in
 	for (var i = 0; i < this.initial_selected_tag_array.length; i++) {
-		this.addTag(this.initial_selected_tag_array[i]);
+		this.addTag(this.initial_selected_tag_array[i][1],
+			this.initial_selected_tag_array[i][0]);
 	}
 
 	YAHOO.util.Event.addListener(this.input_element, 'keydown',
@@ -108,10 +109,10 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 				if (delimeter_pos == -1)
 					delimeter_pos = entry.input_element.value.indexOf(';');
 
-				var tag_string =
+				var tag_name =
 					entry.input_element.value.slice(0, delimeter_pos);
 
-				entry.addTag(tag_string);
+				entry.addTag(tag_name);
 			}
 		}, this);
 }
@@ -122,26 +123,28 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 SiteTagEntry.prototype.addTagFromAutoComplete = function(
 	oSelf, elItem, oData)
 {
-	var tag_string = elItem[2][1];
-	this.addTag(tag_string);
+	var tag_name = elItem[2][1];
+	var tag_title = elItem[2][0];
+
+	this.addTag(tag_name, tag_title);
 }
 
 // }}}
 // {{{ addTag()
 
-SiteTagEntry.prototype.addTag = function(tag_string)
+SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 {
 	var found = false;
 
 	// trim tag string
-	tag_string = tag_string.replace(/^\s+|\s+$/g, '');
+	tag_name = tag_name.replace(/^\s+|\s+$/g, '');
 
-	if (tag_string.length == 0)
+	if (tag_name.length == 0)
 		return;
 
 	for (i = 0; i < this.selected_tag_array.length; i++) {
 		var tag = this.selected_tag_array[i][1];
-		if (tag.toUpperCase() == tag_string.toUpperCase()) {
+		if (tag.toUpperCase() == tag_name.toUpperCase()) {
 			this.input_element.value = '';
 			return;
 		}
@@ -149,26 +152,36 @@ SiteTagEntry.prototype.addTag = function(tag_string)
 
 	for (i = 0; i < this.new_tag_array.length; i++) {
 		var tag = this.new_tag_array[i];
-		if (tag.toUpperCase() == tag_string.toUpperCase()) {
+		if (tag.toUpperCase() == tag_name.toUpperCase()) {
 			this.input_element.value = '';
 			return;
 		}
 	}
 
-	for (i = 0; i < this.data_store.data.length; i++) {
-		var tag = this.data_store.data[i][1];
-		if (tag.toUpperCase() == tag_string.toUpperCase()) {
-			// get tag title
-			var title = this.data_store.data[i][0];
+	if (this.data_store.data) {
+		for (i = 0; i < this.data_store.data.length; i++) {
+			var tag = this.data_store.data[i][1];
+			if (tag.toUpperCase() == tag_name.toUpperCase()) {
+				// get tag title
+				var title = this.data_store.data[i][0];
 
-			// remove row from data store
-			var element = this.data_store.data.splice(i, 1);
+				// remove row from data store
+				var element = this.data_store.data.splice(i, 1);
 
-			// add row to array of selected tags, splice returns an array
-			this.selected_tag_array.push(element[0]);
+				// add row to array of selected tags, splice returns an array
+				this.selected_tag_array.push(element[0]);
 
+				found = true;
+				break;
+			}
+		}
+	} else {
+		if (tag_title) {
 			found = true;
-			break;
+			var title = tag_title;
+			this.selected_tag_array.push([tag_title, tag_name]);
+		} else {
+			found = false;
 		}
 	}
 
@@ -176,15 +189,15 @@ SiteTagEntry.prototype.addTag = function(tag_string)
 	var new_tag = (!found);
 
 	if (new_tag)
-		var title = tag_string;
+		var title = tag_name;
 
 	// create new array node
 	var li_tag = document.createElement('li');
-	li_tag.id = this.id + '_tag_' + tag_string;
+	li_tag.id = this.id + '_tag_' + tag_name;
 	YAHOO.util.Dom.setStyle(li_tag, 'opacity', 0);
 
 	var anchor_tag = document.createElement('a');
-	anchor_tag.id = this.id + '_tag_remove_' + tag_string;
+	anchor_tag.id = this.id + '_tag_remove_' + tag_name;
 	anchor_tag.href = '#';
 	anchor_tag.appendChild(document.createTextNode(
 		SiteTagEntry.remove_text));
@@ -193,7 +206,7 @@ SiteTagEntry.prototype.addTag = function(tag_string)
 		function (e)
 		{
 			YAHOO.util.Event.preventDefault(e);
-			this.removeTag(tag_string);
+			this.removeTag(tag_name);
 		},
 		this, true);
 
@@ -203,19 +216,19 @@ SiteTagEntry.prototype.addTag = function(tag_string)
 		var hidden_tag = document.createElement('input');
 		hidden_tag.type = 'hidden';
 		hidden_tag.name = this.id + '_new[]';
-		hidden_tag.value = tag_string;
+		hidden_tag.value = tag_name;
 		var title_node = document.createTextNode(
 			title + ' ' + SiteTagEntry.new_text + ' ');
 
 		li_tag.className = 'new-tag';
 		li_tag.appendChild(hidden_tag);
-		this.new_tag_array.push(tag_string);
+		this.new_tag_array.push(tag_name);
 	} else {
 		var title_node = document.createTextNode(title + ' ');
 		var hidden_tag = document.createElement('input');
 		hidden_tag.type = 'hidden';
 		hidden_tag.name = this.id + '[]';
-		hidden_tag.value = tag_string;
+		hidden_tag.value = tag_name;
 		li_tag.appendChild(hidden_tag);
 	}
 
@@ -247,17 +260,17 @@ SiteTagEntry.prototype.createTag = function()
 // }}}
 // {{{ removeTag()
 
-SiteTagEntry.prototype.removeTag = function(tag_string)
+SiteTagEntry.prototype.removeTag = function(tag_name)
 {
 	// remove event arrayener
 	var anchor_tag = document.getElementById(
-		this.id + '_tag_remove_' + tag_string);
+		this.id + '_tag_remove_' + tag_name);
 
 	if (anchor_tag)
 		YAHOO.util.Event.purgeElement(anchor_tag);
 
 	// remove array node
-	var li_tag = document.getElementById(this.id + '_tag_' + tag_string);
+	var li_tag = document.getElementById(this.id + '_tag_' + tag_name);
 	if (li_tag) {
 		var out_attributes = { opacity: { from: 1, to: 0 } };
 		var out_animation = new YAHOO.util.Anim(li_tag, out_attributes,
@@ -272,19 +285,22 @@ SiteTagEntry.prototype.removeTag = function(tag_string)
 	}
 
 	for (i = 0; i < this.selected_tag_array.length; i++) {
-		if (this.selected_tag_array[i][1] == tag_string) {
+		if (this.selected_tag_array[i][1] == tag_name) {
 			// remove row from selected array
 			var element = this.selected_tag_array.splice(i, 1);
 
-			// add row back to data store, splice returns an array
-			this.data_store.data.push(element[0]);
-			this.data_store.data.sort();
+			if (this.data_store.data) {
+				// add row back to data store, splice returns an array
+				this.data_store.data.push(element[0]);
+				this.data_store.data.sort();
+			}
+
 			break;
 		}
 	}
 
 	for (i = 0; i < this.new_tag_array.length; i++) {
-		if (this.new_tag_array[i] == tag_string) {
+		if (this.new_tag_array[i] == tag_name) {
 			// remove row from selected array
 			var element = this.new_tag_array.splice(i, 1);
 			break;
