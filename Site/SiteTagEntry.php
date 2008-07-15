@@ -44,7 +44,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 *
 	 * @var array
 	 */
-	protected $selected_tag_array;
+	protected $selected_tag_array = array();
 
 	// }}}
 	// {{{ public function __construct()
