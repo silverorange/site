@@ -152,7 +152,7 @@ class SiteGadgetFactory extends SwatObject
 			if (!is_subclass_of($class_name, 'SiteGadget')) {
 				throw new SwatInvalidClassException(
 					'Gadget class "'.$class_name.'" was found but is not a '.
-					'subclass of SiteGadet.');
+					'subclass of SiteGadget.');
 			}
 
 			self::$gadgets[$key] = new $class_name($app, $instance);
