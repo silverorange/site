@@ -28,31 +28,36 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 	// }}}
 	// {{{ private properties
 
-	private $password_tag = null;
 	private $account_id;
 
 	// }}}
-
-	// init phase
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteLayout $layout,
-		$tag = null)
+	public function __construct(SiteAbstractPage $page)
 	{
-		parent::__construct($app, $layout);
+		parent::__construct($page);
 
-		if ($tag === null) {
+		if ($this->getArgument('tag') === null) {
 			if ($this->app->session->isLoggedIn())
 				$this->app->relocate('account/changepassword');
 			else
 				$this->app->relocate('account/forgotpassword');
 		}
-
-
-		$this->password_tag = $tag;
 	}
 
 	// }}}
+	// {{{ protected function getArgumentMap()
+
+	protected function getArgumentMap()
+	{
+		return array(
+			'tag' => array(0, null),
+		);
+	}
+
+	// }}}
+
+	// init phase
 	// {{{ public function init()
 
 	public function init()
@@ -68,7 +73,7 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 		$confirm = $this->ui->getWidget('confirm_password');
 		$confirm->password_widget = $this->ui->getWidget('password');;
 
-		$this->account_id = $this->getAccountId($this->password_tag);
+		$this->account_id = $this->getAccountId($this->getArgument('tag'));
 
 		$this->ui->init();
 	}
