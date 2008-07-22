@@ -23,10 +23,12 @@ class SiteHttpErrorPage extends SitePage
 	{
 		parent::init();
 
-		if (isset($_SERVER['REDIRECT_STATUS'])) {
-			$this->http_status_code = intval($_SERVER['REDIRECT_STATUS']);
-		} else {
-			$this->http_status_code = 500;
+		if ($this->http_status_code === null) {
+			if (isset($_SERVER['REDIRECT_STATUS'])) {
+				$this->http_status_code = intval($_SERVER['REDIRECT_STATUS']);
+			} else {
+				$this->http_status_code = 500;
+			}
 		}
 
 		$exp = explode('/', $this->app->getBaseHref());
