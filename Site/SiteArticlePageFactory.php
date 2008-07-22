@@ -4,12 +4,14 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatString.php';
 require_once 'Site/SitePageFactory.php';
 require_once 'Site/SiteArticlePath.php';
+require_once 'Site/pages/SiteArticlePage.php';
+require_once 'Site/dataobjects/SiteArticleWrapper.php';
 
 /**
  * Resolves and creates article pages in a web application
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticlePageFactory extends SitePageFactory
@@ -17,107 +19,242 @@ class SiteArticlePageFactory extends SitePageFactory
 	// {{{ protected properties
 
 	/**
-	 * The name of the default class to use when instantiating resolved pages
-	 *
-	 * This must be either {@link SiteArticlePage} or a subclass of
-	 * SiteArticlePage.
+	 * The default article page decorator class to use if no article page
+	 * decorator is specified for a given source string
 	 *
 	 * @var string
+	 *
+	 * @see SiteArticlePageFactory::setDefaultArticlePage()
 	 */
-	protected $default_page_class = 'SiteArticlePage';
+	protected $default_article_page = 'SiteArticlePage';
+
+	/**
+	 * The number of path prefixes to strip from the source string to get the
+	 * article tree path
+	 *
+	 * @var integer
+	 *
+	 * @see SiteArticlePageFactory::setPathPrefixLength()
+	 */
+	protected $path_prefix_length = 0;
 
 	// }}}
-	// {{{ public function resolvePage()
+	// {{{ public function get()
 
 	/**
 	 * Resolves a page object from a source string
 	 *
-	 * @param SiteWebApplication $app the web application for which the page is
-	 *                               being resolved.
 	 * @param string $source the source string for which to get the page.
 	 * @param SiteLayout $layout optional layout to use with this page.
 	 *
-	 * @return SiteArticlePage the page for the given source string.
+	 * @return SiteAbstractPage the page for the given source string.
 	 */
-	public function resolvePage(SiteWebApplication $app, $source, $layout = null)
+	public function get($source, SiteLayout $layout = null)
 	{
-		$page = null;
+		$layout = ($layout === null) ? $this->getLayout($source) : $layout;
 
-		if ($layout === null)
-			$layout = $this->resolveLayout($app, $source);
+		$page_info = $this->getPageInfo($source);
 
-		$article_path = $source;
-		foreach ($this->getPageMap() as $pattern => $class) {
-			$regs = array();
-			$pattern = str_replace('@', '\@', $pattern); // escape delimiters
-			$regexp = '@'.$pattern.'@u';
-			if (preg_match($regexp, $source, $regs) === 1) {
-				array_shift($regs); // discard full match string
-				$article_path = array_shift($regs);
+		// create page object
+		$page = $this->getPage($page_info['page'], $layout,
+			$page_info['arguments']);
 
-				// set empty regs parsed from page map expressions to null
-				foreach ($regs as &$reg) {
-					if ($reg == '')
-						$reg = null;
-				}
+		$page->setSource($source);
 
-				// add layout and application to the argument list
-				array_unshift($regs, $layout);
-				array_unshift($regs, $app);
+		// create article and path
+		$article = $this->getArticle($page_info['path']);
 
-				$page = $this->instantiatePage($app, $class, $regs);
-				break;
+		if ($article === null) {
+			throw new SiteNotFoundException(
+				sprintf('Article not found for path ‘%s’',
+					$path));
+		}
+
+		$article_path = $this->getArticlePath($article);
+
+		// decorate page
+		$has_article_decorator = false;
+		$decorators = array_reverse($page_info['decorators']);
+		foreach ($decorators as $decorator) {
+			$page = $this->decorate($page, $decorator);
+			if ($page instanceof SiteArticlePage) {
+				$has_article_decorator = true;
+				$page->setPath($article_path);
+				$page->setArticle($article);
 			}
 		}
 
-		if ($page === null) {
-			// not found in page map so instantiate default page
-			$params = array($app, $layout);
-			$page = $this->instantiatePage($app, $this->default_page_class, $params);
+		// add article decorator if none was defined in the page map
+		if (!$has_article_decorator) {
+			$page = $this->decorate($page, $this->default_article_page);
+			$page->setPath($article_path);
+			$page->setArticle($article);
 		}
 
-		$article_id = $this->findArticle($app, $article_path);
 
-		if ($article_id === null)
-			throw new SiteNotFoundException(
-				sprintf('Article not found for path ‘%s’',
-					$article_path));
-
-		$article_path = new SiteArticlePath($app, $article_id);
-
-		$page->article_id = $article_id;
-		$page->setPath($article_path);
-		$page->setArticle($this->getArticle($app, $article_id, $article_path));
-
-		if (!$this->checkVisibilty($page)) {
-			$page = $this->instantiateNotVisiblePage($app, $layout);
-			$page->article_id = $article_id;
-			$page->setPath($article_path);
+		if (!$this->isVisible($source, $article)) {
+			$page = $this->getNotVisiblePage($layout);
+			$page->setSource($source);
+			if ($page instanceof SiteArticlePage) {
+				$page->setPath($article_path);
+				$page->setArticle($article);
+			}
 		}
 
 		return $page;
 	}
 
 	// }}}
+	// {{{ public function setDefaultArticlePage()
+
+	/**
+	 * Sets the default article page decorator class to use if no article
+	 * page decorator is specified for a given source string
+	 *
+	 * By default, {@link SiteArticlePage} is used.
+	 *
+	 * @param string $class the name of the default article page decorator
+	 *                      class to use if no article page decorator is
+	 *                      specified for the given source string.
+	 *
+	 * @throws SiteClassNotFoundException if the specified class is not
+	 *                                    {@link SiteArticlePage} or a subclass
+	 *                                    of <code>SiteArticlePage</code>.
+	 */
+	public function setDefaultArticlePage($class)
+	{
+		$this->loadPageClass($class);
+
+		if ($class !== 'SiteArticlePage' &&
+			!is_subclass_of($class, 'SiteArticlePage')) {
+			throw new SiteClassNotFoundException(sprintf('The provided page '.
+				'class ‘%s’ is not a SiteArticlePage.', $class), 0, $class);
+		}
+
+		$this->default_article_page = $class;
+	}
+
+	// }}}
+	// {{{ public function setPathPrefixLength()
+
+	/**
+	 * Sets the number of path prefixes to strip from the source string to
+	 * get the article tree path
+	 *
+	 * This allows subclassed page factories to load articles in the article
+	 * tree at a source string prefix. For example, the root article can be
+	 * located at 'article/' instead of '/'.
+	 *
+	 * By default, no prefixes are stripped.
+	 *
+	 * @param integer $length the number of path prefixes to strip from the
+	 *                         source string to get the article tree path.
+	 */
+	public function setPathPrefixLength($length)
+	{
+		$this->path_prefix_length = $length;
+	}
+
+	// }}}
+	// {{{ protected function getPageInfo()
+
+	/**
+	 * Gets page info for the passed source string
+	 *
+	 * @param string $source the source string for which to get the page info.
+	 *
+	 * @return array an array of page info. The array has the index values
+	 *               'page', 'path', 'decorators' and 'arguments'.
+	 */
+	protected function getPageInfo($source)
+	{
+		// strip path prefixes to get article tree path
+		$source_exp = explode('/', $source);
+		for ($i = 0; $i < $this->path_prefix_length; $i++) {
+			array_shift($source_exp);
+		}
+
+		$source = implode('/', $source_exp);
+
+		$info = array(
+			'page'       => $this->default_page_class,
+			'path'       => $source,
+			'decorators' => array(),
+			'arguments'  => array(),
+		);
+
+		foreach ($this->getPageMap() as $pattern => $class) {
+			$regs = array();
+			$pattern = str_replace('@', '\@', $pattern); // escape delimiters
+			$regexp = '@'.$pattern.'@u';
+			if (preg_match($regexp, $source, $regs) === 1) {
+				array_shift($regs); // discard full match string
+
+				// get path as first subpattern
+				$info['path'] = array_shift($regs);
+
+				// get additional arguments as remaining subpatterns
+				foreach ($regs as $reg) {
+					// set empty regs parsed from page map expressions to null
+					$reg = ($reg == '') ? null : $reg;
+					$info['arguments'][] = $reg;
+				}
+
+				// get page class and/or decorators
+				if (is_array($class)) {
+					$page = array_pop($class);
+					if ($this->isPage($page)) {
+						$info['page']       = $page;
+						$info['decorators'] = $class;
+					} else {
+						$class[]            = $page;
+						$info['decorators'] = $class;
+					}
+				} else {
+					if ($this->isPage($class)) {
+						$info['page'] = $class;
+					} else {
+						$info['decorators'][] = $class;
+					}
+				}
+
+				break;
+			}
+		}
+
+		return $info;
+	}
+
+	// }}}
 	// {{{ protected function getPageMap()
 
 	/**
-	 * Gets an array of page mappings used to resolve pages
+	 * Gets an array of page mappings used to get page info
 	 *
 	 * The page mappings are an array of the form:
 	 *
-	 *   source expression => page class
+	 * <code>
+	 * array(
+	 *     $source expression => $page_class
+	 * );
+	 * </code>
 	 *
-	 * The <i>source expression</i> is an regular expression using PCRE syntax
-	 * sans-delimiters. The delimiter character is unspecified and should not
-	 * be escaped in these expressions. The <i>page class</i> is the class name
-	 * of the page to be resolved.
+	 * The <code>$source_expression</code> is an regular expression using PCRE
+	 * syntax sans-delimiters. The delimiter character is unspecified and should
+	 * not be escaped in these expressions. The <code>$page_class</code> is the
+	 * class name of the page to be resolved.
+	 *
+	 * The first capturing sub-pattern of the expression is used as the
+	 * path to the article in the database. Additional capturing sub-patterns
+	 * are passed as arguments to the page constructor.
 	 *
 	 * For example, the following mapping array will match the source
 	 * 'about/content' to the class 'ContactPage':
 	 *
 	 * <code>
-	 * array('^(about/contact)$' => 'ContactPage');
+	 * array(
+	 *     '^(about/contact)$' => 'ContactPage',
+	 * );
 	 * </code>
 	 *
 	 * By default, no page mappings are defined. Subclasses may define
@@ -131,68 +268,40 @@ class SiteArticlePageFactory extends SitePageFactory
 	}
 
 	// }}}
-	// {{{ protected function checkVisibilty()
+	// {{{ protected function isVisible()
 
-	protected function checkVisibilty($page)
+	/**
+	 * @param string $source
+	 * @param SiteArticle $article
+	 *
+	 * @return boolean
+	 */
+	protected function isVisible($source, SiteArticle $article)
 	{
-		$article = null;
+		$sql = sprintf('select count(id) from EnabledArticleView
+			where id = %s',
+			$this->app->db->quote($article->id, 'integer'));
 
-		$path = $page->getPath();
-
-		if ($path !== null) {
-			$path_entry = $path->getLast();
-			if ($path_entry !== null) {
-				$article_id = $path_entry->id;
-
-				$sql = sprintf(
-					'select id from EnabledArticleView
-					where id = %s',
-					$page->app->db->quote($article_id, 'integer'));
-
-				$article = SwatDB::queryOne($page->app->db, $sql);
-			}
-		}
-
-		return ($article !== null);
+		$count = SwatDB::queryOne($this->app->db, $sql);
+		return ($count !== 0);
 	}
 
 	// }}}
-	// {{{ protected function instantiateNotVisiblePage()
+	// {{{ protected function getNotVisiblePage()
 
-	protected function instantiateNotVisiblePage(SiteApplication $app,
-		SiteLayout $layout)
+	/**
+	 * @return SiteAbstractPage
+	 */
+	protected function getNotVisiblePage(SiteLayout $layout)
 	{
+		require_once 'Site/pages/SiteHttpErrorPage.php';
+		$page = new SiteHttpErrorPage($this->app, $layout);
+		$page->setStatus(404);
+		return $page;
 		// sub-classes can return a custom page here
 
 		// by default, throw an excpetion
 		throw new SiteNotFoundException('Article not visible');
-	}
-
-	// }}}
-	// {{{ protected function findArticle()
-
-	/**
-	 * Gets an article id from the given article path
-	 *
-	 * @param SiteWebApplication $app
-	 * @param string $path
-	 *
-	 * @return integer the database identifier corresponding to the given
-	 *                  article path or null if no such identifier exists.
-	 */
-	protected function findArticle(SiteWebApplication $app, $path)
-	{
-		if (!SwatString::validateUtf8($path))
-			throw new SiteException(
-				sprintf('Path is not valid UTF-8: ‘%s’', $path));
-
-		// trim at 254 to prevent database errors
-		$path = substr($path, 0, 254);
-		$sql = sprintf('select findArticle(%s)',
-			$app->db->quote($path, 'text'));
-
-		$article_id = SwatDB::queryOne($app->db, $sql);
-		return $article_id;
 	}
 
 	// }}}
@@ -201,39 +310,83 @@ class SiteArticlePageFactory extends SitePageFactory
 	/**
 	 * Gets an article object from the database
 	 *
-	 * @param integer $id the database identifier of the article to get.
+	 * @param string $path
 	 *
-	 * @return SiteArticle the specified article or null if no such article
-	 *                       exists.
+	 * @return SiteArticle the specified article.
+	 *
+	 * @throws SiteNotFoundException if no such article exists.
 	 */
-	protected function getArticle($app, $article_id, $path)
+	protected function getArticle($path)
 	{
 		// don't try to resolve articles that are deeper than the max depth
-		if (count($path) > SiteArticle::MAX_DEPTH)
+		if (substr_count($path, '/') >= SiteArticle::MAX_DEPTH) {
 			throw new SiteNotFoundException(
 				sprintf('Article not found for path ‘%s’', $path));
+		}
 
-		if (($article = $this->queryArticle($app->db, $article_id)) === null)
+		// get id from path
+		$article_id = $this->getArticleId($path);
+
+		$sql = $this->getArticleSql($article_id);
+
+		// load dataobject
+		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
+		$articles = SwatDB::query($this->app->db, $sql, $wrapper);
+		$article = $articles->getFirst();
+
+		if ($article  === null) {
 			throw new SiteNotFoundException(
-				sprintf('Article dataobject failed to load for article id ‘%s’',
-				$article_id));
+				sprintf('Failed to load article dataobject for article id ‘%s’',
+					$article_id));
+		}
 
 		return $article;
 	}
 
 	// }}}
-	// {{{ protected function queryArticle()
+	// {{{ protected function getArticleId()
 
-	protected function queryArticle($db, $article_id)
+	/**
+	 * Gets an article id from the given article path
+	 *
+	 * @param string $path
+	 *
+	 * @return integer the database identifier corresponding to the given
+	 *                  article path or null if no such identifier exists.
+	 */
+	protected function getArticleId($path)
 	{
-		$sql = 'select * from Article where id = %s';
+		// don't try to find articles with invalid UTF-8 in the path
+		if (!SwatString::validateUtf8($path)) {
+			throw new SiteException(
+				sprintf('Path is not valid UTF-8: ‘%s’', $path));
+		}
 
-		$sql = sprintf($sql,
-			$db->quote($article_id, 'integer'));
+		// don't try to find articles with more than 254 characters in the path
+		if (strlen($path) > 254) {
+			throw new SiteException(
+				sprintf('Path is too long: ‘%s’', $path));
+		}
 
-		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
-		$articles = SwatDB::query($db, $sql, $wrapper);
-		return $articles->getFirst();
+		return SwatDB::executeStoredProcOne($this->app->db,
+			'findArticle', array($this->app->db->quote($path, 'text')));
+	}
+
+	// }}}
+	// {{{ protected function getArticleSql()
+
+	protected function getArticleSql($article_id)
+	{
+		return sprintf('select * from Article where id = %s',
+			$this->app->db->quote($article_id, 'integer'));
+	}
+
+	// }}}
+	// {{{ protected function getArticlePath()
+
+	protected function getArticlePath(SiteArticle $article)
+	{
+		return new SiteArticlePath($this->app, $article->id);
 	}
 
 	// }}}

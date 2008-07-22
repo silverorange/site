@@ -1,11 +1,10 @@
 <?php
 
-require_once 'Swat/SwatUI.php';
 require_once 'Swat/SwatString.php';
 require_once 'Swat/SwatDateEntry.php';
 require_once 'Swat/exceptions/SwatInvalidPropertyException.php';
 require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SiteUiPage.php';
 
 /**
  * Base class for edit pages
@@ -14,24 +13,11 @@ require_once 'Site/pages/SitePage.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SiteEditPage extends SitePage
+abstract class SiteEditPage extends SiteUiPage
 {
-	// {{{ protected properties
-
-	/**
-	 * @var SwatUI
-	 */
-	protected $ui;
-
-	// }}}
 	// {{{ abstract protected function isNew()
 
 	abstract protected function isNew(SwatForm $form);
-
-	// }}}
-	// {{{ abstract protected function getUiXml()
-
-	abstract protected function getUiXml();
 
 	// }}}
 	// {{{ protected function getForms()
@@ -46,25 +32,11 @@ abstract class SiteEditPage extends SitePage
 	// }}}
 
 	// init phase
-	// {{{ public function init()
-
-	public function init()
-	{
-		parent::init();
-
-		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->getUiXml());
-
-		$this->initInternal();
-
-		$this->ui->init();
-	}
-
-	// }}}
 	// {{{ protected function initInternal()
 
 	protected function initInternal()
 	{
+		parent::initInternal();
 		foreach ($this->getForms() as $form)
 			$form->action = $this->source;
 	}
@@ -262,29 +234,13 @@ abstract class SiteEditPage extends SitePage
 	// }}}
 
 	// build phase
-	// {{{ public function build()
-
-	public function build()
-	{
-		parent::build();
-
-		foreach ($this->getForms() as $form)
-			$this->buildForm($form);
-
-		$this->buildInternal();
-
-		$this->layout->startCapture('content');
-		$this->ui->display();
-		$this->layout->endCapture();
-	}
-
-	// }}}
 	// {{{ protected function buildInternal()
 
 	protected function buildInternal()
 	{
-		foreach ($this->app->messages->getAll() as $message)
-			$this->ui->getWidget('message_display')->add($message);
+		parent::buildInternal();
+		foreach ($this->getForms() as $form)
+			$this->buildForm($form);
 	}
 
 	// }}}
@@ -334,19 +290,6 @@ abstract class SiteEditPage extends SitePage
 		}
 
 		$widget->value = $value;
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		parent::finalize();
-
-		$this->layout->addHtmlHeadEntrySet(
-			$this->ui->getRoot()->getHtmlHeadEntrySet());
 	}
 
 	// }}}

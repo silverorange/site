@@ -1,12 +1,15 @@
 <?php
 
-require_once 'Site/pages/SiteArticlePage.php';
+require_once 'Site/pages/SitePageDecorator.php';
 
 /**
+ * Redirects to login page if not logged in
+ *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SiteAccountPage extends SiteArticlePage
+class SiteAccountPage extends SitePageDecorator
 {
 	// {{{ public function init()
 
