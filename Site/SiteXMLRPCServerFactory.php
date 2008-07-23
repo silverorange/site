@@ -6,33 +6,23 @@ require_once 'Site/SitePageFactory.php';
 
 /**
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2008 silverorange
  */
 class SiteXMLRPCServerFactory extends SitePageFactory
 {
-	// {{{ public function __construct()
+	// {{{ public function get()
 
-	public function __construct()
+	public function ($source, SiteLayout $layout = null)
 	{
-		$this->class_map['Site'] = 'Site/pages';
-	}
-
-	// }}}
-	// {{{ public function resolvePage()
-
-	public function resolvePage(SiteWebApplication $app, $source)
-	{
-		$layout = $this->resolveLayout($app, $source);
+		$layout = ($layout === null) ? $this->getLayout($source) : $layout;
 		$map = $this->getPageMap();
 
-		if (isset($map[$source])) {
-			$class = $map[$source];
-			$params = array($app, $layout);
-			$page = $this->instantiatePage($app, $class, $params);
-			return $page;
+		if (!isset($map[$source])) {
+			throw new SiteNotFoundException();
 		}
 
-		throw new SiteNotFoundException();
+		$class = $map[$source];
+		return $this->getPage($class, $layout);
 	}
 
 	// }}}
@@ -46,11 +36,11 @@ class SiteXMLRPCServerFactory extends SitePageFactory
 	}
 
 	// }}}
-	// {{{ protected function resolveLayout()
+	// {{{ protected function getLayout()
 
-	protected function resolveLayout($app, $source)
+	protected function getLayout($source)
 	{
-		return new SiteXMLRPCServerLayout($app);
+		return new SiteXMLRPCServerLayout($this->app);
 	}
 
 	// }}}
