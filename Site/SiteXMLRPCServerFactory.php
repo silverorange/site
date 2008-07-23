@@ -12,7 +12,7 @@ class SiteXMLRPCServerFactory extends SitePageFactory
 {
 	// {{{ public function get()
 
-	public function ($source, SiteLayout $layout = null)
+	public function get($source, SiteLayout $layout = null)
 	{
 		$layout = ($layout === null) ? $this->getLayout($source) : $layout;
 		$map = $this->getPageMap();
