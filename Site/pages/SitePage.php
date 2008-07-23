@@ -36,27 +36,6 @@ class SitePage extends SiteAbstractPage
 	}
 
 	// }}}
-	// {{{ public function setSource()
-
-	/**
-	 * Sets the source string of this page
-	 *
-	 * This is the Apache rewritten query string passed to the page factory. It
-	 * is the visible part of the URL after the base href and excluding
-	 * additional query parameters.
-	 *
-	 * Note: Ideally, the source string would be set in the constructor of
-	 * this class and would only have a public accessor method. A setter
-	 * method exists here for backwards compatibility.
-	 *
-	 * @param string $source
-	 */
-	public function setSource($source)
-	{
-		$this->source = $source;
-	}
-
-	// }}}
 
 	// build phase
 	// {{{ public function build()
