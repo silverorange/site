@@ -28,16 +28,6 @@ class SiteArticlePageFactory extends SitePageFactory
 	 */
 	protected $default_article_page = 'SiteArticlePage';
 
-	/**
-	 * The number of path prefixes to strip from the source string to get the
-	 * article tree path
-	 *
-	 * @var integer
-	 *
-	 * @see SiteArticlePageFactory::setPathPrefixLength()
-	 */
-	protected $path_prefix_length = 0;
-
 	// }}}
 	// {{{ public function get()
 
@@ -58,8 +48,6 @@ class SiteArticlePageFactory extends SitePageFactory
 		// create page object
 		$page = $this->getPage($page_info['page'], $layout,
 			$page_info['arguments']);
-
-		$page->setSource($source);
 
 		// create article and path
 		$article = $this->getArticle($page_info['path']);
@@ -135,27 +123,6 @@ class SiteArticlePageFactory extends SitePageFactory
 	}
 
 	// }}}
-	// {{{ public function setPathPrefixLength()
-
-	/**
-	 * Sets the number of path prefixes to strip from the source string to
-	 * get the article tree path
-	 *
-	 * This allows subclassed page factories to load articles in the article
-	 * tree at a source string prefix. For example, the root article can be
-	 * located at 'article/' instead of '/'.
-	 *
-	 * By default, no prefixes are stripped.
-	 *
-	 * @param integer $length the number of path prefixes to strip from the
-	 *                         source string to get the article tree path.
-	 */
-	public function setPathPrefixLength($length)
-	{
-		$this->path_prefix_length = $length;
-	}
-
-	// }}}
 	// {{{ protected function getPageInfo()
 
 	/**
@@ -168,14 +135,6 @@ class SiteArticlePageFactory extends SitePageFactory
 	 */
 	protected function getPageInfo($source)
 	{
-		// strip path prefixes to get article tree path
-		$source_exp = explode('/', $source);
-		for ($i = 0; $i < $this->path_prefix_length; $i++) {
-			array_shift($source_exp);
-		}
-
-		$source = implode('/', $source_exp);
-
 		$info = array(
 			'page'       => $this->default_page_class,
 			'path'       => $source,
