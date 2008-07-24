@@ -4,6 +4,7 @@ require_once 'Swat/SwatHtmlTag.php';
 require_once 'Swat/SwatString.php';
 require_once 'Site/dataobjects/SiteArticle.php';
 require_once 'Site/pages/SitePathPage.php';
+require_once 'Site/exceptions/SiteException.php';
 
 /**
  * Article page decorator
@@ -56,6 +57,10 @@ class SiteArticlePage extends SitePathPage
 
 	protected function initArticle()
 	{
+		if (!($this->article instanceof SiteArticle))
+			throw new SiteException('SiteArticlePage must have an article '.
+				'set.');
+
 		$this->layout->selected_article_id = $this->article->id;
 	}
 
