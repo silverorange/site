@@ -96,7 +96,6 @@ class SiteAdDetails extends AdminIndex
 		$toolbar->setToolLinkValues($this->ad->id);
 
 		$this->buildHelp();
-		$this->buildNavBar();
 	}
 
 	// }}}
@@ -181,10 +180,11 @@ class SiteAdDetails extends AdminIndex
 	}
 
 	// }}}
-	// {{{ private function buildNavBar()
+	// {{{ protected function buildNavBar()
 
-	private function buildNavBar()
+	protected function buildNavBar()
 	{
+		parent::buildNavBar();
 		$this->navbar->addEntry(new SwatNavBarEntry($this->ad->title));
 	}
 

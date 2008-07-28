@@ -95,8 +95,6 @@ class SiteArticleDelete extends AdminDBDelete
 
 		if ($dep->getStatusLevelCount(AdminDependency::DELETE) == 0)
 			$this->switchToCancelButton();
-
-		$this->buildNavBar();
 	}
 
 	// }}}
@@ -131,6 +129,8 @@ class SiteArticleDelete extends AdminDBDelete
 
 	protected function buildNavBar()
 	{
+		parent::buildNavBar();
+
 		$this->navbar->popEntry();
 
 		if ($this->single_delete) {
