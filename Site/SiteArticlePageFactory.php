@@ -29,7 +29,7 @@ class SiteArticlePageFactory extends SitePageFactory
 	protected $default_article_page = 'SiteArticlePage';
 
 	// }}}
-	// {{{ public function get()
+	// {{{ public function resolvePage()
 
 	/**
 	 * Resolves a page object from a source string
@@ -39,14 +39,14 @@ class SiteArticlePageFactory extends SitePageFactory
 	 *
 	 * @return SiteAbstractPage the page for the given source string.
 	 */
-	public function get($source, SiteLayout $layout = null)
+	public function resolvePage($source, SiteLayout $layout = null)
 	{
-		$layout = ($layout === null) ? $this->getLayout($source) : $layout;
+		$layout = ($layout === null) ? $this->resolveLayout($source) : $layout;
 
 		$page_info = $this->getPageInfo($source);
 
 		// create page object
-		$page = $this->getPage($page_info['page'], $layout,
+		$page = $this->instantiatePage($page_info['page'], $layout,
 			$page_info['arguments']);
 
 		// create article and path
@@ -289,11 +289,11 @@ class SiteArticlePageFactory extends SitePageFactory
 		$sql = $this->getArticleSql($article_id);
 
 		// load dataobject
-		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
+		$wrapper  = SwatDBClassMap::get('SiteArticleWrapper');
 		$articles = SwatDB::query($this->app->db, $sql, $wrapper);
-		$article = $articles->getFirst();
+		$article  = $articles->getFirst();
 
-		if ($article  === null) {
+		if ($article === null) {
 			throw new SiteNotFoundException(
 				sprintf('Failed to load article dataobject for article id ‘%s’',
 					$article_id));
