@@ -144,7 +144,7 @@ class SiteAccountEdit extends AdminDBEdit
 	}
 
 	// }}}
-	// {{{ private function buildNavBar()
+	// {{{ protected function buildNavBar()
 
 	protected function buildNavBar()
 	{

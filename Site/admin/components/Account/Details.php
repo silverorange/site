@@ -86,8 +86,6 @@ class SiteAccountDetails extends AdminIndex
 
 		$toolbar = $this->ui->getWidget('details_toolbar');
 		$toolbar->setToolLinkValues($this->id);
-
-		$this->buildNavBar();
 	}
 
 	// }}}
@@ -128,10 +126,12 @@ class SiteAccountDetails extends AdminIndex
 	}
 
 	// }}}
-	// {{{ private function buildNavBar()
+	// {{{ protected function buildNavBar()
 
-	private function buildNavBar()
+	protected function buildNavBar()
 	{
+		parent::buildNavBar();
+
 		$fullname = $this->getAccount()->getFullname();
 		$this->navbar->addEntry(new SwatNavBarEntry($fullname));
 		$this->title = $fullname;
