@@ -5,12 +5,12 @@
 	<widget class="SwatFrame" id="index_frame">
 		<property name="title" translatable="yes">Sidebar</property>
 		<widget class="SwatToolbar" id="index_toolbar">
-			<widget class="SwatToolLink">
+			<widget class="SwatToolLink" id="add_tool_link">
 				<property name="title" translatable="yes">Add Gadget</property>
 				<property name="link">Sidebar/Add</property>
 				<property name="stock_id">create</property>
 			</widget>
-			<widget class="SwatToolLink">
+			<widget class="SwatToolLink" id="order_tool_link">
 				<property name="title" translatable="yes">Change Order</property>
 				<property name="link">Sidebar/Order</property>
 			</widget>
