@@ -10,9 +10,9 @@ require_once 'Site/SitePageFactory.php';
  */
 class SiteXMLRPCServerFactory extends SitePageFactory
 {
-	// {{{ public function get()
+	// {{{ public function resolvePage()
 
-	public function get($source, SiteLayout $layout = null)
+	public function resolvePage($source, SiteLayout $layout = null)
 	{
 		$layout = ($layout === null) ? $this->getLayout($source) : $layout;
 		$map = $this->getPageMap();
@@ -22,7 +22,7 @@ class SiteXMLRPCServerFactory extends SitePageFactory
 		}
 
 		$class = $map[$source];
-		return $this->getPage($class, $layout);
+		return $this->instantiatePage($class, $layout);
 	}
 
 	// }}}
