@@ -26,6 +26,16 @@ class SiteArticlePage extends SitePathPage
 	protected $article;
 
 	// }}}
+	// {{{ public function __construct()
+
+	public function __construct(SiteAbstractPage $page)
+	{
+		parent::__construct($page);
+		$this->article = new SiteArticle();
+		$this->article->setDatabase($this->app->db);
+	}
+
+	// }}}
 	// {{{ public function setArticle()
 
 	/**

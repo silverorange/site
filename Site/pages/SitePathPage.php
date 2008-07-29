@@ -25,6 +25,15 @@ class SitePathPage extends SitePageDecorator
 	protected $path;
 
 	// }}}
+	// {{{ public function __construct()
+
+	public function __construct(SiteAbstractPage $page)
+	{
+		parent::__construct($page);
+		$this->path = new SitePath();
+	}
+
+	// }}}
 	// {{{ public function setPath()
 
 	/**
