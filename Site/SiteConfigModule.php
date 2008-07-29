@@ -247,7 +247,7 @@ class SiteConfigModule extends SiteApplicationModule
 	 * If there is no database module, the settings values of this config
 	 * module can not be saved.
 	 *
-	 * @param array $settings A array of config settings to save.
+	 * @param array $settings An array of config settings to save.
 	 */
 	public function save(array $settings)
 	{
@@ -636,7 +636,7 @@ class SiteConfigModule extends SiteApplicationModule
 	 *
 	 * Values are saved in the <em>ConfigSetting</em> table.
 	 *
-	 * @param array $settings A array of config settings to save.
+	 * @param array $settings An array of config settings to save.
 	 */
 	protected function saveDatabaseValues(array $settings)
 	{
@@ -688,7 +688,7 @@ class SiteConfigModule extends SiteApplicationModule
 	 * Values are saved in the <em>InstanceConfigSetting</em> table with a
 	 * binding to the current site instance.
 	 *
-	 * @param array $settings A array of config settings to save.
+	 * @param array $settings An array of config settings to save.
 	 */
 	protected function saveInstanceValues(array $settings)
 	{
