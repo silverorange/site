@@ -246,17 +246,19 @@ class SiteConfigModule extends SiteApplicationModule
 	 *
 	 * If there is no database module, the settings values of this config
 	 * module can not be saved.
+	 *
+	 * @param array $settings A array of config settings to save.
 	 */
-	public function save()
+	public function save(array $settings)
 	{
 		// if there is no database module, do nothing
 		if (!$this->app->hasModule('SiteDatabaseModule'))
 			return;
 
 		if ($this->app->getInstance() === null) {
-			$this->saveDatabaseValues();
+			$this->saveDatabaseValues($settings);
 		} else {
-			$this->saveInstanceValues();
+			$this->saveInstanceValues($settings);
 		}
 	}
 
@@ -633,8 +635,10 @@ class SiteConfigModule extends SiteApplicationModule
 	 * Saves all configuration values in this config module to the database
 	 *
 	 * Values are saved in the <em>ConfigSetting</em> table.
+	 *
+	 * @param array $settings A array of config settings to save.
 	 */
-	protected function saveDatabaseValues()
+	protected function saveDatabaseValues(array $settings)
 	{
 		// if there is no database module, do nothing
 		if (!$this->app->hasModule('SiteDatabaseModule'))
@@ -647,11 +651,9 @@ class SiteConfigModule extends SiteApplicationModule
 		try {
 			foreach ($this->sections as $section_name => $section) {
 				foreach ($section as $name => $value) {
-					// only save values set at runtime
-					if ($this->getSource($section_name, $name) ===
-						self::SOURCE_RUNTIME) {
+					$qualified_name = $section_name.'.'.$name;
 
-						$qualified_name = $section_name.'.'.$name;
+					if (in_array($qualified_name, $settings)) {
 
 						$sql = sprintf('delete from ConfigSetting
 							where name = %s',
@@ -685,8 +687,10 @@ class SiteConfigModule extends SiteApplicationModule
 	 *
 	 * Values are saved in the <em>InstanceConfigSetting</em> table with a
 	 * binding to the current site instance.
+	 *
+	 * @param array $settings A array of config settings to save.
 	 */
-	protected function saveInstanceValues()
+	protected function saveInstanceValues(array $settings)
 	{
 		$instance = $this->app->instance->getId();
 
@@ -697,11 +701,9 @@ class SiteConfigModule extends SiteApplicationModule
 		try {
 			foreach ($this->sections as $section_name => $section) {
 				foreach ($section as $name => $value) {
-					// only save values set at runtime
-					if ($this->getSource($section_name, $name) ===
-						self::SOURCE_RUNTIME) {
+					$qualified_name = $section_name.'.'.$name;
 
-						$qualified_name = $section_name.'.'.$name;
+					if (in_array($qualified_name, $settings)) {
 						$sql = sprintf('delete from InstanceConfigSetting
 							where instance = %s and name = %s',
 							$db->quote($instance, 'integer'),
