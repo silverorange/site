@@ -649,27 +649,21 @@ class SiteConfigModule extends SiteApplicationModule
 
 		$transaction = new SwatDBTransaction($db);
 		try {
-			foreach ($this->sections as $section_name => $section) {
-				foreach ($section as $name => $value) {
-					$qualified_name = $section_name.'.'.$name;
+			foreach ($settings as $setting) {
+				$sql = sprintf('delete from ConfigSetting
+					where name = %s',
+					$db->quote($setting, 'text'));
 
-					if (in_array($qualified_name, $settings)) {
+				SwatDB::exec($db, $sql);
 
-						$sql = sprintf('delete from ConfigSetting
-							where name = %s',
-							$db->quote($qualified_name, 'text'));
+				list($section, $name) = split('\.', $setting);
+				if ($this->$section->$name != '') {
+					$sql = sprintf('insert into ConfigSetting
+						(name, value) values (%s, %s)',
+						$db->quote($setting, 'text'),
+						$db->quote($this->$section->$name, 'text'));
 
-						SwatDB::exec($db, $sql);
-
-						if ($value != '') {
-							$sql = sprintf('insert into ConfigSetting
-								(name, value) values (%s, %s)',
-								$db->quote($qualified_name, 'text'),
-								$db->quote($value, 'text'));
-
-							SwatDB::exec($db, $sql);
-						}
-					}
+					SwatDB::exec($db, $sql);
 				}
 			}
 			$transaction->commit();
@@ -699,30 +693,26 @@ class SiteConfigModule extends SiteApplicationModule
 
 		$transaction = new SwatDBTransaction($db);
 		try {
-			foreach ($this->sections as $section_name => $section) {
-				foreach ($section as $name => $value) {
-					$qualified_name = $section_name.'.'.$name;
+			foreach ($settings as $setting) {
+				$sql = sprintf('delete from InstanceConfigSetting
+					where instance = %s and name = %s',
+					$db->quote($instance, 'integer'),
+					$db->quote($setting, 'text'));
 
-					if (in_array($qualified_name, $settings)) {
-						$sql = sprintf('delete from InstanceConfigSetting
-							where instance = %s and name = %s',
-							$db->quote($instance, 'integer'),
-							$db->quote($qualified_name, 'text'));
+				SwatDB::exec($db, $sql);
 
-						SwatDB::exec($db, $sql);
+				list($section, $name) = split('\.', $setting);
+				if ($this->$section->$name != '') {
+					$sql = sprintf('insert into InstanceConfigSetting
+						(name, value, instance) values (%s, %s, %s)',
+						$db->quote($setting, 'text'),
+						$db->quote($this->$section->$name, 'text'),
+						$db->quote($instance, 'integer'));
 
-						if ($value != '') {
-							$sql = sprintf('insert into InstanceConfigSetting
-								(name, value, instance) values (%s, %s, %s)',
-								$db->quote($qualified_name, 'text'),
-								$db->quote($value, 'text'),
-								$db->quote($instance, 'integer'));
-
-							SwatDB::exec($db, $sql);
-						}
-					}
+					SwatDB::exec($db, $sql);
 				}
 			}
+
 			$transaction->commit();
 		} catch (SwatDBException $e) {
 			$transaction->rollback();
