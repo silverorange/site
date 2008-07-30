@@ -137,7 +137,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function increment()
 
-	public function increment($key, $value)
+	public function increment($key, $value = 1)
 	{
 		$key = $this->key_prefix.$key;
 		return $this->memcache->increment($key, $value);
@@ -146,7 +146,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function decrement()
 
-	public function decrement($key, $value)
+	public function decrement($key, $value = 1)
 	{
 		$key = $this->key_prefix.$key;
 		return $this->memcache->decrement($key, $value);
