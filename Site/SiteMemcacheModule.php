@@ -191,7 +191,14 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function getNs($ns, $key, &$flags = 0)
 	{
-		$key = $this->getNsKey($ns, $key);
+		if (is_array($key)) {
+			foreach ($key as &$the_key) {
+				$the_key = $this->getNsKey($ns, $the_key);
+			}
+		} else {
+			$key = $this->getNsKey($ns, $key);
+		}
+
 		return $this->get($key, $flags);
 	}
 
@@ -236,15 +243,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 			}
 		}
 
-		if (is_array($key)) {
-			foreach ($key as &$the_key) {
-				$the_key = $ns.'_'.$id.'_'.$the_key;
-			}
-		} else {
-			$key = $ns.'_'.$id.'_'.$key;
-		}
-
-		return $key;
+		return $ns.'_'.$id.'_'.$key;
 	}
 
 	// }}}
