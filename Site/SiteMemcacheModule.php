@@ -126,7 +126,14 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function get($key, &$flags = 0)
 	{
-		$key = $this->key_prefix.$key;
+		if (is_array($key)) {
+			foreach ($key as &$the_key) {
+				$the_key = $this->key_prefix.$the_key;
+			}
+		} else {
+			$key = $this->key_prefix.$key;
+		}
+
 		return $this->memcache->get($key, $flags);
 	}
 
