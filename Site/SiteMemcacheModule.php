@@ -208,6 +208,8 @@ class SiteMemcacheModule extends SiteApplicationModule
 	public function flushNs($ns)
 	{
 		$key = $ns.'_key';
+
+		// this could return false, but we don't care
 		$this->increment($key);
 	}
 
