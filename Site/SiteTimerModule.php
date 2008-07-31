@@ -112,7 +112,7 @@ class SiteTimerModule extends SiteApplicationModule
 		echo '<dl style="position: fixed; top: 10px; right: 10px; ';
 		echo 'opacity: 0.8; padding: 1em; font-family: sans-serif; ';
 		echo 'font-weight: bold; color: #000; border: 2px solid #666; ';
-		echo 'background: #eee; font-size: 11px;">';
+		echo 'background: #eee; font-size: 11px; z-index: 200;">';
 
 		$dt_tag = new SwatHtmlTag('dt');
 		$dd_tag = new SwatHtmlTag('dd');
