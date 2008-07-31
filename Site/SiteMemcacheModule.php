@@ -236,7 +236,15 @@ class SiteMemcacheModule extends SiteApplicationModule
 			}
 		}
 
-		return $ns.'_'.$id.'_'.$key;
+		if (is_array($key)) {
+			foreach ($key as &$the_key) {
+				$the_key = $ns.'_'.$id.'_'.$the_key;
+			}
+		} else {
+			$key = $ns.'_'.$id.'_'.$key;
+		}
+
+		return $key;
 	}
 
 	// }}}
