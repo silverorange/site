@@ -44,6 +44,11 @@ class SiteMemcacheModule extends SiteApplicationModule
 	 */
 	protected $key_prefix = '';
 
+	/**
+	 * @var array
+	 */
+	protected $ns_id_cache = array();
+
 	// }}}
 	// {{{ public function init()
 
@@ -209,8 +214,11 @@ class SiteMemcacheModule extends SiteApplicationModule
 	{
 		$key = $ns.'_key';
 
-		// this could return false, but we don't care
-		$this->increment($key);
+		$id = $this->increment($key);
+
+		if ($id !== false) {
+			$this->ns_id_cache[$ns] = $id;
+		}
 	}
 
 	// }}}
@@ -218,10 +226,16 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	protected function getNsKey($ns, $key)
 	{
-		$id = $this->get($ns.'_key');
-		if ($id === false) {
-			$this->set($ns.'_key', 0);
+		if (array_key_exists($ns, $this->ns_id_cache)) {
+			$id = $this->ns_id_cache[$ns];
+		} else {
+			$id = $this->get($ns.'_key');
+			if ($id === false) {
+				$id = 0;
+				$this->set($ns.'_key', $id);
+			}
 		}
+
 		return $ns.'_'.$id.'_'.$key;
 	}
 
