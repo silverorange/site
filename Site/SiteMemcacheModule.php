@@ -193,7 +193,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function deleteNs()
 
-	public function deleteNs($key, $timeout = 0)
+	public function deleteNs($ns, $key, $timeout = 0)
 	{
 		$key = $this->getNsKey($ns, $key);
 		return $this->delete($key, $timeout);
