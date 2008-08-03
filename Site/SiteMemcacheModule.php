@@ -31,6 +31,11 @@ class SiteMemcacheModule extends SiteApplicationModule
 	 */
 	public $server = 'localhost';
 
+	/**
+	 * @var string
+	 */
+	public $app_ns = '';
+
 	// }}}
 	// {{{ protected properties
 
@@ -59,10 +64,16 @@ class SiteMemcacheModule extends SiteApplicationModule
 				'extension to be loaded.');
 		}
 
+		if ($this->app_ns == '') {
+			throw new SiteException('Application namespace '.
+				'(SiteMemcacheModule::$app_ns) must be set to initialize the '.
+				'memcache module.');
+		}
+
 		$this->memcache = new Memcache();
 		$this->memcache->pconnect($this->server);
 
-		$this->key_prefix = $this->app->id.'_';
+		$this->key_prefix = $this->app_ns.'_';
 
 		if ($this->app->hasModule('SiteMultipleInstanceModule')) {
 			$instance = $this->app->getModule('SiteMultipleInstanceModule');
