@@ -11,9 +11,10 @@ require_once 'Site/exceptions/SiteException.php';
  *
  * There are three levels of namespacing implemented to allow easier use of
  * memcached in Site applications. The first namespace level is the application
- * id. The second level is the application instance id. Both the first and
- * second level of namespace are set automatically and do not need to be
- * specified.
+ * as specified in {@link SiteMemcacheModule::$app_ns}. The second level is the
+ * application instance id. The application namespace is usually set during the
+ * configuration step of an application. The instance namespace is set
+ * automatically.
  *
  * The third namespacing level is optional and is used with the *Ns methods.
  * Optional namespacing allows flushing of the cache on a per-namespace level.
