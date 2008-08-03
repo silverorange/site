@@ -225,6 +225,10 @@ class Site
 
 			// from address for automated emails sent by the system
 			'email.service_address'    => null,
+
+			// memcache
+			'memcache.server'          => 'localhost',
+			'memcache.app_ns'          => '',
 		);
 	}
 
