@@ -80,8 +80,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		}
 
 
-		if (!$this->isVisible($source, $article)) {
-			$page = $this->getNotVisiblePage($layout);
+		if (!$this->isVisible($article, $source)) {
+			$page = $this->getNotVisiblePage($article, $layout);
 			$page->setSource($source);
 			if ($page instanceof SiteArticlePage) {
 				$page->setPath($article_path);
@@ -235,7 +235,7 @@ class SiteArticlePageFactory extends SitePageFactory
 	 *
 	 * @return boolean
 	 */
-	protected function isVisible($source, SiteArticle $article)
+	protected function isVisible(SiteArticle $article, $source)
 	{
 		$sql = sprintf('select count(id) from EnabledArticleView
 			where id = %s',
@@ -251,7 +251,8 @@ class SiteArticlePageFactory extends SitePageFactory
 	/**
 	 * @return SiteAbstractPage
 	 */
-	protected function getNotVisiblePage(SiteLayout $layout)
+	protected function getNotVisiblePage(SiteArticle $article,
+		SiteLayout $layout)
 	{
 		// sub-classes can return a custom page here
 
