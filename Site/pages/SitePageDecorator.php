@@ -30,14 +30,6 @@ abstract class SitePageDecorator extends SiteAbstractPage
 	}
 
 	// }}}
-	// {{{ protected function createLayout()
-
-	protected function createLayout()
-	{
-		return $this->page->createLayout();
-	}
-
-	// }}}
 	// {{{ public function setSource()
 
 	/**
@@ -57,6 +49,18 @@ abstract class SitePageDecorator extends SiteAbstractPage
 	{
 		$this->source = $source;
 		$this->page->setSource($source);
+	}
+
+	// }}}
+	// {{{ protected function setLayout()
+
+	/**
+	 * @param SiteLayout $layout
+	 */
+	protected function setLayout(SiteLayout $layout)
+	{
+		$this->layout = $layout;
+		$this->page->setLayout($layout);
 	}
 
 	// }}}
