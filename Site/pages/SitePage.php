@@ -36,6 +36,14 @@ class SitePage extends SiteAbstractPage
 	}
 
 	// }}}
+	// {{{ protected function createLayout()
+
+	protected function createLayout()
+	{
+		return new SiteLayout($this->app, 'Site/layouts/xhtml/default.php');
+	}
+
+	// }}}
 
 	// build phase
 	// {{{ public function build()

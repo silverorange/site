@@ -37,6 +37,7 @@ abstract class SiteAbstractPage extends SiteObject
 	 *
 	 * @see SitePage::__construct()
 	 * @see SitePage::createLayout()
+	 * @see SiteAbstractPage::setLayout()
 	 */
 	public $layout;
 
@@ -107,11 +108,14 @@ abstract class SiteAbstractPage extends SiteObject
 	}
 
 	// }}}
-	// {{{ protected function createLayout()
+	// {{{ protected function setLayout()
 
-	protected function createLayout()
+	/**
+	 * @param SiteLayout $layout
+	 */
+	protected function setLayout(SiteLayout $layout)
 	{
-		return new SiteLayout($this->app, 'Site/layouts/xhtml/default.php');
+		$this->layout = $layout;
 	}
 
 	// }}}
