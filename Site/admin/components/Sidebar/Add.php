@@ -90,6 +90,10 @@ class SiteSidebarAdd extends AdminDBEdit
 		$this->gadget_instance->instance = $this->app->getInstanceId();
 		$this->gadget_instance->save();
 
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->delete('gadget_instances');
+		}
+
 		$gadget = SiteGadgetFactory::get($this->app, $this->gadget_instance);
 
 		$message = new SwatMessage(sprintf(

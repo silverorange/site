@@ -31,6 +31,10 @@ class SiteSidebarDelete extends AdminDBDelete
 
 		$num = SwatDB::exec($this->app->db, $sql);
 
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->delete('gadget_instances');
+		}
+
 		$locale = SwatI18NLocale::get();
 		$message = new SwatMessage(sprintf(Site::ngettext(
 			'One gadget has been removed from the sidebar.',

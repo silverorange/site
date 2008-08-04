@@ -231,6 +231,10 @@ class SiteSidebarSettings extends AdminDBEdit
 		// save wrapper
 		$this->gadget_instance->setting_values->save();
 
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->delete('gadget_instances');
+		}
+
 		$message = new SwatMessage(sprintf(
 			Site::_('“%s” has been saved.'),
 			$this->gadget->getTitle()));
