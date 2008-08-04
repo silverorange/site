@@ -253,10 +253,6 @@ class SiteArticlePageFactory extends SitePageFactory
 	 */
 	protected function getNotVisiblePage(SiteLayout $layout)
 	{
-		require_once 'Site/pages/SiteHttpErrorPage.php';
-		$page = new SiteHttpErrorPage($this->app, $layout);
-		$page->setStatus(404);
-		return $page;
 		// sub-classes can return a custom page here
 
 		// by default, throw an excpetion
