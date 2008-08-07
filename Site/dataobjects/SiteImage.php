@@ -131,6 +131,7 @@ class SiteImage extends SwatDBDataObject
 
 			if ($image_set_id !== null &&
 				array_key_exists($image_set_id, self::$image_set_cache)) {
+
 				$this->setSubDataObject('image_set',
 					self::$image_set_cache[$image_set_id]);
 
@@ -187,6 +188,27 @@ class SiteImage extends SwatDBDataObject
 	protected function getImageDimensionBindingWrapperClassName()
 	{
 		return SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+	}
+
+	// }}}
+	// {{{ protected function getSerializableSubDataObjects()
+
+	protected function getSerializableSubDataObjects()
+	{
+		return array(
+		);
+	}
+
+	// }}}
+	// {{{ protected function getSerializablePrivateProperties()
+
+	protected function getSerializablePrivateProperties()
+	{
+		return array_merge(parent::getSerializablePrivateProperties(), array(
+			'image_set_shortname',
+			'image_set',
+			'dimension_bindings',
+		));
 	}
 
 	// }}}

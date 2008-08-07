@@ -132,6 +132,16 @@ class SiteImageSet extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getSerializableSubDataObjects()
+
+	protected function getSerializableSubDataObjects()
+	{
+		return array(
+			'dimensions',
+		);
+	}
+
+	// }}}
 
 	// loader methods
 	// {{{ protected function loadDimensions()

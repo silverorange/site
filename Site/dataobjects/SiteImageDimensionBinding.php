@@ -128,6 +128,16 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getSerializablePrivateProperties()
+
+	protected function getSerializablePrivateProperties()
+	{
+		return array_merge(parent::getSerializablePrivateProperties(), array(
+			'image_type',
+		));
+	}
+
+	// }}}
 }
 
 ?>
