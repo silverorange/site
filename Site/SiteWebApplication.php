@@ -226,12 +226,12 @@ class SiteWebApplication extends SiteApplication
 	 * application specific code. Subclasses should implement logic here to
 	 * decide which page sub-class to instantiate.
 	 *
-	 * @param SitePage $page the page to load as a replacement of the current
+	 * @param SiteAbstractPage $page the page to load as a replacement of the current
 	 *                        page.
 	 *
-	 * @see SitePage
+	 * @see SiteAbstractPage
 	 */
-	public function setPage(SitePage $page)
+	public function setPage(SiteAbstractPage $page)
 	{
 		$this->page = $page;
 		$this->page->layout->init();
