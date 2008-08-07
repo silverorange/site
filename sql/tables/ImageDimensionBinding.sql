@@ -4,5 +4,6 @@ create table ImageDimensionBinding (
 	image_type integer not null references ImageType(id),
 	width integer not null,
 	height integer not null,
+	filesize integer,
 	primary key(image, dimension)
 );
