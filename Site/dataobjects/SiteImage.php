@@ -246,6 +246,15 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getFilesize()
+
+	public function getFilesize($dimension_shortname)
+	{
+		$binding = $this->getDimensionBinding($dimension_shortname);
+		return $binding->filesize;
+	}
+
+	// }}}
 	// {{{ public function getFilename()
 
 
@@ -655,6 +664,7 @@ class SiteImage extends SwatDBDataObject
 		$binding->image_type = $dimension->default_type->id;
 		$binding->width      = $imagick->getImageWidth();
 		$binding->height     = $imagick->getImageHeight();
+		$binding->filesize   = $imagick->getImageSize();
 		$binding->save();
 
 		$this->dimension_bindings->add($binding);
