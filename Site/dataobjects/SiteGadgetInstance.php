@@ -125,6 +125,16 @@ class SiteGadgetInstance extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getSerializableSubDataObjects()
+
+	protected function getSerializableSubDataObjects()
+	{
+		return array_merge(parent::getSerializableSubDataObjects(), array(
+			'setting_values',
+		));
+	}
+
+	// }}}
 }
 
 ?>
