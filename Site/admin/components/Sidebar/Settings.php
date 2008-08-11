@@ -200,46 +200,42 @@ class SiteSidebarSettings extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		// delete old setting values
-		$sql = sprintf('delete from GadgetInstanceSettingValue
-			where gadget_instance = %s',
-			$this->app->db->quote($this->id, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
-
-		// create new wrapper
-		$class_name =
-			SwatDBClassMap::get('SiteGadgetInstanceSettingValueWrapper');
-
-		$this->gadget_instance->setting_values = new $class_name();
-		$this->gadget_instance->setting_values->setDatabase($this->app->db);
-
-		// add new setting values to wrapper
+		// add and update setting values on wrapper
 		$class_name = SwatDBClassMap::get('SiteGadgetInstanceSettingValue');
 		$settings = $this->gadget->getSettings();
+		$setting_values = $this->gadget_instance->setting_values;
 		foreach ($settings as $id => $setting) {
 			$widget = $this->settings_widgets[$id];
 			if ($widget->value !== null) {
-				$setting_value = new $class_name();
-				$setting_value->name = $id;
-				$setting_value->setValue($setting->getType(), $widget->value);
-				$setting_value->gadget_instance = $this->gadget_instance;
-				$this->gadget_instance->setting_values->add($setting_value);
+				if (isset($setting_values[$id])) {
+					$setting_values[$id]->setValue($setting->getType(),
+						$widget->value);
+				} else {
+					$setting_value = new $class_name();
+					$setting_value->name = $id;
+					$setting_value->setValue($setting->getType(),
+						$widget->value);
+
+					$setting_value->gadget_instance = $this->gadget_instance;
+					$setting_values->add($setting_value);
+				}
 			}
 		}
 
 		// save wrapper
-		$this->gadget_instance->setting_values->save();
+		if ($this->gadget_instance->setting_values->isModified()) {
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->delete('gadget_instances');
+			}
 
-		if (isset($this->app->memcache)) {
-			$this->app->memcache->delete('gadget_instances');
+			$this->gadget_instance->setting_values->save();
+
+			$message = new SwatMessage(sprintf(
+				Site::_('“%s” has been saved.'),
+				$this->gadget->getTitle()));
+
+			$this->app->messages->add($message);
 		}
-
-		$message = new SwatMessage(sprintf(
-			Site::_('“%s” has been saved.'),
-			$this->gadget->getTitle()));
-
-		$this->app->messages->add($message);
 	}
 
 	// }}}

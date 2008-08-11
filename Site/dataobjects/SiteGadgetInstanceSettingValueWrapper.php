@@ -18,8 +18,11 @@ class SiteGadgetInstanceSettingValueWrapper extends SwatDBRecordsetWrapper
 	protected function init()
 	{
 		parent::init();
+
 		$this->row_wrapper_class =
 			SwatDBClassMap::get('SiteGadgetInstanceSettingValue');
+
+		$this->index_field = 'name';
 	}
 
 	// }}}
