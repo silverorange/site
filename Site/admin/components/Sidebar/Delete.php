@@ -31,7 +31,7 @@ class SiteSidebarDelete extends AdminDBDelete
 
 		$num = SwatDB::exec($this->app->db, $sql);
 
-		if (isset($this->app->memcache)) {
+		if ($num > 0 && isset($this->app->memcache)) {
 			$this->app->memcache->delete('gadget_instances');
 		}
 
