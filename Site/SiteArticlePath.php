@@ -44,10 +44,8 @@ class SiteArticlePath extends SitePath
 
 	protected function queryPath($app, $article_id)
 	{
-		$sql = sprintf('select * from getArticlePathInfo(%s)',
-			$app->db->quote($article_id, 'integer'));
-
-		return SwatDB::query($app->db, $sql);
+		return SwatDB::executeStoredProc($app->db, 'getArticlePathInfo',
+			$article_id);
 	}
 
 	// }}}
