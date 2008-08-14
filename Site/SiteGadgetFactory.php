@@ -243,9 +243,11 @@ class SiteGadgetFactory extends SwatObject
 	public static function getAvailable(SiteApplication $app)
 	{
 		if (self::$available_gadgets === null) {
-			self::$available_gadgets = array();
+			$reflectors          = array();
+			$gadget_classes      = array();
 			$instance_class_name = SwatDBClassMap::get('SiteGadgetInstance');
 
+			// get all gadget classes
 			foreach (self::getGadgetFiles() as $file) {
 				$filename = $file->getFilename();
 
@@ -261,12 +263,38 @@ class SiteGadgetFactory extends SwatObject
 						'"'.$class_name.'".');
 				}
 
-				if (!is_subclass_of($class_name, 'SiteGadget')) {
+				if (!is_subclass_of($class_name, 'SiteGadget') &&
+					$class_name !== 'SiteGadget') {
 					throw new SwatInvalidClassException(
 						'Gadget class "'.$class_name.'" was found but is not '.
-						'a subclass of SiteGadet.');
+						'a subclass of SiteGadget.');
 				}
 
+				$reflector = new ReflectionClass($class_name);
+				if ($reflector->isInstantiable()) {
+					$reflectors[$class_name]     = $reflector;
+					$gadget_classes[$class_name] = $class_name;
+				} else {
+					unset($reflector);
+				}
+			}
+
+			// merge parent classes
+			foreach ($gadget_classes as $key => $class_name) {
+				$parent = get_parent_class($class_name);
+				$last_parent = $class_name;
+				while (array_key_exists($parent, $gadget_classes)) {
+					unset($gadget_classes[$parent]);
+					$last_parent = $class_name;
+					$parent = get_parent_class($parent);
+				}
+				unset($gadget_classes[$class_name]);
+				$gadget_classes[$last_parent] = $class_name;
+			}
+
+			// build available list
+			self::$available_gadgets = array();
+			foreach ($gadget_classes as $key => $class_name) {
 				$mock_instance = new $instance_class_name();
 				$mock_instance->gadget = $class_name;
 
@@ -279,8 +307,12 @@ class SiteGadgetFactory extends SwatObject
 				$return_object->settings = $gadget->getSettings();
 				$return_object->ajax_proxy_map = $gadget->getAjaxProxyMap();
 
-				self::$available_gadgets[$class_name] = $return_object;
+				self::$available_gadgets[$key] = $return_object;
 			}
+
+			// clean up
+			unset($reflectors);
+			unset($gadget_classes);
 		}
 
 		return self::$available_gadgets;
