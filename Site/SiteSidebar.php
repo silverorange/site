@@ -4,7 +4,7 @@ require_once 'Swat/SwatHtmlTag.php';
 require_once 'Swat/SwatWidget.php';
 require_once 'Swat/SwatUIParent.php';
 require_once 'SwatDB/SwatDBReadaheadIterator.php';
-require_once 'Site/SiteGadget.php';
+require_once 'Site/gadgets/SiteGadget.php';
 
 /**
  * Sidebar widget that can contain multiple gadgets
