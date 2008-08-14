@@ -23,9 +23,9 @@ CREATE FUNCTION findArticle (param_source VARCHAR(255)) RETURNS INTEGER
 		WHILE local_pos != 0 DO
 			BEGIN
 				-- Get shortname from beginning of source string.
-				SET local_shortname = SUBSTRING(local_source FROM 0 FOR local_pos);
+				SET local_shortname = SUBSTRING(local_source FROM 1 FOR (local_pos - 1));
 				-- Get the remainder of the source string.
-				SET local_source = SUBSTRING(local_source FROM local_pos + 1 FOR character_length(local_source) - local_pos + 1);
+				SET local_source = SUBSTRING(local_source FROM local_pos + 1 FOR character_length(local_source) - local_pos);
 
 				-- Get the id of the parent
 				SELECT id INTO local_id
@@ -33,6 +33,10 @@ CREATE FUNCTION findArticle (param_source VARCHAR(255)) RETURNS INTEGER
 					WHERE (Article.parent = local_id OR (local_id is null AND parent is null))
 						AND shortname = local_shortname
 						AND id != 0;
+
+				IF local_id IS NULL THEN
+					RETURN NULL;
+				END IF;
 
 				-- Find next forward slash in the source string.
 				SET local_pos = POSITION('/' IN local_source);
