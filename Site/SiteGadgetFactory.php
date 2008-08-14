@@ -5,7 +5,7 @@ require_once 'Swat/exceptions/SwatClassNotFoundException.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/SiteApplication.php';
 require_once 'Site/dataobjects/SiteGadgetInstance.php';
-require_once 'Site/SiteGadget.php';
+require_once 'Site/gadgets/SiteGadget.php';
 
 /**
  * Handles creation of gadget objects
