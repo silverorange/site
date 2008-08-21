@@ -20,6 +20,6 @@ CREATE PROCEDURE getArticleNavBar(param_id INTEGER)
 		FROM Article
 			INNER JOIN Tree_Ids ON Article.id = Tree_Ids.id
 		ORDER BY Tree_Ids.displayorder desc;
-		
+
 		DROP TABLE Tree_Ids;
 	END;
