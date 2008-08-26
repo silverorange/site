@@ -7,11 +7,13 @@ require_once 'Swat/SwatErrorLogger.php';
  * link in the system error log to the details file
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteErrorLogger extends SwatErrorLogger
 {
+	// {{{ protected properties
+
 	/**
 	 * Location in which to store detailed error logs
 	 *
@@ -30,6 +32,9 @@ class SiteErrorLogger extends SwatErrorLogger
 	 */
 	protected $base_uri;
 
+	// }}}
+	// {{{ public function __construct()
+
 	/**
 	 * Creates a new error loggger
 	 *
@@ -41,6 +46,9 @@ class SiteErrorLogger extends SwatErrorLogger
 		$this->log_location = $log_location;
 		$this->base_uri = $base_uri;
 	}
+
+	// }}}
+	// {{{ public function log()
 
 	/**
 	 * Logs an error
@@ -101,10 +109,15 @@ class SiteErrorLogger extends SwatErrorLogger
 		$this->logSummary($summary);
 	}
 
+	// }}}
+	// {{{ protected function logSummary()
+
 	protected function logSummary($summary)
 	{
 		error_log($summary, 0);
 	}
+
+	// }}}
 }
 
 ?>
