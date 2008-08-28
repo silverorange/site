@@ -27,10 +27,11 @@ function SiteTagEntry(id, data_store, initial_selected_tag_array)
 	this.selected_tag_array = [];
 	this.new_tag_array = [];
 	this.input_element = document.getElementById(this.id + '_value');
-	this.array_element = document.getElementById(this.id + '_array');
+	this.main_container = document.getElementById(this.id);
+/*	this.array_element = document.getElementById(this.id + '_array');*/
 
 	YAHOO.util.Event.onContentReady(
-		this.id + '_value', this.handleOnAvailable, this, true);
+		this.id, this.handleOnAvailable, this, true);
 }
 
 // }}}
@@ -41,6 +42,14 @@ function SiteTagEntry(id, data_store, initial_selected_tag_array)
  */
 SiteTagEntry.prototype.handleOnAvailable = function()
 {
+	// create list of selected tags
+	this.array_element = document.createElement('ul');
+	this.array_element.className = 'site-tag-array';
+	this.array_element.id = this.id + '_array';
+
+	this.main_container.insertBefore(this.array_element,
+		this.main_container.firstChild);
+
 	// create auto-complete widget
 	this.auto_complete = new YAHOO.widget.AutoComplete(
 		this.input_element, this.id + '_container', this.data_store, {
@@ -73,13 +82,13 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 
 	var img_tag = document.createElement('img');
 	img_tag.src = 'packages/swat/images/swat-tool-link-create.png';
-	img_tag.title = 'Add Tag';
+	img_tag.title = SiteTagEntry.add_text;
 	img_tag.alt = '';
 	img_tag.className = 'add-tag';
 	this.a_tag.appendChild(img_tag);
 
-	document.getElementById(this.id).insertBefore(this.a_tag,
-		document.getElementById(this.id + '_container'));
+	this.input_element.parentNode.insertBefore(this.a_tag,
+		this.input_element.nextSibling);
 
 	// initialize values passed in
 	for (var i = 0; i < this.initial_selected_tag_array.length; i++) {
@@ -142,7 +151,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	if (tag_name.length == 0)
 		return;
 
-	for (i = 0; i < this.selected_tag_array.length; i++) {
+	for (var i = 0; i < this.selected_tag_array.length; i++) {
 		var tag = this.selected_tag_array[i][1];
 		if (tag.toUpperCase() == tag_name.toUpperCase()) {
 			this.input_element.value = '';
@@ -150,7 +159,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 		}
 	}
 
-	for (i = 0; i < this.new_tag_array.length; i++) {
+	for (var i = 0; i < this.new_tag_array.length; i++) {
 		var tag = this.new_tag_array[i];
 		if (tag.toUpperCase() == tag_name.toUpperCase()) {
 			this.input_element.value = '';
@@ -159,7 +168,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	}
 
 	if (this.data_store.data) {
-		for (i = 0; i < this.data_store.data.length; i++) {
+		for (var i = 0; i < this.data_store.data.length; i++) {
 			var tag = this.data_store.data[i][1];
 			if (tag.toUpperCase() == tag_name.toUpperCase()) {
 				// get tag title
@@ -194,6 +203,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	// create new array node
 	var li_tag = document.createElement('li');
 	li_tag.id = this.id + '_tag_' + tag_name;
+	li_tag.className = 'site-tag-last';
 	YAHOO.util.Dom.setStyle(li_tag, 'opacity', 0);
 
 	var anchor_tag = document.createElement('a');
@@ -220,7 +230,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 		var title_node = document.createTextNode(
 			title + ' ' + SiteTagEntry.new_text + ' ');
 
-		li_tag.className = 'new-tag';
+		YAHOO.util.Dom.addClass(li_tag, 'new-tag');
 		li_tag.appendChild(hidden_tag);
 		this.new_tag_array.push(tag_name);
 	} else {
@@ -236,6 +246,10 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	li_tag.appendChild(anchor_tag);
 
 	// add array node
+	if (this.array_element.lastChild) {
+		YAHOO.util.Dom.removeClass(this.array_element.lastChild,
+			'site-tag-last');
+	}
 	this.array_element.appendChild(li_tag);
 
 	var in_attributes = { opacity: { from: 0, to: 1 } };
@@ -284,7 +298,7 @@ SiteTagEntry.prototype.removeTag = function(tag_name)
 		out_animation.animate();
 	}
 
-	for (i = 0; i < this.selected_tag_array.length; i++) {
+	for (var i = 0; i < this.selected_tag_array.length; i++) {
 		if (this.selected_tag_array[i][1] == tag_name) {
 			// remove row from selected array
 			var element = this.selected_tag_array.splice(i, 1);
@@ -299,7 +313,7 @@ SiteTagEntry.prototype.removeTag = function(tag_name)
 		}
 	}
 
-	for (i = 0; i < this.new_tag_array.length; i++) {
+	for (var i = 0; i < this.new_tag_array.length; i++) {
 		if (this.new_tag_array[i] == tag_name) {
 			// remove row from selected array
 			var element = this.new_tag_array.splice(i, 1);
@@ -336,5 +350,12 @@ SiteTagEntry.remove_text = 'remove';
  * @var string
  */
 SiteTagEntry.new_text = '(new)';
+
+/**
+ * Add tag resource
+ *
+ * @var string
+ */
+SiteTagEntry.add_text = 'Add Tag';
 
 // }}}

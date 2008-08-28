@@ -90,6 +90,10 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		$div_tag->id = $this->id;
 		$div_tag->open();
 
+		$autocomplete_div = new SwatHtmlTag('div');
+		$autocomplete_div->class = 'site-tag-autocomplete-container';
+		$autocomplete_div->open();
+
 		$input_tag = new SwatHtmlTag('input');
 		$input_tag->name = $this->id.'_value';
 		$input_tag->id = $this->id.'_value';
@@ -105,13 +109,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		$container_tag->setContent('');
 		$container_tag->display();
 
-		$ul_tag = new SwatHtmlTag('ul');
-		$ul_tag->id = $this->id.'_array';
-		$ul_tag->class = 'site-tag-array';
-		$ul_tag->open();
-		// Array left blank. Values are filled in via javascript.
-		$ul_tag->close();
-
+		$autocomplete_div->close();
 		$div_tag->close();
 
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
