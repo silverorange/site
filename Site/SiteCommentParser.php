@@ -82,14 +82,14 @@ class SiteCommentParser
 	}
 
 	// }}}
-	// {{{ public static function toXHTML()
+	// {{{ public static function toXhtml()
 
 	/**
 	 * @param string $comment
 	 *
 	 * @return string
 	 */
-	public static function toXHTML($comment)
+	public static function toXhtml($comment)
 	{
 		$comment = self::parse($comment);
 
