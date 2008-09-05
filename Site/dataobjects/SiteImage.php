@@ -330,7 +330,7 @@ class SiteImage extends SwatDBDataObject
 
 	public function getImgTag($shortname, $prefix = null)
 	{
-		$dimension = $this->image_set->getDimensionByShortname($shortname);
+		$dimension = $this->getImageSet()->getDimensionByShortname($shortname);
 
 		$img_tag = new SwatHtmlTag('img');
 		$img_tag->src = $this->getUri($shortname, $prefix);
