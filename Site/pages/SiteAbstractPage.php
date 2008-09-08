@@ -80,6 +80,8 @@ abstract class SiteAbstractPage extends SiteObject
 	 * additional query parameters.
 	 *
 	 * @return string the source string of this page.
+	 *
+	 * @xmlrpc.hidden
 	 */
 	public function getSource()
 	{
@@ -101,6 +103,8 @@ abstract class SiteAbstractPage extends SiteObject
 	 * method exists here for backwards compatibility.
 	 *
 	 * @param string $source
+	 *
+	 * @xmlrpc.hidden
 	 */
 	public function setSource($source)
 	{
@@ -168,6 +172,8 @@ abstract class SiteAbstractPage extends SiteObject
 	 * Always runs before {@link SiteLayout::init()}. This method is intended
 	 * to initialize objects used by the {@link SitePage::process()} and
 	 * {@link SitePage::build()} methods.
+	 *
+	 * @xmlrpc.hidden
 	 */
 	public function init()
 	{
@@ -182,6 +188,8 @@ abstract class SiteAbstractPage extends SiteObject
 	 * Always runs after {@link SitePage::init()} and before
 	 * {@link SiteLayout::process()}. This method is intended to process
 	 * data entered by the user.
+	 *
+	 * @xmlrpc.hidden
 	 */
 	public function process()
 	{
@@ -196,6 +204,8 @@ abstract class SiteAbstractPage extends SiteObject
 	 * Always runs after {@link SitePage::process()} and before
 	 * {@link SiteLayout::build()}. This method is intended to build page
 	 * content and add it to the layout.
+	 *
+	 * @xmlrpc.hidden
 	 */
 	public function build()
 	{
@@ -211,6 +221,8 @@ abstract class SiteAbstractPage extends SiteObject
 	 * {@link SiteLayout::complete()}. This method is intended to add HTML head
 	 * entries or perform other actions that should happen after the page has
 	 * been built.
+	 *
+	 * @xmlrpc.hidden
 	 */
 	public function finalize()
 	{
