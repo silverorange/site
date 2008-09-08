@@ -19,17 +19,6 @@ require_once 'XML/RPC2/Server.php';
  */
 abstract class SiteXMLRPCServer extends SitePage
 {
-	// {{{ public function init()
-
-	/**
-	 * @xmlrpc.hidden
-	 */
-	public function init()
-	{
-		parent::init();
-	}
-
-	// }}}
 	// {{{ public function process()
 
 	/**
@@ -48,27 +37,6 @@ abstract class SiteXMLRPCServer extends SitePage
 		$this->layout->startCapture('response');
 		$server->handleCall();
 		$this->layout->endCapture();
-	}
-
-	// }}}
-	// {{{ public function build()
-
-	/**
-	 * @xmlrpc.hidden
-	 */
-	public function build()
-	{
-	}
-
-	// }}}
-	// {{{ public function finalize()
-
-	/**
-	 * @xmlrpc.hidden
-	 */
-	public function finalize()
-	{
-		parent::finalize();
 	}
 
 	// }}}
