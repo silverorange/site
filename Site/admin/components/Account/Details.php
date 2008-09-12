@@ -78,7 +78,7 @@ class SiteAccountDetails extends AdminIndex
 	// build phase
 	// {{{ protected function buildInternal()
 
-	public function buildInternal()
+	protected function buildInternal()
 	{
 		parent::buildInternal();
 
