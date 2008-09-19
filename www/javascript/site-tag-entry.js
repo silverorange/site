@@ -21,7 +21,7 @@
 function SiteTagEntry(id, data_store, initial_selected_tag_array)
 {
 	this.id = id;
-	this.data_store = data_store
+	this.data_store = data_store;
 	this.initial_selected_tag_array = initial_selected_tag_array;
 
 	this.selected_tag_array = [];
@@ -64,8 +64,13 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 		formatResult:
 			function(item, query)
 			{
-				// 0 is title, 1 is tag string
-				return item[0] + ' (' + item[1] + ')';
+				var title = item[0];
+				var shortname = item[1];
+
+				if (title.toLowerCase() == shortname.toLowerCase())
+					return title;
+				else
+					return title + ' (' + shortname + ')';
 			}
 	});
 
