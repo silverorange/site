@@ -177,14 +177,11 @@ class SiteAccountEditPage extends SiteAccountPage
 	// }}}
 
 	// build phase
-	// {{{ public function build()
+	// {{{ protected function buildContent()
 
-	public function build()
+	protected function buildContent()
 	{
-		parent::build();
-
-		$this->buildInternal();
-
+		parent::buildContent();
 		$this->layout->startCapture('content');
 		$this->ui->display();
 		$this->layout->endCapture();
@@ -195,8 +192,23 @@ class SiteAccountEditPage extends SiteAccountPage
 
 	protected function buildInternal()
 	{
+		parent::buildInternal();
+
 		$form = $this->ui->getWidget('edit_form');
 		$form->action = $this->source;
+
+		if ($this->app->session->isLoggedIn() && !$form->isProcessed()) {
+			$account = $this->findAccount();
+			$this->setWidgetValues($account);
+		}
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		parent::buildNavBar();
 
 		if ($this->app->session->isLoggedIn()) {
 			$this->layout->navbar->createEntry(
@@ -212,11 +224,6 @@ class SiteAccountEditPage extends SiteAccountPage
 				Site::_('Create a New Account'));
 
 			$this->layout->data->title = Site::_('Create a New Account');
-		}
-
-		if ($this->app->session->isLoggedIn() && !$form->isProcessed()) {
-			$account = $this->findAccount();
-			$this->setWidgetValues($account);
 		}
 	}
 
