@@ -1,25 +1,31 @@
 <?php
 
-require_once 'Site/pages/SiteAccountPage.php';
-require_once 'Swat/SwatUI.php';
+require_once 'Site/pages/SiteEditPage.php';
 
 /**
  * Page for changing the password of an account
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */
-class SiteAccountChangePasswordPage extends SiteAccountPage
+class SiteAccountChangePasswordPage extends SiteEditPage
 {
-	// {{{ protected properties
+	// {{{ protected function getUiXml()
 
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/pages/account-change-password.xml';
-	protected $ui;
+	protected function getUiXml()
+	{
+		return 'Site/pages/account-change-password.xml';
+	}
+
+	// }}}
+	// {{{ protected function isNew()
+
+	protected function isNew(SwatForm $form)
+	{
+		return false;
+	}
 
 	// }}}
 
@@ -28,18 +34,23 @@ class SiteAccountChangePasswordPage extends SiteAccountPage
 
 	public function init()
 	{
+		if (!$this->app->session->isLoggedIn()) {
+			$this->app->relocate('account/login');
+		}
+
 		parent::init();
 
-		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->init();
+	}
 
-		$form = $this->ui->getWidget('edit_form');
-		$form->action = $this->source;
+	// }}}
+	// {{{ protected function initInternal()
 
+	protected function initInternal()
+	{
+		parent::initInternal();
 		$confirm = $this->ui->getWidget('confirm_password');
 		$confirm->password_widget = $this->ui->getWidget('password');
-
-		$this->ui->init();
 	}
 
 	// }}}
@@ -51,7 +62,7 @@ class SiteAccountChangePasswordPage extends SiteAccountPage
 	{
 		parent::process();
 
-		$form = $this->ui->getWidget('edit_form');
+/*		$form = $this->ui->getWidget('edit_form');
 		$form->process();
 
 		if ($form->isProcessed()) {
@@ -70,13 +81,28 @@ class SiteAccountChangePasswordPage extends SiteAccountPage
 
 				$this->app->relocate('account');
 			}
-		}
+		}*/
 	}
 
 	// }}}
-	// {{{ private function validate()
+	// {{{ protected function save()
 
-	private function validate()
+	protected function save(SwatForm $form)
+	{
+		$password = $this->ui->getWidget('password')->value;
+		$this->app->session->account->setPassword($password);
+		$this->app->session->account->save();
+
+		$message = new SwatMessage(Site::_(
+			'Account password has been updated.'));
+
+		$this->app->messages->add($message);
+	}
+
+	// }}}
+	// {{{ protected function validate()
+
+	protected function validate(SwatForm $form)
 	{
 		$account = $this->app->session->account;
 
@@ -100,35 +126,38 @@ class SiteAccountChangePasswordPage extends SiteAccountPage
 	}
 
 	// }}}
+	// {{{ protected function relocate()
 
-	// build phase
-	// {{{ public function build()
-
-	public function build()
+	protected function relocate(SwatForm $form)
 	{
-		parent::build();
-
-		$this->layout->navbar->createEntry(Site::_('New Password'));
-		$this->layout->data->title = Site::_('Choose a New Password');
-
-		$form = $this->ui->getWidget('edit_form');
-		$form->action = $this->source;
-
-		$this->layout->startCapture('content');
-		$this->ui->display();
-		$this->layout->endCapture();
+		$this->app->relocate('account');
 	}
 
 	// }}}
 
-	// finalize phase
-	// {{{ public function finalize()
+	// build phase
+	// {{{ protected function buildTitle()
 
-	public function finalize()
+	protected function buildTitle()
 	{
-		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->ui->getRoot()->getHtmlHeadEntrySet());
+		parent::buildTitle();
+		$this->layout->data->title = Site::_('Choose a New Password');
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		parent::buildNavBar();
+		$this->layout->navbar->createEntry(Site::_('New Password'));
+	}
+
+	// }}}
+	// {{{ protected function load()
+
+	protected function load(SwatForm $form)
+	{
 	}
 
 	// }}}
