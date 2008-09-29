@@ -79,7 +79,6 @@ class SiteArticlePageFactory extends SitePageFactory
 			$page->setArticle($article);
 		}
 
-
 		if (!$this->isVisible($article, $source)) {
 			$page = $this->getNotVisiblePage($article, $layout);
 			$page->setSource($source);
