@@ -142,11 +142,15 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		if (isset($data[$this->id]) && is_array($data[$this->id])) {
 			$tag_strings = $data[$this->id];
 
-			// make sure entered tags are in the original tag array
-			foreach ($tag_strings as $tag_string)
-				if (array_key_exists($tag_string, $this->tag_array))
-					$this->selected_tag_array[$tag_string] =
-						$this->tag_array[$tag_string];
+			if ($this->json_server === null) {
+				// make sure entered tags are in the original tag array
+				foreach ($tag_strings as $tag_string)
+					if (array_key_exists($tag_string, $this->tag_array))
+						$this->selected_tag_array[$tag_string] =
+							$this->tag_array[$tag_string];
+			} else {
+				$this->selected_tag_array = $tag_strings;
+			}
 		}
 
 		if ($this->required && count($this->selected_tag_array) == 0) {
