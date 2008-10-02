@@ -31,16 +31,6 @@ abstract class SiteEditPage extends SiteUiPage
 
 	// }}}
 
-	// init phase
-	// {{{ protected function initInternal()
-
-	protected function initInternal()
-	{
-		parent::initInternal();
-	}
-
-	// }}}
-
 	// process phase
 	// {{{ public function process()
 
