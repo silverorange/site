@@ -37,8 +37,6 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function initInternal()
 	{
 		parent::initInternal();
-		foreach ($this->getForms() as $form)
-			$form->action = $this->source;
 	}
 
 	// }}}
@@ -248,6 +246,7 @@ abstract class SiteEditPage extends SiteUiPage
 
 	protected function buildForm(SwatForm $form)
 	{
+		$form->action = $this->source;
 		if (!$form->isProcessed() && !$this->isNew($form))
 			$this->load($form);
 	}
