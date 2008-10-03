@@ -61,8 +61,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		$article_path = $this->getArticlePath($article);
 
 		// decorate page
-		$this->applyDecorators($page, $page_info['decorators'], $article,
-			$article_path, $page_info['arguments']);
+		$page = $this->applyDecorators($page, $page_info['decorators'],
+			$article, $article_path, $page_info['arguments']);
 
 		if (!$this->isVisible($article, $source)) {
 			$page = $this->getNotVisiblePage($article, $layout);
