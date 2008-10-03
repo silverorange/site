@@ -77,7 +77,8 @@ li.site-tag-prehighlight {
 	border-bottom: 1px solid #eee;
 	padding: 2px 4px;
 	list-style-type: none;
-	background: #fff; /* For IE opacity fading */
+	_background: #fff; /* For IE6 opacity fading */
+	*background: #fff; /* For IE7 opacity fading */
 }
 
 .site-tag-array li.new-tag {
