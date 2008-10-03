@@ -61,23 +61,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		$article_path = $this->getArticlePath($article);
 
 		// decorate page
-		$has_article_decorator = false;
-		$decorators = array_reverse($page_info['decorators']);
-		foreach ($decorators as $decorator) {
-			$page = $this->decorate($page, $decorator);
-			if ($page instanceof SiteArticlePage) {
-				$has_article_decorator = true;
-				$page->setPath($article_path);
-				$page->setArticle($article);
-			}
-		}
-
-		// add article decorator if none was defined in the page map
-		if (!$has_article_decorator) {
-			$page = $this->decorate($page, $this->default_article_page);
-			$page->setPath($article_path);
-			$page->setArticle($article);
-		}
+		$this->applyDecorators($page, $page_info['decorators'], $article,
+			$article_path, $page_info['arguments']);
 
 		if (!$this->isVisible($article, $source)) {
 			$page = $this->getNotVisiblePage($article, $layout);
@@ -119,6 +104,50 @@ class SiteArticlePageFactory extends SitePageFactory
 		}
 
 		$this->default_article_page = $class;
+	}
+
+	// }}}
+	// {{{ protected function applyDecorators()
+
+	/**
+	 * Applies all decorators to a page
+	 *
+	 * If there are no {@link SiteArticlePage} or SiteArticlePage subclass
+	 * decorators, one is added automatically. All SiteArticlePage decorators
+	 * are assigned the given article and path.
+	 *
+	 * @param SiteAbstractPage the page to which the decorators should be
+	 *                          applied.
+	 * @param array $decorators the decorators to apply.
+	 * @param SiteArticle $article the current article.
+	 * @param SiteArticlePath $path the path of the current article.
+	 * @param array $arguments the arguments of the page.
+	 *
+	 * @return SiteAbstractPage the decorated page.
+	 */
+	protected function applyDecorators(SiteAbstractPage $page,
+		array $decorators, SiteArticle $article, SiteArticlePath $path,
+		array $arguments)
+	{
+		$has_article_decorator = false;
+		$decorators = array_reverse($decorators);
+		foreach ($decorators as $decorator) {
+			$page = $this->decorate($page, $decorator);
+			if ($page instanceof SiteArticlePage) {
+				$has_article_decorator = true;
+				$page->setPath($path);
+				$page->setArticle($article);
+			}
+		}
+
+		// add article decorator if none was defined in the page map
+		if (!$has_article_decorator) {
+			$page = $this->decorate($page, $this->default_article_page);
+			$page->setPath($path);
+			$page->setArticle($article);
+		}
+
+		return $page;
 	}
 
 	// }}}
