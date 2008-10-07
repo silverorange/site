@@ -20,6 +20,16 @@ require_once 'Swat/SwatYUI.php';
  */
 abstract class SiteTagEntry extends SwatInputControl implements SwatState
 {
+	// {{{ public properties
+
+	/*
+	 * Whether or not to allow adding new tags
+	 *
+	 * @var boolean
+	 */
+	public $allow_adding_tags = true;
+
+	// }}}
 	// {{{ protected properties
 
 	/*
@@ -304,10 +314,11 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		}
 
 		$javascript.= sprintf("var %1\$s_obj = new SiteTagEntry(".
-			"'%1\$s', %2\$s, [%3\$s]);",
+			"'%1\$s', %2\$s, [%3\$s], %4\$s);",
 			$this->id,
 			$data_store,
-			implode(',', $selected_tag_array));
+			implode(',', $selected_tag_array),
+			$this->allow_adding_tags ? 'true' : 'false');
 
 		return $javascript;
 	}
