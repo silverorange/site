@@ -9,10 +9,9 @@ SiteUploadProgressManager = {
 
 SiteUploadProgressManager.status_client = null;
 SiteUploadProgressManager.clients = [];
-SiteUploadProgressManager.interval_period = 1500; // in milliseconds
-SiteUploadProgressManager.interval = null;
+SiteUploadProgressManager.period = 1500; // in milliseconds
+SiteUploadProgressManager.timeout = null;
 SiteUploadProgressManager.sequence = 0;
-SiteUploadProgressManager.received_sequence = 0;
 
 SiteUploadProgressManager.setStatusClient = function(uri)
 {
@@ -25,8 +24,9 @@ SiteUploadProgressManager.addClient = function(client)
 
 	SiteUploadProgressManager.clients.push(client);
 
-	if (first_client)
-		SiteUploadProgressManager.setInterval();
+	if (first_client) {
+		SiteUploadProgressManager.setTimeout();
+	}
 }
 
 SiteUploadProgressManager.removeClient = function(client)
@@ -37,9 +37,6 @@ SiteUploadProgressManager.removeClient = function(client)
 			break;
 		}
 	}
-
-	if (SiteUploadProgressManager.clients.length == 0)
-		SiteUploadProgressManager.clearInterval();
 }
 
 SiteUploadProgressManager.getClient = function(id)
@@ -54,19 +51,15 @@ SiteUploadProgressManager.getClient = function(id)
 	return client;
 }
 
-SiteUploadProgressManager.setInterval = function()
+SiteUploadProgressManager.setTimeout = function()
 {
-	if (SiteUploadProgressManager.interval === null) {
-		SiteUploadProgressManager.interval = window.setInterval(
-			SiteUploadProgressManager.updateStatus,
-			SiteUploadProgressManager.interval_period);
+	if (SiteUploadProgressManager.timeout !== null) {
+		clearTimeout(SiteUploadProgressManager.timeout);
 	}
-}
 
-SiteUploadProgressManager.clearInterval = function()
-{
-	window.clearInterval(SiteUploadProgressManager.interval);
-	SiteUploadProgressManager.interval = null;
+	SiteUploadProgressManager.timeout = setTimeout(
+		SiteUploadProgressManager.updateStatus,
+		SiteUploadProgressManager.period);
 }
 
 SiteUploadProgressManager.updateStatus = function()
@@ -91,25 +84,25 @@ SiteUploadProgressManager.updateStatus = function()
 
 SiteUploadProgressManager.statusCallback = function(response)
 {
-	if (response.sequence > SiteUploadProgressManager.received_sequence) {
-		var client;
-		for (client_id in response.statuses) {
-			client = SiteUploadProgressManager.getClient(client_id);
-			if (client) {
-				if (response.statuses[client_id] === 'none') {
-					client.progress();
-				} else {
-					var percent = response.statuses[client_id].bytes_uploaded /
-						response.statuses[client_id].bytes_total;
+	var client;
 
-					var time = response.statuses[client_id].est_sec;
+	for (client_id in response.statuses) {
+		client = SiteUploadProgressManager.getClient(client_id);
+		if (client) {
+			if (response.statuses[client_id] === 'none') {
+				client.progress();
+			} else {
+				var percent = response.statuses[client_id].bytes_uploaded /
+					response.statuses[client_id].bytes_total;
 
-					client.setStatus(percent, time);
-				}
+				var time = response.statuses[client_id].est_sec;
+
+				client.setStatus(percent, time);
 			}
 		}
-		SiteUploadProgressManager.received_sequence = response.sequence;
 	}
+
+	SiteUploadProgressManager.setTimeout();
 }
 
 // }}}
