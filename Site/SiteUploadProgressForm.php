@@ -48,6 +48,34 @@ class SiteUploadProgressForm extends SwatForm
 	}
 
 	// }}}
+	// {{{ public funciton init()
+
+	public function init()
+	{
+		parent::init();
+
+		$added = false;
+
+		// if the last child of this form is a footer form field, append
+		// the progress bar to the form field
+		if (count($this->children) > 0) {
+			$last_child = end($this->children);
+			if ($last_child instanceof SwatFooterFormField) {
+				$container = $this->getCompositeWidget('container');
+				$container->parent = null;
+				$last_child->add($container);
+				$added = true;
+			}
+		}
+
+		if (!$added) {
+			$container = $this->getCompositeWidget('container');
+			$container->parent = null;
+			$this->add($container);
+		}
+	}
+
+	// }}}
 	// {{{ protected function displayChildren()
 
 	protected function displayChildren()
@@ -60,18 +88,6 @@ class SiteUploadProgressForm extends SwatForm
 		$hidden_input_tag->display();
 
 		parent::displayChildren();
-
-		$div_tag = new SwatHtmlTag('div');
-		$div_tag->id = $this->id.'_container';
-		$div_tag->open();
-
-		$progress_bar_div_tag = new SwatHtmlTag('div');
-		$progress_bar_div_tag->class = 'site-upload-progress-bar swat-hidden';
-		$progress_bar_div_tag->open();
-		$this->getCompositeWidget('progress_bar')->display();
-		$progress_bar_div_tag->close();
-
-		$div_tag->close();
 	}
 
 	// }}}
@@ -121,7 +137,20 @@ class SiteUploadProgressForm extends SwatForm
 	protected function createCompositeWidgets()
 	{
 		$progress_bar = new SwatProgressBar($this->id.'_progress_bar');
-		$this->addCompositeWidget($progress_bar, 'progress_bar');
+		$progress_bar->length = '99%';
+
+		$progress_container = new SwatDisplayableContainer();
+		$progress_container->classes = array(
+			'site-upload-progress-bar',
+			'swat-hidden',
+		);
+		$progress_container->add($progress_bar);
+
+		$container = new SwatDisplayableContainer();
+		$container->id = $this->id.'_container';
+		$container->add($progress_container);
+
+		$this->addCompositeWidget($container, 'container');
 	}
 
 	// }}}
