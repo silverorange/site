@@ -1,5 +1,5 @@
 /**
- * @copyright 2007 silverorange
+ * @copyright 2007-2008 silverorange
  */
 
 // {{{ SiteUploadProgressManager
@@ -9,7 +9,7 @@ SiteUploadProgressManager = {
 
 SiteUploadProgressManager.status_client = null;
 SiteUploadProgressManager.clients = [];
-SiteUploadProgressManager.period = 1500; // in milliseconds
+SiteUploadProgressManager.period = 500; // in milliseconds
 SiteUploadProgressManager.timeout = null;
 SiteUploadProgressManager.sequence = 0;
 
@@ -147,7 +147,7 @@ SiteUploadProgressClient.prototype.progress = function()
 SiteUploadProgressClient.prototype.setStatus = function(percent, time)
 {
 	this.status_enabled = true;
-	this.progress_bar.setValue(percent);
+	this.progress_bar.setValueWithAnimation(percent);
 
 	var hours = Math.floor(time / 360);
 	var minutes = Math.floor(time / 60) % 60;
