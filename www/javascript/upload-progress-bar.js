@@ -212,7 +212,8 @@ SiteUploadProgressClient.prototype.createIFrame = function()
 		div.style.display = 'inline';
 		div.innerHTML = '<iframe name="' + this.id + '_iframe" ' +
 			'id="' + this.id + '_iframe" ' +
-			'src="javascript:false" style="border: 0; width: 0; height: 0;">' +
+			'src="javascript:false" style="border: 0; width: 0; height: 0;' +
+			'position: absolute; top: -1000px; left: -1000px;">' +
 			'</iframe>';
 
 		this.container.parentNode.insertBefore(div, this.container);
@@ -223,6 +224,9 @@ SiteUploadProgressClient.prototype.createIFrame = function()
 		iframe.style.border = '0';
 		iframe.style.width = '0';
 		iframe.style.height = '0';
+		iframe.style.position = 'absolute';
+		iframe.style.top = '-1000px';
+		iframe.style.left = '-100px';
 		this.container.parentNode.insertBefore(iframe, this.container);
 	}
 }
