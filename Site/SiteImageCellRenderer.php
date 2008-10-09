@@ -130,6 +130,7 @@ class SiteImageCellRenderer extends SwatCellRenderer
 
 		$occupy = max($this->image->getHeight($this->image_dimension),
 			$this->image->getWidth($this->image_dimension));
+
 		$this->image_cell_renderer->occupy_height = $occupy;
 		$this->image_cell_renderer->occupy_width = $occupy;
 
