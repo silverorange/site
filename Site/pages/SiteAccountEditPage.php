@@ -136,10 +136,6 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 	protected function updateAccount(SwatForm $form)
 	{
-/*		if (!$this->app->session->isLoggedIn()) {
-			$account->setPassword(
-				$this->ui->getWidget('password')->value);
-		}*/
 		$this->assignUiValuesToObject($this->account, array(
 			'fullname',
 			'email',
