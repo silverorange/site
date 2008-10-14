@@ -5,7 +5,11 @@ require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/Site.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/SiteExceptionLogger.php';
+require_once 'Site/SiteErrorLogger.php';
+require_once 'Swat/SwatError.php';
 require_once 'Swat/SwatDate.php';
+require_once 'Swat/exceptions/SwatException.php';
 
 /**
  * Base class for an application
@@ -266,6 +270,30 @@ abstract class SiteApplication extends SiteObject
 	protected function configure(SiteConfigModule $config)
 	{
 		$config->configure();
+		$this->configureErrorHandling($config);
+	}
+
+	// }}}
+	// {{{ protected function configureErrorHandling()
+
+	/**
+	 * Configures error and exception handling of this application
+	 *
+	 * @param SiteConfigModule $config the config module of this application
+	 *                                  to use for configuring the other
+	 *                                  modules.
+	 */
+	protected function configureErrorHandling(SiteConfigModule $config)
+	{
+		if (isset($config->exceptions->log_location))
+			SwatException::setLogger(new SiteExceptionLogger(
+				$config->exceptions->log_location,
+				$config->exceptions->base_uri));
+
+		if (isset($config->errors->log_location))
+			SwatError::setLogger(new SiteErrorLogger(
+				$config->errors->log_location,
+				$config->errors->base_uri));
 	}
 
 	// }}}
