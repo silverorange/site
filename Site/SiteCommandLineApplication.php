@@ -439,7 +439,9 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		$this->lock_file = fopen($this->lock_name, 'rb');
 
 		if ($this->lock_file === false) {
-			$this->terminate(Site::_("Error opening lock file!\n"));
+			$this->terminate(sprintf(
+				Site::_("Error opening lock file: '%s'\n"),
+				$filename));
 		}
 
 		// try to lock
@@ -477,7 +479,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 
 	protected function getLockFilename()
 	{
-		$directory = realpath(dirname($_SERVER['SCRIPT_NAME'));
+		$directory = realpath(dirname($_SERVER['SCRIPT_NAME']));
 		$filename  = '.'.$this->id.'.lock';
 		return $directory.DIRECTORY_SEPARATOR.$filename;
 	}
