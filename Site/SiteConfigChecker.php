@@ -29,16 +29,6 @@ class SiteConfigChecker extends SiteCommandLineApplication
 	private $definitions = array();
 
 	/**
-	 * Whether or not to run in 'quiet' mode
-	 *
-	 * In quiet mode, no output is displayed. The return value of the process
-	 * will still indicate success or failure.
-	 *
-	 * @var boolean
-	 */
-	private $quiet = false;
-
-	/**
 	 * @var string
 	 */
 	private $filename = '';
@@ -66,7 +56,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		$this->parseCommandLineArguments();
 
 		if (!$this->check()) {
-			exit(1);
+			$this->terminate("\nConfig file is NOT valid.\n");
 		}
 	}
 
@@ -163,7 +153,11 @@ class SiteConfigChecker extends SiteCommandLineApplication
 	 */
 	public function setQuiet($quiet = true)
 	{
-		$this->quiet = (boolean)$quiet;
+		$verbosity = ($quiet) ?
+			SiteCommandLineApplication::VERBOSITY_NONE :
+			SiteCommandLineApplication::VERBOSITY_ALL;
+
+		$this->setVerbosity($verbosity);
 	}
 
 	// }}}
@@ -195,7 +189,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		foreach ($ini_array as $section_name => $section_values) {
 
 			if (!array_key_exists($section_name, $this->definitions)) {
-				$this->output(sprintf(Site::_(
+				$this->debug(sprintf(Site::_(
 					"Error: [%s] is not defined.\n"),
 					$section_name));
 
@@ -207,7 +201,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 					!array_key_exists($name,
 						$this->definitions[$section_name])) {
 
-					$this->output(sprintf(Site::_(
+					$this->debug(sprintf(Site::_(
 						"Error: in [%s], '%s' is not defined.\n"),
 						$section_name, $name));
 
@@ -217,23 +211,6 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		}
 
 		return $passed;
-	}
-
-	// }}}
-	// {{{ private function output()
-
-	/**
-	 * Displays text with respect to the quie flag
-	 *
-	 * Text is only displayed if quiet is false.
-	 *
-	 * @param string $text the text to display.
-	 */
-	protected function output($text)
-	{
-		if (!$this->quiet) {
-			echo $text;
-		}
 	}
 
 	// }}}
