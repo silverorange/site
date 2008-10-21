@@ -436,7 +436,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		}
 
 		// open lock
-		$this->lock_file = fopen($this->lock_name, 'rb');
+		$this->lock_file = fopen($filename, 'rb');
 
 		if ($this->lock_file === false) {
 			$this->terminate(sprintf(
