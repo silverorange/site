@@ -59,9 +59,14 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	{
 		$this->initModules();
 		$this->parseCommandLineArguments();
+
+		$this->lock();
+
 		$this->checkQueue();
 		$this->index();
 		$this->clearCache();
+
+		$this->unlock();
 	}
 
 	// }}}
