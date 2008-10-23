@@ -68,8 +68,12 @@ class SiteAccountEditPage extends SiteDBEditPage
 		$confirm_password = $this->ui->getWidget('confirm_password');
 		$confirm_password->password_widget = $this->ui->getWidget('password');
 
-		$confirm_email = $this->ui->getWidget('confirm_email');
-		$confirm_email->email_widget = $this->ui->getWidget('email');
+		try {
+			$confirm_email = $this->ui->getWidget('confirm_email');
+			$confirm_email->email_widget = $this->ui->getWidget('email');
+		} catch (SwatWidgetNotFoundException $e) {
+			// ignore if there is no confirm_email field
+		}
 	}
 
 	// }}}
