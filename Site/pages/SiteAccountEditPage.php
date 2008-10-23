@@ -236,16 +236,6 @@ class SiteAccountEditPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function setWidgetValues()
-
-	protected function setWidgetValues(SiteAccount $account)
-	{
-		$this->ui->getWidget('fullname')->value = $account->fullname;
-		$this->ui->getWidget('email')->value = $account->email;
-		$this->ui->getWidget('confirm_email')->value = $account->email;
-	}
-
-	// }}}
 	// {{{ protected function load()
 
 	protected function load(SwatForm $form)
@@ -255,7 +245,10 @@ class SiteAccountEditPage extends SiteDBEditPage
 			'email',
 		));
 
-		$this->ui->getWidget('confirm_email')->value = $this->account->email;
+		if ($this->ui->hasWidget('confirm_email')) {
+			$this->ui->getWidget('confirm_email')->value =
+				$this->account->email;
+		}
 	}
 
 	// }}}
