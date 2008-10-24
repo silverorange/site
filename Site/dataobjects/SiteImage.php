@@ -66,6 +66,7 @@ class SiteImage extends SwatDBDataObject
 
 	private static $image_set_cache = array();
 	private $file_base;
+	private $crop_boxes = array();
 
 	// }}}
 
@@ -511,6 +512,32 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function addCropBox()
+
+	/**
+	 * Specify a crop bounding-box for a dimension
+	 *
+	 * The dimensions and positions for the crop box should be at the scale of
+	 * the source image. If a crop box exists for a dimension, the image will
+	 * first be cropped to the specified coordinates and then default resizing
+	 * as specified for the dimension will be applied.
+	 *
+	 * @param string $shortname the shortname of the dimension
+	 * @param integer $crop_width Width of the crop bounding box
+	 * @param integer $crop_height Height of the crop bounding box
+	 * @param integer $crop_top Position of the top side of the crop bounding
+	 *                box
+	 * @param integer $crop_left position of the left side of the crop bounding
+	 *                box
+	 */
+	public function addCropBox($shortname, $crop_width, $crop_height,
+		$crop_top, $crop_left)
+	{
+		$this->crop_boxes[$shortname] = array($crop_width, $crop_height,
+			$crop_top, $crop_left);
+	}
+
+	// }}}
 	// {{{ protected function processInternal()
 
 	/**
@@ -548,10 +575,17 @@ class SiteImage extends SwatDBDataObject
 	protected function processDimension(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
-		if ($dimension->crop)
+		if (isset($this->crop_boxes[$dimension->shortname])) {
+			$this->cropToBox($imagick, $dimension,
+				$this->crop_boxes[$dimension->shortname]);
+
+		}
+
+		if ($dimension->crop) {
 			$this->cropToDimension($imagick, $dimension);
-		else
+		} else {
 			$this->fitToDimension($imagick, $dimension);
+		}
 
 		$this->saveDimensionBinding($imagick, $dimension);
 	}
@@ -606,6 +640,27 @@ class SiteImage extends SwatDBDataObject
 
 			$imagick->cropImage($width, $height, $offset_x, $offset_y);
 		}
+	}
+
+	// }}}
+	// {{{ protected function cropToBox()
+
+	/**
+	 * Resizes and crops an image to a given crop bounding box
+	 *
+	 * @param Imagick $imagick the imagick instance to work with.
+	 * @param SiteImageDimension $dimension the dimension to process.
+	 * @param array $bounding_box the dimension to process.
+	 */
+	protected function cropToBox(Imagick $imagick,
+		SiteImageDimension $dimension, array $bounding_box)
+	{
+		$width = $bounding_box[0];
+		$height = $bounding_box[1];
+		$offset_x = $bounding_box[2];
+		$offset_y = $bounding_box[3];
+
+		$imagick->cropImage($width, $height, $offset_x, $offset_y);
 	}
 
 	// }}}
