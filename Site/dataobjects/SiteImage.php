@@ -512,7 +512,7 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function addCropBox()
+	// {{{ public function setDimensionCropBox()
 
 	/**
 	 * Specify a crop bounding-box for a dimension
@@ -530,7 +530,7 @@ class SiteImage extends SwatDBDataObject
 	 * @param integer $crop_left position of the left side of the crop bounding
 	 *                box
 	 */
-	public function addCropBox($shortname, $crop_width, $crop_height,
+	public function setDimensionCropBox($shortname, $crop_width, $crop_height,
 		$crop_top, $crop_left)
 	{
 		$this->crop_boxes[$shortname] = array($crop_width, $crop_height,
@@ -578,7 +578,6 @@ class SiteImage extends SwatDBDataObject
 		if (isset($this->crop_boxes[$dimension->shortname])) {
 			$this->cropToBox($imagick, $dimension,
 				$this->crop_boxes[$dimension->shortname]);
-
 		}
 
 		if ($dimension->crop) {
@@ -661,6 +660,8 @@ class SiteImage extends SwatDBDataObject
 		$offset_y = $bounding_box[3];
 
 		$imagick->cropImage($width, $height, $offset_x, $offset_y);
+
+		echo 'cropped to ', implode(', ', $bounding_box);
 	}
 
 	// }}}
