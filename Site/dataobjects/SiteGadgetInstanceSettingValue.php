@@ -16,6 +16,13 @@ class SiteGadgetInstanceSettingValue extends SwatDBDataObject
 	// {{{ public properties
 
 	/**
+	 * Unique identifier
+	 *
+	 * @var integer
+	 */
+	public $id;
+
+	/**
 	 * The name of the setting
 	 *
 	 * @var string
@@ -203,6 +210,8 @@ class SiteGadgetInstanceSettingValue extends SwatDBDataObject
 	protected function init()
 	{
 		$this->table = 'GadgetInstanceSettingValue';
+		$this->id_field = 'integer:id';
+
 		$this->registerInternalProperty('gadget_instance',
 			'SiteGadgetInstance');
 
