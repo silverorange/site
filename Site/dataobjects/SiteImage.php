@@ -624,6 +624,11 @@ class SiteImage extends SwatDBDataObject
 		$imagick->resizeImage($new_width, $new_height,
 			Imagick::FILTER_LANCZOS, 1);
 
+		// Set page geometry to the new size so subsequent crops will use
+		// will use the geometry of the new image instead of the original
+		// image.
+		$imagick->setImagePage($new_width, $new_height, 0, 0);
+
 		// crop to fit
 		if ($imagick->getImageWidth() != $width ||
 			$imagick->getImageHeight() != $height) {
@@ -638,6 +643,11 @@ class SiteImage extends SwatDBDataObject
 				$offset_y = ceil(($imagick->getImageHeight() - $height) / 2);
 
 			$imagick->cropImage($width, $height, $offset_x, $offset_y);
+
+			// Set page geometry to the newly cropped size so subsequent crops
+			// will use the geometry of the new image instead of the original
+			// image.
+			$imagick->setImagePage($width, $height, $offset_x, $offset_y);
 		}
 	}
 
@@ -660,6 +670,11 @@ class SiteImage extends SwatDBDataObject
 		$offset_y = $bounding_box[3];
 
 		$imagick->cropImage($width, $height, $offset_x, $offset_y);
+
+		// Set page geometry to the newly cropped size so subsequent crops
+		// will use the geometry of the new image instead of the original
+		// image.
+		$imagick->setImagePage($width, $height, $offset_x, $offset_y);
 	}
 
 	// }}}
@@ -685,6 +700,11 @@ class SiteImage extends SwatDBDataObject
 
 			$imagick->resizeImage($new_width, $new_height,
 				Imagick::FILTER_LANCZOS, 1);
+
+			// Set page geometry to the new size so subsequent crops will use
+			// will use the geometry of the new image instead of the original
+			// image.
+			$imagick->setImagePage($new_width, $new_height, 0, 0);
 		}
 
 		if ($dimension->max_height !== null &&
@@ -698,6 +718,11 @@ class SiteImage extends SwatDBDataObject
 
 			$imagick->resizeImage($new_width, $new_height,
 				Imagick::FILTER_LANCZOS, 1);
+
+			// Set page geometry to the new size so subsequent crops will use
+			// will use the geometry of the new image instead of the original
+			// image.
+			$imagick->setImagePage($new_width, $new_height, 0, 0);
 		}
 	}
 
