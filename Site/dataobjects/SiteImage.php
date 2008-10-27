@@ -660,8 +660,6 @@ class SiteImage extends SwatDBDataObject
 		$offset_y = $bounding_box[3];
 
 		$imagick->cropImage($width, $height, $offset_x, $offset_y);
-
-		echo 'cropped to ', implode(', ', $bounding_box);
 	}
 
 	// }}}
