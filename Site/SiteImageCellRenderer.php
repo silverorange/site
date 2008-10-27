@@ -74,6 +74,21 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	 */
 	public $display_title = true;
 
+	/**
+	 * Whether or not this cell renderer should occupy a square region
+	 *
+	 * If set to true, the region occupied by this cell renderer will be a
+	 * square with the same dimensions for every image displayed. This is useful
+	 * for displayimg images in a {@link SwatTileView} when the images do not
+	 * all have the same dimensions.
+	 *
+	 * If set to false, this cell renderer will occupy a region of the actual
+	 * image dimensions.
+	 *
+	 * @var boolean
+	 */
+	public $square = true;
+
 	// }}}
 	// {{{ private properties
 
@@ -140,11 +155,13 @@ class SiteImageCellRenderer extends SwatCellRenderer
 
 		$this->image_cell_renderer->alt = '';
 
-		$occupy = max($this->image->getHeight($this->image_dimension),
-			$this->image->getWidth($this->image_dimension));
+		if ($this->square) {
+			$occupy = max($this->image->getHeight($this->image_dimension),
+				$this->image->getWidth($this->image_dimension));
 
-		$this->image_cell_renderer->occupy_height = $occupy;
-		$this->image_cell_renderer->occupy_width = $occupy;
+			$this->image_cell_renderer->occupy_height = $occupy;
+			$this->image_cell_renderer->occupy_width = $occupy;
+		}
 
 		$image_wrapper_tag = new SwatHtmlTag('span');
 		$image_wrapper_tag->class = 'site-image-wrapper';
