@@ -16,7 +16,7 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	// {{{ class constants
 
 	/**
-	 * Title length before it gets truncated.
+	 * Title length in characters before it gets truncated.
 	 */
 	const MAX_TITLE_LENGTH = 30;
 
@@ -24,11 +24,16 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	// {{{ public properties
 
 	/**
+	 * The image to display
+	 *
 	 * @var SiteImage
 	 */
 	public $image;
 
 	/**
+	 * The shortname of the {@link SiteImageDimension} to display for the
+	 * image
+	 *
 	 * @var string
 	 */
 	public $image_dimension;
@@ -59,7 +64,11 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	public $link_value = null;
 
 	/**
-	 * Display title?
+	 * Whether or not to display the image title
+	 *
+	 * If a title is displayed, it is truncated at
+	 * {@link SiteImageCellRenderer::MAX_TITLE_LENGTH} characters. If set to
+	 * true and the image has no title, an empty span tag is displayed.
 	 *
 	 * @var boolean
 	 */
@@ -122,10 +131,13 @@ class SiteImageCellRenderer extends SwatCellRenderer
 
 		$this->image_cell_renderer->image =
 			$this->image->getUri($this->image_dimension, $this->path_prefix);
+
 		$this->image_cell_renderer->width =
 			$this->image->getWidth($this->image_dimension);
+
 		$this->image_cell_renderer->height =
 			$this->image->getHeight($this->image_dimension);
+
 		$this->image_cell_renderer->alt = '';
 
 		$occupy = max($this->image->getHeight($this->image_dimension),
@@ -149,6 +161,7 @@ class SiteImageCellRenderer extends SwatCellRenderer
 
 			$span_tag = new SwatHtmlTag('span');
 			$span_tag->class = 'title';
+
 			if ($title === null)
 				$span_tag->setContent(''); // prevent self-closing span tag
 			else
