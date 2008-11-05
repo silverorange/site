@@ -775,7 +775,7 @@ class SiteImage extends SwatDBDataObject
 		$filepath = $this->getFilePath($dimension->shortname);
 		$filename = $this->getFilename($dimension->shortname);
 		if (!file_exists($filepath))
-			mkdir($filepath);
+			mkdir($filepath, 0777, true);
 
 		$imagick->writeImage($filepath.$filename);
 	}
