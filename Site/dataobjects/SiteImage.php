@@ -319,11 +319,10 @@ class SiteImage extends SwatDBDataObject
 		$dimension = $this->image_set->getDimensionByShortname(
 			$shortname);
 
-		return sprintf('%s/%s/%s/%s',
+		return sprintf('%s/%s/%s/',
 			$this->getFileBase(),
 			$this->image_set->shortname,
-			$dimension->shortname,
-			$this->getFilename($shortname));
+			$dimension->shortname);
 	}
 
 	// }}}
@@ -773,8 +772,12 @@ class SiteImage extends SwatDBDataObject
 		if ($dimension->strip)
 			$imagick->stripImage();
 
-		$filename = $this->getFilePath($dimension->shortname);
-		$imagick->writeImage($filename);
+		$filepath = $this->getFilePath($dimension->shortname);
+		$filename = $this->getFilename($dimension->shortname);
+		if (!file_exists($filepath))
+			mkdir($filepath);
+
+		$imagick->writeImage($filepath.$filename);
 	}
 
 	// }}}
