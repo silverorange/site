@@ -314,15 +314,36 @@ class SiteImage extends SwatDBDataObject
 	// }}}
 	// {{{ public function getFilePath()
 
+	/**
+	 * Gets the full file path of a dimension
+	 *
+	 * This includes the directory and the filename.
+	 *
+	 * @return string the full file path of a dimension.
+	 */
 	public function getFilePath($shortname)
+	{
+		$directory = $this->getFileDirectory($shortname);
+		$filename  = $this->getFilename($shortname);
+		return $directory.DIRECTORY_SEPARATOR.$filename;
+	}
+
+	// }}}
+	// {{{ public function getFileDirectory()
+
+	/**
+	 * Gets the directory of a dimension
+	 *
+	 * @return string the directory of a dimension.
+	 */
+	public function getFileDirectory($shortname)
 	{
 		$dimension = $this->image_set->getDimensionByShortname(
 			$shortname);
 
-		return sprintf('%s/%s/%s/',
-			$this->getFileBase(),
-			$this->image_set->shortname,
-			$dimension->shortname);
+		return $this->getFileBase().DIRECTORY_SEPARATOR.
+			$this->image_set->shortname.DIRECTORY_SEPARATOR.
+			$dimension->shortname;
 	}
 
 	// }}}
@@ -772,12 +793,14 @@ class SiteImage extends SwatDBDataObject
 		if ($dimension->strip)
 			$imagick->stripImage();
 
-		$filepath = $this->getFilePath($dimension->shortname);
-		$filename = $this->getFilename($dimension->shortname);
-		if (!file_exists($filepath))
-			mkdir($filepath, 0777, true);
+		// recursively create file directories
+		$directory = $this->getFileDirectory($dimension->shortname);
+		if (!file_exists($directory)) {
+			mkdir($directory, 0777, true);
+		}
 
-		$imagick->writeImage($filepath.$filename);
+		$filename = $this->getFilePath($dimension->shortname);
+		$imagick->writeImage($filename);
 	}
 
 	// }}}
