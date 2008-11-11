@@ -16,6 +16,16 @@ class SiteSiteMapPage extends SiteArticlePage
 		parent::build();
 
 		$this->layout->startCapture('content');
+		$this->display();
+		$this->layout->endCapture();
+	}
+
+	// }}}
+	// {{{ protected function display()
+
+	protected function display()
+	{
+		$this->layout->startCapture('content');
 		$this->displaySubArticles($this->queryArticles());
 		$this->layout->endCapture();
 	}
