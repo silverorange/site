@@ -67,6 +67,7 @@ class SiteImage extends SwatDBDataObject
 	private static $image_set_cache = array();
 	private $file_base;
 	private $crop_boxes = array();
+	private $original_dpi;
 
 	// }}}
 
@@ -277,6 +278,15 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		return sprintf('%s.%s', $filename, $extension);
+	}
+
+	// }}}
+	// {{{ public function getDpi()
+
+	public function getDpi($dimension_shortname)
+	{
+		$binding = $this->getDimensionBinding($dimension_shortname);
+		return $binding->dpi;
 	}
 
 	// }}}
@@ -532,6 +542,19 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function setDpi()
+
+	/**
+	 * Specify the DPI of the image being processed
+	 *
+	 * @param integer $dpi The dpi of the image being processed
+	 */
+	public function setDpi($dpi)
+	{
+		$this->original_dpi = $dpi;
+	}
+
+	// }}}
 	// {{{ public function setDimensionCropBox()
 
 	/**
@@ -641,6 +664,9 @@ class SiteImage extends SwatDBDataObject
 				($new_width / $imagick->getImageWidth()));
 		}
 
+		$this->setDimensionDpi($imagick, $dimension,
+			$imagick->getImageWidth(), $new_width);
+
 		$imagick->resizeImage($new_width, $new_height,
 			Imagick::FILTER_LANCZOS, 1);
 
@@ -709,6 +735,8 @@ class SiteImage extends SwatDBDataObject
 	protected function fitToDimension(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
+		$this->setDimensionDpi($imagick, $dimension);
+
 		if ($dimension->max_width !== null &&
 			$imagick->getImageWidth() > $dimension->max_width) {
 
@@ -717,6 +745,9 @@ class SiteImage extends SwatDBDataObject
 
 			$new_height = ceil($imagick->getImageHeight() *
 				($new_width / $imagick->getImageWidth()));
+
+			$this->setDimensionDpi($imagick, $dimension,
+				$imagick->getImageWidth(), $new_width);
 
 			$imagick->resizeImage($new_width, $new_height,
 				Imagick::FILTER_LANCZOS, 1);
@@ -736,6 +767,9 @@ class SiteImage extends SwatDBDataObject
 			$new_width = ceil($imagick->getImageWidth() *
 				($new_height / $imagick->getImageHeight()));
 
+			$this->setdimensiondpi($imagick, $dimension,
+				$imagick->getimagewidth(), $new_width);
+
 			$imagick->resizeImage($new_width, $new_height,
 				Imagick::FILTER_LANCZOS, 1);
 
@@ -744,6 +778,18 @@ class SiteImage extends SwatDBDataObject
 			// image.
 			$imagick->setImagePage($new_width, $new_height, 0, 0);
 		}
+	}
+
+	// }}}
+	// {{{ protected function setDimensionDpi()
+
+	protected function setDimensionDpi(Imagick $imagick,
+		SiteImageDimension $dimension, $original_width = 1, $resized_width = 1)
+	{
+		$dpi = ($this->original_dpi === null) ? $dimension->dpi :
+			round($this->original_dpi / ($original_width / $resized_width));
+
+		$imagick->setImageResolution($dpi, $dpi);
 	}
 
 	// }}}
@@ -767,6 +813,10 @@ class SiteImage extends SwatDBDataObject
 		$binding->width      = $imagick->getImageWidth();
 		$binding->height     = $imagick->getImageHeight();
 		$binding->filesize   = $imagick->getImageSize();
+
+		$resolution = $imagick->getImageResolution();
+		$binding->dpi  = $resolution['x'];
+
 		$binding->save();
 
 		$this->dimension_bindings->add($binding);
@@ -784,7 +834,6 @@ class SiteImage extends SwatDBDataObject
 	protected function saveFile(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
-		$imagick->setResolution($dimension->dpi, $dimension->dpi);
 		$imagick->setCompressionQuality($dimension->quality);
 
 		if ($dimension->interlace)
