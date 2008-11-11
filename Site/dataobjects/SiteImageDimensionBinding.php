@@ -35,6 +35,13 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	public $filesize;
 
 	/**
+	 * Dpi
+	 *
+	 * @var integer
+	 */
+	public $dpi;
+
+	/**
 	 * Dimension Id
 	 *
 	 * This is not an internal property since alternative effiecient methods
