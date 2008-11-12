@@ -601,7 +601,16 @@ class SiteImage extends SwatDBDataObject
 			}
 
 			$this->processDimension($imagick, $dimension);
-			$this->saveFile($imagick, $dimension);
+
+			if ($dimension->max_width === null &&
+				$dimension->max_height === null &&
+				$dimension->default_type === null) {
+
+				$this->copyFile($image_file, $dimension);
+			} else {
+				$this->saveFile($imagick, $dimension);
+			}
+
 			unset($imagick);
 		}
 	}
@@ -809,7 +818,9 @@ class SiteImage extends SwatDBDataObject
 		$binding->setDatabase($this->db);
 		$binding->image      = $this->id;
 		$binding->dimension  = $dimension->id;
-		$binding->image_type = $dimension->default_type->id;
+		$binding->image_type =
+			$this->getDimensionImageType($imagick, $dimension);
+
 		$binding->width      = $imagick->getImageWidth();
 		$binding->height     = $imagick->getImageHeight();
 		$binding->filesize   = $imagick->getImageSize();
@@ -820,6 +831,43 @@ class SiteImage extends SwatDBDataObject
 		$binding->save();
 
 		$this->dimension_bindings->add($binding);
+	}
+
+	// }}}
+	// {{{ protected function getDimensionImageType()
+
+	/**
+	 * Gets the image type for a dimension. If default image type is specified,
+	 * the image is converted to that type, otherwise the type of the image is
+	 * preserved.
+	 *
+	 * @param Imagick $imagick the imagick instance to work with.
+	 * @param SiteImageDimension $dimension the image's dimension.
+	 *
+	 * @return SiteImageType The type of image for the dimension
+	 */
+	protected function getDimensionImageType(Imagick $imagick,
+		SiteImageDimension $dimension)
+	{
+		if ($dimension->default_type === null) {
+			$class_name = SwatDBClassMap::get('SiteImageType');
+			$image_type = new $class_name();
+			$image_type->setDatabase($this->db);
+			$mime_type = 'image/'.$imagick->getImageFormat();
+			$found = $image_type->loadByMimeType($mime_type);
+			if (!$found) {
+				throw new SiteInvalidImageException(sprintf(
+					'The mime-type “%s” is not present in the ImageType '.
+					'table.',
+					$mime_type));
+			}
+
+			$type = $image_type->id;
+		} else {
+			$type = $dimension->default_type->id;
+		}
+
+		return $type;
 	}
 
 	// }}}
@@ -850,6 +898,27 @@ class SiteImage extends SwatDBDataObject
 
 		$filename = $this->getFilePath($dimension->shortname);
 		$imagick->writeImage($filename);
+	}
+
+	// }}}
+	// {{{ protected function copyFile()
+
+	/**
+	 * Copies the image
+	 *
+	 * @param string $image_file the image file to save
+	 * @param SiteImageDimension $dimension the dimension to save.
+	 */
+	protected function copyFile($image_file, SiteImageDimension $dimension)
+	{
+		// recursively create file directories
+		$directory = $this->getFileDirectory($dimension->shortname);
+		if (!file_exists($directory)) {
+			mkdir($directory, 0777, true);
+		}
+
+		$filename = $this->getFilePath($dimension->shortname);
+		copy($image_file, $filename);
 	}
 
 	// }}}
