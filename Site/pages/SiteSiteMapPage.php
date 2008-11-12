@@ -25,9 +25,7 @@ class SiteSiteMapPage extends SiteArticlePage
 
 	protected function display()
 	{
-		$this->layout->startCapture('content');
 		$this->displaySubArticles($this->queryArticles());
-		$this->layout->endCapture();
 	}
 
 	// }}}
