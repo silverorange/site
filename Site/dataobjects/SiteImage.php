@@ -60,6 +60,7 @@ class SiteImage extends SwatDBDataObject
 	// {{{ protected properties
 
 	protected $image_set_shortname;
+	protected $automatically_save = true;
 
 	// }}}
 	// {{{ private properties
@@ -198,6 +199,7 @@ class SiteImage extends SwatDBDataObject
 	protected function getSerializableSubDataObjects()
 	{
 		return array(
+			'image_set',
 		);
 	}
 
@@ -208,7 +210,6 @@ class SiteImage extends SwatDBDataObject
 	{
 		return array_merge(parent::getSerializablePrivateProperties(), array(
 			'image_set_shortname',
-			'image_set',
 			'dimension_bindings',
 		));
 	}
@@ -463,7 +464,8 @@ class SiteImage extends SwatDBDataObject
 	 */
 	public function process($image_file)
 	{
-		$this->checkDB();
+		if ($this->automatically_save)
+			$this->checkDB();
 
 		$this->image_set = $this->getImageSet();
 
@@ -483,13 +485,17 @@ class SiteImage extends SwatDBDataObject
 				'Class Imagick from extension imagick > 2.0.0 not found.');
 
 		try {
-			$transaction = new SwatDBTransaction($this->db);
-			$this->save(); // save once to set id on this object to use for filenames
+			if ($this->automatically_save) {
+				$transaction = new SwatDBTransaction($this->db);
+				$this->save(); // save once to set id on this object to use for filenames
+			}
 
 			$this->processInternal($image_file);
 
-			$this->save(); // save again to record dimensions
-			$transaction->commit();
+			if ($this->automatically_save) {
+				$this->save(); // save again to record dimensions
+				$transaction->commit();
+			}
 		} catch (SiteInvalidImageException $e) {
 			$transaction->rollback();
 			throw $e;
@@ -515,27 +521,37 @@ class SiteImage extends SwatDBDataObject
 	 */
 	public function processManual($image_file, $shortname)
 	{
-		$this->checkDB();
+		if ($this->automatically_save)
+			$this->checkDB();
+
 		$this->image_set = $this->getImageSet();
 		$dimension = $this->image_set->getDimensionByShortname($shortname);
 		$imagick = new Imagick($image_file);
 
 		try {
-			$transaction = new SwatDBTransaction($this->db);
-			$this->save(); // save once to set id on this object to use for filenames
+			if ($this->automatically_save) {
+				$transaction = new SwatDBTransaction($this->db);
+				$this->save(); // save once to set id on this object to use for filenames
+			}
 
 			$this->processDimension($imagick, $dimension);
 			$this->saveFile($imagick, $dimension);
 
-			$this->save(); // save again to record dimensions
-			$transaction->commit();
+			if ($this->automatically_save) {
+				$this->save(); // save again to record dimensions
+				$transaction->commit();
+			}
 		} catch (SwatException $e) {
 			$e->process();
-			$transaction->rollback();
+
+			if ($this->automatically_save)
+				$transaction->rollback();
 		} catch (Exception $e) {
 			$e = new SwatException($e);
 			$e->process();
-			$transaction->rollback();
+
+			if ($this->automatically_save)
+				$transaction->rollback();
 		}
 
 		unset($imagick);
@@ -815,7 +831,6 @@ class SiteImage extends SwatDBDataObject
 	{
 		$class_name = $this->getImageDimensionBindingClassName();
 		$binding = new $class_name();
-		$binding->setDatabase($this->db);
 		$binding->image      = $this->id;
 		$binding->dimension  = $dimension->id;
 		$binding->image_type =
@@ -828,7 +843,10 @@ class SiteImage extends SwatDBDataObject
 		$resolution = $imagick->getImageResolution();
 		$binding->dpi  = $resolution['x'];
 
-		$binding->save();
+		if ($this->automatically_save) {
+			$binding->setDatabase($this->db);
+			$binding->save();
+		}
 
 		$this->dimension_bindings->add($binding);
 	}
