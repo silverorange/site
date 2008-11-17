@@ -792,7 +792,7 @@ class SiteImage extends SwatDBDataObject
 			$new_width = ceil($imagick->getImageWidth() *
 				($new_height / $imagick->getImageHeight()));
 
-			$this->setdimensiondpi($imagick, $dimension,
+			$this->setDimensionDpi($imagick, $dimension,
 				$imagick->getimagewidth(), $new_width);
 
 			$imagick->resizeImage($new_width, $new_height,
@@ -841,7 +841,7 @@ class SiteImage extends SwatDBDataObject
 		$binding->filesize   = $imagick->getImageSize();
 
 		$resolution = $imagick->getImageResolution();
-		$binding->dpi  = $resolution['x'];
+		$binding->dpi  = intval($resolution['x']);
 
 		if ($this->automatically_save) {
 			$binding->setDatabase($this->db);
