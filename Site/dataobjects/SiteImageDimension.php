@@ -177,6 +177,16 @@ class SiteImageDimension extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getSerializableSubDataObjects()
+
+	protected function getSerializableSubDataObjects()
+	{
+		return array(
+			'default_type',
+		);
+	}
+
+	// }}}
 }
 
 ?>
