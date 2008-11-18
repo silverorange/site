@@ -200,6 +200,7 @@ class SiteImage extends SwatDBDataObject
 	{
 		return array(
 			'image_set',
+			'dimension_bindings',
 		);
 	}
 
@@ -210,7 +211,6 @@ class SiteImage extends SwatDBDataObject
 	{
 		return array_merge(parent::getSerializablePrivateProperties(), array(
 			'image_set_shortname',
-			'dimension_bindings',
 		));
 	}
 
@@ -880,9 +880,9 @@ class SiteImage extends SwatDBDataObject
 					$mime_type));
 			}
 
-			$type = $image_type->id;
+			$type = $image_type;
 		} else {
-			$type = $dimension->default_type->id;
+			$type = $dimension->default_type;
 		}
 
 		return $type;
@@ -944,6 +944,9 @@ class SiteImage extends SwatDBDataObject
 
 	protected function getImageSet()
 	{
+		if ($this->image_set instanceof SiteImageSet)
+			return $this->image_set;
+
 		if ($this->image_set_shortname === null)
 			throw new SwatException('To process images, an image type '.
 				'shortname must be defined in the image dataobject.');
