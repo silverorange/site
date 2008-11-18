@@ -421,7 +421,15 @@ class SiteImage extends SwatDBDataObject
 		$dimension = $this->image_set->getDimensionByShortname(
 			$dimension_shortname);
 
-		return $this->dimension_bindings->getByIndex($dimension->id);
+		foreach ($this->dimension_bindings as $binding) {
+			$id = ($binding->dimension instanceof SiteImageDimension) ?
+				$binding->dimension->id : $binding->dimension;
+
+			if ($dimension->id === $id)
+				return $binding;
+		}
+
+		return null;
 	}
 
 	// }}}
