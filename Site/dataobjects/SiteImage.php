@@ -505,15 +505,21 @@ class SiteImage extends SwatDBDataObject
 				$transaction->commit();
 			}
 		} catch (SiteInvalidImageException $e) {
-			$transaction->rollback();
+			if ($this->automatically_save) {
+				$transaction->rollback();
+			}
 			throw $e;
 		} catch (SwatException $e) {
+			if ($this->automatically_save) {
+				$transaction->rollback();
+			}
 			$e->process();
-			$transaction->rollback();
 		} catch (Exception $e) {
+			if ($this->automatically_save) {
+				$transaction->rollback();
+			}
 			$e = new SwatException($e);
 			$e->process();
-			$transaction->rollback();
 		}
 
 	}
