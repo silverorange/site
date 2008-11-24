@@ -124,6 +124,21 @@ class SiteComment extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public static function getStatusArray()
+
+	public static function getStatusArray()
+	{
+		return array(
+			self::STATUS_PUBLISHED =>
+				self::getSourceTitle(self::STATUS_PUBLISHED),
+
+			self::STATUS_PENDING => self::getSourceTitle(self::STATUS_PENDING),
+			self::STATUS_UNPUBLISHED =>
+				self::getSourceTitle(self::STATUS_UNPUBLISHED),
+		);
+	}
+
+	// }}}
 	// {{{ public function load()
 
 	/**
