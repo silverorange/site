@@ -13,5 +13,4 @@ create table Comment (
 );
 
 create index Comment_spam_index on Comment(spam);
-create index Comment_post_index on Comment(post);
 create index Comment_status_index on Comment(status);
