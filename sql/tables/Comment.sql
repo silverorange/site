@@ -1,7 +1,5 @@
-create table BlorgComment (
+create table Comment (
 	id serial,
-	post integer not null references BlorgPost(id) on delete cascade,
-	author integer references BlorgAuthor(id),
 	fullname varchar(255),
 	link varchar(255),
 	email varchar(255),
@@ -14,6 +12,6 @@ create table BlorgComment (
 	primary key (id)
 );
 
-create index BlorgComment_spam_index on BlorgComment(spam);
-create index BlorgComment_post_index on BlorgComment(post);
-create index BlorgComment_status_index on BlorgComment(status);
+create index Comment_spam_index on Comment(spam);
+create index Comment_post_index on Comment(post);
+create index Comment_status_index on Comment(status);
