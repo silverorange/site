@@ -2,7 +2,7 @@
 
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Swat/SwatString.php';
-require_once 'Site/SiteCommentParser.php';
+require_once 'Site/SiteCommentFilter.php';
 
 /**
  * A comment on a site
@@ -121,25 +121,6 @@ class SiteComment extends SwatDBDataObject
 		}
 
 		return $title;
-	}
-
-	// }}}
-	// {{{ public static function getBodytextXhtml()
-
-	public static function getBodytextXhtml($bodytext)
-	{
-		$bodytext = SiteCommentParser::parse($bodytext);
-		$bodytext = str_replace("\r\n", "\n", $bodytext);
-		$bodytext = str_replace("\r",   "\n", $bodytext);
-		$bodytext = preg_replace('/[\x0a\s]*\n\n[\x0a\s]*/s', '</p><p>',
-			$bodytext);
-
-		$bodytext = preg_replace('/[\x0a\s]*\n[\x0a\s]*/s', '<br />',
-			$bodytext);
-
-		$bodytext = '<p>'.$bodytext.'</p>';
-
-		return $bodytext;
 	}
 
 	// }}}
