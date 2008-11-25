@@ -67,6 +67,15 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 		$this->ui = new SwatUI();
 		$this->ui->loadFromXML($this->ui_xml);
 
+		$this->initInternal();
+		$this->ui->init();
+	}
+
+	// }}}
+	// {{{ protected function initInternal()
+
+	protected function initInternal()
+	{
 		$form = $this->ui->getWidget('edit_form');
 		$form->action = $this->source;
 
@@ -74,8 +83,6 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 		$confirm->password_widget = $this->ui->getWidget('password');;
 
 		$this->account_id = $this->getAccountId($this->getArgument('tag'));
-
-		$this->ui->init();
 	}
 
 	// }}}
