@@ -221,8 +221,14 @@ class SiteImage extends SwatDBDataObject
 
 	public function hasDimension($dimension_shortname)
 	{
-		$binding = $this->getDimensionBinding($dimension_shortname);
-		return ($binding !== null);
+		$found = false;
+
+		if ($this->image_set->hasDimension($dimension_shortname)) {
+			$binding = $this->getDimensionBinding($dimension_shortname);
+			$found = ($binding !== null);
+		}
+
+		return $found;
 	}
 
 	// }}}
