@@ -294,6 +294,9 @@ abstract class SiteApplication extends SiteObject
 			SwatError::setLogger(new SiteErrorLogger(
 				$config->errors->log_location,
 				$config->errors->base_uri));
+
+		if (isset($config->errors->fatal_severity))
+			SwatError::setFatalSeverity($config->errors->fatal_severity);
 	}
 
 	// }}}
