@@ -166,7 +166,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 			$this->app->session->loginById($this->account->id);
 
 			$message = new SwatMessage(
-				Site::_('New account has been created.'));
+				Site::_('Your account has been created.'));
 
 			$this->app->messages->add($message);
 		} elseif ($this->account->isModified()) {
