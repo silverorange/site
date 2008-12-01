@@ -25,6 +25,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 	// {{{ private properties
 
 	private $data_object_classes = array();
+	private $destroy_on_logout_objects = array();
 
 	// }}}
 	// {{{ protected properties
@@ -166,6 +167,9 @@ class SiteAccountSessionModule extends SiteSessionModule
 		unset($this->account);
 		unset($this->_authentication_token);
 		$this->removeAccountCookie();
+
+		foreach ($this->destroy_on_logout_objects as $name)
+			unset($this->$name);
 	}
 
 	// }}}
@@ -218,10 +222,15 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 *
 	 * @param string $name the name of the session variable
 	 * @param string $class the dataobject class name
+	 * @param boolean $destroy_on_logout whether to destroy this dataobject on logout
 	 */
-	public function registerDataObject($name, $class)
+	public function registerDataObject($name, $class,
+		$destroy_on_logout = true)
 	{
 		$this->data_object_classes[$name] = $class;
+
+		if ($destroy_on_logout)
+			$this->destroy_on_logout_objects[] = $name;
 	}
 
 	// }}}
