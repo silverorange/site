@@ -130,11 +130,11 @@ class SiteComment extends SwatDBDataObject
 	{
 		return array(
 			self::STATUS_PUBLISHED =>
-				self::getSourceTitle(self::STATUS_PUBLISHED),
+				self::getStatusTitle(self::STATUS_PUBLISHED),
 
-			self::STATUS_PENDING => self::getSourceTitle(self::STATUS_PENDING),
+			self::STATUS_PENDING => self::getStatusTitle(self::STATUS_PENDING),
 			self::STATUS_UNPUBLISHED =>
-				self::getSourceTitle(self::STATUS_UNPUBLISHED),
+				self::getStatusTitle(self::STATUS_UNPUBLISHED),
 		);
 	}
 
