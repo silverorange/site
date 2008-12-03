@@ -1,5 +1,6 @@
 create table Comment (
 	id serial,
+	instance int references Instance(id),
 	fullname varchar(255),
 	link varchar(255),
 	email varchar(255),
