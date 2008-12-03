@@ -322,7 +322,7 @@ class SiteImage extends SwatDBDataObject
 		if ($this->getUriBase() !== null)
 			$uri = $this->getUriBase().'/'.$uri;
 
-		if ($prefix !== null)
+		if ($prefix !== null && !strpos($uri, '://'))
 			$uri = $prefix.$uri;
 
 		return $uri;
