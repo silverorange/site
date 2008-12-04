@@ -94,6 +94,13 @@ class SiteImage extends SwatDBDataObject
 					'class is used.');
 		}
 
+		if ($loaded) {
+			// pre-load dimension bindings. This is useful if the object is
+			// serialized before dimensions are loaded.
+			$this->setSubDataObject('dimension_bindings',
+				$this->loadDimensionBindings());
+		}
+
 		return $loaded;
 	}
 
