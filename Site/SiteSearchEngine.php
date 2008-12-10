@@ -55,7 +55,7 @@ abstract class SiteSearchEngine extends SwatObject
 
 	protected $select_fields = array('*');
 
-	protected $memcahe;
+	protected $memcache;
 
 	// }}}
 	// {{{ public function __construct()
