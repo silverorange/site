@@ -130,14 +130,9 @@ class SiteArticlePageFactory extends SitePageFactory
 		array $arguments)
 	{
 		$has_article_decorator = false;
-		$decorators = array_reverse($decorators);
 		foreach ($decorators as $decorator) {
-			$page = $this->decorate($page, $decorator);
-			if ($page instanceof SiteArticlePage) {
+			if ($page instanceof SiteArticlePage)
 				$has_article_decorator = true;
-				$page->setPath($path);
-				$page->setArticle($article);
-			}
 		}
 
 		// add article decorator if none was defined in the page map
@@ -145,6 +140,14 @@ class SiteArticlePageFactory extends SitePageFactory
 			$page = $this->decorate($page, $this->default_article_page);
 			$page->setPath($path);
 			$page->setArticle($article);
+		}
+
+		foreach ($decorators as $decorator) {
+			$page = $this->decorate($page, $decorator);
+			if ($page instanceof SiteArticlePage) {
+				$page->setPath($path);
+				$page->setArticle($article);
+			}
 		}
 
 		return $page;
