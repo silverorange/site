@@ -150,6 +150,14 @@ abstract class SiteSearchEngine extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function clearOrderByFields()
+
+	public function clearOrderByFields()
+	{
+		$this->order_by_fields = array();
+	}
+
+	// }}}
 	// {{{ public function addOrderByField()
 
 	/**
