@@ -49,7 +49,6 @@ abstract class SiteSearchEngine extends SwatObject
 	 * @var array
 	 *
 	 * @see SiteSearchEngine::getResultCount()
-	 * @see SiteSearchEngine::getSearchParameterHash()
 	 */
 	protected $result_count_cache = array();
 
@@ -123,16 +122,9 @@ abstract class SiteSearchEngine extends SwatObject
 	 */
 	public function getResultCount()
 	{
-		$hash = $this->getSearchParameterHash();
-		if (array_key_exists($hash, $this->result_count_cache)) {
-			$count = $this->result_count_cache[$hash];
-		} else {
-			$from_clause = $this->getFromClause();
-			$where_clause = $this->getWhereClause();
-			$count = $this->queryResultCount($from_clause, $where_clause);
-			$this->result_count_cache[$hash] = $count;
-		}
-
+		$from_clause = $this->getFromClause();
+		$where_clause = $this->getWhereClause();
+		$count = $this->queryResultCount($from_clause, $where_clause);
 		return $count;
 	}
 
@@ -281,19 +273,26 @@ abstract class SiteSearchEngine extends SwatObject
 			$from_clause,
 			$where_clause);
 
-		$count = false;
+		$key = $this->getResultCountCacheKey($sql);
 
-		if ($this->hasMemcache()) {
-			$key   = $this->getResultCountCacheKey($sql);
-			$ns    = $this->getMemcacheNs();
-			$count = $this->memcache->getNs($ns, $key);
-		}
+		if (array_key_exists($key, $this->result_count_cache)) {
+			$count = $this->result_count_cache[$key];
+		} else {
+			$count = false;
 
-		if ($count === false) {
-			$count = SwatDB::queryOne($this->app->db, $sql);
 			if ($this->hasMemcache()) {
-				$this->memcache->setNs($ns, $key, $count);
+				$ns    = $this->getMemcacheNs();
+				$count = $this->memcache->getNs($ns, $key);
 			}
+
+			if ($count === false) {
+				$count = SwatDB::queryOne($this->app->db, $sql);
+				if ($this->hasMemcache()) {
+					$this->memcache->setNs($ns, $key, $count);
+				}
+			}
+
+			$this->result_count_cache[$key] = $count;
 		}
 
 		return $count;
@@ -418,47 +417,6 @@ abstract class SiteSearchEngine extends SwatObject
 				$this->app->db->quote($limit, 'integer'));
 
 		return $clause;
-	}
-
-	// }}}
-	// {{{ protected function getSearchParameterHash()
-
-	/**
-	 * Gets a hash value for the public properties (search parameters) of this
-	 * search engine
-	 *
-	 * The hash value is used to identify cached search results.
-	 *
-	 * @return string a hash value for the public properties of this search
-	 *                 engine.
-	 */
-	protected function getSearchParameterHash()
-	{
-		$properties = $this->getPublicProperties();
-		return md5(serialize($properties));
-	}
-
-	// }}}
-	// {{{ protected function getPublicProperties()
-
-	/**
-	 * Gets all the public properties (search parameters) of this search engine
-	 *
-	 * @return array an associative array of public properties of this search
-	 *               engine. The array key is the property name and the array
-	 *               value is the property value.
-	 */
-	protected function getPublicProperties()
-	{
-		$public_properties = array();
-		$reflector = new ReflectionClass(get_class($this));
-		foreach ($reflector->getProperties() as $property) {
-			if ($property->isPublic() && !$property->isStatic()) {
-				$public_properties[$property->getName()] =
-					$property->getValue($this);
-			}
-		}
-		return $public_properties;
 	}
 
 	// }}}
