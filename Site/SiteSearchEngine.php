@@ -2,12 +2,13 @@
 
 require_once 'Swat/SwatObject.php';
 require_once 'Site/SiteFulltextSearchResult.php';
+require_once 'Site/SiteMemcacheModule.php';
 
 /**
  * An abstract search engine
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2008 silverorange
  */
 abstract class SiteSearchEngine extends SwatObject
 {
@@ -52,6 +53,10 @@ abstract class SiteSearchEngine extends SwatObject
 	 */
 	protected $result_count_cache = array();
 
+	protected $select_fields = array('*');
+
+	protected $memcahe;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -63,6 +68,10 @@ abstract class SiteSearchEngine extends SwatObject
 	public function __construct(SiteApplication $app)
 	{
 		$this->app = $app;
+
+		if ($app->hasModule('SiteMemcacheModule')) {
+			$this->memcache = $app->getModule('SiteMemcacheModule');
+		}
 	}
 
 	// }}}
@@ -168,6 +177,14 @@ abstract class SiteSearchEngine extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function setSelectFields()
+
+	public function setSelectFields(array $fields = array('*'))
+	{
+		$this->select_fields = $fields;
+	}
+
+	// }}}
 	// {{{ protected function queryResults()
 
 	/**
@@ -193,10 +210,58 @@ abstract class SiteSearchEngine extends SwatObject
 			$limit_clause,
 			$offset_clause);
 
-		$wrapper_class = $this->getResultWrapperClass();
-		$results = SwatDB::query($this->app->db, $sql, $wrapper_class);
+		$results = false;
+
+		if ($this->hasMemcache()) {
+			$key = $this->getResultsCacheKey($sql);
+			$ns  = $this->getMemcacheNs();
+			$ids = $this->memcache->getNs($ns, $key);
+
+			if ($ids !== false) {
+				$wrapper_class = $this->getResultWrapperClass();
+				$results = new $wrapper_class();
+				if (count($ids) > 0) {
+					$cached_results = $this->memcache->getNs($ns, $ids);
+					if (count($cached_results) !== count($ids)) {
+						$results = false;
+					} else {
+						foreach ($cached_results as $result) {
+							$results->add($result);
+						}
+					}
+				}
+
+				if ($results !== false) {
+					$results->setDatabase($this->app->db);
+				}
+			}
+		}
+
+		if ($results === false) {
+			$wrapper_class = $this->getResultWrapperClass();
+			$results = SwatDB::query($this->app->db, $sql, $wrapper_class);
+
+			$this->loadSubObjects($results);
+
+			if ($this->hasMemcache()) {
+				$ids = array();
+				foreach ($results as $id => $result) {
+					$result_key = $key.'.'.$id;
+					$ids[] = $result_key;
+					$this->memcache->setNs($ns, $result_key, $result);
+				}
+				$this->memcache->setNs($ns, $key, $ids);
+			}
+		}
 
 		return $results;
+	}
+
+	// }}}
+	// {{{ protected function loadSubObjects()
+
+	protected function loadSubObjects(SwatDBRecordsetWrapper $results)
+	{
 	}
 
 	// }}}
@@ -216,7 +281,20 @@ abstract class SiteSearchEngine extends SwatObject
 			$from_clause,
 			$where_clause);
 
-		$count = SwatDB::queryOne($this->app->db, $sql);
+		$count = false;
+
+		if ($this->hasMemcache()) {
+			$key   = $this->getResultCountCacheKey($sql);
+			$ns    = $this->getMemcacheNs();
+			$count = $this->memcache->getNs($ns, $key);
+		}
+
+		if ($count === false) {
+			$count = SwatDB::queryOne($this->app->db, $sql);
+			if ($this->hasMemcache()) {
+				$this->memcache->setNs($ns, $key, $count);
+			}
+		}
 
 		return $count;
 	}
@@ -250,6 +328,23 @@ abstract class SiteSearchEngine extends SwatObject
 	 * @return string the SQL clause.
 	 */
 	abstract protected function getFromClause();
+
+	// }}}
+	// {{{ protected function getMemcacheNs()
+
+	protected function getMemcacheNs()
+	{
+		return null;
+	}
+
+	// }}}
+	// {{{ protected function hasMemcache()
+
+	protected function hasMemcache()
+	{
+		return ($this->memcache instanceof SiteMemcacheModule &&
+			$this->getMemcacheNs() !== null);
+	}
 
 	// }}}
 	// {{{ protected function getOrderByClause()
@@ -364,6 +459,34 @@ abstract class SiteSearchEngine extends SwatObject
 			}
 		}
 		return $public_properties;
+	}
+
+	// }}}
+	// {{{ protected function getResultsCacheKey()
+
+	protected function getResultsCacheKey($sql)
+	{
+		return md5($sql);
+	}
+
+	// }}}
+	// {{{ protected function getResultCountCacheKey()
+
+	protected function getResultCountCacheKey($sql)
+	{
+		return md5($sql);
+	}
+
+	// }}}
+	// {{{ protected function getResultIds()
+
+	protected function getResultIds(SwatDBRecordsetWrapper $results)
+	{
+		$result_ids = array();
+		foreach ($results as $result) {
+			$result_ids[] = $result->id;
+		}
+		return $result_ids;
 	}
 
 	// }}}
