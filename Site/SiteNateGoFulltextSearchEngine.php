@@ -88,7 +88,9 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 
 		$query = new NateGoSearchQuery($this->db);
 		$query->addBlockedWords(NateGoSearchQuery::getDefaultBlockedWords());
-		$query->setSpellChecker($spell_checker);
+// TODO: add this back when we filter out bad words. Mike 2008-12-15.
+// Ticket #3949.
+//		$query->setSpellChecker($spell_checker);
 
 		foreach ($this->types as $type)
 			$query->addDocumentType($type);
