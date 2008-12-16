@@ -69,7 +69,7 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function getInvalidMessage(SwatForm $form)
 	{
 		$message = new SwatMessage(Site::_('There is a problem with '.
-			'the information submitted.'), SwatMessage::ERROR);
+			'the information submitted.'), 'error');
 
 		$message->secondary_content = Site::_('Please address the '.
 			'fields highlighted below and re-submit the form.');
