@@ -165,9 +165,8 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	 */
 	protected function indexArticles()
 	{
-		$spell_checker = new NateGoSearchPSpellSpellChecker('en');
-		$spell_checker->setCustomWordList($this->getCustomWordList());
-		$spell_checker->loadCustomContent();
+		$spell_checker = new NateGoSearchPSpellSpellChecker($this->locale, '',
+			'', $this->getCustomWordList());
 
 		$indexer = new NateGoSearchIndexer('article', $this->db);
 
