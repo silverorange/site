@@ -8,3 +8,5 @@ create table ImageDimensionBinding (
 	filesize integer,
 	primary key(image, dimension)
 );
+
+create index ImageDimensionBinding_image_index on ImageDimensionBinding(image);
