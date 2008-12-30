@@ -90,12 +90,12 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	public $square = true;
 
 	// }}}
-	// {{{ private properties
+	// {{{ protected properties
 
 	/**
 	 * @var SwatImageCellRenderer
 	 */
-	private $image_cell_renderer;
+	protected $image_cell_renderer;
 
 	// }}}
 	// {{{ public function __construct()
