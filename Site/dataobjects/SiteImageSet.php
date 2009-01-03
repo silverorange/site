@@ -156,9 +156,9 @@ class SiteImageSet extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function getSerializablePrivateProperties()
+	// {{{ protected function getSerializableSubdataobjects()
 
-	protected function getSerializablePrivateProperties()
+	protected function getSerializableSubdataobjects()
 	{
 		return array(
 			'dimensions',
