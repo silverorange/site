@@ -286,7 +286,7 @@ abstract class SiteGadget extends SwatUIObject
 	{
 		$header = new SwatHtmlTag('h3');
 		$header->class = 'site-gadget-title';
-		$header->setContent($this->getTitle());
+		$header->setContent($this->getTitle(), 'text/xml');
 		$header->display();
 	}
 
