@@ -78,7 +78,9 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 		if ($this->app->hasModule('SiteMultipleInstanceModule')) {
 			$instance = $this->app->getModule('SiteMultipleInstanceModule');
-			$this->key_prefix.= $instance->getInstance()->shortname.'_';
+
+			if ($instance->getInstance() !== null)
+				$this->key_prefix.= $instance->getInstance()->shortname.'_';
 		}
 	}
 
