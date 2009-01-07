@@ -192,6 +192,9 @@ class SiteComment extends SwatDBDataObject
 
 	protected function init()
 	{
+		$this->registerInternalProperty('instance',
+			SwatDBClassMap::get('SiteInstance'));
+
 		$this->registerDateProperty('createdate');
 
 		$this->table = 'Comment';
