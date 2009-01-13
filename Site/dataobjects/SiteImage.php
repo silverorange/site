@@ -640,7 +640,8 @@ class SiteImage extends SwatDBDataObject
 			try {
 				$imagick = new Imagick($image_file);
 			} catch (ImagickException $e) {
-				throw new SiteInvalidImageException();
+				throw new SiteInvalidImageException($e->getMessage(),
+					$e->getCode());
 			}
 
 			$this->processDimension($imagick, $dimension);
