@@ -20,13 +20,12 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 
 	public function init()
 	{
-		if ($this->app->session->isActive()) {
+		if ($this->app->session->isActive())
 			if (!isset($this->app->session->alternative_tests))
 				$this->app->session->alternative_tests = array();
 
-			foreach ($this->test_values as $name => $value)
-				$this->initTest($name);
-		}
+		foreach ($this->test_values as $name => $value)
+			$this->initTest($name);
 	}
 
 	// }}}
@@ -53,6 +52,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	{
 		$depends = parent::depends();
 		$depends[] = new SiteApplicationModuleDependency('SiteSessionModule');
+		$depends[] = new SiteApplicationModuleDependency('SiteCookieModule');
 		return $depends;
 	}
 
@@ -61,12 +61,23 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 
 	protected function initTest($name)
 	{
-		if (!isset($this->app->session->alternative_tests[$name])) {
+		if ($this->app->session->isActive() &&
+			isset($this->app->session->alternative_tests[$name])) {
+				$value = $this->app->session->alternative_tests[$name];
+				$this->app->cookie->removeCookie($name);
+
+		} elseif (isset($this->app->cookie->$name)) {
+			$value = $this->app->cookie->$name;
+
+		} else {
 			$value = (rand(0,1) === 1);
-			$this->app->session->alternative_tests[$name] = $value;
+			$this->app->cookie->setCookie($name, $value, 0);
 		}
 
-		$this->test_values[$name] = $this->app->session->alternative_tests[$name];
+		if ($this->app->session->isActive())
+			$this->app->session->alternative_tests[$name] = $value;
+
+		$this->test_values[$name] = $value;
 	}
 
 	// }}}
@@ -80,6 +91,14 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 		}
 
 		return $this->test_values[$name];
+	}
+
+	// }}}
+	// {{{ public function getAll()
+
+	public function getAll()
+	{
+		return $this->test_values;
 	}
 
 	// }}}
