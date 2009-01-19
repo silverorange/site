@@ -177,6 +177,9 @@ class SiteArticleEdit extends AdminDBEdit
 		$this->edit_article->searchable    = $values['searchable'];
 
 		$this->edit_article->save();
+
+		if (isset($this->app->memcache))
+			$this->app->memcache->flushNs('article');
 	}
 
 	// }}}

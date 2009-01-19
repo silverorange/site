@@ -130,8 +130,12 @@ class SiteArticleActionsProcessor
 			}
 		}
 
-		if ($message !== null)
+		if ($message !== null) {
 			$this->page->app->messages->add($message);
+
+			if (isset($this->app->memcache))
+				$this->app->memcache->flushNs('article');
+		}
 	}
 
 	// }}}

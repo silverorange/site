@@ -72,6 +72,14 @@ class SiteArticleSearchEngine extends SiteSearchEngine
 	}
 
 	// }}}
+	// {{{ protected function getMemcacheNs()
+
+	protected function getMemcacheNs()
+	{
+		return 'article';
+	}
+
+	// }}}
 }
 
 ?>
