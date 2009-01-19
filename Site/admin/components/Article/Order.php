@@ -51,6 +51,9 @@ class SiteArticleOrder extends AdminDBOrder
 	{
 		SwatDB::updateColumn($this->app->db, 'Article', 'integer:displayorder',
 			$index, 'integer:id', array($id), $this->getWhereClause());
+
+		if (isset($this->app->memcache))
+			$this->app->memcache->flushNs('article');
 	}
 
 	// }}}
