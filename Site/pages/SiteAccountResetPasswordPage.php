@@ -128,7 +128,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	// }}}
 	// {{{ protected function relocate()
 
-	protected function relocate()
+	protected function relocate(SwatForm $form)
 	{
 		$this->app->relocate('account');
 	}
@@ -163,6 +163,13 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 
 			$this->layout->clear('content');
 		}
+	}
+
+	// }}}
+	// {{{ protected function load()
+
+	protected function load(SwatForm $form)
+	{
 	}
 
 	// }}}
