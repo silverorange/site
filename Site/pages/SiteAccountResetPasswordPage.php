@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/pages/SiteArticlePage.php';
+require_once 'Site/pages/SiteEditPage.php';
 require_once 'Swat/SwatUI.php';
 
 /**
@@ -9,40 +9,31 @@ require_once 'Swat/SwatUI.php';
  * Users are required to enter a new password.
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  * @see       SiteAccountForgotPasswordPage
  */
-class SiteAccountResetPasswordPage extends SiteArticlePage
+class SiteAccountResetPasswordPage extends SiteEditPage
 {
-	// {{{ protected properties
-
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/pages/account-reset-password.xml';
-
-	protected $ui;
-
-	// }}}
 	// {{{ private properties
 
 	private $account_id;
 
 	// }}}
-	// {{{ public function __construct()
+	// {{{ protected function getUiXml()
 
-	public function __construct(SiteAbstractPage $page)
+	protected function getUiXml()
 	{
-		parent::__construct($page);
+		return 'Site/pages/account-reset-password.xml';
+	}
 
-		if ($this->getArgument('tag') === null) {
-			if ($this->app->session->isLoggedIn())
-				$this->app->relocate('account/changepassword');
-			else
-				$this->app->relocate('account/forgotpassword');
-		}
+	// }}}
+	// {{{ protected function isNew()
+
+	protected function isNew(SwatForm $form)
+	{
+		return false;
 	}
 
 	// }}}
@@ -58,31 +49,23 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 	// }}}
 
 	// init phase
-	// {{{ public function init()
-
-	public function init()
-	{
-		parent::init();
-
-		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->ui_xml);
-
-		$this->initInternal();
-		$this->ui->init();
-	}
-
-	// }}}
 	// {{{ protected function initInternal()
 
 	protected function initInternal()
 	{
-		$form = $this->ui->getWidget('edit_form');
-		$form->action = $this->source;
+		$tag = $this->getArgument('tag');
+
+		if ($tag === null) {
+			if ($this->app->session->isLoggedIn())
+				$this->app->relocate('account/changepassword');
+			else
+				$this->app->relocate('account/forgotpassword');
+		}
+
+		$this->account_id = $this->getAccountId($tag);
 
 		$confirm = $this->ui->getWidget('confirm_password');
 		$confirm->password_widget = $this->ui->getWidget('password');;
-
-		$this->account_id = $this->getAccountId($this->getArgument('tag'));
 	}
 
 	// }}}
@@ -118,29 +101,28 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 
 	public function process()
 	{
-		parent::process();
-
 		if ($this->account_id === null)
 			return;
 
-		$form = $this->ui->getWidget('edit_form');
-		$form->process();
+		parent::process();
+	}
 
-		if ($form->isProcessed()) {
-			if (!$form->hasMessage()) {
-				$this->app->session->loginById($this->account_id);
+	// }}}
+	// {{{ protected function save()
 
-				$password = $this->ui->getWidget('password')->value;
-				$this->app->session->account->setPassword($password);
-				$this->app->session->account->password_tag = null;
-				$this->app->session->account->save();
+	protected function save(SwatForm $form)
+	{
+		$this->app->session->loginById($this->account_id);
 
-				$this->app->messages->add(new SwatMessage(
-						Site::_('Account password has been updated.')));
+		$password = $this->ui->getWidget('password')->value;
+		$this->app->session->account->setPassword($password);
+		$this->app->session->account->password_tag = null;
+		$this->app->session->account->save();
 
-				$this->relocate();
-			}
-		}
+		$message = new SwatMessage(Site::_(
+			'Account password has been updated.'));
+
+		$this->app->messages->add($message);
 	}
 
 	// }}}
@@ -159,9 +141,6 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 	public function build()
 	{
 		parent::build();
-
-		$form = $this->ui->getWidget('edit_form');
-		$form->action = $this->source;
 
 		if ($this->account_id === null) {
 			$text = sprintf('<p>%s</p><ul><li>%s</li><li>%s</li></ul>',
@@ -184,10 +163,6 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 
 			$this->layout->clear('content');
 		}
-
-		$this->layout->startCapture('content');
-		$this->ui->display();
-		$this->layout->endCapture();
 	}
 
 	// }}}

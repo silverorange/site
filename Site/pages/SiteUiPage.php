@@ -50,6 +50,25 @@ abstract class SiteUiPage extends SitePageDecorator
 
 	// }}}
 
+	// process phase
+	// {{{ public function process()
+
+	public function process()
+	{
+		parent::process();
+		$this->ui->process();
+		$this->processInternal();
+	}
+
+	// }}}
+	// {{{ protected function processInternal()
+
+	protected function processInternal()
+	{
+	}
+
+	// }}}
+
 	// build phase
 	// {{{ public function build()
 

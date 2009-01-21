@@ -36,8 +36,6 @@ abstract class SiteEditPage extends SiteUiPage
 
 	public function process()
 	{
-		parent::process();
-
 		foreach ($this->getForms() as $form)
 			$this->processForm($form);
 	}
@@ -145,7 +143,8 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function assignUiValueToObject(SwatDBDataObject $object, $name)
 	{
 		$widget = $this->ui->getWidget($name);
-		if ($widget instanceof SwatDateEntry) {
+		// only clone the value when its actually an object
+		if ($widget instanceof SwatDateEntry && $widget->value !== null) {
 			$value = clone $widget->value;
 			$value->setTZ($this->app->default_time_zone);
 			$value->toUTC();
