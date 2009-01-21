@@ -3,7 +3,7 @@
 require_once 'Text/Password.php';
 require_once 'Swat/SwatUI.php';
 require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Site/pages/SiteEditPage.php';
+require_once 'Site/pages/SiteUiPage.php';
 require_once 'Site/dataobjects/SiteAccount.php';
 
 /**
@@ -15,21 +15,13 @@ require_once 'Site/dataobjects/SiteAccount.php';
  * @see       SiteAccount
  * @see       SiteAccountResetPasswordPage
  */
-class SiteAccountForgotPasswordPage extends SiteEditPage
+class SiteAccountForgotPasswordPage extends SiteUiPage
 {
 	// {{{ protected function getUiXml()
 
 	protected function getUiXml()
 	{
 		return 'Site/pages/account-forgot-password.xml';
-	}
-
-	// }}}
-	// {{{ protected function isNew()
-
-	protected function isNew(SwatForm $form)
-	{
-		return false;
 	}
 
 	// }}}
@@ -113,31 +105,17 @@ class SiteAccountForgotPasswordPage extends SiteEditPage
 	// }}}
 
 	// build phase
-	// {{{ public function build()
+	// {{{ protected function buildInternal()
 
-	public function build()
+	protected function buildInternal()
 	{
-		parent::build();
+		parent::buildInternal();
+
+		$this->ui->getWidget('password_form')->action = $this->source;
 
 		$email = $this->app->initVar('email');
 		if ($email !== null)
 			$this->ui->getWidget('email')->value = $email;
-
-		$this->layout->startCapture('content', true);
-		$this->ui->display();
-		$this->layout->endCapture();
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->ui->getRoot()->getHtmlHeadEntrySet());
 	}
 
 	// }}}
