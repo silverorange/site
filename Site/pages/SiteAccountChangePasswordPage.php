@@ -34,13 +34,10 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 
 	public function init()
 	{
-		if (!$this->app->session->isLoggedIn()) {
+		if (!$this->app->session->isLoggedIn())
 			$this->app->relocate('account/login');
-		}
 
 		parent::init();
-
-		$this->ui->init();
 	}
 
 	// }}}
@@ -49,6 +46,7 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 	protected function initInternal()
 	{
 		parent::initInternal();
+
 		$confirm = $this->ui->getWidget('confirm_password');
 		$confirm->password_widget = $this->ui->getWidget('password');
 	}
@@ -56,35 +54,6 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 	// }}}
 
 	// process phase
-	// {{{ public function process()
-
-	public function process()
-	{
-		parent::process();
-
-/*		$form = $this->ui->getWidget('edit_form');
-		$form->process();
-
-		if ($form->isProcessed()) {
-			if (!$form->hasMessage())
-				$this->validate();
-
-			if (!$form->hasMessage()) {
-				$password = $this->ui->getWidget('password')->value;
-				$this->app->session->account->setPassword($password);
-				$this->app->session->account->save();
-
-				$message = new SwatMessage(Site::_(
-					'Account password has been updated.'));
-
-				$this->app->messages->add($message);
-
-				$this->app->relocate('account');
-			}
-		}*/
-	}
-
-	// }}}
 	// {{{ protected function save()
 
 	protected function save(SwatForm $form)

@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Swat/SwatUI.php';
-require_once 'Site/pages/SiteAccountPage.php';
+require_once 'Site/pages/SitePage.php';
 
 /**
  * Page for logging into an account
@@ -11,7 +11,7 @@ require_once 'Site/pages/SiteAccountPage.php';
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */
-class SiteAccountLoginPage extends SiteAccountPage
+class SiteAccountLoginPage extends SitePage
 {
 	// {{{ protected properties
 

@@ -3,7 +3,7 @@
 require_once 'Text/Password.php';
 require_once 'Swat/SwatUI.php';
 require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Site/pages/SiteAccountPage.php';
+require_once 'Site/pages/SiteEditPage.php';
 require_once 'Site/dataobjects/SiteAccount.php';
 
 /**
@@ -15,39 +15,21 @@ require_once 'Site/dataobjects/SiteAccount.php';
  * @see       SiteAccount
  * @see       SiteAccountResetPasswordPage
  */
-class SiteAccountForgotPasswordPage extends SiteAccountPage
+class SiteAccountForgotPasswordPage extends SiteEditPage
 {
-	// {{{ protected properties
+	// {{{ protected function getUiXml()
 
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/pages/account-forgot-password.xml';
-	protected $ui;
-
-	// }}}
-
-	// init phase
-	// {{{ public function init()
-
-	public function init()
+	protected function getUiXml()
 	{
-		parent::init();
-
-		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->ui_xml);
-
-		$this->initInternal();
-		$this->ui->init();
+		return 'Site/pages/account-forgot-password.xml';
 	}
 
 	// }}}
-	// {{{ protected function initInternal()
+	// {{{ protected function isNew()
 
-	protected function initInternal()
+	protected function isNew(SwatForm $form)
 	{
-		$form = $this->ui->getWidget('password_form');
-		$form->action = $this->source;
+		return false;
 	}
 
 	// }}}
