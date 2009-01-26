@@ -55,7 +55,9 @@ abstract class SiteEditPage extends SiteUiPage
 					$this->save($form);
 					$this->relocate($form);
 				} else {
-					$this->app->messages->add($this->getInvalidMessage($form));
+					$message = $this->getInvalidMessage($form);
+					if ($message !== null)
+						$this->app->messages->add($message);
 				}
 			}
 		}
