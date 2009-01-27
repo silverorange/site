@@ -82,10 +82,11 @@ class SiteArticlePage extends SitePathPage
 	public function build()
 	{
 		$this->buildTitle();
-		$this->page->build();
 		$this->buildMetaDescription();
-		$this->buildContent();
 		$this->buildNavBar();
+		$this->buildContent();
+
+		$this->page->build();
 	}
 
 	// }}}
