@@ -80,7 +80,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 			$instance = $this->app->getModule('SiteMultipleInstanceModule');
 
 			if ($instance->getInstance() !== null)
-				$this->key_prefix.= $instance->getInstance()->shortname.'_';
+				$this->setInstance($instance->getInstance());
 		}
 	}
 
@@ -270,6 +270,35 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// }}}
 
 	// general
+	// {{{ public function setInstance()
+
+	/**
+	 * Manually specify the instance for the memcache module
+	 *
+ 	 * If the application already specifies an instance, the SiteMemcacheModule
+	 * will automatically use the specified instance for naming keys. In
+	 * certain situations though, such as flushing the namespace for more than
+	 * one instance in a system script, manually specifying the current instance
+	 * can be useful.
+	 *
+	 * @param $instance SiteInstance|string The instance to use for memcache
+	 *                                      keys, or optionally an instance
+	 *                                      shortname.
+	 */
+	public function setInstance($instance)
+	{
+		$this->key_prefix = $this->app_ns.'_';
+
+		if ($instance instanceof SiteInstance) {
+			$shortname = $instance->shortname;
+		} else {
+			$shortname = $instance;
+		}
+
+		$this->key_prefix.= $shortname.'_';
+	}
+
+	// }}}
 	// {{{ public function flush()
 
 	public function flush()
