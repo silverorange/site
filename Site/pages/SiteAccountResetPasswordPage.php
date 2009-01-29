@@ -85,7 +85,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 			$this->app->db->quote($password_tag, 'text'));
 
 		if ($this->app->hasModule('SiteMultipleInstanceModule')) {
-			$instance_id = $this->app->instance->getId();
+			$instance_id = $this->app->getInstanceId();
 			$sql.= sprintf(' and instance %s %s',
 				SwatDB::equalityOperator($instance_id),
 				$this->app->db->quote($instance_id, 'integer'));
