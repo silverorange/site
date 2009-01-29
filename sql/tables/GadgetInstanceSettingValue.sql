@@ -1,4 +1,5 @@
 create table GadgetInstanceSettingValue (
+	id serial,
 	gadget_instance integer not null
 		references GadgetInstance(id) on delete cascade,
 
@@ -9,5 +10,7 @@ create table GadgetInstanceSettingValue (
 	value_float   double precision,
 	value_integer integer,
 	value_string  varchar(255),
-	value_text    text
+	value_text    text,
+
+	primary key (id)
 );

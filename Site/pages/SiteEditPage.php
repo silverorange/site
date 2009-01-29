@@ -31,18 +31,6 @@ abstract class SiteEditPage extends SiteUiPage
 
 	// }}}
 
-	// init phase
-	// {{{ protected function initInternal()
-
-	protected function initInternal()
-	{
-		parent::initInternal();
-		foreach ($this->getForms() as $form)
-			$form->action = $this->source;
-	}
-
-	// }}}
-
 	// process phase
 	// {{{ public function process()
 
@@ -81,7 +69,7 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function getInvalidMessage(SwatForm $form)
 	{
 		$message = new SwatMessage(Site::_('There is a problem with '.
-			'the information submitted.'), SwatMessage::ERROR);
+			'the information submitted.'), 'error');
 
 		$message->secondary_content = Site::_('Please address the '.
 			'fields highlighted below and re-submit the form.');
@@ -248,6 +236,7 @@ abstract class SiteEditPage extends SiteUiPage
 
 	protected function buildForm(SwatForm $form)
 	{
+		$form->action = $this->source;
 		if (!$form->isProcessed() && !$this->isNew($form))
 			$this->load($form);
 	}

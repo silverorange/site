@@ -67,6 +67,15 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 		$this->ui = new SwatUI();
 		$this->ui->loadFromXML($this->ui_xml);
 
+		$this->initInternal();
+		$this->ui->init();
+	}
+
+	// }}}
+	// {{{ protected function initInternal()
+
+	protected function initInternal()
+	{
 		$form = $this->ui->getWidget('edit_form');
 		$form->action = $this->source;
 
@@ -74,8 +83,6 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 		$confirm->password_widget = $this->ui->getWidget('password');;
 
 		$this->account_id = $this->getAccountId($this->getArgument('tag'));
-
-		$this->ui->init();
 	}
 
 	// }}}
@@ -94,12 +101,9 @@ class SiteAccountResetPasswordPage extends SiteArticlePage
 		$sql = sprintf('select id from Account where password_tag = %s',
 			$this->app->db->quote($password_tag, 'text'));
 
-		if ($this->app->hasModule('SiteMultipleInstanceModule')) {
-			$instance_id = $this->app->getInstanceId();
-			$sql.= sprintf(' and instance %s %s',
-				SwatDB::equalityOperator($instance_id),
-				$this->app->db->quote($instance_id, 'integer'));
-		}
+		if ($this->app->hasModule('SiteMultipleInstanceModule'))
+			$sql.= sprintf(' and instance = %s', $this->app->db->quote(
+				$this->app->instance->getInstance()->id), 'integer');
 
 		return SwatDB::queryOne($this->app->db, $sql);
 	}

@@ -88,18 +88,21 @@ class SitePathPage extends SitePageDecorator
 	{
 		parent::buildNavBar();
 
-		$navbar = $this->layout->navbar;
-		$link = '';
-		$first = true;
-		foreach ($this->path as $path_entry) {
-			if ($first) {
-				$link.= $path_entry->shortname;
-				$first = false;
-			} else {
-				$link.= '/'.$path_entry->shortname;
-			}
+		if (isset($this->layout->navbar) &&
+			$this->layout->navbar instanceof SwatNavBar) {
+			$navbar = $this->layout->navbar;
+			$link = '';
+			$first = true;
+			foreach ($this->path as $path_entry) {
+				if ($first) {
+					$link.= $path_entry->shortname;
+					$first = false;
+				} else {
+					$link.= '/'.$path_entry->shortname;
+				}
 
-			$navbar->createEntry($path_entry->title, $link);
+				$navbar->createEntry($path_entry->title, $link);
+			}
 		}
 	}
 

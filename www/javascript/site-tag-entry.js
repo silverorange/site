@@ -15,20 +15,24 @@
  * @param DS_XHR|DS_JSArray The type of YUI datastore to use for values.
  * @param array initial_selected_tag_array an array of already selected tag
  *                                         strings.
+ * @param boolean allow_adding_tags Whether new tags can be added.
  *
  * @see http://developer.yahoo.com/yui/autocomplete/
  */
-function SiteTagEntry(id, data_store, initial_selected_tag_array)
+function SiteTagEntry(id, data_store, initial_selected_tag_array,
+	allow_adding_tags)
 {
 	this.id = id;
 	this.data_store = data_store;
 	this.initial_selected_tag_array = initial_selected_tag_array;
 
+	this.allow_adding_tags = allow_adding_tags;
+
 	this.selected_tag_array = [];
 	this.new_tag_array = [];
 	this.input_element = document.getElementById(this.id + '_value');
 	this.main_container = document.getElementById(this.id);
-/*	this.array_element = document.getElementById(this.id + '_array');*/
+	this.item_selected = false;
 
 	YAHOO.util.Event.onContentReady(
 		this.id, this.handleOnAvailable, this, true);
@@ -57,7 +61,7 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 		minQueryLength:        0,
 		highlightClassName:    'site-tag-highlight',
 		prehighlightClassName: 'site-tag-prehighlight',
-		autoHighlight:         true,
+		autoHighlight:         false,
 		useShadow:             false,
 		forceSelection:        false,
 		animVert:              false,
@@ -77,23 +81,25 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 	this.auto_complete.itemSelectEvent.subscribe(
 		this.addTagFromAutoComplete, this, true);
 
-	this.a_tag = document.createElement('a');
-	this.a_tag.href = '#';
-	YAHOO.util.Event.addListener(this.a_tag, 'click',
-		function(e, entry) {
-			YAHOO.util.Event.preventDefault(e);
-			entry.createTag();
-		}, this);
+	if (this.allow_adding_tags) {
+		this.a_tag = document.createElement('a');
+		this.a_tag.href = '#';
+		YAHOO.util.Event.addListener(this.a_tag, 'click',
+			function(e, entry) {
+				YAHOO.util.Event.preventDefault(e);
+				entry.createTag();
+			}, this);
 
-	var img_tag = document.createElement('img');
-	img_tag.src = 'packages/swat/images/swat-tool-link-create.png';
-	img_tag.title = SiteTagEntry.add_text;
-	img_tag.alt = '';
-	img_tag.className = 'add-tag';
-	this.a_tag.appendChild(img_tag);
+		var img_tag = document.createElement('img');
+		img_tag.src = 'packages/swat/images/swat-tool-link-create.png';
+		img_tag.title = SiteTagEntry.add_text;
+		img_tag.alt = '';
+		img_tag.className = 'add-tag';
+		this.a_tag.appendChild(img_tag);
 
-	this.input_element.parentNode.insertBefore(this.a_tag,
-		this.input_element.nextSibling);
+		this.input_element.parentNode.insertBefore(this.a_tag,
+			this.input_element.nextSibling);
+	}
 
 	// initialize values passed in
 	for (var i = 0; i < this.initial_selected_tag_array.length; i++) {
@@ -101,13 +107,32 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 			this.initial_selected_tag_array[i][0]);
 	}
 
+	// capture selected events so we know whether pressing enter means adding a
+	// tag or selecting one from the list
+	this.auto_complete.itemArrowToEvent.subscribe(
+		this.itemSelected, this, true);
+
+	this.auto_complete.itemArrowFromEvent.subscribe(
+		this.itemUnSelected, this, true);
+
+	this.auto_complete.itemMouseOverEvent.subscribe(
+		this.itemSelected, this, true);
+
+	this.auto_complete.itemMouseOutEvent.subscribe(
+		this.itemUnSelected, this, true);
+
+	var self = this;
+
 	YAHOO.util.Event.addListener(this.input_element, 'keydown',
 		function(e, entry) {
 			// capture enter key for new tags
-			if (YAHOO.util.Event.getCharCode(e) == 13 &&
-				!entry.auto_complete.isContainerOpen()) {
+			if (YAHOO.util.Event.getCharCode(e) == 13) {
+
+				//alert(entry.auto_complete.isFocused());
 				YAHOO.util.Event.stopEvent(e);
-				entry.createTag();
+
+				if (!self.item_selected)
+					entry.createTag();
 			}
 		}, this);
 
@@ -149,6 +174,7 @@ SiteTagEntry.prototype.addTagFromAutoComplete = function(
 SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 {
 	var found = false;
+	this.item_selected = false;
 
 	// trim tag string
 	tag_name = tag_name.replace(/^\s+|\s+$/g, '');
@@ -201,6 +227,9 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 
 	// create new tag
 	var new_tag = (!found);
+
+	if (new_tag && !this.allow_adding_tags)
+		return;
 
 	if (new_tag)
 		var title = tag_name;
@@ -274,6 +303,22 @@ SiteTagEntry.prototype.createTag = function()
 {
 	var tag_title = this.input_element.value;
 	this.addTag(tag_title);
+}
+
+// }}}
+// {{{ itemSelected()
+
+SiteTagEntry.prototype.itemSelected = function(oSelf, elItem)
+{
+	this.item_selected = true;
+}
+
+// }}}
+// {{{ itemUnSelected()
+
+SiteTagEntry.prototype.itemUnSelected = function(oSelf, elItem)
+{
+	this.item_selected = false;
 }
 
 // }}}

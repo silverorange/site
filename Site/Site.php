@@ -205,6 +205,7 @@ class Site
 			'exceptions.base_uri'      => null,
 			'errors.log_location'      => null,
 			'errors.base_uri'          => null,
+			'errors.fatal_severity'    => null,
 
 			// Analytics
 			// Google analytics account id (UA-XXXXX-XXX)

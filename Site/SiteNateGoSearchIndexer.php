@@ -17,19 +17,6 @@ require_once 'NateGoSearch/NateGoSearchPSpellSpellChecker.php';
  */
 class SiteNateGoSearchIndexer extends SiteSearchIndexer
 {
-	// {{{ class constants
-
-	/**
-	 * Verbosity level for showing nothing.
-	 */
-	const VERBOSITY_NONE = 0;
-
-	/**
-	 * Verbosity level for showing all indexing actions
-	 */
-	const VERBOSITY_ALL = 1;
-
-	// }}}
 	// {{{ protected properties
 
 	/**
@@ -47,19 +34,10 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	{
 		parent::__construct($id, $config_filename, $title, $documentation);
 
-		$verbosity = new SiteCommandLineArgument(array('-v', '--verbose'),
-			'setVerbosity', 'Sets the level of verbosity of the indexer. '.
-			'Pass 0 to turn off all output.');
-
-		$verbosity->addParameter('integer',
-			'--verbose expects a level between 0 and 1.',
-			self::VERBOSITY_ALL);
-
 		$all = new SiteCommandLineArgument(array('-A', '--all'),
 			'queue', 'Indexes all content rather than just queued '.
 			'content.');
 
-		$this->addCommandLineArgument($verbosity);
 		$this->addCommandLineArgument($all);
 	}
 
@@ -81,9 +59,14 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	{
 		$this->initModules();
 		$this->parseCommandLineArguments();
+
+		$this->lock();
+
 		$this->checkQueue();
 		$this->index();
 		$this->clearCache();
+
+		$this->unlock();
 	}
 
 	// }}}
@@ -100,12 +83,10 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 		$sql = 'select count(document_id) from NateGoSearchQueue';
 		$count = SwatDB::queryOne($this->db, $sql);
 		if ($count == 0) {
-			$this->output(Site::_('No entries in the search queue.')."\n",
-				self::VERBOSITY_ALL);
+			$this->debug(Site::_('No entries in the search queue.')."\n");
 		} else {
-			$this->output(Site::_('Search queue has entries. Cached search '.
-				'results will be cleared after indexing is complete.')."\n",
-				self::VERBOSITY_ALL);
+			$this->debug(Site::_('Search queue has entries. Cached search '.
+				'results will be cleared after indexing is complete.')."\n");
 
 			$this->clear_cache = true;
 		}
@@ -134,14 +115,12 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	protected function clearCache()
 	{
 		if ($this->clear_cache) {
-			$this->output(Site::_('Clearing cached search results ... '),
-				self::VERBOSITY_ALL);
+			$this->debug(Site::_('Clearing cached search results ... '));
 
 			$sql = 'delete from NateGoSearchCache';
 			SwatDB::exec($this->db, $sql);
 
-			$this->output(Site::_('done')."\n",
-				self::VERBOSITY_ALL);
+			$this->debug(Site::_('done')."\n");
 		}
 	}
 
@@ -153,8 +132,7 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	 */
 	protected function queueArticles()
 	{
-		$this->output(Site::_('Repopulating article search queue ... '),
-			self::VERBOSITY_ALL);
+		$this->debug(Site::_('Repopulating article search queue ... '));
 
 		$type = NateGoSearch::getDocumentType($this->db, 'article');
 
@@ -172,7 +150,7 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 
 		SwatDB::exec($this->db, $sql);
 
-		$this->output(Site::_('done')."\n", self::VERBOSITY_ALL);
+		$this->debug(Site::_('done')."\n");
 	}
 
 	// }}}
@@ -187,9 +165,8 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	 */
 	protected function indexArticles()
 	{
-		$spell_checker = new NateGoSearchPSpellSpellChecker('en');
-		$spell_checker->setCustomWordList($this->getCustomWordList());
-		$spell_checker->loadCustomContent();
+		$spell_checker = new NateGoSearchPSpellSpellChecker('en_US', '',
+			'', $this->getCustomWordList());
 
 		$indexer = new NateGoSearchIndexer('article', $this->db);
 
@@ -208,8 +185,7 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 				and NateGoSearchQueue.document_type = %s',
 			$this->db->quote($type, 'integer'));
 
-		$this->output(Site::_('Indexing articles ... ').'   ',
-			self::VERBOSITY_ALL);
+		$this->debug(Site::_('Indexing articles ... ').'   ');
 
 		$articles = SwatDB::query($this->db, $sql);
 		$total = count($articles);
@@ -218,9 +194,8 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 
 			if ($count % 10 == 0) {
 				$indexer->commit();
-				$this->output(str_repeat(chr(8), 3), self::VERBOSITY_ALL);
-				$this->output(sprintf('%2d%%', ($count / $total) * 100),
-					self::VERBOSITY_ALL);
+				$this->debug(str_repeat(chr(8), 3));
+				$this->debug(sprintf('%2d%%', ($count / $total) * 100));
 			}
 
 			$document = new NateGoSearchDocument($article, 'id');
@@ -229,8 +204,7 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 			$count++;
 		}
 
-		$this->output(str_repeat(chr(8), 3).Site::_('done')."\n",
-			self::VERBOSITY_ALL);
+		$this->debug(str_repeat(chr(8), 3).Site::_('done')."\n");
 
 		$indexer->commit();
 		unset($indexer);

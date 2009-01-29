@@ -1,121 +1,30 @@
 <?php
 
 require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Site/pages/SiteAccountPage.php';
+require_once 'Site/pages/SiteDBEditPage.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatUI.php';
 
 /**
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteAccountEditPage extends SiteAccountPage
+class SiteAccountEditPage extends SiteDBEditPage
 {
 	// {{{ protected properties
 
-	protected $ui;
-	protected $ui_xml = 'Site/pages/account-edit.xml';
+	/**
+	 * @var SiteAccount
+	 */
+	protected $account;
 
 	// }}}
+	// {{{ protected function getUiXml()
 
-	// init phase
-	// {{{ public function init()
-
-	public function init()
+	protected function getUiXml()
 	{
-		parent::init();
-
-		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->ui_xml);
-
-		$form = $this->ui->getWidget('edit_form');
-		$form->action = $this->source;
-
-		$confirm_password = $this->ui->getWidget('confirm_password');
-		$confirm_password->password_widget = $this->ui->getWidget('password');;
-
-		$confirm_email = $this->ui->getWidget('confirm_email');
-		$confirm_email->email_widget = $this->ui->getWidget('email');;
-
-		$this->ui->init();
-	}
-
-	// }}}
-	// {{{ private function findAccount()
-
-	private function findAccount()
-	{
-		if ($this->app->session->isLoggedIn())
-			return $this->app->session->account;
-
-		return $this->createNewAccount();
-	}
-
-	// }}}
-
-	// process phase
-	// {{{ public function process()
-
-	public function process()
-	{
-		parent::process();
-
-		if ($this->app->session->isLoggedIn()) {
-			$this->ui->getWidget('password')->required = false;
-			$this->ui->getWidget('confirm_password')->required = false;
-		}
-
-		$form = $this->ui->getWidget('edit_form');
-		$form->process();
-
-		if ($form->isProcessed()) {
-			$this->validateEmail();
-
-			if (!$form->hasMessage()) {
-				$account = $this->findAccount();
-
-				$this->updateAccount($account);
-
-				if (!$this->app->session->isLoggedIn()) {
-
-					$account->createdate = new SwatDate();
-					$account->createdate->toUTC();
-
-					$account->setDatabase($this->app->db);
-					$account->save();
-
-					$this->app->session->loginById($account->id);
-
-					$message = new SwatMessage(
-						Site::_('New account has been created.'));
-
-				} elseif ($this->app->session->account->isModified()) {
-					$message = new SwatMessage(
-						Site::_('Account details have been updated.'));
-
-					$this->app->messages->add($message);
-
-					$this->app->session->account->save();
-				}
-
-				$this->app->relocate('account');
-			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function updateAccount()
-
-	protected function updateAccount(StoreAccount $account)
-	{
-		if (!$this->app->session->isLoggedIn()) {
-			$account->setPassword(
-				$this->ui->getWidget('password')->value);
-		}
-
-		$account->fullname = $this->ui->getWidget('fullname')->value;
-		$account->email = $this->ui->getWidget('email')->value;
+		return 'Site/pages/account-edit.xml';
 	}
 
 	// }}}
@@ -135,6 +44,58 @@ class SiteAccountEditPage extends SiteAccountPage
 			$account->instance = $this->app->instance->getInstance();
 
 		return $account;
+	}
+
+	// }}}
+	// {{{ protected function isNew()
+
+	protected function isNew(SwatForm $form)
+	{
+		return (!$this->app->session->isLoggedIn());
+	}
+
+	// }}}
+
+	// init phase
+	// {{{ protected function initInternal()
+
+	protected function initInternal()
+	{
+		parent::initInternal();
+
+		$this->initAccount();
+
+		$confirm_password = $this->ui->getWidget('confirm_password');
+		$confirm_password->password_widget = $this->ui->getWidget('password');
+
+		try {
+			$confirm_email = $this->ui->getWidget('confirm_email');
+			$confirm_email->email_widget = $this->ui->getWidget('email');
+		} catch (SwatWidgetNotFoundException $e) {
+			// ignore if there is no confirm_email field
+		}
+	}
+
+	// }}}
+	// {{{ protected function initAccount()
+
+	protected function initAccount()
+	{
+		if ($this->app->session->isLoggedIn()) {
+			$this->account = $this->app->session->account;
+		} else {
+			$this->account = $this->createNewAccount();
+		}
+	}
+
+	// }}}
+
+	// process phase
+	// {{{ protected function validate()
+
+	protected function validate(SwatForm $form)
+	{
+		$this->validateEmail();
 	}
 
 	// }}}
@@ -175,19 +136,60 @@ class SiteAccountEditPage extends SiteAccountPage
 	}
 
 	// }}}
+	// {{{ protected function updateAccount()
 
-	// build phase
-	// {{{ protected function buildContent()
-
-	protected function buildContent()
+	protected function updateAccount(SwatForm $form)
 	{
-		parent::buildContent();
-		$this->layout->startCapture('content');
-		$this->ui->display();
-		$this->layout->endCapture();
+		$this->assignUiValuesToObject($this->account, array(
+			'fullname',
+			'email',
+		));
 	}
 
 	// }}}
+	// {{{ protected function saveData()
+
+	protected function saveData(SwatForm $form)
+	{
+		$this->updateAccount($form);
+
+		if ($this->isNew($form)) {
+			$this->account->setPassword(
+				$this->ui->getWidget('password')->value);
+
+			$this->account->createdate = new SwatDate();
+			$this->account->createdate->toUTC();
+
+			$this->account->setDatabase($this->app->db);
+			$this->account->save();
+
+			$this->app->session->loginById($this->account->id);
+
+			$message = new SwatMessage(
+				Site::_('Your account has been created.'));
+
+			$this->app->messages->add($message);
+		} elseif ($this->account->isModified()) {
+			$this->app->session->account->save();
+
+			$message = new SwatMessage(
+				Site::_('Account details have been updated.'));
+
+			$this->app->messages->add($message);
+		}
+	}
+
+	// }}}
+	// {{{ protected function relocate()
+
+	protected function relocate(SwatForm $form)
+	{
+		$this->app->relocate('account');
+	}
+
+	// }}}
+
+	// build phase
 	// {{{ protected function buildInternal()
 
 	protected function buildInternal()
@@ -195,11 +197,11 @@ class SiteAccountEditPage extends SiteAccountPage
 		parent::buildInternal();
 
 		$form = $this->ui->getWidget('edit_form');
-		$form->action = $this->source;
+		if (!$this->isNew($form)) {
+			$this->ui->getWidget('submit_button')->title =
+				Site::_('Update Account Details');
 
-		if ($this->app->session->isLoggedIn() && !$form->isProcessed()) {
-			$account = $this->findAccount();
-			$this->setWidgetValues($account);
+			$this->ui->getWidget('password_container')->visible = false;
 		}
 	}
 
@@ -210,43 +212,43 @@ class SiteAccountEditPage extends SiteAccountPage
 	{
 		parent::buildNavBar();
 
-		if ($this->app->session->isLoggedIn()) {
-			$this->layout->navbar->createEntry(
-				Site::_('Edit Account Details'));
-
-			$this->layout->data->title = Site::_('Edit Account Details');
-			$this->ui->getWidget('submit_button')->title =
-				Site::_('Update Account Details');
-
-			$this->ui->getWidget('password_container')->visible = false;
+		$form = $this->ui->getWidget('edit_form');
+		if ($this->isNew($form)) {
+			$this->layout->navbar->createEntry(Site::_('Create a New Account'));
 		} else {
-			$this->layout->navbar->createEntry(
-				Site::_('Create a New Account'));
-
-			$this->layout->data->title = Site::_('Create a New Account');
+			$this->layout->navbar->createEntry(Site::_('Edit Account Details'));
 		}
 	}
 
 	// }}}
-	// {{{ protected function setWidgetValues()
+	// {{{ protected function buildTitle()
 
-	protected function setWidgetValues(SiteAccount $account)
+	protected function buildTitle()
 	{
-		$this->ui->getWidget('fullname')->value = $account->fullname;
-		$this->ui->getWidget('email')->value = $account->email;
-		$this->ui->getWidget('confirm_email')->value = $account->email;
+		parent::buildTitle();
+
+		$form = $this->ui->getWidget('edit_form');
+		if ($this->isNew($form)) {
+			$this->layout->data->title = Site::_('Create a New Account');
+		} else {
+			$this->layout->data->title = Site::_('Edit Account Details');
+		}
 	}
 
 	// }}}
+	// {{{ protected function load()
 
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
+	protected function load(SwatForm $form)
 	{
-		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->ui->getRoot()->getHtmlHeadEntrySet());
+		$this->assignObjectValuesToUi($this->account, array(
+			'fullname',
+			'email',
+		));
+
+		if ($this->ui->hasWidget('confirm_email')) {
+			$this->ui->getWidget('confirm_email')->value =
+				$this->account->email;
+		}
 	}
 
 	// }}}

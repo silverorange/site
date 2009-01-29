@@ -48,6 +48,9 @@ class SiteArticleDelete extends AdminDBDelete
 			SwatString::numberFormat($num)));
 
 		$this->app->messages->add($message);
+
+		if (isset($this->app->memcache))
+			$this->app->memcache->flushNs('article');
 	}
 
 	// }}}

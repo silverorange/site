@@ -7,7 +7,8 @@ require_once 'Site/dataobjects/SiteArticleWrapper.php';
  * An article search engine
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticleSearchEngine extends SiteSearchEngine
 {
@@ -64,10 +65,18 @@ class SiteArticleSearchEngine extends SiteSearchEngine
 		if ($this->fulltext_result === null)
 			$clause = sprintf('order by Article.title');
 		else
-			$clause = 
+			$clause =
 				$this->fulltext_result->getOrderByClause('Article.title');
 
 		return $clause;
+	}
+
+	// }}}
+	// {{{ protected function getMemcacheNs()
+
+	protected function getMemcacheNs()
+	{
+		return 'article';
 	}
 
 	// }}}

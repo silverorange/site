@@ -72,6 +72,30 @@ class SiteImageSet extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function hasDimension()
+
+	/**
+	 * Checks existance of a dimension by its shortname
+	 *
+	 * @param string $shortname the shortname of the dimension
+	 *
+	 * @return boolean whether the dimension with the given shortname exists
+	 */
+	public function hasDimension($shortname)
+	{
+		$found = false;
+
+		foreach ($this->dimensions as $dimension) {
+			if ($dimension->shortname === $shortname) {
+				$found = true;
+				break;
+			}
+		}
+
+		return $found;
+	}
+
+	// }}}
 	// {{{ public function getDimensionByShortname()
 
 	/**
@@ -132,9 +156,9 @@ class SiteImageSet extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function getSerializableSubDataObjects()
+	// {{{ protected function getSerializableSubdataobjects()
 
-	protected function getSerializableSubDataObjects()
+	protected function getSerializableSubdataobjects()
 	{
 		return array(
 			'dimensions',

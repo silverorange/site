@@ -14,7 +14,7 @@ require_once 'Swat/SwatString.php';
  * <code>
  * <?php
  * $comment = ' ... ';
- * echo SiteCommentParser::parse($comment);
+ * echo SiteCommentFilter::parse($comment);
  * ?>
  * </code>
  *
@@ -25,7 +25,7 @@ require_once 'Swat/SwatString.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteCommentParser
+class SiteCommentFilter
 {
 	// {{{ protected static properties
 

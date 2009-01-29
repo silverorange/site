@@ -61,6 +61,27 @@ class SiteContentGadget extends SiteGadget
 	}
 
 	// }}}
+	// {{{ protected function getCSSClassNames()
+
+	/**
+	 * Gets the array of CSS classes that are applied to this user-interface
+	 * object
+	 *
+	 * User-interface objects aggregate the list of user-specified classes and
+	 * may add static CSS classes of their own in this method.
+	 *
+	 * @return array the array of CSS classes that are applied to this
+	 *                user-interface object.
+	 *
+	 * @see SwatUIObject::getCSSClassString()
+	 */
+	protected function getCSSClassNames()
+	{
+		return array_merge($this->classes,
+			array('site-content-gadget'));
+	}
+
+	// }}}
 }
 
 ?>

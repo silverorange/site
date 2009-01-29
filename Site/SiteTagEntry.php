@@ -20,6 +20,16 @@ require_once 'Swat/SwatYUI.php';
  */
 abstract class SiteTagEntry extends SwatInputControl implements SwatState
 {
+	// {{{ public properties
+
+	/*
+	 * Whether or not to allow adding new tags
+	 *
+	 * @var boolean
+	 */
+	public $allow_adding_tags = true;
+
+	// }}}
 	// {{{ protected properties
 
 	/*
@@ -142,11 +152,17 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		if (isset($data[$this->id]) && is_array($data[$this->id])) {
 			$tag_strings = $data[$this->id];
 
-			// make sure entered tags are in the original tag array
-			foreach ($tag_strings as $tag_string)
-				if (array_key_exists($tag_string, $this->tag_array))
-					$this->selected_tag_array[$tag_string] =
-						$this->tag_array[$tag_string];
+			if ($this->json_server === null) {
+				// make sure entered tags are in the original tag array
+				foreach ($tag_strings as $tag_string)
+					if (array_key_exists($tag_string, $this->tag_array))
+						$this->selected_tag_array[$tag_string] =
+							$this->tag_array[$tag_string];
+			} else {
+				foreach ($tag_strings as $string) {
+					$this->selected_tag_array[$string] = $string;
+				}
+			}
 		}
 
 		if ($this->required && count($this->selected_tag_array) == 0) {
@@ -300,10 +316,11 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		}
 
 		$javascript.= sprintf("var %1\$s_obj = new SiteTagEntry(".
-			"'%1\$s', %2\$s, [%3\$s]);",
+			"'%1\$s', %2\$s, [%3\$s], %4\$s);",
 			$this->id,
 			$data_store,
-			implode(',', $selected_tag_array));
+			implode(',', $selected_tag_array),
+			$this->allow_adding_tags ? 'true' : 'false');
 
 		return $javascript;
 	}

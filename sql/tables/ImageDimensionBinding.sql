@@ -4,6 +4,9 @@ create table ImageDimensionBinding (
 	image_type integer not null references ImageType(id),
 	width integer not null,
 	height integer not null,
+	dpi integer not null default 72,
 	filesize integer,
 	primary key(image, dimension)
 );
+
+create index ImageDimensionBinding_image_index on ImageDimensionBinding(image);

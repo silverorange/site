@@ -16,6 +16,17 @@ class SiteGadgetInstanceSettingValue extends SwatDBDataObject
 	// {{{ public properties
 
 	/**
+	 * Unique identifier
+	 *
+	 * The primary key of the GadgetInstanceSettingValue table is actually
+	 * (gadget_instance, name). This field is added so the dataobject will
+	 * play nicely with SwatDB and SiteEditPage.
+	 *
+	 * @var integer
+	 */
+	public $id;
+
+	/**
 	 * The name of the setting
 	 *
 	 * @var string
@@ -203,6 +214,8 @@ class SiteGadgetInstanceSettingValue extends SwatDBDataObject
 	protected function init()
 	{
 		$this->table = 'GadgetInstanceSettingValue';
+		$this->id_field = 'integer:id';
+
 		$this->registerInternalProperty('gadget_instance',
 			'SiteGadgetInstance');
 

@@ -2,12 +2,13 @@
 
 require_once 'Swat/SwatObject.php';
 require_once 'Site/SiteFulltextSearchResult.php';
+require_once 'Site/SiteMemcacheModule.php';
 
 /**
  * An abstract search engine
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2008 silverorange
  */
 abstract class SiteSearchEngine extends SwatObject
 {
@@ -48,9 +49,12 @@ abstract class SiteSearchEngine extends SwatObject
 	 * @var array
 	 *
 	 * @see SiteSearchEngine::getResultCount()
-	 * @see SiteSearchEngine::getSearchParameterHash()
 	 */
 	protected $result_count_cache = array();
+
+	protected $select_fields = array('*');
+
+	protected $memcache;
 
 	// }}}
 	// {{{ public function __construct()
@@ -63,6 +67,10 @@ abstract class SiteSearchEngine extends SwatObject
 	public function __construct(SiteApplication $app)
 	{
 		$this->app = $app;
+
+		if ($app->hasModule('SiteMemcacheModule')) {
+			$this->memcache = $app->getModule('SiteMemcacheModule');
+		}
 	}
 
 	// }}}
@@ -114,16 +122,9 @@ abstract class SiteSearchEngine extends SwatObject
 	 */
 	public function getResultCount()
 	{
-		$hash = $this->getSearchParameterHash();
-		if (array_key_exists($hash, $this->result_count_cache)) {
-			$count = $this->result_count_cache[$hash];
-		} else {
-			$from_clause = $this->getFromClause();
-			$where_clause = $this->getWhereClause();
-			$count = $this->queryResultCount($from_clause, $where_clause);
-			$this->result_count_cache[$hash] = $count;
-		}
-
+		$from_clause = $this->getFromClause();
+		$where_clause = $this->getWhereClause();
+		$count = $this->queryResultCount($from_clause, $where_clause);
 		return $count;
 	}
 
@@ -149,6 +150,14 @@ abstract class SiteSearchEngine extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function clearOrderByFields()
+
+	public function clearOrderByFields()
+	{
+		$this->order_by_fields = array();
+	}
+
+	// }}}
 	// {{{ public function addOrderByField()
 
 	/**
@@ -165,6 +174,14 @@ abstract class SiteSearchEngine extends SwatObject
 	public function addOrderByField($field)
 	{
 		array_unshift($this->order_by_fields, $field);
+	}
+
+	// }}}
+	// {{{ public function setSelectFields()
+
+	public function setSelectFields(array $fields = array('*'))
+	{
+		$this->select_fields = $fields;
 	}
 
 	// }}}
@@ -193,10 +210,58 @@ abstract class SiteSearchEngine extends SwatObject
 			$limit_clause,
 			$offset_clause);
 
-		$wrapper_class = $this->getResultWrapperClass();
-		$results = SwatDB::query($this->app->db, $sql, $wrapper_class);
+		$results = false;
+
+		if ($this->hasMemcache()) {
+			$key = $this->getResultsCacheKey($sql);
+			$ns  = $this->getMemcacheNs();
+			$ids = $this->memcache->getNs($ns, $key);
+
+			if ($ids !== false) {
+				$wrapper_class = $this->getResultWrapperClass();
+				$results = new $wrapper_class();
+				if (count($ids) > 0) {
+					$cached_results = $this->memcache->getNs($ns, $ids);
+					if (count($cached_results) !== count($ids)) {
+						$results = false;
+					} else {
+						foreach ($cached_results as $result) {
+							$results->add($result);
+						}
+					}
+				}
+
+				if ($results !== false) {
+					$results->setDatabase($this->app->db);
+				}
+			}
+		}
+
+		if ($results === false) {
+			$wrapper_class = $this->getResultWrapperClass();
+			$results = SwatDB::query($this->app->db, $sql, $wrapper_class);
+
+			$this->loadSubObjects($results);
+
+			if ($this->hasMemcache()) {
+				$ids = array();
+				foreach ($results as $id => $result) {
+					$result_key = $key.'.'.$id;
+					$ids[] = $result_key;
+					$this->memcache->setNs($ns, $result_key, $result);
+				}
+				$this->memcache->setNs($ns, $key, $ids);
+			}
+		}
 
 		return $results;
+	}
+
+	// }}}
+	// {{{ protected function loadSubObjects()
+
+	protected function loadSubObjects(SwatDBRecordsetWrapper $results)
+	{
 	}
 
 	// }}}
@@ -216,7 +281,27 @@ abstract class SiteSearchEngine extends SwatObject
 			$from_clause,
 			$where_clause);
 
-		$count = SwatDB::queryOne($this->app->db, $sql);
+		$key = $this->getResultCountCacheKey($sql);
+
+		if (array_key_exists($key, $this->result_count_cache)) {
+			$count = $this->result_count_cache[$key];
+		} else {
+			$count = false;
+
+			if ($this->hasMemcache()) {
+				$ns    = $this->getMemcacheNs();
+				$count = $this->memcache->getNs($ns, $key);
+			}
+
+			if ($count === false) {
+				$count = SwatDB::queryOne($this->app->db, $sql);
+				if ($this->hasMemcache()) {
+					$this->memcache->setNs($ns, $key, $count);
+				}
+			}
+
+			$this->result_count_cache[$key] = $count;
+		}
 
 		return $count;
 	}
@@ -250,6 +335,23 @@ abstract class SiteSearchEngine extends SwatObject
 	 * @return string the SQL clause.
 	 */
 	abstract protected function getFromClause();
+
+	// }}}
+	// {{{ protected function getMemcacheNs()
+
+	protected function getMemcacheNs()
+	{
+		return null;
+	}
+
+	// }}}
+	// {{{ protected function hasMemcache()
+
+	protected function hasMemcache()
+	{
+		return ($this->memcache instanceof SiteMemcacheModule &&
+			$this->getMemcacheNs() !== null);
+	}
 
 	// }}}
 	// {{{ protected function getOrderByClause()
@@ -326,44 +428,31 @@ abstract class SiteSearchEngine extends SwatObject
 	}
 
 	// }}}
-	// {{{ protected function getSearchParameterHash()
+	// {{{ protected function getResultsCacheKey()
 
-	/**
-	 * Gets a hash value for the public properties (search parameters) of this
-	 * search engine
-	 *
-	 * The hash value is used to identify cached search results.
-	 *
-	 * @return string a hash value for the public properties of this search
-	 *                 engine.
-	 */
-	protected function getSearchParameterHash()
+	protected function getResultsCacheKey($sql)
 	{
-		$properties = $this->getPublicProperties();
-		return md5(serialize($properties));
+		return md5($sql);
 	}
 
 	// }}}
-	// {{{ protected function getPublicProperties()
+	// {{{ protected function getResultCountCacheKey()
 
-	/**
-	 * Gets all the public properties (search parameters) of this search engine
-	 *
-	 * @return array an associative array of public properties of this search
-	 *               engine. The array key is the property name and the array
-	 *               value is the property value.
-	 */
-	protected function getPublicProperties()
+	protected function getResultCountCacheKey($sql)
 	{
-		$public_properties = array();
-		$reflector = new ReflectionClass(get_class($this));
-		foreach ($reflector->getProperties() as $property) {
-			if ($property->isPublic() && !$property->isStatic()) {
-				$public_properties[$property->getName()] =
-					$property->getValue($this);
-			}
+		return md5($sql);
+	}
+
+	// }}}
+	// {{{ protected function getResultIds()
+
+	protected function getResultIds(SwatDBRecordsetWrapper $results)
+	{
+		$result_ids = array();
+		foreach ($results as $result) {
+			$result_ids[] = $result->id;
 		}
-		return $public_properties;
+		return $result_ids;
 	}
 
 	// }}}

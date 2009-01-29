@@ -2,7 +2,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '1.3.9';
+$version = '1.3.34';
 $notes = <<<EOT
 see ChangeLog
 EOT;
@@ -54,13 +54,14 @@ $package->addReplacement('Site/Site.php', 'pear-config', '@DATA-DIR@', 'data_dir
 
 $package->setPhpDep('5.1.5');
 $package->setPearinstallerDep('1.4.0');
-$package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.3.15');
+$package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.3.54');
 $package->addPackageDepWithChannel('required', 'MDB2', 'pear.php.net', '2.2.2');
 $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10');
 $package->addPackageDepWithChannel('required', 'Mail_mime', 'pear.silverorange.com', '1.3.0so1');
 $package->addPackageDepWithChannel('required', 'Net_SMTP', 'pear.php.net', '1.2.8');
 $package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.php.net', '1.0.5');
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
+$package->addExtensionDep('optional', 'uploadprogress', '0.3.0');
 $package->generateContents();
 
 if (isset($_GET['make']) || (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {

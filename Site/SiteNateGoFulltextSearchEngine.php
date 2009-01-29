@@ -82,9 +82,8 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	 */
 	public function search($keywords)
 	{
-		$spell_checker = new NateGoSearchPSpellSpellChecker($this->locale);
-		$spell_checker->setCustomWordList($this->getCustomWordList());
-		$spell_checker->loadCustomContent();
+		$spell_checker = new NateGoSearchPSpellSpellChecker($this->locale, '',
+			'', $this->getCustomWordList());
 
 		$query = new NateGoSearchQuery($this->db);
 		$query->addBlockedWords(NateGoSearchQuery::getDefaultBlockedWords());

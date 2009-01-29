@@ -16,7 +16,7 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	// {{{ class constants
 
 	/**
-	 * Title length before it gets truncated.
+	 * Title length in characters before it gets truncated.
 	 */
 	const MAX_TITLE_LENGTH = 30;
 
@@ -24,11 +24,16 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	// {{{ public properties
 
 	/**
+	 * The image to display
+	 *
 	 * @var SiteImage
 	 */
 	public $image;
 
 	/**
+	 * The shortname of the {@link SiteImageDimension} to display for the
+	 * image
+	 *
 	 * @var string
 	 */
 	public $image_dimension;
@@ -59,19 +64,38 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	public $link_value = null;
 
 	/**
-	 * Display title?
+	 * Whether or not to display the image title
+	 *
+	 * If a title is displayed, it is truncated at
+	 * {@link SiteImageCellRenderer::MAX_TITLE_LENGTH} characters. If set to
+	 * true and the image has no title, an empty span tag is displayed.
 	 *
 	 * @var boolean
 	 */
 	public $display_title = true;
 
+	/**
+	 * Whether or not this cell renderer should occupy a square region
+	 *
+	 * If set to true, the region occupied by this cell renderer will be a
+	 * square with the same dimensions for every image displayed. This is useful
+	 * for displayimg images in a {@link SwatTileView} when the images do not
+	 * all have the same dimensions.
+	 *
+	 * If set to false, this cell renderer will occupy a region of the actual
+	 * image dimensions.
+	 *
+	 * @var boolean
+	 */
+	public $square = true;
+
 	// }}}
-	// {{{ private properties
+	// {{{ protected properties
 
 	/**
 	 * @var SwatImageCellRenderer
 	 */
-	private $image_cell_renderer;
+	protected $image_cell_renderer;
 
 	// }}}
 	// {{{ public function __construct()
@@ -122,16 +146,22 @@ class SiteImageCellRenderer extends SwatCellRenderer
 
 		$this->image_cell_renderer->image =
 			$this->image->getUri($this->image_dimension, $this->path_prefix);
+
 		$this->image_cell_renderer->width =
 			$this->image->getWidth($this->image_dimension);
+
 		$this->image_cell_renderer->height =
 			$this->image->getHeight($this->image_dimension);
+
 		$this->image_cell_renderer->alt = '';
 
-		$occupy = max($this->image->getHeight($this->image_dimension),
-			$this->image->getWidth($this->image_dimension));
-		$this->image_cell_renderer->occupy_height = $occupy;
-		$this->image_cell_renderer->occupy_width = $occupy;
+		if ($this->square) {
+			$occupy = max($this->image->getHeight($this->image_dimension),
+				$this->image->getWidth($this->image_dimension));
+
+			$this->image_cell_renderer->occupy_height = $occupy;
+			$this->image_cell_renderer->occupy_width = $occupy;
+		}
 
 		$image_wrapper_tag = new SwatHtmlTag('span');
 		$image_wrapper_tag->class = 'site-image-wrapper';
@@ -148,6 +178,7 @@ class SiteImageCellRenderer extends SwatCellRenderer
 
 			$span_tag = new SwatHtmlTag('span');
 			$span_tag->class = 'title';
+
 			if ($title === null)
 				$span_tag->setContent(''); // prevent self-closing span tag
 			else
