@@ -70,7 +70,7 @@ class SiteNateGoFulltextSearchResult extends SwatObject
 		$clause = sprintf('order by %1$s.displayorder1,
 			%1$s.displayorder2',
 			$this->nate_go_result->getResultTable());
-		
+
 		if ($default_clause != '') {
 			$clause.= ', '.$default_clause;
 		}
