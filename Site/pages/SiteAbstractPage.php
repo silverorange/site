@@ -168,10 +168,11 @@ abstract class SiteAbstractPage extends SiteObject
 	// {{{ public function init()
 
 	/**
-	 * The first page method that is run by a {@link SiteWebApplication}.
-	 * Always runs before {@link SiteLayout::init()}. This method is intended
-	 * to initialize objects used by the {@link SitePage::process()} and
-	 * {@link SitePage::build()} methods.
+	 * This is the first page-level method that is called by a
+	 * {@link SiteWebApplication}. Runs after {@link SiteLayout::init()}. Runs
+	 * before {@link SiteLayout::process()}. This method is intended to
+	 * initialize objects used by the {@link SiteAbstractPage::process()} and
+	 * {@link SiteAbstractPage::build()} methods.
 	 *
 	 * @xmlrpc.hidden
 	 */
@@ -185,8 +186,9 @@ abstract class SiteAbstractPage extends SiteObject
 	// {{{ public function process()
 
 	/**
-	 * Always runs after {@link SitePage::init()} and before
-	 * {@link SiteLayout::process()}. This method is intended to process
+	 * Runs after {@link SiteAbstractPage::init()} and
+	 * {@link SiteLayout::process()}. Runs before
+	 * {@link SiteLayout::build()}. This method is intended to process
 	 * data entered by the user.
 	 *
 	 * @xmlrpc.hidden
@@ -201,8 +203,9 @@ abstract class SiteAbstractPage extends SiteObject
 	// {{{ public function build()
 
 	/**
-	 * Always runs after {@link SitePage::process()} and before
-	 * {@link SiteLayout::build()}. This method is intended to build page
+	 * Runs after {@link SiteAbstractPage::process()} and
+	 * {@link SiteLayout::build()}. Runs before
+	 * {@link SiteLayout::finalize()}. This method is intended to build page
 	 * content and add it to the layout.
 	 *
 	 * @xmlrpc.hidden
@@ -217,7 +220,8 @@ abstract class SiteAbstractPage extends SiteObject
 	// {{{ public function finalize()
 
 	/**
-	 * Always runs after {@link SitePage::build()} and before
+	 * Runs after {@link SiteAbstractPage::build()} and
+	 * {@SiteLayout::finalize()}. Runs before
 	 * {@link SiteLayout::complete()}. This method is intended to add HTML head
 	 * entries or perform other actions that should happen after the page has
 	 * been built.
