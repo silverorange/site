@@ -1,5 +1,6 @@
 create table GadgetInstanceSettingValue (
 	id serial,
+
 	gadget_instance integer not null
 		references GadgetInstance(id) on delete cascade,
 
