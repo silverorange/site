@@ -147,7 +147,9 @@ class SiteCookieModule extends SiteApplicationModule
 	 *
 	 * @param string $name the name of the cookie to get.
 	 *
-	 * @return mixed the value of the cookie. This is returned by reference.
+	 * @return mixed the value of the cookie. This is returned by reference. If
+	 *                there is an error unserializing the cookie value, null is
+	 *                returned.
 	 */
 	private function &__get($name)
 	{
@@ -157,16 +159,28 @@ class SiteCookieModule extends SiteApplicationModule
 			throw new SiteCookieException("Cookie '{$name}' is not set.");
 
 		try {
-			$value =
-				SwatString::signedUnserialize($_COOKIE[$name], $this->salt);
-		} catch (SwatInvalidSerializedDataException $e) {
-			// Try old unsalt technique for backwards compatibility
-			// this will be removed in future versions of Site
-			$value = $this->unsaltValue($_COOKIE[$name]);
+			try {
+				$value =
+					SwatString::signedUnserialize($_COOKIE[$name], $this->salt);
+			} catch (SwatInvalidSerializedDataException $e) {
+				// Try old unsalt technique for backwards compatibility
+				// this will be removed in future versions of Site
+				$value = $this->unsaltValue($_COOKIE[$name]);
 
-			// If we unserilaized an old cookie value successfully,
-			// reserialize it using the newer, safer method.
-			$this->setCookie($name, $value);
+				// If we unserilaized an old cookie value successfully,
+				// reserialize it using the newer, safer method.
+				$this->setCookie($name, $value);
+			}
+		} catch (SiteCookieException $e) {
+			// ignore some bad cookie data completely
+			$ignored_values = array(0, 1, '');
+
+			if (!in_array($_COOKIE[$name], $ignored_values)) {
+				// log cookie exceptions that have weird values
+				$e->process();
+			}
+
+			$value = null;
 		}
 
 		return $value;
