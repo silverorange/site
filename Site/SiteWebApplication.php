@@ -451,6 +451,43 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
+	// {{{ public function getBaseHrefRelativeUri()
+
+	/**
+	 * Gets the URI relative to the base href
+	 *
+	 * @param boolean $secure whether or not the base href should be a secure
+	 *                         URI. The default value of null maintains the
+	 *                         same security as the current page.
+	 *
+	 * @return string the relative URI
+	 */
+	public function getBaseHrefRelativeUri($secure = null)
+	{
+		if ($secure === null)
+			$secure = $this->secure;
+
+		$base_uri = $this->secure ? $this->secure_base_uri : $this->base_uri;
+		$protocol = $this->getProtocol();
+		$protocol_length = strlen($protocol);
+
+		if (strncmp($base_uri, $protocol, $protocol_length) === 0) {
+			$pos = strpos($base_uri, '/', $protocol_length);
+
+			if ($pos !== false)
+				$base_uri = substr($base_uri, $pos);
+		}
+
+		$base_uri_length = strlen($base_uri);
+		if (strncmp($base_uri, $this->uri, $base_uri_length) === 0)
+			$uri = substr($this->uri, $base_uri_length);
+		else
+			$uri = $this->uri;
+
+		return $uri;
+	}
+
+	// }}}
 	// {{{ protected function getSecureSourceList()
 
 	/**
@@ -501,34 +538,6 @@ class SiteWebApplication extends SiteApplication
 				}
 			}
 		}
-	}
-
-	// }}}
-	// {{{ protected function getBaseHrefRelativeUri()
-
-	protected function getBaseHrefRelativeUri($secure = null)
-	{
-		if ($secure === null)
-			$secure = $this->secure;
-
-		$base_uri = $this->secure ? $this->secure_base_uri : $this->base_uri;
-		$protocol = $this->getProtocol();
-		$protocol_length = strlen($protocol);
-
-		if (strncmp($base_uri, $protocol, $protocol_length) === 0) {
-			$pos = strpos($base_uri, '/', $protocol_length);
-
-			if ($pos !== false)
-				$base_uri = substr($base_uri, $pos);
-		}
-
-		$base_uri_length = strlen($base_uri);
-		if (strncmp($base_uri, $this->uri, $base_uri_length) === 0)
-			$uri = substr($this->uri, $base_uri_length);
-		else
-			$uri = $this->uri;
-
-		return $uri;
 	}
 
 	// }}}
