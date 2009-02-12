@@ -52,7 +52,10 @@ class SitePage extends SiteAbstractPage
 	{
 		$this->buildTitle();
 		$this->buildMetaDescription();
-		$this->buildNavBar();
+
+		if (isset($this->layout->navbar))
+			$this->buildNavBar();
+
 		$this->buildContent();
 	}
 
