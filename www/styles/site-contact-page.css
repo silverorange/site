@@ -1,0 +1,39 @@
+.swat-frame {
+	margin: 0;
+}
+
+#contact_form {
+	float: right;
+	width: 300px;
+	margin-left: 20px;
+	margin-bottom: 1em;
+}
+
+#contact_form .swat-entry,
+#contact_form .swat-flydown,
+#contact_form .swat-textarea {
+	width: 98%;
+}
+
+dl#contact_details {
+	margin: 1em;
+}
+
+dl#contact_details dt {
+	font-weight: bold;
+	margin-bottom: 0.5em;
+}
+
+dl#contact_details dd {
+	margin-left: 1em;
+	margin-bottom: 1em;
+}
+
+#email_to_field.swat-form-field label,
+#email_to_field.swat-form-field .swat-form-field-contents {
+	display: inline;
+}
+
+#email_to_field.swat-form-field {
+	margin-bottom: 1em;
+}
