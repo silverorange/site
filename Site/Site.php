@@ -224,6 +224,12 @@ class Site
 			// Email
 			'email.smtp_server'        => null,
 
+			// to address for contact-us emails
+			'email.contact_address'    => null,
+
+			// from address for contact-us emails (from "the website" to client)
+			'email.website_address'    => null,
+
 			// from address for automated emails sent by the system
 			'email.service_address'    => null,
 
