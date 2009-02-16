@@ -3,7 +3,7 @@
 require_once 'Swat/SwatUI.php';
 require_once 'Swat/SwatString.php';
 require_once 'Site/SiteMultipartMailMessage.php';
-require_once 'Site/pages/SiteArticlePage.php';
+require_once 'Site/pages/SitePage.php';
 
 /**
  *
@@ -11,7 +11,7 @@ require_once 'Site/pages/SiteArticlePage.php';
  * @copyright 2006-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteContactPage extends SiteArticlePage
+class SiteContactPage extends SitePage
 {
 	// {{{ protected properties
 
