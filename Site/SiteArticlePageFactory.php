@@ -305,11 +305,16 @@ class SiteArticlePageFactory extends SitePageFactory
 		// don't try to resolve articles that are deeper than the max depth
 		if (substr_count($path, '/') >= SiteArticle::MAX_DEPTH) {
 			throw new SiteNotFoundException(
-				sprintf('Article not found for path ‘%s’', $path));
+				sprintf('Article path too long: ‘%s’', $path));
 		}
 
 		// get id from path
 		$article_id = $this->getArticleId($path);
+
+		if ($article_id === null) {
+			throw new SiteNotFoundException(
+				sprintf('Article not found for path ‘%s’', $path));
+		}
 
 		$sql = $this->getArticleSql($article_id);
 
