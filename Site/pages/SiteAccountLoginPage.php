@@ -94,9 +94,38 @@ class SiteAccountLoginPage extends SitePage
 	{
 		parent::build();
 
+		$this->buildForgotPasswordLink();
+
 		$this->layout->startCapture('content', true);
 		$this->ui->display();
 		$this->layout->endCapture();
+	}
+
+	// }}}
+	// {{{ protected function buildForgotPasswordLink()
+
+	protected function buildForgotPasswordLink()
+	{
+		$this->ui->getWidget('forgot_password')->content =
+			$this->getForgotPasswordLink();
+	}
+
+	// }}}
+	// {{{ protected function getForgotPasswordLink()
+
+	protected function getForgotPasswordLink()
+	{
+		$email = $this->ui->getWidget('email_address');
+		$link = sprintf(Site::_(' %sForgot your password?%s'),
+			'<a href="account/forgotpassword%s">', '</a>');
+
+		if (!$email->hasMessage() && $email != null) {
+			$link_value = sprintf('?email=%s', urlencode($email->value));
+		} else {
+			$link_value = null;
+		}
+
+		return sprintf($link, $link_value);
 	}
 
 	// }}}

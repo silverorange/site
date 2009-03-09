@@ -21,8 +21,7 @@
 				<widget class="SwatButton" id="login_button">
 					<property name="title" translatable="yes">Login</property>
 				</widget>
-				<widget class="SwatContentBlock">
-					<property name="content" translatable="yes"><![CDATA[ <a href="account/forgotpassword">Forgot your password?</a>]]></property>
+				<widget class="SwatContentBlock" id="forgot_password">
 					<property name="content_type">text/xml</property>
 				</widget>
 			</widget>
