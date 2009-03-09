@@ -136,11 +136,11 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	// }}}
 
 	// build phase
-	// {{{ public function build()
+	// {{{ protected function buildInternal()
 
-	public function build()
+	protected function buildInternal()
 	{
-		parent::build();
+		parent::buildInternal();
 
 		if ($this->account_id === null) {
 			$text = sprintf('<p>%s</p><ul><li>%s</li><li>%s</li></ul>',
