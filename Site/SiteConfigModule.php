@@ -656,7 +656,7 @@ class SiteConfigModule extends SiteApplicationModule
 
 				SwatDB::exec($db, $sql);
 
-				list($section, $name) = split('\.', $setting);
+				list($section, $name) = explode('.', $setting, 2);
 				if ($this->$section->$name != '') {
 					$sql = sprintf('insert into ConfigSetting
 						(name, value) values (%s, %s)',
@@ -701,7 +701,7 @@ class SiteConfigModule extends SiteApplicationModule
 
 				SwatDB::exec($db, $sql);
 
-				list($section, $name) = split('\.', $setting);
+				list($section, $name) = explode('.', $setting, 2);
 				if ($this->$section->$name != '') {
 					$sql = sprintf('insert into InstanceConfigSetting
 						(name, value, instance) values (%s, %s, %s)',
