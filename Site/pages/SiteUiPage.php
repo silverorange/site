@@ -76,6 +76,7 @@ abstract class SiteUiPage extends SitePageDecorator
 	{
 		$this->page->build();
 
+		$this->buildMessages();
 		$this->buildInternal();
 		$this->buildTitle();
 		$this->buildMetaDescription();
@@ -84,17 +85,23 @@ abstract class SiteUiPage extends SitePageDecorator
 	}
 
 	// }}}
+	// {{{ protected function buildMessages()
+
+	protected function buildMessages()
+	{
+		if (!$this->ui->hasWidget('message_display'))
+			return;
+
+		$message_display = $this->ui->getWidget('message_display');
+		foreach ($this->app->messages->getAll() as $message)
+			$message_display->add($message);
+	}
+
+	// }}}
 	// {{{ protected function buildInternal()
 
 	protected function buildInternal()
 	{
-		try {
-			$message_display = $this->ui->getWidget('message_display');
-			foreach ($this->app->messages->getAll() as $message) {
-				$message_display->add($message);
-			}
-		} catch (SwatWidgetNotFoundException $e) {
-		}
 	}
 
 	// }}}
