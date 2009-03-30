@@ -54,27 +54,9 @@ abstract class SiteEditPage extends SiteUiPage
 				if ($this->isValid($form)) {
 					$this->save($form);
 					$this->relocate($form);
-				} else {
-					$message = $this->getInvalidMessage($form);
-					if ($message !== null)
-						$this->app->messages->add($message);
 				}
 			}
 		}
-	}
-
-	// }}}
-	// {{{ protected function getInvalidMessage()
-
-	protected function getInvalidMessage(SwatForm $form)
-	{
-		$message = new SwatMessage(Site::_('There is a problem with '.
-			'the information submitted.'), 'error');
-
-		$message->secondary_content = Site::_('Please address the '.
-			'fields highlighted below and re-submit the form.');
-
-		return $message;
 	}
 
 	// }}}
@@ -114,7 +96,16 @@ abstract class SiteEditPage extends SiteUiPage
 
 	protected function isValid(SwatForm $form)
 	{
-		$valid = ($form->hasMessage() === false);
+		$valid = true;
+
+		if ($form->hasMessage())
+			$valid = false;
+
+		if ($this->ui->hasWidget('message_display')) {
+			$message_display = $this->ui->getWidget('message_display');
+			if ($message_display->getMessageCount() > 0)
+				$valid = false;
+		}
 
 		return $valid;
 	}
@@ -223,6 +214,41 @@ abstract class SiteEditPage extends SiteUiPage
 	// }}}
 
 	// build phase
+	// {{{ protected function buildMessages()
+
+	protected function buildMessages()
+	{
+		parent::buildMessages();
+
+		if (!$this->ui->hasWidget('message_display'))
+			return;
+
+		$message_display = $this->ui->getWidget('message_display');
+
+		foreach ($this->getForms() as $form) {
+			if ($form->isProcessed() && $form->hasMessage()) {
+				$message = $this->getInvalidMessage($form);
+				if ($message !== null)
+					$message_display->add($message);
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function getInvalidMessage()
+
+	protected function getInvalidMessage(SwatForm $form)
+	{
+		$message = new SwatMessage(Site::_('There is a problem with '.
+			'the information submitted.'), 'error');
+
+		$message->secondary_content = Site::_('Please address the '.
+			'fields highlighted below and re-submit the form.');
+
+		return $message;
+	}
+
+	// }}}
 	// {{{ protected function buildInternal()
 
 	protected function buildInternal()
@@ -238,6 +264,7 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function buildForm(SwatForm $form)
 	{
 		$form->action = $this->source;
+
 		if (!$form->isProcessed() && !$this->isNew($form))
 			$this->load($form);
 	}
