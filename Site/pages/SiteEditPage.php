@@ -301,7 +301,7 @@ abstract class SiteEditPage extends SiteUiPage
 
 		$widget = $this->ui->getWidget($name);
 
-		if ($widget instanceof SwatDateEntry) {
+		if ($value !== null && $widget instanceof SwatDateEntry) {
 			$value = new SwatDate($value);
 			$value->convertTZ($this->app->default_time_zone);
 		}
