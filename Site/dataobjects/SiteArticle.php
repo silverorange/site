@@ -244,7 +244,7 @@ class SiteArticle extends SwatDBDataObject
 	 *
 	 * @param string $shortname the shortname of the article to load.
 	 *
-	 * @return boolean true if the loading of this article was successfil and
+	 * @return boolean true if the loading of this article was successful and
 	 *                  false if the article with the given shortname doesn't
 	 *                  exist.
 	 */
