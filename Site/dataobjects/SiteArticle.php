@@ -271,7 +271,7 @@ class SiteArticle extends SwatDBDataObject
 
 		return true;
 	}
-	
+
 	// }}}
 	// {{{ protected function init()
 
