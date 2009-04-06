@@ -509,6 +509,10 @@ abstract class SiteGadget extends SwatUIObject
 			$this->gadget_instance->cache = $cache->id;
 			$this->gadget_instance->save();
 		}
+
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->delete('gadget_instances');
+		}
 	}
 
 	// }}}
