@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteInstance.php';
 require_once 'Site/dataobjects/SiteGadgetInstanceSettingValueWrapper.php';
+require_once 'Site/dataobjects/SiteGadgetInstanceCache.php';
 
 /**
  * A gadget that belongs to a site instance
@@ -103,6 +104,8 @@ class SiteGadgetInstance extends SwatDBDataObject
 		$this->table = 'GadgetInstance';
 		$this->id_field = 'integer:id';
 		$this->registerInternalProperty('instance', 'SiteInstance');
+		$this->registerInternalProperty('cache',
+			SwatDBClassMap::get('SiteGadgetInstanceCache'));
 	}
 
 	// }}}

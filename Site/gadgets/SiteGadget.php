@@ -4,6 +4,8 @@ require_once 'Site/SiteApplication.php';
 require_once 'Swat/SwatUIObject.php';
 require_once 'Site/SiteGadgetSetting.php';
 require_once 'Site/dataobjects/SiteGadgetInstance.php';
+require_once 'Site/dataobjects/SiteGadgetInstanceCache.php';
+require_once 'SwatDB/SwatDBClassMap.php';
 
 /**
  * Base class for creating sidebar gadgets
@@ -422,6 +424,91 @@ abstract class SiteGadget extends SwatUIObject
 		}
 
 		return $this->settings[$name]->getDefault();
+	}
+
+	// }}}
+	// {{{ protected function hasCache()
+
+	/**
+	 * Whether or not this gadget instance has a cache.
+	 *
+	 * @return boolean whether or not this gadget instance has a cache.
+	 */
+	protected function hasCache()
+	{
+		return ($this->gadget_instance->cache !== null);
+	}
+
+	// }}}
+	// {{{ protected function getCacheValue()
+
+	/**
+	 * Gets the value of the cache.
+	 *
+	 * @return string the value of the cache.
+	 *
+	 * @throw RuntimeException if the current gadget instance doesn't have a
+	 *                          cache.
+	 */
+	protected function getCacheValue()
+	{
+		if (!$this->hasCache())
+			throw new RuntimeException(
+				Site::_('Current gadget does not have a cache.'));
+
+		return $this->gadget_instance->cache->value;
+	}
+
+	// }}}
+	// {{{ protected function getCacheLastUpdateDate()
+
+	/**
+	 * Gets the date of the last time the cache was updated.
+	 *
+	 * @return SwatDate the date of the last time the cache was updated
+	 *
+	 * @throw RuntimeException if the current gadget instance doesn't have a
+	 *                          cache.
+	 */
+	protected function getCacheLastUpdateDate()
+	{
+		if (!$this->hasCache())
+			throw new RuntimeException(
+				Site::_('Current gadget does not have a cache.'));
+
+		return $this->gadget_instance->cache->last_update;
+	}
+
+	// }}}
+	// {{{ protected function updateCacheValue()
+
+	/**
+	 * Updates the current cache or if no cache exists creates a cache for this
+	 *  gadget.
+	 *
+	 * @param string $value the new value for the cache.
+	 */
+	protected function updateCacheValue($value)
+	{
+		$now = new SwatDate();
+		$now->toUTC();
+
+		if ($this->hasCache()) {
+			$this->gadget_instance->cache->value = $value;
+			$this->gadget_instance->cache->last_update = $now;
+			$this->gadget_instance->cache->save();
+		} else {
+			$class_name = SwatDBClassMap::get('SiteGadgetInstanceCache');
+			$cache = new $class_name();
+			$cache->setDatabase($this->app->db);
+			$cache->gadget_instance = $this->gadget_instance->id;
+			$cache->value = $value;
+			$cache->last_update = $now;
+			$cache->save();
+
+			$this->gadget_instance->cache = $cache->id;
+			$this->gadget_instance->save();
+		}
 	}
 
 	// }}}
