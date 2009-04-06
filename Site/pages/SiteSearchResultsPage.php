@@ -450,7 +450,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 		if ($this->hasSearchDataValue('keywords')) {
 			$keywords = $this->getSearchDataValue('keywords');
 
-			// TODO: remove refernce to StoreApplication::getLocale()
+			// TODO: remove reference to StoreApplication::getLocale()
 			$fulltext_engine = new SiteNateGoFulltextSearchEngine(
 				$this->app->db, $this->app->getLocale());
 
