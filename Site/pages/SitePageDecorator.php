@@ -71,6 +71,7 @@ abstract class SitePageDecorator extends SiteAbstractPage
 	public function init()
 	{
 		$this->page->init();
+		parent::init();
 	}
 
 	// }}}
@@ -81,6 +82,7 @@ abstract class SitePageDecorator extends SiteAbstractPage
 	public function process()
 	{
 		$this->page->process();
+		parent::process();
 	}
 
 	// }}}
@@ -96,6 +98,8 @@ abstract class SitePageDecorator extends SiteAbstractPage
 		$this->buildMetaDescription();
 		$this->buildNavBar();
 		$this->buildContent();
+
+		parent::build();
 	}
 
 	// }}}
@@ -134,6 +138,7 @@ abstract class SitePageDecorator extends SiteAbstractPage
 	public function finalize()
 	{
 		$this->page->finalize();
+		parent::finalize();
 	}
 
 	// }}}
