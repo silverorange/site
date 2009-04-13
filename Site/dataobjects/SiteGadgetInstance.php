@@ -3,7 +3,6 @@
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteInstance.php';
 require_once 'Site/dataobjects/SiteGadgetInstanceSettingValueWrapper.php';
-require_once 'Site/dataobjects/SiteGadgetInstanceCache.php';
 
 /**
  * A gadget that belongs to a site instance
@@ -11,7 +10,7 @@ require_once 'Site/dataobjects/SiteGadgetInstanceCache.php';
  * Responsible for binding settings in the database to a gadget.
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteGadget
  */
@@ -30,12 +29,26 @@ class SiteGadgetInstance extends SwatDBDataObject
 	 * The gadget class of this instance
 	 *
 	 * This must be a valid gadget class name. See
-	 * {@link SiteGadgetFactory::getAvailable() for a list of available gadget
+	 * {@link SiteGadgetFactory::getAvailable()} for a list of available gadget
 	 * classes.
 	 *
 	 * @var string
 	 */
 	public $gadget;
+
+	/**
+	 * The value of the cache for this gadget instance
+	 *
+	 * @var string
+	 */
+	public $cache_value;
+
+	/**
+	 * The last time that {@link SiteGadgetInstance::cache_value} was updated
+	 *
+	 * @var Date
+	 */
+	public $cache_last_update;
 
 	/**
 	 * Position of this sidebar gadget relative to other gadgets
@@ -104,8 +117,7 @@ class SiteGadgetInstance extends SwatDBDataObject
 		$this->table = 'GadgetInstance';
 		$this->id_field = 'integer:id';
 		$this->registerInternalProperty('instance', 'SiteInstance');
-		$this->registerInternalProperty('cache',
-			SwatDBClassMap::get('SiteGadgetInstanceCache'));
+		$this->registerDateProperty('cache_last_update');
 	}
 
 	// }}}
