@@ -42,7 +42,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
  *    hooks into the Swat UI tree initilization and processing methods.
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteGadgetSetting
  */
@@ -436,7 +436,7 @@ abstract class SiteGadget extends SwatUIObject
 	 */
 	protected function hasCache()
 	{
-		return ($this->gadget_instance->cache !== null);
+		return ($this->gadget_instance->cache_last_update !== null);
 	}
 
 	// }}}
@@ -456,7 +456,7 @@ abstract class SiteGadget extends SwatUIObject
 			throw new RuntimeException(
 				Site::_('Current gadget does not have a cache.'));
 
-		return $this->gadget_instance->cache->value;
+		return $this->gadget_instance->cache_value;
 	}
 
 	// }}}
@@ -465,7 +465,7 @@ abstract class SiteGadget extends SwatUIObject
 	/**
 	 * Gets the date of the last time the cache was updated.
 	 *
-	 * @return SwatDate the date of the last time the cache was updated
+	 * @return Date the date of the last time the cache was updated
 	 *
 	 * @throw RuntimeException if the current gadget instance doesn't have a
 	 *                          cache.
@@ -476,7 +476,7 @@ abstract class SiteGadget extends SwatUIObject
 			throw new RuntimeException(
 				Site::_('Current gadget does not have a cache.'));
 
-		return $this->gadget_instance->cache->last_update;
+		return $this->gadget_instance->cache_last_update;
 	}
 
 	// }}}
@@ -493,22 +493,9 @@ abstract class SiteGadget extends SwatUIObject
 		$now = new SwatDate();
 		$now->toUTC();
 
-		if ($this->hasCache()) {
-			$this->gadget_instance->cache->value = $value;
-			$this->gadget_instance->cache->last_update = $now;
-			$this->gadget_instance->cache->save();
-		} else {
-			$class_name = SwatDBClassMap::get('SiteGadgetInstanceCache');
-			$cache = new $class_name();
-			$cache->setDatabase($this->app->db);
-			$cache->gadget_instance = $this->gadget_instance->id;
-			$cache->value = $value;
-			$cache->last_update = $now;
-			$cache->save();
-
-			$this->gadget_instance->cache = $cache->id;
-			$this->gadget_instance->save();
-		}
+		$this->gadget_instance->cache_value = $value;
+		$this->gadget_instance->cache_last_update = $now;
+		$this->gadget_instance->save();
 
 		if (isset($this->app->memcache)) {
 			$this->app->memcache->delete('gadget_instances');
