@@ -288,6 +288,15 @@ class SiteArticle extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getSerializableSubDataObjects()
+
+	protected function getSerializableSubDataObjects()
+	{
+		return array_merge(parent::getSerializableSubDataObjects(),
+			array('parent', 'path', 'sub_articles'));
+	}
+
+	// }}}
 
 	// loader methods
 	// {{{ protected function loadPath()
