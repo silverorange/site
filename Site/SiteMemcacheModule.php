@@ -113,6 +113,9 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function add($key, $value, $flag, $expire)
 	{
+		if (!$this->app->config->memcache->enabled)
+			return false;
+
 		$key = $this->key_prefix.$key;
 		return $this->memcache->add($key, $value, $flag, $expire);
 	}
@@ -122,6 +125,9 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function set($key, $value, $flag = 0, $expire = 0)
 	{
+		if (!$this->app->config->memcache->enabled)
+			return false;
+
 		$key = $this->key_prefix.$key;
 		return $this->memcache->set($key, $value, $flag, $expire);
 	}
@@ -131,6 +137,9 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function replace($key, $value, $flag = 0, $expire = 0)
 	{
+		if (!$this->app->config->memcache->enabled)
+			return false;
+
 		$key = $this->key_prefix.$key;
 		return $this->memcache->replace($key, $value, $flag, $expire);
 	}
@@ -140,6 +149,9 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function get($key, &$flags = 0)
 	{
+		if (!$this->app->config->memcache->enabled)
+			return false;
+
 		if (is_array($key)) {
 			foreach ($key as &$the_key) {
 				$the_key = $this->key_prefix.$the_key;
@@ -156,6 +168,9 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function delete($key, $timeout = 0)
 	{
+		if (!$this->app->config->memcache->enabled)
+			return false;
+
 		$key = $this->key_prefix.$key;
 		return $this->memcache->delete($key, $timeout);
 	}
@@ -165,6 +180,9 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function increment($key, $value = 1)
 	{
+		if (!$this->app->config->memcache->enabled)
+			return false;
+
 		$key = $this->key_prefix.$key;
 		return $this->memcache->increment($key, $value);
 	}
@@ -174,6 +192,9 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function decrement($key, $value = 1)
 	{
+		if (!$this->app->config->memcache->enabled)
+			return false;
+
 		$key = $this->key_prefix.$key;
 		return $this->memcache->decrement($key, $value);
 	}

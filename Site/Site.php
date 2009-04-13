@@ -234,6 +234,7 @@ class Site
 			'email.service_address'    => null,
 
 			// memcache
+			'memcache.enabled'         => true,
 			'memcache.server'          => 'localhost',
 			'memcache.app_ns'          => '',
 		);
