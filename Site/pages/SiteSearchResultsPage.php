@@ -261,28 +261,11 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		parent::build();
 
-		$content = false;
-
-		if (isset($this->app->memcache)) {
-			$key = 'SiteSearchResultsPage.'.implode('.', $_GET);
-			$content = $this->app->memcache->getNs('product', $key);
-		}
-
-		if ($content === false) {
-			if ($this->buildResults())
-				$this->buildMessages();
-
-			ob_start();
-			$this->ui->display();
-			$content = ob_get_clean();
-		}
-
-		if (isset($this->app->memcache)) {
-			$this->app->memcache->setNs('product', $key, $content);
-		}
+		if ($this->buildResults())
+			$this->buildMessages();
 
 		$this->layout->startCapture('content');
-		echo $content;
+		$this->ui->display();
 		$this->layout->endCapture();
 	}
 
