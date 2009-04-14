@@ -113,7 +113,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function add($key, $value, $flag, $expire)
 	{
-		if (!$this->app->config->memcache->enabled)
+		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
@@ -125,7 +125,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function set($key, $value, $flag = 0, $expire = 0)
 	{
-		if (!$this->app->config->memcache->enabled)
+		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
@@ -137,7 +137,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function replace($key, $value, $flag = 0, $expire = 0)
 	{
-		if (!$this->app->config->memcache->enabled)
+		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
@@ -149,7 +149,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function get($key, &$flags = 0)
 	{
-		if (!$this->app->config->memcache->enabled)
+		if (!$this->enabled())
 			return false;
 
 		if (is_array($key)) {
@@ -168,7 +168,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function delete($key, $timeout = 0)
 	{
-		if (!$this->app->config->memcache->enabled)
+		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
@@ -180,7 +180,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function increment($key, $value = 1)
 	{
-		if (!$this->app->config->memcache->enabled)
+		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
@@ -192,7 +192,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function decrement($key, $value = 1)
 	{
-		if (!$this->app->config->memcache->enabled)
+		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
@@ -333,6 +333,19 @@ class SiteMemcacheModule extends SiteApplicationModule
 	public function getStats($type = '', $slab_id = 0, $limit = 100)
 	{
 		return $this->memcached->getStats();
+	}
+
+	// }}}
+	// {{{ protected function enabled()
+
+	/**
+	 * Whether memcache is currently enabled on the site
+	 *
+	 * @return boolean
+ 	 */
+	protected function enabled()
+	{
+		return $this->app->config->memcache->enabled;
 	}
 
 	// }}}
