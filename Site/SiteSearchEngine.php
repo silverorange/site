@@ -56,11 +56,6 @@ abstract class SiteSearchEngine extends SwatObject
 
 	protected $memcache;
 
-	/**
-	 * Property used to cache results in the __deconstruct method
-	 */
-	protected $memcache_results = array();
-
 	// }}}
 	// {{{ public function __construct()
 
@@ -75,27 +70,6 @@ abstract class SiteSearchEngine extends SwatObject
 
 		if ($app->hasModule('SiteMemcacheModule')) {
 			$this->memcache = $app->getModule('SiteMemcacheModule');
-		}
-	}
-
-	// }}}
-	// {{{ public function __destruct()
-
-	public function __destruct()
-	{
-		if ($this->hasMemcache()) {
-			$ns  = $this->getMemcacheNs();
-
-			$ids = array();
-			foreach ($this->memcache_results as $key => $results) {
-				foreach ($results as $id => $result) {
-					$result_key = $key.'.'.$id;
-					$ids[] = $result_key;
-					$this->memcache->setNs($ns, $result_key, $result);
-				}
-
-				$this->memcache->setNs($ns, $key, $ids);
-			}
 		}
 	}
 
@@ -211,6 +185,24 @@ abstract class SiteSearchEngine extends SwatObject
 	}
 
 	// }}}
+	// {{{ public function cacheResults()
+
+	public function cacheResults($results, $key)
+	{
+		$ns = $this->getMemcacheNs();
+		$ids = array();
+
+		foreach ($results as $id => $result) {
+			$result_key = $key.'.'.$id;
+				$ids[] = $result_key;
+				$this->app->memcache->setNs($ns, $result_key, $result);
+
+		}
+
+		$this->app->memcache->setNs($ns, $key, $ids);
+	}
+
+	// }}}
 	// {{{ protected function queryResults()
 
 	/**
@@ -270,7 +262,8 @@ abstract class SiteSearchEngine extends SwatObject
 			$this->loadSubObjects($results);
 
 			if ($this->hasMemcache()) {
-				$this->memcache_results[$key] = $results;
+				register_shutdown_function(array($this, 'cacheResults'),
+					$results, $key);
 			}
 		}
 
