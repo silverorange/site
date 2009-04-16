@@ -15,9 +15,12 @@ require_once 'Site/pages/SiteUiPage.php';
  */
 abstract class SiteEditPage extends SiteUiPage
 {
-	// {{{ abstract protected function isNew()
+	// {{{ protected function isNew()
 
-	abstract protected function isNew(SwatForm $form);
+	protected function isNew(SwatForm $form)
+	{
+		return true;
+	}
 
 	// }}}
 	// {{{ protected function getForms()
