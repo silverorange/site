@@ -10,7 +10,7 @@ require_once 'Site/pages/SiteUiPage.php';
  * Base class for edit pages
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteEditPage extends SiteUiPage
