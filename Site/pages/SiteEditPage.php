@@ -273,9 +273,11 @@ abstract class SiteEditPage extends SiteUiPage
 	}
 
 	// }}}
-	// {{{ abstract protected function load()
+	// {{{ protected function load()
 
-	abstract protected function load(SwatForm $form);
+	protected function load(SwatForm $form)
+	{
+	}
 
 	// }}}
 	// {{{ protected function assignObjectValuesToUi()
