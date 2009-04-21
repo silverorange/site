@@ -6,7 +6,7 @@ require_once 'Site/SiteApplicationModule.php';
  * Web application module for testing alternatives.
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAlternativeTestModule extends SiteApplicationModule
@@ -57,6 +57,19 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function __get()
+
+	public function __get($name)
+	{
+		if (!array_key_exists($name, $this->test_values)) {
+			throw new SiteException(sprintf(
+				"Test '%s' does not exist.", $name));
+		}
+
+		return $this->test_values[$name];
+	}
+
+	// }}}
 	// {{{ protected function initTest()
 
 	protected function initTest($name)
@@ -78,19 +91,6 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 			$this->app->session->alternative_tests[$name] = $value;
 
 		$this->test_values[$name] = $value;
-	}
-
-	// }}}
-	// {{{ private function __get()
-
-	private function __get($name)
-	{
-		if (!array_key_exists($name, $this->test_values)) {
-			throw new SiteException(sprintf(
-				"Test '%s' does not exist.", $name));
-		}
-
-		return $this->test_values[$name];
 	}
 
 	// }}}

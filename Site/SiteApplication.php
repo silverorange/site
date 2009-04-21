@@ -15,7 +15,7 @@ require_once 'Swat/exceptions/SwatException.php';
  * Base class for an application
  *
  * @package   Site
- * @copyright 2004-2007 silverorange
+ * @copyright 2004-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteApplication extends SiteObject
@@ -434,6 +434,31 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function __get()
+
+	public function __get($name)
+	{
+		if (isset($this->modules[$name]))
+			return $this->modules[$name];
+
+		throw new SiteException('Application does not have a property with '.
+			"the name '{$name}', and no application module with the ".
+			"identifier '{$name}' is loaded.");
+	}
+
+	// }}}
+	// {{{ public function __isset()
+
+	public function __isset($name)
+	{
+		$isset = isset($this->$name);
+		if (!$isset)
+			$isset = isset($this->modules[$name]);
+
+		return $isset;
+	}
+
+	// }}}
 	// {{{ protected function initModules()
 
 	/**
@@ -647,31 +672,6 @@ abstract class SiteApplication extends SiteObject
 	protected function addConfigDefinitions(SiteConfigModule $config)
 	{
 		$config->addDefinitions(Site::getConfigDefinitions());
-	}
-
-	// }}}
-	// {{{ private function __get()
-
-	private function __get($name)
-	{
-		if (isset($this->modules[$name]))
-			return $this->modules[$name];
-
-		throw new SiteException('Application does not have a property with '.
-			"the name '{$name}', and no application module with the ".
-			"identifier '{$name}' is loaded.");
-	}
-
-	// }}}
-	// {{{ private function __isset()
-
-	private function __isset($name)
-	{
-		$isset = isset($this->$name);
-		if (!$isset)
-			$isset = isset($this->modules[$name]);
-
-		return $isset;
 	}
 
 	// }}}

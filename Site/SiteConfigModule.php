@@ -404,25 +404,6 @@ class SiteConfigModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function __toString()
-
-	/**
-	 * Gets a string representation of this config module
-	 *
-	 * This gets the loaded config values split into the loaded sections.
-	 *
-	 * @return string a string representation of this config module.
-	 */
-	public function __toString()
-	{
-		ob_start();
-		foreach ($this->sections as $section) {
-			echo $section, "\n";
-		}
-		return ob_get_clean();
-	}
-
-	// }}}
 	// {{{ public function getSource()
 
 	/**
@@ -505,6 +486,62 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 
 		$this->setting_sources[$section][$name] = $source;
+	}
+
+	// }}}
+	// {{{ public function __get()
+
+	/**
+	 * Gets a section of this config module
+	 *
+	 * @param string $name the name of the config section to get.
+	 *
+	 * @return SiteConfigSection the config section.
+	 */
+	public function __get($name)
+	{
+		if (!array_key_exists($name, $this->sections)) {
+			throw new SiteException(sprintf(
+				"Section '%s' does not exist in this config module.",
+				$name));
+		}
+
+		return $this->sections[$name];
+	}
+
+	// }}}
+	// {{{ public function __isset()
+
+	/**
+	 * Checks for existence of a section within this config module
+	 *
+	 * @param string $name the name of the section value to check.
+	 *
+	 * @return boolean true if the section exists in this config module and
+	 *                  false if it does not.
+	 */
+	public function __isset($name)
+	{
+		return array_key_exists($name, $this->sections);
+	}
+
+	// }}}
+	// {{{ public function __toString()
+
+	/**
+	 * Gets a string representation of this config module
+	 *
+	 * This gets the loaded config values split into the loaded sections.
+	 *
+	 * @return string a string representation of this config module.
+	 */
+	public function __toString()
+	{
+		ob_start();
+		foreach ($this->sections as $section) {
+			echo $section, "\n";
+		}
+		return ob_get_clean();
 	}
 
 	// }}}
@@ -734,43 +771,6 @@ class SiteConfigModule extends SiteApplicationModule
 	{
 		$regexp = '/^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*$/';
 		return (preg_match($regexp, $name) == 1);
-	}
-
-	// }}}
-	// {{{ private function __get()
-
-	/**
-	 * Gets a section of this config module
-	 *
-	 * @param string $name the name of the config section to get.
-	 *
-	 * @return SiteConfigSection the config section.
-	 */
-	private function __get($name)
-	{
-		if (!array_key_exists($name, $this->sections)) {
-			throw new SiteException(sprintf(
-				"Section '%s' does not exist in this config module.",
-				$name));
-		}
-
-		return $this->sections[$name];
-	}
-
-	// }}}
-	// {{{ private function __isset()
-
-	/**
-	 * Checks for existence of a section within this config module
-	 *
-	 * @param string $name the name of the section value to check.
-	 *
-	 * @return boolean true if the section exists in this config module and
-	 *                  false if it does not.
-	 */
-	private function __isset($name)
-	{
-		return array_key_exists($name, $this->sections);
 	}
 
 	// }}}
