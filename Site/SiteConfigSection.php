@@ -8,7 +8,7 @@ require_once 'Site/SiteConfigModule.php';
  * Configuration section for the configuration module
  *
  * @package   Site
- * @copyright 2007-2008 silverorange
+ * @copyright 2007-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteConfigSection extends SwatObject implements Iterator
@@ -160,7 +160,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	}
 
 	// }}}
-	// {{{ private function __set()
+	// {{{ public function __set()
 
 	/**
 	 * Sets a setting of this configuration section
@@ -171,7 +171,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 * @throws SiteException if the name of the setting being set does not
 	 *                       exist in this section.
 	 */
-	private function __set($name, $value)
+	public function __set($name, $value)
 	{
 		if (!array_key_exists($name, $this->values)) {
 			throw new SiteException(
@@ -187,7 +187,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	}
 
 	// }}}
-	// {{{ private function __get()
+	// {{{ public function __get()
 
 	/**
 	 * Gets a setting of this configuration section
@@ -199,7 +199,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 * @throws SiteException if the setting being set does not exist in this
 	 *                       section.
 	 */
-	private function __get($name)
+	public function __get($name)
 	{
 		if (!array_key_exists($name, $this->values))
 			throw new SiteException(
@@ -211,7 +211,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	}
 
 	// }}}
-	// {{{ private function __isset()
+	// {{{ public function __isset()
 
 	/**
 	 * Checks for existence of a configuration setting in this section
@@ -221,7 +221,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 * @return boolean true if the configuration setting exists and false if it
 	 *                  does not.
 	 */
-	private function __isset($name)
+	public function __isset($name)
 	{
 		return (isset($this->values[$name]));
 	}

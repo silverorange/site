@@ -366,6 +366,77 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function __set()
+
+	/**
+	 * Sets a session variable
+	 *
+	 * @param string $name the name of the session variable to set.
+	 * @param mixed $value the value to set the variable to.
+	 */
+	public function __set($name, $value)
+	{
+		if (!$this->isActive())
+			throw new SiteException('Session is  not active.');
+
+		$_SESSION[$name] = $value;
+	}
+
+	// }}}
+	// {{{ public function __isset()
+
+	/**
+	 * Checks the existence of a session variable
+	 *
+	 * If the session is not active this method always returns false.
+	 *
+	 * @param string $name the name of the session variable to check.
+	 */
+	public function __isset($name)
+	{
+		return ($this->isActive() && isset($_SESSION[$name]));
+	}
+
+	// }}}
+	// {{{ public function __unset()
+
+	/**
+	 * Removes a session variable
+	 *
+	 * @param string $name the name of the session variable to set.
+	 */
+	public function __unset($name)
+	{
+		if (!$this->isActive())
+			throw new SiteException('Session is not active.');
+
+		if (isset($_SESSION[$name]))
+			unset($_SESSION[$name]);
+	}
+
+	// }}}
+	// {{{ public function __get()
+
+	/**
+	 * Gets a session variable
+	 *
+	 * @param string $name the name of the session variable to get.
+	 *
+	 * @return mixed the session variable value.
+	 */
+	public function __get($name)
+	{
+		if (!$this->isActive())
+			throw new SiteException('Session is not active.');
+
+		if (!array_key_exists($name, $_SESSION))
+			throw new SiteException(
+				"Session variable '{$name}' does not exist.");
+
+		return $_SESSION[$name];
+	}
+
+	// }}}
 	// {{{ protected function regenerateAuthenticationToken()
 
 	protected function regenerateAuthenticationToken()
@@ -440,77 +511,6 @@ class SiteSessionModule extends SiteApplicationModule
 	protected function startSession()
 	{
 		session_start();
-	}
-
-	// }}}
-	// {{{ private function __set()
-
-	/**
-	 * Sets a session variable
-	 *
-	 * @param string $name the name of the session variable to set.
-	 * @param mixed $value the value to set the variable to.
-	 */
-	private function __set($name, $value)
-	{
-		if (!$this->isActive())
-			throw new SiteException('Session is  not active.');
-
-		$_SESSION[$name] = $value;
-	}
-
-	// }}}
-	// {{{ private function __isset()
-
-	/**
-	 * Checks the existence of a session variable
-	 *
-	 * If the session is not active this method always returns false.
-	 *
-	 * @param string $name the name of the session variable to check.
-	 */
-	private function __isset($name)
-	{
-		return ($this->isActive() && isset($_SESSION[$name]));
-	}
-
-	// }}}
-	// {{{ private function __unset()
-
-	/**
-	 * Removes a session variable
-	 *
-	 * @param string $name the name of the session variable to set.
-	 */
-	private function __unset($name)
-	{
-		if (!$this->isActive())
-			throw new SiteException('Session is not active.');
-
-		if (isset($_SESSION[$name]))
-			unset($_SESSION[$name]);
-	}
-
-	// }}}
-	// {{{ private function &__get()
-
-	/**
-	 * Gets a session variable
-	 *
-	 * @param string $name the name of the session variable to get.
-	 *
-	 * @return mixed the session variable value. This is returned by reference.
-	 */
-	private function &__get($name)
-	{
-		if (!$this->isActive())
-			throw new SiteException('Session is not active.');
-
-		if (!array_key_exists($name, $_SESSION))
-			throw new SiteException(
-				"Session variable '{$name}' does not exist.");
-
-		return $_SESSION[$name];
 	}
 
 	// }}}

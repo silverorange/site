@@ -8,7 +8,7 @@ require_once 'Site/exceptions/SiteCookieException.php';
  * Web application module for cookies
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2009 silverorange
  */
 class SiteCookieModule extends SiteApplicationModule
 {
@@ -118,40 +118,17 @@ class SiteCookieModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ protected function getPrefix()
-
-	/**
-	 * Gets the prefix for the cookie name
-	 *
-	 * @return string Cookie prefix
-	 */
-	protected function getPrefix()
-	{
-		$prefix = $this->app->id;
-
-		if ($this->app->hasModule('SiteMultipleInstanceModule')) {
-			$instance = $this->app->getModule('SiteMultipleInstanceModule');
-			if ($instance->getInstance() !== null) {
-				$prefix = $instance->getInstance()->shortname;
-			}
-		}
-
-		return $prefix;
-	}
-
-	// }}}
-	// {{{ private function &__get()
+	// {{{ public function __get()
 
 	/**
 	 * Gets a cookie value
 	 *
 	 * @param string $name the name of the cookie to get.
 	 *
-	 * @return mixed the value of the cookie. This is returned by reference. If
-	 *                there is an error unserializing the cookie value, null is
-	 *                returned.
+	 * @return mixed the value of the cookie. If there is an error
+	 *               unserializing the cookie value, null is returned.
 	 */
-	private function &__get($name)
+	public function __get($name)
 	{
 		$name = $this->getPrefix().'_'.$name;
 
@@ -187,17 +164,39 @@ class SiteCookieModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ private function __isset()
+	// {{{ public function __isset()
 
 	/**
 	 * Checks the existence of a cookie
 	 *
 	 * @param string $name the name of the cookie to check.
 	 */
-	private function __isset($name)
+	public function __isset($name)
 	{
 		$name = $this->getPrefix().'_'.$name;
 		return isset($_COOKIE[$name]);
+	}
+
+	// }}}
+	// {{{ protected function getPrefix()
+
+	/**
+	 * Gets the prefix for the cookie name
+	 *
+	 * @return string Cookie prefix
+	 */
+	protected function getPrefix()
+	{
+		$prefix = $this->app->id;
+
+		if ($this->app->hasModule('SiteMultipleInstanceModule')) {
+			$instance = $this->app->getModule('SiteMultipleInstanceModule');
+			if ($instance->getInstance() !== null) {
+				$prefix = $instance->getInstance()->shortname;
+			}
+		}
+
+		return $prefix;
 	}
 
 	// }}}
