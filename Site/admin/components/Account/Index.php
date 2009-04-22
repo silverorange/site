@@ -73,10 +73,10 @@ class SiteAccountIndex extends AdminSearch
 		 */
 		$where = 'Account.fullname is not null';
 
-		if ($this->app->hasModule('SiteMultipleInstanceModule'))
-			$where.= sprintf(' and Account.instance = %s',
-				$this->app->db->quote(
-					$this->app->instance->getInstance()->id, 'integer'));
+		$instance_id = $this->app->getInstanceId();
+		$where.= sprintf(' and Account.instance %s %s',
+			SwatDB::equityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'));
 
 		// fullname
 		$clause = new AdminSearchClause('fullname');
