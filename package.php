@@ -60,6 +60,7 @@ $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10')
 $package->addPackageDepWithChannel('required', 'Mail_mime', 'pear.silverorange.com', '1.3.0so1');
 $package->addPackageDepWithChannel('required', 'Net_SMTP', 'pear.php.net', '1.2.8');
 $package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.php.net', '1.0.5');
+$package->addPackageDepWithChannel('required', 'Text_Passsword', 'pear.php.net', '1.1.1');
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
 $package->addExtensionDep('optional', 'uploadprogress', '0.3.0');
 $package->generateContents();
