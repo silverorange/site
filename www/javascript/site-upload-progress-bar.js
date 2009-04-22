@@ -122,8 +122,6 @@ SiteUploadProgressClient = function(id, status_server, progress_bar)
 	this.form = document.getElementById(id);
 	this.container = document.getElementById(this.id + '_container');
 
-	this.createIFrame();
-
 	YAHOO.util.Event.addListener(this.form, 'submit', this.upload,
 		this, true);
 }
@@ -203,32 +201,6 @@ SiteUploadProgressClient.prototype.showProgressBar = function()
 		fade_animation, true);
 
 	slide_animation.animate();
-}
-
-SiteUploadProgressClient.prototype.createIFrame = function()
-{
-	if (navigator.userAgent.indexOf('MSIE') != -1) {
-		var div = document.createElement('div');
-		div.style.display = 'inline';
-		div.innerHTML = '<iframe name="' + this.id + '_iframe" ' +
-			'id="' + this.id + '_iframe" ' +
-			'src="javascript:false" style="border: 0; width: 0; height: 0;' +
-			'position: absolute; top: -1000px; left: -1000px;">' +
-			'</iframe>';
-
-		this.container.parentNode.insertBefore(div, this.container);
-	} else {
-		var iframe = document.createElement('iframe');
-		iframe.name = this.id + '_iframe';
-		iframe.id = this.id + '_iframe';
-		iframe.style.border = '0';
-		iframe.style.width = '0';
-		iframe.style.height = '0';
-		iframe.style.position = 'absolute';
-		iframe.style.top = '-1000px';
-		iframe.style.left = '-100px';
-		this.container.parentNode.insertBefore(iframe, this.container);
-	}
 }
 
 SiteUploadProgressClient.prototype.getUploadIdentifier = function()
