@@ -127,6 +127,16 @@ class SiteContactPage extends SiteEditPage
 	// }}}
 
 	// build phase
+	// {{{ protected function buildContent()
+
+	protected function buildContent()
+	{
+		$this->layout->startCapture('content', true);
+		$this->ui->display();
+		$this->layout->endCapture();
+	}
+
+	// }}}
 	// {{{ protected function buildInternal()
 
 	protected function buildInternal()
