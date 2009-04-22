@@ -59,6 +59,7 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 		this.input_element, this.id + '_container', this.data_store, {
 		queryDelay:            0,
 		minQueryLength:        0,
+		queryMatchContains:    true,
 		highlightClassName:    'site-tag-highlight',
 		prehighlightClassName: 'site-tag-prehighlight',
 		autoHighlight:         false,
