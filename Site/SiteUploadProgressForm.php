@@ -43,7 +43,7 @@ class SiteUploadProgressForm extends SwatForm
 		$this->html_head_entry_set->addEntrySet($ajax->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
-			'packages/site/javascript/upload-progress-bar.js',
+			'packages/site/javascript/site-upload-progress-bar.js',
 			Site::PACKAGE_ID);
 	}
 
