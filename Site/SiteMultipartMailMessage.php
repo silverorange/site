@@ -180,10 +180,26 @@ class SiteMultipartMailMessage extends SiteObject
 		$headers = $mime->headers($headers);
 
 		// send email
-		$result = $mailer->Send($this->to_address, $headers, $body);
+		$result = $mailer->send($this->getRecipients(), $headers, $body);
 
 		if (PEAR::isError($result))
 			throw new SiteMailException($result);
+	}
+
+	// }}}
+	// {{{ protected function getRecipients()
+
+	protected function getRecipients()
+	{
+		$recipients = array($this->to_address);
+
+		// add cc addresses
+		$recipients = array_merge($recipients, $this->cc_list);
+
+		// add bcc addresses
+		$recipients = array_merge($recipients, $this->bcc_list);
+
+		return implode(', ', $recipients);
 	}
 
 	// }}}
