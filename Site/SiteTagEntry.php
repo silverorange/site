@@ -29,6 +29,13 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 */
 	public $allow_adding_tags = true;
 
+	/*
+	 * Maximum number of tags
+	 *
+	 * @var integer
+	 */
+	public $maximum_tags = null;
+
 	// }}}
 	// {{{ protected properties
 
@@ -313,6 +320,11 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 			$data_store,
 			implode(',', $selected_tag_array),
 			$this->allow_adding_tags ? 'true' : 'false');
+
+		if ($this->maximum_tags !== null) {
+			$javascript.= sprintf('var %1\$s_obj.maximum_tags = %d;',
+				$this->id, $this->maximum_tags);
+		}
 
 		return $javascript;
 	}

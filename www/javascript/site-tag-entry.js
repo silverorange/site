@@ -33,6 +33,7 @@ function SiteTagEntry(id, data_store, initial_selected_tag_array,
 	this.input_element = document.getElementById(this.id + '_value');
 	this.main_container = document.getElementById(this.id);
 	this.item_selected = false;
+	this.maximum_tags = 0;
 
 	YAHOO.util.Event.onContentReady(
 		this.id, this.handleOnAvailable, this, true);
@@ -174,6 +175,12 @@ SiteTagEntry.prototype.addTagFromAutoComplete = function(
 
 SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 {
+	var total_tags = this.selected_tag_array.length +
+		this.new_tag_array.length;
+
+	if (this.maximum_tags > 0 && total_tags >= this.maximum_tags)
+		return;
+
 	var found = false;
 	this.item_selected = false;
 
