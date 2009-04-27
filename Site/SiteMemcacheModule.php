@@ -4,7 +4,7 @@ require_once 'Site/SiteApplicationModule.php';
 require_once 'Site/exceptions/SiteException.php';
 
 /**
- * Web application module for using memcache
+ * Web application module for using memcached
  *
  * In general, the API mirrors the object-oriented API of the object-oriented
  * {@link http://ca.php.net/manual/en/ref.memcache.php memcache extension}.
@@ -20,7 +20,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Optional namespacing allows flushing of the cache on a per-namespace level.
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMemcacheModule extends SiteApplicationModule
@@ -43,7 +43,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 	/**
 	 * @var Memcache
 	 */
-	protected $memcache;
+	protected $memcached;
 
 	/**
 	 * @var string
@@ -60,8 +60,8 @@ class SiteMemcacheModule extends SiteApplicationModule
 
 	public function init()
 	{
-		if (!extension_loaded('memcache')) {
-			throw new SiteException('Memcache module requires the memcache '.
+		if (!extension_loaded('memcached')) {
+			throw new SiteException('Memcache module requires the memcached '.
 				'extension to be loaded.');
 		}
 
@@ -71,8 +71,10 @@ class SiteMemcacheModule extends SiteApplicationModule
 				'memcache module.');
 		}
 
-		$this->memcache = new Memcache();
-		$this->memcache->pconnect($this->server);
+		$this->memcached = new Memcached();
+
+		// add server to server pool
+		$this->memcached->addServer($this->server, 11211);
 
 		$this->key_prefix = $this->app_ns.'_';
 
@@ -111,43 +113,43 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// storage and retrieval
 	// {{{ public function add()
 
-	public function add($key, $value, $flag, $expire)
+	public function add($key, $value, $expiration = 0)
 	{
 		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
-		return $this->memcache->add($key, $value, $flag, $expire);
+		return $this->memcached->add($key, $value, $expiration);
 	}
 
 	// }}}
 	// {{{ public function set()
 
-	public function set($key, $value, $flag = 0, $expire = 0)
+	public function set($key, $value, $expiration = 0)
 	{
 		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
-		return $this->memcache->set($key, $value, $flag, $expire);
+		return $this->memcached->set($key, $value, $expiration);
 	}
 
 	// }}}
 	// {{{ public function replace()
 
-	public function replace($key, $value, $flag = 0, $expire = 0)
+	public function replace($key, $value, $expiration = 0)
 	{
 		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
-		return $this->memcache->replace($key, $value, $flag, $expire);
+		return $this->memcached->replace($key, $value, $expiration);
 	}
 
 	// }}}
 	// {{{ public function get()
 
-	public function get($key, &$flags = 0)
+	public function get($key, $cache_cb = null, &$cas_token = null)
 	{
 		if (!$this->enabled())
 			return false;
@@ -160,43 +162,43 @@ class SiteMemcacheModule extends SiteApplicationModule
 			$key = $this->key_prefix.$key;
 		}
 
-		return $this->memcache->get($key, $flags);
+		return $this->memcached->get($key, $cache_cb, $cas_token);
 	}
 
 	// }}}
 	// {{{ public function delete()
 
-	public function delete($key, $timeout = 0)
+	public function delete($key, $time = 0)
 	{
 		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
-		return $this->memcache->delete($key, $timeout);
+		return $this->memcached->delete($key, $time);
 	}
 
 	// }}}
 	// {{{ public function increment()
 
-	public function increment($key, $value = 1)
+	public function increment($key, $offset = 1)
 	{
 		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
-		return $this->memcache->increment($key, $value);
+		return $this->memcached->increment($key, $offset);
 	}
 
 	// }}}
 	// {{{ public function decrement()
 
-	public function decrement($key, $value = 1)
+	public function decrement($key, $offset = 1)
 	{
 		if (!$this->enabled())
 			return false;
 
 		$key = $this->key_prefix.$key;
-		return $this->memcache->decrement($key, $value);
+		return $this->memcached->decrement($key, $offset);
 	}
 
 	// }}}
@@ -231,7 +233,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function getNs()
 
-	public function getNs($ns, $key, &$flags = 0)
+	public function getNs($ns, $key, $cache_cb = null, &$cas_token = null)
 	{
 		if (is_array($key)) {
 			foreach ($key as &$the_key) {
@@ -241,7 +243,7 @@ class SiteMemcacheModule extends SiteApplicationModule
 			$key = $this->getNsKey($ns, $key);
 		}
 
-		return $this->get($key, $flags);
+		return $this->get($key, $cache_cb, $cas_token);
 	}
 
 	// }}}
@@ -322,15 +324,15 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function flush()
 
-	public function flush()
+	public function flush($delay = 0)
 	{
-		return $this->memcache->flush();
+		return $this->memcached->flush($delay);
 	}
 
 	// }}}
 	// {{{ public function getStats()
 
-	public function getStats($type = '', $slab_id = 0, $limit = 100)
+	public function getStats()
 	{
 		return $this->memcached->getStats();
 	}
