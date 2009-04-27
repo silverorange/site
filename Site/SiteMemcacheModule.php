@@ -206,28 +206,28 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// namespaces
 	// {{{ public function addNs()
 
-	public function addNs($ns, $key, $value, $flag, $expire = 86400)
+	public function addNs($ns, $key, $value, $expiration = 0)
 	{
 		$key = $this->getNsKey($ns, $key);
-		return $this->add($key, $value, $flag, $expire);
+		return $this->add($key, $value, $expiration);
 	}
 
 	// }}}
 	// {{{ public function setNs()
 
-	public function setNs($ns, $key, $value, $flag = 0, $expire = 86400)
+	public function setNs($ns, $key, $value, $expiration = 0)
 	{
 		$key = $this->getNsKey($ns, $key);
-		return $this->set($key, $value, $flag, $expire);
+		return $this->set($key, $value, $expiration);
 	}
 
 	// }}}
 	// {{{ public function replaceNs()
 
-	public function replaceNs($ns, $key, $value, $flag = 0, $expire = 86400)
+	public function replaceNs($ns, $key, $value, $expiration = 0)
 	{
 		$key = $this->getNsKey($ns, $key);
-		return $this->replace($key, $value, $flag, $expire);
+		return $this->replace($key, $value, $expiration);
 	}
 
 	// }}}
@@ -249,10 +249,10 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function deleteNs()
 
-	public function deleteNs($ns, $key, $timeout = 0)
+	public function deleteNs($ns, $key, $time = 0)
 	{
 		$key = $this->getNsKey($ns, $key);
-		return $this->delete($key, $timeout);
+		return $this->delete($key, $time);
 	}
 
 	// }}}
