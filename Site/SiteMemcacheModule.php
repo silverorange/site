@@ -125,13 +125,26 @@ class SiteMemcacheModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function set()
 
-	public function set($key, $value, $expiration = 0)
+	public function set($key, $value = null, $expiration = 0)
 	{
 		if (!$this->enabled())
 			return false;
 
-		$key = $this->key_prefix.$key;
-		return $this->memcached->set($key, $value, $expiration);
+		if (is_array($key)) {
+
+			$prefixed_values = array();
+			foreach ($key as $the_key => $value) {
+				$prefixed_values[$this->key_prefix.$the_key] = $value;
+			}
+			$return = $this->memcached->setMulti($prefixed_values, $expiration);
+
+		} else {
+
+			$key = $this->key_prefix.$key;
+			$return = $this->memcached->set($key, $value, $expiration);
+		}
+
+		return $return;
 	}
 
 	// }}}
@@ -155,14 +168,20 @@ class SiteMemcacheModule extends SiteApplicationModule
 			return false;
 
 		if (is_array($key)) {
+
 			foreach ($key as &$the_key) {
 				$the_key = $this->key_prefix.$the_key;
 			}
+			$value = $this->memcached->getMulti($key, $cas_token);
+
 		} else {
+
 			$key = $this->key_prefix.$key;
+			$value = $this->memcached->get($key, $cache_cb, $cas_token);
+
 		}
 
-		return $this->memcached->get($key, $cache_cb, $cas_token);
+		return $value;
 	}
 
 	// }}}
