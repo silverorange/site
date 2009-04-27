@@ -203,8 +203,10 @@ class Site
 			// Exceptions & errors
 			'exceptions.log_location'  => null,
 			'exceptions.base_uri'      => null,
+			'exceptions.unix_group'    => null,
 			'errors.log_location'      => null,
 			'errors.base_uri'          => null,
+			'errors.unix_group'        => null,
 			'errors.fatal_severity'    => null,
 
 			// Analytics

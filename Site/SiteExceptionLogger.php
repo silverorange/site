@@ -34,6 +34,15 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	 */
 	protected $base_uri;
 
+	/**
+	 * Unix group to use when creating new dirs and files
+	 *
+	 * If null, the current group is used.
+	 *
+	 * @var string
+	 */
+	protected $unix_group;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -43,10 +52,11 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	 * @param string $log_location the location in which to store detailed
 	 *                              error log files.
 	 */
-	public function __construct($log_location, $base_uri = null)
+	public function __construct($log_location, $base_uri = null, $unix_group = null)
 	{
 		$this->log_location = $log_location;
 		$this->base_uri = $base_uri;
+		$this->unix_group = $unix_group;
 	}
 
 	// }}}
@@ -70,6 +80,9 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		if (!file_exists($log_directory_path)) {
 			mkdir($log_directory_path, 0770, true);
 			chmod($log_directory_path, 0770);
+
+			if ($this->unix_group !== null)
+				chgrp($log_directory_path, $this->unix_group);
 		}
 
 		if (($log_file = fopen($log_filepath, 'w')) !== false) {
@@ -114,6 +127,9 @@ class SiteExceptionLogger extends SwatExceptionLogger
 			fwrite($log_file, $e->toXHTML());
 			fwrite($log_file, '</body></html>');
 			fclose($log_file);
+
+			if ($this->unix_group !== null)
+				chgrp($log_file, $this->unix_group);
 		}
 
 		if ($this->base_uri === null)

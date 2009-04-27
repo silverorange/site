@@ -288,12 +288,14 @@ abstract class SiteApplication extends SiteObject
 		if (isset($config->exceptions->log_location))
 			SwatException::setLogger(new SiteExceptionLogger(
 				$config->exceptions->log_location,
-				$config->exceptions->base_uri));
+				$config->exceptions->base_uri,
+				$config->exceptions->unix_group));
 
 		if (isset($config->errors->log_location))
 			SwatError::setLogger(new SiteErrorLogger(
 				$config->errors->log_location,
-				$config->errors->base_uri));
+				$config->errors->base_uri,
+				$config->errors->unix_group));
 
 		if (isset($config->errors->fatal_severity))
 			SwatError::setFatalSeverity($config->errors->fatal_severity);
