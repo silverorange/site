@@ -322,7 +322,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 			$this->allow_adding_tags ? 'true' : 'false');
 
 		if ($this->maximum_tags !== null) {
-			$javascript.= sprintf('var %1\$s_obj.maximum_tags = %d;',
+			$javascript.= sprintf("\n%s_obj.maximum_tags = %d;",
 				$this->id, $this->maximum_tags);
 		}
 
