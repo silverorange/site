@@ -185,7 +185,6 @@ class SiteSessionModule extends SiteApplicationModule
 	public function getSessionName()
 	{
 		$name = $this->app->config->session->name;
-
 		return $name;
 	}
 
