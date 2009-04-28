@@ -156,6 +156,8 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 				entry.addTag(tag_name);
 			}
 		}, this);
+
+	this.updateVisibility();
 }
 
 // }}}
@@ -302,6 +304,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 
 	// clear input value once a value is chosen
 	this.input_element.value = '';
+	this.updateVisibility();
 }
 
 // }}}
@@ -378,6 +381,8 @@ SiteTagEntry.prototype.removeTag = function(tag_name)
 			break;
 		}
 	}
+
+	this.updateVisibility();
 }
 
 // }}}
@@ -390,6 +395,20 @@ SiteTagEntry.prototype.filterTitle = function(title)
 	title = title.replace(/&gt;/g,   '>');
 	title = title.replace(/&quot;/g, '"');
 	return title;
+}
+
+// }}}
+// {{{ updateVisibility()
+
+SiteTagEntry.prototype.updateVisibility= function()
+{
+	var total_tags = this.selected_tag_array.length +
+		this.new_tag_array.length;
+
+	if (this.maximum_tags > 0 && total_tags >= this.maximum_tags)
+		YAHOO.util.Dom.addClass(this.input_element.parentNode, 'swat-hidden');
+	else
+		YAHOO.util.Dom.removeClass(this.input_element.parentNode, 'swat-hidden');
 }
 
 // }}}
