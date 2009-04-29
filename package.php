@@ -2,7 +2,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '1.4.9';
+$version = '1.4.10';
 $notes = <<<EOT
 see ChangeLog
 EOT;
@@ -28,6 +28,7 @@ $result = $package->setOptions(
 			'Site' => 'php',
 			'locale' => 'data',
 			'www' => 'data',
+			'/' => 'data'
 		),
 	)
 );
