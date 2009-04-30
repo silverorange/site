@@ -64,6 +64,7 @@ $package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.php.net', '1.0.
 $package->addPackageDepWithChannel('required', 'Text_Password', 'pear.php.net', '1.1.1');
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
 $package->addExtensionDep('optional', 'uploadprogress', '0.3.0');
+$package->addExtensionDep('optional', 'memcached', '0.1.5');
 $package->generateContents();
 
 if (isset($_GET['make']) || (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {
