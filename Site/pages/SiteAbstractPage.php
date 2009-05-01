@@ -69,8 +69,6 @@ abstract class SiteAbstractPage extends SiteObject
 	 */
 	protected $arguments = array();
 
-	protected $cache_values = array();
-
 	// }}}
 	// {{{ public function getSource()
 
@@ -165,59 +163,6 @@ abstract class SiteAbstractPage extends SiteObject
 	}
 
 	// }}}
-	// {{{ protected function addCacheValue()
-
-	/**
-	 * Set a value to be cached
-	 *
-	 * Useful for caching values that have properties that aren't
-	 * immediately initialized. Variables added using this method are cached
-	 * in the SiteAbstractPage::finalize() method.
-	 *
-	 * @param string $value
-	 * @param string $key
-	 * @param string $name_space
-	 */
-	protected function addCacheValue($value, $key, $name_space = null)
-	{
-		if (isset($this->app->memcache)) {
-			$entry = array(
-				'value' => $value,
-				'key' => $key,
-				'name_space' => $name_space);
-
-			$this->cache_values[] = $entry;
-		}
-	}
-
-	// }}}
-	// {{{ protected function getCacheValue()
-
-	/**
-	 * Get a cached value
-	 *
-	 * @param string $key
-	 * @param string $name_space
-	 *
-	 * @return mixed Returns false if no cached value is found, otherwise
-	 *               the cached value is returned.
-	 */
-	protected function getCacheValue($key, $name_space = null)
-	{
-		$value = false;
-
-		if (isset($this->app->memcache)) {
-			if ($name_space === null) {
-				$value = $this->app->memcache->get($key);
-			} else {
-				$value = $this->app->memcache->getNs($name_space, $key);
-			}
-		}
-
-		return $value;
-	}
-
-	// }}}
 
 	// init phase
 	// {{{ public function init()
@@ -285,21 +230,48 @@ abstract class SiteAbstractPage extends SiteObject
 	 */
 	public function finalize()
 	{
-		$this->setCacheValues();
 	}
 
 	// }}}
-	// {{{ protected function setCacheValues()
 
-	protected function setCacheValues()
+	// deprecated
+	// {{{ protected function addCacheValue()
+
+	/**
+	 * Set a value to be cached
+	 *
+	 * Useful for caching values that have properties that aren't
+	 * immediately initialized. Variables added using this method are cached
+	 * in the SiteAbstractPage::finalize() method.
+	 *
+	 * @param string $value
+	 * @param string $key
+	 * @param string $name_space
+	 *
+	 * @deprecated Use SiteApplication::addCacheValue() instead
+	 */
+	protected function addCacheValue($value, $key, $name_space = null)
 	{
-		foreach ($this->cache_values as $entry) {
-			if ($entry['name_space'] === null)
-				$this->app->memcache->set($entry['key'], $entry['value']);
-			else
-				$this->app->memcache->setNs($entry['name_space'],
-					$entry['key'], $entry['value']);
-		}
+		// this functionality now exists in SiteApplication
+		$this->app->addCacheValue($value, $key, $name_space);
+	}
+
+	// }}}
+	// {{{ protected function getCacheValue()
+
+	/**
+	 * Get a cached value
+	 *
+	 * @param string $key
+	 * @param string $name_space
+	 *
+	 * @return mixed Returns false if no cached value is found, otherwise
+	 *               the cached value is returned.
+	 */
+	protected function getCacheValue($key, $name_space = null)
+	{
+		// this functionality now exists in SiteApplication
+		return $this->app->getCacheValue($key, $name_space);
 	}
 
 	// }}}

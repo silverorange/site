@@ -678,6 +678,68 @@ abstract class SiteApplication extends SiteObject
 
 	// }}}
 
+	// caching convenience methods
+	// {{{ public function addCacheValue()
+
+	/**
+	 * Set a value to be cached
+	 *
+	 * @param mixed  $value
+	 * @param string $key
+	 * @param string $name_space
+	 */
+	public function addCacheValue($value, $key, $name_space = null)
+	{
+		register_shutdown_function(array($this, 'cacheOnShutdown'),
+			$value, $key, $name_space);
+	}
+
+	// }}}
+	// {{{ public function getCacheValue()
+
+	/**
+	 * Get a cached value
+	 *
+	 * @param string $key
+	 * @param string $name_space
+	 *
+	 * @return mixed Returns false if no cached value is found, otherwise
+	 *               the cached value is returned.
+	 */
+	public function getCacheValue($key, $name_space = null)
+	{
+		$value = false;
+
+		if (isset($this->memcache)) {
+			if ($name_space === null) {
+				$value = $this->memcache->get($key);
+			} else {
+				$value = $this->memcache->getNs($name_space, $key);
+			}
+		}
+
+		return $value;
+	}
+
+	// }}}
+	// {{{ public function cacheOnShutdown()
+
+	/**
+	 * Callback method used by addCacheValue(). Must be public, but should not
+	 * be accessed directly.
+	 */
+	public function cacheOnShutdown($value, $key = null, $name_space = null)
+	{
+		if (isset($this->memcache)) {
+			if ($name_space === null)
+				$this->memcache->set($key, $value);
+			else
+				$this->memcache->setNs($key, $name_space, $value);
+		}
+	}
+
+	// }}}
+
 	// static convenience methods
 	// {{{ public static function initVar()
 
