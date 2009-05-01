@@ -185,24 +185,6 @@ abstract class SiteSearchEngine extends SwatObject
 	}
 
 	// }}}
-	// {{{ public function cacheResults()
-
-	public function cacheResults($results, $key)
-	{
-		$ns = $this->getMemcacheNs();
-		$ids = array();
-
-		foreach ($results as $id => $result) {
-			$result_key = $key.'.'.$id;
-				$ids[] = $result_key;
-				$this->app->memcache->setNs($ns, $result_key, $result);
-
-		}
-
-		$this->app->memcache->setNs($ns, $key, $ids);
-	}
-
-	// }}}
 	// {{{ protected function queryResults()
 
 	/**
@@ -233,13 +215,13 @@ abstract class SiteSearchEngine extends SwatObject
 		if ($this->hasMemcache()) {
 			$key = $this->getResultsCacheKey($sql);
 			$ns  = $this->getMemcacheNs();
-			$ids = $this->memcache->getNs($ns, $key);
+			$ids = $this->app->getCacheValue($key, $ns);
 
 			if ($ids !== false) {
 				$wrapper_class = $this->getResultWrapperClass();
 				$results = new $wrapper_class();
 				if (count($ids) > 0) {
-					$cached_results = $this->memcache->getNs($ns, $ids);
+					$cached_results = $this->app->getCacheValue($ids, $ns);
 					if (count($cached_results) !== count($ids)) {
 						$results = false;
 					} else {
@@ -262,8 +244,14 @@ abstract class SiteSearchEngine extends SwatObject
 			$this->loadSubObjects($results);
 
 			if ($this->hasMemcache()) {
-				register_shutdown_function(array($this, 'cacheResults'),
-					$results, $key);
+				$ids = array();
+				foreach ($results as $id => $result) {
+					$result_key = $key.'.'.$id;
+						$ids[] = $result_key;
+						$this->app->addCacheValue($result, $result_key, $ns);
+				}
+
+				$this->app->addCacheValue($ids, $key, $ns);
 			}
 		}
 
@@ -303,13 +291,13 @@ abstract class SiteSearchEngine extends SwatObject
 
 			if ($this->hasMemcache()) {
 				$ns    = $this->getMemcacheNs();
-				$count = $this->memcache->getNs($ns, $key);
+				$count = $this->app->getCacheValue($key, $ns);
 			}
 
 			if ($count === false) {
 				$count = SwatDB::queryOne($this->app->db, $sql);
 				if ($this->hasMemcache()) {
-					$this->memcache->setNs($ns, $key, $count);
+					$this->app->addCacheValue($count, $key, $ns);
 				}
 			}
 
