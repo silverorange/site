@@ -75,7 +75,7 @@ class SiteAccountIndex extends AdminSearch
 
 		$instance_id = $this->app->getInstanceId();
 		$where.= sprintf(' and Account.instance %s %s',
-			SwatDB::equityOperator($instance_id),
+			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'));
 
 		// fullname
