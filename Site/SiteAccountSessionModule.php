@@ -17,7 +17,7 @@ require_once 'Swat/SwatString.php';
  * session.
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountSessionModule extends SiteSessionModule
@@ -167,7 +167,18 @@ class SiteAccountSessionModule extends SiteSessionModule
 		unset($this->account);
 		unset($this->_authentication_token);
 		$this->removeAccountCookie();
+		$this->unsetDataObjects();
+	}
 
+	// }}}
+	// {{{ public function unsetRegisteredDataObjects()
+
+	/**
+	 * Unsets data objects registered in the session and marked as
+	 * destroy-on-logout
+	 */
+	public function unsetRegisteredDataObjects()
+	{
 		foreach ($this->destroy_on_logout_objects as $name)
 			unset($this->$name);
 	}
@@ -220,9 +231,17 @@ class SiteAccountSessionModule extends SiteSessionModule
 	/**
 	 * Register a dataobject class for a session variable
 	 *
-	 * @param string $name the name of the session variable
-	 * @param string $class the dataobject class name
-	 * @param boolean $destroy_on_logout whether to destroy this dataobject on logout
+	 * Dataobjects in the session must be registered so the appropriate classes
+	 * can be loaded before the session is restored. This prevents
+	 * unserializing an unknown class from the session.
+	 *
+	 * Note: If an autoloader is used to load class definitions, this method
+	 * will become obsolete.
+	 *
+	 * @param string $name the name of the session variable.
+	 * @param string $class the dataobject class name.
+	 * @param boolean $destroy_on_logout whether to destroy this dataobject on
+	 *                                    logout.
 	 */
 	public function registerDataObject($name, $class,
 		$destroy_on_logout = true)
