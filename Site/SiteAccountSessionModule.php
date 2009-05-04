@@ -167,7 +167,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 		unset($this->account);
 		unset($this->_authentication_token);
 		$this->removeAccountCookie();
-		$this->unsetDataObjects();
+		$this->unsetRegisteredDataObjects();
 	}
 
 	// }}}
