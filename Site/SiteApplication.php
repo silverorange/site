@@ -722,6 +722,53 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function addCacheRecordset()
+
+	public function addCacheRecordset(SwatDBRecordsetWrapper $recordset,
+		$key, $name_space = null, $index_property = 'id')
+	{
+		$ids = array();
+		foreach ($recordset as $object) {
+			$object_key = $key.'.'.$object->$index_property;
+			$ids[] = $object_key;
+			$this->addCacheValue($object, $object_key, $name_space);
+		}
+
+		$this->addCacheValue($ids, $key, $name_space);
+	}
+
+	// }}}
+	// {{{ public function getCacheRecordset()
+
+	public function getCacheRecordset($key, $wrapper_class, $name_space = null)
+	{
+		$indexes = $this->getCacheValue($key, $name_space);
+		$wrapper = false;
+
+		if ($indexes !== false) {
+			$wrapper = new $wrapper_class();
+
+			if (count($indexes) > 0) {
+				$dataobject_array =
+					$this->getCacheValue($indexes, $name_space);
+
+				if (count($dataobject_array) !== count($indexes)) {
+					// one or more objects are missing from the cache
+					$wrapper = false;
+				} else {
+					foreach ($dataobject_array as $object) {
+						$wrapper->add($object);
+					}
+
+					$wrapper->setDatabase($this->db);
+				}
+			}
+		}
+
+		return $wrapper;
+	}
+
+	// }}}
 	// {{{ public function cacheOnShutdown()
 
 	/**
@@ -734,7 +781,7 @@ abstract class SiteApplication extends SiteObject
 			if ($name_space === null)
 				$this->memcache->set($key, $value);
 			else
-				$this->memcache->setNs($key, $name_space, $value);
+				$this->memcache->setNs($name_space, $key, $value);
 		}
 	}
 
