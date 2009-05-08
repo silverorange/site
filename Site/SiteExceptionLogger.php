@@ -129,7 +129,7 @@ class SiteExceptionLogger extends SwatExceptionLogger
 			fclose($log_file);
 
 			if ($this->unix_group !== null)
-				chgrp($log_file, $this->unix_group);
+				chgrp($log_filepath, $this->unix_group);
 		}
 
 		if ($this->base_uri === null)
