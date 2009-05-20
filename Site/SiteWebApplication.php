@@ -378,8 +378,12 @@ class SiteWebApplication extends SiteApplication
 	 *                             is determined automatically by the
 	 *                             {@link SiteSessionModule::appendSessionId()}
 	 *                             method.
+	 * @param boolean $permanent Whether or not to the relocate is permanent.
+	 *                            Set true for urls that are permanently
+	 *                            moved.
 	 */
-	public function relocate($uri, $secure = null, $append_sid = null)
+	public function relocate($uri, $secure = null, $append_sid = null,
+		$permanent = false)
 	{
 		// check for session module
 		if (isset($this->session) &&
@@ -388,6 +392,9 @@ class SiteWebApplication extends SiteApplication
 
 		if (substr($uri, 0, 1) != '/' && strpos($uri, '://') === false)
 			$uri = $this->getBaseHref($secure).$uri;
+
+		if ($permanent)
+			header('HTTP/1.1 301 Moved Permanently');
 
 		header('Location: '.$uri);
 		exit();
