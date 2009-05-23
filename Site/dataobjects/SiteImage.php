@@ -69,6 +69,7 @@ class SiteImage extends SwatDBDataObject
 	private $file_base;
 	private $crop_boxes = array();
 	private $original_dpi;
+	private $imagick_instances = array();
 
 	// }}}
 
@@ -553,7 +554,6 @@ class SiteImage extends SwatDBDataObject
 
 		$this->image_set = $this->getImageSet();
 		$dimension = $this->image_set->getDimensionByShortname($shortname);
-		$imagick = new Imagick($image_file);
 
 		try {
 			if ($this->automatically_save) {
@@ -561,7 +561,7 @@ class SiteImage extends SwatDBDataObject
 				$this->save(); // save once to set id on this object to use for filenames
 			}
 
-			$this->processDimension($imagick, $dimension);
+			$imagick = $this->processDimension($image_file, $dimension);
 			$this->saveFile($imagick, $dimension);
 
 			if ($this->automatically_save) {
@@ -636,15 +636,10 @@ class SiteImage extends SwatDBDataObject
 	 */
 	protected function processInternal($image_file)
 	{
-		foreach ($this->image_set->dimensions as $dimension) {
-			try {
-				$imagick = new Imagick($image_file);
-			} catch (ImagickException $e) {
-				throw new SiteInvalidImageException($e->getMessage(),
-					$e->getCode());
-			}
+		$this->imagick_instances = array();
 
-			$this->processDimension($imagick, $dimension);
+		foreach ($this->image_set->dimensions as $dimension) {
+			$imagick = $this->processDimension($image_file, $dimension);
 
 			if ($dimension->max_width === null &&
 				$dimension->max_height === null &&
@@ -657,6 +652,8 @@ class SiteImage extends SwatDBDataObject
 
 			unset($imagick);
 		}
+
+		unset($this->imagick_instances);
 	}
 
 	// }}}
@@ -665,12 +662,14 @@ class SiteImage extends SwatDBDataObject
 	/**
 	 * Resizes an image for the given dimension
 	 *
-	 * @param Imagick $imagick the imagick instance to work with.
+	 * @param string $image_file the image file to process.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function processDimension(Imagick $imagick,
+	protected function processDimension($image_file,
 		SiteImageDimension $dimension)
 	{
+		$imagick = $this->getImagick($image_file, $dimension);
+
 		if (isset($this->crop_boxes[$dimension->shortname])) {
 			$this->cropToBox($imagick, $dimension,
 				$this->crop_boxes[$dimension->shortname]);
@@ -683,6 +682,46 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		$this->saveDimensionBinding($imagick, $dimension);
+
+		return $imagick;
+	}
+
+	// }}}
+	// {{{ protected function getImagick()
+
+	/**
+	 * Gets the Imagick object to process
+	 *
+	 * @param string $image_file the image file to process.
+	 * @param SiteImageDimension $dimension the dimension to process.
+	 */
+	protected function getImagick($image_file,
+		SiteImageDimension $dimension)
+	{
+		$imagick = null;
+
+		// Use the smallest non-cropped processed image bigger than the
+		// current dimension.
+		// This assumes that the aspect ratio remains unchanged.
+		if (!isset($this->crop_boxes[$dimension->shortname])) {
+			foreach ($this->imagick_instances as $imagick_obj) {
+				if ($imagick_obj->getImageWidth() >= $dimension->max_width &&
+					$imagick_obj->getImageHeight() >= $dimension->max_height) {
+					$imagick = $imagick_obj;
+				}
+			}
+		}
+
+		if ($imagick === null) {
+			try {
+				$imagick = new Imagick($image_file);
+			} catch (ImagickException $e) {
+				throw new SiteInvalidImageException($e->getMessage(),
+					$e->getCode());
+			}
+		}
+
+		return $imagick;
 	}
 
 	// }}}
@@ -831,6 +870,8 @@ class SiteImage extends SwatDBDataObject
 			// image.
 			$imagick->setImagePage($new_width, $new_height, 0, 0);
 		}
+
+		$this->imagick_instances[] = $imagick;
 	}
 
 	// }}}
