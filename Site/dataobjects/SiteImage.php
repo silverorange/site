@@ -687,44 +687,6 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function getImagick()
-
-	/**
-	 * Gets the Imagick object to process
-	 *
-	 * @param string $image_file the image file to process.
-	 * @param SiteImageDimension $dimension the dimension to process.
-	 */
-	protected function getImagick($image_file,
-		SiteImageDimension $dimension)
-	{
-		$imagick = null;
-
-		// Use the smallest non-cropped processed image bigger than the
-		// current dimension.
-		// This assumes that the aspect ratio remains unchanged.
-		if (!isset($this->crop_boxes[$dimension->shortname])) {
-			foreach ($this->imagick_instances as $imagick_obj) {
-				if ($imagick_obj->getImageWidth() >= $dimension->max_width &&
-					$imagick_obj->getImageHeight() >= $dimension->max_height) {
-					$imagick = $imagick_obj;
-				}
-			}
-		}
-
-		if ($imagick === null) {
-			try {
-				$imagick = new Imagick($image_file);
-			} catch (ImagickException $e) {
-				throw new SiteInvalidImageException($e->getMessage(),
-					$e->getCode());
-			}
-		}
-
-		return $imagick;
-	}
-
-	// }}}
 	// {{{ protected function cropToDimension()
 
 	/**
@@ -760,7 +722,7 @@ class SiteImage extends SwatDBDataObject
 			$imagick->getImageWidth(), $new_width);
 
 		$imagick->resizeImage($new_width, $new_height,
-			Imagick::FILTER_LANCZOS, 1);
+			$this->getResizeFilter($dimension), 1);
 
 		// Set page geometry to the new size so subsequent crops will use
 		// will use the geometry of the new image instead of the original
@@ -842,7 +804,7 @@ class SiteImage extends SwatDBDataObject
 				$imagick->getImageWidth(), $new_width);
 
 			$imagick->resizeImage($new_width, $new_height,
-				Imagick::FILTER_LANCZOS, 1);
+				$this->getResizeFilter($dimension), 1);
 
 			// Set page geometry to the new size so subsequent crops will use
 			// will use the geometry of the new image instead of the original
@@ -863,7 +825,7 @@ class SiteImage extends SwatDBDataObject
 				$imagick->getimagewidth(), $new_width);
 
 			$imagick->resizeImage($new_width, $new_height,
-				Imagick::FILTER_LANCZOS, 1);
+				$this->getResizeFilter($dimension), 1);
 
 			// Set page geometry to the new size so subsequent crops will use
 			// will use the geometry of the new image instead of the original
@@ -1009,6 +971,44 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getImagick()
+
+	/**
+	 * Gets the Imagick object to process
+	 *
+	 * @param string $image_file the image file to process.
+	 * @param SiteImageDimension $dimension the dimension to process.
+	 */
+	protected function getImagick($image_file,
+		SiteImageDimension $dimension)
+	{
+		$imagick = null;
+
+		// Use the smallest non-cropped processed image bigger than the
+		// current dimension.
+		// This assumes that the aspect ratio remains unchanged.
+		if (!isset($this->crop_boxes[$dimension->shortname])) {
+			foreach ($this->imagick_instances as $imagick_obj) {
+				if ($imagick_obj->getImageWidth() >= $dimension->max_width &&
+					$imagick_obj->getImageHeight() >= $dimension->max_height) {
+					$imagick = $imagick_obj;
+				}
+			}
+		}
+
+		if ($imagick === null) {
+			try {
+				$imagick = new Imagick($image_file);
+			} catch (ImagickException $e) {
+				throw new SiteInvalidImageException($e->getMessage(),
+					$e->getCode());
+			}
+		}
+
+		return $imagick;
+	}
+
+	// }}}
 	// {{{ protected function getImageSet()
 
 	protected function getImageSet()
@@ -1030,6 +1030,26 @@ class SiteImage extends SwatDBDataObject
 				$this->image_set_shortname));
 
 		return $image_set;
+	}
+
+	// }}}
+	// {{{ protected function getResizeFilter()
+
+	protected function getResizeFilter(SiteImageDimension $dimension)
+	{
+		if ($dimension->resize_filter === null) {
+			$filter = Imagick::FILTER_LANCZOS;
+		} else {
+			$filter = constant('Imagick::'.$dimension->resize_filter);
+
+			if ($filter === null) {
+				throw new SwatException(sprintf('%s is not a valid '.
+					'Imagick constant.',
+					$dimension->resize_filter));
+			}
+		}
+
+		return $filter;
 	}
 
 	// }}}
