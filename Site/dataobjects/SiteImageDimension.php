@@ -86,6 +86,18 @@ class SiteImageDimension extends SwatDBDataObject
 	 */
 	public $interlace;
 
+	/**
+	 * Resize filter type
+	 *
+	 * Specify which type of filter to use when resizing.
+	 * See the Imagick FILTER_* constants
+	 * {@link http://ca.php.net/manual/en/imagick.constants.php}.
+	 * If not defined, the default, 'FILTER_LANCZOS', is used.
+	 *
+	 * @var string
+	 */
+	public $resize_filter;
+
 	// }}}
 	// {{{ private properties
 
