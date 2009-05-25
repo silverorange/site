@@ -998,7 +998,16 @@ class SiteImage extends SwatDBDataObject
 
 		if ($imagick === null) {
 			try {
-				$imagick = new Imagick($image_file);
+				$imagick = new Imagick();
+
+				if ($dimension->max_width !== null &&
+					$dimension->max_height !== null) {
+					$imagick->setSize($dimension->max_width,
+						$dimension->max_height);
+				}
+
+				$imagick->readImage($image_file);
+
 			} catch (ImagickException $e) {
 				throw new SiteInvalidImageException($e->getMessage(),
 					$e->getCode());
