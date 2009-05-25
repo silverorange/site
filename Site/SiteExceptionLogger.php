@@ -9,7 +9,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * and puts a link in the system error log to the details file
  *
  * @package   Site
- * @copyright 2006-2008 silverorange
+ * @copyright 2006-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteExceptionLogger extends SwatExceptionLogger
@@ -43,6 +43,25 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	 */
 	protected $unix_group;
 
+	/**
+	 * Exception identifier
+	 *
+	 * Unique id used for filenames and paths. Generated once for each
+	 * exception.
+	 *
+	 * @var string
+	 */
+	protected $id;
+
+	/**
+	 * Directory in which logged exceptions will be stored
+	 *
+	 * Not necessarily unique. Generated once for each exception.
+	 *
+	 * @var string
+	 */
+	protected $directory;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -51,12 +70,17 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	 *
 	 * @param string $log_location the location in which to store detailed
 	 *                              error log files.
+	 * @param string $base_uri optional.
+	 * @param integer $unix_group optional.
 	 */
-	public function __construct($log_location, $base_uri = null, $unix_group = null)
+	public function __construct($log_location, $base_uri = null,
+		$unix_group = null)
 	{
 		$this->log_location = $log_location;
-		$this->base_uri = $base_uri;
-		$this->unix_group = $unix_group;
+		$this->base_uri     = $base_uri;
+		$this->unix_group   = $unix_group;
+		$this->id           = md5(uniqid());
+		$this->directory    = date('Y-m-d');
 	}
 
 	// }}}
@@ -71,74 +95,27 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		if ($e instanceof SiteNotFoundException)
 			return;
 
-		$hash = md5(uniqid());
-		$log_directory = date('Y-m-d');
-		$log_filename = 'exception-'.$hash.'.html';
-		$log_directory_path = $this->log_location.'/'.$log_directory;
-		$log_filepath = $log_directory_path.'/'.$log_filename;
+		$log_path     = $this->getLogPath();
+		$log_filepath = $this->getLogFilePath();
 
-		if (!file_exists($log_directory_path)) {
-			mkdir($log_directory_path, 0770, true);
-			chmod($log_directory_path, 0770);
+		// create path if it does not exist
+		if (!file_exists($log_path)) {
+			mkdir($log_path, 0770, true);
+			chmod($log_path, 0770);
 
 			if ($this->unix_group !== null)
-				chgrp($log_directory_path, $this->unix_group);
+				chgrp($log_path, $this->unix_group);
 		}
 
 		if (($log_file = fopen($log_filepath, 'w')) !== false) {
-			fwrite($log_file, '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 '.
-				'Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">');
-
-			fwrite($log_file, '<html xmlns="http://www.w3.org/1999/xhtml" '.
-				'xml:lang="en" lang="en">');
-
-			fwrite($log_file, '<head><meta http-equiv="Content-Type" '.
-				'content="text/html; charset=UTF-8" /></head><body>');
-
-			fwrite($log_file, '<table>');
-			fwrite($log_file, '<tr><th>Exeception Time:</th><td>'.
-				date('c', time()).'</td></tr>');
-
-			if (isset($_SERVER['HTTP_HOST']))
-				fwrite($log_file, '<tr><th>HTTP Host:</th><td>'.
-					$_SERVER['HTTP_HOST'].'</td></tr>');
-
-			if (isset($_SERVER['REQUEST_URI']))
-				fwrite($log_file, '<tr><th>Request URI:</th><td>'.
-					$_SERVER['REQUEST_URI'].'</td></tr>');
-
-			if (isset($_SERVER['REQUEST_TIME']))
-				fwrite($log_file, '<tr><th>Request Time:</th><td>'.
-					date('c', $_SERVER['REQUEST_TIME']).'</td></tr>');
-
-			if (isset($_SERVER['HTTP_REFERER']))
-				fwrite($log_file, '<tr><th>HTTP Referer:</th><td>'.
-					$_SERVER['HTTP_REFERER'].'</td></tr>');
-
-			if (isset($_SERVER['HTTP_USER_AGENT']))
-				fwrite($log_file, '<tr><th>HTTP User Agent:</th><td>'.
-					$_SERVER['HTTP_USER_AGENT'].'</td></tr>');
-
-			if (isset($_SERVER['REMOTE_ADDR']))
-				fwrite($log_file, '<tr><th>Remote Address:</th><td>'.
-					$_SERVER['REMOTE_ADDR'].'</td></tr>');
-
-			fwrite($log_file, '</table>');
-			fwrite($log_file, $e->toXHTML());
-			fwrite($log_file, '</body></html>');
 			fclose($log_file);
 
 			if ($this->unix_group !== null)
 				chgrp($log_filepath, $this->unix_group);
 		}
 
-		if ($this->base_uri === null)
-			$summary = $e->getClass().': '.$log_filepath;
-		else
-			$summary = $e->getClass().': '.$this->base_uri.
-				'/'.$log_directory.'/'.$log_filename;
-
-		$this->logSummary($summary);
+		// add to syslog
+		$this->logSummary($this->getSummary());
 	}
 
 	// }}}
@@ -147,6 +124,106 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	protected function logSummary($summary)
 	{
 		error_log($summary, 0);
+	}
+
+	// }}}
+	// {{{ protected function getLogPath()
+
+	protected function getLogPath()
+	{
+		return $this->log_location.'/'.$this->directory;
+	}
+
+	// }}}
+	// {{{ protected function getLogFilename()
+
+	protected function getLogFilename()
+	{
+		return 'exception-'.$this->id.'.html';
+	}
+
+	// }}}
+	// {{{ protected function getLogFilePath()
+
+	protected function getLogFilePath()
+	{
+		return $this->getLogPath().'/'.$this->getLogFilename();
+	}
+
+	// }}}
+	// {{{ protected function getSummary()
+
+	protected function getSummary(SwatException $e)
+	{
+		if ($this->base_uri === null) {
+			$summary = $e->getClass().': '.$this->getLogFilePath();
+		} else {
+			$summary = $e->getClass().': '.$this->base_uri.'/'.
+				$this->directory.'/'.$this->getLogFilename();
+		}
+
+		return $summary;
+	}
+
+	// }}}
+	// {{{ protected function getBody()
+
+	protected function getBody()
+	{
+		ob_start();
+
+		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 ',
+			'Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+			"\n";
+
+		echo '<html xmlns="http://www.w3.org/1999/xhtml" ',
+			'xml:lang="en" lang="en">', "\n";
+
+		echo '<head><meta http-equiv="Content-Type" '.
+			'content="text/html; charset=UTF-8" /></head><body>', "\n";
+
+		echo '<table>', "\n";
+
+		echo '<tr><th>Exception Time:</th><td>', date('c', time()),
+			'</td></tr>', "\n";
+
+		if (isset($_SERVER['HTTP_HOST'])) {
+			echo '<tr><th>HTTP Host:</th><td>', $_SERVER['HTTP_HOST'],
+				'</td></tr>', "\n";
+		}
+
+		if (isset($_SERVER['REQUEST_URI'])) {
+			echo '<tr><th>Request URI:</th><td>', $_SERVER['REQUEST_URI'],
+				'</td></tr>', "\n";
+		}
+
+		if (isset($_SERVER['REQUEST_TIME'])) {
+			echo '<tr><th>Request Time:</th><td>',
+				date('c', $_SERVER['REQUEST_TIME']), '</td></tr>', "\n";
+		}
+
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			echo '<tr><th>HTTP Referer:</th><td>', $_SERVER['HTTP_REFERER'],
+				'</td></tr>', "\n";
+		}
+
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
+			echo '<tr><th>HTTP User Agent:</th><td>',
+				$_SERVER['HTTP_USER_AGENT'], '</td></tr>', "\n";
+		}
+
+		if (isset($_SERVER['REMOTE_ADDR'])) {
+			echo '<tr><th>Remote Address:</th><td>', $_SERVER['REMOTE_ADDR'],
+				'</td></tr>', "\n";
+		}
+
+		echo '</table>', "\n";
+
+		echo $e->toXHTML();
+
+		echo '</body></html>', "\n";
+
+		return ob_get_clean();
 	}
 
 	// }}}
