@@ -102,7 +102,7 @@ class SiteErrorLogger extends SwatErrorLogger
 
 		// save detailed error log
 		if (($log_file = fopen($log_filepath, 'w')) !== false) {
-			fwrite($log_file, $this->getBody());
+			fwrite($log_file, $this->getBody($e));
 			fclose($log_file);
 
 			if ($this->unix_group !== null)
@@ -110,7 +110,7 @@ class SiteErrorLogger extends SwatErrorLogger
 		}
 
 		// add to syslog
-		$this->logSummary($this->getSummary());
+		$this->logSummary($this->getSummary($e));
 	}
 
 	// }}}
