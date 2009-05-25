@@ -169,7 +169,7 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	// }}}
 	// {{{ protected function getBody()
 
-	protected function getBody()
+	protected function getBody(SwatException $e)
 	{
 		ob_start();
 
