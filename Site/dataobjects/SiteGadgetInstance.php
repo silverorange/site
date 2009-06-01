@@ -2,6 +2,7 @@
 
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteInstance.php';
+require_once 'Site/dataobjects/SiteGadgetCacheWrapper.php';
 require_once 'Site/dataobjects/SiteGadgetInstanceSettingValueWrapper.php';
 
 /**
@@ -35,20 +36,6 @@ class SiteGadgetInstance extends SwatDBDataObject
 	 * @var string
 	 */
 	public $gadget;
-
-	/**
-	 * The value of the cache for this gadget instance
-	 *
-	 * @var string
-	 */
-	public $cache_value;
-
-	/**
-	 * The last time that {@link SiteGadgetInstance::cache_value} was updated
-	 *
-	 * @var Date
-	 */
-	public $cache_last_update;
 
 	/**
 	 * Position of this sidebar gadget relative to other gadgets
@@ -117,7 +104,24 @@ class SiteGadgetInstance extends SwatDBDataObject
 		$this->table = 'GadgetInstance';
 		$this->id_field = 'integer:id';
 		$this->registerInternalProperty('instance', 'SiteInstance');
-		$this->registerDateProperty('cache_last_update');
+	}
+
+	// }}}
+	// {{{ protected function loadCaches()
+
+	/**
+	 * Loads gadget caches for this gadget instance
+	 *
+	 * @return SiteGadgetCacheValueWrapper the caches for this gadget instance.
+	 */
+	protected function loadCaches()
+	{
+		$sql = sprintf('select * from GadgetCache
+			where gadget_instance = %s',
+			$this->db->quote($this->id, 'integer'));
+
+		return SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('SiteGadgetCacheWrapper'));
 	}
 
 	// }}}
@@ -146,6 +150,7 @@ class SiteGadgetInstance extends SwatDBDataObject
 	{
 		return array_merge(parent::getSerializableSubDataObjects(), array(
 			'setting_values',
+			'caches',
 		));
 	}
 
