@@ -74,17 +74,45 @@ class SiteWebApplication extends SiteApplication
 		$this->initModules();
 		$this->parseUri();
 
+		$content = false;
+		$cache_key = false;
+
+		if ($this->hasModule('SiteMemcacheModule') &&
+			$this->isRequestStaticCacheable()) {
+			$memcache = $this->getModule('SiteMemcacheModule');
+			$cache_key = $this->getStaticCacheKey();
+			$content = $memcache->getNs('static-content', $cache_key);
+		}
+
 		try {
-			$this->loadPage();
-			$this->page->layout->init();
-			$this->page->init();
-			$this->page->layout->process();
-			$this->page->process();
-			$this->page->layout->build();
-			$this->page->build();
-			$this->page->layout->finalize();
-			$this->page->finalize();
-			$this->page->layout->complete();
+			if ($content === false) {
+
+				$this->loadPage();
+				$this->page->layout->init();
+				$this->page->init();
+				$this->page->layout->process();
+				$this->page->process();
+				$this->page->layout->build();
+				$this->page->build();
+				$this->page->layout->finalize();
+				$this->page->finalize();
+				$this->page->layout->complete();
+
+				// get page content
+				ob_start();
+				$this->page->layout->display();
+				$content = ob_get_clean();
+
+				// cache content
+				if ($cache_key !== false) {
+					$memcache->setNs('static-content', $cache_key, $content,
+						$this->getStaticCacheExpirationTime());
+				}
+			}
+
+			// display page content
+			echo $content;
+
 		} catch (Exception $e) {
 			$this->replacePage($this->exception_page_source);
 
@@ -96,9 +124,10 @@ class SiteWebApplication extends SiteApplication
 			$this->page->layout->finalize();
 			$this->page->finalize();
 			$this->page->layout->complete();
-		}
 
-		$this->page->layout->display();
+			// display exception page (never cached)
+			$this->page->layout->display();
+		}
 	}
 
 	// }}}
@@ -142,6 +171,59 @@ class SiteWebApplication extends SiteApplication
 				}
 			}
 		}
+	}
+
+	// }}}
+
+	// static caching methods
+	// {{{ protected function isRequestStaticCacheable()
+
+	/**
+	 * Gets whether or not this entire page request can be cached
+	 *
+	 * By default, pages requests with no active session and no HTTP post data
+	 * are cacheable.
+	 *
+	 * @return boolean true if the current request is cacheable, otherwise
+	 *                 false.
+	 */
+	protected function isRequestStaticCacheable()
+	{
+		$session_is_active = ($this->hasModule('SiteSessionModule') &&
+			$this->getModule('SiteSessionModule')->isActive());
+
+		return (!$session_is_active && empty($_POST));
+	}
+
+	// }}}
+	// {{{ protected function getStaticCacheExpirationTime()
+
+	/**
+	 * Gets the expiration time for statically cached pages
+	 *
+	 * By default, the exipration time is 15 minutes.
+	 *
+	 * @return integer the expiration time for statically cached pages.
+	 */
+	protected function getStaticCacheExpirationTime()
+	{
+		return time() + 900; // 15 minutes in the future
+	}
+
+	// }}}
+	// {{{ protected function getStaticCacheKey()
+
+	/**
+	 * Gets the cache key used for staticlly cached pages
+	 *
+	 * This is based on the application identigier and the current request
+	 * URI.
+	 *
+	 * @return string the cache key used for statically cached pages.
+	 */
+	protected function getStaticCacheKey()
+	{
+		return $this->id.'-page-'.$this->getUri();
 	}
 
 	// }}}
