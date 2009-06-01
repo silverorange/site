@@ -226,6 +226,9 @@ class SiteSidebarSettings extends AdminDBEdit
 		if ($this->gadget_instance->setting_values->isModified()) {
 			$this->gadget_instance->setting_values->save();
 
+			// clear the caches
+			$this->gadget_instance->caches->delete();
+
 			if (isset($this->app->memcache)) {
 				$this->app->memcache->delete('gadget_instances');
 			}

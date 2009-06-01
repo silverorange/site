@@ -91,6 +91,17 @@ abstract class SiteGadget extends SwatUIObject
 	private $values = null;
 
 	/**
+	 * The current caches of this gadget for the instance in which this gadget
+	 * was created
+	 *
+	 * @var array
+	 *
+	 * @see SiteGadget::getCacheValue()
+	 * @see SiteGadget::getCacheLastUpdateDate()
+	 */
+	private $caches = null;
+
+	/**
 	 * The gadget instance of this gadget
 	 *
 	 * This is a dataobject that binds setting values to this gadget.
@@ -431,11 +442,15 @@ abstract class SiteGadget extends SwatUIObject
 	/**
 	 * Whether or not this gadget instance has a cache.
 	 *
+	 * @param string $name the name of the cache
+	 *
 	 * @return boolean whether or not this gadget instance has a cache.
 	 */
-	protected function hasCache()
+	protected function hasCache($name)
 	{
-		return ($this->gadget_instance->cache_last_update !== null);
+		$this->lazyLoadCache();
+
+		return (array_key_exists($name, $this->caches));
 	}
 
 	// }}}
@@ -444,18 +459,20 @@ abstract class SiteGadget extends SwatUIObject
 	/**
 	 * Gets the value of the cache.
 	 *
+	 * @param string $name the name of the cache
+	 *
 	 * @return string the value of the cache.
 	 *
 	 * @throw RuntimeException if the current gadget instance doesn't have a
 	 *                          cache.
 	 */
-	protected function getCacheValue()
+	protected function getCacheValue($name)
 	{
-		if (!$this->hasCache())
+		if (!$this->hasCache($name))
 			throw new RuntimeException(
 				Site::_('Current gadget does not have a cache.'));
 
-		return $this->gadget_instance->cache_value;
+		return $this->caches[$name]->value;
 	}
 
 	// }}}
@@ -464,37 +481,52 @@ abstract class SiteGadget extends SwatUIObject
 	/**
 	 * Gets the date of the last time the cache was updated.
 	 *
+	 * @param string $name the name of the cache
+	 *
 	 * @return Date the date of the last time the cache was updated
 	 *
 	 * @throw RuntimeException if the current gadget instance doesn't have a
 	 *                          cache.
 	 */
-	protected function getCacheLastUpdateDate()
+	protected function getCacheLastUpdateDate($name)
 	{
-		if (!$this->hasCache())
+		if (!$this->hasCache($name))
 			throw new RuntimeException(
 				Site::_('Current gadget does not have a cache.'));
 
-		return $this->gadget_instance->cache_last_update;
+		return $this->caches[$name]->last_update;
 	}
 
 	// }}}
 	// {{{ protected function updateCacheValue()
 
 	/**
-	 * Updates the current cache or if no cache exists creates a cache for this
-	 *  gadget.
+	 * Update an existing named cache or create a new cache if none exist.
 	 *
+	 * @param string $name the name of the cache to update
 	 * @param string $value the new value for the cache.
 	 */
-	protected function updateCacheValue($value)
+	protected function updateCacheValue($name, $value)
 	{
 		$now = new SwatDate();
 		$now->toUTC();
 
-		$this->gadget_instance->cache_value = $value;
-		$this->gadget_instance->cache_last_update = $now;
-		$this->gadget_instance->save();
+		if ($this->hasCache($name)) {
+			$cache = $this->caches[$name];
+		} else {
+			$class_name = SwatDBClassMap::get('SiteGadgetCache');
+			$cache = new $class_name();
+			$cache->setDatabase($this->app->db);
+			$cache->gadget_instance = $this->gadget_instance->id;
+			$this->gadget_instance->caches->add($cache);
+		}
+
+		$cache->name        = $name;
+		$cache->value       = $value;
+		$cache->last_update = $now;
+		$cache->save();
+
+		$this->caches[$name] = $cache;
 
 		if (isset($this->app->memcache)) {
 			$this->app->memcache->delete('gadget_instances');
@@ -625,6 +657,30 @@ abstract class SiteGadget extends SwatUIObject
 						$setting_value = $setting->getValue($type);
 						$this->values[$setting_name] = $setting_value;
 					}
+				}
+			} catch (SwatDBNoDatabaseException $e) {
+				// don't try to load settings if we don't have a database
+			}
+		}
+	}
+
+	// }}}
+	// {{{ private function lazyLoadCache()
+
+	/**
+	 * Lazily loads all caches for this gadget
+	 *
+	 * @see SiteGadget::hasCache()
+	 * @see SiteGadget::getCacheValue()
+	 * @see SiteGadget::getCacheLastUpdateDate()
+	 */
+	private function lazyLoadCache()
+	{
+		if ($this->caches === null) {
+			$this->caches = array();
+			try {
+				foreach ($this->gadget_instance->caches as $gadget_cache) {
+					$this->caches[$gadget_cache->name] = $gadget_cache;
 				}
 			} catch (SwatDBNoDatabaseException $e) {
 				// don't try to load settings if we don't have a database
