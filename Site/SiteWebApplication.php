@@ -76,16 +76,19 @@ class SiteWebApplication extends SiteApplication
 
 		$content = false;
 		$cache_key = false;
+		$cached = false;
 
 		if ($this->hasModule('SiteMemcacheModule') &&
 			$this->isRequestStaticCacheable()) {
 			$memcache = $this->getModule('SiteMemcacheModule');
 			$cache_key = $this->getStaticCacheKey();
 			$content = $memcache->getNs('static-content', $cache_key);
+			$cached = ($content !== false);
 		}
 
 		try {
-			if ($content === false) {
+			if (!$cached) {
+				$content = array();
 
 				$this->loadPage();
 				$this->page->layout->init();
@@ -101,17 +104,27 @@ class SiteWebApplication extends SiteApplication
 				// get page content
 				ob_start();
 				$this->page->layout->display();
-				$content = ob_get_clean();
+				$content['content'] = ob_get_clean();
 
-				// cache content
+				// cache static page
 				if ($cache_key !== false) {
+					// get headers
+					$content['headers'] = headers_list();
+
 					$memcache->setNs('static-content', $cache_key, $content,
 						$this->getStaticCacheExpirationTime());
 				}
 			}
 
 			// display page content
-			echo $content;
+			echo $content['content'];
+
+			// send cached page headers
+			if ($cached) {
+				foreach ($content['headers'] as $header) {
+					header($header);
+				}
+			}
 
 		} catch (Exception $e) {
 			$this->replacePage($this->exception_page_source);
