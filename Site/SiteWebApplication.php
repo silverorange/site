@@ -74,21 +74,33 @@ class SiteWebApplication extends SiteApplication
 		$this->initModules();
 		$this->parseUri();
 
-		$content = false;
+		$page_data = false;
 		$cache_key = false;
 		$cached = false;
 
-		if ($this->hasModule('SiteMemcacheModule') &&
-			$this->isRequestStaticCacheable()) {
+		if ($this->config->memcache->page_cache &&
+			$this->hasModule('SiteMemcacheModule')) {
+
 			$memcache = $this->getModule('SiteMemcacheModule');
-			$cache_key = $this->getStaticCacheKey();
-			$content = $memcache->getNs('static-content', $cache_key);
-			$cached = ($content !== false);
+
+			// set user as active if posting data
+			if (!empty($_POST)) {
+				$key = $this->getPageCacheUserIdentifier();
+				$memcache->setNs('page-cache', $key, true,
+					$this->getPageCacheTimeout());
+			}
+
+			// check if request is cacheable
+			if ($this->isRequestPageCacheable()) {
+				$cache_key = $this->getPageCacheKey();
+				$page_data = $memcache->getNs('page-cache', $cache_key);
+				$cached = ($page_data !== false);
+			}
 		}
 
 		try {
 			if (!$cached) {
-				$content = array();
+				$page_data = array();
 
 				$this->loadPage();
 				$this->page->layout->init();
@@ -104,27 +116,27 @@ class SiteWebApplication extends SiteApplication
 				// get page content
 				ob_start();
 				$this->page->layout->display();
-				$content['content'] = ob_get_clean();
+				$page_data['content'] = ob_get_clean();
 
-				// cache static page
 				if ($cache_key !== false) {
 					// get headers
-					$content['headers'] = headers_list();
+					$page_data['headers'] = headers_list();
 
-					$memcache->setNs('static-content', $cache_key, $content,
-						$this->getStaticCacheExpirationTime());
+					// cache page data
+					$memcache->setNs('static-content', $cache_key, $page_data,
+						$this->getPageCacheTimeout());
+				}
+			}
+
+			// send cached page headers
+			if ($cached) {
+				foreach ($page_data['headers'] as $header) {
+					header($header);
 				}
 			}
 
 			// display page content
-			echo $content['content'];
-
-			// send cached page headers
-			if ($cached) {
-				foreach ($content['headers'] as $header) {
-					header($header);
-				}
-			}
+			echo $page_data['content'];
 
 		} catch (Exception $e) {
 			$this->replacePage($this->exception_page_source);
@@ -189,54 +201,91 @@ class SiteWebApplication extends SiteApplication
 	// }}}
 
 	// static caching methods
-	// {{{ protected function isRequestStaticCacheable()
+	// {{{ protected function isRequestPageCacheable()
 
 	/**
-	 * Gets whether or not this entire page request can be cached
+	 * Gets whether or not this entire page request can be cached in the page
+	 * cache
 	 *
-	 * By default, pages requests with no active session and no HTTP post data
-	 * are cacheable.
+	 * By default, page caching is disabled in the application config.
+	 * Additionally, page requests must have no active session and no HTTP
+	 * post data to be cacheable.
 	 *
 	 * @return boolean true if the current request is cacheable, otherwise
 	 *                 false.
 	 */
-	protected function isRequestStaticCacheable()
+	protected function isRequestPageCacheable()
 	{
+		$config = $this->config->memcache;
+
 		$session_is_active = ($this->hasModule('SiteSessionModule') &&
 			$this->getModule('SiteSessionModule')->isActive());
 
-		return (!$session_is_active && empty($_POST));
+		return ($config->page_cache && !$session_is_active && empty($_POST) &&
+			!$this->isPageCacheUserActive());
 	}
 
 	// }}}
-	// {{{ protected function getStaticCacheExpirationTime()
+	// {{{ protected function isPageCacheUserActive()
 
-	/**
-	 * Gets the expiration time for statically cached pages
-	 *
-	 * By default, the exipration time is 15 minutes.
-	 *
-	 * @return integer the expiration time for statically cached pages.
-	 */
-	protected function getStaticCacheExpirationTime()
+	protected function isPageCacheUserActive()
 	{
-		return time() + 900; // 15 minutes in the future
+		$active = false;
+
+		if ($this->hasModule('SiteMemcacheModule')) {
+			$memcache = $this->getModule('SiteMemcacheModule');
+			$key = $this->getPageCacheUserIdentifier();
+			$active = $memcache->getNs('static-content', $key);
+		}
+
+		return $active;
 	}
 
 	// }}}
-	// {{{ protected function getStaticCacheKey()
+	// {{{ protected function getPageCacheExpirationTime()
 
 	/**
-	 * Gets the cache key used for staticlly cached pages
+	 * Gets the expiration time for the page cache
 	 *
-	 * This is based on the application identigier and the current request
+	 * The timeout is specified in the application config. By default, the
+	 * exipration time is 15 minutes in the future.
+	 *
+	 * @return integer the expiration time for the page cache.
+	 */
+	protected function getPageCacheExpirationTime()
+	{
+		$config = $this->app->config->memcache;
+
+		// default to 15 minutes in the future
+		$timeout = ($config->page_cache_timeout === null) ?
+			900 : $config->page_cache_timeout;
+
+		return time() + $timeout;
+	}
+
+	// }}}
+	// {{{ protected function getPageCacheKey()
+
+	/**
+	 * Gets the cache key used for the page cache
+	 *
+	 * This is based on the application identifier and the current request
 	 * URI.
 	 *
-	 * @return string the cache key used for statically cached pages.
+	 * @return string the cache key used for the page cache.
 	 */
-	protected function getStaticCacheKey()
+	protected function getPageCacheKey()
 	{
 		return $this->id.'-page-'.$this->getUri();
+	}
+
+	// }}}
+	// {{{ protected function getPageCacheUserIdentifier()
+
+	protected function getPageCacheUserIdentifier()
+	{
+		$hash = md5($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+		return 'user-'.$hash;
 	}
 
 	// }}}

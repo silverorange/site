@@ -236,9 +236,11 @@ class Site
 			'email.service_address'    => null,
 
 			// memcache
-			'memcache.enabled'         => true,
-			'memcache.server'          => 'localhost',
-			'memcache.app_ns'          => '',
+			'memcache.enabled'            => true,
+			'memcache.server'             => 'localhost',
+			'memcache.app_ns'             => '',
+			'memcache.page_cache'         => false,
+			'memcache.page_cache_timeout' => 900, // in seconds
 		);
 	}
 
