@@ -191,8 +191,6 @@ abstract class SiteCommentIndex extends AdminPage
 	protected function getWhereClause()
 	{
 		if ($this->where_clause === null) {
-			$instance_id = $this->app->getInstanceId();
-
 			$where = '1 = 1';
 
 			$keywords = $this->ui->getWidget('search_keywords')->value;
