@@ -11,5 +11,6 @@ create table ImageDimension (
 	quality integer not null default 85,
 	strip boolean not null default true,
 	interlace boolean not null default false,
+	resize_filter varchar(50),
 	primary key(id)
 );
