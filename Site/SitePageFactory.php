@@ -131,6 +131,9 @@ abstract class SitePageFactory
 	 * @param SiteLayout $layout optional. The layout to use for the page.
 	 *
 	 * @return SiteAbstractPage the page for the given source string.
+	 *
+	 * @throws SiteNotFoundException if no suitable page is found for the
+	 *                               given <kbd>$source</kbd>.
 	 */
 	abstract public function resolvePage($source, SiteLayout $layout = null);
 
