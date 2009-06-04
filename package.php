@@ -62,6 +62,7 @@ $package->addPackageDepWithChannel('required', 'Mail_Mime', 'pear.php.net', '1.5
 $package->addPackageDepWithChannel('required', 'Net_SMTP', 'pear.php.net', '1.2.8');
 $package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.php.net', '1.0.5');
 $package->addPackageDepWithChannel('required', 'Text_Password', 'pear.php.net', '1.1.1');
+$package->addPackageDepWithChannel('optional', 'Services_Akismet2', 'pear.php.net', '0.2.0');
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
 $package->addExtensionDep('optional', 'uploadprogress', '0.3.0');
 $package->addExtensionDep('optional', 'memcached', '0.1.5');

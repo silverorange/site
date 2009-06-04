@@ -4,7 +4,7 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'Site/dataobjects/SiteComment.php';
 require_once 'Site/pages/SiteXMLRPCServer.php';
 require_once 'Site/layouts/SiteXMLRPCServerLayout.php';
-require_once 'Services/Akismet.php';
+require_once 'Services/Akismet2.php';
 
 /**
  * Performs actions on comments via AJAX
@@ -34,16 +34,19 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 				// submit spam to akismet
 				if ($this->app->config->comment->akismet_key !== null) {
 					try {
-						$akismet = new Services_Akismet($uri,
+						$akismet = new Services_Akismet2($uri,
 							$this->app->config->comment->akismet_key);
 
-						$akismet_comment = new Services_Akismet_Comment();
-						$akismet_comment->setAuthor($comment->fullname);
-						$akismet_comment->setAuthorEmail($comment->email);
-						$akismet_comment->setAuthorUri($comment->link);
-						$akismet_comment->setContent($comment->bodytext);
-						$akismet_comment->setPostPermalink(
-							$this->getPermalink($comment));
+						$akismet_comment = new Services_Akismet2_Comment(
+							array(
+								'comment_author'       => $comment->fullname,
+								'comment_author_email' => $comment->email,
+								'comment_author_url'   => $comment->link,
+								'comment_content'      => $comment->bodytext,
+								'permalink'            =>
+									$this->getPermalink($comment),
+							)
+						);
 
 						$akismet->submitSpam($akismet_comment);
 					} catch (Exception $e) {
@@ -80,16 +83,19 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 				// submit false positive to akismet
 				if ($this->app->config->comment->akismet_key !== null) {
 					try {
-						$akismet = new Services_Akismet($uri,
+						$akismet = new Services_Akismet2($uri,
 							$this->app->config->comment->akismet_key);
 
-						$akismet_comment = new Services_Akismet_Comment();
-						$akismet_comment->setAuthor($comment->fullname);
-						$akismet_comment->setAuthorEmail($comment->email);
-						$akismet_comment->setAuthorUri($comment->link);
-						$akismet_comment->setContent($comment->bodytext);
-						$akismet_comment->setPostPermalink(
-							$this->getPermalink($comment));
+						$akismet_comment = new Services_Akismet2_Comment(
+							array(
+								'comment_author'       => $comment->fullname,
+								'comment_author_email' => $comment->email,
+								'comment_author_url'   => $comment->link,
+								'comment_content'      => $comment->bodytext,
+								'permalink'            =>
+									$this->getPermalink($comment),
+							)
+						);
 
 						$akismet->submitFalsePositive($akismet_comment);
 					} catch (Exception $e) {
