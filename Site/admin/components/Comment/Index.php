@@ -76,14 +76,7 @@ abstract class SiteCommentIndex extends AdminPage
 
 		$visibility = $this->ui->getWidget('search_visibility');
 		$visibility->addOptionsByArray($visibility_options);
-
-		// if default comment status is moderated, only show pending comments
-		// by default.
-		if ($this->app->config->blorg->default_comment_status === 'moderated') {
-			$visibility->value = self::SHOW_UNAPPROVED;
-		} else {
-			$visibility->value = self::SHOW_ALL;
-		}
+		$visibility->value = self::SHOW_ALL;
 
 		$this->processSearchUi();
 
