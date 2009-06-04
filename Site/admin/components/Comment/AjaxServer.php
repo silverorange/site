@@ -37,16 +37,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 						$akismet = new Services_Akismet2($uri,
 							$this->app->config->comment->akismet_key);
 
-						$akismet_comment = new Services_Akismet2_Comment(
-							array(
-								'comment_author'       => $comment->fullname,
-								'comment_author_email' => $comment->email,
-								'comment_author_url'   => $comment->link,
-								'comment_content'      => $comment->bodytext,
-								'permalink'            =>
-									$this->getPermalink($comment),
-							)
-						);
+						$akismet_comment = $this->getAkismetComment($comment);
 
 						$akismet->submitSpam($akismet_comment);
 					} catch (Exception $e) {
@@ -86,16 +77,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 						$akismet = new Services_Akismet2($uri,
 							$this->app->config->comment->akismet_key);
 
-						$akismet_comment = new Services_Akismet2_Comment(
-							array(
-								'comment_author'       => $comment->fullname,
-								'comment_author_email' => $comment->email,
-								'comment_author_url'   => $comment->link,
-								'comment_content'      => $comment->bodytext,
-								'permalink'            =>
-									$this->getPermalink($comment),
-							)
-						);
+						$akismet_comment = $this->getAkismetComment($comment);
 
 						$akismet->submitFalsePositive($akismet_comment);
 					} catch (Exception $e) {
@@ -190,6 +172,24 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 	// {{{ abstract protected function getPermalink()
 
 	abstract protected function getPermalink(SiteComment $comment);
+
+	// }}}
+	// {{{ protected function getAkismetComment()
+
+	protected function getAkismetComment(SiteComment $comment)
+	{
+		return new Services_Akismet2_Comment(
+			array(
+				'comment_author'       => $comment->fullname,
+				'comment_author_email' => $comment->email,
+				'comment_author_url'   => $comment->link,
+				'comment_content'      => $comment->bodytext,
+				'permalink'            => $this->getPermalink($comment),
+				'user_ip'              => $comment->ip_address,
+				'user_agent'           => $comment->user_agent,
+			)
+		);
+	}
 
 	// }}}
 	// {{{ protected function flushCache()
