@@ -157,7 +157,7 @@ class Site
 	 */
 	public static function getDependencies()
 	{
-		return array(Swat::PACKAGE_ID);
+		return array(Swat::PACKAGE_ID, XML_RPCAjax::PACKAGE_ID);
 	}
 
 	// }}}
@@ -241,6 +241,9 @@ class Site
 			'memcache.app_ns'             => '',
 			'memcache.page_cache'         => false,
 			'memcache.page_cache_timeout' => 900, // in seconds
+
+			// comments
+			'comment.aksimet_key'         => null,
 		);
 	}
 

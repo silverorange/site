@@ -1,0 +1,25 @@
+.site-comment-status-slider {
+	position: relative;
+	background: url(../images/site-comment-status-slider-bg.gif) 5px 0 no-repeat;
+	height: 50px;
+	width: 218px;
+}
+
+.site-comment-status-slider-thumb {
+	position: absolute;
+}
+
+img.site-comment-status-slider-image {
+	position: relative;
+	top: 3px;
+}
+
+.site-comment-status-slider-legend {
+	color: #666;
+	font-size: 85%;
+}
+
+.site-comment-status-slider-legend-selected {
+	color: #333;
+	font-weight: bold;
+}
