@@ -157,7 +157,12 @@ class Site
 	 */
 	public static function getDependencies()
 	{
-		return array(Swat::PACKAGE_ID, XML_RPCAjax::PACKAGE_ID);
+		$dependencies = array(Swat::PACKAGE_ID);
+
+		if (class_exists('XML_RPCAjax'))
+			$dependencies[] = XML_RPCAjax::PACKAGE_ID;
+
+		return $dependencies;
 	}
 
 	// }}}
