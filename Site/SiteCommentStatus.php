@@ -7,7 +7,7 @@
  * @copyright 2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteCommentStatus
+interface SiteCommentStatus
 {
 	// {{{ class constants
 
@@ -32,6 +32,11 @@ class SiteCommentStatus
 	 * No new comments are allowed, and existing comments are no longer shown.
 	 */
 	const CLOSED    = 3;
+
+	// }}}
+	// {{{ public function getCommentStatus()
+
+	public function getCommentStatus();
 
 	// }}}
 }

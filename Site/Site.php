@@ -248,7 +248,7 @@ class Site
 			'memcache.page_cache_timeout' => 900, // in seconds
 
 			// comments
-			'comment.aksimet_key'         => null,
+			'comment.akismet_key'         => null,
 		);
 	}
 
