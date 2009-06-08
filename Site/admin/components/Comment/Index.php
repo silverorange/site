@@ -12,7 +12,7 @@ require_once 'Site/admin/SiteCommentDisplay.php';
  * Page to manage pending comments on posts
  *
  * @package   Site
- * @copyright 20089silverorange
+ * @copyright 2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentIndex extends AdminPage
