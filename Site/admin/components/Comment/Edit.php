@@ -49,9 +49,11 @@ class SiteCommentEdit extends AdminDBEdit
 		$this->comment = new $class_name();
 		$this->comment->setDatabase($this->app->db);
 
-		if (!$this->comment->load($this->id, $this->app->getInstance())) {
-			throw new AdminNotFoundException(
-				sprintf('Comment with id ‘%s’ not found.', $this->id));
+		if ($this->id !== null) {
+			if (!$this->comment->load($this->id, $this->app->getInstance())) {
+				throw new AdminNotFoundException(
+					sprintf('Comment with id ‘%s’ not found.', $this->id));
+			}
 		}
 	}
 
