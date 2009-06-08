@@ -76,7 +76,7 @@ abstract class SiteCommentIndex extends AdminPage
 
 		$visibility = $this->ui->getWidget('search_visibility');
 		$visibility->addOptionsByArray($visibility_options);
-		$visibility->value = self::SHOW_ALL;
+		$visibility->value = $this->getDefaultVisibilityValue();
 
 		$this->processSearchUi();
 
@@ -254,6 +254,14 @@ abstract class SiteCommentIndex extends AdminPage
 		}
 
 		return $where;
+	}
+
+	// }}}
+	// {{{ protected function getDefaultVisibilityValue()
+
+	protected function getDefaultVisibilityValue()
+	{
+		return self::SHOW_ALL;
 	}
 
 	// }}}
