@@ -17,7 +17,8 @@ require_once 'NateGoSearch/NateGoSearch.php';
  * @copyright 2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-abstract class SiteCommentUi {
+abstract class SiteCommentUi
+{
 	// {{{ class constants
 
 	const THANK_YOU_ID = 'thank-you';
@@ -136,6 +137,17 @@ abstract class SiteCommentUi {
 	}
 
 	// }}}
+	// {{{ abstract protected function setCommentPost()
+
+	abstract protected function setCommentPost(SiteComment $comment,
+		SiteCommentStatus $post);
+
+	// }}}
+	// {{{ abstract protected function getPermalink()
+
+	abstract protected function getPermalink(SiteComment $comment);
+
+	// }}}
 	// {{{ protected function processComment()
 
 	protected function processComment()
@@ -182,12 +194,6 @@ abstract class SiteCommentUi {
 
 		$this->setCommentPost($this->comment, $this->post);
 	}
-
-	// }}}
-	// {{{ abstract protected function setCommentPost()
-
-	abstract protected function setCommentPost(SiteComment $comment,
-		SiteCommentStatus $post);
 
 	// }}}
 	// {{{ protected function getThankYouUri()
@@ -278,11 +284,6 @@ abstract class SiteCommentUi {
 
 		return $is_spam;
 	}
-
-	// }}}
-	// {{{ abstract protected function getPermalink()
-
-	abstract protected function getPermalink(SiteComment $comment);
 
 	// }}}
 	// {{{ protected function addToSearchQueue()
