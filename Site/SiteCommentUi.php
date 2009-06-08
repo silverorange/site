@@ -263,6 +263,7 @@ abstract class SiteCommentUi
 		$is_spam = false;
 
 		if ($this->app->config->comment->akismet_key !== null) {
+			$uri = $this->app->getBaseHref();
 			try {
 				$akismet = new Services_Akismet2($uri,
 					$this->app->config->comment->akismet_key);
