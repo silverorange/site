@@ -115,15 +115,13 @@ abstract class SiteCommentUi {
 
 				switch ($this->post->comment_status) {
 				case SiteCommentStatus::OPEN:
-					$uri = $this->source.'?'.self::THANK_YOU_ID.
+					$uri = $this->getThankYouUri().
 						'#comment'.$this->comment->id;
 
 					break;
 
 				case SiteCommentStatus::MODERATED:
-					$uri = $this->source.'?'.self::THANK_YOU_ID.
-						'#submit_comment';
-
+					$uri = $this->getThankYouUri().'#submit_comment';
 					break;
 
 				default:
@@ -135,32 +133,6 @@ abstract class SiteCommentUi {
 			}
 		}
 
-	}
-
-	// }}}
-	// {{{ protected function saveComment()
-
-	protected function saveComment()
-	{
-		if ($this->ui->getWidget('remember_me')->value) {
-			$this->saveCommentCookie();
-		} else {
-			$this->deleteCommentCookie();
-		}
-
-		$this->comment->spam = $this->isCommentSpam($this->comment);
-
-		$this->post->comments->add($this->comment);
-		$this->post->save();
-		$this->addToSearchQueue();
-
-		// clear posts cache if comment is visible
-		if (isset($this->app->memcache)) {
-			if (!$this->comment->spam &&
-				$this->comment->status === SiteComment::STATUS_PUBLISHED) {
-				$this->clearCache();
-			}
-		}
 	}
 
 	// }}}
@@ -216,6 +188,40 @@ abstract class SiteCommentUi {
 
 	abstract protected function setCommentPost(SiteComment $comment,
 		SiteCommentStatus $post);
+
+	// }}}
+	// {{{ protected function getThankYouUri()
+
+	protected function getThankYouUri()
+	{
+		return $this->source.'?'.self::THANK_YOU_ID;
+	}
+
+	// }}}
+	// {{{ protected function saveComment()
+
+	protected function saveComment()
+	{
+		if ($this->ui->getWidget('remember_me')->value) {
+			$this->saveCommentCookie();
+		} else {
+			$this->deleteCommentCookie();
+		}
+
+		$this->comment->spam = $this->isCommentSpam($this->comment);
+
+		$this->post->comments->add($this->comment);
+		$this->post->save();
+		$this->addToSearchQueue();
+
+		// clear posts cache if comment is visible
+		if (isset($this->app->memcache)) {
+			if (!$this->comment->spam &&
+				$this->comment->status === SiteComment::STATUS_PUBLISHED) {
+				$this->clearCache();
+			}
+		}
+	}
 
 	// }}}
 	// {{{ protected function saveCommentCookie()
@@ -316,7 +322,7 @@ abstract class SiteCommentUi {
 		$frame->subtitle = $this->post->getTitle();
 		$show_thank_you  = array_key_exists(self::THANK_YOU_ID, $_GET);
 
-		switch ($this->post->comment_status) {
+		switch ($this->getCommentStatus()) {
 		case SiteCommentStatus::OPEN:
 		case SiteCommentStatus::MODERATED:
 			$form->action = $this->source.'#submit_comment';
@@ -446,6 +452,14 @@ abstract class SiteCommentUi {
 	protected function displaySubmitComment()
 	{
 		echo '<div id="submit_comment"></div>';
+	}
+
+	// }}}
+	// {{{ protected function getCommentStatus()
+
+	protected function getCommentStatus()
+	{
+		return $this->post->getCommentStatus();	
 	}
 
 	// }}}
