@@ -168,9 +168,25 @@ class SiteImage extends SwatDBDataObject
 	// {{{ protected function deleteInternal()
 
 	/**
-	 * Deletes this object from the database
+	 * Deletes this object from the database and any images files
+	 * corresponding to this object
 	 */
 	protected function deleteInternal()
+	{
+		$filenames = $this->getFilenamesToDelete();
+		parent::deleteInternal();
+		$this->deleteFiles($filenames);
+	}
+
+	// }}}
+	// {{{ protected function getFilenamesToDelete()
+
+	/**
+	 * Gets an array of files names to delete when deleting this object
+	 *
+	 * @return array an array of filenames.
+	 */
+	protected function getFilenamesToDelete()
 	{
 		$this->image_set = $this->getImageSet();
 		$filenames = array();
@@ -178,11 +194,23 @@ class SiteImage extends SwatDBDataObject
 		foreach ($this->image_set->dimensions as $dimension)
 			$filenames[] = $this->getFilePath($dimension->shortname);
 
-		parent::deleteInternal();
+		return $filenames;
+	}
 
-		foreach ($filenames as $filename)
+	// }}}
+	// {{{ protected function deleteFiles()
+
+	/**
+	 * Deletes each file in a given set of filenames
+	 *
+	 * @param array $filenames an array of filenames to delete.
+	 */
+	protected function deleteFiles(array $filenames)
+	{
+		foreach ($filenames as $filename) {
 			if (file_exists($filename))
 				unlink($filename);
+		}
 	}
 
 	// }}}
