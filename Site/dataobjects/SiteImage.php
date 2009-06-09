@@ -302,7 +302,6 @@ class SiteImage extends SwatDBDataObject
 	// }}}
 	// {{{ public function getFilename()
 
-
 	public function getFilename($shortname)
 	{
 		// get extension if it exists, otherwise get the default from dimension
@@ -334,7 +333,6 @@ class SiteImage extends SwatDBDataObject
 
 	// }}}
 	// {{{ public function getMimeType()
-
 
 	public function getMimeType($dimension_shortname)
 	{
