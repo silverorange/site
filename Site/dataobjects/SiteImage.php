@@ -61,6 +61,7 @@ class SiteImage extends SwatDBDataObject
 
 	protected $image_set_shortname;
 	protected $automatically_save = true;
+	protected $imagick_instances = array();
 
 	// }}}
 	// {{{ private properties
@@ -69,7 +70,6 @@ class SiteImage extends SwatDBDataObject
 	private $file_base;
 	private $crop_boxes = array();
 	private $original_dpi;
-	private $imagick_instances = array();
 
 	// }}}
 
