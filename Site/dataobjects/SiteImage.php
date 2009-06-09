@@ -833,7 +833,7 @@ class SiteImage extends SwatDBDataObject
 			$imagick->setImagePage($new_width, $new_height, 0, 0);
 		}
 
-		$this->imagick_instances[] = $imagick;
+		$this->imagick_instances[$dimension->shortname] = $imagick->clone();
 	}
 
 	// }}}
