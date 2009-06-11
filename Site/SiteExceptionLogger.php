@@ -43,25 +43,6 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	 */
 	protected $unix_group;
 
-	/**
-	 * Exception identifier
-	 *
-	 * Unique id used for filenames and paths. Generated once for each
-	 * exception.
-	 *
-	 * @var string
-	 */
-	protected $id;
-
-	/**
-	 * Directory in which logged exceptions will be stored
-	 *
-	 * Not necessarily unique. Generated once for each exception.
-	 *
-	 * @var string
-	 */
-	protected $directory;
-
 	// }}}
 	// {{{ public function __construct()
 
@@ -79,8 +60,6 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		$this->log_location = $log_location;
 		$this->base_uri     = $base_uri;
 		$this->unix_group   = $unix_group;
-		$this->id           = md5(uniqid());
-		$this->directory    = date('Y-m-d');
 	}
 
 	// }}}
@@ -95,8 +74,10 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		if ($e instanceof SiteNotFoundException)
 			return;
 
-		$log_path     = $this->getLogPath();
-		$log_filepath = $this->getLogFilePath();
+		$id           = md5(uniqid());
+		$directory    = date('Y-m-d');
+		$log_path     = $this->getLogPath($directory);
+		$log_filepath = $this->getLogFilePath($directory, $id);
 
 		// create path if it does not exist
 		if (!file_exists($log_path)) {
@@ -116,7 +97,7 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		}
 
 		// add to syslog
-		$this->logSummary($this->getSummary($e));
+		$this->logSummary($this->getSummary($e, $directory, $id));
 	}
 
 	// }}}
@@ -130,37 +111,38 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	// }}}
 	// {{{ protected function getLogPath()
 
-	protected function getLogPath()
+	protected function getLogPath($directory)
 	{
-		return $this->log_location.'/'.$this->directory;
+		return $this->log_location.'/'.$directory;
 	}
 
 	// }}}
 	// {{{ protected function getLogFilename()
 
-	protected function getLogFilename()
+	protected function getLogFilename($id)
 	{
-		return 'exception-'.$this->id.'.html';
+		return 'exception-'.$id.'.html';
 	}
 
 	// }}}
 	// {{{ protected function getLogFilePath()
 
-	protected function getLogFilePath()
+	protected function getLogFilePath($directory, $id)
 	{
-		return $this->getLogPath().'/'.$this->getLogFilename();
+		return $this->getLogPath($directory).'/'.$this->getLogFilename($id);
 	}
 
 	// }}}
 	// {{{ protected function getSummary()
 
-	protected function getSummary(SwatException $e)
+	protected function getSummary(SwatException $e, $directory, $id)
 	{
 		if ($this->base_uri === null) {
-			$summary = $e->getClass().': '.$this->getLogFilePath();
+			$summary = $e->getClass().': '.
+				$this->getLogFilePath($directory, $id);
 		} else {
 			$summary = $e->getClass().': '.$this->base_uri.'/'.
-				$this->directory.'/'.$this->getLogFilename();
+				$directory.'/'.$this->getLogFilename($id);
 		}
 
 		return $summary;
