@@ -131,7 +131,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 				$this->initSession();
 
 			$messages = $this->app->session->messages;
-			$this->app->session->messages = array();
+			$this->app->session->messages = new ArrayObject();
 		}
 
 		return $messages;
