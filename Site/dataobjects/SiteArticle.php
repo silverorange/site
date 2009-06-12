@@ -341,7 +341,8 @@ class SiteArticle extends SwatDBDataObject
 		$sql = 'select id, title, shortname, description,
 				createdate
 			from Article
-			where parent = %s
+			where parent = %s and id in
+			(select id from VisibleArticleView)
 			order by displayorder, title';
 
 		$sql = sprintf($sql,
