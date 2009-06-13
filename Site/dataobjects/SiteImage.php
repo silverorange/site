@@ -68,6 +68,7 @@ class SiteImage extends SwatDBDataObject
 
 	private static $image_set_cache = array();
 	private $file_base;
+	private $crop_box;
 	private $crop_boxes = array();
 	private $original_dpi;
 
@@ -587,7 +588,8 @@ class SiteImage extends SwatDBDataObject
 				$this->save(); // save once to set id on this object to use for filenames
 			}
 
-			$imagick = $this->processDimension($image_file, $dimension);
+			$imagick = $this->getImagick($image_file, $dimension);
+			$this->processDimension($image_file, $dimension);
 			$this->saveFile($imagick, $dimension);
 
 			if ($this->automatically_save) {
@@ -624,29 +626,34 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function setDimensionCropBox()
+	// {{{ public function setCropBox()
 
 	/**
-	 * Specify a crop bounding-box for a dimension
+	 * Specify a crop bounding-box
 	 *
 	 * The dimensions and positions for the crop box should be at the scale of
-	 * the source image. If a crop box exists for a dimension, the image will
-	 * first be cropped to the specified coordinates and then default resizing
-	 * as specified for the dimension will be applied.
+	 * the source image. If a crop box exists, the image will first be cropped
+	 * to the specified coordinates and then default resizing will be applied.
+	 * Optionally, crop boxes can be specified per dimension.  In this case
+	 * the crop box will only be used for the dimension specified.
 	 *
-	 * @param string $shortname the shortname of the dimension
-	 * @param integer $crop_width Width of the crop bounding box
-	 * @param integer $crop_height Height of the crop bounding box
-	 * @param integer $crop_top Position of the top side of the crop bounding
+	 * @param integer $width Width of the crop bounding box
+	 * @param integer $height Height of the crop bounding box
+	 * @param integer $offset_x Position of the top side of the crop bounding
 	 *                box
-	 * @param integer $crop_left position of the left side of the crop bounding
+	 * @param integer $offset_y Position of the left side of the crop bounding
 	 *                box
+	 * @param string $shortname The shortname of the dimension
 	 */
-	public function setDimensionCropBox($shortname, $crop_width, $crop_height,
-		$crop_top, $crop_left)
+	public function setCropBox($width, $height, $offset_x, $offset_y,
+		$dimension_shortname = null)
 	{
-		$this->crop_boxes[$shortname] = array($crop_width, $crop_height,
-			$crop_top, $crop_left);
+		$crop_box = array($width, $height, $offset_x, $offset_y);
+
+		if ($dimension_shortname === null)
+			$this->crop_box = $crop_box;
+		else
+			$this->crop_boxes[$dimension_shortname] = $crop_box;
 	}
 
 	// }}}
@@ -665,7 +672,9 @@ class SiteImage extends SwatDBDataObject
 		$this->imagick_instances = array();
 
 		foreach ($this->image_set->dimensions as $dimension) {
-			$imagick = $this->processDimension($image_file, $dimension);
+			$imagick = $this->getImagick($image_file, $dimension);
+
+			$this->processDimension($imagick, $dimension);
 
 			if ($dimension->max_width === null &&
 				$dimension->max_height === null &&
@@ -688,18 +697,15 @@ class SiteImage extends SwatDBDataObject
 	/**
 	 * Resizes an image for the given dimension
 	 *
-	 * @param string $image_file the image file to process.
+	 * @param Imagick $imagick image to process.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function processDimension($image_file,
+	protected function processDimension(Imagick $imagick,
 		SiteImageDimension $dimension)
 	{
-		$imagick = $this->getImagick($image_file, $dimension);
-
-		if (isset($this->crop_boxes[$dimension->shortname])) {
-			$this->cropToBox($imagick, $dimension,
-				$this->crop_boxes[$dimension->shortname]);
-		}
+		$crop_box = $this->getCropBox($dimension);
+		if ($crop_box !== null)
+			$this->cropToBox($imagick, $dimension, $crop_box);
 
 		if ($dimension->crop) {
 			$this->cropToDimension($imagick, $dimension);
@@ -708,8 +714,6 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		$this->saveDimensionBinding($imagick, $dimension);
-
-		return $imagick;
 	}
 
 	// }}}
@@ -790,17 +794,14 @@ class SiteImage extends SwatDBDataObject
 	protected function cropToBox(Imagick $imagick,
 		SiteImageDimension $dimension, array $bounding_box)
 	{
-		$width = $bounding_box[0];
-		$height = $bounding_box[1];
-		$offset_x = $bounding_box[2];
-		$offset_y = $bounding_box[3];
+		list($width, $height, $offset_x, $offset_y) = $bounding_box;
 
 		$imagick->cropImage($width, $height, $offset_x, $offset_y);
 
 		// Set page geometry to the newly cropped size so subsequent crops
 		// will use the geometry of the new image instead of the original
 		// image.
-		$imagick->setImagePage($width, $height, $offset_x, $offset_y);
+		//$imagick->setImagePage($width, $height, $offset_x, $offset_y);
 	}
 
 	// }}}
@@ -859,7 +860,8 @@ class SiteImage extends SwatDBDataObject
 			$imagick->setImagePage($new_width, $new_height, 0, 0);
 		}
 
-		$this->imagick_instances[$dimension->shortname] = $imagick->clone();
+		if ($this->getCropBox($dimension) === null)
+			$this->imagick_instances[$dimension->shortname] = $imagick->clone();
 	}
 
 	// }}}
@@ -1010,10 +1012,10 @@ class SiteImage extends SwatDBDataObject
 	{
 		$imagick = null;
 
-		// Use the smallest non-cropped processed image bigger than the
-		// current dimension.
-		// This assumes that the aspect ratio remains unchanged.
-		if (!isset($this->crop_boxes[$dimension->shortname])) {
+		$crop_box = $this->getCropBox($dimension);
+		if ($crop_box === null) {
+			// Use the smallest non-cropped processed image bigger than the
+			// current dimension.
 			foreach ($this->imagick_instances as $imagick_obj) {
 				if ($imagick_obj->getImageWidth() >= $dimension->max_width &&
 					$imagick_obj->getImageHeight() >= $dimension->max_height) {
@@ -1026,8 +1028,9 @@ class SiteImage extends SwatDBDataObject
 			try {
 				$imagick = new Imagick();
 
-				if ($dimension->max_width !== null &&
+				if ($crop_box === null && $dimension->max_width !== null &&
 					$dimension->max_height !== null) {
+
 					$imagick->setSize($dimension->max_width,
 						$dimension->max_height);
 				}
@@ -1073,7 +1076,15 @@ class SiteImage extends SwatDBDataObject
 	protected function getResizeFilter(SiteImageDimension $dimension)
 	{
 		if ($dimension->resize_filter === null) {
-			$filter = Imagick::FILTER_LANCZOS;
+			$threshold = $this->getBoxFilterThreshold();
+
+			if ($dimension->max_width >= $threshold &&
+				$dimension->max_height >= $threshold) {
+
+				$filter = Imagick::FILTER_BOX;
+			} else {
+				$filter = Imagick::FILTER_LANCZOS;
+			}
 		} else {
 			$filter = constant('Imagick::'.$dimension->resize_filter);
 
@@ -1085,6 +1096,47 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		return $filter;
+	}
+
+	// }}}
+	// {{{ protected function getBoxFilterThreshold()
+
+	/**
+	 * Get the threshold for using the BOX filter
+	 *
+	 * If the longest image dimension is greater than or equal to this
+	 * threshold, the Imagick::FILTER_BOX will be used as it is more efficient
+	 * than the default Imagick::FILTER_LANCZOS filter with little noticeable
+	 * difference for larger images.
+	 *
+	 * @return integer Threshold to use the BOX filter. 
+	 */
+	protected function getBoxFilterThreshold()
+	{
+		return 350;
+	}
+
+	// }}}
+	// {{{ protected function getCropBox()
+
+	/**
+	 * Get an optional crop box to use on imput image before processing
+	 *
+	 * @param SiteImageDimension $dimension Dimension to check for crop box
+	 *
+	 * @return array a bounding-box array
+	 */
+	protected function getCropBox(SiteImageDimension $dimension)
+	{
+		$crop_box = null;
+
+		if (isset($this->crop_boxes[$dimension->shortname])) {
+			$crop_box = $this->crop_boxes[$dimension->shortname];
+		} elseif ($this->crop_box !== null) {
+			$crop_box = $this->crop_box;
+		}
+
+		return $crop_box;
 	}
 
 	// }}}
