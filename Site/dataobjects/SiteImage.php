@@ -859,7 +859,7 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		if ($this->getCropBox($dimension) === null)
-			$this->imagick_instances[$dimension->shortname] = $imagick;
+			$this->imagick_instances[$dimension->shortname] = $imagick->clone();
 	}
 
 	// }}}
