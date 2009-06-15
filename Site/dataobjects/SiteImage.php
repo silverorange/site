@@ -705,7 +705,7 @@ class SiteImage extends SwatDBDataObject
 	{
 		$crop_box = $this->getCropBox($dimension);
 		if ($crop_box !== null)
-			$this->cropToBox($imagick, $dimension, $crop_box);
+			$this->cropToBox($imagick, $crop_box);
 
 		if ($dimension->crop) {
 			$this->cropToDimension($imagick, $dimension);
@@ -788,11 +788,9 @@ class SiteImage extends SwatDBDataObject
 	 * Resizes and crops an image to a given crop bounding box
 	 *
 	 * @param Imagick $imagick the imagick instance to work with.
-	 * @param SiteImageDimension $dimension the dimension to process.
 	 * @param array $bounding_box the dimension to process.
 	 */
-	protected function cropToBox(Imagick $imagick,
-		SiteImageDimension $dimension, array $bounding_box)
+	protected function cropToBox(Imagick $imagick, array $bounding_box)
 	{
 		list($width, $height, $offset_x, $offset_y) = $bounding_box;
 
@@ -801,7 +799,7 @@ class SiteImage extends SwatDBDataObject
 		// Set page geometry to the newly cropped size so subsequent crops
 		// will use the geometry of the new image instead of the original
 		// image.
-		//$imagick->setImagePage($width, $height, $offset_x, $offset_y);
+		$imagick->setImagePage($width, $height, $offset_x, $offset_y);
 	}
 
 	// }}}
@@ -861,7 +859,7 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		if ($this->getCropBox($dimension) === null)
-			$this->imagick_instances[$dimension->shortname] = $imagick->clone();
+			$this->imagick_instances[$dimension->shortname] = $imagick;
 	}
 
 	// }}}
@@ -1043,7 +1041,7 @@ class SiteImage extends SwatDBDataObject
 			}
 		}
 
-		return $imagick;
+		return $imagick->clone();
 	}
 
 	// }}}
