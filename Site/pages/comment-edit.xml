@@ -31,7 +31,7 @@
 						<property name="maxlength" type="integer">255</property>
 					</widget>
 				</widget>
-				<widget class="SwatFormField" id="rember_me_field">
+				<widget class="SwatFormField" id="remember_me_field">
 					<property name="title" translatable="yes">Remember Me</property>
 					<widget class="SwatCheckbox" id="remember_me" />
 				</widget>
