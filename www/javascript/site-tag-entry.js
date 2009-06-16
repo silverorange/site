@@ -2,7 +2,7 @@
  * Control for selecting multiple tags from a array of tags
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 
@@ -85,19 +85,14 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 
 	if (this.allow_adding_tags) {
 		this.a_tag = document.createElement('a');
+		this.a_tag.className = 'site-tag-entry-add-tag';
 		this.a_tag.href = '#';
+		this.a_tag.title = SiteTagEntry.add_text;
 		YAHOO.util.Event.addListener(this.a_tag, 'click',
 			function(e, entry) {
 				YAHOO.util.Event.preventDefault(e);
 				entry.createTag();
 			}, this);
-
-		var img_tag = document.createElement('img');
-		img_tag.src = 'packages/swat/images/swat-tool-link-create.png';
-		img_tag.title = SiteTagEntry.add_text;
-		img_tag.alt = '';
-		img_tag.className = 'add-tag';
-		this.a_tag.appendChild(img_tag);
 
 		this.input_element.parentNode.insertBefore(this.a_tag,
 			this.input_element.nextSibling);
