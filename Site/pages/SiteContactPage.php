@@ -75,6 +75,7 @@ class SiteContactPage extends SiteEditPage
 
 		$message->smtp_server      = $this->app->config->email->smtp_server;
 		$message->from_address     = $this->app->config->email->website_address;
+		$message->from_name        = $this->getFromName();
 		$message->reply_to_address = $this->ui->getWidget('email')->value;
 		$message->to_address       = $this->app->config->email->contact_address;
 
@@ -122,6 +123,17 @@ class SiteContactPage extends SiteEditPage
 			$info.= 'Not available';
 
 		return $info;
+	}
+
+	// }}}
+	// {{{ protected function getFromAddress()
+
+	protected function getFromName()
+	{
+		$user_address = $this->ui->getWidget('email')->value;
+		$user_address = str_replace('@', ' at ', $user_address);
+		$user_address = str_replace('.', ' dot ', $user_address);
+		return $user_address;
 	}
 
 	// }}}
