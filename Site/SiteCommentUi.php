@@ -215,8 +215,7 @@ abstract class SiteCommentUi
 		}
 
 		$this->comment->spam = $this->isCommentSpam($this->comment);
-
-		$this->post->comments->add($this->comment);
+		$this->addCommentToPost($this->post, $this->comment);
 		$this->post->save();
 		$this->addToSearchQueue();
 
@@ -227,6 +226,15 @@ abstract class SiteCommentUi
 				$this->clearCache();
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function addCommentToPost()
+
+	protected function addCommentToPost(SiteCommentStatus $post,
+		SiteComment $comment)
+	{
+		$post->comments->add($comment);
 	}
 
 	// }}}
@@ -344,9 +352,8 @@ abstract class SiteCommentUi
 
 		case SiteCommentStatus::LOCKED:
 			$form->visible = false;
-			$message = new SwatMessage(Site::_('Comments are Locked'));
-			$message->secondary_content =
-				Site::_('No new comments may be posted for this article.');
+			$message = new SwatMessage($this->getMessage('locked'));
+			$message->secondary_content = $this->getMessage('locked-subtitle');
 
 			$ui->getWidget('message_display')->add($message,
 				SwatMessageDisplay::DISMISS_OFF);
@@ -361,21 +368,16 @@ abstract class SiteCommentUi
 		if ($show_thank_you) {
 			switch ($this->post->comment_status) {
 			case SiteCommentStatus::OPEN:
-				$message = new SwatMessage(
-					Site::_('Your comment has been published.'));
-
+				$message = new SwatMessage($this->getMessage('published'));
 				$this->ui->getWidget('message_display')->add($message,
 					SwatMessageDisplay::DISMISS_OFF);
 
 				break;
 
 			case SiteCommentStatus::MODERATED:
-				$message = new SwatMessage(
-					Site::_('Your comment has been submitted.'));
-
+				$message = new SwatMessage($this->getMessage('moderated'));
 				$message->secondary_content =
-					Site::_('Your comment will be published after being '.
-						'approved by the site moderator.');
+					$this->getMessage('moderated-subtitle');
 
 				$this->ui->getWidget('message_display')->add($message,
 					SwatMessageDisplay::DISMISS_OFF);
@@ -398,13 +400,9 @@ abstract class SiteCommentUi
 			$button_tag->name = 'post_button';
 			$button_tag->value = Site::_('Post');
 
-			$message = new SwatMessage(Site::_(
-				'Your comment has not yet been published.'));
-
-			$message->secondary_content = sprintf(Site::_(
-				'Review your comment and press the <em>Post</em> button when '.
-				'it’s ready to publish. %s'),
-				$button_tag);
+			$message = new SwatMessage($this->getMessage('preview-message'));
+			$message->secondary_content = sprintf(
+				$this->getMessage('preview-message-subtitle'), $button_tag);
 
 			$message->content_type = 'text/xml';
 
@@ -426,6 +424,40 @@ abstract class SiteCommentUi
 				'comment_preview_container');
 
 			$container->visible = true;
+		}
+	}
+
+	// }}}
+	// {{{ protected function getMessage()
+
+	protected function getMessage($shortname)
+	{
+		switch ($shortname) {
+		case 'preview-message' :
+			return Site::_('Your comment has not yet been published.');
+
+		case 'preview-message-subtitle' :
+			return Site::_('Review your comment and press the <em>Post</em> '.
+				'button when it’s ready to publish. %s');
+
+		case 'locked' :
+			return Site::_('Comments are locked');
+
+		case 'locked-subtitle' :
+			return Site::_('No new comments may be posted for this article.');
+
+		case 'published' :
+			return Site::_('Your comment has been published.');
+
+		case 'moderated' :
+			return Site::_('Your comment has been submitted.');
+
+		case 'moderated-subtitle' :
+			return Site::_('Your comment will be published after being '.
+				'approved by the site moderator.');
+
+		default :
+			return null;
 		}
 	}
 
@@ -461,7 +493,7 @@ abstract class SiteCommentUi
 
 	protected function getCommentStatus()
 	{
-		return $this->post->getCommentStatus();	
+		return $this->post->getCommentStatus();
 	}
 
 	// }}}
