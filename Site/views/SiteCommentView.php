@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/views/SiteView.php';
+require_once 'Site/SiteCommentFilter.php';
 
 /**
  * View for Site comment objects
