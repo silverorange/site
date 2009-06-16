@@ -91,14 +91,22 @@ li.site-tag-prehighlight {
 	border-bottom: none;
 }
 
-.site-tag-entry img.add-tag {
+.site-tag-entry .site-tag-entry-add-tag {
+	background: url(../../swat/images/swat-tool-link-create.png) top left no-repeat;
 	margin-left: 2px;
-	vertical-align: middle;
+	padding: 0 0 2px 16px;
+	font-size: 85%;
 }
 /* IE hack to prevent image from displaying underneath input */
-* html .site-tag-entry img.add-tag {
+* html .site-tag-entry .site-tag-entry-add-tag {
 	position: relative;
-	left: 152px;
+	display: block;
+	padding: 0;
+	width: 16px;
+	height: 16px;
+	left: 154px;
+	top: 2px;
+	zoom: 1;
 }
 
 .site-tag-entry a {
