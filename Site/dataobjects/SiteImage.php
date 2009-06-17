@@ -589,7 +589,7 @@ class SiteImage extends SwatDBDataObject
 			}
 
 			$imagick = $this->getImagick($image_file, $dimension);
-			$this->processDimension($image_file, $dimension);
+			$this->processDimension($imagick, $dimension);
 			$this->saveFile($imagick, $dimension);
 
 			if ($this->automatically_save) {
