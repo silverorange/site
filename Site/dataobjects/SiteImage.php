@@ -1023,25 +1023,42 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		if ($imagick === null) {
-			try {
-				$imagick = new Imagick();
-
-				if ($crop_box === null && $dimension->max_width !== null &&
-					$dimension->max_height !== null) {
-
-					$imagick->setSize($dimension->max_width,
-						$dimension->max_height);
-				}
-
-				$imagick->readImage($image_file);
-
-			} catch (ImagickException $e) {
-				throw new SiteInvalidImageException($e->getMessage(),
-					$e->getCode());
-			}
+			$imagick = $this->getNewImagick($image_file, $dimension);
 		}
 
 		return $imagick->clone();
+	}
+
+	// }}}
+	// {{{ protected function getNewImagick()
+
+	/**
+	 * Gets a new Imagick instance from a file
+	 *
+	 * @param string $image_file the image file to process.
+	 * @param SiteImageDimension $dimension the dimension to process.
+	 */
+	protected function getNewImagick($image_file,
+		SiteImageDimension $dimension)
+	{
+		$crop_box = $this->getCropBox($dimension);
+		$imagick = new Imagick();
+
+		if ($crop_box === null && $dimension->max_width !== null &&
+			$dimension->max_height !== null) {
+
+			$imagick->setSize($dimension->max_width,
+				$dimension->max_height);
+		}
+
+		try {
+			$imagick->readImage($image_file);
+		} catch (ImagickException $e) {
+			throw new SiteInvalidImageException($e->getMessage(),
+				$e->getCode());
+		}
+
+		return $imagick;
 	}
 
 	// }}}
