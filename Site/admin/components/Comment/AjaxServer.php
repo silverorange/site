@@ -33,6 +33,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 			if (!$comment->spam) {
 				// submit spam to akismet
 				if ($this->app->config->comment->akismet_key !== null) {
+					$uri = $this->app->getBaseHref();
 					try {
 						$akismet = new Services_Akismet2($uri,
 							$this->app->config->comment->akismet_key);
@@ -73,6 +74,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 
 				// submit false positive to akismet
 				if ($this->app->config->comment->akismet_key !== null) {
+					$uri = $this->app->getBaseHref();
 					try {
 						$akismet = new Services_Akismet2($uri,
 							$this->app->config->comment->akismet_key);
