@@ -5,7 +5,6 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/Site.php';
 require_once 'Site/SiteViewFactory.php';
 require_once 'Site/SiteCommentStatus.php';
-require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Services/Akismet2.php';
 require_once 'NateGoSearch/NateGoSearch.php';
