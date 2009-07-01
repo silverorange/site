@@ -94,6 +94,21 @@ abstract class SiteCommentDisplay extends SwatControl
 
 		parent::display();
 
+		$this->displayRow();
+
+		Swat::displayInlineJavaScript($this->getInlineJavaScript());
+	}
+
+	// }}}
+	// {{{ abstract protected function displayHeader()
+
+	abstract protected function displayHeader();
+
+	// }}}
+	// {{{ protected function displayRow()
+
+	protected function displayRow()
+	{
 		$container_div = new SwatHtmlTag('div');
 		$container_div->class = $this->getCSSClassString();
 		$container_div->id = $this->id;
@@ -111,14 +126,7 @@ abstract class SiteCommentDisplay extends SwatControl
 
 		$animation_container->close();
 		$container_div->close();
-
-		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 	}
-
-	// }}}
-	// {{{ abstract protected function displayHeader()
-
-	abstract protected function displayHeader();
 
 	// }}}
 	// {{{ protected function displayControls()

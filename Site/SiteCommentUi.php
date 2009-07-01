@@ -80,9 +80,10 @@ abstract class SiteCommentUi
 	// }}}
 	// {{{ protected function getComment()
 
-	protected function getCommentClass()
+	protected function getComment()
 	{
-		return SwatDBClassMap::get('SiteComment');
+		$class_name = SwatDBClassMap::get('SiteComment');
+		return new $class_name();
 	}
 
 	// }}}
@@ -171,8 +172,7 @@ abstract class SiteCommentUi
 			$user_agent = null;
 		}
 
-		$class_name = $this->getCommentClass();
-		$this->comment = new $class_name();
+		$this->comment = $this->getComment();
 		$this->comment->fullname   = $fullname->value;
 		$this->comment->link       = $link->value;
 		$this->comment->email      = $email->value;
