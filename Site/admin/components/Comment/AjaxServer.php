@@ -26,10 +26,9 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 	 */
 	public function spam($comment_id)
 	{
-		$comment_class = SwatDBClassMap::get('SiteComment');
-		$comment = new $comment_class();
-		$comment->setDatabase($this->app->db);
-		if ($comment->load($comment_id, $this->app->getInstance())) {
+		$comment = $this->getComment($comment_id);
+
+		if ($comment !== null) {
 			if (!$comment->spam) {
 				// submit spam to akismet
 				if ($this->app->config->comment->akismet_key !== null) {
@@ -66,10 +65,8 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 	 */
 	public function notSpam($comment_id)
 	{
-		$comment_class = SwatDBClassMap::get('SiteComment');
-		$comment = new $comment_class();
-		$comment->setDatabase($this->app->db);
-		if ($comment->load($comment_id, $this->app->getInstance())) {
+		$comment = $this->getComment($comment_id);
+		if ($comment !== null) {
 			if ($comment->spam) {
 
 				// submit false positive to akismet
@@ -107,10 +104,8 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 	 */
 	public function publish($comment_id)
 	{
-		$class_name = SwatDBClassMap::get('SiteComment');
-		$comment = new $class_name();
-		$comment->setDatabase($this->app->db);
-		if ($comment->load($comment_id, $this->app->getInstance())) {
+		$comment = $this->getComment($comment_id);
+		if ($comment !== null) {
 			if ($comment->status !== SiteComment::STATUS_PUBLISHED) {
 				$comment->status = SiteComment::STATUS_PUBLISHED;
 				$comment->save();
@@ -133,10 +128,8 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 	 */
 	public function unpublish($comment_id)
 	{
-		$class_name = SwatDBClassMap::get('SiteComment');
-		$comment = new $class_name();
-		$comment->setDatabase($this->app->db);
-		if ($comment->load($comment_id, $this->app->getInstance())) {
+		$comment = $this->getComment($comment_id);
+		if ($comment !== null) {
 			if ($comment->status !== SiteComment::STATUS_UNPUBLISHED) {
 				$comment->status = SiteComment::STATUS_UNPUBLISHED;
 				$comment->save();
@@ -159,10 +152,8 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 	 */
 	public function delete($comment_id)
 	{
-		$class_name = SwatDBClassMap::get('SiteComment');
-		$comment = new $class_name();
-		$comment->setDatabase($this->app->db);
-		if ($comment->load($comment_id, $this->app->getInstance())) {
+		$comment = $this->getComment($comment_id);
+		if ($comment !== null) {
 			$comment->delete();
 			$this->flushCache();
 		}
@@ -191,6 +182,21 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 				'user_agent'           => $comment->user_agent,
 			)
 		);
+	}
+
+	// }}}
+	// {{{ protected function getComment()
+
+	protected function getComment($comment_id)
+	{
+		$comment_class = SwatDBClassMap::get('SiteComment');
+		$comment = new $comment_class();
+		$comment->setDatabase($this->app->db);
+		if ($comment->load($comment_id, $this->app->getInstance())) {
+			return $comment;
+		} else {
+			return null;
+		}
 	}
 
 	// }}}
