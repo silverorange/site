@@ -63,6 +63,7 @@ abstract class SiteCommentIndex extends AdminPage
 		$this->ui->loadFromXML($this->ui_xml);
 
 		$this->comment_display = $this->getCommentDisplayWidget();
+
 		$this->ui->getWidget('comment_replicator')->add(
 			$this->comment_display);
 

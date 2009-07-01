@@ -240,6 +240,11 @@ abstract class SiteCommentDisplay extends SwatControl
 
 		if (!$shown) {
 			$javascript = $this->getInlineJavaScriptTranslations();
+
+			$javascript.= sprintf(
+				'SiteCommentDisplay.xml_rpc_client_component = \'%s\';',
+				$this->app->getPage()->getComponentName().'/AjaxServer');
+
 			$shown = true;
 		} else {
 			$javascript = '';

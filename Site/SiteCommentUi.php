@@ -412,7 +412,7 @@ abstract class SiteCommentUi
 
 			ob_start();
 
-			$view = SiteViewFactory::get($this->app, 'comment');
+			$view = $this->getView();
 			$view->display($this->comment);
 
 			$comment_preview = $this->ui->getWidget('comment_preview');
@@ -424,6 +424,14 @@ abstract class SiteCommentUi
 
 			$container->visible = true;
 		}
+	}
+
+	// }}}
+	// {{{ protected function getView()
+
+	protected function getView()
+	{
+		return SiteViewFactory::get($this->app, 'comment');
 	}
 
 	// }}}

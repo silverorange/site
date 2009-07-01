@@ -7,6 +7,11 @@ function SiteCommentDisplay(id, comment_status, spam)
 	var id_split = id.split('_', 2);
 	this.comment_id = (id_split[1]) ? id_split[1] : id_split[0];
 
+	if (!SiteCommentDisplay.xml_rpc_client) {
+		SiteCommentDisplay.xml_rpc_client = new XML_RPC_Client(
+			SiteCommentDisplay.xml_rpc_client_component);
+	}
+
 	this.initControls();
 	this.initConfirmation();
 	this.container = document.getElementById(this.id);
@@ -32,8 +37,7 @@ SiteCommentDisplay.STATUS_PENDING     = 0;
 SiteCommentDisplay.STATUS_PUBLISHED   = 1;
 SiteCommentDisplay.STATUS_UNPUBLISHED = 2;
 
-SiteCommentDisplay.xml_rpc_client = new XML_RPC_Client(
-	'Comment/AjaxServer');
+SiteCommentDisplay.xml_rpc_client_component = 'Comment/AjaxServer';
 
 // {{{ initControls()
 
