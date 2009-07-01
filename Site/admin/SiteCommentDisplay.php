@@ -17,6 +17,16 @@ require_once 'XML/RPCAjax.php';
  */
 abstract class SiteCommentDisplay extends SwatControl
 {
+	// {{{ public properties
+
+	/**
+	 * Admin page for xml-rpc-ajax client operations
+	 *
+	 * By deault, {current-admin-component}/AjaxServer is used
+	 */
+	public $xml_rpc_client_uri = null;
+
+	// }}}
 	// {{{ protected properties
 
 	/**
@@ -243,7 +253,7 @@ abstract class SiteCommentDisplay extends SwatControl
 
 			$javascript.= sprintf(
 				'SiteCommentDisplay.xml_rpc_client_component = \'%s\';',
-				$this->app->getPage()->getComponentName().'/AjaxServer');
+				$this->getXmlRpcClientUri());
 
 			$shown = true;
 		} else {
@@ -258,6 +268,17 @@ abstract class SiteCommentDisplay extends SwatControl
 			$this->id, $this->id, $status, $spam);
 
 		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getXmlRpcClientUri()
+
+	protected function getXmlRpcClientUri()
+	{
+		if ($this->xml_rpc_client_uri === null)
+			return $this->app->getPage()->getComponentName().'/AjaxServer';
+		else
+			return $this->xml_rpc_client_uri;
 	}
 
 	// }}}
