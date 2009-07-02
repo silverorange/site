@@ -25,7 +25,7 @@ abstract class SiteCommentDisplay extends SwatControl
 	 *
 	 * This component <em>must</em> contain a sub-component named 'AjaxServer'.
 	 *
-	 * By default, the admin component of ths current page is used
+	 * By default, the admin component of the current page is used
 	 */
 	public $comment_component = null;
 
