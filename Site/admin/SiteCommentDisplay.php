@@ -12,7 +12,7 @@ require_once 'XML/RPCAjax.php';
  * delete and mark as spam
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentDisplay extends SwatControl
@@ -20,9 +20,12 @@ abstract class SiteCommentDisplay extends SwatControl
 	// {{{ public properties
 
 	/**
-	 * Admin page for xml-rpc-ajax client operations
+	 * Admin component that contains the AJAX server for xml-rpc-ajax client
+	 * operations
 	 *
-	 * By deault, {current-admin-component}/AjaxServer is used
+	 * This component <em>must</em> contain a sub-component named 'AjaxServer'.
+	 *
+	 * By default, the admin component of ths current page is used
 	 */
 	public $comment_component = null;
 
