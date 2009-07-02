@@ -9,7 +9,7 @@ function SiteCommentDisplay(id, comment_status, spam)
 
 	if (!SiteCommentDisplay.xml_rpc_client) {
 		SiteCommentDisplay.xml_rpc_client = new XML_RPC_Client(
-			SiteCommentDisplay.xml_rpc_client_uri);
+			SiteCommentDisplay.comment_component + '/AjaxServer');
 	}
 
 	this.initControls();
@@ -37,7 +37,7 @@ SiteCommentDisplay.STATUS_PENDING     = 0;
 SiteCommentDisplay.STATUS_PUBLISHED   = 1;
 SiteCommentDisplay.STATUS_UNPUBLISHED = 2;
 
-SiteCommentDisplay.xml_rpc_client_uri = 'Comment/AjaxServer';
+SiteCommentDisplay.comment_component = 'Comment';
 
 // {{{ initControls()
 
