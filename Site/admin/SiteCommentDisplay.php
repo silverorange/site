@@ -252,7 +252,7 @@ abstract class SiteCommentDisplay extends SwatControl
 			$javascript = $this->getInlineJavaScriptTranslations();
 
 			$javascript.= sprintf(
-				'SiteCommentDisplay.xml_rpc_client_component = \'%s\';',
+				'SiteCommentDisplay.xml_rpc_client_uri = \'%s\';',
 				$this->getXmlRpcClientUri());
 
 			$shown = true;
