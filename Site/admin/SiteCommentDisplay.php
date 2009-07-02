@@ -24,7 +24,7 @@ abstract class SiteCommentDisplay extends SwatControl
 	 *
 	 * By deault, {current-admin-component}/AjaxServer is used
 	 */
-	public $xml_rpc_client_uri = null;
+	public $comment_component = null;
 
 	// }}}
 	// {{{ protected properties
@@ -252,8 +252,8 @@ abstract class SiteCommentDisplay extends SwatControl
 			$javascript = $this->getInlineJavaScriptTranslations();
 
 			$javascript.= sprintf(
-				'SiteCommentDisplay.xml_rpc_client_uri = \'%s\';',
-				$this->getXmlRpcClientUri());
+				'SiteCommentDisplay.comment_component = \'%s\';',
+				$this->getCommentComponent());
 
 			$shown = true;
 		} else {
@@ -271,14 +271,14 @@ abstract class SiteCommentDisplay extends SwatControl
 	}
 
 	// }}}
-	// {{{ protected function getXmlRpcClientUri()
+	// {{{ protected function getCommentComponent()
 
-	protected function getXmlRpcClientUri()
+	protected function getCommentComponent()
 	{
-		if ($this->xml_rpc_client_uri === null)
-			return $this->app->getPage()->getComponentName().'/AjaxServer';
+		if ($this->comment_component === null)
+			return $this->app->getPage()->getComponentName();
 		else
-			return $this->xml_rpc_client_uri;
+			return $this->comment_component;
 	}
 
 	// }}}
