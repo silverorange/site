@@ -45,8 +45,7 @@ class SiteCommentEdit extends AdminDBEdit
 
 	protected function initComment()
 	{
-		$class_name = SwatDBClassMap::get('SiteComment');
-		$this->comment = new $class_name();
+		$this->comment = $this->getComment();
 		$this->comment->setDatabase($this->app->db);
 
 		if ($this->id !== null) {
@@ -55,6 +54,15 @@ class SiteCommentEdit extends AdminDBEdit
 					sprintf('Comment with id ‘%s’ not found.', $this->id));
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function getComment()
+
+	protected function getComment()
+	{
+		$class_name = SwatDBClassMap::get('SiteComment');
+		return new $class_name();
 	}
 
 	// }}}
