@@ -455,9 +455,9 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ private function getDimensionBinding()
+	// {{{ protected function getDimensionBinding()
 
-	private function getDimensionBinding($dimension_shortname)
+	protected function getDimensionBinding($dimension_shortname)
 	{
 		$dimension = $this->image_set->getDimensionByShortname(
 			$dimension_shortname);
@@ -1124,7 +1124,7 @@ class SiteImage extends SwatDBDataObject
 	 * than the default Imagick::FILTER_LANCZOS filter with little noticeable
 	 * difference for larger images.
 	 *
-	 * @return integer Threshold to use the BOX filter. 
+	 * @return integer Threshold to use the BOX filter.
 	 */
 	protected function getBoxFilterThreshold()
 	{
