@@ -546,24 +546,13 @@ class SiteImage extends SwatDBDataObject
 				$this->save(); // save again to record dimensions
 				$transaction->commit();
 			}
-		} catch (SiteInvalidImageException $e) {
-			if ($this->automatically_save) {
-				$transaction->rollback();
-			}
-			throw $e;
-		} catch (SwatException $e) {
-			if ($this->automatically_save) {
-				$transaction->rollback();
-			}
-			$e->process();
 		} catch (Exception $e) {
 			if ($this->automatically_save) {
 				$transaction->rollback();
 			}
-			$e = new SwatException($e);
-			$e->process();
-		}
 
+			throw $e;
+		}
 	}
 
 	// }}}
