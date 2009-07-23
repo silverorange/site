@@ -11,7 +11,8 @@ require_once 'Site/exceptions/SiteInvalidImageException.php';
  * An image data object
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2009 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImage extends SwatDBDataObject
 {
@@ -535,15 +536,17 @@ class SiteImage extends SwatDBDataObject
 				'Class Imagick from extension imagick > 2.0.0 not found.');
 
 		try {
+			// save once to set id on this object to use for filenames
 			if ($this->automatically_save) {
 				$transaction = new SwatDBTransaction($this->db);
-				$this->save(); // save once to set id on this object to use for filenames
+				$this->save();
 			}
 
 			$this->processInternal($image_file);
 
+			// save again to record dimensions
 			if ($this->automatically_save) {
-				$this->save(); // save again to record dimensions
+				$this->save();
 				$transaction->commit();
 			}
 		} catch (Exception $e) {
@@ -702,6 +705,12 @@ class SiteImage extends SwatDBDataObject
 		} else {
 			$this->fitToDimension($imagick, $dimension);
 		}
+
+		// Set the image to sRGB colorspace before we save the file. This is
+		// mostly to prevent CYMK jpgs from getting saved. Colours are not
+		// necessarily accurately converted, but they will no longer look
+		// inverted.
+		$imagick->setImageColorspace(13);
 
 		$this->saveDimensionBinding($imagick, $dimension);
 	}
