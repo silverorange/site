@@ -135,7 +135,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	// }}}
 	// {{{ protected function updatePassword()
 
-	protected function updatePassword(SwatForm $form)
+	protected function updatePassword()
 	{
 		$password = $this->ui->getWidget('password')->value;
 		$this->app->session->account->setPassword($password);
