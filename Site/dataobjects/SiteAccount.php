@@ -363,26 +363,39 @@ class SiteAccount extends SwatDBDataObject
 	{
 		require_once 'Text/Password.php';
 
-		$new_password = Text_Password::Create();
-		$new_password_salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
+		$transaction = new SwatDBTransaction($this->db);
+		try {
 
-		/*
-		 * Update the database with new password. Don't use the regular
-		 * dataobject saving here in case other fields have changed.
-		 */
-		$id_field = new SwatDBField($this->id_field, 'integer');
-		$sql = sprintf('update %s set password = %s, password_salt = %s
-			where %s = %s',
-			$this->table,
-			$app->db->quote(md5($new_password.$new_password_salt), 'text'),
-			$app->db->quote(base64_encode($new_password_salt), 'text'),
-			$id_field->name,
-			$this->db->quote($this->{$id_field->name}, $id_field->type));
+			$new_password      = Text_Password::Create();
+			$new_password_salt = SwatString::getSalt(
+				self::PASSWORD_SALT_LENGTH
+			);
 
-		SwatDB::exec($app->db, $sql);
+			/*
+			 * Update the database with new password. Don't use the regular
+			 * dataobject saving here in case other fields have changed.
+			 */
+			$id_field = new SwatDBField($this->id_field, 'integer');
 
-		// email the new password to the account holder
-		$this->sendNewPasswordMailMessage($app, $new_password);
+			$sql = sprintf(
+				'update %s set password = %s, password_salt = %s where %s = %s',
+				$this->table,
+				$app->db->quote(md5($new_password.$new_password_salt), 'text'),
+				$app->db->quote(base64_encode($new_password_salt), 'text'),
+				$id_field->name,
+				$this->db->quote($this->{$id_field->name}, $id_field->type)
+			);
+
+			SwatDB::exec($app->db, $sql);
+
+			// email the new password to the account holder
+			$this->sendNewPasswordMailMessage($app, $new_password);
+
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
 	}
 
 	// }}}
