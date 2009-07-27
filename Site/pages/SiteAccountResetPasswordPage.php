@@ -114,9 +114,8 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	{
 		$this->app->session->loginById($this->account_id);
 
-		$password = $this->ui->getWidget('password')->value;
-		$this->app->session->account->setPassword($password);
-		$this->app->session->account->password_tag = null;
+		$this->updatePassword();
+
 		$this->app->session->account->save();
 
 		$message = new SwatMessage(Site::_(
@@ -131,6 +130,16 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	protected function relocate(SwatForm $form)
 	{
 		$this->app->relocate('account');
+	}
+
+	// }}}
+	// {{{ protected function updatePassword()
+
+	protected function updatePassword(SwatForm $form)
+	{
+		$password = $this->ui->getWidget('password')->value;
+		$this->app->session->account->setPassword($password);
+		$this->app->session->account->password_tag = null;
 	}
 
 	// }}}
