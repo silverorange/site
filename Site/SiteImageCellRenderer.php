@@ -144,24 +144,7 @@ class SiteImageCellRenderer extends SwatCellRenderer
 			$a_tag->open();
 		}
 
-		$this->image_cell_renderer->image =
-			$this->image->getUri($this->image_dimension, $this->path_prefix);
-
-		$this->image_cell_renderer->width =
-			$this->image->getWidth($this->image_dimension);
-
-		$this->image_cell_renderer->height =
-			$this->image->getHeight($this->image_dimension);
-
-		$this->image_cell_renderer->alt = '';
-
-		if ($this->square) {
-			$occupy = max($this->image->getHeight($this->image_dimension),
-				$this->image->getWidth($this->image_dimension));
-
-			$this->image_cell_renderer->occupy_height = $occupy;
-			$this->image_cell_renderer->occupy_width = $occupy;
-		}
+		$this->buildImageCellRenderer($this->image_cell_renderer);
 
 		$image_wrapper_tag = new SwatHtmlTag('span');
 		$image_wrapper_tag->class = 'site-image-wrapper';
@@ -192,6 +175,27 @@ class SiteImageCellRenderer extends SwatCellRenderer
 
 		if ($this->link !== null)
 			$a_tag->close();
+	}
+
+	// }}}
+	// {{{ protected function buildImageCellRenderer()
+
+	protected function buildImageCellRenderer(SwatImageCellRenderer $renderer)
+	{
+		$renderer->image =
+			$this->image->getUri($this->image_dimension, $this->path_prefix);
+
+		$renderer->width = $this->image->getWidth($this->image_dimension);
+		$renderer->height = $this->image->getHeight($this->image_dimension);
+		$renderer->alt = '';
+
+		if ($this->square) {
+			$occupy = max($this->image->getHeight($this->image_dimension),
+				$this->image->getWidth($this->image_dimension));
+
+			$renderer->occupy_height = $occupy;
+			$renderer->occupy_width = $occupy;
+		}
 	}
 
 	// }}}
