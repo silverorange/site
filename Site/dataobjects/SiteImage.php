@@ -706,12 +706,6 @@ class SiteImage extends SwatDBDataObject
 			$this->fitToDimension($imagick, $dimension);
 		}
 
-		// Set the image to sRGB colorspace before we save the file. This is
-		// mostly to prevent CYMK jpgs from getting saved. Colours are not
-		// necessarily accurately converted, but they will no longer look
-		// inverted.
-		$imagick->setImageColorspace(13);
-
 		$this->saveDimensionBinding($imagick, $dimension);
 	}
 
