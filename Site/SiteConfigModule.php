@@ -732,9 +732,10 @@ class SiteConfigModule extends SiteApplicationModule
 		try {
 			foreach ($settings as $setting) {
 				$sql = sprintf('delete from InstanceConfigSetting
-					where instance = %s and name = %s',
+					where instance = %s and name = %s and is_default = %s',
 					$db->quote($instance, 'integer'),
-					$db->quote($setting, 'text'));
+					$db->quote($setting, 'text'),
+					$db->quote(false, 'boolean'));
 
 				SwatDB::exec($db, $sql);
 
