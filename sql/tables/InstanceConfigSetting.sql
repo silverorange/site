@@ -1,4 +1,4 @@
-create table NewInstanceConfigSetting (
+create table InstanceConfigSetting (
 	name varchar(255) not null,
 	value varchar(1024),
 	is_default boolean not null default false,
@@ -6,6 +6,6 @@ create table NewInstanceConfigSetting (
 	primary key (name, is_default, instance)
 );
 
-CREATE INDEX NewInstanceConfigSetting_name_index ON NewInstanceConfigSetting(name);
-CREATE INDEX NewInstanceConfigSetting_is_default_index ON NewInstanceConfigSetting(is_default);
-CREATE INDEX NewInstanceConfigSetting_instance_index ON NewInstanceConfigSetting(instance);
+CREATE INDEX InstanceConfigSetting_name_index ON InstanceConfigSetting(name);
+CREATE INDEX InstanceConfigSetting_is_default_index ON InstanceConfigSetting(is_default);
+CREATE INDEX InstanceConfigSetting_instance_index ON InstanceConfigSetting(instance);
