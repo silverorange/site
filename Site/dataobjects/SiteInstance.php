@@ -82,15 +82,30 @@ class SiteInstance extends SwatDBDataObject
 	 */
 	protected function loadConfigSettings()
 	{
-		$sql = 'select id, instance, name, value
-			from InstanceConfigSetting
-			where instance = %s';
+		$sql = 'select * from InstanceConfigSetting where instance = %s';
+		$sql = sprintf($sql, $this->db->quote($this->id, 'integer'));
 
-		$sql = sprintf($sql,
-			$this->db->quote($this->id, 'integer'));
+		$wrapper  = SwatDBClassMap::get('SiteInstanceConfigSettingWrapper');
+		$settings = SwatDB::query($this->db, $sql, $wrapper);
 
-		$wrapper = SwatDBClassMap::get('SiteInstanceConfigSettingWrapper');
-		return SwatDB::query($this->db, $sql, $wrapper);
+		$non_default = array();
+
+		// Find all config settings that have non-default values
+		foreach ($settings as $setting) {
+			if (!$setting->is_default) {
+				$non_default[] = $setting->name;
+			}
+		}
+
+		// Remove all the config settings that have non-default replacements
+		foreach ($settings as $setting) {
+			if (in_array($setting->name, $non_default) &&
+				$setting->is_default) {
+				$settings->remove($setting);
+			}
+		}
+
+		return $settings;
 	}
 
 	// }}}
