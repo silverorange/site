@@ -58,7 +58,7 @@ class SiteAccountEdit extends AdminDBEdit
 				$this->account->instance->id !=
 				$this->app->instance->getInstance()->id)
 				throw new AdminNotFoundException(sprintf(
-					Store::_('Incorrect instance for account ‘%d’.'),
+					Site::_('Incorrect instance for account ‘%d’.'),
 						$this->id));
 		} elseif ($this->app->hasModule('SiteMultipleInstanceModule')) {
 			$this->account->instance = $this->app->instance->getInstance();
