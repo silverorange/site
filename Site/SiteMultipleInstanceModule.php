@@ -48,13 +48,32 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 		$db = $database->getConnection();
 
 		if ($instance_shortname !== null) {
-			$class_name = SwatDBClassMap::get('SiteInstance');
-			$this->instance = new $class_name();
-			$this->instance->setDatabase($db);
-			if (!$this->instance->loadFromShortname($instance_shortname)) {
-				throw new SiteNotFoundException(sprintf(
-					"No site instance with the shortname '%s' exists.",
-					$instance_shortname));
+			try {
+				$class_name = SwatDBClassMap::get('SiteInstance');
+				$this->instance = new $class_name();
+				$this->instance->setDatabase($db);
+				if (!$this->instance->loadFromShortname($instance_shortname)) {
+					throw new SiteNotFoundException(sprintf(
+						"No site instance with the shortname '%s' exists.",
+						$instance_shortname));
+				}
+			} catch (SiteNotFoundException $e) {
+				/* instance not found, diplsay a simple apache-like 404 page
+				 * we do not have an instance to display a pretty 404 page
+				 * within
+				 */
+				header("HTTP/1.0 404 Not Found");
+				echo <<<EOD
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>404 Not Found</title>
+</head><body>
+<h1>Not Found</h1>
+<p>The requested URL was not found on this server.</p>
+</body></html>
+EOD;
+
+				throw($e);
 			}
 		}
 	}
