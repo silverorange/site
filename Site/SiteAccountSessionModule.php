@@ -292,7 +292,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 					'in the session.');
 		}
 
-		session_start();
+		parent::startSession();
 
 		foreach ($this->data_object_classes as $name => $class) {
 			if (isset($this->$name) && $this->$name !== null) {
