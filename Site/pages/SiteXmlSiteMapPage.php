@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SitePageDecorator.php';
 require_once 'Site/layouts/SiteXmlSiteMapLayout.php';
 require_once 'Site/dataobjects/SiteArticleWrapper.php';
 
@@ -12,11 +12,20 @@ require_once 'Site/dataobjects/SiteArticleWrapper.php';
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       http://www.sitemaps.org/
  */
-class SiteXmlSiteMapPage extends SitePage
+class SiteXmlSiteMapPage extends SitePageDecorator
 {
 	// {{{ protected properties
 
 	protected $priority_paths = array();
+
+	// }}}
+	// {{{ public function __construct()
+
+	public function __construct(SiteAbstractPage $page)
+	{
+		parent::__construct($page);
+		$this->setLayout(new SiteXmlSiteMapLayout($this->app));
+	}
 
 	// }}}
 	// {{{ public function build()
@@ -24,7 +33,11 @@ class SiteXmlSiteMapPage extends SitePage
 	public function build()
 	{
 		$this->layout->startCapture('site_map');
+
+		echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 		$this->displaySiteMap();
+		echo '</urlset>';
+
 		$this->layout->endCapture();
 	}
 
@@ -111,14 +124,6 @@ class SiteXmlSiteMapPage extends SitePage
 		$articles = SwatDB::query($this->app->db, $sql, $wrapper);
 
 		return $articles;
-	}
-
-	// }}}
-	// {{{ protected function createLayout()
-
-	protected function createLayout()
-	{
-		return new SiteXmlSiteMapLayout($this->app);
 	}
 
 	// }}}

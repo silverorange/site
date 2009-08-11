@@ -14,10 +14,8 @@ header('Cache-Control: no-cache, must-revalidate max-age=0');
 header('Pragma: no-cache');
 
 echo '<?xml version="1.0" encoding="UTF-8"?>';
-echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
 echo $this->site_map;
 
-echo '</urlset>';
 
 ?>
