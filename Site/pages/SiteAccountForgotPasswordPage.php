@@ -10,7 +10,7 @@ require_once 'Site/dataobjects/SiteAccount.php';
  * Page for requesting a new password for forgotten account passwords
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  * @see       SiteAccountResetPasswordPage
@@ -38,12 +38,22 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		$form->process();
 
 		if ($form->isProcessed()) {
-			if (!$form->hasMessage())
+			if (!$form->hasMessage()) {
 				$this->generatePassword();
+			}
 
-			if (!$form->hasMessage())
-				$this->app->relocate('account/forgotpassword/sent');
+			if (!$form->hasMessage()) {
+				$this->relocate();
+			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function relocate()
+
+	protected function relocate()
+	{
+		$this->app->relocate('account/forgotpassword/sent');
 	}
 
 	// }}}
@@ -73,9 +83,9 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 	}
 
 	// }}}
-	// {{{ private function generatePassword()
+	// {{{ protected function generatePassword()
 
-	private function generatePassword()
+	protected function generatePassword()
 	{
 		$email = $this->ui->getWidget('email')->value;
 
@@ -84,7 +94,7 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		if ($account === null) {
 			$message = new SwatMessage(Site::_(
 				'There is no account with this email address.'),
-				SwatMessage::ERROR);
+				'error');
 
 			$message->secondary_content = sprintf(Site::_(
 				'Make sure you entered it correctly, or '.
@@ -94,12 +104,19 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 			$message->content_type = 'text/xml';
 			$this->ui->getWidget('email')->addMessage($message);
 		} else {
-			$password_tag = $account->resetPassword($this->app);
-			$password_link = $this->app->getBaseHref().
-				'account/resetpassword/'.$password_tag;
-
+			$password_tag  = $account->resetPassword($this->app);
+			$password_link = $this->getResetPasswordLink($password_tag);
 			$account->sendResetPasswordMailMessage($this->app, $password_link);
 		}
+	}
+
+	// }}}
+	// {{{ protected function getResetPasswordLink()
+
+	protected function getResetPasswordLink($password_tag)
+	{
+		return $this->app->getBaseHref().
+			'account/resetpassword/'.$password_tag;
 	}
 
 	// }}}
@@ -114,8 +131,9 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		$this->ui->getWidget('password_form')->action = $this->source;
 
 		$email = $this->app->initVar('email');
-		if ($email !== null)
+		if ($email !== null) {
 			$this->ui->getWidget('email')->value = $email;
+		}
 	}
 
 	// }}}
