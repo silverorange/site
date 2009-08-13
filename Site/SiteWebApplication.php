@@ -669,6 +669,7 @@ class SiteWebApplication extends SiteApplication
 			return;
 
 		foreach ($this->getSecureSourceList() as $pattern) {
+			$pattern = str_replace('|', '\|', $pattern);
 			$regexp = '|'.$pattern.'|u';
 			if (preg_match($regexp, $source) === 1) {
 				if ($this->secure) {
