@@ -31,6 +31,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 	// {{{ protected properties
 
 	protected $login_callbacks = array();
+	protected $logout_callbacks = array();
 
 	// }}}
 	// {{{ public function depends()
@@ -168,6 +169,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 		unset($this->_authentication_token);
 		$this->removeAccountCookie();
 		$this->unsetRegisteredDataObjects();
+		$this->runLogoutCallbacks();
 	}
 
 	// }}}
@@ -277,6 +279,30 @@ class SiteAccountSessionModule extends SiteSessionModule
 	}
 
 	// }}}
+	// {{{ public function registerLogoutCallback()
+
+	/**
+	 * Registers a callback function that is executed when a logout is
+	 * performed
+	 *
+	 * @param callback $callback the callback to call when a logout is
+	 *                            performed.
+	 * @param array $parameters optional. The paramaters to pass to the
+	 *                           callback. Use an empty array for no parameters.
+	 */
+	public function registerLogoutCallback($callback,
+		array $parameters = array())
+	{
+		if (!is_callable($callback))
+			throw new SiteException('Cannot register invalid callback.');
+
+		$this->logout_callbacks[] = array(
+			'callback' => $callback,
+			'parameters' => $parameters
+		);
+	}
+
+	// }}}
 	// {{{ protected function startSession()
 
 	/**
@@ -335,6 +361,18 @@ class SiteAccountSessionModule extends SiteSessionModule
 		foreach ($this->login_callbacks as $login_callback) {
 			$callback = $login_callback['callback'];
 			$parameters = $login_callback['parameters'];
+			call_user_func_array($callback, $parameters);
+		}
+	}
+
+	// }}}
+	// {{{ protected function runLogoutCallbacks()
+
+	protected function runLogoutCallbacks()
+	{
+		foreach ($this->logout_callbacks as $logout_callback) {
+			$callback = $logout_callback['callback'];
+			$parameters = $logout_callback['parameters'];
 			call_user_func_array($callback, $parameters);
 		}
 	}
