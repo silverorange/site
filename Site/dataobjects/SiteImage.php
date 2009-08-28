@@ -961,7 +961,9 @@ class SiteImage extends SwatDBDataObject
 		// recursively create file directories
 		$directory = $this->getFileDirectory($dimension->shortname);
 		if (!file_exists($directory)) {
+			$old_umask = umask(0);
 			mkdir($directory, 0777, true);
+			umask($old_umask);
 		}
 
 		$filename = $this->getFilePath($dimension->shortname);
