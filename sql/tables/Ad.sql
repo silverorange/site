@@ -8,3 +8,5 @@ create table Ad (
 	total_referrers int not null default 0,
 	primary key (id)
 );
+
+CREATE INDEX Ad_shortname_index ON Ad(shortname);

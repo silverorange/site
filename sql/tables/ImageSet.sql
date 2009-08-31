@@ -4,3 +4,5 @@ create table ImageSet (
 	obfuscate_filename boolean not null default false,
 	primary key(id)
 );
+
+CREATE INDEX ImageSet_shortname_index ON ImageSet(shortname);

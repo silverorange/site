@@ -14,3 +14,5 @@ create table ImageDimension (
 	resize_filter varchar(50),
 	primary key(id)
 );
+
+CREATE INDEX ImageDimension_shortname_index ON ImageDimension(shortname);
