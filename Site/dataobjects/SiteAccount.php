@@ -318,8 +318,8 @@ class SiteAccount extends SwatDBDataObject
 	/**
 	 * Resets this account's password
 	 *
-	 * Creates a unique tag and emails this account's holder a tagged URL to
-	 * update his or her password.
+	 * Creates a unique tag that can be emailed to the account holder as part of
+	 * a url that allows them to update their password.
 	 *
 	 * @param SiteApplication $app the application resetting this account's
 	 *                              password.
@@ -357,20 +357,19 @@ class SiteAccount extends SwatDBDataObject
 	 *
 	 * @param SiteApplication $app the application generating the new password.
 	 *
+	 * @return string $new_password the new password in plaintext
+	 *
 	 * @see SiteAccount::resetPassword()
 	 */
 	public function generateNewPassword(SiteApplication $app)
 	{
 		require_once 'Text/Password.php';
 
+		$new_password      = Text_Password::Create();
+		$new_password_salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
+
 		$transaction = new SwatDBTransaction($this->db);
 		try {
-
-			$new_password      = Text_Password::Create();
-			$new_password_salt = SwatString::getSalt(
-				self::PASSWORD_SALT_LENGTH
-			);
-
 			/*
 			 * Update the database with new password. Don't use the regular
 			 * dataobject saving here in case other fields have changed.
@@ -388,14 +387,13 @@ class SiteAccount extends SwatDBDataObject
 
 			SwatDB::exec($app->db, $sql);
 
-			// email the new password to the account holder
-			$this->sendNewPasswordMailMessage($app, $new_password);
-
 			$transaction->commit();
 		} catch (Exception $e) {
 			$transaction->rollback();
 			throw $e;
 		}
+
+		return $new_password;
 	}
 
 	// }}}
@@ -418,7 +416,7 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function sendNewPasswordMailMessage()
+	// {{{ public function sendNewPasswordMailMessage()
 
 	/**
 	 * Emails this account's holder with his or her new generated password
@@ -428,7 +426,7 @@ class SiteAccount extends SwatDBDataObject
 	 *
 	 * @see StoreAccount::generateNewPassword()
 	 */
-	protected function sendNewPasswordMailMessage(
+	public function sendNewPasswordMailMessage(
 		SiteApplication $app, $new_password)
 	{
 	}
