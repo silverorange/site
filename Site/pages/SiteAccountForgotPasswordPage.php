@@ -92,16 +92,7 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		$account = $this->getAccount($email);
 
 		if ($account === null) {
-			$message = new SwatMessage(Site::_(
-				'There is no account with this email address.'),
-				'error');
-
-			$message->secondary_content = sprintf(Site::_(
-				'Make sure you entered it correctly, or '.
-				'%screate a New Account%s.'),
-				'<a href="account/edit">', '</a>');
-
-			$message->content_type = 'text/xml';
+			$message = $this->getAccountNotFoundMessage();
 			$this->ui->getWidget('email')->addMessage($message);
 		} else {
 			$password_tag  = $account->resetPassword($this->app);
@@ -117,6 +108,24 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 	{
 		return $this->app->getBaseHref().
 			'account/resetpassword/'.$password_tag;
+	}
+
+	// }}}
+	// {{{ protected function getAccountNotFoundMessage()
+
+	protected function getAccountNotFoundMessage()
+	{
+		$message = new SwatMessage(Site::_(
+			'There is no account with this email address.'),
+			'error');
+
+		$message->secondary_content = sprintf(Site::_(
+			'Make sure you entered it correctly, or '.
+			'%screate a New Account%s.'),
+			'<a href="account/edit">', '</a>');
+
+		$message->content_type = 'text/xml';
+		return $message;
 	}
 
 	// }}}
