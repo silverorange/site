@@ -72,7 +72,8 @@ class SiteAccountEmailPassword extends AdminConfirmation
 		$form = $this->ui->getWidget('confirmation_form');
 
 		if ($form->button->id == 'yes_button') {
-			$this->account->generateNewPassword($this->app);
+			$password = $this->account->generateNewPassword($this->app);
+			$this->account->sendNewPasswordMailMessage($this->app, $password);
 
 			$message = new SwatMessage(sprintf(
 				Site::_('%1$s’s password has been reset and has been emailed '.
