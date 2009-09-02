@@ -424,7 +424,7 @@ class SiteAccount extends SwatDBDataObject
 	 * @param SiteApplication $app the application sending mail.
 	 * @param string $new_password this account's new password.
 	 *
-	 * @see StoreAccount::generateNewPassword()
+	 * @see SiteAccount::generateNewPassword()
 	 */
 	public function sendNewPasswordMailMessage(
 		SiteApplication $app, $new_password)
