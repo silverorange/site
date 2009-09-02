@@ -164,19 +164,11 @@ class SiteAccountEditPage extends SiteDBEditPage
 			$this->account->save();
 
 			$this->app->session->loginById($this->account->id);
-
-			$message = new SwatMessage(
-				Site::_('Your account has been created.'));
-
-			$this->app->messages->add($message);
 		} elseif ($this->account->isModified()) {
 			$this->app->session->account->save();
-
-			$message = new SwatMessage(
-				Site::_('Account details have been updated.'));
-
-			$this->app->messages->add($message);
 		}
+
+		$this->addSavedMessage($form);
 	}
 
 	// }}}
@@ -185,6 +177,24 @@ class SiteAccountEditPage extends SiteDBEditPage
 	protected function relocate(SwatForm $form)
 	{
 		$this->app->relocate('account');
+	}
+
+	// }}}
+	// {{{ protected function addSavedMessage()
+
+	protected function addSavedMessage(SwatForm $form)
+	{
+		if ($this->isNew($form)) {
+			$message = new SwatMessage(
+				Site::_('Your account has been created.'));
+
+			$this->app->messages->add($message);
+		} else {
+			$message = new SwatMessage(
+				Site::_('Account details have been updated.'));
+
+			$this->app->messages->add($message);
+		}
 	}
 
 	// }}}
