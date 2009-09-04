@@ -115,16 +115,13 @@ class SiteAccountEditPage extends SiteDBEditPage
 		$account->setDatabase($this->app->db);
 		$found = $account->loadWithEmail($email->value, $instance);
 
-		$account_id = ($this->app->session->isLoggedIn()) ?
-			$this->app->session->account->id : null;
-
-		if ($found && $account_id !== $account->id) {
+		if ($found && $this->account->id !== $account->id) {
 			$email_link = sprintf('<a href="account/forgotpassword?email=%s">',
 				$email->value);
 
 			$message = new SwatMessage(
 				Site::_('An account already exists with this email address.'),
-				SwatMessage::ERROR);
+				'error');
 
 			$message->secondary_content =
 				sprintf(Site::_('You can %srequest a new password%s to log '.
@@ -165,7 +162,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 			$this->app->session->loginById($this->account->id);
 		} elseif ($this->account->isModified()) {
-			$this->app->session->account->save();
+			$this->account->save();
 		}
 
 		$this->addSavedMessage($form);
