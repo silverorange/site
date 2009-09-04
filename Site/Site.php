@@ -97,7 +97,11 @@ class Site
 
 	public static function setupGettext()
 	{
-		bindtextdomain(Site::GETTEXT_DOMAIN, '@DATA-DIR@/Site/locale');
+		$path = '@DATA-DIR@/Site/locale';
+		if (substr($path, 0 ,1) === '@')
+			$path = dirname(__FILE__).'/../locale';
+
+		bindtextdomain(Site::GETTEXT_DOMAIN, $path);
 		bind_textdomain_codeset(Site::GETTEXT_DOMAIN, 'UTF-8');
 	}
 
