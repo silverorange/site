@@ -148,24 +148,26 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 	protected function saveData(SwatForm $form)
 	{
-		$this->updateAccount($form);
+		if ($form->id == 'edit_form') {
+			$this->updateAccount($form);
 
-		if ($this->isNew($form)) {
-			$this->account->setPassword(
-				$this->ui->getWidget('password')->value);
+			if ($this->isNew($form)) {
+				$this->account->setPassword(
+					$this->ui->getWidget('password')->value);
 
-			$this->account->createdate = new SwatDate();
-			$this->account->createdate->toUTC();
+				$this->account->createdate = new SwatDate();
+				$this->account->createdate->toUTC();
 
-			$this->account->setDatabase($this->app->db);
-			$this->account->save();
+				$this->account->setDatabase($this->app->db);
+				$this->account->save();
 
-			$this->app->session->loginById($this->account->id);
-		} elseif ($this->account->isModified()) {
-			$this->account->save();
+				$this->app->session->loginById($this->account->id);
+			} elseif ($this->account->isModified()) {
+				$this->account->save();
+			}
+
+			$this->addSavedMessage($form);
 		}
-
-		$this->addSavedMessage($form);
 	}
 
 	// }}}
