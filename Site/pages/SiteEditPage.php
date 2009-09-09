@@ -232,7 +232,7 @@ abstract class SiteEditPage extends SiteUiPage
 				$message_display =
 					$form->getFirstDescendant('SwatMessageDisplay');
 
-				if ($message_display) {
+				if ($message_display !== null) {
 					$message = $this->getInvalidMessage($form);
 					if ($message !== null)
 						$message_display->add($message);
