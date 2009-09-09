@@ -104,10 +104,11 @@ abstract class SiteEditPage extends SiteUiPage
 		if ($form->hasMessage())
 			$valid = false;
 
-		if ($this->ui->hasWidget('message_display')) {
-			$message_display = $this->ui->getWidget('message_display');
-			if ($message_display->getMessageCount() > 0)
+		foreach ($form->getChildren('SwatMessageDisplay') as $message_display) {
+			if ($message_display->getMessageCount() > 0) {
 				$valid = false;
+				break;
+			}
 		}
 
 		return $valid;
@@ -223,16 +224,19 @@ abstract class SiteEditPage extends SiteUiPage
 	{
 		parent::buildMessages();
 
-		if (!$this->ui->hasWidget('message_display'))
+		if (!$this->ui->getRoot()->getFirstDescendant('SwatMessageDisplay'))
 			return;
-
-		$message_display = $this->ui->getWidget('message_display');
 
 		foreach ($this->getForms() as $form) {
 			if ($form->isProcessed() && $form->hasMessage()) {
-				$message = $this->getInvalidMessage($form);
-				if ($message !== null)
-					$message_display->add($message);
+				$message_display =
+					$form->getFirstDescendant('SwatMessageDisplay');
+
+				if ($message_display) {
+					$message = $this->getInvalidMessage($form);
+					if ($message !== null)
+						$message_display->add($message);
+				}
 			}
 		}
 	}
