@@ -93,7 +93,11 @@ class SiteContactPage extends SiteEditPage
 	{
 		$subject_index = $this->ui->getWidget('subject')->value;
 		$subjects = $this->getSubjects();
-		return $subjects[$subject_index];
+		$subject = sprintf('%s (%s)',
+			$subjects[$subject_index],
+			$this->ui->getWidget('email')->value);
+
+		return $subject;
 	}
 
 	// }}}
@@ -130,10 +134,19 @@ class SiteContactPage extends SiteEditPage
 
 	protected function getFromName()
 	{
-		$user_address = $this->ui->getWidget('email')->value;
-		$user_address = str_replace('@', ' at ', $user_address);
-		$user_address = str_replace('.', ' dot ', $user_address);
+		$user_address = sprintf(Site::_('%s via %s'),
+			$this->ui->getWidget('email')->value,
+			$this->getSiteTitle());
+
 		return $user_address;
+	}
+
+	// }}}
+	// {{{ protected function getSiteTitle()
+
+	protected function getSiteTitle()
+	{
+		return $this->app->config->site->title;
 	}
 
 	// }}}
