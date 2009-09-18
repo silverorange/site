@@ -1,0 +1,24 @@
+xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatForm" id="unsubscribe_form">
+		<widget class="SwatFrame" id="frame">
+			<widget class="SwatFormField" id="email_field">
+				<property name="title">Email</property>
+				<widget class="SwatEmailEntry" id="email">
+					<property name="required" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<property name="note"><![CDATA[You can also easily
+					<a href="x">add your email address</a>
+					to our mailing list.]]>
+				</property>
+				<property name="note_content_type">text/xml</property>
+				<widget class="SwatButton">
+					<property name="title">Unsubscribe</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>
