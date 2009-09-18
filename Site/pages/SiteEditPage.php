@@ -15,6 +15,11 @@ require_once 'Site/pages/SiteUiPage.php';
  */
 abstract class SiteEditPage extends SiteUiPage
 {
+	// {{{ class constants
+
+	const RELOCATE_URL_FIELD = '_relocate_url';
+
+	// }}}
 	// {{{ protected function isNew()
 
 	protected function isNew(SwatForm $form)
@@ -123,6 +128,19 @@ abstract class SiteEditPage extends SiteUiPage
 	// {{{ abstract protected function relocate()
 
 	abstract protected function relocate(SwatForm $form);
+
+	// }}}
+	// {{{ protected function relocateToRefererUrl()
+
+	protected function relocateToRefererUrl(SwatForm $form, $default_relocate)
+	{
+		$url = $form->getHiddenField(self::RELOCATE_URL_FIELD);
+
+		if ($url === null)
+			$url = $default_relocate;
+
+		$this->app->relocate($url);
+	}
 
 	// }}}
 	// {{{ protected function assignUiValuesToObject()
@@ -274,6 +292,13 @@ abstract class SiteEditPage extends SiteUiPage
 
 		if (!$form->isProcessed() && !$this->isNew($form))
 			$this->load($form);
+
+		if ($form->getHiddenField(self::RELOCATE_URL_FIELD) === null) {
+			$url = $this->getRefererUrl();
+			if ($url !== null) {
+				$form->addHiddenField(self::RELOCATE_URL_FIELD, $url);
+			}
+		}
 	}
 
 	// }}}
@@ -316,6 +341,18 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 
 		$widget->value = $value;
+	}
+
+	// }}}
+	// {{{ protected function getRefererUrl()
+
+	protected function getRefererUrl()
+	{
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			return $_SERVER['HTTP_REFERER'];
+		} else {
+			return null;
+		}
 	}
 
 	// }}}
