@@ -368,12 +368,6 @@ class SiteMailChimpList extends SiteMailingList
 			'text' => $campaign->getContent(SiteMailingCampaign::FORMAT_TEXT),
 		);
 
-		$resource_archive = $campaign->getResourcesArchive();
-		if ($resource_archive !== null) {
-			$content['archive'] = $resource_archive;
-			$content['archive_type'] = 'tgz';
-		}
-
 		return $content;
 	}
 
