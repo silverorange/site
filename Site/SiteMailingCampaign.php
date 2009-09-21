@@ -43,7 +43,7 @@ class SiteMailingCampaign
 	{
 		$this->app       = $app;
 		$this->shortname = $shortname;
-		$this->data = new SiteLayoutData();
+		$this->data      = new SiteLayoutData();
 	}
 
 	// }}}
@@ -101,6 +101,7 @@ class SiteMailingCampaign
 		ob_start();
 		$this->data->display($filename);
 		$content = ob_get_clean();
+		$content = $this->replaceMarkers($content);
 		$content = $this->transform($content, $format);
 
 		return $content;
@@ -266,7 +267,6 @@ class SiteMailingCampaign
 	}
 
 	// }}}
-
 	// {{{ protected function getSourceDirectory()
 
 	protected function getSourceDirectory()
@@ -292,6 +292,63 @@ class SiteMailingCampaign
 		}
 
 		return $filename;
+	}
+
+	// }}}
+	// {{{ protected function getReplacementMarkerText()
+
+	/**
+	 * Gets replacement text for a specfied replacement marker identifier
+	 *
+	 * @param string $marker_id the id of the marker found in the campaign
+	 *                           content.
+	 *
+	 * @return string the replacement text for the given marker id.
+	 */
+	protected function getReplacementMarkerText($marker_id)
+	{
+		// by default, always return a blank string as replacement text
+		return '';
+	}
+
+	// }}}
+	// {{{ protected final function replaceMarkers()
+
+	/**
+	 * Replaces markers in campaign with dynamic content
+	 *
+	 * @param string $text the content of the campaign.
+	 *
+	 * @return string the campaign content with markers replaced by dynamic
+	 *                 content.
+	 *
+	 * @see SitePage::getReplacementMarkerText()
+	 */
+	protected final function replaceMarkers($text)
+	{
+		$marker_pattern = '/<!-- \[(.*?)\] -->/u';
+		$callback = array($this, 'getReplacementMarkerTextByMatches');
+		return preg_replace_callback($marker_pattern, $callback, $text);
+	}
+
+	// }}}
+	// {{{ private final function getReplacementMarkerTextByMatches()
+
+	/**
+	 * Gets replacement text for a replacement marker from within a matches
+	 * array returned from a PERL regular expression
+	 *
+	 * @param array $matches the PERL regular expression matches array.
+	 *
+	 * @return string the replacement text for the first parenthesized
+	 *                 subpattern of the <i>$matches</i> array.
+	 */
+	private final function getReplacementMarkerTextByMatches($matches)
+	{
+		if (isset($matches[1]))
+			return $this->getReplacementMarkerText($matches[1]);
+
+		return '';
 	}
 
 	// }}}

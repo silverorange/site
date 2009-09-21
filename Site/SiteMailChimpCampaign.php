@@ -36,36 +36,6 @@ class SiteMailChimpCampaign extends SiteMailingCampaign
 	}
 
 	// }}}
-	// {{{ public function getResourcesArchive()
-
-	/**
-	 * Gets a base64 encoded tgz file which has all the resource files for this
-	 * campaign.
-	 *
-	 * @return string base64 encoded tgz file
-	 */
-	public function getResourcesArchive()
-	{
-		$output = null;
-
-		$filename = $this->getResourcesArchiveFilename();
-		if ($filename !== null && file_exists($filename)) {
-			$content = file_get_contents($filename);
-			$output = base64_encode($content);
-		}
-
-		return $output;
-	}
-
-	// }}}
-	// {{{ protected function getResourcesArchiveFilename()
-
-	protected function getResourcesArchiveFilename()
-	{
-		return null;
-	}
-
-	// }}}
 }
 
 ?>
