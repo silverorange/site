@@ -135,8 +135,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		// add verbosity
 		$verbosity = new SiteCommandLineArgument(
 			array('-v', '--verbose'), 'setVerbosity',
-			Site::_('Sets the level of verbosity of the indexer. Pass 0 to '.
-				'turn off all output.'));
+			Site::_('Sets the level of verbosity of this application. Pass 0 '.
+				'to turn off all output.'));
 
 		$verbosity->addParameter('integer',
 			Site::_('--verbose expects a level between 0 and 2.'),
