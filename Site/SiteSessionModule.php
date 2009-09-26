@@ -511,7 +511,8 @@ class SiteSessionModule extends SiteApplicationModule
 	{
 		session_start();
 
-		/* Explicitly set the session cookie since PHP doesn't do this
+		/*
+		 * Explicitly set the session cookie since PHP doesn't do this
 		 * sometimes on SSL requests.
 		 */
 		setcookie(session_name(), session_id(), 0, '/');
