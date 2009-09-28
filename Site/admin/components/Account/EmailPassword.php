@@ -78,7 +78,8 @@ class SiteAccountEmailPassword extends AdminConfirmation
 			$message = new SwatMessage(sprintf(
 				Site::_('%1$s’s password has been reset and has been emailed '.
 				'to <a href="email:%2$s">%2$s</a>.'),
-				$this->account->getFullname(), $this->account->email));
+				SwatString::minimizeEntities($this->account->getFullname()),
+				SwatString::minimizeEntities($this->account->email)));
 
 			$message->content_type = 'text/xml';
 
