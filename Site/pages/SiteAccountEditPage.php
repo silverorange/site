@@ -67,7 +67,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 		if ($this->ui->hasWidget('confirm_password')) {
 			$confirm_password = $this->ui->getWidget('confirm_password');
-			$confirm_password->password_widget = $this->ui->getWidget('password');
+			$confirm_password->password_widget =
+				$this->ui->getWidget('password');
 		}
 
 		if ($this->ui->hasWidget('confirm_email')) {
@@ -123,9 +124,11 @@ class SiteAccountEditPage extends SiteDBEditPage
 				Site::_('An account already exists with this email address.'),
 				'error');
 
-			$message->secondary_content =
-				sprintf(Site::_('You can %srequest a new password%s to log '.
-					'into the existing account.'), $email_link, '</a>');
+			if ($this->isNew($this->ui->getWidget('edit_form'))) {
+				$message->secondary_content =
+					sprintf(Site::_('You can %srequest a new password%s to '.
+						'log into the existing account.'), $email_link, '</a>');
+			}
 
 			$message->content_type = 'text/xml';
 			$email->addMessage($message);
