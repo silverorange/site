@@ -165,13 +165,21 @@ class SiteAccountEditPage extends SiteDBEditPage
 				$this->account->setDatabase($this->app->db);
 				$this->account->save();
 
-				$this->app->session->loginById($this->account->id);
+				$this->loginAccount();
 			} elseif ($this->account->isModified()) {
 				$this->account->save();
 			}
 
 			$this->addSavedMessage($form);
 		}
+	}
+
+	// }}}
+	// {{{ protected function loginAccount()
+
+	protected function loginAccount()
+	{
+		$this->app->session->loginById($this->account->id);
 	}
 
 	// }}}
