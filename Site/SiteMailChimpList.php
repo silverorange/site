@@ -364,6 +364,7 @@ class SiteMailChimpList extends SiteMailingList
 			'to_email'     => '*|FNAME|* *|LNAME|*',
 			'authenticate' => 'true',
 			'analytics'    => $analytics,
+			'inline_css'   => 'true',
 		);
 
 		if ($this->app->config->mail_chimp->default_folder != null) {
