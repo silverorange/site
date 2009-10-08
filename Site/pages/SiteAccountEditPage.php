@@ -154,25 +154,25 @@ class SiteAccountEditPage extends SiteDBEditPage
 	{
 		if ($form->id == 'edit_form') {
 			$this->updateAccount($form);
+			$message = $this->getSavedMessage($form);
 
 			if ($this->isNew($form)) {
-				$this->account->setPassword(
-					$this->ui->getWidget('password')->value);
+				$password = $this->ui->getWidget('password')->value;
+				if ($password != null)
+					$this->account->setPassword($password);
 
 				$this->account->createdate = new SwatDate();
 				$this->account->createdate->toUTC();
 
 				$this->account->setDatabase($this->app->db);
 				$this->account->save();
+				$this->loginAccount();
 			} elseif ($this->account->isModified()) {
 				$this->account->save();
 			}
 
-			$this->addSavedMessage($form);
-
-			if (!$this->app->session->isLoggedIn()) {
-				$this->loginAccount();
-			}
+			if (strlen($message) > 0)
+				$this->app->messages->add(new SwatMessage($message));
 		}
 	}
 
@@ -193,21 +193,19 @@ class SiteAccountEditPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function addSavedMessage()
+	// {{{ protected function getSavedMessage()
 
-	protected function addSavedMessage(SwatForm $form)
+	protected function getSavedMessage(SwatForm $form)
 	{
+		$message = '';
+
 		if ($this->isNew($form)) {
-			$message = new SwatMessage(
-				Site::_('Your account has been created.'));
-
-			$this->app->messages->add($message);
+			$message = Site::_('Your account has been created.');
 		} else {
-			$message = new SwatMessage(
-				Site::_('Account details have been updated.'));
-
-			$this->app->messages->add($message);
+			$message = Site::_('Account details have been updated.');
 		}
+
+		return $message;
 	}
 
 	// }}}
