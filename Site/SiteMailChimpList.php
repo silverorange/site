@@ -364,6 +364,7 @@ class SiteMailChimpList extends SiteMailingList
 			'to_email'     => '*|FNAME|* *|LNAME|*',
 			'authenticate' => 'true',
 			'analytics'    => $analytics,
+			'inline_css'   => true,
 		);
 
 		if ($this->app->config->mail_chimp->default_folder != null) {
@@ -380,30 +381,9 @@ class SiteMailChimpList extends SiteMailingList
 	protected function getCampaignContent(SiteMailChimpCampaign $campaign)
 	{
 		$content = array(
-			'html' => $this->inlineContentCss(
-				$campaign->getContent(SiteMailingCampaign::FORMAT_XHTML)),
-
+			'html' => $campaign->getContent(SiteMailingCampaign::FORMAT_XHTML),
 			'text' => $campaign->getContent(SiteMailingCampaign::FORMAT_TEXT),
 		);
-
-		return $content;
-	}
-
-	// }}}
-	// {{{ protected function inlineContentCss()
-
-	protected function inlineContentCss($content)
-	{
-		try {
-			$content = $this->client->inlineCss(
-				$this->app->config->mail_chimp->api_key,
-				$content,
-				true // strip_css
-				);
-		} catch (XML_RPC2_FaultException $e){
-			$e = new SiteException($e);
-			$e->process();
-		}
 
 		return $content;
 	}
@@ -412,3 +392,4 @@ class SiteMailChimpList extends SiteMailingList
 }
 
 ?>
+
