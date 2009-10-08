@@ -146,6 +146,12 @@ class SiteMailingCampaign
 		$head_tags = $document->documentElement->getElementsByTagName('head');
 		$head = $head_tags->item(0);
 
+		// add meta Content-Type element to head for UTF-8 encoding
+		$encoding = $document->createElement('meta');
+		$encoding->setAttribute('http-equiv', 'Content-Type');
+		$encoding->setAttribute('content', 'text/html; charset=utf-8');
+		$head->insertBefore($encoding, $head->firstChild);
+
 		// add base element to head
 		$base = $document->createElement('base');
 		$base->setAttribute('href', $this->getBaseHref());
