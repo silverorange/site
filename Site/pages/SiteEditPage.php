@@ -240,7 +240,6 @@ abstract class SiteEditPage extends SiteUiPage
 
 	protected function buildMessages()
 	{
-		parent::buildMessages();
 		foreach ($this->getForms() as $form) {
 			if ($form->isProcessed() && $form->hasMessage()) {
 				$message_display = $this->getMessageDisplay($form);

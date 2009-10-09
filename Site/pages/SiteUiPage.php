@@ -89,12 +89,21 @@ abstract class SiteUiPage extends SitePageDecorator
 
 	protected function buildMessages()
 	{
-		if (!$this->ui->hasWidget('message_display'))
+		$message_display = $this->getMessageDisplay();
+
+		if ($message_display !== null)
 			return;
 
-		$message_display = $this->ui->getWidget('message_display');
 		foreach ($this->app->messages->getAll() as $message)
 			$message_display->add($message);
+	}
+
+	// }}}
+	// {{{ protected function getMessageDisplay()
+
+	protected function getMessageDisplay()
+	{
+		return $this->ui->getRoot()->getFirstDescendant('SwatMessageDisplay');
 	}
 
 	// }}}
