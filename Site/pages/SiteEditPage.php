@@ -240,6 +240,10 @@ abstract class SiteEditPage extends SiteUiPage
 
 	protected function buildMessages()
 	{
+		// parent builds app messages.
+		parent::buildMessages();
+
+		// build form messages.
 		foreach ($this->getForms() as $form) {
 			if ($form->isProcessed() && $form->hasMessage()) {
 				$message_display = $this->getMessageDisplay($form);
@@ -255,7 +259,7 @@ abstract class SiteEditPage extends SiteUiPage
 	// }}}
 	// {{{ protected function getMessageDisplay()
 
-	protected function getMessageDisplay(SwatForm $form)
+	protected function getMessageDisplay(SwatForm $form = null)
 	{
 		return $form->getFirstDescendant('SwatMessageDisplay');
 	}
