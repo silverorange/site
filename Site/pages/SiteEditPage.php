@@ -241,15 +241,9 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function buildMessages()
 	{
 		parent::buildMessages();
-
-		if (!$this->ui->getRoot()->getFirstDescendant('SwatMessageDisplay'))
-			return;
-
 		foreach ($this->getForms() as $form) {
 			if ($form->isProcessed() && $form->hasMessage()) {
-				$message_display =
-					$form->getFirstDescendant('SwatMessageDisplay');
-
+				$message_display = $this->getMessageDisplay($form);
 				if ($message_display !== null) {
 					$message = $this->getInvalidMessage($form);
 					if ($message !== null)
@@ -257,6 +251,14 @@ abstract class SiteEditPage extends SiteUiPage
 				}
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function getMessageDisplay()
+
+	protected function getMessageDisplay(SwatForm $form)
+	{
+		return $form->getFirstDescendant('SwatMessageDisplay');
 	}
 
 	// }}}
