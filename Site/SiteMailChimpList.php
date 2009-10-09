@@ -317,16 +317,16 @@ class SiteMailChimpList extends SiteMailingList
 		$content = $this->getCampaignContent($campaign);
 
 		try {
+			$this->client->campaignUpdate(
+				$this->app->config->mail_chimp->api_key,
+				$campaign->id, 'content', $content);
+
 			// options can only be updated one at a time.
 			foreach ($options as $title => $value) {
 				$this->client->campaignUpdate(
 					$this->app->config->mail_chimp->api_key,
 					$campaign->id, $title, $value);
 			}
-
-			$this->client->campaignUpdate(
-				$this->app->config->mail_chimp->api_key,
-				$campaign->id, 'content', $content);
 		} catch (XML_RPC2_FaultException $e){
 			$e = new SiteException($e);
 			$e->process();
