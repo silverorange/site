@@ -169,6 +169,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 				$this->loginAccount();
 			} elseif ($this->account->isModified()) {
 				$this->account->save();
+				$this->app->session->account = $this->account;
 			}
 
 			if (strlen($message) > 0)
