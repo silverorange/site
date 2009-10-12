@@ -125,12 +125,21 @@ class SiteAccountIndex extends AdminSearch
 
 		$store = new SwatTableStore();
 		foreach ($accounts as $account) {
-			$ds = new SwatDetailsStore($account);
-			$ds->fullname = $account->getFullname();
+			$ds = $this->getDetailsStore($account);
 			$store->add($ds);
 		}
 
 		return $store;
+	}
+
+	// }}}
+	// {{{ protected function getDetailsStore()
+
+	protected function getDetailsStore(SiteAccount $account)
+	{
+		$ds = new SwatDetailsStore($account);
+		$ds->fullname = $account->getFullname();
+		return $ds;
 	}
 
 	// }}}
