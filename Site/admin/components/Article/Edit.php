@@ -126,6 +126,9 @@ class SiteArticleEdit extends AdminDBEdit
 		$this->saveArticle();
 		$this->addToSearchQueue();
 
+		if (isset($this->app->memcache))
+			$this->app->memcache->flushNs('article');
+
 		$message = new SwatMessage(
 			sprintf(Site::_('“%s” has been saved.'),
 				$this->edit_article->title));
@@ -177,9 +180,6 @@ class SiteArticleEdit extends AdminDBEdit
 		$this->edit_article->searchable    = $values['searchable'];
 
 		$this->edit_article->save();
-
-		if (isset($this->app->memcache))
-			$this->app->memcache->flushNs('article');
 	}
 
 	// }}}
