@@ -1,6 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
 <swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
 	<widget class="SwatForm" id="contact_form">
 		<widget class="SwatFrame" id="frame">
 			<property name="title" translatable="yes">Send us a Message</property>

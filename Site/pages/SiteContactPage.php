@@ -49,7 +49,9 @@ class SiteContactPage extends SiteEditPage
 
 	protected function relocate(SwatForm $form)
 	{
-		$this->app->relocate($this->source.'/thankyou');
+		if (count($this->app->messages) === 0) {
+			$this->app->relocate($this->source.'/thankyou');
+		}
 	}
 
 	// }}}
@@ -62,6 +64,18 @@ class SiteContactPage extends SiteEditPage
 		try {
 			$message->send();
 		} catch (SiteMailException $e) {
+			$message = new SwatMessage(
+				Site::_('An error has occurred sending your message.'),
+				'error');
+
+			$message->content_type = 'text/xml';
+			$message->secondary_content = sprintf(Site::_('Please try again '.
+				'later, or send an email directly to '.
+				'<a href="mailto:%1$s">%1$s</a>.'),
+				$this->app->config->email->website_address);
+
+			$this->app->messages->add($message);
+
 			$e->process(false);
 		}
 	}
