@@ -29,9 +29,9 @@ class SiteMailChimpCampaign extends SiteMailingCampaign
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, $shortname)
+	public function __construct(SiteApplication $app, $shortname, $directory)
 	{
-		parent::__construct($app, $shortname);
+		parent::__construct($app, $shortname, $directory);
 		$this->type = self::CAMPAIGN_TYPE_REGULAR;
 	}
 

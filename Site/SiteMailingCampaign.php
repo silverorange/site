@@ -27,6 +27,7 @@ class SiteMailingCampaign
 	// {{{ protected properties
 
 	protected $app;
+	protected $directory;
 
 	/**
 	 * @var SiteLayoutData
@@ -39,10 +40,11 @@ class SiteMailingCampaign
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, $shortname)
+	public function __construct(SiteApplication $app, $shortname, $directory)
 	{
 		$this->app       = $app;
 		$this->shortname = $shortname;
+		$this->directory = $directory;
 		$this->data      = new SiteLayoutData();
 	}
 
