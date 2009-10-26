@@ -195,7 +195,7 @@ class SiteMailChimpList extends SiteMailingList
 
 		} catch (XML_RPC2_FaultException $e){
 			// ignore exceptions caused by users not belonging to the list.
-			if ($e->getFaultCode() != 232) {
+			if ($e->getFaultCode() != 215) {
 				$e = new SiteException($e);
 				$e->process();
 			}
