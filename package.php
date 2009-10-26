@@ -58,7 +58,7 @@ $package->setPearinstallerDep('1.4.0');
 $package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.3.60');
 $package->addPackageDepWithChannel('required', 'MDB2', 'pear.php.net', '2.2.2');
 $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10');
-$package->addPackageDepWithChannel('required', 'Mail_Mime', 'pear.php.net', '1.5.2');
+$package->addPackageDepWithChannel('required', 'Mail_Mime', 'pear.silverorange.com', '1.5.2so3');
 $package->addPackageDepWithChannel('required', 'Net_SMTP', 'pear.php.net', '1.2.8');
 $package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.php.net', '1.0.5');
 $package->addPackageDepWithChannel('required', 'Text_Password', 'pear.php.net', '1.1.1');
