@@ -49,7 +49,8 @@ class SiteContactPage extends SiteEditPage
 
 	protected function relocate(SwatForm $form)
 	{
-		if (count($this->app->messages) === 0) {
+		if ($this->app->session->isActive() &&
+			count($this->app->messages) === 0) {
 			$this->app->relocate($this->source.'/thankyou');
 		}
 	}
@@ -64,6 +65,9 @@ class SiteContactPage extends SiteEditPage
 		try {
 			$message->send();
 		} catch (SiteMailException $e) {
+			if (!$this->app->session->isActive())
+				$this->app->session->activate();
+
 			$message = new SwatMessage(
 				Site::_('An error has occurred sending your message.'),
 				'error');
