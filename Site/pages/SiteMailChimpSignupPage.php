@@ -19,7 +19,7 @@ class SiteMailChimpSignupPage extends SiteMailingSignupPage
 	}
 
 	// }}}
-	// {{{ protected getSubscriberInfo();
+	// {{{ protected getSubscriberInfo()
 
 	protected function getSubscriberInfo()
 	{
