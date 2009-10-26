@@ -118,7 +118,7 @@ class SiteMailChimpList extends SiteMailingList
 
 		try {
 			// last boolean is flag for update_existing
-			$this->client->listSubscribe(
+			$result = $this->client->listSubscribe(
 				$this->app->config->mail_chimp->api_key,
 				$this->shortname,
 				$address,
