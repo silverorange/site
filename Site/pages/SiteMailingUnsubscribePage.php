@@ -38,7 +38,50 @@ abstract class SiteMailingUnsubscribePage extends SiteEditPage
 	protected function unsubscribe(SiteMailingList $list)
 	{
 		$email = $this->getEmail();
-		$list->unsubscribe($email);
+		$unsubscribed = $list->unsubscribe($email);
+
+		switch ($unsubscribed) {
+		case SiteMailingList::NOT_FOUND:
+			$message = new SwatMessage(Site::_('Thank You. Your email address '.
+				'was never subscribed to our newsletter.'),
+				'notice');
+
+			$message->secondary_content =
+				Site::_('You will not receive any mailings to this address.');
+
+			break;
+
+		case SiteMailingList::NOT_SUBSCRIBED:
+			$message = new SwatMessage(Site::_('Thank You. Your email address '.
+				'has already been unsubscribed from our newsletter.'),
+				'notice');
+
+			$message->secondary_content =
+				Site::_('You will not receive any mailings to this address.');
+
+			break;
+
+		case SiteMailingList::FAILURE:
+			$message = new SwatMessage(Site::_('Sorry, there was an issue '.
+				'unsubscribing from the list.'),
+				'error');
+
+			$message->content_type = 'text/xml';
+			$message->secondary_content = sprintf(Site::_('This can usually '.
+				'be resolved by trying again later. If the issue persists '.
+				'please <a href="%s">contact us</a>.'),
+				$this->getContactUsLink());
+
+			$message->content_type = 'txt/xhtml';
+			break;
+
+		default:
+			$message = null;
+		}
+
+		if ($message instanceof SwatMessage) {
+			$this->ui->getWidget('message_display')->add($message);
+		}
 	}
 
 	// }}}
@@ -54,7 +97,17 @@ abstract class SiteMailingUnsubscribePage extends SiteEditPage
 
 	protected function relocate(SwatForm $form)
 	{
-		$this->app->relocate($this->source.'/thankyou');
+		if ($this->ui->getWidget('message_display')->getMessageCount() == 0) {
+			$this->app->relocate($this->source.'/thankyou');
+		}
+	}
+
+	// }}}
+	// {{{ protected function getContactUsLink()
+
+	protected function getContactUsLink()
+	{
+		return 'about/contact';
 	}
 
 	// }}}
