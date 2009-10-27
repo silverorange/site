@@ -16,9 +16,15 @@ class SiteMailChimpList extends SiteMailingList
 
 	/**
 	 * Error code returned when attempting to unsubscribe an email address that
-	 * is not a member of the list. We can safely ignore these.
+	 * was never a member of the list.
 	 */
 	const NOT_FOUND_ERROR_CODE = 232;
+
+	/**
+	 * Error code returned when attempting to unsubscribe an email address that
+	 * is not a current member of the list.
+	 */
+	const NOT_SUBSCRIBED_ERROR_CODE = 215;
 
 	// }}}
 	// {{{ protected properties
@@ -143,6 +149,12 @@ class SiteMailChimpList extends SiteMailingList
 			$e->process();
 		}
 
+		if ($result === true) {
+			$result = self::SUCCESS;
+		} elseif ($result === false) {
+			$result = self::FAILURE;
+		}
+
 		return $result;
 	}
 
@@ -206,11 +218,22 @@ class SiteMailChimpList extends SiteMailingList
 				);
 
 		} catch (XML_RPC2_FaultException $e){
-			// ignore exceptions caused by users not belonging to the list.
-			if ($e->getFaultCode() != self::NOT_FOUND_ERROR_CODE) {
+			// gracefully handle exceptions that we can provide nice feedback
+			// about.
+			if ($e->getFaultCode() == self::NOT_FOUND_ERROR_CODE) {
+				$result = SiteMailingList::NOT_FOUND;
+			} elseif ($e->getFaultCode() == self::NOT_SUBSCRIBED_ERROR_CODE) {
+				$result = SiteMailingList::NOT_SUBSCRIBED;
+			} else {
 				$e = new SiteException($e);
 				$e->process();
 			}
+		}
+
+		if ($result === true) {
+			$result = self::SUCCESS;
+		} elseif ($result === false) {
+			$result = self::FAILURE;
 		}
 
 		return $result;

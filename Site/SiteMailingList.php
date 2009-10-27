@@ -7,6 +7,39 @@
  */
 abstract class SiteMailingList
 {
+	// {{{ class constants
+
+	/**
+	 * Return Value when successfully subscribing or unsubscribing an email
+	 * address from the list.
+	 */
+	const SUCCESS = 1;
+
+	/**
+	 * Return Value when unsuccessfully subscribing or unsubscribing an email
+	 * address from the list and we have no further information.
+	 */
+	const FAILURE = 2;
+
+	/**
+	 * Return Value when unsuccessfully unsubscribing an email address from the
+	 * list.
+	 *
+	 * This is returned if we know the address was never a member of the
+	 * list, or when we have less information, and know the unsubscribe failed.
+	 */
+	const NOT_FOUND = 3;
+
+	/**
+	 * Return Value when unsuccessfully unsubscribing an email address from the
+	 * list.
+	 *
+	 * This is returned if we know the address was a member that has already
+	 * unsubscribed from the list.
+	 */
+	const NOT_SUBSCRIBED = 4;
+
+	// }}}
 	// {{{ protected properties
 
 	protected $app;
