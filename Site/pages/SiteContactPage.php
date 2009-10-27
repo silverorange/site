@@ -69,13 +69,15 @@ class SiteContactPage extends SiteEditPage
 				$this->app->session->activate();
 
 			$message = new SwatMessage(
-				Site::_('An error has occurred sending your message.'),
+				Site::_('Sorry, an error has occurred sending your message.'),
 				'error');
 
 			$message->content_type = 'text/xml';
-			$message->secondary_content = sprintf(Site::_('Please try again '.
-				'later, or send an email directly to '.
-				'<a href="mailto:%1$s">%1$s</a>.'),
+
+			$message->secondary_content = sprintf(Site::_('This can usually '.
+				'be resolved by trying again later. If the issue persists, or '.
+				'your message is time sensitive, please send an email '.
+				'directly to <a href="mailto:%1$s">%1$s</a>.'),
 				$this->app->config->email->website_address);
 
 			$this->app->messages->add($message);
