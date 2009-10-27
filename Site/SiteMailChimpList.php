@@ -50,6 +50,8 @@ class SiteMailChimpList extends SiteMailingList
 
 	public static function getLists(SiteApplication $app)
 	{
+		$result = false;
+
 		try {
 			$client = XML_RPC2_Client::create(
 				$app->config->mail_chimp->api_url);
@@ -68,6 +70,8 @@ class SiteMailChimpList extends SiteMailingList
 
 	public static function getFolders(SiteApplication $app)
 	{
+		$result = false;
+
 		try {
 			$client = XML_RPC2_Client::create(
 				$app->config->mail_chimp->api_url);
@@ -88,6 +92,8 @@ class SiteMailChimpList extends SiteMailingList
 
 	public function getlistMergeVars()
 	{
+		$result = false;
+
 		try {
 			$result = $this->client->listMergeVars(
 				$this->app->config->mail_chimp->api_key, $this->shortname);
@@ -105,6 +111,8 @@ class SiteMailChimpList extends SiteMailingList
 
 	public function subscribe($address, $info = array(), $array_map = array())
 	{
+		$result = false;
+
 		// passed in array_map is second so that it can override any of the
 		// list_merge_array_map values
 		$array_map = array_merge($this->list_merge_array_map, $array_map);
@@ -143,6 +151,8 @@ class SiteMailChimpList extends SiteMailingList
 
 	public function batchSubscribe(array $addresses,  $array_map = array())
 	{
+		$result = false;
+
 		// passed in array_map is second so that it can override any of the
 		// list_merge_array_map values
 		$array_map = array_merge($this->list_merge_array_map, $array_map);
@@ -184,6 +194,8 @@ class SiteMailChimpList extends SiteMailingList
 
 	public function unsubscribe($address)
 	{
+		$result = false;
+
 		try {
 			$result = $this->client->listUnsubscribe(
 				$this->app->config->mail_chimp->api_key,
@@ -195,7 +207,7 @@ class SiteMailChimpList extends SiteMailingList
 
 		} catch (XML_RPC2_FaultException $e){
 			// ignore exceptions caused by users not belonging to the list.
-			if ($e->getFaultCode() != 215) {
+			if ($e->getFaultCode() != self::NOT_FOUND_ERROR_CODE) {
 				$e = new SiteException($e);
 				$e->process();
 			}
@@ -209,6 +221,8 @@ class SiteMailChimpList extends SiteMailingList
 
 	public function batchUnsubscribe(array $addresses)
 	{
+		$result = false;
+
 		try {
 			$result = $this->client->listBatchUnsubscribe(
 				$this->app->config->mail_chimp->api_key,
@@ -286,7 +300,8 @@ class SiteMailChimpList extends SiteMailingList
 		} catch (XML_RPC2_FaultException $e){
 			$e = new SiteException($e);
 			$e->process();
-		}	}
+		}
+	}
 
 	// }}}
 	// {{{ protected function createCampaign()
