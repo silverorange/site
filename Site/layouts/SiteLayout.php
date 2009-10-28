@@ -108,7 +108,9 @@ class SiteLayout extends SiteObject
 	public function complete()
 	{
 		$this->startCapture('html_head_entries');
-		$this->html_head_entries->display($this->app->getBaseHref());
+		$this->html_head_entries->display($this->app->getBaseHref(),
+			$this->app->config->site->resource_tag);
+
 		$this->endCapture();
 	}
 
