@@ -15,16 +15,35 @@ class SiteMailChimpList extends SiteMailingList
 	// {{{ class constants
 
 	/**
-	 * Error code returned when attempting to unsubscribe an email address that
-	 * was never a member of the list.
+	 * Error code returned when attempting to subscribe an email address that
+	 * has previously unsubscribed. We can't programatically resubscribe them,
+	 * mailchimp requires them to resubscribe out of their own volition.
 	 */
-	const NOT_FOUND_ERROR_CODE = 232;
+	const PREVIOUSLY_UNSUBSCRIBED_ERROR_CODE = 212;
+
+	/**
+	 * Error code returned when attempting to subscribe an email address that
+	 * has bounced in the past, so can't be resubscribed.
+	 */
+	const BOUNCED_ERROR_CODE = 213;
 
 	/**
 	 * Error code returned when attempting to unsubscribe an email address that
 	 * is not a current member of the list.
 	 */
 	const NOT_SUBSCRIBED_ERROR_CODE = 215;
+
+	/**
+	 * Error code returned when attempting to unsubscribe an email address that
+	 * was never a member of the list.
+	 */
+	const NOT_FOUND_ERROR_CODE = 232;
+
+	/**
+	 * Error code returned when attempting to subscribe an email address that
+	 * is not a valid email address.
+	 */
+	const INVALID_ADDRESS_ERROR_CODE = 502;
 
 	// }}}
 	// {{{ protected properties
