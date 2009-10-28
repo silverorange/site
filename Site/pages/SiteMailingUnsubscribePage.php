@@ -42,7 +42,7 @@ abstract class SiteMailingUnsubscribePage extends SiteEditPage
 
 		switch ($unsubscribed) {
 		case SiteMailingList::NOT_FOUND:
-			$message = new SwatMessage(Site::_('Thank You. Your email address '.
+			$message = new SwatMessage(Site::_('Thank you. Your email address '.
 				'was never subscribed to our newsletter.'),
 				'notice');
 
@@ -52,7 +52,7 @@ abstract class SiteMailingUnsubscribePage extends SiteEditPage
 			break;
 
 		case SiteMailingList::NOT_SUBSCRIBED:
-			$message = new SwatMessage(Site::_('Thank You. Your email address '.
+			$message = new SwatMessage(Site::_('Thank you. Your email address '.
 				'has already been unsubscribed from our newsletter.'),
 				'notice');
 
