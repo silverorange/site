@@ -191,6 +191,9 @@ class Site
 			// Title of the site
 			'site.title'               => null,
 
+			// Resource tag, used for uncaching html-head-entries
+			'site.resource_tag'        => null,
+
 			// DSN of database
 			'database.dsn'             => null,
 
