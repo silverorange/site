@@ -78,7 +78,7 @@ class SiteContactPage extends SiteEditPage
 				'be resolved by trying again later. If the issue persists, or '.
 				'your message is time sensitive, please send an email '.
 				'directly to <a href="mailto:%1$s">%1$s</a>.'),
-				$this->app->config->email->website_address);
+				$this->app->config->email->contact_address);
 
 			$this->app->messages->add($message);
 
