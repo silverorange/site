@@ -111,6 +111,22 @@ abstract class SiteMailingUnsubscribePage extends SiteEditPage
 	}
 
 	// }}}
+
+	// build phase
+	// {{{ protected function buildInternal()
+
+	protected function buildInternal()
+	{
+		parent::buildInternal();
+
+		$email = SiteApplication::initVar('email');
+		if (strlen($email) > 0) {
+			$this->ui->getWidget('email')->value = $email;
+		}
+	}
+
+	// }}}
+
 }
 
 ?>
