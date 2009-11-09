@@ -39,6 +39,14 @@ abstract class SiteMailingList
 	 */
 	const NOT_SUBSCRIBED = 4;
 
+	/**
+	 * Return Value when unable to subscribed/unsubscribe an email address from
+	 * the list, but we've been able to queue the request.
+	 *
+	 * This happens if isAvailable() returns false.
+	 */
+	const QUEUED = 5;
+
 	// }}}
 	// {{{ protected properties
 
@@ -55,10 +63,23 @@ abstract class SiteMailingList
 	}
 
 	// }}}
+	// {{{ abstract public function isAvailable()
+
+	abstract public function isAvailable();
+
+	// }}}
+
+	// subscriber methods
 	// {{{ abstract public function subscribe()
 
-	abstract public function subscribe($address, $info = array(),
-		$array_map = array());
+	abstract public function subscribe($address, array $info = array(),
+		$send_welcome = true, array $array_map = array());
+
+	// }}}
+	// {{{ abstract public function batchSubscribe()
+
+	abstract public function batchSubscribe(array $addresses,
+		$send_welcome = false, array $array_map = array());
 
 	// }}}
 	// {{{ abstract public function unsubscribe()
@@ -66,6 +87,14 @@ abstract class SiteMailingList
 	abstract public function unsubscribe($address);
 
 	// }}}
+	// {{{ abstract public function batchUnsubscribe()
+
+	abstract public function batchUnsubscribe(array $addresses,
+		array $array_map = array());
+
+	// }}}
+
+	// campaign methods
 	// {{{ abstract public function saveCampaign()
 
 	abstract public function saveCampaign(SiteMailingCampaign $campaign);
