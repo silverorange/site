@@ -19,18 +19,6 @@ class SiteMailChimpUnsubscribePage extends SiteMailingUnsubscribePage
 	}
 
 	// }}}
-	// {{{ protected getSubscriberInfo();
-
-	protected function getSubscriberInfo()
-	{
-		$info = array(
-			'user_ip' => getenv("REMOTE_ADDR"),
-		);
-
-		return $info;
-	}
-
-	// }}}
 }
 
 ?>
