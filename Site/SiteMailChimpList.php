@@ -331,10 +331,12 @@ class SiteMailChimpList extends SiteMailingList
 		$sql = 'insert into MailingListSubscribeQueue
 			(email, info, send_welcome) values (%s, %s, %s)';
 
-		SwatDB::exec($this->app->db, sprintf($sql,
+		$sql = sprintf($sql,
 			$this->app->db->quote($address, 'text'),
 			$this->app->db->quote(serialize($info), 'text'),
-			$this->app->db->quote($send_welcome, 'boolean')));
+			$this->app->db->quote($send_welcome, 'boolean'));
+
+		SwatDB::exec($this->app->db, $sql);
 
 		return SiteMailingList::QUEUED;
 	}
@@ -357,8 +359,10 @@ class SiteMailChimpList extends SiteMailingList
 				$send_welcome_quoted);
 		}
 
-		SwatDB::exec($this->app->db, sprintf($sql,
-			implode(',', $values)));
+		$sql = sprintf($sql,
+			implode(',', $values));
+
+		SwatDB::exec($this->app->db, $sql);
 
 		return SiteMailingList::QUEUED;
 	}
@@ -369,9 +373,10 @@ class SiteMailChimpList extends SiteMailingList
 	protected function queueUnsubscribe($address)
 	{
 		$sql = 'insert into MailingListUnsubscribeQueue (email) values (%s)';
+		$sql = sprintf($sql,
+			$this->app->db->quote($address, 'text'));
 
-		SwatDB::exec($this->app->db, sprintf($sql,
-			$this->app->db->quote($address, 'text')));
+		SwatDB::exec($this->app->db, $sql);
 
 		return SiteMailingList::QUEUED;
 	}
@@ -388,8 +393,10 @@ class SiteMailChimpList extends SiteMailingList
 				$this->app->db->quote($address, 'text'));
 		}
 
-		SwatDB::exec($this->app->db, sprintf($sql,
-			implode(',', $values)));
+		$sql = sprintf($sql,
+			implode(',', $values));
+
+		SwatDB::exec($this->app->db, $sql);
 
 		return SiteMailingList::QUEUED;
 	}
