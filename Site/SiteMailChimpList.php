@@ -58,8 +58,8 @@ class SiteMailChimpList extends SiteMailingList
 	{
 		parent::__construct($app, $shortname);
 
-		$this->client = XML_RPC2_Client::create('asdas');
-//			$this->app->config->mail_chimp->api_url);
+		$this->client = XML_RPC2_Client::create(
+			$this->app->config->mail_chimp->api_url);
 
 		if ($this->shortname === null)
 			$this->shortname = $app->config->mail_chimp->default_list;
