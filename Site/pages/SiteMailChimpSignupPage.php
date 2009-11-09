@@ -11,7 +11,7 @@ require_once 'Site/SiteMailChimpList.php';
 class SiteMailChimpSignupPage extends SiteMailingSignupPage
 {
 	// process phase
-	// {{{ protected function save()
+	// {{{ protected function getList()
 
 	protected function getList()
 	{
