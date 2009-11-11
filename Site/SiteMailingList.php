@@ -89,8 +89,7 @@ abstract class SiteMailingList
 	// }}}
 	// {{{ abstract public function batchUnsubscribe()
 
-	abstract public function batchUnsubscribe(array $addresses,
-		array $array_map = array());
+	abstract public function batchUnsubscribe(array $addresses);
 
 	// }}}
 
