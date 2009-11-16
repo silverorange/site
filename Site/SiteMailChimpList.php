@@ -180,24 +180,6 @@ class SiteMailChimpList extends SiteMailingList
 		$result = false;
 
 		if ($this->isAvailable()) {
-			// passed in array_map is second so that it can override any of the
-			// list_merge_array_map values
-			$array_map = array_merge($this->list_merge_array_map, $array_map);
-
-			$merged_addresses = array();
-			foreach ($addresses as $address) {
-				$merged_address = array();
-				foreach ($address as $id => $value) {
-					if (array_key_exists($id, $array_map) && $value != null) {
-						$merged_address[$array_map[$id]] = $value;
-					}
-				}
-
-				if (count($merged_address)) {
-					$merged_addresses[] = $merged_address;
-				}
-			}
-
 			// MailChimp doesn't allow welcomes to be sent on batch subscribes.
 			// So if we need to send them, do individual subscribes instead.
 			if ($send_welcome === true) {
@@ -207,8 +189,8 @@ class SiteMailChimpList extends SiteMailingList
 					'errors'        => array(),
 					);
 
-				foreach ($merged_addresses as $info) {
-					$current_result = $this->subscribe($info['EMAIL'], $info,
+				foreach ($addresses as $info) {
+					$current_result = $this->subscribe($info['email'], $info,
 						$send_welcome, $array_map);
 
 					switch ($current_result) {
@@ -226,6 +208,26 @@ class SiteMailChimpList extends SiteMailingList
 					}
 				}
 			} else {
+				// passed in array_map is second so that it can override any of
+				// the list_merge_array_map values
+				$array_map = array_merge($this->list_merge_array_map,
+					$array_map);
+
+				$merged_addresses = array();
+				foreach ($addresses as $address) {
+					$merged_address = array();
+					foreach ($address as $id => $value) {
+						if (array_key_exists($id, $array_map) &&
+							$value != null) {
+							$merged_address[$array_map[$id]] = $value;
+						}
+					}
+
+					if (count($merged_address)) {
+						$merged_addresses[] = $merged_address;
+					}
+				}
+
 				try {
 					$result = $this->client->listBatchSubscribe(
 						$this->app->config->mail_chimp->api_key,
