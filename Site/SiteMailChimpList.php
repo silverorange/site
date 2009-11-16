@@ -208,10 +208,10 @@ class SiteMailChimpList extends SiteMailingList
 					);
 
 				foreach ($merged_addresses as $info) {
-					$current_result = $this->subscribe($info['email'], $info,
+					$current_result = $this->subscribe($info['EMAIL'], $info,
 						$send_welcome, $array_map);
 
-					switch ($curent_result) {
+					switch ($current_result) {
 					case self::SUCCESS:
 						$result['success_count']++;
 						break;
@@ -219,7 +219,7 @@ class SiteMailChimpList extends SiteMailingList
 					default:
 						$result['error_count']++;
 						$result['errors'][] = array(
-							'code' => $curent_result,
+							'code' => $current_result,
 							'message' => Site::_(sprintf('Error subscribing %s',
 								$info['email'])),
 						);
