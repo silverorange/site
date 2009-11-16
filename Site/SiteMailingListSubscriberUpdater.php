@@ -17,7 +17,7 @@ abstract class SiteMailingListSubscriberUpdater
 {
 	// {{{ protected properties
 
-	private $dry_run = false;
+	protected $dry_run = false;
 
 	// }}}
 	// {{{ public function __construct()
@@ -49,7 +49,7 @@ abstract class SiteMailingListSubscriberUpdater
 
 		$list = $this->getList();
 
-		$this->debug(Site::_('Updating Mailing List')."\n\n". true);
+		$this->debug(Site::_('Updating Mailing List')."\n\n", true);
 
 		$this->debug(Site::_('Subscribing:')."\n--------------------\n");
 		$this->subscribe($list);
@@ -194,7 +194,7 @@ abstract class SiteMailingListSubscriberUpdater
 	{
 		if ($result === SiteMailingList::QUEUED) {
 			$this->debug(Site::_('All requests queued.')."\n");
-		} elseif ($result === SiteMailingList::SUCESS) {
+		} elseif ($result === SiteMailingList::SUCCESS) {
 			$this->debug(Site::_('All requests successful.')."\n");
 		} elseif (is_int($result) && $result > 0) {
 			$this->debug(sprintf($success_message, $result));

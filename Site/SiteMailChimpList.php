@@ -213,7 +213,7 @@ class SiteMailChimpList extends SiteMailingList
 
 					switch ($curent_result) {
 					case self::SUCCESS:
-						$result['sucess_count']++;
+						$result['success_count']++;
 						break;
 
 					default:
@@ -347,7 +347,7 @@ class SiteMailChimpList extends SiteMailingList
 	protected function queueBatchSubscribe(array $addresses, $send_welcome)
 	{
 		$sql = 'insert into MailingListSubscribeQueue
-			(email, info, send_welcome) values %s';
+			(email, info) values %s';
 
 		$values = array();
 		$send_welcome_quoted = $this->app->db->quote($send_welcome, 'boolean');

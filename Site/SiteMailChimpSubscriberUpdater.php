@@ -24,7 +24,7 @@ class SiteMailChimpSubscriberUpdater
 
 	protected function handleResult($result, $success_message)
 	{
-		parent::handleResult();
+		parent::handleResult($result, $success_message);
 
 		if (is_array($result)) {
 			$this->debug(sprintf($success_message,
