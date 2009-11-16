@@ -49,7 +49,7 @@ class SiteContactPage extends SiteEditPage
 
 	protected function relocate(SwatForm $form)
 	{
-		if ($this->app->session->isActive() &&
+		if (!$this->app->session->isActive() ||
 			count($this->app->messages) === 0) {
 			$this->app->relocate($this->source.'/thankyou');
 		}
