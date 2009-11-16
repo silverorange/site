@@ -9,6 +9,11 @@ require_once 'Site/pages/SiteEditPage.php';
  */
 abstract class SiteMailingSignupPage extends SiteEditPage
 {
+	// {{{ protected properties
+
+	protected $send_welcome = true;
+
+	// }}}
 	// {{{ protected function getUiXml()
 
 	protected function getUiXml()
@@ -41,7 +46,7 @@ abstract class SiteMailingSignupPage extends SiteEditPage
 		$info      = $this->getSubscriberInfo();
 		$array_map = $this->getArrayMap();
 
-		$list->subscribe($email, $info, $array_map);
+		$list->subscribe($email, $info, $this->send_welcome, $array_map);
 	}
 
 	// }}}
