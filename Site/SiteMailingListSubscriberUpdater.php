@@ -206,6 +206,7 @@ abstract class SiteMailingListSubscriberUpdater
 
 	protected function getArrayMap()
 	{
+		return array();
 	}
 
 	// }}}
@@ -219,11 +220,11 @@ abstract class SiteMailingListSubscriberUpdater
 			where send_welcome = %s';
 
 		$sql = sprintf($sql,
-			$this->app->db->quote($with_welcome, 'boolean'));
+			$this->db->quote($with_welcome, 'boolean'));
 
-		$rows = SwatDB::query($this->app->db, $sql);
+		$rows = SwatDB::query($this->db, $sql);
 		foreach ($rows as $row) {
-			$address          = $row->info;
+			$address          = unserialize($row->info);
 			$address['email'] = $row->email;
 
 			$addresses[] = $address;
@@ -241,7 +242,7 @@ abstract class SiteMailingListSubscriberUpdater
 
 		$sql = 'select email from MailingListUnsubscribeQueue';
 
-		$rows = SwatDB::query($this->app->db, $sql);
+		$rows = SwatDB::query($this->db, $sql);
 		foreach ($rows as $row) {
 			$addresses[] = $row->email;
 		}
@@ -259,15 +260,15 @@ abstract class SiteMailingListSubscriberUpdater
 
 		$quoted_address_array = array();
 		foreach ($addresses as $address) {
-			$quoted_address_array[] = $this->app->db->quote($address['email'],
+			$quoted_address_array[] = $this->db->quote($address['email'],
 				'text');
 		}
 
 		$sql = sprintf($sql,
 			implode(',', $quoted_address_array),
-			$this->app->db->quote($with_welcome, 'boolean'));
+			$this->db->quote($with_welcome, 'boolean'));
 
-		$delete_count = SwatDB::exec($this->app->db, $sql);
+		$delete_count = SwatDB::exec($this->db, $sql);
 
 		$this->debug(sprintf(
 			Site::_('%s rows (%s addresses) cleared from the queue.')."\n",
@@ -283,13 +284,13 @@ abstract class SiteMailingListSubscriberUpdater
 
 		$quoted_address_array = array();
 		foreach ($addresses as $address) {
-			$quoted_address_array[] = $this->app->db->quote($address, 'text');
+			$quoted_address_array[] = $this->db->quote($address, 'text');
 		}
 
 		$sql = sprintf($sql,
 			implode(',', $quoted_address_array));
 
-		$delete_count = SwatDB::exec($this->app->db, $sql);
+		$delete_count = SwatDB::exec($this->db, $sql);
 
 		$this->debug(sprintf(
 			Site::_('%s rows (%s addresses) cleared from the queue.')."\n",

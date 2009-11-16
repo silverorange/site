@@ -28,7 +28,7 @@ class SiteMailChimpSubscriberUpdater
 
 		if (is_array($result)) {
 			$this->debug(sprintf($success_message,
-				count($result['success_count'])));
+				$result['success_count']));
 
 			if ($result['error_count']) {
 				$errors = array();
