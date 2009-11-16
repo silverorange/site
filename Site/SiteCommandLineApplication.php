@@ -14,7 +14,7 @@ require_once 'Site/SiteCommandLineArgument.php';
  * method.
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommandLineApplication extends SiteApplication
@@ -248,6 +248,19 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	public function getScriptDirectory()
 	{
 		return dirname(realpath($_SERVER['SCRIPT_FILENAME']));
+	}
+
+	// }}}
+	// {{{ public function run()
+
+	/**
+	 * Run the application. Includes boilerplate init of modules and command
+	 * line arguments.
+	 */
+	public function run()
+	{
+		$this->initModules();
+		$this->parseCommandLineArguments();
 	}
 
 	// }}}
