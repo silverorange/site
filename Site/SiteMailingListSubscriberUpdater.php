@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDB.php';
 require_once 'Site/Site.php';
 require_once 'Site/SiteMailingList.php';
+require_once 'Site/SiteCommandLineApplication.php';
 
 /**
  * Cron job application to update newsletter subscribers
@@ -14,6 +15,32 @@ require_once 'Site/SiteMailingList.php';
 abstract class SiteMailingListSubscriberUpdater
 	extends SiteCommandLineApplication
 {
+	// {{{ protected properties
+
+	private $dry_run = false;
+
+	// }}}
+	// {{{ public function __construct()
+
+	public function __construct($id, $filename, $title, $documentation)
+	{
+		parent::__construct($id, $filename, $title, $documentation);
+
+		$dry_run = new SiteCommandLineArgument(array('--dry-run'),
+			'setDryRun', 'No data is actually modified.');
+
+		$this->addCommandLineArgument($dry_run);
+	}
+
+	// }}}
+	// {{{ public function setDryRun()
+
+	public function setDryRun($dry_run)
+	{
+		$this->dry_run = (boolean)$dry_run;
+	}
+
+	// }}}
 	// {{{ public function run()
 
 	public function run()
@@ -45,7 +72,7 @@ abstract class SiteMailingListSubscriberUpdater
 
 	protected function subscribe(SiteMailingList $list)
 	{
-		if ($list->isAvailable) {
+		if ($list->isAvailable()) {
 			// broken into two methods since we sometimes have to use different
 			// api calls to send the welcome email.
 			$this->subscribeQueuedWithWelcome($list);
@@ -61,7 +88,7 @@ abstract class SiteMailingListSubscriberUpdater
 
 	protected function unsubscribe(SiteMailingList $list)
 	{
-		if ($list->isAvailable) {
+		if ($list->isAvailable()) {
 			$this->unsubscribeQueued($list);
 		} else {
 			$this->debug(Site::_('Mailing list unavailable. No queued '.
@@ -84,19 +111,21 @@ abstract class SiteMailingListSubscriberUpdater
 			return;
 		}
 
-		$result = $list->batchSubscribe($addresses, true,
-			$this->getArrayMap());
-
 		$this->debug(sprintf(
 			Site::_('Subscribing %s queued addresses with welcome message.').
 			"\n",
 			count($addresses)));
 
-		$this->clearQueuedSubscribes($addresses, $with_welcome);
+		if ($this->dry_run === false) {
+			$result = $list->batchSubscribe($addresses, true,
+				$this->getArrayMap());
 
-		$this->handleResult($success_count,
-			Site::_('%s queued addresses with welcome message subscribed.').
-			"\n");
+			$this->clearQueuedSubscribes($addresses, $with_welcome);
+
+			$this->handleResult($result,
+				Site::_('%s queued addresses with welcome message subscribed.').
+				"\n");
+		}
 
 		$this->debug(Site::_('done subscribing queued addresses with welcome '.
 			'message.')."\n\n");
@@ -118,13 +147,15 @@ abstract class SiteMailingListSubscriberUpdater
 		$this->debug(sprintf(Site::_('Subscribing %s queued addresses.')."\n",
 			count($addresses)));
 
-		$result = $list->batchSubscribe($addresses, false,
-			$this->getArrayMap());
+		if ($this->dry_run === false) {
+			$result = $list->batchSubscribe($addresses, false,
+				$this->getArrayMap());
 
-		$this->handleResult($result,
-			Site::_('%s queued addresses subscribed.')."\n");
+			$this->clearQueuedSubscribes($addresses, $with_welcome);
 
-		$this->clearQueuedSubscribes($addresses, $with_welcome);
+			$this->handleResult($result,
+				Site::_('%s queued addresses subscribed.')."\n");
+		}
 
 		$this->debug(Site::_('done subscribing queued addresses.')."\n\n");
 	}
@@ -144,12 +175,14 @@ abstract class SiteMailingListSubscriberUpdater
 		$this->debug(sprintf(Site::_('Unsubscribing %s queued addresses.')."\n",
 			count($addresses)));
 
-		$result = $list->batchUnsubscribe($addresses);
+		if ($this->dry_run === false) {
+			$result = $list->batchUnsubscribe($addresses);
 
-		$this->handleResult($result,
-			Site::_('%s queued addresses unsubscribed.')."\n");
+			$this->handleResult($result,
+				Site::_('%s queued addresses unsubscribed.')."\n");
 
-		$this->clearQueuedUnsubscribes($addresses);
+			$this->clearQueuedUnsubscribes($addresses);
+		}
 
 		$this->debug(Site::_('done unsubscribing queued addresses.')."\n\n");
 	}
