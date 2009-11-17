@@ -92,11 +92,102 @@ abstract class SiteMailingList
 	abstract public function batchUnsubscribe(array $addresses);
 
 	// }}}
+	// {{{ abstract public function isMember()
+
+	abstract public function isMember($address);
+
+	// }}}
 
 	// campaign methods
 	// {{{ abstract public function saveCampaign()
 
 	abstract public function saveCampaign(SiteMailingCampaign $campaign);
+
+	// }}}
+
+	/**
+	 * Subscriber queue methods
+	 *
+	 * Don't worry about dupes in the list, subscribing someone multiple times
+	 * doesn't break anything. And if it ever does, we'll handle it in the
+	 * code that subscribes the queued requests.
+	 */
+	// {{{ protected function queueSubscribe()
+
+	protected function queueSubscribe($address, array $info, $send_welcome)
+	{
+		$sql = 'insert into MailingListSubscribeQueue
+			(email, info, send_welcome) values (%s, %s, %s)';
+
+		$sql = sprintf($sql,
+			$this->app->db->quote($address, 'text'),
+			$this->app->db->quote(serialize($info), 'text'),
+			$this->app->db->quote($send_welcome, 'boolean'));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		return SiteMailingList::QUEUED;
+	}
+
+	// }}}
+	// {{{ protected function queueBatchSubscribe()
+
+	protected function queueBatchSubscribe(array $addresses, $send_welcome)
+	{
+		$sql = 'insert into MailingListSubscribeQueue
+			(email, info) values %s';
+
+		$values = array();
+		$send_welcome_quoted = $this->app->db->quote($send_welcome, 'boolean');
+
+		foreach ($addresses as $info) {
+			$values[] = sprintf('(%s, %s)',
+				$this->app->db->quote($info['email'], 'text'),
+				$this->app->db->quote(serialize($info), 'text'),
+				$send_welcome_quoted);
+		}
+
+		$sql = sprintf($sql,
+			implode(',', $values));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		return SiteMailingList::QUEUED;
+	}
+
+	// }}}
+	// {{{ protected function queueUnsubscribe()
+
+	protected function queueUnsubscribe($address)
+	{
+		$sql = 'insert into MailingListUnsubscribeQueue (email) values (%s)';
+		$sql = sprintf($sql,
+			$this->app->db->quote($address, 'text'));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		return SiteMailingList::QUEUED;
+	}
+
+	// }}}
+	// {{{ protected function queueBatchUnsubscribe()
+
+	protected function queueBatchUnsubscribe(array $addresses)
+	{
+		$sql = 'insert into MailingListUnsubscribeQueue (email) values %s';
+		$values = array();
+		foreach ($addresses as $address) {
+			$values[] = sprintf('(%s)',
+				$this->app->db->quote($address, 'text'));
+		}
+
+		$sql = sprintf($sql,
+			implode(',', $values));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		return SiteMailingList::QUEUED;
+	}
 
 	// }}}
 }

@@ -322,85 +322,29 @@ class SiteMailChimpList extends SiteMailingList
 	}
 
 	// }}}
+	// {{{ public function isMember()
 
-	// subscriber queue methods
-	// TODO: test what happens when a subscriber is queued multiple times.
-	// if it doesn't break anything, just allow it to happen.
-	// {{{ protected function queueSubscribe()
-
-	protected function queueSubscribe($address, array $info, $send_welcome)
+	public function isMember($address)
 	{
-		$sql = 'insert into MailingListSubscribeQueue
-			(email, info, send_welcome) values (%s, %s, %s)';
+		$result = false;
 
-		$sql = sprintf($sql,
-			$this->app->db->quote($address, 'text'),
-			$this->app->db->quote(serialize($info), 'text'),
-			$this->app->db->quote($send_welcome, 'boolean'));
+		try {
+			$info = $this->client->listMemberInfo(
+				$this->app->config->mail_chimp->api_key,
+				$this->shortname,
+				$address
+				);
 
-		SwatDB::exec($this->app->db, $sql);
-
-		return SiteMailingList::QUEUED;
-	}
-
-	// }}}
-	// {{{ protected function queueBatchSubscribe()
-
-	protected function queueBatchSubscribe(array $addresses, $send_welcome)
-	{
-		$sql = 'insert into MailingListSubscribeQueue
-			(email, info) values %s';
-
-		$values = array();
-		$send_welcome_quoted = $this->app->db->quote($send_welcome, 'boolean');
-
-		foreach ($addresses as $info) {
-			$values[] = sprintf('(%s, %s)',
-				$this->app->db->quote($info['email'], 'text'),
-				$this->app->db->quote(serialize($info), 'text'),
-				$send_welcome_quoted);
+			// this is the only way to tell if a member is actually subscribed.
+			if ($info['status'] == 'subscribed') {
+				$result = true;
+			}
+		} catch (XML_RPC2_FaultException $e) {
+			// if it fails for any reason, just consider the address as not
+			// subscribed.
 		}
 
-		$sql = sprintf($sql,
-			implode(',', $values));
-
-		SwatDB::exec($this->app->db, $sql);
-
-		return SiteMailingList::QUEUED;
-	}
-
-	// }}}
-	// {{{ protected function queueUnsubscribe()
-
-	protected function queueUnsubscribe($address)
-	{
-		$sql = 'insert into MailingListUnsubscribeQueue (email) values (%s)';
-		$sql = sprintf($sql,
-			$this->app->db->quote($address, 'text'));
-
-		SwatDB::exec($this->app->db, $sql);
-
-		return SiteMailingList::QUEUED;
-	}
-
-	// }}}
-	// {{{ protected function queueBatchUnsubscribe()
-
-	protected function queueBatchUnsubscribe(array $addresses)
-	{
-		$sql = 'insert into MailingListUnsubscribeQueue (email) values %s';
-		$values = array();
-		foreach ($addresses as $address) {
-			$values[] = sprintf('(%s)',
-				$this->app->db->quote($address, 'text'));
-		}
-
-		$sql = sprintf($sql,
-			implode(',', $values));
-
-		SwatDB::exec($this->app->db, $sql);
-
-		return SiteMailingList::QUEUED;
+		return $result;
 	}
 
 	// }}}
