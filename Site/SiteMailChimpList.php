@@ -58,11 +58,11 @@ class SiteMailChimpList extends SiteMailingList
 	{
 		parent::__construct($app, $shortname);
 
-		// if the connection takes longer than 2s timeout. This will prevent
+		// if the connection takes longer than 5s timeout. This will prevent
 		// users from waiting too long when mailchimp is down - requests will
 		// just get queued. Without setting this, the timeout is ~90s
 		$client_options = array(
-			'connectionTimeout' => 2000,
+			'connectionTimeout' => 5000,
 		);
 
 		$this->client = XML_RPC2_Client::create(
