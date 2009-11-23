@@ -58,8 +58,15 @@ class SiteMailChimpList extends SiteMailingList
 	{
 		parent::__construct($app, $shortname);
 
+		// if the connection takes longer than 2s timeout. This will prevent
+		// users from waiting too long when mailchimp is down - requests will
+		// just get queued. Without setting this, the timeout is ~90s
+		$client_options = array(
+			'connectionTimeout' => 2000,
+		);
+
 		$this->client = XML_RPC2_Client::create(
-			$this->app->config->mail_chimp->api_url);
+			$this->app->config->mail_chimp->api_url, $client_options);
 
 		if ($this->shortname === null)
 			$this->shortname = $app->config->mail_chimp->default_list;
@@ -154,7 +161,7 @@ class SiteMailChimpList extends SiteMailingList
 					$send_welcome
 					);
 
-			} catch (XML_RPC2_FaultException $e) {
+			} catch (XML_RPC2_Exception $e) {
 				$e = new SiteException($e);
 				$e->process();
 			}
@@ -238,7 +245,7 @@ class SiteMailChimpList extends SiteMailingList
 						true   // replace_intrests, this is the default
 						);
 
-				} catch (XML_RPC2_FaultException $e) {
+				} catch (XML_RPC2_Exception $e) {
 					$e = new SiteException($e);
 					$e->process();
 				}
@@ -267,7 +274,7 @@ class SiteMailChimpList extends SiteMailingList
 					false  // send_goodbye
 					);
 
-			} catch (XML_RPC2_FaultException $e) {
+			} catch (XML_RPC2_Exception $e) {
 				// gracefully handle exceptions that we can provide nice
 				// feedback about.
 				if ($e->getFaultCode() == self::NOT_FOUND_ERROR_CODE) {
@@ -310,7 +317,7 @@ class SiteMailChimpList extends SiteMailingList
 					false  // send_goodbye
 					);
 
-			} catch (XML_RPC2_FaultException $e) {
+			} catch (XML_RPC2_Exception $e) {
 				$e = new SiteException($e);
 				$e->process();
 			}
@@ -339,7 +346,7 @@ class SiteMailChimpList extends SiteMailingList
 			if ($info['status'] == 'subscribed') {
 				$result = true;
 			}
-		} catch (XML_RPC2_FaultException $e) {
+		} catch (XML_RPC2_Exception $e) {
 			// if it fails for any reason, just consider the address as not
 			// subscribed.
 		}
@@ -379,7 +386,7 @@ class SiteMailChimpList extends SiteMailingList
 			$campaigns = $this->client->campaigns(
 				$this->app->config->mail_chimp->api_key,
 				$filters);
-		} catch (XML_RPC2_FaultException $e) {
+		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
 		}
@@ -403,7 +410,7 @@ class SiteMailChimpList extends SiteMailingList
 				$this->app->config->mail_chimp->api_key,
 				$campaign->id,
 				$test_emails);
-		} catch (XML_RPC2_FaultException $e) {
+		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
 		}
@@ -421,7 +428,7 @@ class SiteMailChimpList extends SiteMailingList
 			$campaign_id = $this->client->campaignCreate(
 				$this->app->config->mail_chimp->api_key,
 				$campaign->type, $options, $content);
-		} catch (XML_RPC2_FaultException $e) {
+		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
 		}
@@ -448,7 +455,7 @@ class SiteMailChimpList extends SiteMailingList
 					$this->app->config->mail_chimp->api_key,
 					$campaign->id, $title, $value);
 			}
-		} catch (XML_RPC2_FaultException $e) {
+		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
 		}
@@ -520,7 +527,7 @@ class SiteMailChimpList extends SiteMailingList
 
 		try {
 		    $lists = $this->client->lists($app->config->mail_chimp->api_key);
-		} catch (XML_RPC2_FaultException $e) {
+		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
 		}
@@ -539,7 +546,7 @@ class SiteMailChimpList extends SiteMailingList
 		    $folders = $client->campaignFolders(
 				$app->config->mail_chimp->api_key);
 
-		} catch (XML_RPC2_FaultException $e) {
+		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
 		}
@@ -558,7 +565,7 @@ class SiteMailChimpList extends SiteMailingList
 			$merge_vars = $this->client->listMergeVars(
 				$this->app->config->mail_chimp->api_key, $this->shortname);
 
-		} catch (XML_RPC2_FaultException $e) {
+		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
 		}
