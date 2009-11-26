@@ -47,6 +47,13 @@ abstract class SiteMailingList
 	 */
 	const QUEUED = 5;
 
+	/**
+	 * Return Value when unable to subscribe an email address to the list.
+	 *
+	 * This is returned on invalid email addresses.
+	 */
+	const INVALID = 6;
+
 	// }}}
 	// {{{ protected properties
 
