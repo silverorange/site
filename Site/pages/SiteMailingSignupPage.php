@@ -46,10 +46,61 @@ abstract class SiteMailingSignupPage extends SiteEditPage
 		$info      = $this->getSubscriberInfo();
 		$array_map = $this->getArrayMap();
 
+		$this->checkMember($list, $email);
+
 		$subscribed = $list->subscribe($email, $info, $this->send_welcome,
 			$array_map);
 
-		switch ($subscribed) {
+		$this->handleResponse($subscribed);
+	}
+
+	// }}}
+	// {{{ protected function getEmail()
+
+	protected function getEmail()
+	{
+		return $this->ui->getWidget('email')->value;
+	}
+
+	// }}}
+	// {{{ abstract protected function getSubscriberInfo();
+
+	abstract protected function getSubscriberInfo();
+
+	// }}}
+	// {{{ protected function getArrayMap()
+
+	protected function getArrayMap()
+	{
+		return array();
+	}
+
+	// }}}
+	// {{{ protected function checkMember()
+
+	protected function checkMember(SiteMailingList $list, $email)
+	{
+		if ($list->isMember($email)) {
+			// TODO: rewrite.
+			$message = new SwatMessage(Site::_('Thank you. Your email address '.
+				'was already subscribed to our newsletter.'),
+				'notice');
+
+			$message->secondary_content = Site::_('Your subscriber '.
+				'information has been updated, and you will continue to '.
+				'receive mailings to this address.');
+
+			$this->app->messages->add($message);
+			$this->send_welcome = false;
+		}
+	}
+
+	// }}}
+	// {{{ protected function handleResponse()
+
+	protected function handleResponse($response)
+	{
+		switch ($response) {
 		case SiteMailingList::INVALID:
 			$message = new SwatMessage(Site::_('Sorry, the email address '.
 				'you entered is not a valid email address.'),
@@ -78,27 +129,6 @@ abstract class SiteMailingSignupPage extends SiteEditPage
 		if ($message instanceof SwatMessage) {
 			$this->ui->getWidget('message_display')->add($message);
 		}
-	}
-
-	// }}}
-	// {{{ protected function getEmail()
-
-	protected function getEmail()
-	{
-		return $this->ui->getWidget('email')->value;
-	}
-
-	// }}}
-	// {{{ abstract protected function getSubscriberInfo();
-
-	abstract protected function getSubscriberInfo();
-
-	// }}}
-	// {{{ protected function getArrayMap()
-
-	protected function getArrayMap()
-	{
-		return array();
 	}
 
 	// }}}
