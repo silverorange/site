@@ -3,7 +3,6 @@
 require_once 'XML/RPC2/Client.php';
 require_once 'Site/SiteMailingList.php';
 require_once 'Site/SiteMailChimpCampaign.php';
-require_once 'VanBourgondien/VanBourgondienNewsletter.php';
 
 /**
  * @package   Site
@@ -160,10 +159,15 @@ class SiteMailChimpList extends SiteMailingList
 					true, // replace_interests, this is the default
 					$send_welcome
 					);
-
 			} catch (XML_RPC2_Exception $e) {
-				$e = new SiteException($e);
-				$e->process();
+				// gracefully handle exceptions that we can provide nice
+				// feedback about.
+				if ($e->getFaultCode() == self::INVALID_ADDRESS_ERROR_CODE) {
+					$result = SiteMailingList::INVALID;
+				} else {
+					$e = new SiteException($e);
+					$e->process();
+				}
 			}
 		} elseif ($this->app->hasModule('SiteDatabaseModule')) {
 			$result = $this->queueSubscribe($address, $info, $send_welcome);
