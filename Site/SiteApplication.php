@@ -757,7 +757,7 @@ abstract class SiteApplication extends SiteObject
 					$wrapper = false;
 				} else {
 					foreach ($dataobject_array as $object) {
-						$wrapper->add($object);
+						$wrapper[] = $object;
 					}
 
 					$wrapper->setDatabase($this->db);
