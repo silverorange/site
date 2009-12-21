@@ -51,7 +51,10 @@ abstract class SiteMailingSignupPage extends SiteEditPage
 		$subscribed = $list->subscribe($email, $info, $this->send_welcome,
 			$array_map);
 
-		$this->handleResponse($subscribed);
+		$message = $list->handleSubscribeResponse($response);
+		if ($message instanceof SwatMessage) {
+			$this->ui->getWidget('message_display')->add($message);
+		}
 	}
 
 	// }}}
@@ -96,42 +99,6 @@ abstract class SiteMailingSignupPage extends SiteEditPage
 	}
 
 	// }}}
-	// {{{ protected function handleResponse()
-
-	protected function handleResponse($response)
-	{
-		switch ($response) {
-		case SiteMailingList::INVALID:
-			$message = new SwatMessage(Site::_('Sorry, the email address '.
-				'you entered is not a valid email address.'),
-				'error');
-
-			break;
-
-		case SiteMailingList::FAILURE:
-			$message = new SwatMessage(Site::_('Sorry, there was an issue '.
-				'subscribing you to the list.'),
-				'error');
-
-			$message->content_type = 'text/xml';
-			$message->secondary_content = sprintf(Site::_('This can usually '.
-				'be resolved by trying again later. If the issue persists '.
-				'please <a href="%s">contact us</a>.'),
-				$this->getContactUsLink());
-
-			$message->content_type = 'txt/xhtml';
-			break;
-
-		default:
-			$message = null;
-		}
-
-		if ($message instanceof SwatMessage) {
-			$this->ui->getWidget('message_display')->add($message);
-		}
-	}
-
-	// }}}
 	// {{{ protected function relocate()
 
 	protected function relocate(SwatForm $form)
@@ -139,14 +106,6 @@ abstract class SiteMailingSignupPage extends SiteEditPage
 		if ($this->ui->getWidget('message_display')->getMessageCount() == 0) {
 			$this->app->relocate($this->source.'/thankyou');
 		}
-	}
-
-	// }}}
-	// {{{ protected function getContactUsLink()
-
-	protected function getContactUsLink()
-	{
-		return 'about/contact';
 	}
 
 	// }}}
