@@ -9,6 +9,9 @@ require_once 'Site/SiteMailChimpCampaign.php';
  * @copyright 2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
+// TODO: handle addresses somehow magically, perhaps add type checking on merge
+// vars, and allow zip to be passed into an address field by filling with
+// placeholder data in the other address columns (as suggested by mailchimp).
 class SiteMailChimpList extends SiteMailingList
 {
 	// {{{ class constants
@@ -16,7 +19,7 @@ class SiteMailChimpList extends SiteMailingList
 	/**
 	 * Error code returned when attempting to subscribe an email address that
 	 * has previously unsubscribed. We can't programatically resubscribe them,
-	 * mailchimp requires them to resubscribe out of their own volition.
+	 * MailChimp requires them to resubscribe out of their own volition.
 	 */
 	const PREVIOUSLY_UNSUBSCRIBED_ERROR_CODE = 212;
 
@@ -49,6 +52,14 @@ class SiteMailChimpList extends SiteMailingList
 
 	protected $client;
 	protected $list_merge_array_map = array();
+	protected $default_address = array(
+		'addr1'   => '',
+		'addr2'   => '',
+		'city'    => '',
+		'state'   => '',
+		'zip'     => '',
+		'country' => '',
+		);
 
 	// }}}
 	// {{{ public function __construct()
@@ -58,7 +69,7 @@ class SiteMailChimpList extends SiteMailingList
 		parent::__construct($app, $shortname);
 
 		// if the connection takes longer than 5s timeout. This will prevent
-		// users from waiting too long when mailchimp is down - requests will
+		// users from waiting too long when MailChimp is down - requests will
 		// just get queued. Without setting this, the timeout is ~90s
 		$client_options = array(
 			'connectionTimeout' => 5000,
@@ -79,8 +90,8 @@ class SiteMailChimpList extends SiteMailingList
 	/**
 	 * Tests to make sure the service is available.
 	 *
-	 * Returns false if mailchimp returns an unexpected value or the
-	 * XML_RPC2_Client throws an exception. Unexpected values from mailchimp
+	 * Returns false if MailChimp returns an unexpected value or the
+	 * XML_RPC2_Client throws an exception. Unexpected values from MailChimp
 	 * get thrown in exceptions as well. Any exceptions thrown are not exited
 	 * on, so that we can queue requests based on service availability.
 	 *
@@ -121,6 +132,7 @@ class SiteMailChimpList extends SiteMailingList
 			'first_name' => 'FNAME',
 			'last_name'  => 'LNAME',
 			'user_ip'    => 'OPTINIP',
+			'interests'  => 'INTERESTS',
 		);
 	}
 
@@ -135,17 +147,7 @@ class SiteMailChimpList extends SiteMailingList
 		$result = false;
 
 		if ($this->isAvailable()) {
-			// passed in array_map is second so that it can override any of the
-			// list_merge_array_map values
-			$array_map = array_merge($this->list_merge_array_map, $array_map);
-
-			$merges = array();
-			foreach ($info as $id => $value) {
-				if (array_key_exists($id, $array_map) && $value != null) {
-					$merges[$array_map[$id]] = $value;
-				}
-			}
-
+			$merges = $this->mergeInfo($info, $array_map);
 			try {
 				// last boolean is flag for update_existing
 				$result = $this->client->listSubscribe(
@@ -156,7 +158,7 @@ class SiteMailChimpList extends SiteMailingList
 					'html',
 					$this->app->config->mail_chimp->double_opt_in,
 					true, // update_existing
-					true, // replace_interests, this is the default
+					false, // replace_interests
 					$send_welcome
 					);
 			} catch (XML_RPC2_Exception $e) {
@@ -219,23 +221,11 @@ class SiteMailChimpList extends SiteMailingList
 					}
 				}
 			} else {
-				// passed in array_map is second so that it can override any of
-				// the list_merge_array_map values
-				$array_map = array_merge($this->list_merge_array_map,
-					$array_map);
-
 				$merged_addresses = array();
-				foreach ($addresses as $address) {
-					$merged_address = array();
-					foreach ($address as $id => $value) {
-						if (array_key_exists($id, $array_map) &&
-							$value != null) {
-							$merged_address[$array_map[$id]] = $value;
-						}
-					}
-
-					if (count($merged_address)) {
-						$merged_addresses[] = $merged_address;
+				foreach ($addresses as $info) {
+					$merges = $this->mergeInfo($info, $array_map);
+					if (count($merges)) {
+						$merged_addresses[] = $merges;
 					}
 				}
 
@@ -246,7 +236,7 @@ class SiteMailChimpList extends SiteMailingList
 						$merged_addresses,
 						false, // double_optin
 						true,  // update_existing
-						true   // replace_intrests, this is the default
+						false  // replace_intrests
 						);
 
 				} catch (XML_RPC2_Exception $e) {
@@ -356,6 +346,95 @@ class SiteMailChimpList extends SiteMailingList
 		}
 
 		return $result;
+	}
+
+	// }}}
+	// {{{ public function getMemberInfo()
+
+	public function getMemberInfo($address)
+	{
+		$member_info = null;
+
+		try {
+			$member_info = $this->client->listMemberInfo(
+				$this->app->config->mail_chimp->api_key,
+				$this->shortname,
+				$address
+				);
+		} catch (XML_RPC2_Exception $e) {
+			// if it fails for any reason, just consider the address as not
+			// subscribed.
+		}
+
+		return $member_info;
+	}
+
+	// }}}
+	// {{{ public function updateMemberInfo()
+
+	public function updateMemberInfo($address, array $info,
+		array $array_map = array())
+	{
+		$result = false;
+
+		// TODO: queueing of some sort
+		$merges = $this->mergeInfo($info, $array_map);
+		try {
+			$result = $this->client->listUpdateMember(
+				$this->app->config->mail_chimp->api_key,
+				$this->shortname,
+				$address,
+				$merges,
+				'', // email_type, left blank to keep existing preference.
+				false // replace_interests
+				);
+		} catch (XML_RPC2_Exception $e) {
+			// TODO: handle some edge cases more elegantly
+			throw new SiteException($e);
+		}
+
+		if ($result === true) {
+			$result = self::SUCCESS;
+		} elseif ($result === false) {
+			$result = self::FAILURE;
+		}
+
+		return $result;
+	}
+
+	// }}}
+	// {{{ protected function mergeInfo()
+
+	protected function mergeInfo(array $info, array $array_map = array())
+	{
+		// passed in array_map is second so that it can override any of the
+		// list_merge_array_map values
+		$array_map = array_merge($this->list_merge_array_map, $array_map);
+
+		$merges = array();
+		foreach ($info as $id => $value) {
+			if (array_key_exists($id, $array_map) && $value != null) {
+				$merge_var = $array_map[$id];
+				// interests can be passed in as an array, but MailChimp
+				// expects a comma delimited list.
+				if ($merge_var == 'INTERESTS' && is_array($value)) {
+					$value = implode(',', $value);
+				}
+
+				$merges[$merge_var] = $value;
+			}
+		}
+
+		return $merges;
+	}
+
+	// }}}
+	// {{{ public function getDefaultAddress()
+
+	public function getDefaultAddress()
+	{
+		// TODO: do this better somehow
+		return $this->default_address;
 	}
 
 	// }}}

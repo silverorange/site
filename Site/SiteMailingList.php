@@ -89,6 +89,40 @@ abstract class SiteMailingList
 		$send_welcome = false, array $array_map = array());
 
 	// }}}
+	// {{{ public function handleSubscribeResponse()
+
+	public function handleSubscribeResponse($response)
+	{
+		switch ($response) {
+		case SiteMailingList::INVALID:
+			$message = new SwatMessage(Site::_('Sorry, the email address '.
+				'you entered is not a valid email address.'),
+				'error');
+
+			break;
+
+		case SiteMailingList::FAILURE:
+			$message = new SwatMessage(Site::_('Sorry, there was an issue '.
+				'subscribing you to the list.'),
+				'error');
+
+			$message->content_type = 'text/xml';
+			$message->secondary_content = sprintf(Site::_('This can usually '.
+				'be resolved by trying again later. If the issue persists '.
+				'please <a href="%s">contact us</a>.'),
+				$this->getContactUsLink());
+
+			$message->content_type = 'txt/xhtml';
+			break;
+
+		default:
+			$message = null;
+		}
+
+		return $message;
+	}
+
+	// }}}
 	// {{{ abstract public function unsubscribe()
 
 	abstract public function unsubscribe($address);
@@ -99,9 +133,70 @@ abstract class SiteMailingList
 	abstract public function batchUnsubscribe(array $addresses);
 
 	// }}}
+	// {{{ public function handleUnsubscribeResponse()
+
+	public function handleUnsubscribeResponse($response)
+	{
+		switch ($response) {
+		case SiteMailingList::NOT_FOUND:
+			$message = new SwatMessage(Site::_('Thank you. Your email address '.
+				'was never subscribed to our newsletter.'),
+				'notice');
+
+			$message->secondary_content =
+				Site::_('You will not receive any mailings to this address.');
+
+			break;
+
+		case SiteMailingList::NOT_SUBSCRIBED:
+			$message = new SwatMessage(Site::_('Thank you. Your email address '.
+				'has already been unsubscribed from our newsletter.'),
+				'notice');
+
+			$message->secondary_content =
+				Site::_('You will not receive any mailings to this address.');
+
+			break;
+
+		case SiteMailingList::FAILURE:
+			$message = new SwatMessage(Site::_('Sorry, there was an issue '.
+				'unsubscribing from the list.'),
+				'error');
+
+			$message->content_type = 'text/xml';
+			$message->secondary_content = sprintf(Site::_('This can usually '.
+				'be resolved by trying again later. If the issue persists '.
+				'please <a href="%s">contact us</a>.'),
+				$this->getContactUsLink());
+
+			$message->content_type = 'txt/xhtml';
+			break;
+
+		default:
+			$message = null;
+		}
+
+		return $message;
+	}
+
+	// }}}
 	// {{{ abstract public function isMember()
 
 	abstract public function isMember($address);
+
+	// }}}
+	// {{{ abstract public function updateMemberInfo()
+
+	abstract public function updateMemberInfo($address, array $info,
+		array $array_map = array());
+
+	// }}}
+	// {{{ protected function getContactUsLink()
+
+	protected function getContactUsLink()
+	{
+		return 'about/contact';
+	}
 
 	// }}}
 
