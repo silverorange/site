@@ -12,6 +12,7 @@ require_once 'Site/SiteCommandLineApplication.php';
  * @copyright 2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
+// TODO: make sure we're batchSubscribing in small enough batches to not timeout
 abstract class SiteMailingListSubscriberUpdater
 	extends SiteCommandLineApplication
 {
