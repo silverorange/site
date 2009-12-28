@@ -36,6 +36,14 @@ class SiteMailChimpCampaign extends SiteMailingCampaign
 	}
 
 	// }}}
+	// {{{ public function getSegmentOptions()
+
+	public function getSegmentOptions()
+	{
+		return null;
+	}
+
+	// }}}
 }
 
 ?>

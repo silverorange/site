@@ -523,6 +523,27 @@ class SiteMailChimpList extends SiteMailingList
 	}
 
 	// }}}
+	// {{{ public function testSegmentOptions()
+
+	public function getSegmentSize(SiteMailChimpCampaign $campaign,
+		array $segment_options)
+	{
+		$segment_size = 0;
+
+		try {
+			$segment_size = $this->client->campaignSegmentTest(
+				$this->app->config->mail_chimp->api_key,
+				$this->shortname,
+				$segment_options);
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
+		}
+
+		return $segment_size;
+	}
+
+	// }}}
 	// {{{ protected function createCampaign()
 
 	protected function createCampaign(SiteMailingCampaign $campaign)
@@ -604,6 +625,16 @@ class SiteMailChimpList extends SiteMailingList
 		if ($this->app->config->mail_chimp->default_folder != null) {
 			$options['folder_id'] =
 				$this->app->config->mail_chimp->default_folder;
+		}
+
+		$segment_options = $campaign->getSegmentOptions();
+		if ($segment_options != null) {
+			if ($this->getSegmentSize($campaign, $segment_options) == 0) {
+				throw new SiteException('Campaign Segment Options return no '.
+					'members');
+			}
+
+			$options['segment_opts'] = $segment_options;
 		}
 
 		return $options;
