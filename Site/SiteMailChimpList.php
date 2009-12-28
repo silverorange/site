@@ -214,7 +214,7 @@ class SiteMailChimpList extends SiteMailingList
 					default:
 						$result['error_count']++;
 						$result['errors'][] = array(
-							'code' => $current_result,
+							'code'    => $current_result,
 							'message' => Site::_(sprintf('Error subscribing %s',
 								$info['email'])),
 						);
@@ -346,6 +346,29 @@ class SiteMailChimpList extends SiteMailingList
 		}
 
 		return $result;
+	}
+
+	// }}}
+	// {{{ public function getMembers()
+
+	public function getMembers($start = 0, $limit = 100, $since = '')
+	{
+		$members = null;
+
+		try {
+			$members = $this->client->listMembers(
+				$this->app->config->mail_chimp->api_key,
+				$this->shortname,
+				'subscribed',
+				$since,
+				$start,
+				$limit
+				);
+		} catch (XML_RPC2_Exception $e) {
+			throw new SiteException($e);
+		}
+
+		return $members;
 	}
 
 	// }}}
@@ -601,46 +624,35 @@ class SiteMailChimpList extends SiteMailingList
 
 	// }}}
 
-	// setup helper methods.
-	// {{{ public static function getLists()
+	// list methods
+	// {{{ public function getMemberCount()
 
-	public static function getLists(SiteApplication $app)
+	public function getMemberCount()
 	{
-		$lists = null;
+		$member_count = null;
 
 		try {
-		    $lists = $this->client->lists($app->config->mail_chimp->api_key);
+		    $lists = $this->client->lists(
+				$this->app->config->mail_chimp->api_key);
+
+			foreach ($lists as $list) {
+				if ($list['id'] == $this->shortname) {
+					$member_count = $list['member_count'];
+					break;
+				}
+			}
 		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
 		}
 
-		return $lists;
+		return $member_count;
 	}
 
 	// }}}
-	// {{{ public static function getFolders()
+	// {{{ public function getMergeVars()
 
-	public static function getFolders(SiteApplication $app)
-	{
-		$folders = null;
-
-		try {
-		    $folders = $client->campaignFolders(
-				$app->config->mail_chimp->api_key);
-
-		} catch (XML_RPC2_Exception $e) {
-			$e = new SiteException($e);
-			$e->process();
-		}
-
-		return $folders;
-	}
-
-	// }}}
-	// {{{ public function getlistMergeVars()
-
-	public function getlistMergeVars()
+	public function getMergeVars()
 	{
 		$merge_vars = null;
 
@@ -654,6 +666,46 @@ class SiteMailChimpList extends SiteMailingList
 		}
 
 		return $merge_vars;
+	}
+
+	// }}}
+
+	// list setup helper methods.
+	// {{{ public function getAllLists()
+
+	public function getAllLists()
+	{
+		$lists = null;
+
+		try {
+		    $lists = $this->client->lists(
+				$this->app->config->mail_chimp->api_key);
+
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
+		}
+
+		return $lists;
+	}
+
+	// }}}
+	// {{{ public function getFolders()
+
+	public function getFolders()
+	{
+		$folders = null;
+
+		try {
+		    $folders = $this->client->campaignFolders(
+				$this->app->config->mail_chimp->api_key);
+
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
+		}
+
+		return $folders;
 	}
 
 	// }}}
