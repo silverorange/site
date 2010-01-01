@@ -34,6 +34,9 @@ function SiteTagEntry(id, data_store, initial_selected_tag_array,
 	this.main_container = document.getElementById(this.id);
 	this.item_selected = false;
 	this.maximum_tags = 0;
+	this.query_delay = 0;
+	this.minimum_query_length = 0;
+	this.query_match_contains = true;
 
 	YAHOO.util.Event.onContentReady(
 		this.id, this.handleOnAvailable, this, true);
@@ -58,9 +61,9 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 	// create auto-complete widget
 	this.auto_complete = new YAHOO.widget.AutoComplete(
 		this.input_element, this.id + '_container', this.data_store, {
-		queryDelay:            0,
-		minQueryLength:        0,
-		queryMatchContains:    true,
+		queryDelay:            this.query_delay,
+		minQueryLength:        this.minimum_query_length,
+		queryMatchContains:    this.query_match_contains,
 		highlightClassName:    'site-tag-highlight',
 		prehighlightClassName: 'site-tag-prehighlight',
 		autoHighlight:         false,
