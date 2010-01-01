@@ -497,8 +497,11 @@ class SiteMailChimpList extends SiteMailingList
 			$e->process();
 		}
 
-		// TODO: clean up, and throw error if count > 1
-		if (count($campaigns)) {
+		if (count($campaigns) > 1) {
+			throw new SiteException(sprintf(
+				'Multiple campaigns exist with a title of ‘%s’',
+				$campaign->shortname));
+		} elseif (count($campaigns) == 1) {
 			$campaign_id = $campaigns[0]['id'];
 		}
 
