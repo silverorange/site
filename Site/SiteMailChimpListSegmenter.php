@@ -7,18 +7,48 @@ require_once 'Site/SiteMailChimpList.php';
  * Manually segments a MailChimp list into a arbitrary number of groups.
  *
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 {
 	// {{{ class constants
 
-	const CHUNK_SIZE   = 15000;  // 100 is the api default, 15000 the max.
-	const UPDATE_SIZE  = 250;  // to use updateMember() set this to one
+	/**
+	 * Number of members to query from MailChimp per request.
+	 *
+	 * 100 is the api default, 15000 the max.
+	 *
+	 * @var integer
+	 */
+	const CHUNK_SIZE = 15000;
+
+	/**
+	 * How often to submit updated member information to MailChimp.
+	 *
+	 * Set to 1 to individual update members with updateMember(). Anything
+	 * higher will group together updates in batchSubscribe().
+	 *
+	 * @var integer
+	 */
+	const UPDATE_SIZE  = 200;
+
+	/**
+	 *
+	 *
+	 * @var integer
+	 */
 	const ASCII_OFFSET = 65;   // to get us to A
 	const RATINGS      = 5;    // why a constant?
-	const USE_CACHE    = true; // using this for future simplification ease
+
+	/**
+	 * Whether or not to locally cache member segments.
+	 *
+	 * This exists for the ability to easily rip out caching in the future.
+	 *
+	 * @var boolean
+	 */
+	const USE_CACHE = true;
 
 	// }}}
 	// {{{ protected properties
@@ -118,28 +148,51 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 
 		$this->debug(sprintf("Segmenting %s list into %s segments.\n",
 			($this->incremental) ? 'unsegmented members of the' : 'the entire',
-			$this->number_of_segments));
+			$this->number_of_segments), true);
 
-		if (self::USE_CACHE === true && $this->incremental === false) {
-			$sql = 'delete from MailingListSegmenterCache';
-			SwatDB::exec($this->db, $sql);
-			$this->debug("DB Cache Table cleared.\n");
+		$this->api_calls = 0;
+		$total_count     = $this->list->getMemberCount();
+		$this->api_calls++;
+		$results         = $this->getResultsArray();
+		$current_count   = 0;
+		$offset          = 0;
+		$members         = $this->list->getMembers($offset, self::CHUNK_SIZE);
+		$this->api_calls++;
+		$chunk_count     = count($members);
+		$total_chunks    = ceil($total_count / self::CHUNK_SIZE);
+
+		if (self::USE_CACHE === true) {
+			$cached_count = 0;
+			if ($this->incremental === false) {
+				$sql = 'delete from MailingListSegmenterCache';
+				SwatDB::exec($this->db, $sql);
+				$this->debug("DB Cache Table cleared.\n");
+			} else {
+				$sql = 'select count(distinct(email))
+					from MailingListSegmenterCache';
+
+				$cached_count = SwatDB::queryOne($this->db, $sql);
+			}
 		}
 
-		$this->api_calls     = 0;
-		$total_count   = $this->list->getMemberCount();
-		$this->api_calls++;
-		$segments      = $this->getSegments();
-		$current_count = 0;
-		$offset        = 0;
-		$members       = $this->list->getMembers($offset, self::CHUNK_SIZE);
-		$this->api_calls++;
-		$chunk_count   = count($members);
+		$this->debug(sprintf("%s Total Members%s - %s Chunks of %s to check.\n",
+			SwatString::numberFormat($total_count),
+			(self::USE_CACHE === true && $cached_count > 0) ?
+				sprintf(" (%s cached)",
+					SwatString::numberFormat($cached_count)) :
+				'',
+			SwatString::numberFormat($total_chunks),
+			SwatString::numberFormat(self::CHUNK_SIZE)));
 
 		while ($chunk_count > 0) {
+			$offset++;
+			$this->debug(sprintf("\nProcessing Chunk %s of %s\n",
+				SwatString::numberFormat($offset),
+				SwatString::numberFormat($total_chunks)));
+
 			$member_updates = array();
 			$member_count   = 0;
-//var_dump($members);
+
 			foreach ($members as $member) {
 				$needs_segment = true;
 				$email         = $member['email'];
@@ -147,17 +200,18 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 				$member_rating = $member_info['member_rating'];
 				$current_count++;
 				$member_count++;
-				$segments[$member_rating]['total_count']++;
-//var_dump($member_info);
+				$results[$member_rating]['total_count']++;
+				$results['total_count']++;
 
 				if ($this->incremental === true &&
 					strlen($member_info['merges']['SEGMENT']) > 0) {
 					$needs_segment = false;
-					$segments[$member_rating]['existing_count']++;
+					$results[$member_rating]['existing_count']++;
 					$letter_segment = $member_info['merges']['SEGMENT'];
-					$segments[$letter_segment]['total_count']++;
-					$segments[$letter_segment]['existing_count']++;
-					$segments[$letter_segment][$member_rating]++;
+					$results[$letter_segment]['total_count']++;
+					$results[$letter_segment]['existing_count']++;
+					$results[$letter_segment][$member_rating]++;
+					$results['existing_count']++;
 
 					// check for two elements in the array, since thats a hacky
 					// way to know if we've grabbed the member from the cache
@@ -175,28 +229,33 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 					}
 				}
 
+				$message = 'Email: %s';
 				if ($needs_segment === true) {
-					if ($segments[$member_rating]['last_segment'] ==
+					if ($results[$member_rating]['last_segment'] ==
 						$this->number_of_segments) {
-						$segments[$member_rating]['last_segment'] = 0;
+						$results[$member_rating]['last_segment'] = 0;
 					}
 
 					$letter_segment = chr(self::ASCII_OFFSET +
-						$segments[$member_rating]['last_segment']);
+						$results[$member_rating]['last_segment']);
 
-					$segments[$member_rating]['segmented_count']++;
-					$segments[$member_rating]['last_segment']++;
-					$segments[$letter_segment]['total_count']++;
-					$segments[$letter_segment]['segmented_count']++;
-					$segments[$letter_segment][$member_rating]++;
+					$results[$member_rating]['segmented_count']++;
+					$results[$member_rating]['last_segment']++;
+					$results[$letter_segment]['total_count']++;
+					$results[$letter_segment]['segmented_count']++;
+					$results[$letter_segment][$member_rating]++;
+					$results['segmented_count']++;
 
-echo $member_rating.' '.$letter_segment;
+					$message.= ' - Rating: %s - Segment: %s';
+
 					// since we segfault after ~550 api calls, cut down on calls
 					// by not updating every member, but grouping them together
 					// into a batchSubscribe (which achieves the same thing).
 					if (self::UPDATE_SIZE == 1) {
 						$this->list->updateMemberInfo($email,
 							array('segment' => $letter_segment));
+
+						$message.= ' (updated)';
 					} else {
 						$member_updates[] = array(
 							'email'   => $email,
@@ -207,12 +266,16 @@ echo $member_rating.' '.$letter_segment;
 							'rating'  => $member_rating,
 						);
 					}
+				} else {
+					$message.= ' (already segmented)';
 				}
-echo ' ',$email,' '.$current_count." current calls: ".$this->api_calls."\n";
+
+				$this->debug(sprintf($message."\n",
+					$email, $member_rating, $letter_segment));
 
 				if ($member_count == self::UPDATE_SIZE) {
-					if (count($member_updates)) {
-echo sprintf("%s members batch updated.\n", count($member_updates));
+					$update_count = count($member_updates);
+					if ($update_count > 0) {
 						// this still segfaults, but cuts down on api calls
 						// so the script can run longer without segfaulting.
 						$this->list->batchSubscribe($member_updates);
@@ -233,33 +296,29 @@ echo sprintf("%s members batch updated.\n", count($member_updates));
 
 							$sql = sprintf($sql,
 								implode(',', $values));
-//echo $sql;
 
 							SwatDB::exec($this->db, $sql);
 						}
+					}
+
+					if (self::UPDATE_SIZE > 1) {
+						$this->debug(sprintf(
+							"\n%s of %s Members Batch Updated\n",
+							SwatString::numberFormat($update_count),
+							SwatString::numberFormat(self::UPDATE_SIZE)),
+							true);
 					}
 					$member_count   = 0;
 					$member_updates = array();
 				}
 			}
 
-			$offset++;
 			$this->api_calls++;
 			$members     = $this->list->getMembers($offset, self::CHUNK_SIZE);
 			$chunk_count = count($members);
-//unset($this->list);
-//$this->initList();
-//var_dump($segments);
 		}
-//var_dump($segments);
 
-//		for ($rating = 1; $rating <= self::RATINGS; $rating++) {
-//			$this->debug(sprintf("\n%s Members:\n", str_repeat('★', $rating)));
-//		$total_member_count = $this->getMemberCount($rating);
-//		$this->debug(sprintf("%s subscribers\n", $total_member_count)));
-//		$members = $this->getMembers(self::CHUNK_SIZE, $rating);
-//		$count   = count($members);
-//		}
+		$this->displaySummary($results);
 
 		$this->debug("\nAll done!\n\n", true);
 
@@ -267,15 +326,20 @@ echo sprintf("%s members batch updated.\n", count($member_updates));
 	}
 
 	// }}}
-	// {{{ protected function getSegments()
+	// {{{ protected function getResultsArray()
 
-	protected function getSegments()
+	protected function getResultsArray()
 	{
-		$segments = array();
+		$results = array(
+			'total_count'     => 0,
+			'existing_count'  => 0,
+			'segmented_count' => 0,
+			);
+
 		for ($rating = 1; $rating <= self::RATINGS; $rating++) {
-			$segments[$rating]['total_count']     = 0;
-			$segments[$rating]['existing_count']  = 0;
-			$segments[$rating]['segmented_count'] = 0;
+			$results[$rating]['total_count']     = 0;
+			$results[$rating]['existing_count']  = 0;
+			$results[$rating]['segmented_count'] = 0;
 
 			$use_random_start = true;
 			if (self::USE_CACHE === true && $this->incremental === true) {
@@ -290,7 +354,7 @@ echo sprintf("%s members batch updated.\n", count($member_updates));
 				$segment = SwatDB::queryOne($this->db, $sql);
 				if ($segment !== null) {
 					$use_random_start = false;
-					$segments[$rating]['last_segment'] = ord($segment) -
+					$results[$rating]['last_segment'] = ord($segment) -
 						self::ASCII_OFFSET;
 				}
 			}
@@ -298,7 +362,7 @@ echo sprintf("%s members batch updated.\n", count($member_updates));
 			// random the starting last segment, so as to not bias when running
 			// incremental updates. is rand() good enough for this?
 			if ($use_random_start === true) {
-				$segments[$rating]['last_segment'] =
+				$results[$rating]['last_segment'] =
 					rand(0, $this->number_of_segments);
 			}
 		}
@@ -306,16 +370,15 @@ echo sprintf("%s members batch updated.\n", count($member_updates));
 		for ($segment = 0; $segment < $this->number_of_segments; $segment++) {
 			$letter_segment = chr(self::ASCII_OFFSET + $segment);
 
-			$segments[$letter_segment]['total_count']     = 0;
-			$segments[$letter_segment]['existing_count']  = 0;
-			$segments[$letter_segment]['segmented_count'] = 0;
+			$results[$letter_segment]['total_count']     = 0;
+			$results[$letter_segment]['existing_count']  = 0;
+			$results[$letter_segment]['segmented_count'] = 0;
 			for ($rating = 1; $rating <= self::RATINGS; $rating++) {
-				$segments[$letter_segment][$rating] = 0;
+				$results[$letter_segment][$rating] = 0;
 			}
 		}
-//var_dump($segments);
 
-		return $segments;
+		return $results;
 	}
 
 	// }}}
@@ -331,9 +394,8 @@ echo sprintf("%s members batch updated.\n", count($member_updates));
 
 			$sql = sprintf($sql,
 				$this->db->quote($email, 'text'));
-//echo $sql;
+
 			$member = SwatDB::queryRow($this->db, $sql);
-//var_dump($member); exit;
 			if ($member !== null) {
 				$member_info['member_rating'] = $member->rating;
 				$member_info['merges']['SEGMENT'] = $member->segment;
@@ -347,6 +409,39 @@ echo sprintf("%s members batch updated.\n", count($member_updates));
 		}
 
 		return $member_info;
+	}
+
+	// }}}
+	// {{{ protected function displaySummary()
+
+	protected function displaySummary(array $results)
+	{
+		// Theoretical TODO: do sanity checks and throw warnings on expected
+		// totals versus actual, total count versus existing+segmented counts,
+		// etc.
+		// var_dump($results);
+
+		$this->debug(sprintf("\n%s of %s Members split into %s Segments\n",
+			SwatString::numberFormat($results['segmented_count']),
+			SwatString::numberFormat($results['total_count']),
+			$this->number_of_segments),
+			true);
+
+		for ($segment = 0; $segment < $this->number_of_segments; $segment++) {
+			$letter_segment = chr(self::ASCII_OFFSET + $segment);
+			$this->debug(sprintf("Segment %s:\n", $letter_segment));
+			$this->debug(sprintf("%s Members\n",
+				SwatString::numberFormat(
+					$results[$letter_segment]['total_count'])));
+
+			for ($rating = 1; $rating <= self::RATINGS; $rating++) {
+				$this->debug(sprintf("%s%s Members: %s\n",
+					str_repeat(' ', self::RATINGS-$rating), // for nice ws
+					str_repeat('★', $rating),
+					SwatString::numberFormat($results[$letter_segment][$rating])
+					));
+			}
+		}
 	}
 
 	// }}}
