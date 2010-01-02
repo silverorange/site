@@ -153,7 +153,7 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 		$this->api_calls = 0;
 		$total_count     = $this->list->getMemberCount();
 		$this->api_calls++;
-		$results         = $this->getResultsArray();
+		$results         = $this->initResultsArray();
 		$current_count   = 0;
 		$offset          = 0;
 		$members         = $this->list->getMembers($offset, self::CHUNK_SIZE);
@@ -326,9 +326,9 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 	}
 
 	// }}}
-	// {{{ protected function getResultsArray()
+	// {{{ protected function initResultsArray()
 
-	protected function getResultsArray()
+	protected function initResultsArray()
 	{
 		$results = array(
 			'total_count'     => 0,
@@ -429,7 +429,7 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 
 		for ($segment = 0; $segment < $this->number_of_segments; $segment++) {
 			$letter_segment = chr(self::ASCII_OFFSET + $segment);
-			$this->debug(sprintf("Segment %s:\n", $letter_segment));
+			$this->debug(sprintf("\nSegment %s:\n", $letter_segment));
 			$this->debug(sprintf("%s Members\n",
 				SwatString::numberFormat(
 					$results[$letter_segment]['total_count'])));
