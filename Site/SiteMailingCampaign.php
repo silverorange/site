@@ -77,6 +77,14 @@ class SiteMailingCampaign
 	}
 
 	// }}}
+	// {{{ public function getTitle()
+
+	public function getTitle()
+	{
+		return $this->shortname;
+	}
+
+	// }}}
 	// {{{ public function getSubject()
 
 	public function getSubject()

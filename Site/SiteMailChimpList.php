@@ -484,7 +484,7 @@ class SiteMailChimpList extends SiteMailingList
 		$campaign_id = null;
 		$filters     = array(
 			'list_id' => $this->shortname,
-			'title'   => $campaign->shortname,
+			'title'   => $campaign->getTitle(),
 			'exact'   => true,
 		);
 
@@ -500,7 +500,7 @@ class SiteMailChimpList extends SiteMailingList
 		if (count($campaigns) > 1) {
 			throw new SiteException(sprintf(
 				'Multiple campaigns exist with a title of ‘%s’',
-				$campaign->shortname));
+				$campaign->getTitle()));
 		} elseif (count($campaigns) == 1) {
 			$campaign_id = $campaigns[0]['id'];
 		}
@@ -596,6 +596,10 @@ class SiteMailChimpList extends SiteMailingList
 
 	protected function getCampaignOptions(SiteMailChimpCampaign $campaign)
 	{
+		$title = $campaign->getTitle();
+		if ($title == null)
+			throw new SiteException('Campaign “Title” is null');
+
 		$subject = $campaign->getSubject();
 		if ($subject == null)
 			throw new SiteException('Campaign “Subject” is null');
@@ -615,7 +619,7 @@ class SiteMailChimpList extends SiteMailingList
 
 		$options = array(
 			'list_id'      => $this->shortname,
-			'title'        => $campaign->shortname,
+			'title'        => $title,
 			'subject'      => $subject,
 			'from_email'   => $from_address,
 			'from_name'    => $from_name,
