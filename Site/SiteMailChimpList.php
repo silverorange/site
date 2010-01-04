@@ -6,7 +6,7 @@ require_once 'Site/SiteMailChimpCampaign.php';
 
 /**
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 // TODO: handle addresses somehow magically, perhaps add type checking on merge
@@ -612,6 +612,10 @@ class SiteMailChimpList extends SiteMailingList
 		}
 
 		$campaign->id = $campaign_id;
+
+		// call this separately because XML/RPC can't pass nulls, and it's often
+		// null. And other values are type checked by MailChimp
+		$this->updateCampaignSegmentOptions($campaign);
 	}
 
 	// }}}
@@ -633,9 +637,29 @@ class SiteMailChimpList extends SiteMailingList
 					$this->app->config->mail_chimp->api_key,
 					$campaign->id, $title, $value);
 			}
+
+			$this->updateCampaignSegmentOptions($campaign);
 		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
+		}
+	}
+
+	// }}}
+	// {{{ protected function updateCampaignSegmentOptions()
+
+	protected function updateCampaignSegmentOptions(SiteMailingCampaign $campaign)
+	{
+		$segment_options = $this->getCampaignSegmentOptions($campaign);
+		if ($segment_options !== null) {
+			try {
+				$this->client->campaignUpdate(
+					$this->app->config->mail_chimp->api_key,
+					$campaign->id, 'segment_opts', $segment_options);
+			} catch (XML_RPC2_Exception $e) {
+				$e = new SiteException($e);
+				$e->process();
+			}
 		}
 	}
 
@@ -682,17 +706,26 @@ class SiteMailChimpList extends SiteMailingList
 				$this->app->config->mail_chimp->default_folder;
 		}
 
+		return $options;
+	}
+
+	// }}}
+	// {{{ protected function getCampaignSegmentOptions()
+
+	protected function getCampaignSegmentOptions(
+		SiteMailChimpCampaign $campaign)
+	{
+		$segment_options = array();
+
 		$segment_options = $campaign->getSegmentOptions();
 		if ($segment_options != null) {
 			if ($this->getSegmentSize($campaign, $segment_options) == 0) {
 				throw new SiteException('Campaign Segment Options return no '.
 					'members');
 			}
-
-			$options['segment_opts'] = $segment_options;
 		}
 
-		return $options;
+		return $segment_options;
 	}
 
 	// }}}
