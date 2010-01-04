@@ -5,7 +5,7 @@ require_once 'Site/SiteLayoutData.php';
 
 /**
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMailingCampaign
@@ -49,7 +49,6 @@ class SiteMailingCampaign
 	}
 
 	// }}}
-
 	// {{{ public function getAnalyticsKey()
 
 	public function getAnalyticsKey()
