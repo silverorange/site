@@ -44,6 +44,14 @@ class SiteMailChimpCampaign extends SiteMailingCampaign
 	}
 
 	// }}}
+	// {{{ public function getSendDate()
+
+	public function getSendDate()
+	{
+		return null;
+	}
+
+	// }}}
 }
 
 ?>

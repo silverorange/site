@@ -474,6 +474,50 @@ class SiteMailChimpList extends SiteMailingList
 		} else {
 			$this->createCampaign($campaign);
 		}
+
+		return $campaign->id;
+	}
+
+	// }}}
+	// {{{ public function scheduleCampaign()
+
+	public function scheduleCampaign(SiteMailingCampaign $campaign)
+	{
+		$send_date = $campaign->getSendDate();
+		if ($send_date instanceof SwatDate) {
+			// Campaigns have to be unscheduled to set a new send time. Only
+			// unschedule if we're rescheduling so that we don't accidentally
+			// unschedule a manually scheduled campaign.
+			$this->unscheduleCampaign($campaign);
+
+			$send_date->setTZ($this->app->config->date->time_zone);
+			$send_date->toUTC();
+
+			try {
+				$this->client->campaignSchedule(
+					$this->app->config->mail_chimp->api_key,
+					$campaign->id,
+					$send_date->getDate(DATE_FORMAT_ISO));
+			} catch (XML_RPC2_Exception $e) {
+				$e = new SiteException($e);
+				$e->process();
+			}
+		}
+	}
+
+	// }}}
+	// {{{ public function unscheduleCampaign()
+
+	public function unscheduleCampaign(SiteMailingCampaign $campaign)
+	{
+		try {
+			$this->client->campaignUnschedule(
+				$this->app->config->mail_chimp->api_key,
+				$campaign->id);
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
+		}
 	}
 
 	// }}}
