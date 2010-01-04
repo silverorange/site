@@ -515,8 +515,12 @@ class SiteMailChimpList extends SiteMailingList
 				$this->app->config->mail_chimp->api_key,
 				$campaign->id);
 		} catch (XML_RPC2_Exception $e) {
-			$e = new SiteException($e);
-			$e->process();
+			// ignore errors caused by trying to unschedule a campaign that
+			// isn't scheduled yet. These are safe to ignore.
+			if ($e->getFaultCode() != 122) {
+				$e = new SiteException($e);
+				$e->process();
+			}
 		}
 	}
 
