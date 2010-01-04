@@ -135,7 +135,7 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 
 	protected function initList()
 	{
-		$this->list = new MailChimpList($this);
+		$this->list = new SiteMailChimpList($this);
 	}
 
 	// }}}
