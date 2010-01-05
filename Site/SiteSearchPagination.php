@@ -8,7 +8,7 @@ require_once 'Swat/SwatPagination.php';
  * This pagination widget will automatically preserve HTTP GET variables
  * when generating links.  The current page is passed as a GET variable
  * named 'page'.  Optional a GET variable named 'type' will be used to
- * diffirentiate between two SiteSearchPagination widgets on the same
+ * differentiate between two SiteSearchPagination widgets on the same
  * search results page.
  *
  * This widget also supports pagination of result sets where the total count is
@@ -153,6 +153,13 @@ class SiteSearchPagination extends SwatPagination
 
 				// Always show the first 2, last 2, and middle 6 pages
 				$display = true;
+			} elseif ($this->max_accurate_records !== null &&
+				$total_pages > $this->total_pages &&
+				$this->current_page - $i <= min(10, 3 + $total_pages - $this->total_pages)) {
+
+				// When total records are unknown, grow the last number of
+				// pages until 10 are displayed.
+				$display = true;
 			}
 
 			if ($display) {
@@ -207,8 +214,8 @@ class SiteSearchPagination extends SwatPagination
 
 		if (($this->total_pages <= 1) ||
 			($this->total_pages == $this->current_page &&
-			$this->max_accurate_records !== null &&
-			$this->total_records <= $this->max_accurate_records)) {
+			($this->max_accurate_records === null ||
+			$this->total_records <= $this->max_accurate_records))) {
 			$this->next_page = 0;
 		} else {
 			$this->next_page = $this->current_page + 1;
