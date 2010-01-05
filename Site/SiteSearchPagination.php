@@ -178,7 +178,8 @@ class SiteSearchPagination extends SwatPagination
 			}
 		}
 
-		if ($this->max_accurate_records !== null && $this->total_records > $this->max_accurate_records) {
+		if ($this->max_accurate_records !== null &&
+			$this->total_records > $this->max_accurate_records) {
 			// ellipses
 			$span->setContent('…');
 			$span->display();
@@ -195,7 +196,12 @@ class SiteSearchPagination extends SwatPagination
 	 */
 	protected function calculatePages()
 	{
-		$records = min($this->max_accurate_records, $this->total_records);
+
+		if ($this->max_accurate_records === null) {
+			$records = $this->total_records;
+		} else {
+			$records = min($this->max_accurate_records, $this->total_records);
+		}
 
 		$this->total_pages = ceil($records / $this->page_size);
 
