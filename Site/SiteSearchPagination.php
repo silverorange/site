@@ -140,7 +140,8 @@ class SiteSearchPagination extends SwatPagination
 			} elseif ($this->current_page > $this->total_pages - 6 &&
 				$i >= $this->total_pages - 10 &&
 				($this->max_accurate_records === null ||
-				$this->total_records <= $this->max_accurate_records)) {
+				($this->total_records <= $this->max_accurate_records ||
+					$i == $this->next_page))) {
 
 				// Current page is in the last 6, show the last 10 pages
 				$display = true;
@@ -203,7 +204,6 @@ class SiteSearchPagination extends SwatPagination
 	 */
 	protected function calculatePages()
 	{
-
 		if ($this->max_accurate_records === null) {
 			$records = $this->total_records;
 		} else {
@@ -219,6 +219,13 @@ class SiteSearchPagination extends SwatPagination
 			$this->next_page = 0;
 		} else {
 			$this->next_page = $this->current_page + 1;
+
+			// we know there's a next page even though we don't know the total
+			// number of records, so display one more page
+			if ($this->max_accurate_records !== null &&
+				$this->current_page >= $this->total_pages) {
+				$this->total_pages = $this->current_page + 1;
+			}
 		}
 
 		if ($this->current_page > 0) {
