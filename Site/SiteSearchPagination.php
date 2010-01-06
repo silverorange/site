@@ -130,6 +130,14 @@ class SiteSearchPagination extends SwatPagination
 
 		$total_pages = max($this->total_pages, $this->current_page);
 
+		// If the total records is unknown, we know there is a next page even
+		// though we don't know the total number of records, so display one
+		// more page.
+		if ($this->max_accurate_records !== null &&
+			$this->current_page >= $this->total_pages) {
+			$total_pages = $this->current_page + 1;
+		}
+
 		for ($i = 1; $i <= $total_pages; $i++) {
 			$display = false;
 
@@ -156,10 +164,11 @@ class SiteSearchPagination extends SwatPagination
 				$display = true;
 			} elseif ($this->max_accurate_records !== null &&
 				$total_pages > $this->total_pages &&
-				$this->current_page - $i <= min(10, 3 + $total_pages - $this->total_pages)) {
+				$this->current_page - $i <=
+					min(9, 3 + $total_pages - $this->total_pages)) {
 
 				// When total records are unknown, grow the last number of
-				// pages until 10 are displayed.
+				// pages until 9 are displayed (plus the next page, makes 10).
 				$display = true;
 			}
 
@@ -219,13 +228,6 @@ class SiteSearchPagination extends SwatPagination
 			$this->next_page = 0;
 		} else {
 			$this->next_page = $this->current_page + 1;
-
-			// we know there's a next page even though we don't know the total
-			// number of records, so display one more page
-			if ($this->max_accurate_records !== null &&
-				$this->current_page >= $this->total_pages) {
-				$this->total_pages = $this->current_page + 1;
-			}
 		}
 
 		if ($this->current_page > 0) {
