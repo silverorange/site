@@ -4,7 +4,7 @@ require_once 'Site/pages/SiteEditPage.php';
 
 /**
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteMailingSignupPage extends SiteEditPage
@@ -48,7 +48,7 @@ abstract class SiteMailingSignupPage extends SiteEditPage
 
 		$this->checkMember($list, $email);
 
-		$subscribed = $list->subscribe($email, $info, $this->send_welcome,
+		$response = $list->subscribe($email, $info, $this->send_welcome,
 			$array_map);
 
 		$message = $list->handleSubscribeResponse($response);
