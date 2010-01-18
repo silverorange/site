@@ -7,7 +7,7 @@ require_once 'Swat/SwatUI.php';
 
 /**
  * @package   Site
- * @copyright 2006-2008 silverorange
+ * @copyright 2006-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountEditPage extends SiteDBEditPage
@@ -154,6 +154,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 	{
 		if ($form->id == 'edit_form') {
 			$this->updateAccount($form);
+			// getSavedMessage() needs to be called here so that the isNew()
+			// calls it depends on are still accurate.
 			$message = $this->getSavedMessage($form);
 
 			if ($this->isNew($form)) {
@@ -175,8 +177,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 				}
 			}
 
-			if (strlen($message) > 0)
-				$this->app->messages->add(new SwatMessage($message));
+			if ($message instanceof SwatMessage)
+				$this->app->messages->add($message);
 		}
 	}
 
@@ -209,7 +211,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 			$message = Site::_('Account details have been updated.');
 		}
 
-		return $message;
+		return new SwatMessage($message);
 	}
 
 	// }}}
