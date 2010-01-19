@@ -96,13 +96,14 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 	protected function validate(SwatForm $form)
 	{
-		$this->validateEmail();
+		if ($form->id == 'edit_form')
+			$this->validateEmail($form);
 	}
 
 	// }}}
 	// {{{ protected function validateEmail()
 
-	protected function validateEmail()
+	protected function validateEmail(SwatForm $form)
 	{
 		$email = $this->ui->getWidget('email');
 		if ($email->hasMessage())
@@ -135,7 +136,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 		if ($this->isNew($this->ui->getWidget('edit_form'))) {
 			$email_link = sprintf('<a href="account/forgotpassword?email=%s">',
-				$email->value);
+				$this->ui->getWidget('email')->value);
 
 			$message->secondary_content =
 				sprintf(Site::_('You can %srequest a new password%s to '.
