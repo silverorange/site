@@ -118,7 +118,9 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 		if ($found && $this->account->id !== $account->id) {
 			$message = $this->getInvalidEmailMessage();
-			$email->addMessage($message);
+			if ($message instanceof SwatMessage) {
+				$email->addMessage($message);
+			}
 		}
 	}
 
