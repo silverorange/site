@@ -138,9 +138,10 @@ class SiteAccountEditPage extends SiteDBEditPage
 			$message->secondary_content =
 				sprintf(Site::_('You can %srequest a new password%s to '.
 					'log into the existing account.'), $email_link, '</a>');
+
+			$message->content_type = 'text/xml';
 		}
 
-		$message->content_type = 'text/xml';
 		return $message;
 	}
 
