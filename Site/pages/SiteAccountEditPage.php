@@ -117,23 +117,31 @@ class SiteAccountEditPage extends SiteDBEditPage
 		$found = $account->loadWithEmail($email->value, $instance);
 
 		if ($found && $this->account->id !== $account->id) {
-			$message = new SwatMessage(
-				Site::_('An account already exists with this email address.'),
-				'error');
-
-			if ($this->isNew($this->ui->getWidget('edit_form'))) {
-				$email_link = sprintf(
-					'<a href="account/forgotpassword?email=%s">',
-					$email->value);
-
-				$message->secondary_content =
-					sprintf(Site::_('You can %srequest a new password%s to '.
-						'log into the existing account.'), $email_link, '</a>');
-			}
-
-			$message->content_type = 'text/xml';
+			$message = $this->getInvalidEmailMessage();
 			$email->addMessage($message);
 		}
+	}
+
+	// }}}
+	// {{{ protected function getInvalidEmailMessage()
+
+	protected function getInvalidEmailMessage()
+	{
+		$message = new SwatMessage(
+			Site::_('An account already exists with this email address.'),
+			'error');
+
+		if ($this->isNew($this->ui->getWidget('edit_form'))) {
+			$email_link = sprintf('<a href="account/forgotpassword?email=%s">',
+				$email->value);
+
+			$message->secondary_content =
+				sprintf(Site::_('You can %srequest a new password%s to '.
+					'log into the existing account.'), $email_link, '</a>');
+		}
+
+		$message->content_type = 'text/xml';
+		return $message;
 	}
 
 	// }}}
