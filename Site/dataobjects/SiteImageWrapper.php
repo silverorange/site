@@ -54,10 +54,15 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 
 	/**
 	 * Attaches dimension bindings to the recordset
+	 *
+	 * @param array $dimensions Array of dimension shortnames to attach. To
+	 *                          attach all dimensions use null.
 	 */
 	protected function attachDimensionBindings(array $dimensions = null)
 	{
-		if ($this->getCount() > 0 && count($dimensions) > 0) {
+		if ($this->getCount() > 0 &&
+			($dimensions === null || count($dimensions) > 0)) {
+
 			$image_ids = array();
 			foreach ($this->getArray() as $image)
 				$image_ids[] = $this->db->quote($image->id, 'integer');
