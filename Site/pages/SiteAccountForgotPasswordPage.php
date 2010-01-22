@@ -4,19 +4,26 @@ require_once 'Text/Password.php';
 require_once 'Swat/SwatUI.php';
 require_once 'Site/dataobjects/SiteAccount.php';
 require_once 'Site/pages/SiteUiPage.php';
-require_once 'Site/dataobjects/SiteAccount.php';
 
 /**
  * Page for requesting a new password for forgotten account passwords
  *
  * @package   Site
- * @copyright 2006-2009 silverorange
+ * @copyright 2006-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  * @see       SiteAccountResetPasswordPage
  */
 class SiteAccountForgotPasswordPage extends SiteUiPage
 {
+	// {{{ protected properties
+
+	/**
+	 * @var SiteAccount
+	 */
+	protected $account;
+
+	// }}}
 	// {{{ protected function getUiXml()
 
 	protected function getUiXml()
@@ -89,15 +96,16 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 	{
 		$email = $this->ui->getWidget('email')->value;
 
-		$account = $this->getAccount($email);
+		$this->account = $this->getAccount($email);
 
-		if ($account === null) {
+		if ($this->account === null) {
 			$message = $this->getAccountNotFoundMessage();
 			$this->ui->getWidget('email')->addMessage($message);
 		} else {
-			$password_tag  = $account->resetPassword($this->app);
+			$password_tag  = $this->account->resetPassword($this->app);
 			$password_link = $this->getResetPasswordLink($password_tag);
-			$account->sendResetPasswordMailMessage($this->app, $password_link);
+			$this->account->sendResetPasswordMailMessage($this->app,
+				$password_link);
 		}
 	}
 
