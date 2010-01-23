@@ -1,0 +1,39 @@
+##
+## Static Web-resource dependencies for the Site package
+##
+## Copyright (c) 2010 silverorange
+##
+## This library is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as
+## published by the Free Software Foundation; either version 2.1 of the
+## License, or (at your option) any later version.
+##
+## This library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+## Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public
+## License along with this library; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+##
+Site:
+  Depends:
+    # Package Dependencies
+    - Swat
+
+  Provides:
+
+    # JavaScript resources
+    packages/site/javascript/site-tag-entry.js:
+    packages/site/javascript/site-upload-progress-bar.js:
+
+    # Style-sheet resources
+    packages/site/styles/site-account-login-page.css:
+    packages/site/styles/site-account-reset-password-page.css:
+    packages/site/styles/site-contact-page.css:
+    packages/site/styles/site-image-cell-renderer.css:
+    packages/site/styles/site-search-results-page.css:
+    packages/site/styles/site-tag-entry.css:
+
+# vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:
