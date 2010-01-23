@@ -28,6 +28,8 @@ Site:
     # JavaScript resources
     packages/site/javascript/site-tag-entry.js:
     packages/site/javascript/site-upload-progress-bar.js:
+    packages/site/admin/javascript/site-comment-display.js:
+    packages/site/admin/javascript/site-comment-status-slider.js:
 
     # Style-sheet resources
     packages/site/styles/site-account-login-page.css:
@@ -36,5 +38,8 @@ Site:
     packages/site/styles/site-image-cell-renderer.css:
     packages/site/styles/site-search-results-page.css:
     packages/site/styles/site-tag-entry.css:
+    packages/site/admin/styles/site-comment-display.css:
+    packages/site/admin/styles/site-comment-status-slider.css:
+    packages/site/admin/styles/site-theme-display.css:
 
 # vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:
