@@ -35,9 +35,10 @@ class SiteImageLazyWrapper extends SiteImageWrapper
 	/**
 	 * Load image dimensions
 	 *
-	 * @param array Dimension shortnames to load
+	 * @param array Dimension shortnames to load. Use null to load all
+	 *              dimensions.
 	 */
-	public function loadDimensions(array $dimensions)
+	public function loadDimensions(array $dimensions = null)
 	{
 		$this->attachDimensionBindings($dimensions);
 	}
