@@ -81,6 +81,30 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 	 */
 	protected $incremental = false;
 
+
+	/**
+	 * Merge Var Array for the segment field
+	 *
+	 * @var array
+	 */
+	protected $segment_field = 'segment';
+
+	/**
+	 * Merge Var Array for the segment field
+	 *
+	 * @var array
+	 */
+	protected $segment_merge = 'SEGMENT';
+
+	/**
+	 * Merge Var Array for the segment field
+	 *
+	 * This is always an array of $segment_field => $segment_merge
+	 *
+	 * @var array
+	 */
+	protected $segment_array_map = array();
+
 	// }}}
 	// {{{ public funtcion __construct()
 
@@ -107,9 +131,31 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 
 		$this->addCommandLineArgument($incremental);
 
+		$segment_field = new SiteCommandLineArgument(
+			array('-sf', '--segment-field'),
+			'setSegmentField',
+			'Sets the field for the segment merge var. Will also set the '.
+			'merge as the uppercase version of the field.');
+
+		$segment_field->addParameter('string',
+			'--segment-field expects a single paramater.');
+
+		$this->addCommandLineArgument($segment_field);
+
+		$segment_merge = new SiteCommandLineArgument(
+			array('-sm', '--segment-merge'),
+			'setSegmentMerge',
+			'Sets the merge for the segment merge var.');
+
+		$segment_merge->addParameter('string',
+			'--segment-merge expects a single paramater.');
+
+		$this->addCommandLineArgument($segment_merge);
+
 		$this->initModules();
 		$this->parseCommandLineArguments();
 		$this->initList();
+		$this->initSegmentArrayMap();
 	}
 
 	// }}}
@@ -129,6 +175,24 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 	}
 
 	// }}}
+	// {{{ public function setSegmentField()
+
+	public function setSegmentField($field)
+	{
+		$this->segment_field = $field;
+		// note, this is lazy, but works 99% of the time.
+		$this->segment_merge = strtoupper($field);
+	}
+
+	// }}}
+	// {{{ public function setSegmentMerge()
+
+	public function setSegmentMerge($merge)
+	{
+		$this->segment_merge = $merge;
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initList()
@@ -136,6 +200,15 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 	protected function initList()
 	{
 		$this->list = new SiteMailChimpList($this);
+	}
+
+	// }}}
+	// {{{ protected function initSegmentArrayMap()
+
+	protected function initSegmentArrayMap()
+	{
+		$this->segment_array_map = array(
+			$this->segment_field => $this->segment_merge);
 	}
 
 	// }}}
@@ -194,20 +267,27 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 			$member_count   = 0;
 
 			foreach ($members as $member) {
-				$needs_segment = true;
-				$email         = $member['email'];
-				$member_info   = $this->getMemberInfo($email);
-				$member_rating = $member_info['member_rating'];
+				$needs_segment  = true;
+				$email          = $member['email'];
+				$member_info    = $this->getMemberInfo($email);
+				$member_rating  = $member_info['member_rating'];
+				$member_segment = $member_info['merges'][$this->segment_merge];
 				$current_count++;
 				$member_count++;
 				$results[$member_rating]['total_count']++;
 				$results['total_count']++;
 
+
 				if ($this->incremental === true &&
-					strlen($member_info['merges']['SEGMENT']) > 0) {
+					strlen($member_segment) > 0 &&
+					$this->getNumericSegment($member_segment) <
+					$this->number_of_segments) {
+
 					$needs_segment = false;
 					$results[$member_rating]['existing_count']++;
-					$letter_segment = $member_info['merges']['SEGMENT'];
+					$letter_segment =
+						$member_info['merges'][$this->segment_merge];
+
 					$results[$letter_segment]['total_count']++;
 					$results[$letter_segment]['existing_count']++;
 					$results[$letter_segment][$member_rating]++;
@@ -236,7 +316,7 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 						$results[$member_rating]['last_segment'] = 0;
 					}
 
-					$letter_segment = chr(self::ASCII_OFFSET +
+					$letter_segment = $this->getLetterSegment(
 						$results[$member_rating]['last_segment']);
 
 					$results[$member_rating]['segmented_count']++;
@@ -253,17 +333,18 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 					// into a batchSubscribe (which achieves the same thing).
 					if (self::UPDATE_SIZE == 1) {
 						$this->list->updateMemberInfo($email,
-							array('segment' => $letter_segment));
+							array($this->segment_field => $letter_segment),
+							$this->segment_array_map);
 
 						$message.= ' (updated)';
 					} else {
 						$member_updates[] = array(
-							'email'   => $email,
-							'segment' => $letter_segment,
+							'email'              => $email,
+							$this->segment_field => $letter_segment,
 							// Rating is needed for the cache table, so keep
 							// track of it here. It isn't a merge var, so will
 							// safely be ignored.
-							'rating'  => $member_rating,
+							'rating'             => $member_rating,
 						);
 					}
 				} else {
@@ -278,7 +359,9 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 					if ($update_count > 0) {
 						// this still segfaults, but cuts down on api calls
 						// so the script can run longer without segfaulting.
-						$this->list->batchSubscribe($member_updates);
+						$this->list->batchSubscribe($member_updates, false,
+							$this->segment_array_map);
+
 						$this->api_calls = $this->api_calls + 2;
 
 						if (self::USE_CACHE === true) {
@@ -290,8 +373,8 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 									$this->db->quote($member['email'], 'text'),
 									$this->db->quote($member['rating'],
 										'integer'),
-									$this->db->quote($member['segment'],
-										'text'));
+									$this->db->quote(
+										$member[$this->segment_field], 'text'));
 							}
 
 							$sql = sprintf($sql,
@@ -348,14 +431,13 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 					where rating = %s
 					order by id desc
 					limit 1',
-					$this->db->quote($rating, 'integer')
-					);
+					$this->db->quote($rating, 'integer'));
 
 				$segment = SwatDB::queryOne($this->db, $sql);
 				if ($segment !== null) {
 					$use_random_start = false;
-					$results[$rating]['last_segment'] = ord($segment) -
-						self::ASCII_OFFSET;
+					$results[$rating]['last_segment'] =
+						$this->getNumericSegment($segment);
 				}
 			}
 
@@ -368,7 +450,7 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 		}
 
 		for ($segment = 0; $segment < $this->number_of_segments; $segment++) {
-			$letter_segment = chr(self::ASCII_OFFSET + $segment);
+			$letter_segment = $this->getLetterSegment($segment);
 
 			$results[$letter_segment]['total_count']     = 0;
 			$results[$letter_segment]['existing_count']  = 0;
@@ -398,7 +480,7 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 			$member = SwatDB::queryRow($this->db, $sql);
 			if ($member !== null) {
 				$member_info['member_rating'] = $member->rating;
-				$member_info['merges']['SEGMENT'] = $member->segment;
+				$member_info['merges'][$this->segment_merge] = $member->segment;
 				$lookup = false;
 			}
 		}
@@ -428,7 +510,7 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 			true);
 
 		for ($segment = 0; $segment < $this->number_of_segments; $segment++) {
-			$letter_segment = chr(self::ASCII_OFFSET + $segment);
+			$letter_segment = $this->getLetterSegment($segment);
 			$this->debug(sprintf("\nSegment %s:\n", $letter_segment));
 			$this->debug(sprintf("%s Members\n",
 				SwatString::numberFormat(
@@ -442,6 +524,22 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 					));
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function getLetterSegment()
+
+	protected function getLetterSegment($segment)
+	{
+		return chr(self::ASCII_OFFSET + $segment);
+	}
+
+	// }}}
+	// {{{ protected function getNumericSegment()
+
+	protected function getNumericSegment($segment)
+	{
+		return ord($segment) - self::ASCII_OFFSET;
 	}
 
 	// }}}
