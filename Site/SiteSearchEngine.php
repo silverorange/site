@@ -238,9 +238,7 @@ abstract class SiteSearchEngine extends SwatObject
 		}
 
 		if ($results === false) {
-			$wrapper_class = $this->getResultWrapperClass();
-			$results = SwatDB::query($this->app->db, $sql, $wrapper_class);
-
+			$results = $this->performResultsQuery($sql);
 			$this->loadSubObjects($results);
 
 			if ($this->hasMemcache()) {
@@ -256,6 +254,22 @@ abstract class SiteSearchEngine extends SwatObject
 		}
 
 		return $results;
+	}
+
+	// }}}
+	// {{{ protected function performResultsQuery()
+
+	/**
+	 * Performs a query for search results
+	 *
+	 * @param string $sql the SQL query.
+	 *
+	 * @return SwatDBRecordsetWrapper the results.
+	 */
+	protected function performResultsQuery($sql)
+	{
+		return SwatDB::query($this->app->db, $sql,
+			$this->getResultWrapperClass());
 	}
 
 	// }}}
