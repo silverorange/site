@@ -557,6 +557,73 @@ class SiteMailChimpList extends SiteMailingList
 	}
 
 	// }}}
+	// {{{ public function getCampaigns()
+
+	public function getCampaigns($filters)
+	{
+		$campaigns = array();
+		// add the list id to the set of passed in filters
+		$filters['list_id'] = $this->shortname;
+
+		try {
+			$campaigns = $this->client->campaigns(
+				$this->app->config->mail_chimp->api_key,
+				$filters);
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
+		}
+
+		return $campaigns;
+	}
+
+	// }}}
+	// {{{ public function getCampaignStats()
+
+	public function getCampaignStats($campaign_id)
+	{
+		$stats = array();
+
+		try {
+			$stats = $this->client->campaignStats(
+				$this->app->config->mail_chimp->api_key,
+				$campaign_id);
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
+		}
+
+		return $stats;
+	}
+
+	// }}}
+	// {{{ public function getCampaignUtmSource()
+
+	public function getCampaignUtmSource($campaign_id)
+	{
+		$utm_source = null;
+
+		try {
+			$content = $this->client->campaignContent(
+				$this->app->config->mail_chimp->api_key,
+				$campaign_id);
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
+		}
+
+		// This is a very very hacky way to be doing this, but its the only easy
+		// way to get UTM_Sources for any campaign. We should probably handle
+		// the whole utm_source thing better.
+		if (substr($content['html'], 'utm_source=') !== false) {
+			$utm_source = substr($content['html'],
+				strpos($content['html'], 'utm_source=')+11, 8);
+		}
+
+		return $utm_source;
+	}
+
+	// }}}
 	// {{{ public function sendCampaignTest()
 
 	public function sendCampaignTest(SiteMailChimpCampaign $campaign,
