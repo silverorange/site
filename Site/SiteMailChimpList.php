@@ -597,33 +597,6 @@ class SiteMailChimpList extends SiteMailingList
 	}
 
 	// }}}
-	// {{{ public function getCampaignUtmSource()
-
-	public function getCampaignUtmSource($campaign_id)
-	{
-		$utm_source = null;
-
-		try {
-			$content = $this->client->campaignContent(
-				$this->app->config->mail_chimp->api_key,
-				$campaign_id);
-		} catch (XML_RPC2_Exception $e) {
-			$e = new SiteException($e);
-			$e->process();
-		}
-
-		// This is a very very hacky way to be doing this, but its the only easy
-		// way to get UTM_Sources for any campaign. We should probably handle
-		// the whole utm_source thing better.
-		if (substr($content['html'], 'utm_source=') !== false) {
-			$utm_source = substr($content['html'],
-				strpos($content['html'], 'utm_source=')+11, 8);
-		}
-
-		return $utm_source;
-	}
-
-	// }}}
 	// {{{ public function sendCampaignTest()
 
 	public function sendCampaignTest(SiteMailChimpCampaign $campaign,
