@@ -566,9 +566,15 @@ class SiteMailChimpList extends SiteMailingList
 		$filters['list_id'] = $this->shortname;
 
 		try {
+			// TODO: add better support for grabbing in smaller chunks,
+			// and paging past the first set of results if there are more.
+
 			$campaigns = $this->client->campaigns(
 				$this->app->config->mail_chimp->api_key,
-				$filters);
+				$filters,
+				0,   // start
+				1000 //limit, this is the max allowable
+				);
 		} catch (XML_RPC2_Exception $e) {
 			$e = new SiteException($e);
 			$e->process();
