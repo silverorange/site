@@ -210,7 +210,7 @@ class Site
 			'resources.combine'        => false,
 
 			// Whether or not to minify resources
-			'resources.minify'         => true,
+			'resources.minify'         => false,
 
 			// DSN of database
 			'database.dsn'             => null,
