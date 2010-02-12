@@ -191,8 +191,26 @@ class Site
 			// Title of the site
 			'site.title'               => null,
 
-			// Resource tag, used for uncaching html-head-entries
+			// Location of site's local PEAR configuration. If null, the system
+			// PEAR configuration is used.
+			'site.pearrc'              => '../pear/pearrc',
+
+			// Resource tag, used for uncaching html-head-entries. Deprecated
+			// in favor of 'resources.tag'.
 			'site.resource_tag'        => null,
+
+			// Resource tag, used for uncaching html-head-entries.
+			'resources.tag'            => null,
+
+			// Whether or not to use development resource data-files. If false,
+			// data files are taken from installed pear packages.
+			'resources.development'    => true,
+
+			// Whether or not to combine resources
+			'resources.combine'        => false,
+
+			// Whether or not to minify resources
+			'resources.minify'         => true,
 
 			// DSN of database
 			'database.dsn'             => null,

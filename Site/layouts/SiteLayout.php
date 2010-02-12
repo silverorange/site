@@ -1,9 +1,15 @@
 <?php
 
+require_once 'Concentrate/DataProvider.php';
+require_once 'Concentrate/DataProviderMemcache.php';
+require_once 'Concentrate/DataProvider/FileFinderDevelopment.php';
+require_once 'Concentrate/DataProvider/FileFinderPear.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/SiteApplication.php';
 require_once 'Site/SiteLayoutData.php';
 require_once 'Site/exceptions/SiteInvalidPropertyException.php';
+require_once 'Swat/SwatHtmlHeadEntrySet.php';
+require_once 'Swat/SwatHtmlHeadEntrySetDisplayer.php';
 
 /**
  * Base class for a layout
@@ -107,11 +113,7 @@ class SiteLayout extends SiteObject
 
 	public function complete()
 	{
-		$this->startCapture('html_head_entries');
-		$this->html_head_entries->display($this->app->getBaseHref(),
-			$this->app->config->site->resource_tag);
-
-		$this->endCapture();
+		$this->completeHtmlHeadEntries();
 	}
 
 	// }}}
@@ -174,6 +176,60 @@ class SiteLayout extends SiteObject
 	public function addHtmlHeadEntrySet(SwatHtmlHeadEntrySet $set)
 	{
 		$this->html_head_entries->addEntrySet($set);
+	}
+
+	// }}}
+	// {{{ protected function completeHtmlHeadEntries()
+
+	protected function completeHtmlHeadEntries()
+	{
+		$time = microtime();
+
+		// build data-file finder
+		if ($this->app->config->resources->development) {
+			$finder = new Concentrate_DataProvider_FileFinderDevelopment();
+		} else {
+			$finder = new Concentrate_DataProvider_FileFinderPear(
+				$this->app->config->site->pearrc);
+		}
+
+		// build data provider
+		if ($this->app->config->memcache->enabled) {
+			$memcache = new Memcached();
+			$memcache->addServer($this->app->config->memcache->server, 11211);
+			$data_provider = new Concentrate_DataProviderMemcache($memcache);
+		} else {
+			$data_provider = new Concentrate_DataProvider();
+		}
+
+		// build concentrator
+		$concentrator = new Concentrate_Concentrator(
+			array('data_provider' => $data_provider));
+
+		foreach ($finder->getDataFiles() as $data_file) {
+			$concentrator->loadDataFile($data_file);
+		}
+
+		// get resource tag
+		if ($this->app->config->resources->tag === null) {
+			// support deprecated site.resource_tag config option
+			$tag = $this->app->config->site->resource_tag;
+		} else {
+			$tag = $this->app->config->resources->tag;
+		}
+
+		// display head entries
+		$this->startCapture('html_head_entries');
+
+		$displayer = new SwatHtmlHeadEntrySetDisplayer($concentrator);
+		$displayer->display($this->html_head_entries,
+			$this->app->getBaseHref(), $tag,
+			$this->app->config->resources->combine);
+
+		 // TODO: remove debug
+		 echo "\t<!-- ", (microtime() - $time) * 1000 , " ms to sort and display head entries -->\n";
+
+		$this->endCapture();
 	}
 
 	// }}}
