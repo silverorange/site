@@ -1,7 +1,9 @@
 <?php
 
+require_once 'Concentrate/CacheArray.php';
+require_once 'Concentrate/CacheMemcache.php';
 require_once 'Concentrate/DataProvider.php';
-require_once 'Concentrate/DataProviderMemcache.php';
+//:require_once 'Concentrate/DataProviderMemcache.php';
 require_once 'Concentrate/DataProvider/FileFinderDevelopment.php';
 require_once 'Concentrate/DataProvider/FileFinderPear.php';
 require_once 'Site/SiteObject.php';
@@ -183,39 +185,49 @@ class SiteLayout extends SiteObject
 
 	protected function completeHtmlHeadEntries()
 	{
+		$resources = $this->app->config->resources;
+		$memcache  = $this->app->config->memcache;
+
 		$time = microtime();
 
 		// build data-file finder
-		if ($this->app->config->resources->development) {
+		if ($resources->development) {
 			$finder = new Concentrate_DataProvider_FileFinderDevelopment();
 		} else {
 			$finder = new Concentrate_DataProvider_FileFinderPear(
 				$this->app->config->site->pearrc);
 		}
 
-		// build data provider
-		if ($this->app->config->memcache->enabled) {
-			$memcache = new Memcached();
-			$memcache->addServer($this->app->config->memcache->server, 11211);
-			$data_provider = new Concentrate_DataProviderMemcache($memcache);
+		// build cache
+		if ($memcache->cache_resources) {
+			$memcached = new Memcached();
+			$memcached->addServer($memcache->server, 11211);
+			$cache = new Concentrate_CacheMemcache(
+				$memcached, $memcache->app_ns);
 		} else {
-			$data_provider = new Concentrate_DataProvider();
+			$cache = new Concentrate_CacheArray();
 		}
+
+		// build data provider
+		$data_provider = new Concentrate_DataProvider(array(
+			'stat' => $resources->development,
+		));
 
 		// build concentrator
-		$concentrator = new Concentrate_Concentrator(
-			array('data_provider' => $data_provider));
+		$concentrator = new Concentrate_Concentrator(array(
+			'cache'         => $cache,
+			'data_provider' => $data_provider,
+		));
 
-		foreach ($finder->getDataFiles() as $data_file) {
-			$concentrator->loadDataFile($data_file);
-		}
+		// load data files
+		$concentrator->loadDataFiles($finder->getDataFiles());
 
 		// get resource tag
 		if ($this->app->config->resources->tag === null) {
 			// support deprecated site.resource_tag config option
 			$tag = $this->app->config->site->resource_tag;
 		} else {
-			$tag = $this->app->config->resources->tag;
+			$tag = $resources->tag;
 		}
 
 		// display head entries
@@ -224,7 +236,8 @@ class SiteLayout extends SiteObject
 		$displayer = new SwatHtmlHeadEntrySetDisplayer($concentrator);
 		$displayer->display($this->html_head_entries,
 			$this->app->getBaseHref(), $tag,
-			$this->app->config->resources->combine);
+			$resources->combine,
+			$resources->minify);
 
 		 // TODO: remove debug
 		 echo "\t<!-- ", (microtime() - $time) * 1000 , " ms to sort and display head entries -->\n";

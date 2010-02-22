@@ -271,6 +271,7 @@ class Site
 			'memcache.app_ns'             => '',
 			'memcache.page_cache'         => false,
 			'memcache.page_cache_timeout' => 900, // in seconds
+			'memcache.cache_resources'    => true,
 
 			// mailchimp
 			'mail_chimp.api_url'        => 'https://us1.api.mailchimp.com/1.2/',
