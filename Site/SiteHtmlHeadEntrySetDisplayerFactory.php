@@ -37,14 +37,6 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 			$resources = $app->config->resources;
 			$memcache  = $app->config->memcache;
 
-			// build data-file finder
-			if ($resources->development) {
-				$finder = new Concentrate_DataProvider_FileFinderDevelopment();
-			} else {
-				$finder = new Concentrate_DataProvider_FileFinderPear(
-					$app->config->site->pearrc);
-			}
-
 			// build cache
 			if ($memcache->cache_resources) {
 				$memcached = new Memcached();
@@ -67,7 +59,19 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 			));
 
 			// load data files
-			$concentrator->loadDataFiles($finder->getDataFiles());
+			if ($resources->development) {
+				$finder = new Concentrate_DataProvider_FileFinderDevelopment();
+				$concentrator->loadDataFiles($finder->getDataFiles());
+			} else {
+				$finder = new Concentrate_DataProvider_FileFinderPear(
+					$app->config->site->pearrc);
+
+				$concentrator->loadDataFiles($finder->getDataFiles());
+				$finder = new Concentrate_DataProvider_FileFinderDirectory(
+					'../dependencies');
+
+				$concentrator->loadDataFiles($finder->getDataFiles());
+			}
 
 			$this->displayers[$app->id] =
 				new SwatHtmlHeadEntrySetDisplayer($concentrator);
