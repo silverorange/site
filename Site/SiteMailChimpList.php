@@ -559,25 +559,19 @@ class SiteMailChimpList extends SiteMailingList
 	// }}}
 	// {{{ public function getCampaigns()
 
-	public function getCampaigns($filters)
+	public function getCampaigns(array $filters = array())
 	{
-		$campaigns = array();
-		// add the list id to the set of passed in filters
-		$filters['list_id'] = $this->shortname;
+		$campaigns  = array();
+		$offset     = 0;
+		$chunk_size = 10;
+		$chunk      = $this->getCampaignsChunk($filters, $offset, $chunk_size);
 
-		try {
-			// TODO: add better support for grabbing in smaller chunks,
-			// and paging past the first set of results if there are more.
-
-			$campaigns = $this->client->campaigns(
-				$this->app->config->mail_chimp->api_key,
-				$filters,
-				0,   // start
-				1000 //limit, this is the max allowable
-				);
-		} catch (XML_RPC2_Exception $e) {
-			$e = new SiteException($e);
-			$e->process();
+		while (count($chunk) > 0) {
+			$campaigns = array_merge($campaigns, $chunk);
+			echo count($campaigns);
+			$offset++;
+			$chunk = $this->getCampaignsChunk($filters, $offset,
+				$chunk_size);
 		}
 
 		return $campaigns;
@@ -785,6 +779,35 @@ class SiteMailChimpList extends SiteMailingList
 		);
 
 		return $content;
+	}
+
+	// }}}
+	// {{{ protected function getCampaignsChunk()
+
+	protected function getCampaignsChunk(array $filters = array(), $offset = 0,
+		$chunk_size = 0)
+	{
+		if ($chunk_size > 1000)
+			throw new SiteException('Campaign chunk size exceeds API limit');
+
+		$campaigns = array();
+		// add the list id to the set of passed in filters
+		$filters['list_id'] = $this->shortname;
+
+		try {
+			$campaigns = $this->client->campaigns(
+				$this->app->config->mail_chimp->api_key,
+				$filters,
+				$offset,
+				$chunk_size
+				);
+
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
+		}
+
+		return $campaigns;
 	}
 
 	// }}}
