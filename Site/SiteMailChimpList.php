@@ -563,7 +563,7 @@ class SiteMailChimpList extends SiteMailingList
 	{
 		$campaigns  = array();
 		$offset     = 0;
-		$chunk_size = 10;
+		$chunk_size = 50;
 		$chunk      = $this->getCampaignsChunk($filters, $offset, $chunk_size);
 
 		while (count($chunk) > 0) {
