@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteArticleWrapper.php';
  * Resolves and creates article pages in a web application
  *
  * @package   Site
- * @copyright 2006-2008 silverorange
+ * @copyright 2006-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticlePageFactory extends SitePageFactory
@@ -304,7 +304,7 @@ class SiteArticlePageFactory extends SitePageFactory
 	{
 		// don't try to resolve articles that are deeper than the max depth
 		if (substr_count($path, '/') >= SiteArticle::MAX_DEPTH) {
-			throw new SiteNotFoundException(
+			throw new SitePathTooLongException(
 				sprintf('Article path too long: ‘%s’', $path));
 		}
 
@@ -347,13 +347,13 @@ class SiteArticlePageFactory extends SitePageFactory
 	{
 		// don't try to find articles with invalid UTF-8 in the path
 		if (!SwatString::validateUtf8($path)) {
-			throw new SiteException(
+			throw new SitePathInvalidUtf8Exception(
 				sprintf('Path is not valid UTF-8: ‘%s’', $path));
 		}
 
 		// don't try to find articles with more than 254 characters in the path
 		if (strlen($path) > 254) {
-			throw new SiteException(
+			throw new SitePathTooLongException(
 				sprintf('Path is too long: ‘%s’', $path));
 		}
 
