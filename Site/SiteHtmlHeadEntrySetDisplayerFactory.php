@@ -3,10 +3,9 @@
 require_once 'Concentrate/CacheArray.php';
 require_once 'Concentrate/CacheMemcache.php';
 require_once 'Concentrate/DataProvider.php';
-require_once 'Concentrate/DataProvider/FileFinderDevelopment.php';
-require_once 'Concentrate/DataProvider/FileFinderPear.php';
 require_once 'Swat/SwatHtmlHeadEntrySet.php';
 require_once 'Swat/SwatHtmlHeadEntrySetDisplayer.php';
+require_once 'Site/SiteConcentrateFileFinder.php';
 require_once 'Site/SiteApplication.php';
 
 /**
@@ -59,19 +58,8 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 			));
 
 			// load data files
-			if ($resources->development) {
-				$finder = new Concentrate_DataProvider_FileFinderDevelopment();
-				$concentrator->loadDataFiles($finder->getDataFiles());
-			} else {
-				$finder = new Concentrate_DataProvider_FileFinderPear(
-					$app->config->site->pearrc);
-
-				$concentrator->loadDataFiles($finder->getDataFiles());
-				$finder = new Concentrate_DataProvider_FileFinderDirectory(
-					'../dependencies');
-
-				$concentrator->loadDataFiles($finder->getDataFiles());
-			}
+			$finder = new SiteConcentrateFileFinder();
+			$concentrator->loadDataFiles($finder->getDataFiles());
 
 			$this->displayers[$app->id] =
 				new SwatHtmlHeadEntrySetDisplayer($concentrator);
