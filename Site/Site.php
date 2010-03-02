@@ -204,6 +204,8 @@ class Site
 			// Whether or not to minify resources
 			'resources.minify'         => false,
 
+			'resources.development'    => true,
+
 			// DSN of database
 			'database.dsn'             => null,
 
