@@ -84,18 +84,27 @@ abstract class SiteMailingSignupPage extends SiteEditPage
 	protected function checkMember(SiteMailingList $list, $email)
 	{
 		if ($list->isMember($email)) {
-			// TODO: rewrite.
-			$message = new SwatMessage(Site::_('Thank you. Your email address '.
-				'was already subscribed to our newsletter.'),
-				'notice');
-
-			$message->secondary_content = Site::_('Your subscriber '.
-				'information has been updated, and you will continue to '.
-				'receive mailings to this address.');
-
-			$this->app->messages->add($message);
 			$this->send_welcome = false;
+			$message = $this->getExistingMemberMessage($list, $email);
+			if ($message != null) {
+				$this->app->messages->add($message);
+			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function getExistingMemberMessage()
+
+	protected function getExistingMemberMessage(SiteMailingList $list, $email)
+	{
+		// TODO: rewrite.
+		$message = new SwatMessage(Site::_('Thank you. Your email address '.
+			'was already subscribed to our newsletter.'),
+			'notice');
+
+		$message->secondary_content = Site::_('Your subscriber '.
+			'information has been updated, and you will continue to '.
+			'receive mailings to this address.');
 	}
 
 	// }}}
