@@ -37,7 +37,7 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 			$memcache  = $app->config->memcache;
 
 			// build cache
-			if ($memcache->cache_resources) {
+			if ($memcache->resource_cache) {
 				$memcached = new Memcached();
 				$memcached->addServer($memcache->server, 11211);
 				$cache = new Concentrate_CacheMemcache(
@@ -48,7 +48,7 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 
 			// build data provider
 			$data_provider = new Concentrate_DataProvider(array(
-				'stat' => $resources->development,
+				'stat' => $memcache->resource_cache_stat,
 			));
 
 			// build concentrator

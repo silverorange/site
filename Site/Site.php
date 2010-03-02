@@ -204,8 +204,6 @@ class Site
 			// Whether or not to minify resources
 			'resources.minify'         => false,
 
-			'resources.development'    => true,
-
 			// DSN of database
 			'database.dsn'             => null,
 
@@ -260,12 +258,13 @@ class Site
 			'email.service_address'    => null,
 
 			// memcache
-			'memcache.enabled'            => true,
-			'memcache.server'             => 'localhost',
-			'memcache.app_ns'             => '',
-			'memcache.page_cache'         => false,
-			'memcache.page_cache_timeout' => 900, // in seconds
-			'memcache.cache_resources'    => true,
+			'memcache.enabled'             => true,
+			'memcache.server'              => 'localhost',
+			'memcache.app_ns'              => '',
+			'memcache.page_cache'          => false,
+			'memcache.page_cache_timeout'  => 900, // in seconds
+			'memcache.resource_cache'      => true,
+			'memcache.resource_cache_stat' => true,
 
 			// mailchimp
 			'mail_chimp.api_url'        => 'https://us1.api.mailchimp.com/1.2/',
