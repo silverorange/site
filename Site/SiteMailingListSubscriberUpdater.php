@@ -4,6 +4,8 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'Site/Site.php';
 require_once 'Site/SiteMailingList.php';
 require_once 'Site/SiteCommandLineApplication.php';
+require_once 'Site/SiteDatabaseModule.php';
+require_once 'Site/SiteConfigModule.php';
 
 /**
  * Cron job application to update newsletter subscribers
@@ -13,6 +15,7 @@ require_once 'Site/SiteCommandLineApplication.php';
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 // TODO: make sure we're batchSubscribing in small enough batches to not timeout
+
 abstract class SiteMailingListSubscriberUpdater
 	extends SiteCommandLineApplication
 {
@@ -297,6 +300,20 @@ abstract class SiteMailingListSubscriberUpdater
 			Site::_('%s rows (%s addresses) cleared from the queue.')."\n",
 			$delete_count, count($addresses)));
 
+	}
+
+	// }}}
+
+	// boilerplate
+	// {{{ protected function getDefaultModuleList()
+
+	protected function getDefaultModuleList()
+	{
+		$list = parent::getDefaultModuleList();
+		$list['config']   = 'SiteConfigModule';
+		$list['database'] = 'SiteDatabaseModule';
+
+		return $list;
 	}
 
 	// }}}
