@@ -105,6 +105,8 @@ abstract class SiteMailingSignupPage extends SiteEditPage
 		$message->secondary_content = Site::_('Your subscriber '.
 			'information has been updated, and you will continue to '.
 			'receive mailings to this address.');
+
+		return $message;
 	}
 
 	// }}}
