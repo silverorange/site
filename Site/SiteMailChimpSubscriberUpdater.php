@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/SiteMailingListSubscriberUpdater.php';
+require_once 'Site/SiteMailChimpList.php';
 
 /**
  * Cron job application to update newsletter subscribers
