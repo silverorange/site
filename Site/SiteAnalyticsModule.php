@@ -135,13 +135,26 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	public function cleanInboundTrackingUri(SiteAd $ad)
 	{
-		$regexp = sprintf('/&?\??%s=%s/u',
+		$regexp = sprintf(
+			'/
+			(?:
+				(\?)%1$s=%2$s& # ad starts query string
+				|
+				\?%1$s=%2$s$   # ad is entire query string
+				|
+				&%1$s=%2$s&    # ad is embedded in query string
+				|
+				&%1$s=%2$s$    # ad ends query string
+			)
+			/xu',
 			preg_quote($this->inbound_tracking_id, '/'),
 			preg_quote($ad->shortname, '/'));
 
 		// Site URI may not have been parsed yet if autocleaning is used. This
 		// must be a full URI as a result.
-		$uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
+		$uri = preg_replace($regexp, '\1', $_SERVER['REQUEST_URI']);
+
+		// relocate to cleaned URI
 		$this->app->relocate($uri);
 	}
 
