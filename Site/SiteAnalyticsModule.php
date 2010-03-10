@@ -142,7 +142,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 				|
 				\?%1$s=%2$s$   # ad is entire query string
 				|
-				&%1$s=%2$s&    # ad is embedded in query string
+				(&)%1$s=%2$s&  # ad is embedded in query string
 				|
 				&%1$s=%2$s$    # ad ends query string
 			)
@@ -152,7 +152,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		// Site URI may not have been parsed yet if autocleaning is used. This
 		// must be a full URI as a result.
-		$uri = preg_replace($regexp, '\1', $_SERVER['REQUEST_URI']);
+		$uri = preg_replace($regexp, '\1\2', $_SERVER['REQUEST_URI']);
 
 		// relocate to cleaned URI
 		$this->app->relocate($uri);
