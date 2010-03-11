@@ -7,6 +7,7 @@ require_once 'Site/SiteApplication.php';
 require_once 'Site/SiteLayoutData.php';
 require_once 'Site/SiteHtmlHeadEntrySetDisplayerFactory.php';
 require_once 'Site/exceptions/SiteInvalidPropertyException.php';
+require_once 'Concentrate/CLI.php';
 
 /**
  * Base class for a layout
@@ -66,54 +67,6 @@ class SiteLayout extends SiteObject
 	}
 
 	// }}}
-	// {{{ public function init()
-
-	public function init()
-	{
-		$this->data->basehref = $this->app->getBaseHref();
-		$this->data->title = '';
-		$this->data->html_title = '';
-
-		if (isset($this->app->config->site->meta_description))
-			$this->data->meta_description =
-				$this->app->config->site->meta_description;
-		else
-			$this->data->meta_description = '';
-
-		$this->data->meta_keywords = '';
-		$this->data->extra_headers = '';
-	}
-
-	// }}}
-	// {{{ public function process()
-
-	public function process()
-	{
-	}
-
-	// }}}
-	// {{{ public function build()
-
-	public function build()
-	{
-	}
-
-	// }}}
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-	}
-
-	// }}}
-	// {{{ public function complete()
-
-	public function complete()
-	{
-		$this->completeHtmlHeadEntries();
-	}
-
-	// }}}
 	// {{{ public function startCapture()
 
 	public function startCapture($name, $prepend = false)
@@ -160,6 +113,54 @@ class SiteLayout extends SiteObject
 	}
 
 	// }}}
+
+	// init phase
+	// {{{ public function init()
+
+	public function init()
+	{
+		$this->data->basehref = $this->app->getBaseHref();
+		$this->data->title = '';
+		$this->data->html_title = '';
+
+		if (isset($this->app->config->site->meta_description))
+			$this->data->meta_description =
+				$this->app->config->site->meta_description;
+		else
+			$this->data->meta_description = '';
+
+		$this->data->meta_keywords = '';
+		$this->data->extra_headers = '';
+	}
+
+	// }}}
+
+	// process phase
+	// {{{ public function process()
+
+	public function process()
+	{
+	}
+
+	// }}}
+
+	// build phase
+	// {{{ public function build()
+
+	public function build()
+	{
+	}
+
+	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+	}
+
+	// }}}
 	// {{{ public function addHtmlHeadEntry()
 
 	public function addHtmlHeadEntry(SwatHtmlHeadEntry $entry)
@@ -173,6 +174,16 @@ class SiteLayout extends SiteObject
 	public function addHtmlHeadEntrySet(SwatHtmlHeadEntrySet $set)
 	{
 		$this->html_head_entries->addEntrySet($set);
+	}
+
+	// }}}
+
+	// complete phase
+	// {{{ public function complete()
+
+	public function complete()
+	{
+		$this->completeHtmlHeadEntries();
 	}
 
 	// }}}
@@ -192,16 +203,63 @@ class SiteLayout extends SiteObject
 			$tag = $resources->tag;
 		}
 
+		// get combine option
+		$combine = ($resources->combine &&
+			$this->getCombineEnabledByFlagFile());
+
+		// get minify option
+		$minify = ($resources->minify &&
+			$this->getMinifyEnabledByFlagFile());
+
+		var_dump($combine);
+		var_dump($minify);
+
 		$this->startCapture('html_head_entries');
 
 		$displayer->display(
 			$this->html_head_entries,
 			$this->app->getBaseHref(),
 			$tag,
-			$resources->combine,
-			$resources->minify);
+			$combine,
+			$minify);
 
 		$this->endCapture();
+	}
+
+	// }}}
+	// {{{ protected function getCombineEnabledByFlagFile()
+
+	/**
+	 * Gets whether or not the flag file generated during the concentrate build
+	 * exists
+	 *
+	 * @return boolean true if the file exists, false if it does not.
+	 */
+	protected function getCombineEnabledByFlagFile()
+	{
+		$www_root = dirname($_SERVER['SCRIPT_FILENAME']);
+		$filename = $www_root.DIRECTORY_SEPARATOR.
+			Concentrate_CLI::FILENAME_FLAG_COMBINED;
+
+		return file_exists($filename);
+	}
+
+	// }}}
+	// {{{ protected function getMinifyEnabledByFlagFile()
+
+	/**
+	 * Gets whether or not the flag file generated during the concentrate build
+	 * exists
+	 *
+	 * @return boolean true if the file exists, false if it does not.
+	 */
+	protected function getMinifyEnabledByFlagFile()
+	{
+		$www_root = dirname($_SERVER['SCRIPT_FILENAME']);
+		$filename = $www_root.DIRECTORY_SEPARATOR.
+			Concentrate_CLI::FILENAME_FLAG_MINIFIED;
+
+		return file_exists($filename);
 	}
 
 	// }}}
