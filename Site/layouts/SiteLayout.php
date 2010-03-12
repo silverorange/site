@@ -211,9 +211,6 @@ class SiteLayout extends SiteObject
 		$minify = ($resources->minify &&
 			$this->getMinifyEnabledByFlagFile());
 
-		var_dump($combine);
-		var_dump($minify);
-
 		$this->startCapture('html_head_entries');
 
 		$displayer->display(
