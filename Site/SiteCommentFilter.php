@@ -32,27 +32,36 @@ class SiteCommentFilter
 	/**
 	 * @var array
 	 */
+	protected static $tags = array(
+		'a' => array(
+			'tag' => 'a',
+			'self_closing' => false,
+			'attributes' => array(
+				'title="[^"]+?"',
+				'href="http[^"]+?"',
+			),
+		),
+		'em' => array(
+			'tag' => 'em',
+			'self_closing' => false,
+			'attributes' => array(),
+		),
+		'strong' => array(
+			'tag' => 'strong',
+			'self_closing' => false,
+			'attributes' => array(),
+		),
+		'code' => array(
+			'tag' => 'code',
+			'self_closing' => false,
+			'attributes' => array(),
+		),
+	);
+
+	/**
+	 * @var array
+	 */
 	protected static $tag_stack = array();
-
-	/**
-	 * @var array
-	 */
-	protected static $opening_tags = array(
-		'a',
-		'em',
-		'strong',
-		'code',
-	);
-
-	/**
-	 * @var array
-	 */
-	protected static $closing_tags = array(
-		'na',
-		'nem',
-		'nstrong',
-		'ncode',
-	);
 
 	/**
 	 * @var boolean
@@ -107,6 +116,27 @@ class SiteCommentFilter
 	}
 
 	// }}}
+	// {{{ public static function addTag()
+
+	/**
+	 * @param string $tag
+	 * @param boolean $self_closing
+	 * @param array $attributes
+	 */
+	public static function addTag($tag, $self_closing = false,
+		array $attributes = null)
+	{
+		if ($attributes === null)
+			$attributes = array();
+
+		self::$tags[$tag] = array(
+			'tag' => $tag,
+			'self_closing' => $self_closing,
+			'attributes' => $attributes,
+		);
+	}
+
+	// }}}
 	// {{{ protected static function startTag()
 
 	protected static function startTag($data, $tag_name)
@@ -129,6 +159,14 @@ class SiteCommentFilter
 	}
 
 	// }}}
+	// {{{ protected static function selfClosingTag()
+
+	protected static function selfClosingTag($data, $tag_name)
+	{
+		echo $data;
+	}
+
+	// }}}
 	// {{{ protected static function characterData()
 
 	protected static function characterData($data)
@@ -141,39 +179,13 @@ class SiteCommentFilter
 
 	protected static function parseInternal($comment)
 	{
-		// expression to get all allowed tags
-		$tokens = '/
-			(
-				<(?P<a>a)
-					(?: title="[^"]+?")?
-					\ href="http[^"]+?"
-					(?: title="[^"]+?")?
-				>
-				|
-				<(?P<em>em)>
-				|
-				<(?P<strong>strong)>
-				|
-				<(?P<code>code)>
-				|
-				<\/(?P<na>a)>
-				|
-				<\/(?P<nem>em)>
-				|
-				<\/(?P<nstrong>strong)>
-				|
-				<\/(?P<ncode>code)>
-			)
-			/uix';
-
 		$matches = array();
 		// Note: PHP PCRE always returns offsets in bytes, not characters
-		preg_match_all($tokens, $comment, $matches,
+		preg_match_all(self::getExpression(), $comment, $matches,
 			PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
 
 		$offset = 0;
 		foreach ($matches as $match) {
-
 			// get leading character data before tag
 			if ($match[0][1] !== $offset) {
 				$data = self::getByteSubstring($comment, $offset,
@@ -182,20 +194,26 @@ class SiteCommentFilter
 				self::characterData($data);
 			}
 
-			// check if it is an opening tag
-			foreach (self::$opening_tags as $tag) {
-				if (array_key_exists($tag, $match) && $match[$tag][1] != -1) {
-					self::startTag($match[0][0], $tag);
-					break;
-				}
-			}
+			foreach (self::$tags as $tag) {
+				if ($tag['self_closing'] === false) {
+					// check if it is an opening tag
+					if (array_key_exists($tag['tag'], $match) &&
+						$match[$tag['tag']][1] != -1) {
 
-			// check if it is a closing tag
-			foreach (self::$closing_tags as $tag) {
-				if (array_key_exists($tag, $match) && $match[$tag][1] != -1) {
-					$tag = substr($tag, 1); // strip leading 'n'
-					self::endTag($match[0][0], $tag);
-					break;
+						self::startTag($match[0][0], $tag['tag']);
+
+					// check if it is a closing tag
+					} elseif (array_key_exists('n'.$tag['tag'], $match) &&
+						$match['n'.$tag['tag']][1] != -1) {
+
+						self::endTag($match[0][0], $tag['tag']);
+					}
+
+				// check if it is a self-closing tag
+				} elseif (array_key_exists($tag['tag'], $match) &&
+					$match[$tag['tag']][1] != -1) {
+
+					self::selfClosingTag($match[0][0], $tag['tag']);
 				}
 			}
 
@@ -214,6 +232,43 @@ class SiteCommentFilter
 			$tag = array_pop(self::$tag_stack);
 			echo '</', $tag, '>';
 		}
+	}
+
+	// }}}
+	// {{{ protected static function getExpression()
+
+	protected static function getExpression()
+	{
+		$tag_tokens = array();
+		foreach (self::$tags as $tag) {
+			$attributes = array();
+			foreach ($tag['attributes'] as $attribute) {
+				$attributes[] = '\s+'.$attribute;
+			}
+
+			if (count($attributes) > 0) {
+				$attribute_tokens = '('.implode("\n\t|\n", $attributes).')*';
+			} else {
+				$attribute_tokens = '';
+			}
+
+			if ($tag['self_closing']) {
+				$tag_tokens[] = sprintf('<(?P<%1$s>%1$s)%2$s\ \/>',
+					$tag['tag'],
+					$attribute_tokens);
+
+			} else {
+				$tag_tokens[] = sprintf('<(?P<%1$s>%1$s)%2$s>',
+					$tag['tag'],
+					$attribute_tokens);
+
+				$tag_tokens[] = sprintf('<\/(?P<n%1$s>%1$s)>',
+					$tag['tag']);
+			}
+		}
+
+		$tokens = '/('.implode("\n|\n", $tag_tokens).') /uix';
+		return $tokens;
 	}
 
 	// }}}
