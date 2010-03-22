@@ -47,6 +47,11 @@ class SiteMailChimpList extends SiteMailingList
 	 */
 	const INVALID_ADDRESS_ERROR_CODE = 502;
 
+	/**
+	 * Error code returned when the request timeouts.
+	 */
+	const TIMEOUT_ERROR_CODE = 28;
+
 	// }}}
 	// {{{ protected properties
 
@@ -113,7 +118,12 @@ class SiteMailChimpList extends SiteMailingList
 				$e = new SiteException($result);
 				$e->log();
 			}
-
+		} catch (XML_RPC2_CurlException $e) {
+			// ignore timeout exceptions.
+			if ($e->getCode() !== self::TIMEOUT_ERROR_CODE) {
+				$e = new SiteException($e);
+				$e->log();
+			}
 		} catch (Exception $e) {
 			$e = new SiteException($e);
 			$e->log();
