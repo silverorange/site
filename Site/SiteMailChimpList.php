@@ -58,12 +58,10 @@ class SiteMailChimpList extends SiteMailingList
 	protected $client;
 	protected $list_merge_array_map = array();
 	protected $default_address = array(
-		'addr1'   => '',
-		'addr2'   => '',
-		'city'    => '',
-		'state'   => '',
-		'zip'     => '',
-		'country' => '',
+		'addr1'   => 'null',
+		'city'    => 'null',
+		'state'   => 'null',
+		'zip'     => 'null',
 		);
 
 	// }}}
