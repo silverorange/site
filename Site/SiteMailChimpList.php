@@ -50,7 +50,7 @@ class SiteMailChimpList extends SiteMailingList
 	/**
 	 * Error code returned when the request timeouts.
 	 */
-	const TIMEOUT_ERROR_CODE = 28;
+	const CURL_TIMEOUT_ERROR_CODE = 28;
 
 	// }}}
 	// {{{ protected properties
@@ -120,7 +120,7 @@ class SiteMailChimpList extends SiteMailingList
 			}
 		} catch (XML_RPC2_CurlException $e) {
 			// ignore timeout exceptions.
-			if ($e->getCode() !== self::TIMEOUT_ERROR_CODE) {
+			if ($e->getCode() !== self::CURL_TIMEOUT_ERROR_CODE) {
 				$e = new SiteException($e);
 				$e->log();
 			}
