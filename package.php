@@ -62,7 +62,7 @@ $package->addPackageDepWithChannel('required', 'MDB2', 'pear.php.net', '2.2.2');
 $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10');
 $package->addPackageDepWithChannel('required', 'Mail_Mime', 'pear.silverorange.com', '1.5.2so3');
 $package->addPackageDepWithChannel('required', 'Net_SMTP', 'pear.php.net', '1.2.8');
-$package->addPackageDepWithChannel('optional', 'XML_RPC2', 'pear.silverorange.com', '1.0.3so4');
+$package->addPackageDepWithChannel('optional', 'XML_RPC2', 'pear.silverorange.com', '1.0.3so5');
 $package->addPackageDepWithChannel('required', 'Text_Password', 'pear.php.net', '1.1.1');
 $package->addPackageDepWithChannel('optional', 'Services_Akismet2', 'pear.php.net', '0.2.0');
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
