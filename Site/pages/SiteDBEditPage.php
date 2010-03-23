@@ -7,7 +7,7 @@ require_once 'Site/pages/SiteEditPage.php';
  * Base class for database edit pages
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteDBEditPage extends SiteEditPage
@@ -40,7 +40,7 @@ abstract class SiteDBEditPage extends SiteEditPage
 	{
 		$message = new SwatMessage(
 			Site::_('An error has occurred. The item was not saved.'),
-			SwatMessage::SYSTEM_ERROR);
+			'system-error');
 
 		return $message;
 	}
