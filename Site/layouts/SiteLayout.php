@@ -196,11 +196,14 @@ class SiteLayout extends SiteObject
 		$displayer = $factory->build($this->app);
 
 		// get resource tag
-		if ($this->app->config->resources->tag === null) {
-			// support deprecated site.resource_tag config option
-			$tag = $this->app->config->site->resource_tag;
-		} else {
-			$tag = $resources->tag;
+		$tag = $this->getTagByFlagFile();
+		if ($tag === null) {
+			if ($this->app->config->resources->tag === null) {
+				// support deprecated site.resource_tag config option
+				$tag = $this->app->config->site->resource_tag;
+			} else {
+				$tag = $resources->tag;
+			}
 		}
 
 		// get combine option
@@ -257,6 +260,32 @@ class SiteLayout extends SiteObject
 			Concentrate_CLI::FILENAME_FLAG_MINIFIED;
 
 		return file_exists($filename);
+	}
+
+	// }}}
+	// {{{ protected function getTagByFlagFile()
+
+	/**
+	 * Gets the resource tag from a flag file that can be generated during
+	 * a site build process
+	 *
+	 * If the flag file is present, the tag value in the file overrides the
+	 * value in the site's configuration.
+	 *
+	 * @return string the resource tag or null if the flag file is not present.
+	 */
+	protected function getTagByFlagFile()
+	{
+		$tag = null;
+
+		$www_root = dirname($_SERVER['SCRIPT_FILENAME']);
+		$filename = $www_root.DIRECTORY_SEPARATOR.'.resource-tag';
+
+		if (file_exists($filename) && is_readable($filename)) {
+			$tag = file_get_contents($filename);
+		}
+
+		return $tag;
 	}
 
 	// }}}
