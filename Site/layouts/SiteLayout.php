@@ -282,7 +282,7 @@ class SiteLayout extends SiteObject
 		$filename = $www_root.DIRECTORY_SEPARATOR.'.resource-tag';
 
 		if (file_exists($filename) && is_readable($filename)) {
-			$tag = file_get_contents($filename);
+			$tag = trim(file_get_contents($filename));
 		}
 
 		return $tag;
