@@ -73,10 +73,13 @@ class SiteCommentFilter
 
 	/**
 	 * @param string $comment
+	 * @param boolean $strip_invalid_tags If true, invalid tags are stripped,
+	 *                                    and if false, invalid tags are
+	 *                                    displayed with entities minimized.
 	 *
 	 * @return string
 	 */
-	public static function parse($comment)
+	public static function parse($comment, $strip_invalid_tags = false)
 	{
 		if (self::$use_mb_string === null) {
 			self::$use_mb_string = (extension_loaded('mbstring') &&
@@ -86,7 +89,7 @@ class SiteCommentFilter
 		self::$tag_stack = array();
 
 		ob_start();
-		self::parseInternal($comment);
+		self::parseInternal($comment, $strip_invalid_tags);
 		return ob_get_clean();
 	}
 
@@ -95,12 +98,15 @@ class SiteCommentFilter
 
 	/**
 	 * @param string $comment
+	 * @param boolean $strip_invalid_tags If true, invalid tags are stripped,
+	 *                                    and if false, invalid tags are
+	 *                                    displayed with entities minimized.
 	 *
 	 * @return string
 	 */
-	public static function toXhtml($comment)
+	public static function toXhtml($comment, $strip_invalid_tags = false)
 	{
-		$comment = self::parse($comment);
+		$comment = self::parse($comment, $strip_invalid_tags);
 
 		$comment = str_replace("\r\n", "\n", $comment);
 		$comment = str_replace("\r",   "\n", $comment);
@@ -169,15 +175,19 @@ class SiteCommentFilter
 	// }}}
 	// {{{ protected static function characterData()
 
-	protected static function characterData($data)
+	protected static function characterData($data, $strip_invalid_tags)
 	{
+		if ($strip_invalid_tags) {
+			$data = strip_tags($data);
+		}
+
 		echo SwatString::minimizeEntities($data);
 	}
 
 	// }}}
 	// {{{ protected static function parseInternal()
 
-	protected static function parseInternal($comment)
+	protected static function parseInternal($comment, $strip_invalid_tags)
 	{
 		$matches = array();
 		// Note: PHP PCRE always returns offsets in bytes, not characters
@@ -191,7 +201,7 @@ class SiteCommentFilter
 				$data = self::getByteSubstring($comment, $offset,
 					$match[0][1]);
 
-				self::characterData($data);
+				self::characterData($data, $strip_invalid_tags);
 			}
 
 			foreach (self::$tags as $tag) {
@@ -224,7 +234,7 @@ class SiteCommentFilter
 		$length = self::getByteLength($comment);
 		if ($offset < $length) {
 			$data = self::getByteSubstring($comment, $offset, $length);
-			self::characterData($data);
+			self::characterData($data, $strip_invalid_tags);
 		}
 
 		// close unclosed tags
