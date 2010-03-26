@@ -31,7 +31,7 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 	 *
 	 * @var integer
 	 */
-	const UPDATE_SIZE  = 200;
+	const UPDATE_SIZE = 200;
 
 	/**
 	 *
@@ -80,7 +80,6 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 	 * @var boolean
 	 */
 	protected $incremental = false;
-
 
 	/**
 	 * Merge Var Array for the segment field
@@ -199,7 +198,8 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 
 	protected function initList()
 	{
-		$this->list = new SiteMailChimpList($this);
+		// long custom timeout
+		$this->list = new SiteMailChimpList($this, null, 90000);
 	}
 
 	// }}}
@@ -276,7 +276,6 @@ class SiteMailChimpListSegmenter extends SiteCommandLineApplication
 				$member_count++;
 				$results[$member_rating]['total_count']++;
 				$results['total_count']++;
-
 
 				if ($this->incremental === true &&
 					strlen($member_segment) > 0 &&

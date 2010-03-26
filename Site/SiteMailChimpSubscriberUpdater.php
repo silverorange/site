@@ -17,7 +17,8 @@ class SiteMailChimpSubscriberUpdater
 
 	protected function getList()
 	{
-		return new SiteMailChimpList($this);
+		// long custom timeout
+		return new SiteMailChimpList($this, null, 90000);
 	}
 
 	// }}}
