@@ -610,6 +610,25 @@ class SiteMailChimpList extends SiteMailingList
 	}
 
 	// }}}
+	// {{{ public function getCampaignClickStats()
+
+	public function getCampaignClickStats($campaign_id)
+	{
+		$stats = array();
+
+		try {
+			$stats = $this->client->campaignClickStats(
+				$this->app->config->mail_chimp->api_key,
+				$campaign_id);
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
+		}
+
+		return $stats;
+	}
+
+	// }}}
 	// {{{ public function sendCampaignTest()
 
 	public function sendCampaignTest(SiteMailChimpCampaign $campaign,
