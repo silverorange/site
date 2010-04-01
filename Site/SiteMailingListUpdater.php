@@ -8,15 +8,14 @@ require_once 'Site/SiteDatabaseModule.php';
 require_once 'Site/SiteConfigModule.php';
 
 /**
- * Cron job application to update newsletter subscribers
+ * Cron job application to update mailing list with new and queued subscriber
+ * requests.
  *
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-
-abstract class SiteMailingListSubscriberUpdater
-	extends SiteCommandLineApplication
+abstract class SiteMailingListUpdater extends SiteCommandLineApplication
 {
 	// {{{ protected properties
 
