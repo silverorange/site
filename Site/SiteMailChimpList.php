@@ -17,6 +17,16 @@ class SiteMailChimpList extends SiteMailingList
 	// {{{ class constants
 
 	/**
+	 * How many members to batch update at once.
+	 *
+	 * Must be kept low enough to not timeout. API docs say cap batch updates
+	 * between 5k-10k.
+	 *
+	 * @var integer
+	 */
+	const BATCH_UPDATE_SIZE  = 5000;
+
+	/**
 	 * Error code returned when attempting to subscribe an email address that
 	 * has previously unsubscribed. We can't programatically resubscribe them,
 	 * MailChimp requires them to resubscribe out of their own volition.
@@ -208,6 +218,12 @@ class SiteMailChimpList extends SiteMailingList
 		$result = false;
 
 		if ($this->isAvailable()) {
+			$result = array(
+				'success_count' => 0,
+				'error_count'   => 0,
+				'errors'        => array(),
+				);
+
 			// MailChimp doesn't allow welcomes to be sent on batch subscribes.
 			// So if we need to send them, do individual subscribes instead.
 			if ($send_welcome === true) {
@@ -237,26 +253,44 @@ class SiteMailChimpList extends SiteMailingList
 				}
 			} else {
 				$merged_addresses = array();
+				$address_count    = count($addresses);
+				$current_count    = 0;
+
 				foreach ($addresses as $info) {
+					$current_count++;
+
 					$merges = $this->mergeInfo($info, $array_map);
 					if (count($merges)) {
 						$merged_addresses[] = $merges;
 					}
-				}
 
-				try {
-					$result = $this->client->listBatchSubscribe(
-						$this->app->config->mail_chimp->api_key,
-						$this->shortname,
-						$merged_addresses,
-						false, // double_optin
-						true,  // update_existing
-						false  // replace_intrests
-						);
+					if (count($merged_addresses) === self::BATCH_UPDATE_SIZE ||
+						$current_count == $address_count) {
+						// do update
+						try {
+							$current_result = $this->client->listBatchSubscribe(
+								$this->app->config->mail_chimp->api_key,
+								$this->shortname,
+								$merged_addresses,
+								false, // double_optin
+								true,  // update_existing
+								false  // replace_intrests
+								);
 
-				} catch (XML_RPC2_Exception $e) {
-					$e = new SiteException($e);
-					$e->process();
+						} catch (XML_RPC2_Exception $e) {
+							$e = new SiteException($e);
+							$e->process();
+						}
+
+						$result['success_count']+=
+							$current_result['success_count'];
+
+						$result['error_count']+= $current_result['error_count'];
+						$result['errors'] = array_merge($result['errors'],
+							$current_result['errors']);
+
+						$merged_addresses = array();
+					}
 				}
 			}
 		} elseif ($this->app->hasModule('SiteDatabaseModule')) {
