@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/SiteMailingListSubscriberUpdater.php';
+require_once 'Site/SiteMailingListUpdater.php';
 require_once 'Site/SiteMailChimpList.php';
 
 /**
