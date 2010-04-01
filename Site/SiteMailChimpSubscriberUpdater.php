@@ -26,9 +26,11 @@ class SiteMailChimpSubscriberUpdater
 
 	protected function handleResult($result, $success_message)
 	{
-		parent::handleResult($result, $success_message);
+		$clear_queued = parent::handleResult($result, $success_message);
 
 		if (is_array($result)) {
+			$clear_queued = true;
+
 			$this->debug(sprintf($success_message,
 				$result['success_count']));
 
@@ -102,6 +104,7 @@ class SiteMailChimpSubscriberUpdater
 				}
 
 				if ($queued_count > 0) {
+					$clear_queued = false;
 					$this->debug(sprintf(Site::_('%s addresses queued.')."\n",
 						$queued_count));
 				}
@@ -116,6 +119,8 @@ class SiteMailChimpSubscriberUpdater
 				}
 			}
 		}
+
+		return $clear_queued;
 	}
 
 	// }}}

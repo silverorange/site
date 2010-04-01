@@ -14,7 +14,6 @@ require_once 'Site/SiteConfigModule.php';
  * @copyright 2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-// TODO: make sure we're batchSubscribing in small enough batches to not timeout
 
 abstract class SiteMailingListSubscriberUpdater
 	extends SiteCommandLineApplication
@@ -124,11 +123,14 @@ abstract class SiteMailingListSubscriberUpdater
 			$result = $list->batchSubscribe($addresses, true,
 				$this->getArrayMap());
 
-			$this->clearQueuedSubscribes($addresses, $with_welcome);
-
-			$this->handleResult($result,
+			$clear_queued = $this->handleResult($result,
 				Site::_('%s queued addresses with welcome message subscribed.').
 				"\n");
+
+			// don't clean the queued subscribes if they have been re-queued.
+			if ($clear_queued === true) {
+				$this->clearQueuedSubscribes($addresses, $with_welcome);
+			}
 		}
 
 		$this->debug(Site::_('done subscribing queued addresses with welcome '.
@@ -155,10 +157,13 @@ abstract class SiteMailingListSubscriberUpdater
 			$result = $list->batchSubscribe($addresses, false,
 				$this->getArrayMap());
 
-			$this->clearQueuedSubscribes($addresses, $with_welcome);
-
-			$this->handleResult($result,
+			$clear_queued = $this->handleResult($result,
 				Site::_('%s queued addresses subscribed.')."\n");
+
+			// don't clean the queued subscribes if they have been re-queued.
+			if ($clear_queued === true) {
+				$this->clearQueuedSubscribes($addresses, $with_welcome);
+			}
 		}
 
 		$this->debug(Site::_('done subscribing queued addresses.')."\n\n");
@@ -182,10 +187,13 @@ abstract class SiteMailingListSubscriberUpdater
 		if ($this->dry_run === false) {
 			$result = $list->batchUnsubscribe($addresses);
 
-			$this->handleResult($result,
+			$clear_queued = $this->handleResult($result,
 				Site::_('%s queued addresses unsubscribed.')."\n");
 
-			$this->clearQueuedUnsubscribes($addresses);
+			// don't clean the queued subscribes if they have been re-queued.
+			if ($clear_queued === true) {
+				$this->clearQueuedUnsubscribes($addresses);
+			}
 		}
 
 		$this->debug(Site::_('done unsubscribing queued addresses.')."\n\n");
@@ -196,13 +204,18 @@ abstract class SiteMailingListSubscriberUpdater
 
 	protected function handleResult($result, $success_message)
 	{
+		$clear_queued = false;
+
 		if ($result === SiteMailingList::QUEUED) {
 			$this->debug(Site::_('All requests queued.')."\n");
 		} elseif ($result === SiteMailingList::SUCCESS) {
 			$this->debug(Site::_('All requests successful.')."\n");
+			$clear_queued = true;
 		} elseif (is_int($result) && $result > 0) {
 			$this->debug(sprintf($success_message, $result));
 		}
+
+		return $clear_queued;
 	}
 
 	// }}}
