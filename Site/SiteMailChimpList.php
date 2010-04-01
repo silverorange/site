@@ -24,7 +24,7 @@ class SiteMailChimpList extends SiteMailingList
 	 *
 	 * @var integer
 	 */
-	const BATCH_UPDATE_SIZE  = 5000;
+	const BATCH_UPDATE_SIZE = 5000;
 
 	/**
 	 * Error code returned when attempting to subscribe an email address that
@@ -366,7 +366,7 @@ class SiteMailChimpList extends SiteMailingList
 						$current_result = $this->client->listBatchUnsubscribe(
 							$this->app->config->mail_chimp->api_key,
 							$this->shortname,
-							$addresses,
+							$addresses_chunk,
 							false, // delete_member
 							false  // send_goodbye
 							);
@@ -375,6 +375,7 @@ class SiteMailChimpList extends SiteMailingList
 						$e->process();
 					}
 
+					$addresses_chunk = array();
 					$result['success_count']+= $current_result['success_count'];
 					$result['error_count']+= $current_result['error_count'];
 					$result['errors'] = array_merge($result['errors'],
