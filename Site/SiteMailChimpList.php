@@ -227,12 +227,6 @@ class SiteMailChimpList extends SiteMailingList
 			// MailChimp doesn't allow welcomes to be sent on batch subscribes.
 			// So if we need to send them, do individual subscribes instead.
 			if ($send_welcome === true) {
-				$result = array(
-					'success_count' => 0,
-					'error_count'   => 0,
-					'errors'        => array(),
-					);
-
 				foreach ($addresses as $info) {
 					$current_result = $this->subscribe($info['email'], $info,
 						$send_welcome, $array_map);
@@ -351,18 +345,41 @@ class SiteMailChimpList extends SiteMailingList
 		$result = false;
 
 		if ($this->isAvailable()) {
-			try {
-				$result = $this->client->listBatchUnsubscribe(
-					$this->app->config->mail_chimp->api_key,
-					$this->shortname,
-					$addresses,
-					false, // delete_member
-					false  // send_goodbye
-					);
+			$addresses_chunk = array();
+			$address_count   = count($addresses);
+			$current_count   = 0;
+			$result          = array(
+				'success_count' => 0,
+				'error_count'   => 0,
+				'errors'        => array(),
+				);
 
-			} catch (XML_RPC2_Exception $e) {
-				$e = new SiteException($e);
-				$e->process();
+			foreach ($addresses as $email) {
+				$current_count++;
+				$addresses_chunk[] = $email;
+
+				if (count($addresses_chunk) === self::BATCH_UPDATE_SIZE ||
+					$current_count == $address_count) {
+
+					// unsubscribe the current chunk
+					try {
+						$current_result = $this->client->listBatchUnsubscribe(
+							$this->app->config->mail_chimp->api_key,
+							$this->shortname,
+							$addresses,
+							false, // delete_member
+							false  // send_goodbye
+							);
+					} catch (XML_RPC2_Exception $e) {
+						$e = new SiteException($e);
+						$e->process();
+					}
+
+					$result['success_count']+= $current_result['success_count'];
+					$result['error_count']+= $current_result['error_count'];
+					$result['errors'] = array_merge($result['errors'],
+						$current_result['errors']);
+				}
 			}
 		} elseif ($this->app->hasModule('SiteDatabaseModule')) {
 			$result = $this->queueBatchUnsubscribe($addresses);
