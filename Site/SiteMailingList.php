@@ -214,9 +214,9 @@ abstract class SiteMailingList
 	 * doesn't break anything. And if it ever does, we'll handle it in the
 	 * code that subscribes the queued requests.
 	 */
-	// {{{ protected function queueSubscribe()
+	// {{{ public function queueSubscribe()
 
-	protected function queueSubscribe($address, array $info, $send_welcome)
+	public function queueSubscribe($address, array $info, $send_welcome = false)
 	{
 		$sql = 'insert into MailingListSubscribeQueue
 			(email, info, send_welcome) values (%s, %s, %s)';
@@ -232,9 +232,9 @@ abstract class SiteMailingList
 	}
 
 	// }}}
-	// {{{ protected function queueBatchSubscribe()
+	// {{{ public function queueBatchSubscribe()
 
-	protected function queueBatchSubscribe(array $addresses, $send_welcome)
+	public function queueBatchSubscribe(array $addresses, $send_welcome = false)
 	{
 		$sql = 'insert into MailingListSubscribeQueue
 			(email, info) values %s';
@@ -258,9 +258,9 @@ abstract class SiteMailingList
 	}
 
 	// }}}
-	// {{{ protected function queueUnsubscribe()
+	// {{{ public function queueUnsubscribe()
 
-	protected function queueUnsubscribe($address)
+	public function queueUnsubscribe($address)
 	{
 		$sql = 'insert into MailingListUnsubscribeQueue (email) values (%s)';
 		$sql = sprintf($sql,
@@ -272,9 +272,9 @@ abstract class SiteMailingList
 	}
 
 	// }}}
-	// {{{ protected function queueBatchUnsubscribe()
+	// {{{ public function queueBatchUnsubscribe()
 
-	protected function queueBatchUnsubscribe(array $addresses)
+	public function queueBatchUnsubscribe(array $addresses)
 	{
 		$sql = 'insert into MailingListUnsubscribeQueue (email) values %s';
 		$values = array();
