@@ -275,7 +275,7 @@ abstract class SiteMailChimpListMemberUpdater extends SiteCommandLineApplication
 				$offset            = 0;
 
 				while ($members_remaining === true) {
-					$this->debug(sprintf("chunk %s ",
+					$this->debug(sprintf("chunk %s… ",
 						$offset+1));
 
 					$members = $this->list->getMembers($offset,
