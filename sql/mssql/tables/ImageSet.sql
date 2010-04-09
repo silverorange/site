@@ -1,7 +1,7 @@
 create table ImageSet (
 	id                 int not null identity,
 
-	shortname          varchar(255),
+	shortname          varchar(255) null,
 	obfuscate_filename bit not null default 0,
 
 	primary key(id)
