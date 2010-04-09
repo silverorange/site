@@ -11,7 +11,7 @@ create table Account (
 	last_login    datetimeoffset(0) null,
 
 	primary key (id)
-)
+);
 
-CREATE INDEX Account_instance_index ON Account(instance)
-CREATE INDEX Account_email_index ON Account(email)
+CREATE INDEX Account_instance_index ON Account(instance);
+CREATE INDEX Account_email_index ON Account(email);

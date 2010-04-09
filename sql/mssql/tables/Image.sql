@@ -8,4 +8,4 @@ create table Image (
 	description       ntext null,
 
 	primary key(id)
-)
+);
