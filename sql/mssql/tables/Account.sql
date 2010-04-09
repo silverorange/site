@@ -1,14 +1,14 @@
 create table Account (
 	id            int not null identity,
 
-	instance      int references Instance(id),
-	fullname      nvarchar(255),
-	email         nvarchar(255),
-	password      nvarchar(255),
-	password_salt varchar(50),
-	password_tag  varchar(255),
-	createdate    datetimeoffset(0),
-	last_login    datetimeoffset(0),
+	instance      int null references Instance(id),
+	fullname      nvarchar(255) null,
+	email         nvarchar(255) null,
+	password      nvarchar(255) null,
+	password_salt varchar(50) null,
+	password_tag  varchar(255) null,
+	createdate    datetimeoffset(0) null,
+	last_login    datetimeoffset(0) null,
 
 	primary key (id)
 )
