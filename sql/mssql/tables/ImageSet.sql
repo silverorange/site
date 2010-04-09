@@ -5,6 +5,6 @@ create table ImageSet (
 	obfuscate_filename bit not null default 0,
 
 	primary key(id)
-)
+);
 
-CREATE INDEX ImageSet_shortname_index ON ImageSet(shortname)
+CREATE INDEX ImageSet_shortname_index ON ImageSet(shortname);

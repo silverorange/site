@@ -9,6 +9,6 @@ create table ImageDimensionBinding (
 	filesize   int null,
 
 	primary key(image, dimension)
-)
+);
 
-create index ImageDimensionBinding_image_index on ImageDimensionBinding(image)
+create index ImageDimensionBinding_image_index on ImageDimensionBinding(image);

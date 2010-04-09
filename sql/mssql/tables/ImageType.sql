@@ -5,4 +5,4 @@ create table ImageType (
 	mime_type varchar(50) null,
 
 	primary key(id)
-)
+);
