@@ -73,16 +73,20 @@ class SiteMailChimpList extends SiteMailingList
 	const CURL_NAME_LOOKUP_TIMEOUT_ERROR_CODE = 6;
 
 	// }}}
-	// {{{ protected properties
+	// {{{ public properties
 
-	protected $client;
-	protected $list_merge_array_map = array();
-	protected $default_address = array(
+	public $default_address = array(
 		'addr1'   => 'null',
 		'city'    => 'null',
 		'state'   => 'null',
 		'zip'     => 'null',
 		);
+
+	// }}}
+	// {{{ protected properties
+
+	protected $client;
+	protected $list_merge_array_map = array();
 
 	// }}}
 	// {{{ public function __construct()
