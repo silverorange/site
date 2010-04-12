@@ -1,8 +1,8 @@
 create table ImageDimension (
 	id            int not null identity,
 
-	image_set     int not null references ImageSet(id) on delete cascade,
-	default_type  int null references ImageType(id) on delete cascade,
+	image_set     int not null references ImageSet(id),
+	default_type  int null references ImageType(id),
 	shortname     varchar(255) null,
 	title         nvarchar(255) null,
 	max_width     int null,
