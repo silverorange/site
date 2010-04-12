@@ -1,7 +1,7 @@
 create table ImageDimensionBinding (
-	image      int not null references Image(id) on delete cascade,
+	image      int not null references Image(id),
 
-	dimension  int not null references ImageDimension(id) on delete cascade,
+	dimension  int not null references ImageDimension(id),
 	image_type int not null references ImageType(id),
 	width      int not null,
 	height     int not null,
