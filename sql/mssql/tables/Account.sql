@@ -7,8 +7,8 @@ create table Account (
 	password      nvarchar(255) null,
 	password_salt varchar(50) null,
 	password_tag  varchar(255) null,
-	createdate    datetimeoffset(0) null,
-	last_login    datetimeoffset(0) null,
+	createdate    datetime2 null,
+	last_login    datetime2 null,
 
 	primary key (id)
 );
