@@ -505,10 +505,14 @@ abstract class SiteGadget extends SwatUIObject
 	 *
 	 * @param string $name the name of the cache to update
 	 * @param string $value the new value for the cache.
+	 * @param Date $now optional. The update date. If not specified, the
+	 *                   current date is used.
 	 */
-	protected function updateCacheValue($name, $value)
+	protected function updateCacheValue($name, $value, Date $now = null)
 	{
-		$now = new SwatDate();
+		if ($now === null) {
+			$now = new SwatDate();
+		}
 		$now->toUTC();
 
 		if ($this->hasCache($name)) {
