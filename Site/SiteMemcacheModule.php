@@ -7,7 +7,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Web application module for using memcached
  *
  * In general, the API mirrors the object-oriented API of the object-oriented
- * {@link http://ca.php.net/manual/en/ref.memcache.php memcache extension}.
+ * {@link http://www.php.net/manual/en/class.memcached.php memcached extension}.
  *
  * There are three levels of namespacing implemented to allow easier use of
  * memcached in Site applications. The first namespace level is the application
