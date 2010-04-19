@@ -684,14 +684,16 @@ abstract class SiteApplication extends SiteObject
 	/**
 	 * Set a value to be cached
 	 *
-	 * @param mixed  $value
-	 * @param string $key
-	 * @param string $name_space
+	 * @param mixed   $value
+	 * @param string  $key
+	 * @param string  $name_space
+	 * @param integer $expiration
 	 */
-	public function addCacheValue($value, $key, $name_space = null)
+	public function addCacheValue($value, $key, $name_space = null,
+		$expiration = 0)
 	{
 		register_shutdown_function(array($this, 'cacheOnShutdown'),
-			$value, $key, $name_space);
+			$value, $key, $name_space, $expiration);
 	}
 
 	// }}}
@@ -725,16 +727,17 @@ abstract class SiteApplication extends SiteObject
 	// {{{ public function addCacheRecordset()
 
 	public function addCacheRecordset(SwatDBRecordsetWrapper $recordset,
-		$key, $name_space = null, $index_property = 'id')
+		$key, $name_space = null, $index_property = 'id', $expiration = 0)
 	{
 		$ids = array();
 		foreach ($recordset as $object) {
 			$object_key = $key.'.'.$object->$index_property;
 			$ids[] = $object_key;
-			$this->addCacheValue($object, $object_key, $name_space);
+			$this->addCacheValue($object, $object_key, $name_space,
+				$expiration);
 		}
 
-		$this->addCacheValue($ids, $key, $name_space);
+		$this->addCacheValue($ids, $key, $name_space, $expiration);
 	}
 
 	// }}}
@@ -775,13 +778,14 @@ abstract class SiteApplication extends SiteObject
 	 * Callback method used by addCacheValue(). Must be public, but should not
 	 * be accessed directly.
 	 */
-	public function cacheOnShutdown($value, $key = null, $name_space = null)
+	public function cacheOnShutdown($value, $key = null, $name_space = null,
+		$expiration = 0)
 	{
 		if (isset($this->memcache)) {
 			if ($name_space === null)
-				$this->memcache->set($key, $value);
+				$this->memcache->set($key, $value, $expiration);
 			else
-				$this->memcache->setNs($name_space, $key, $value);
+				$this->memcache->setNs($name_space, $key, $value, $expiration);
 		}
 	}
 
