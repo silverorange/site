@@ -15,7 +15,7 @@ require_once 'Swat/exceptions/SwatException.php';
  * Base class for an application
  *
  * @package   Site
- * @copyright 2004-2009 silverorange
+ * @copyright 2004-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteApplication extends SiteObject
@@ -721,6 +721,32 @@ abstract class SiteApplication extends SiteObject
 		}
 
 		return $value;
+	}
+
+	// }}}
+	// {{{ public function deleteCacheValue()
+
+	/**
+	 * Get a cached value
+	 *
+	 * @param string $key
+	 * @param string $name_space
+	 *
+	 * @return boolean Returns true if successful, false if not.
+	 */
+	public function deleteCacheValue($key, $name_space = null)
+	{
+		$success = false;
+
+		if (isset($this->memcache)) {
+			if ($name_space === null) {
+				$success = $this->memcache->delete($key);
+			} else {
+				$success = $this->memcache->deleteNs($name_space, $key);
+			}
+		}
+
+		return $success;
 	}
 
 	// }}}
