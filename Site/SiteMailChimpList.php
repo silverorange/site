@@ -72,6 +72,16 @@ class SiteMailChimpList extends SiteMailingList
 	 */
 	const CURL_NAME_LOOKUP_TIMEOUT_ERROR_CODE = 6;
 
+	/**
+	 * Email type preference value for html email.
+	 */
+	const EMAIL_TYPE__HTML = 'html';
+
+	/**
+	 * Email type preference value for text only email.
+	 */
+	const EMAIL_TYPE_TEXT = 'text';
+
 	// }}}
 	// {{{ public properties
 
@@ -87,6 +97,42 @@ class SiteMailChimpList extends SiteMailingList
 
 	protected $client;
 	protected $list_merge_array_map = array();
+
+	/**
+	 * Whether or not to require double opt in on subscribe.
+	 *
+	 * @var boolean
+	 */
+	protected $double_opt_in = false;
+
+	/**
+	 * Whether or not to replace interests on subscribe.
+	 *
+	 * If true, existing interests are replaced by the interests passed in. If
+	 * false, the new interests are merged with the existing ones.
+	 *
+	 * @var boolean
+	 */
+	protected $replace_interests = false;
+
+	/**
+	 * Whether or not to update existing members on subscribe.
+	 *
+	 * If true, the member is updated with the new information, if false, an
+	 * error is thrown.
+	 *
+	 * @var boolean
+	 */
+	protected $update_existing = true;
+
+	/**
+	 * Email type subscribes wish to receive.
+	 *
+	 * Valid email types are class constants starting with EMAIL_TYPE_*
+	 *
+	 * @var string
+	 */
+	protected $email_type = self::EMAIL_TYPE_HTML;
 
 	// }}}
 	// {{{ public function __construct()
@@ -110,6 +156,41 @@ class SiteMailChimpList extends SiteMailingList
 			$this->shortname = $app->config->mail_chimp->default_list;
 
 		$this->initListMergeArrayMap();
+
+		// default double_opt_in to the config var.
+		$this->double_opt_in = $this->app->config->mail_chimp->double_opt_in;
+	}
+
+	// }}}
+	// {{{ protected function setDoubleOptIn()
+
+	protected function setDoubleOptIn($double_opt_in)
+	{
+		$this->double_opt_in = $double_opt_in;
+	}
+
+	// }}}
+	// {{{ protected function setReplaceInterests()
+
+	protected function setReplaceInterests($replace_interests)
+	{
+		$this->replace_interests = $replace_interests;
+	}
+
+	// }}}
+	// {{{ protected function setUpdateExisting()
+
+	protected function setUpdateExisting($update_existing)
+	{
+		$this->update_existing = $update_existing;
+	}
+
+	// }}}
+	// {{{ protected function setEmailType()
+
+	protected function setEmailType($email_type)
+	{
+		$this->email_type = $email_type;
 	}
 
 	// }}}
@@ -185,16 +266,15 @@ class SiteMailChimpList extends SiteMailingList
 		if ($this->isAvailable()) {
 			$merges = $this->mergeInfo($info, $array_map);
 			try {
-				// last boolean is flag for update_existing
 				$result = $this->client->listSubscribe(
 					$this->app->config->mail_chimp->api_key,
 					$this->shortname,
 					$address,
 					$merges,
-					'html',
-					$this->app->config->mail_chimp->double_opt_in,
-					true, // update_existing
-					false, // replace_interests
+					$this->email_type,
+					$this->double_opt_in,
+					$this->update_existing,
+					$this->replace_interests,
 					$send_welcome
 					);
 			} catch (XML_RPC2_Exception $e) {
@@ -248,6 +328,7 @@ class SiteMailChimpList extends SiteMailingList
 						break;
 
 					default:
+						// Match MailChimp's batch subscribe error structure.
 						$result['error_count']++;
 						$result['errors'][] = array(
 							'code'    => $current_result,
@@ -277,9 +358,9 @@ class SiteMailChimpList extends SiteMailingList
 								$this->app->config->mail_chimp->api_key,
 								$this->shortname,
 								$merged_addresses,
-								false, // double_optin
-								true,  // update_existing
-								false  // replace_intrests
+								$this->double_opt_in,
+								$this->update_existing,
+								$this->replace_interests
 								);
 
 						} catch (XML_RPC2_Exception $e) {
@@ -487,7 +568,7 @@ class SiteMailChimpList extends SiteMailingList
 				$address,
 				$merges,
 				'', // email_type, left blank to keep existing preference.
-				false // replace_interests
+				$this->replace_interests
 				);
 		} catch (XML_RPC2_Exception $e) {
 			// TODO: handle some edge cases more elegantly
