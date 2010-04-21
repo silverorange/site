@@ -75,7 +75,7 @@ class SiteMailChimpList extends SiteMailingList
 	/**
 	 * Email type preference value for html email.
 	 */
-	const EMAIL_TYPE__HTML = 'html';
+	const EMAIL_TYPE_HTML = 'html';
 
 	/**
 	 * Email type preference value for text only email.
@@ -162,33 +162,33 @@ class SiteMailChimpList extends SiteMailingList
 	}
 
 	// }}}
-	// {{{ protected function setDoubleOptIn()
+	// {{{ public function setDoubleOptIn()
 
-	protected function setDoubleOptIn($double_opt_in)
+	public function setDoubleOptIn($double_opt_in)
 	{
 		$this->double_opt_in = $double_opt_in;
 	}
 
 	// }}}
-	// {{{ protected function setReplaceInterests()
+	// {{{ public function setReplaceInterests()
 
-	protected function setReplaceInterests($replace_interests)
+	public function setReplaceInterests($replace_interests)
 	{
 		$this->replace_interests = $replace_interests;
 	}
 
 	// }}}
-	// {{{ protected function setUpdateExisting()
+	// {{{ public function setUpdateExisting()
 
-	protected function setUpdateExisting($update_existing)
+	public function setUpdateExisting($update_existing)
 	{
 		$this->update_existing = $update_existing;
 	}
 
 	// }}}
-	// {{{ protected function setEmailType()
+	// {{{ public function setEmailType()
 
-	protected function setEmailType($email_type)
+	public function setEmailType($email_type)
 	{
 		$this->email_type = $email_type;
 	}
