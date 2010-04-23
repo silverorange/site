@@ -301,7 +301,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected function buildMisspellings($fulltext_result)
 	{
-		$misspellings = $fulltext_result->getMisspellings();
+		$misspellings = $this->getMisspellings($fulltext_result);
 
 		if (count($misspellings) > 0 ) {
 			$corrected_phrase = ' '.$this->getSearchDataValue('keywords').' ';
@@ -342,6 +342,14 @@ class SiteSearchResultsPage extends SiteArticlePage
 			$messages = $this->ui->getWidget('results_message');
 			$messages->add($misspellings_message);
 		}
+	}
+
+	// }}}
+	// {{{ protected function getMisspellings()
+
+	protected function getMisspellings($fulltext_result)
+	{
+		return $fulltext_result->getMisspellings();
 	}
 
 	// }}}
