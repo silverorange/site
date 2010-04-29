@@ -22,7 +22,7 @@
 			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button">
-					<property name="title">Search</property>
+					<property name="title" translatable="yes">Search</property>
 				</widget>
 			</widget>
 		</widget>
