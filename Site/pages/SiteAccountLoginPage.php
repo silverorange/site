@@ -7,7 +7,7 @@ require_once 'Site/pages/SitePage.php';
  * Page for logging into an account
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */
@@ -22,6 +22,11 @@ class SiteAccountLoginPage extends SitePage
 
 	protected $ui;
 
+	/**
+	 * @var string
+	 */
+	protected $relocate_uri = 'account';
+
 	// }}}
 
 	// init phase
@@ -31,20 +36,40 @@ class SiteAccountLoginPage extends SitePage
 	{
 		parent::init();
 
-		// go to detail page if already logged in
-		if ($this->app->session->isLoggedIn())
-			$this->app->relocate('account');
-
 		$this->ui = new SwatUI();
 		$this->ui->loadFromXML($this->ui_xml);
 
-		$form = $this->ui->getWidget('login_form');
-		$form->action = $this->source;
+		$login_form = $this->ui->getWidget('login_form');
+		$login_form->action = $this->source;
 
-		$form = $this->ui->getWidget('create_account_form');
-		$form->action = 'account/edit';
+		$create_form = $this->ui->getWidget('create_account_form');
+		$create_form->action = 'account/edit';
+
+		$this->initRelocateUri($login_form);
+
+		// go to detail page if already logged in
+		if ($this->app->session->isLoggedIn())
+			$this->app->relocate($this->relocate_uri);
 
 		$this->ui->init();
+	}
+
+	// }}}
+	// {{{ protected function initRelocateUri()
+
+	public function initRelocateUri(SwatForm $form)
+	{
+		$relocate_uri = SiteApplication::initVar('relocate', null,
+			SiteApplication::VAR_GET);
+
+		if ($relocate_uri === null) {
+			$relocate_uri = $form->getHiddenField('relocate_uri');
+		}
+
+		if ($relocate_uri !== null)
+			$this->relocate_uri = $relocate_uri;
+
+		$form->addHiddenField('relocate_uri', $this->relocate_uri);
 	}
 
 	// }}}
@@ -66,7 +91,7 @@ class SiteAccountLoginPage extends SitePage
 
 			if ($this->app->session->login($email, $password)) {
 				$this->app->cart->save();
-				$this->app->relocate('account');
+				$this->app->relocate($this->relocate_uri);
 			} else {
 				$message = new SwatMessage(Site::_('Login Incorrect'),
 					SwatMessage::WARNING);
