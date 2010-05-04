@@ -207,7 +207,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 	protected function relocate(SwatForm $form)
 	{
-		$this->app->relocate('account');
+		$this->relocateToRefererUrl($form, 'account');
 	}
 
 	// }}}
