@@ -46,10 +46,7 @@ class SiteAccountLoginPage extends SitePage
 		$create_form->action = 'account/edit';
 
 		$this->initRelocateUri($login_form);
-
-		// go to detail page if already logged in
-		if ($this->app->session->isLoggedIn())
-			$this->app->relocate($this->relocate_uri);
+		$this->loggedInRelocate();
 
 		$this->ui->init();
 	}
@@ -57,7 +54,7 @@ class SiteAccountLoginPage extends SitePage
 	// }}}
 	// {{{ protected function initRelocateUri()
 
-	public function initRelocateUri(SwatForm $form)
+	protected function initRelocateUri(SwatForm $form)
 	{
 		$relocate_uri = SiteApplication::initVar('relocate', null,
 			SiteApplication::VAR_GET);
@@ -70,6 +67,16 @@ class SiteAccountLoginPage extends SitePage
 			$this->relocate_uri = $relocate_uri;
 
 		$form->addHiddenField('relocate_uri', $this->relocate_uri);
+	}
+
+	// }}}
+	// {{{ protected function loggedInRelocate()
+
+	protected function loggedInRelocate()
+	{
+		// go to details page if already logged in
+		if ($this->app->session->isLoggedIn())
+			$this->app->relocate($this->relocate_uri);
 	}
 
 	// }}}
