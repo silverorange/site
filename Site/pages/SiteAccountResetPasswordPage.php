@@ -162,32 +162,46 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	// }}}
 
 	// build phase
-	// {{{ protected function buildInternal()
+	// {{{ protected function buildForm()
 
-	protected function buildInternal()
+	protected function buildForm(SwatForm $form)
 	{
-		parent::buildInternal();
+		parent::buildForm($form);
 
 		if ($this->account_id === null) {
-			$text = sprintf('<p>%s</p><ul><li>%s</li><li>%s</li></ul>',
-				Site::_('Please verify that the link is exactly the same as '.
-					'the one emailed to you.'),
-				Site::_('If you requested an email more than once, only the '.
-					'most recent link will work.'),
-				sprintf(Site::_('If you have lost the link sent in the '.
-					'email, you may %shave the email sent again%s.'),
-					'<a href="account/forgotpassword">', '</a>'));
 
-			$message = new SwatMessage(Site::_('Link Incorrect'),
-				SwatMessage::WARNING);
+			$text = sprintf(
+				'<p>%s</p><ul><li>%s</li><li>%s</li></ul>',
+				Site::_(
+					'Please verify that the link is exactly the same as '.
+					'the one emailed to you.'
+				),
+				Site::_(
+					'If you requested an email more than once, only the '.
+					'most recent link will work.'
+				),
+				sprintf(
+					Site::_(
+						'If you have lost the link sent in the '.
+						'email, you may %shave the email sent again%s.'
+					),
+					sprintf('<a href="%s">', $this->getForgotPasswordSource()),
+					'</a>'
+				)
+			);
 
+			$message = new SwatMessage(Site::_('Link Incorrect'), 'warning');
 			$message->secondary_content = $text;
 			$message->content_type = 'text/xml';
-			$this->ui->getWidget('message_display')->add($message);
+
+			$message_display = $this->getMessageDisplay($form);
+			$message_display->add($message, SwatMessageDisplay::DISMISS_OFF);
 
 			$this->ui->getWidget('field_container')->visible = false;
 
-			$this->layout->clear('content');
+			if (isset($this->layout->data->content)) {
+				$this->layout->clear('content');
+			}
 		}
 	}
 
