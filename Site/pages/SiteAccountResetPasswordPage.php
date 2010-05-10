@@ -56,16 +56,17 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		$tag = $this->getArgument('tag');
 
 		if ($tag === null) {
-			if ($this->app->session->isLoggedIn())
-				$this->app->relocate('account/changepassword');
-			else
-				$this->app->relocate('account/forgotpassword');
+			if ($this->app->session->isLoggedIn()) {
+				$this->app->relocate($this->getChangePasswordSource());
+			} else {
+				$this->app->relocate($this->getForgotPasswordSource());
+			}
 		}
 
 		$this->account_id = $this->getAccountId($tag);
 
 		$confirm = $this->ui->getWidget('confirm_password');
-		$confirm->password_widget = $this->ui->getWidget('password');;
+		$confirm->password_widget = $this->ui->getWidget('password');
 	}
 
 	// }}}
@@ -92,6 +93,22 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		}
 
 		return SwatDB::queryOne($this->app->db, $sql);
+	}
+
+	// }}}
+	// {{{ protected function getChangePasswordSource()
+
+	protected function getChangePasswordSource()
+	{
+		return 'account/changepassword';
+	}
+
+	// }}}
+	// {{{ protected function getForgotPasswordSource()
+
+	protected function getForgotPasswordSource()
+	{
+		return 'account/forgotpassword';
 	}
 
 	// }}}
