@@ -550,7 +550,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 
 		foreach ($articles as $article) {
 			$navbar = new SwatNavBar();
-			$navbar->addEntries($article->getNavBarEntries());
+			$navbar->addEntries($article->getNavBarEntries(
+				$this->getArticlePathPrefix()));
 
 			$anchor_tag = new SwatHtmlTag('a');
 			$anchor_tag->href = $navbar->getLastEntry()->link;
@@ -574,6 +575,14 @@ class SiteSearchResultsPage extends SiteArticlePage
 		}
 
 		echo '</ul>';
+	}
+
+	// }}}
+	// {{{ protected function getArticlePathPrefix()
+
+	protected function getArticlePathPrefix()
+	{
+		return '';
 	}
 
 	// }}}
