@@ -448,8 +448,9 @@ class SiteTheme extends SwatObject
 				case 'shortname':
 					$shortname = $node->nodeValue;
 					if (preg_match('/^[a-z0-9._-]+$/u', $shortname) === 0) {
-						throw new SiteThemeException("Theme shortname '%s' ".
-							"is not a valid theme shortname.");
+						throw new SiteThemeException(sprintf(
+							"Theme shortname '%s' is not a valid theme ".
+							"shortname.", $shortname));
 					}
 					$theme->shortname = $shortname;
 					break;
