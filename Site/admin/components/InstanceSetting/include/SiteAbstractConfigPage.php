@@ -33,7 +33,7 @@ abstract class SiteAbstractConfigPage
 	public function initUI()
 	{
 		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->getPathToXML());
+		$this->ui->loadFromXML($this->getUiXml());
 
 		foreach ($this->getConfigSettings() as $section => $keys) {
 			foreach ($keys as $name) {
