@@ -129,9 +129,11 @@ class SiteArticle extends SwatDBDataObject
 	/**
 	 * Gets the set of {@link SwatNavBarEntry} objects for this article
 	 *
+	 * @param string $link_prefix optional. A path to prepend to article links.
+	 *
 	 * @return array the set of SwatNavBarEntry objects for this article.
 	 */
-	public function getNavBarEntries()
+	public function getNavBarEntries($link_prefix = '')
 	{
 		if ($this->navbar_entries === null) {
 			$this->navbar_entries = array();
@@ -141,12 +143,11 @@ class SiteArticle extends SwatDBDataObject
 
 			$navbar_rows = SwatDB::query($this->db, $sql);
 
-			$path = '';
-			$first = true;
+			$path = $link_prefix;
 			foreach ($navbar_rows as $row) {
-				if ($first) {
+
+				if ($path == '') {
 					$path.= $row->shortname;
-					$first = false;
 				} else {
 					$path.= '/'.$row->shortname;
 				}
