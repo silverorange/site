@@ -111,9 +111,9 @@ abstract class SiteAbstractConfigPage
 	abstract public function getConfigSettings();
 
 	// }}}
-	// {{{ abstract protected function getPathToXML()
+	// {{{ abstract protected function getUiXml()
 
-	abstract protected function getPathToXML();
+	abstract protected function getUiXml();
 
 	// }}}
 }

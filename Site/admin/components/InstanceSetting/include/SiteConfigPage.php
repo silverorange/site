@@ -39,9 +39,9 @@ class SiteConfigPage extends SiteAbstractConfigPage
 	}
 
 	// }}}
-	// {{{ protected function getPathToXML()
+	// {{{ protected function getUiXml()
 
-	protected function getPathToXML()
+	protected function getUiXml()
 	{
 		return dirname(__FILE__).'/config-page.xml';
 	}
