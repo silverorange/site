@@ -24,7 +24,7 @@ class SiteMailChimpSignupPage extends SiteMailingSignupPage
 	protected function getSubscriberInfo()
 	{
 		$info = array(
-			'user_ip' => getenv("REMOTE_ADDR"),
+			'user_ip' => $_SERVER['REMOTE_ADDR'],
 		);
 
 		return $info;
