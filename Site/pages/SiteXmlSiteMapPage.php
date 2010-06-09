@@ -114,9 +114,11 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 	{
 		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
 
-		$sql = 'select id, shortname, modified_date
+		$sql = 'select Article.id, shortname, modified_date
 			from Article
-			where parent is null and enabled = %1$s and visible = %1$s
+			inner join EnabledArticleView on
+				EnabledArticleView.id = Article.id
+			where visible = %s
 			order by displayorder, title';
 
 		$sql = sprintf($sql, $this->app->db->quote(true, 'boolean'));
