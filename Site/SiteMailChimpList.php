@@ -277,7 +277,7 @@ class SiteMailChimpList extends SiteMailingList
 					$this->replace_interests,
 					$send_welcome
 					);
-			} catch (XML_RPC2_Exception $e) {
+			} catch (XML_RPC2_FaultException $e) {
 				// gracefully handle exceptions that we can provide nice
 				// feedback about.
 				if ($e->getFaultCode() == self::INVALID_ADDRESS_ERROR_CODE) {
@@ -286,6 +286,9 @@ class SiteMailChimpList extends SiteMailingList
 					$e = new SiteException($e);
 					$e->process();
 				}
+			} catch (XML_RPC2_Exception $e) {
+				$e = new SiteException($e);
+				$e->process();
 			}
 		} elseif ($this->app->hasModule('SiteDatabaseModule')) {
 			$result = $this->queueSubscribe($address, $info, $send_welcome);
@@ -403,7 +406,7 @@ class SiteMailChimpList extends SiteMailingList
 					false  // send_goodbye
 					);
 
-			} catch (XML_RPC2_Exception $e) {
+			} catch (XML_RPC2_FaultException $e) {
 				// gracefully handle exceptions that we can provide nice
 				// feedback about.
 				if ($e->getFaultCode() == self::NOT_FOUND_ERROR_CODE) {
@@ -415,6 +418,9 @@ class SiteMailChimpList extends SiteMailingList
 					$e = new SiteException($e);
 					$e->process();
 				}
+			} catch (XML_RPC2_Exception $e) {
+				$e = new SiteException($e);
+				$e->process();
 			}
 		} elseif ($this->app->hasModule('SiteDatabaseModule')) {
 			$result = $this->queueUnsubscribe($address);
@@ -673,13 +679,16 @@ class SiteMailChimpList extends SiteMailingList
 			$this->client->campaignUnschedule(
 				$this->app->config->mail_chimp->api_key,
 				$campaign->id);
-		} catch (XML_RPC2_Exception $e) {
+		} catch (XML_RPC2_FaultException $e) {
 			// ignore errors caused by trying to unschedule a campaign that
 			// isn't scheduled yet. These are safe to ignore.
 			if ($e->getFaultCode() != 122) {
 				$e = new SiteException($e);
 				$e->process();
 			}
+		} catch (XML_RPC2_Exception $e) {
+			$e = new SiteException($e);
+			$e->process();
 		}
 	}
 
