@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteAdReferrer.php';
  * Web application module for handling site analytics and ad tracking
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAnalyticsModule extends SiteApplicationModule
@@ -135,24 +135,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	public function cleanInboundTrackingUri(SiteAd $ad)
 	{
-		$regexp = sprintf(
-			'/
-			(?:
-				(\?)%1$s=%2$s& # ad starts query string
-				|
-				\?%1$s=%2$s$   # ad is entire query string
-				|
-				(&)%1$s=%2$s&  # ad is embedded in query string
-				|
-				&%1$s=%2$s$    # ad ends query string
-			)
-			/xu',
-			preg_quote($this->inbound_tracking_id, '/'),
-			preg_quote($ad->shortname, '/'));
-
 		// Site URI may not have been parsed yet if autocleaning is used. This
 		// must be a full URI as a result.
-		$uri = preg_replace($regexp, '\1\2', $_SERVER['REQUEST_URI']);
+		$uri = SiteWebApplication::cleanUriGetVar($_SERVER['REQUEST_URI'],
+			$this->inbound_tracking_id,
+			$ad->shortname);
 
 		// relocate to cleaned URI
 		$this->app->relocate($uri);
