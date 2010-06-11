@@ -9,7 +9,7 @@ require_once 'Site/pages/SitePage.php';
  * Web-applicaitions are set up to resolve pages and handle page requests.
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteWebApplication extends SiteApplication
@@ -64,6 +64,40 @@ class SiteWebApplication extends SiteApplication
 
 	// }}}
 
+	// {{{ public static function cleanUriGetVar()
+
+	/**
+	 * Removes a get var from the uri, and returns the cleaned version.
+	 *
+	 * @param string $uri the uri to clean.
+	 * @param string $id the get var id to clean.
+	 * @param string $value the value of the var to clean.
+	 *
+	 * @return string $uri the cleaned uri.
+	 */
+	public static function cleanUriGetVar($uri, $id, $value)
+	{
+		$regexp = sprintf(
+			'/
+			(?:
+				(\?)%1$s=%2$s& # get var starts query string
+				|
+				\?%1$s=%2$s$   # get var is entire query string
+				|
+				(&)%1$s=%2$s&  # get var is embedded in query string
+				|
+				&%1$s=%2$s$    # get var ends query string
+			)
+			/xu',
+			preg_quote($id, '/'),
+			preg_quote($value, '/'));
+
+		$uri = preg_replace($regexp, '\1\2', $uri);
+
+		return $uri;
+	}
+
+	// }}}
 	// {{{ public function run()
 
 	/**
