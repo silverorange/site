@@ -95,8 +95,12 @@ abstract class SiteUiPage extends SitePageDecorator
 		if ($message_display === null)
 			return;
 
-		foreach ($this->app->messages->getAll() as $message)
-			$message_display->add($message);
+		if ($this->app->hasModule('SiteMessagesModule')) {
+			$messages = $this->app->getModule('SiteMessagesModule');
+			foreach ($messages->getAll() as $message) {
+				$message_display->add($message);
+			}
+		}
 	}
 
 	// }}}
