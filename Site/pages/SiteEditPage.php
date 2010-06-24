@@ -79,15 +79,20 @@ abstract class SiteEditPage extends SiteUiPage
 
 		if (!$form->isAuthenticated()) {
 			$authenticated = false;
-			$message = new SwatMessage(Site::_(
-				'There is a problem with the information submitted.'),
-				'warning');
 
-			$message->secondary_content = Site::_(
-				'In order to ensure your security, we were unable to process '.
-				'your request. Please try again.');
+			if ($this->app->hasModule('SiteMessagesModule')) {
+				$messages = $this->app->getModule('SiteMessagesModule');
 
-			$this->app->messages->add($message);
+				$message = new SwatMessage(Site::_(
+					'There is a problem with the information submitted.'),
+					'warning');
+
+				$message->secondary_content = Site::_(
+					'In order to ensure your security, we were unable to '.
+					'process your request. Please try again.');
+
+				$messages->add($message);
+			}
 		}
 
 		return $authenticated;
