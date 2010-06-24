@@ -22,7 +22,10 @@ abstract class SiteDBEditPage extends SiteEditPage
 			$this->saveData($form);
 			$transaction->commit();
 		} catch (SwatDBException $e) {
-			$this->app->messages->add($this->getRollbackMessage($form));
+			if ($this->app->hasModule('SiteMessagesModule')) {
+				$messages = $this->app->getModule('SiteMessagesModule');
+				$messages->add($this->getRollbackMessage($form));
+			}
 			$transaction->rollback();
 			throw $e;
 		}
