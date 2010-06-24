@@ -218,7 +218,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 
 	private function initSearchData()
 	{
-		$search_data_values = array();
+		$this->search_data_values = array();
 
 		foreach ($this->search_data_fields as $field => $is_array) {
 			$value = SiteApplication::initVar($field,
