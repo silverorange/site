@@ -33,7 +33,7 @@ abstract class SiteMailingUnsubscribePage extends SiteEditPage
 	abstract protected function getList();
 
 	// }}}
-	// {{{ protected function save()
+	// {{{ protected function unsubscribe()
 
 	protected function unsubscribe(SiteMailingList $list)
 	{
