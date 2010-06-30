@@ -10,7 +10,7 @@
 					<property name="required" type="boolean">true</property>
 				</widget>
 			</widget>
-			<widget class="SwatFooterFormField">
+			<widget class="SwatFooterFormField" id="footer_field">
 				<property name="note"><![CDATA[You can also easily
 					<a href="x">add your email address</a>
 					to our mailing list.]]>
