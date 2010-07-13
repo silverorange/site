@@ -24,9 +24,9 @@ class SiteConnectionClosePage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function init()
+	// {{{ public function init()
 
-	protected function init()
+	public function init()
 	{
 		parent::init();
 		header('Connection: close');
