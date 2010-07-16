@@ -36,9 +36,6 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 */
 	public $maximum_tags = null;
 
-	// }}}
-	// {{{ protected properties
-
 	/*
 	 * JSON server
 	 *
@@ -46,7 +43,10 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 * 'query' GET variable. If not specified, all tag values must be specified
 	 * using the $tag_array property.
 	 */
-	protected $json_server;
+	public $json_server;
+
+	// }}}
+	// {{{ protected properties
 
 	/**
 	 * An associative array of tags for the tag flydown in the form of
