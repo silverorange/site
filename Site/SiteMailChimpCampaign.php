@@ -25,6 +25,7 @@ class SiteMailChimpCampaign extends SiteMailingCampaign
 
 	public $id;
 	public $type;
+	public $timewarp = false;
 
 	// }}}
 	// {{{ public function __construct()
@@ -49,6 +50,14 @@ class SiteMailChimpCampaign extends SiteMailingCampaign
 	public function getSendDate()
 	{
 		return null;
+	}
+
+	// }}}
+	// {{{ public function setTimewarp()
+
+	public function setTimewarp($timewarp = false)
+	{
+		$this->timewarp = (bool) $timewarp;
 	}
 
 	// }}}
