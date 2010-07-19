@@ -925,6 +925,7 @@ class SiteMailChimpList extends SiteMailingList
 			'authenticate' => 'true',
 			'analytics'    => $analytics,
 			'inline_css'   => true,
+			'timewarp'     => $campaign->timewarp,
 		);
 
 		if ($this->app->config->mail_chimp->default_folder != null) {
