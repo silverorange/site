@@ -5,7 +5,7 @@ require_once 'Site/Site.php';
 require_once 'Site/SiteMailingList.php';
 require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteConfigModule.php';
+require_once 'Site/SiteCommandLineConfigModule.php';
 
 /**
  * Cron job application to update mailing list with new and queued subscriber
@@ -322,7 +322,7 @@ abstract class SiteMailingListUpdater extends SiteCommandLineApplication
 	protected function getDefaultModuleList()
 	{
 		$list = parent::getDefaultModuleList();
-		$list['config']   = 'SiteConfigModule';
+		$list['config']   = 'SiteCommandLineConfigModule';
 		$list['database'] = 'SiteDatabaseModule';
 
 		return $list;
