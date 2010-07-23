@@ -8,7 +8,7 @@ require_once 'Site/pages/SiteEditPage.php';
 /**
  *
  * @package   Site
- * @copyright 2006-2009 silverorange
+ * @copyright 2006-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactPage extends SiteEditPage
@@ -42,6 +42,28 @@ class SiteContactPage extends SiteEditPage
 	protected function save(SwatForm $form)
 	{
 		$this->sendEmail();
+	}
+
+	// }}}
+	// {{{ protected function validate()
+
+	protected function validate(SwatForm $form)
+	{
+		parent::validate($form);
+
+		// Ensure a subject is set. Some robots try to submit the contact form
+		// and omit HTTP POST data for the subject field. Due to Swat's
+		// architecture, the widget will not raise its own validation error if
+		// no POST data exists for the subject flydown. We check for a null
+		// value here and explicitly add a validation message.
+		$subject = $this->ui->getWidget('subject');
+		if ($subject->value === null) {
+			$message = new SwatMessage(
+				Site::_('The <strong>%s<strong> field is required.'));
+
+			$message->content_type = 'text/xml';
+			$subject->addMessage($message);
+		}
 	}
 
 	// }}}
