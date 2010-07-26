@@ -55,7 +55,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	// {{{ private properties
 
 	private $search_data_fields = array();
-	private $search_data_values;
+	private $search_data_values = array();
 	private $search_engines = array();
 
 	// }}}
@@ -218,8 +218,6 @@ class SiteSearchResultsPage extends SiteArticlePage
 
 	private function initSearchData()
 	{
-		$this->search_data_values = array();
-
 		foreach ($this->search_data_fields as $field => $is_array) {
 			$value = SiteApplication::initVar($field,
 					null, SiteApplication::VAR_GET);
