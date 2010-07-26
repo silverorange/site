@@ -8,7 +8,7 @@ require_once 'Site/SiteConfigModule.php';
 require_once 'Date/TimeZone.php';
 
 /**
- * Commin configuration module for command-line applications
+ * Common configuration module for command-line applications
  *
  * Contains a common configuration for command-line applications. This config
  * module is optional, but can be used to aid rapid development of command-line
