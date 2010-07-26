@@ -8,9 +8,20 @@ require_once 'Site/SiteConfigModule.php';
 require_once 'Date/TimeZone.php';
 
 /**
- * Configuration module for Site command-line applications
+ * Commin configuration module for command-line applications
  *
- * Performs additional module configuration.
+ * Contains a common configuration for command-line applications. This config
+ * module is optional, but can be used to aid rapid development of command-line
+ * apps.
+ *
+ * This module expects an application that provides:
+ * - a database module
+ *
+ * This module configures:
+ * - error and exception logging
+ * - application database connection
+ * - application time zone
+ * - application locale
  *
  * @package   Site
  * @copyright 2007-2010 silverorange
