@@ -262,6 +262,7 @@ class SiteMailChimpList extends SiteMailingList
 		$send_welcome = true, array $array_map = array())
 	{
 		$result = false;
+		$queue_request = false;
 
 		if ($this->isAvailable()) {
 			$merges = $this->mergeInfo($info, $array_map);
@@ -286,11 +287,27 @@ class SiteMailChimpList extends SiteMailingList
 					$e = new SiteException($e);
 					$e->process();
 				}
+			} catch (XML_RPC2_CurlException $e) {
+				$error_code = $e->getCode();
+				// ignore timeout and connection exceptions.
+				if ($error_code !== self::CURL_TIMEOUT_ERROR_CODE &&
+					$error_code !== self::CURL_CONNECT_ERROR_CODE &&
+					$error_code !== self::CURL_NAME_LOOKUP_TIMEOUT_ERROR_CODE) {
+					$e = new SiteException($e);
+					$e->log();
+				} else {
+					$queue_request = true;
+				}
 			} catch (XML_RPC2_Exception $e) {
 				$e = new SiteException($e);
 				$e->process();
 			}
-		} elseif ($this->app->hasModule('SiteDatabaseModule')) {
+		} else {
+			$queue_request = true;
+		}
+
+		if ($queue_request === true &&
+			$this->app->hasModule('SiteDatabaseModule')) {
 			$result = $this->queueSubscribe($address, $info, $send_welcome);
 		}
 
@@ -395,6 +412,7 @@ class SiteMailChimpList extends SiteMailingList
 	public function unsubscribe($address)
 	{
 		$result = false;
+		$queue_request = false;
 
 		if ($this->isAvailable()) {
 			try {
@@ -418,11 +436,27 @@ class SiteMailChimpList extends SiteMailingList
 					$e = new SiteException($e);
 					$e->process();
 				}
+			} catch (XML_RPC2_CurlException $e) {
+				$error_code = $e->getCode();
+				// ignore timeout and connection exceptions.
+				if ($error_code !== self::CURL_TIMEOUT_ERROR_CODE &&
+					$error_code !== self::CURL_CONNECT_ERROR_CODE &&
+					$error_code !== self::CURL_NAME_LOOKUP_TIMEOUT_ERROR_CODE) {
+					$e = new SiteException($e);
+					$e->log();
+				} else {
+					$queue_request = true;
+				}
 			} catch (XML_RPC2_Exception $e) {
 				$e = new SiteException($e);
 				$e->process();
 			}
-		} elseif ($this->app->hasModule('SiteDatabaseModule')) {
+		} else {
+			$queue_request = true;
+		}
+
+		if ($queue_request === true &&
+			$this->app->hasModule('SiteDatabaseModule')) {
 			$result = $this->queueUnsubscribe($address);
 		}
 
