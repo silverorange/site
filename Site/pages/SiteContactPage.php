@@ -26,9 +26,9 @@ class SiteContactPage extends SiteEditPage
 	protected function getSubjects()
 	{
 		$subjects = array(
-			'general'  => Site::_('General Question'),
-			'website'  => Site::_('Website'),
-			'privacy'  => Site::_('Privacy'),
+			'general' => Site::_('General Question'),
+			'website' => Site::_('Website'),
+			'privacy' => Site::_('Privacy'),
 		);
 
 		return $subjects;
