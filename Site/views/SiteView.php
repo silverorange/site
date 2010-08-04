@@ -142,6 +142,28 @@ abstract class SiteView
 	}
 
 	// }}}
+	// {{{ public function definePartLink()
+
+	/**
+	 * Defines the link for a part in this view
+	 *
+	 * Parts are encouraged to use the default values for link. By default, all
+	 * parts are displayed. The calling code should selectivly turn off parts.
+	 *
+	 * @param string $part the name of the part.
+	 * @param string|boolean $link optional. Whether or not the display the
+	 *                              part as/with a link. Unless there is good
+	 *                              reason to do otherwise, the default value
+	 *                              of <i>true</i> should be used.
+	 */
+	public function definePartLink($part, $link = true)
+	{
+		$mode = $this->getMode($part);
+		$link = $this->filterLink($link);
+		$this->parts[$part] = array('mode' => $mode, 'link' => $link);
+	}
+
+	// }}}
 	// {{{ public function getParts()
 
 	/**
@@ -292,10 +314,10 @@ abstract class SiteView
 	 * @param integer $mode optional. The part mode to use by default. Unless
 	 *                       there is a good reason to do otherwise, the default
 	 *                       {@link SiteView::MODE_ALL} should be used.
-	 * @param strinjg|boolean $link optional. Whether or not the display the
-	 *                               part as/with a link. Unless there is good
-	 *                               reason to do otherwise, the default value
-	 *                               of <i>true</i> should be used.
+	 * @param string|boolean $link optional. Whether or not the display the
+	 *                              part as/with a link. Unless there is good
+	 *                              reason to do otherwise, the default value
+	 *                              of <i>true</i> should be used.
 	 */
 	protected function definePart($part, $mode = self::MODE_ALL, $link = true)
 	{
