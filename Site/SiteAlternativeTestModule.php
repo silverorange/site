@@ -22,7 +22,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	{
 		if ($this->app->session->isActive())
 			if (!isset($this->app->session->alternative_tests))
-				$this->app->session->alternative_tests = array();
+				$this->app->session->alternative_tests = new ArrayObject();
 
 		foreach ($this->test_values as $name => $value)
 			$this->initTest($name);
