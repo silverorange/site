@@ -70,6 +70,14 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function getAll()
+
+	public function getAll()
+	{
+		return $this->test_values;
+	}
+
+	// }}}
 	// {{{ protected function initTest()
 
 	protected function initTest($name)
@@ -91,14 +99,6 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 			$this->app->session->alternative_tests[$name] = $value;
 
 		$this->test_values[$name] = $value;
-	}
-
-	// }}}
-	// {{{ public function getAll()
-
-	public function getAll()
-	{
-		return $this->test_values;
 	}
 
 	// }}}
