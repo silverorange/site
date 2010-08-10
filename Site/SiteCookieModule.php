@@ -8,7 +8,7 @@ require_once 'Site/exceptions/SiteCookieException.php';
  * Web application module for cookies
  *
  * @package   Site
- * @copyright 2006-2009 silverorange
+ * @copyright 2006-2010 silverorange
  */
 class SiteCookieModule extends SiteApplicationModule
 {
@@ -66,7 +66,7 @@ class SiteCookieModule extends SiteApplicationModule
 
 		// TODO: get domain from application
 		//if ($domain = null)
-		//	$domain = 
+		//	$domain =
 
 		setcookie($name, $cookie_value, $expiry, $path);
 		//setcookie($name, $value, $expiry, $path, $domain);
@@ -89,7 +89,7 @@ class SiteCookieModule extends SiteApplicationModule
 
 		// TODO: get domain from application
 		//if ($domain = null)
-		//	$domain = 
+		//	$domain =
 
 		setcookie($name, 0, $expiry, $path);
 		//setcookie($name, 0, $expiry, $path, $domain);
@@ -142,7 +142,7 @@ class SiteCookieModule extends SiteApplicationModule
 			} catch (SwatInvalidSerializedDataException $e) {
 				// Try old unsalt technique for backwards compatibility
 				// this will be removed in future versions of Site
-				$value = $this->unsaltValue($_COOKIE[$name]);
+				$value = $this->unsaltValue($name);
 
 				// If we unserilaized an old cookie value successfully,
 				// reserialize it using the newer, safer method.
@@ -216,24 +216,38 @@ class SiteCookieModule extends SiteApplicationModule
 	 *             the old, less secure data-signing technique. It will be
 	 *             removed in future versions of SiteCookieModule.
 	 */
-	private function unsaltValue($value)
+	private function unsaltValue($name)
 	{
+		$value   = $_COOKIE[$name];
 		$package = @unserialize($value);
 
-		// serialized value is broken
-		if ($package === false && strcmp($value, serialize(false)) != 0)
-			throw new SiteCookieException('Could not unserialize cookie.');
+		try {
+			// serialized value is broken
+			if ($package === false && strcmp($value, serialize(false)) != 0) {
+				throw new SiteCookieException('Could not unserialize cookie.');
+			}
 
-		// serialized data is not how we expected
-		if (!is_array($package) || !isset($package['value']) ||
-			!isset($package['hash']))
+			// serialized data is not how we expected
+			if (!is_array($package) || !isset($package['value']) ||
+				!isset($package['hash'])) {
 				throw new SiteCookieException('Corrupt cookie data.');
+			}
 
-		$value = $package['value'];
+			$value = $package['value'];
 
-		// hash does not match, cookie was tampered with
-		if ($package['hash'] !== $this->getHash($value))
-			throw new SiteCookieException('Invalid cookie hash.');
+			// hash does not match, cookie was tampered with
+			if ($package['hash'] !== $this->getHash($value)) {
+				throw new SiteCookieException('Invalid cookie hash.');
+			}
+		} catch (SiteCookieException $e) {
+			// if the cookie doesn't unserialize for any reason, log the error
+			// and delete the cookie so the user can continue loading the site.
+			$this->removeCookie($name);
+			$e->log();
+			$value = null;
+		}
+
+		return $value;
 	}
 
 	// }}}
