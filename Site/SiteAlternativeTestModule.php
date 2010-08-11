@@ -6,7 +6,7 @@ require_once 'Site/SiteApplicationModule.php';
  * Web application module for testing alternatives.
  *
  * @package   Site
- * @copyright 2008-2009 silverorange
+ * @copyright 2008-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAlternativeTestModule extends SiteApplicationModule
