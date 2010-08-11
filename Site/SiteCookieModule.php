@@ -139,9 +139,9 @@ class SiteCookieModule extends SiteApplicationModule
 			$value =
 				SwatString::signedUnserialize($_COOKIE[$name], $this->salt);
 		} catch (SwatInvalidSerializedDataException $e) {
-			// if the cookie can't be unserialized, then log it and delete the
-			// cookie to prevent further exceptions.
-			$e->log();
+			// if the cookie can't be unserialized, then log it and don't exit
+			// and delete the cookie to prevent further exceptions.
+			$e->process(false);
 			$value = null;
 			$this->removeCookie($name);
 		}
