@@ -82,21 +82,32 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 
 	protected function initTest($name)
 	{
-		if ($this->app->session->isActive() &&
-			isset($this->app->session->alternative_tests[$name])) {
-				$value = $this->app->session->alternative_tests[$name];
-				$this->app->cookie->removeCookie($name);
+		$value = null;
+		$set_cookie = false;
 
-		} elseif (isset($this->app->cookie->$name)) {
-			$value = $this->app->cookie->$name;
-
+		if (isset($_GET['alternatetest']) && $_GET['alternatetest'] == $name
+			&& isset($_GET['alternatetestversion'])) {
+			$value = $_GET['alternatetestversion'];
+			$set_cookie = true;
 		} else {
-			$value = (rand(0,1) === 1);
-			$this->app->cookie->setCookie($name, $value, 0);
+			if ($this->app->session->isActive() &&
+				isset($this->app->session->alternative_tests[$name])) {
+					$value = $this->app->session->alternative_tests[$name];
+					$this->app->cookie->removeCookie($name);
+
+			} elseif (isset($this->app->cookie->$name)) {
+				$value = $this->app->cookie->$name;
+			} else {
+				$value = (rand(0,1) === 1);
+				$set_cookie = true;
+			}
 		}
 
 		if ($this->app->session->isActive())
 			$this->app->session->alternative_tests[$name] = $value;
+
+		if ($set_cookie === true)
+			$this->app->cookie->setCookie($name, $value, 0);
 
 		$this->test_values[$name] = $value;
 	}
