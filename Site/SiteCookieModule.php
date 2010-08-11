@@ -141,7 +141,7 @@ class SiteCookieModule extends SiteApplicationModule
 		} catch (SwatInvalidSerializedDataException $e) {
 			// if the cookie can't be unserialized, then log it and delete the
 			// cookie to prevent further exceptions.
-			$e->log;
+			$e->log();
 			$value = null;
 			$this->removeCookie($name);
 		}
