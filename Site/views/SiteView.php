@@ -109,7 +109,7 @@ abstract class SiteView
 	// {{{ public function setPartMode()
 
 	/**
-	 * Sets the display mode and optinoally the link value of a part in this
+	 * Sets the display mode and optionally the link value of a part in this
 	 * view
 	 *
 	 * @param string $part the name of the part for which to set the mode.
@@ -121,12 +121,14 @@ abstract class SiteView
 	 * @param string|boolean $link optional. The link mode of the part. If
 	 *                              false, the part will not be linked. If true
 	 *                              the part will be linked using the default
-	 *                              behaviour. If a string, the part will be
+	 *                              behavior. If a string, the part will be
 	 *                              linked using the specified string as the
 	 *                              URI. If not specified, defaults to
 	 *                              <i>true</i>.
 	 *
 	 * @throws InvalidArgumentException if the specified part name is invalid.
+	 *
+	 * @see SiteView::setPartLink()
 	 */
 	public function setPartMode($part, $mode, $link = true)
 	{
@@ -142,25 +144,30 @@ abstract class SiteView
 	}
 
 	// }}}
-	// {{{ public function definePartLink()
+	// {{{ public function setPartLink()
 
 	/**
-	 * Defines the link for a part in this view
-	 *
-	 * Parts are encouraged to use the default values for link. By default, all
-	 * parts are displayed. The calling code should selectivly turn off parts.
+	 * Sets the link value of a part in this view
 	 *
 	 * @param string $part the name of the part.
-	 * @param string|boolean $link optional. Whether or not the display the
-	 *                              part as/with a link. Unless there is good
-	 *                              reason to do otherwise, the default value
-	 *                              of <i>true</i> should be used.
+	 * @param string|boolean $link The link mode of the part. If false, the
+	 *                              part will not be linked. If true the part
+	 *                              will be linked using the default behavior.
+	 *                              If a string, the part will be linked using
+	 *                              the specified string as the URI.
+	 *
+	 * @see SiteView::setPartMode()
 	 */
-	public function definePartLink($part, $link = true)
+	public function setPartLink($part, $link)
 	{
-		$mode = $this->getMode($part);
+		if (!array_key_exists($part, $this->parts)) {
+			throw new InvalidArgumentException(sprintf(
+				'Specified part name “%s” is not valid for the %s view.',
+				$part, get_class($this)));
+		}
+
 		$link = $this->filterLink($link);
-		$this->parts[$part] = array('mode' => $mode, 'link' => $link);
+		$this->parts[$part]['link'] = $link;
 	}
 
 	// }}}
