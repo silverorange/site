@@ -157,6 +157,7 @@ class SiteCookieModule extends SiteApplicationModule
 				// If the cookie can't be unserialized, then log it and
 				// continue execution. Also remove the cookie to prevent
 				// further exceptions.
+				$e = new SiteCookieException($e);
 				$e->process(false);
 				$value = null;
 				$this->removeCookie($name);
