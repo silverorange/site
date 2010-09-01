@@ -85,14 +85,24 @@ class SiteCookieModule extends SiteApplicationModule
 	public function removeCookie($name, $path = '/', $domain = null)
 	{
 		$name = $this->getPrefix().'_'.$name;
-		$expiry = time() - 3600;
+
+		// Set expiry time to the past. The expiry of 25 hours in the past is
+		// used because time() uses the server's local time and some browsers
+		// use local time rather than UTC to trigger cookie deletion. 25 hours
+		// takes into account all time-zone differences.
+		$expiry = time() - 3600 * 25;
+
+		// Some browsers set the cookie value to 'deleted' when an empty string
+		// is used as a cookie value. THe value '0' is chosen instead for
+		// unsetting cookies.
+		$value = 0;
 
 		// TODO: get domain from application
 		//if ($domain = null)
 		//	$domain =
 
-		setcookie($name, 0, $expiry, $path);
-		//setcookie($name, 0, $expiry, $path, $domain);
+		setcookie($name, $value, $expiry, $path);
+		//setcookie($name, $value, $expiry, $path, $domain);
 
 		unset($_COOKIE[$name]);
 	}
@@ -139,11 +149,18 @@ class SiteCookieModule extends SiteApplicationModule
 			$value =
 				SwatString::signedUnserialize($_COOKIE[$name], $this->salt);
 		} catch (SwatInvalidSerializedDataException $e) {
-			// if the cookie can't be unserialized, then log it and don't exit
-			// and delete the cookie to prevent further exceptions.
-			$e->process(false);
-			$value = null;
-			$this->removeCookie($name);
+
+			// ignore common cookie values used to remove cookies
+			$ignored_values = array(0, '');
+
+			if (!in_array($_COOKIE[$name], $ignored_values)) {
+				// If the cookie can't be unserialized, then log it and
+				// continue execution. Also remove the cookie to prevent
+				// further exceptions.
+				$e->process(false);
+				$value = null;
+				$this->removeCookie($name);
+			}
 		}
 
 		return $value;
