@@ -93,7 +93,7 @@ class SiteCookieModule extends SiteApplicationModule
 		$expiry = time() - 3600 * 25;
 
 		// Some browsers set the cookie value to 'deleted' when an empty string
-		// is used as a cookie value. THe value '0' is chosen instead for
+		// is used as a cookie value. The value '0' is chosen instead for
 		// unsetting cookies.
 		$value = 0;
 
@@ -150,18 +150,19 @@ class SiteCookieModule extends SiteApplicationModule
 				SwatString::signedUnserialize($_COOKIE[$name], $this->salt);
 		} catch (SwatInvalidSerializedDataException $e) {
 
-			// ignore common cookie values used to remove cookies
+			// Ignore common cookie values used to remove cookies.
 			$ignored_values = array(0, '');
 
 			if (!in_array($_COOKIE[$name], $ignored_values)) {
 				// If the cookie can't be unserialized, then log it and
-				// continue execution. Also remove the cookie to prevent
-				// further exceptions.
+				// continue execution.
 				$e = new SiteCookieException($e);
 				$e->process(false);
-				$value = null;
-				$this->removeCookie($name);
 			}
+
+			// Remove the cookie to prevent further exceptions.
+			$value = null;
+			$this->removeCookie($name);
 		}
 
 		return $value;
