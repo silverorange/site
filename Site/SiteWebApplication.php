@@ -230,6 +230,14 @@ class SiteWebApplication extends SiteApplication
 				}
 			}
 		}
+
+		if ($this->config->uri->cdn_base != '' &&
+			$this->config->uri->secure_cdn_base != '') {
+
+			SiteImage::$cdn_base = (!$this->isSecure()) ?
+				$this->config->uri->cdn_base :
+				$this->config->uri->secure_cdn_base;
+		}
 	}
 
 	// }}}
