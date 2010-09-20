@@ -19,6 +19,13 @@ class SiteImage extends SwatDBDataObject
 	// {{{ public properties
 
 	/**
+	 * The base uri for CDN hosted images
+	 *
+	 * @var string
+	 */
+	public static $cdn_base;
+
+	/**
 	 * Unique identifier
 	 *
 	 * @var integer
@@ -56,6 +63,13 @@ class SiteImage extends SwatDBDataObject
 	 * @var string
 	 */
 	public $description;
+
+	/**
+	 * Whether or not this image is on a CDN.
+	 *
+	 * @var boolean
+	 */
+	public $on_cdn;
 
 	// }}}
 	// {{{ protected properties
@@ -366,11 +380,18 @@ class SiteImage extends SwatDBDataObject
 			$dimension->shortname,
 			$this->getFilename($shortname));
 
-		if ($this->getUriBase() !== null)
+		if ($this->getUriBase() !== null) {
 			$uri = $this->getUriBase().'/'.$uri;
+		}
 
-		if ($prefix !== null && !strpos($uri, '://'))
+		// Don't apply the prefix if the image exists on a CDN since the image
+		// will always be in the same location. We don't need to apply ../ for
+		// images displayed in the admin.
+		if ($this->on_cdn && self::$cdn_base != '') {
+			$uri = self::$cdn_base.$uri;
+		} else if ($prefix !== null && !strpos($uri, '://')) {
 			$uri = $prefix.$uri;
+		}
 
 		return $uri;
 	}
