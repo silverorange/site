@@ -27,6 +27,7 @@ abstract class SiteDBEditPage extends SiteEditPage
 				$messages->add($this->getRollbackMessage($form));
 			}
 			$transaction->rollback();
+			$this->handleDBException($e);
 			throw $e;
 		}
 	}
@@ -46,6 +47,13 @@ abstract class SiteDBEditPage extends SiteEditPage
 			'system-error');
 
 		return $message;
+	}
+
+	// }}}
+	// {{{ protected function handleDBException()
+
+	protected function handleDBException(SwatDBException $e)
+	{
 	}
 
 	// }}}
