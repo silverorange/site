@@ -468,11 +468,25 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected function initModules()
 	{
-		foreach ($this->modules as $module)
+		foreach ($this->modules as $module) {
 			$module->init();
+		}
 
 		$config = $this->getModule('SiteConfigModule');
 		$this->postInitConfigure($config);
+
+		// Setup the S3 image object if the config values are set.
+		if ($this->config->amazon->bucket            != '' &&
+			$this->config->amazon->access_key_id     != '' &&
+			$this->config->amazon->access_key_secret != '') {
+
+			require_once 'Site/SiteS3Bucket.php';
+
+			SiteImage::$cdn_object = new SiteS3Bucket(
+				$this->config->amazon->bucket,
+				$this->config->amazon->access_key_id,
+				$this->config->amazon->access_key_secret);
+		}
 	}
 
 	// }}}

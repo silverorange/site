@@ -26,6 +26,13 @@ class SiteImage extends SwatDBDataObject
 	public static $cdn_base;
 
 	/**
+	 * Object used to preform CDN operations like adding and removing images
+	 *
+	 * @var SiteCDN
+	 */
+	public static $cdn_object;
+
+	/**
 	 * Unique identifier
 	 *
 	 * @var integer
@@ -189,9 +196,13 @@ class SiteImage extends SwatDBDataObject
 	 */
 	protected function deleteInternal()
 	{
-		$filenames = $this->getFilenamesToDelete();
+		$cdn_files   = $this->getCDNFilenamesToDelete();
+		$local_files = $this->getLocalFilenamesToDelete();
+
 		parent::deleteInternal();
-		$this->deleteFiles($filenames);
+
+		$this->deleteCDNFiles($cdn_files);
+		$this->deleteLocalFiles($local_files);
 	}
 
 	// }}}
@@ -202,7 +213,7 @@ class SiteImage extends SwatDBDataObject
 	 *
 	 * @return array an array of filenames.
 	 */
-	protected function getFilenamesToDelete()
+	protected function getLocalFilenamesToDelete()
 	{
 		$this->image_set = $this->getImageSet();
 		$filenames = array();
@@ -214,14 +225,50 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function deleteFiles()
+	// {{{ protected function getCDNFilenamesToDelete()
+
+	/**
+	 * Gets an array of CDN files to delete when deleting this object
+	 *
+	 * @return array an array of filenames.
+	 */
+	protected function getCDNFilenamesToDelete()
+	{
+		$this->image_set = $this->getImageSet();
+		$filenames = array();
+
+		foreach ($this->image_set->dimensions as $dimension)
+			$filenames[] = $this->getCDNFilePath($dimension->shortname);
+
+		return $filenames;
+	}
+
+	// }}}
+	// {{{ protected function deleteCDNFiles()
+
+	/**
+	 * Deletes each file in a given set of filenames from the CDN
+	 *
+	 * @param array $filenames an array of filenames to delete from the CDN.
+	 */
+	protected function deleteCDNFiles(array $filenames)
+	{
+		foreach ($filenames as $filename) {
+			if ($this->hasCDNObject() && $this->on_cdn) {
+				self::$cdn_object->deleteFromCDN($filename);
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function deleteLocalFiles()
 
 	/**
 	 * Deletes each file in a given set of filenames
 	 *
 	 * @param array $filenames an array of filenames to delete.
 	 */
-	protected function deleteFiles(array $filenames)
+	protected function deleteLocalFiles(array $filenames)
 	{
 		foreach ($filenames as $filename) {
 			if (file_exists($filename))
@@ -264,6 +311,14 @@ class SiteImage extends SwatDBDataObject
 		return array_merge(parent::getSerializablePrivateProperties(), array(
 			'image_set_shortname',
 		));
+	}
+
+	// }}}
+	// {{{ protected function hasCDNObject()
+
+	protected function hasCDNObject()
+	{
+		return (self::$cdn_object instanceof SiteCDN);
 	}
 
 	// }}}
@@ -414,6 +469,27 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getCDNFilePath()
+
+	/**
+	 * Gets the full CDN file path of a dimension
+	 *
+	 * This includes the directory and the filename.
+	 *
+	 * @return string the full CDN file path of a dimension.
+	 */
+	public function getCDNFilePath($shortname)
+	{
+		$dimension = $this->image_set->getDimensionByShortname($shortname);
+
+		return sprintf('%s/%s/%s/%s',
+			$this->getCDNFileBase(),
+			$this->image_set->shortname,
+			$dimension->shortname,
+			$this->getFilename($shortname));
+	}
+
+	// }}}
 	// {{{ public function getFileDirectory()
 
 	/**
@@ -488,6 +564,14 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getCDNFileBase()
+
+	protected function getCDNFileBase()
+	{
+		return 'images';
+	}
+
+	// }}}
 	// {{{ protected function getDimensionBinding()
 
 	protected function getDimensionBinding($dimension_shortname)
@@ -522,10 +606,9 @@ class SiteImage extends SwatDBDataObject
 		$sql = 'select * from ImageDimensionBinding
 				where ImageDimensionBinding.image = %s';
 
-		$sql = sprintf($sql,
-			$this->db->quote($this->id, 'integer'));
+		$sql = sprintf($sql, $this->db->quote($this->id, 'integer'));
 
-		$wrapper =$this->getImageDimensionBindingWrapperClassName();
+		$wrapper = $this->getImageDimensionBindingWrapperClassName();
 		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
@@ -546,25 +629,11 @@ class SiteImage extends SwatDBDataObject
 	 */
 	public function process($image_file)
 	{
-		if ($this->automatically_save)
+		if ($this->automatically_save) {
 			$this->checkDB();
-
-		$this->image_set = $this->getImageSet();
-
-		if ($this->original_filename === null) {
-			// extra space is to overcome a UTF-8 problem with basename
-			$this->original_filename = ltrim(basename(' '.$image_file));
 		}
 
-		$wrapper = $this->getImageDimensionBindingWrapperClassName();
-		$this->dimension_bindings = new $wrapper();
-
-		if ($this->image_set->obfuscate_filename)
-			$this->filename = sha1(uniqid(rand(), true));
-
-		if (!extension_loaded('imagick') || !class_exists('Imagick'))
-			throw new SwatException(
-				'Class Imagick from extension imagick > 2.0.0 not found.');
+		$this->prepareForProcessing($image_file);
 
 		try {
 			// save once to set id on this object to use for filenames
@@ -573,7 +642,12 @@ class SiteImage extends SwatDBDataObject
 				$this->save();
 			}
 
-			$this->processInternal($image_file);
+			foreach ($this->image_set->dimensions as $dimension) {
+				$this->processDimension($image_file, $dimension);
+			}
+
+			// Reset the instances to an empty array. 
+			$this->imagick_instances = array();
 
 			// save again to record dimensions
 			if ($this->automatically_save) {
@@ -600,11 +674,11 @@ class SiteImage extends SwatDBDataObject
 	 */
 	public function processManual($image_file, $shortname)
 	{
-		if ($this->automatically_save)
+		if ($this->automatically_save) {
 			$this->checkDB();
+		}
 
-		$this->image_set = $this->getImageSet();
-		$dimension = $this->image_set->getDimensionByShortname($shortname);
+		$this->prepareForProcessing($image_file);
 
 		try {
 			if ($this->automatically_save) {
@@ -612,28 +686,23 @@ class SiteImage extends SwatDBDataObject
 				$this->save(); // save once to set id on this object to use for filenames
 			}
 
-			$imagick = $this->getImagick($image_file, $dimension);
-			$this->processDimension($imagick, $dimension);
-			$this->saveFile($imagick, $dimension);
+			$dimension = $this->image_set->getDimensionByShortname($shortname);
+			$this->processDimension($image_file, $dimension);
+
+			// Reset the instances to an empty array. 
+			$this->imagick_instances = array();
 
 			if ($this->automatically_save) {
 				$this->save(); // save again to record dimensions
 				$transaction->commit();
 			}
-		} catch (SwatException $e) {
-			$e->process();
-
-			if ($this->automatically_save)
-				$transaction->rollback();
 		} catch (Exception $e) {
-			$e = new SwatException($e);
-			$e->process();
-
-			if ($this->automatically_save)
+			if ($this->automatically_save) {
 				$transaction->rollback();
-		}
+			}
 
-		unset($imagick);
+			throw $e;
+		}
 	}
 
 	// }}}
@@ -681,55 +750,23 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function processInternal()
-
-	/**
-	 * Processes the image
-	 *
-	 * At this point in the process, the image already has a filename and id
-	 * and is wrapped in a database transaction.
-	 *
-	 * @param string $image_file the image file to process
-	 */
-	protected function processInternal($image_file)
-	{
-		$this->imagick_instances = array();
-
-		foreach ($this->image_set->dimensions as $dimension) {
-			$imagick = $this->getImagick($image_file, $dimension);
-
-			$this->processDimension($imagick, $dimension);
-
-			if ($dimension->max_width === null &&
-				$dimension->max_height === null &&
-				$dimension->default_type === null) {
-
-				$this->copyFile($image_file, $dimension);
-			} else {
-				$this->saveFile($imagick, $dimension);
-			}
-
-			unset($imagick);
-		}
-
-		unset($this->imagick_instances);
-	}
-
-	// }}}
 	// {{{ protected function processDimension()
 
 	/**
 	 * Resizes an image for the given dimension
 	 *
-	 * @param Imagick $imagick image to process.
+	 * @param string $image_file location of image to process.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function processDimension(Imagick $imagick,
+	protected function processDimension($image_file,
 		SiteImageDimension $dimension)
 	{
+		$imagick  = $this->getImagick($image_file, $dimension);
 		$crop_box = $this->getCropBox($dimension);
-		if ($crop_box !== null)
+
+		if ($crop_box !== null) {
 			$this->cropToBox($imagick, $crop_box);
+		}
 
 		if ($dimension->crop) {
 			$this->cropToDimension($imagick, $dimension);
@@ -738,6 +775,23 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		$this->saveDimensionBinding($imagick, $dimension);
+
+		if ($dimension->max_width    === null &&
+			$dimension->max_height   === null &&
+			$dimension->default_type === null) {
+
+			$this->copyFile($image_file, $dimension);
+		} else {
+			$this->saveFile($imagick, $dimension);
+		}
+
+		if ($this->hasCDNObject() && $this->on_cdn) {
+			self::$cdn_object->copyToCDN(
+				$this->getFilePath($dimension->shortname),
+				$this->getCDNFilePath($dimension->shortname));
+		}
+			
+		unset($imagick);
 	}
 
 	// }}}
@@ -1176,6 +1230,38 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		return $crop_box;
+	}
+
+	// }}}
+	// {{{ protected function prepareForProcessing()
+
+	protected function prepareForProcessing($image_file)
+	{
+		$wrapper = $this->getImageDimensionBindingWrapperClassName();
+		$this->dimension_bindings = new $wrapper();
+
+		$this->image_set = $this->getImageSet();
+
+		if ($this->original_filename == '') {
+			// extra space is to overcome a UTF-8 problem with basename
+			$this->original_filename = ltrim(basename(' '.$image_file));
+		}
+
+		if ($this->filename == '' && $this->image_set->obfuscate_filename) {
+			$this->filename = sha1(uniqid(rand(), true));
+		}
+
+		if ($this->hasCDNObject() && $this->image_set->on_cdn) {
+			$this->on_cdn = true;
+		} else {
+			throw new SwatException('In order to save image to a CDN a '.
+				'SiteCDN must be assigned to the SiteImage object.');
+		}
+
+		if (!extension_loaded('imagick') || !class_exists('Imagick')) {
+			throw new SwatException(
+				'Class Imagick from extension imagick > 2.0.0 not found.');
+		}
 	}
 
 	// }}}
