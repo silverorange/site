@@ -37,6 +37,13 @@ class SiteImageSet extends SwatDBDataObject
 	 */
 	public $obfuscate_filename;
 
+	/**
+	 * Whether or not images added to this image set should be saved to a CDN
+	 *
+	 * @var boolean
+	 */
+	public $on_cdn;
+
 	// }}}
 	// {{{ public function loadByShortname()
 

@@ -1,7 +1,10 @@
 create table ImageSet (
 	id serial,
 	shortname varchar(255),
+
+	on_cdn             boolean not null default false,
 	obfuscate_filename boolean not null default false,
+
 	primary key(id)
 );
 
