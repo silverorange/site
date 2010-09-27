@@ -279,6 +279,11 @@ class Site
 
 			// comments
 			'comment.akismet_key'         => null,
+
+			// amazon S3
+			'amazon.bucket'            => null,
+			'amazon.access_key_id'     => null,
+			'amazon.access_key_secret' => null,
 		);
 	}
 
