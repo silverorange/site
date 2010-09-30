@@ -9,6 +9,10 @@ require_once 'Site/exceptions/SiteCookieException.php';
  *
  * @package   Site
  * @copyright 2006-2010 silverorange
+ * @todo      For sites that use multiple instances on their own subdomains set
+ *            the subdomain on the cookies to prevent all cookies from existing
+ *            on the parent domain. Also useful would be setting correct path
+ *            for admin's that share a common base domain.
  */
 class SiteCookieModule extends SiteApplicationModule
 {
@@ -64,12 +68,12 @@ class SiteCookieModule extends SiteApplicationModule
 
 		$cookie_value = SwatString::signedSerialize($value, $this->salt);
 
-		// TODO: get domain from application
+		// TODO: get subdomain from application when on a multi-instance site.
 		//if ($domain = null)
 		//	$domain =
 
 		setcookie($name, $cookie_value, $expiry, $path);
-		//setcookie($name, $value, $expiry, $path, $domain);
+		//setcookie($name, $cookie_value, $expiry, $path, $domain);
 	}
 
 	// }}}
@@ -97,7 +101,7 @@ class SiteCookieModule extends SiteApplicationModule
 		// unsetting cookies.
 		$value = 0;
 
-		// TODO: get domain from application
+		// TODO: get from application when on a multi-instance site.
 		//if ($domain = null)
 		//	$domain =
 
