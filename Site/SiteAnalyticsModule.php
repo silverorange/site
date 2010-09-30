@@ -13,9 +13,20 @@ require_once 'Site/dataobjects/SiteAdReferrer.php';
  * @package   Site
  * @copyright 2007-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @todo      Make sure kwid works for Microsoft adCenter
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
+	// {{{ class constants
+
+	/**
+	 * Value was not loaded and the default value is used.
+	 */
+	const AD_NETWORK_GOOGLE    = 1;
+	const AD_NETWORK_YAHOO     = 2;
+	const AD_NETWORK_MICROSOFT = 3;
+
+	// }}}
 	// {{{ protected properties
 
 	/**
@@ -54,6 +65,32 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $autocreate_ad = false;
 
+	/**
+	 * Whether or not to save a cookie with the referring ad network.
+	 *
+	 * Defaults to false.
+	 *
+	 * @var boolean
+	 *
+	 * @see SiteAnalyticsModule::setTrackAdNetwork()
+	 */
+	protected $track_ad_network = false;
+
+	/**
+	 * Whether or not to save a cookie with the referring ad network.
+	 *
+	 * Defaults to false.
+	 *
+	 * @var boolean
+	 *
+	 * @see SiteAnalyticsModule::setTrackAdNetwork()
+	 */
+	protected $ad_network_tracking_ids = array(
+		'gclid'  => self::AD_NETWORK_GOOGLE,
+		'OVNDID' => self::AD_NETWORK_YAHOO,
+		'kwid'   => self::AD_NETWORK_MICROSOFT,
+	);
+
 	// }}}
 	// {{{ public function init()
 
@@ -72,6 +109,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		if ($ad !== null) {
 			$db = $this->app->getModule('SiteDatabaseModule')->getConnection();
 			$ad->setDatabase($db);
+		}
+
+		if ($this->track_ad_network) {
+			$this->trackAdNetwork();
 		}
 	}
 
@@ -121,6 +162,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$depends = parent::depends();
 		$depends[] = new SiteApplicationModuleDependency('SiteDatabaseModule');
 		$depends[] = new SiteApplicationModuleDependency('SiteSessionModule');
+
+		if ($this->app->hasModule('SiteCookieModule')) {
+			$depends[] =
+				new SiteApplicationModuleDependency('SiteCookieModule');
+		}
+
 		return $depends;
 	}
 
@@ -190,6 +237,54 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	public function setAutocreateAd($create = true)
 	{
 		$this->autocreate_ad = (boolean)$create;
+	}
+
+	// }}}
+	// {{{ public function setTrackAdNetwork()
+
+	/**
+	 * Sets whether or not to track referring ad network
+	 *
+	 * If the application has SiteCookieModule, the Ad Network is saved to a 30
+	 * day cookie. Otherwise its saved in the session.
+	 *
+	 * @param boolean $track optional. True if ad network should be tracked and
+	 *                        false if they should not.
+	 */
+	public function setTrackAdNetwork($track = true)
+	{
+		$this->track_ad_network = (boolean)$track;
+	}
+
+	// }}}
+	// {{{ public function getAdNetwork()
+
+	/**
+	 * Returns any saved Ad Network
+	 *
+	 * @return string the shortname of the ad network.
+	 */
+	public function getAdNetwork()
+	{
+		$ad_network = null;
+
+		if ($this->track_ad_network === true) {
+			// Don't combine the cookie module check, and then the check to see
+			// if the cookie isset into one statement, as we don't want to fall
+			// back onto the session if the cookie module does exist.
+			if ($this->app->hasModule('SiteCookieModule')) {
+				$cookie_module = $this->app->getModule('SiteCookieModule');
+				if (isset($cookie_module->ad_network)) {
+					$ad_network = $cookie_module->ad_network;
+				}
+			} elseif ($this->app->getModule('SiteSessionModule')->isActive() &&
+				isset($this->app->getModule('SiteSessionModule')->ad_network)) {
+				$ad_network =
+					$this->app->getModule('SiteSessionModule')->ad_network;
+			}
+		}
+
+		return $ad_network;
 	}
 
 	// }}}
@@ -313,6 +408,47 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$ad->createdate->toUTC();
 
 		return $ad;
+	}
+
+	// }}}
+	// {{{ protected function trackAdNetwork()
+
+	/**
+	 * Saves the ad network for later use.
+	 *
+	 * Saves the most recent ad network, just as Google Analytics only saves the
+	 * most recent ad when tracking users.
+	 */
+	protected function trackAdNetwork()
+	{
+		$ad_network = null;
+
+		foreach ($this->ad_network_tracking_ids as $id => $network) {
+			$value = SiteApplication::initVar($id, null,
+				SiteApplication::VAR_GET);
+
+			// if we find one of the tracking ids in the query string, don't
+			// worry about checking the rest, an ad will only belong to one
+			// network.
+			if ($value !== null) {
+				$ad_network = $network;
+				break;
+			}
+		}
+
+		if ($ad_network !== null) {
+			if ($this->app->hasModule('SiteCookieModule')) {
+				$cookie_module = $this->app->getModule('SiteCookieModule');
+				$cookie_module->setCookie('ad_network', $ad_network,
+					strtotime('+30 days'));
+			} else {
+				$session = $this->app->getModule('SiteSessionModule');
+				if (!$session->isActive()) {
+					$session->activate();
+				}
+				$session->ad_network = $ad_network;
+			}
+		}
 	}
 
 	// }}}
