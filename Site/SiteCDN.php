@@ -11,12 +11,12 @@ interface SiteCDN
 {
 	// {{{ public function copyToCDN()
 
-	public function copyToCDN($source, $destination);
+	public function copyToCDN($source, $destination, $mime_type = null);
 
 	// }}}
 	// {{{ public function deleteFromCDN()
 
-	public function deleteFromCDN($file_path);
+	public function deleteFromCDN($file_path, $mime_type = null);
 
 	// }}}
 }

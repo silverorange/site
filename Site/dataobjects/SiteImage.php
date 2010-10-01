@@ -788,7 +788,8 @@ class SiteImage extends SwatDBDataObject
 		if ($this->hasCDNObject() && $this->on_cdn) {
 			self::$cdn_object->copyToCDN(
 				$this->getFilePath($dimension->shortname),
-				$this->getCDNFilePath($dimension->shortname));
+				$this->getCDNFilePath($dimension->shortname),
+				$this->getMimeType($dimension->shortname));
 		}
 			
 		unset($imagick);
