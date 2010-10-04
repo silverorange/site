@@ -11,7 +11,7 @@ require_once 'Site/exceptions/SiteInvalidImageException.php';
  * An image data object
  *
  * @package   Site
- * @copyright 2008-2009 silverorange
+ * @copyright 2008-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImage extends SwatDBDataObject
@@ -761,19 +761,9 @@ class SiteImage extends SwatDBDataObject
 	protected function processDimension($image_file,
 		SiteImageDimension $dimension)
 	{
-		$imagick  = $this->getImagick($image_file, $dimension);
-		$crop_box = $this->getCropBox($dimension);
+		$imagick = $this->getImagick($image_file, $dimension);
 
-		if ($crop_box !== null) {
-			$this->cropToBox($imagick, $crop_box);
-		}
-
-		if ($dimension->crop) {
-			$this->cropToDimension($imagick, $dimension);
-		} else {
-			$this->fitToDimension($imagick, $dimension);
-		}
-
+		$this->processDimensionInternal($imagick, $dimension);
 		$this->saveDimensionBinding($imagick, $dimension);
 
 		if ($dimension->max_width    === null &&
@@ -793,6 +783,25 @@ class SiteImage extends SwatDBDataObject
 		}
 			
 		unset($imagick);
+	}
+
+	// }}}
+	// {{{ protected function processDimensionInternal()
+
+	protected function processDimensionInternal(Imagick $imagick,
+		SiteImageDimension $dimension)
+	{
+		$crop_box = $this->getCropBox($dimension);
+
+		if ($crop_box !== null) {
+			$this->cropToBox($imagick, $crop_box);
+		}
+
+		if ($dimension->crop) {
+			$this->cropToDimension($imagick, $dimension);
+		} else {
+			$this->fitToDimension($imagick, $dimension);
+		}
 	}
 
 	// }}}
@@ -1252,11 +1261,13 @@ class SiteImage extends SwatDBDataObject
 			$this->filename = sha1(uniqid(rand(), true));
 		}
 
-		if ($this->hasCDNObject() && $this->image_set->on_cdn) {
-			$this->on_cdn = true;
-		} else {
-			throw new SwatException('In order to save image to a CDN a '.
-				'SiteCDN must be assigned to the SiteImage object.');
+		if ($this->image_set->on_cdn) {
+			if ($this->hasCDNObject()) {
+				$this->on_cdn = true;
+			} else {
+				throw new SwatException('In order to save image to a CDN a '.
+					'SiteCDN must be assigned to the SiteImage object.');
+			}
 		}
 
 		if (!extension_loaded('imagick') || !class_exists('Imagick')) {
