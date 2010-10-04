@@ -65,6 +65,7 @@ $package->addPackageDepWithChannel('required', 'Net_SMTP', 'pear.php.net', '1.2.
 $package->addPackageDepWithChannel('optional', 'XML_RPC2', 'pear.silverorange.com', '1.0.3so5');
 $package->addPackageDepWithChannel('required', 'Text_Password', 'pear.php.net', '1.1.1');
 $package->addPackageDepWithChannel('optional', 'Services_Akismet2', 'pear.php.net', '0.2.0');
+$package->addPackageDepWithChannel('optional', 'Services_Amazon_S3', 'pear.php.net', '0.3.1');
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
 $package->addExtensionDep('optional', 'uploadprogress', '0.3.0');
 $package->addExtensionDep('optional', 'memcached', '0.1.5');
