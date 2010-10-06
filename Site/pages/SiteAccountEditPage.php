@@ -19,6 +19,11 @@ class SiteAccountEditPage extends SiteDBEditPage
 	 */
 	protected $account;
 
+	/**
+	 * @var boolean
+	 */
+	protected $is_new = true;
+
 	// }}}
 	// {{{ protected function getUiXml()
 
@@ -51,7 +56,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 	protected function isNew(SwatForm $form)
 	{
-		return (!$this->app->session->isLoggedIn());
+		return $this->is_new;
 	}
 
 	// }}}
@@ -64,6 +69,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		parent::initInternal();
 
 		$this->initAccount();
+
+		$this->is_new = ($this->account->id === null);
 
 		if ($this->ui->hasWidget('confirm_password')) {
 			$confirm_password = $this->ui->getWidget('confirm_password');
@@ -224,6 +231,22 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 
 		return new SwatMessage($message);
+	}
+
+	// }}}
+	// {{{ protected function handleDBException()
+
+	protected function handleDBException(SwatDBException $e)
+	{
+		// If account was successfully saved, but we're rolling back because
+		// of another error, we need to log out so that a bogus account
+		// doesn't stay in the user's session. Also make sure we're editing
+		// the session account before we log out. Some subclasses allow
+		// editing of other accounts.
+		if ($this->is_new && $this->app->session->isLoggedIn() &&
+			$this->account->id === $this->app->session->account->id) {
+			$this->app->session->logout();
+		}
 	}
 
 	// }}}
