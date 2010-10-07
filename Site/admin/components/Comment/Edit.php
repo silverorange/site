@@ -83,7 +83,7 @@ class SiteCommentEdit extends AdminDBEdit
 		if ($this->comment->id === null) {
 			$now = new SwatDate();
 			$now->toUTC();
-			$this->comment->createdate   = $now;
+			$this->comment->createdate = $now;
 		}
 
 		$this->comment->fullname = $values['fullname'];

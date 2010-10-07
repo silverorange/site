@@ -693,10 +693,11 @@ class SiteMailChimpList extends SiteMailingList
 			$send_date->toUTC();
 
 			try {
+				// TODO: is TZ intentionally ommitted from this date?
 				$this->client->campaignSchedule(
 					$this->app->config->mail_chimp->api_key,
 					$campaign->id,
-					$send_date->getDate(DATE_FORMAT_ISO));
+					$send_date->getDate());
 			} catch (XML_RPC2_Exception $e) {
 				$e = new SiteException($e);
 				$e->process();

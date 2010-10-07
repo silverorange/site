@@ -180,8 +180,7 @@ abstract class SiteCommentView extends SiteView
 			// display machine-readable date in UTC
 			$abbr_tag = new SwatHtmlTag('abbr');
 			$abbr_tag->class = 'comment-published';
-			$abbr_tag->title =
-				$comment->createdate->getDate(DATE_FORMAT_ISO_EXTENDED);
+			$abbr_tag->title = $comment->createdate->getISO8601();
 
 			// display human-readable date in local time
 			$date = clone $comment->createdate;

@@ -483,7 +483,7 @@ abstract class SiteGadget extends SwatUIObject
 	 *
 	 * @param string $name the name of the cache
 	 *
-	 * @return Date the date of the last time the cache was updated
+	 * @return SwatDate the date of the last time the cache was updated.
 	 *
 	 * @throw RuntimeException if the current gadget instance doesn't have a
 	 *                          cache.
@@ -505,10 +505,10 @@ abstract class SiteGadget extends SwatUIObject
 	 *
 	 * @param string $name the name of the cache to update
 	 * @param string $value the new value for the cache.
-	 * @param Date $now optional. The update date. If not specified, the
-	 *                   current date is used.
+	 * @param SwatDate $now optional. The update date. If not specified, the
+	 *                       current date is used.
 	 */
-	protected function updateCacheValue($name, $value, Date $now = null)
+	protected function updateCacheValue($name, $value, SwatDate $now = null)
 	{
 		if ($now === null) {
 			$now = new SwatDate();

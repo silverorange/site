@@ -20,7 +20,7 @@ require_once 'Site/SiteMailChimpList.php';
  * @copyright 2009-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Don't queue updates when the field already exists. Make sure
- *             queued subscribes haven't unsubscribed?
+ *            queued subscribes haven't unsubscribed?
  */
 
 abstract class SiteMailChimpListMemberUpdater extends SiteCommandLineApplication
