@@ -175,7 +175,8 @@ class SiteSidebarSettings extends AdminDBEdit
 			break;
 
 		case 'date':
-			$value = $setting->getDefault()->format(SwatDate::DF_DATE_TIME);
+			$value = $setting->getDefault()->formatLikeIntl(
+				SwatDate::DF_DATE_TIME);
 			break;
 
 		case 'integer':

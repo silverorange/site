@@ -207,13 +207,14 @@ abstract class SiteMailingList
 
 	// }}}
 
-	/**
+	/*
 	 * Subscriber queue methods
 	 *
 	 * Don't worry about dupes in the list, subscribing someone multiple times
 	 * doesn't break anything. And if it ever does, we'll handle it in the
 	 * code that subscribes the queued requests.
 	 */
+
 	// {{{ public function queueSubscribe()
 
 	public function queueSubscribe($address, array $info, $send_welcome = false)

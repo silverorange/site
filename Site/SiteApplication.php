@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Date/TimeZone.php';
+require_once 'HotDate/HotDateTimeZone.php';
 require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/Site.php';
 require_once 'Site/SiteObject.php';
@@ -47,14 +47,14 @@ abstract class SiteApplication extends SiteObject
 	 * This time zone may be used to display dates that have no time zone
 	 * information.
 	 *
-	 * Time zones are specified as {@link Date_TimeZone} objects and it is
+	 * Time zones are specified as {@link HotDateTimeZone} objects and it is
 	 * recommended to use the continent/city time zone format. For example,
 	 * if this application is based in Halifax, Canada, use 'America/Halifax'
 	 * as the time zone.
 	 *
 	 * If unspecified, the default time zone is set to 'UTC'.
 	 *
-	 * @var Date_TimeZone
+	 * @var HotDateTimeZone
 	 */
 	public $default_time_zone = null;
 
@@ -141,7 +141,7 @@ abstract class SiteApplication extends SiteObject
 
 		$this->addDefaultModules();
 
-		$this->default_time_zone = new Date_TimeZone('UTC');
+		$this->default_time_zone = new HotDateTimeZone('UTC');
 
 		if ($config_filename !== null) {
 
