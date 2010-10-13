@@ -102,9 +102,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 * @see SiteAnalyticsModule::trackAdNetwork()
 	 */
 	protected $ad_network_utm_sources = array(
-		'google' => self::AD_NETWORK_GOOGLE,
-		'bing'   => self::AD_NETWORK_YAHOO,
-		'yahoo'  => self::AD_NETWORK_MICROSOFT,
+		'google'    => self::AD_NETWORK_GOOGLE,
+		'microsoft' => self::AD_NETWORK_MICROSOFT,
+		'bing'      => self::AD_NETWORK_MICROSOFT,
+		'yahoo'     => self::AD_NETWORK_YAHOO,
 	);
 
 	/**
