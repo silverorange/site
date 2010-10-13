@@ -77,18 +77,46 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected $track_ad_network = false;
 
 	/**
-	 * Whether or not to save a cookie with the referring ad network.
+	 * Tracking get vars for various ad networks.
 	 *
-	 * Defaults to false.
+	 * @var array
 	 *
-	 * @var boolean
-	 *
-	 * @see SiteAnalyticsModule::setTrackAdNetwork()
+	 * @see SiteAnalyticsModule::trackAdNetwork()
 	 */
 	protected $ad_network_tracking_ids = array(
 		'gclid'  => self::AD_NETWORK_GOOGLE,
 		'OVNDID' => self::AD_NETWORK_YAHOO,
 		'kwid'   => self::AD_NETWORK_MICROSOFT,
+	);
+
+	/**
+	 * Google analytics utm_sources used for various ad networks.
+	 *
+	 * This is a secondary value to check when looking up ad network, and
+	 * requires the ads to be properly tagged with Google Analytics utm_*
+	 * variables, including a utm_medium that exists within
+	 * {@link SiteAnalyticsModule::$ad_network_utm_mediums}.
+	 *
+	 * @var array
+	 *
+	 * @see SiteAnalyticsModule::trackAdNetwork()
+	 */
+	protected $ad_network_utm_sources = array(
+		'google' => self::AD_NETWORK_GOOGLE,
+		'bing'   => self::AD_NETWORK_YAHOO,
+		'yahoo'  => self::AD_NETWORK_MICROSOFT,
+	);
+
+	/**
+	 * Google analytics utm_mediums valid for ad networks.
+	 *
+	 * For the secondary ad network check, all ads need to be tagged with a
+	 * Google Analytics utm_medium from this list.
+	 *
+	 * @see SiteAnalyticsModule::trackAdNetwork()
+	 */
+	protected $ad_network_utm_mediums = array(
+		'cpc',
 	);
 
 	// }}}
@@ -423,6 +451,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$ad_network = null;
 
+		// primary check for ad network based on tracking id
 		foreach ($this->ad_network_tracking_ids as $id => $network) {
 			$value = SiteApplication::initVar($id, null,
 				SiteApplication::VAR_GET);
@@ -433,6 +462,23 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			if ($value !== null) {
 				$ad_network = $network;
 				break;
+			}
+		}
+
+		// if tracking id didn't find anything, check for Google Analytic
+		// tracking vars that signify an ad network.
+		if ($ad_network === null) {
+			$utm_medium = strtolower(SiteApplication::initVar('utm_medium',
+				null, SiteApplication::VAR_GET));
+
+			if (in_array($utm_medium, $this->ad_network_utm_mediums)) {
+				$utm_source = strtolower(SiteApplication::initVar('utm_source',
+					null, SiteApplication::VAR_GET));
+
+				if (array_key_exists($utm_source,
+					$this->ad_network_utm_sources)) {
+					$ad_network = $this->ad_network_utm_sources[$utm_source];
+				}
 			}
 		}
 
