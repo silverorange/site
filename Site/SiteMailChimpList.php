@@ -689,11 +689,12 @@ class SiteMailChimpList extends SiteMailingList
 			// unschedule a manually scheduled campaign.
 			$this->unscheduleCampaign($campaign);
 
-			$send_date->setTZ($this->app->config->date->time_zone);
+			$send_date->setTZ($this->app->default_time_zone);
 			$send_date->toUTC();
 
 			try {
-				// TODO: is TZ intentionally ommitted from this date?
+				// TZ intentionally omitted, API call expects date in UTC with
+				// no timezone information.
 				$this->client->campaignSchedule(
 					$this->app->config->mail_chimp->api_key,
 					$campaign->id,
