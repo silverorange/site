@@ -5,6 +5,5 @@ create table Image (
 	filename varchar(255),
 	original_filename varchar(255),
 	description text,
-	on_cdn boolean not null default false,
 	primary key(id)
 );
