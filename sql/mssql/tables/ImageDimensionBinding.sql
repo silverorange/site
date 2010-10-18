@@ -7,6 +7,7 @@ create table ImageDimensionBinding (
 	height     int not null,
 	dpi        int not null default 72,
 	filesize   int null,
+	on_cdn     bit not null default 0,
 
 	primary key(image, dimension)
 );

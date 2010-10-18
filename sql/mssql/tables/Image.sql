@@ -6,7 +6,6 @@ create table Image (
 	filename          nvarchar(255) null,
 	original_filename nvarchar(255) null,
 	description       ntext null,
-	on_cdn            bit not null default 0,
 
 	primary key(id)
 );
