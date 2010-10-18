@@ -42,6 +42,13 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	public $dpi;
 
 	/**
+	 * Whether or not this dimension is on a CDN
+	 *
+	 * @var boolean
+	 */
+	public $on_cdn;
+
+	/**
 	 * Dimension Id
 	 *
 	 * This is not an internal property since alternative effiecient methods
