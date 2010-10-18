@@ -26,13 +26,6 @@ class SiteImage extends SwatDBDataObject
 	public static $cdn_base;
 
 	/**
-	 * Object used to preform CDN operations like adding and removing images
-	 *
-	 * @var SiteCDN
-	 */
-	public static $cdn_object;
-
-	/**
 	 * Unique identifier
 	 *
 	 * @var integer
@@ -70,13 +63,6 @@ class SiteImage extends SwatDBDataObject
 	 * @var string
 	 */
 	public $description;
-
-	/**
-	 * Whether or not this image is on a CDN.
-	 *
-	 * @var boolean
-	 */
-	public $on_cdn;
 
 	// }}}
 	// {{{ protected properties
@@ -196,17 +182,15 @@ class SiteImage extends SwatDBDataObject
 	 */
 	protected function deleteInternal()
 	{
-		$cdn_files   = $this->getCDNFilenamesToDelete();
 		$local_files = $this->getLocalFilenamesToDelete();
 
 		parent::deleteInternal();
 
-		$this->deleteCDNFiles($cdn_files);
 		$this->deleteLocalFiles($local_files);
 	}
 
 	// }}}
-	// {{{ protected function getFilenamesToDelete()
+	// {{{ protected function getLocalFilenamesToDelete()
 
 	/**
 	 * Gets an array of files names to delete when deleting this object
@@ -222,42 +206,6 @@ class SiteImage extends SwatDBDataObject
 			$filenames[] = $this->getFilePath($dimension->shortname);
 
 		return $filenames;
-	}
-
-	// }}}
-	// {{{ protected function getCDNFilenamesToDelete()
-
-	/**
-	 * Gets an array of CDN files to delete when deleting this object
-	 *
-	 * @return array an array of filenames.
-	 */
-	protected function getCDNFilenamesToDelete()
-	{
-		$this->image_set = $this->getImageSet();
-		$filenames = array();
-
-		foreach ($this->image_set->dimensions as $dimension)
-			$filenames[] = $this->getCDNFilePath($dimension->shortname);
-
-		return $filenames;
-	}
-
-	// }}}
-	// {{{ protected function deleteCDNFiles()
-
-	/**
-	 * Deletes each file in a given set of filenames from the CDN
-	 *
-	 * @param array $filenames an array of filenames to delete from the CDN.
-	 */
-	protected function deleteCDNFiles(array $filenames)
-	{
-		foreach ($filenames as $filename) {
-			if ($this->hasCDNObject() && $this->on_cdn) {
-				self::$cdn_object->deleteFromCDN($filename);
-			}
-		}
 	}
 
 	// }}}
@@ -311,14 +259,6 @@ class SiteImage extends SwatDBDataObject
 		return array_merge(parent::getSerializablePrivateProperties(), array(
 			'image_set_shortname',
 		));
-	}
-
-	// }}}
-	// {{{ protected function hasCDNObject()
-
-	protected function hasCDNObject()
-	{
-		return (self::$cdn_object instanceof SiteCDN);
 	}
 
 	// }}}
@@ -442,7 +382,8 @@ class SiteImage extends SwatDBDataObject
 		// Don't apply the prefix if the image exists on a CDN since the image
 		// will always be in the same location. We don't need to apply ../ for
 		// images displayed in the admin.
-		if ($this->on_cdn && self::$cdn_base != '') {
+		$binding = $this->getDimensionBinding($shortname);
+		if ($binding->on_cdn && self::$cdn_base != '') {
 			$uri = self::$cdn_base.$uri;
 		} else if ($prefix !== null && !strpos($uri, '://')) {
 			$uri = $prefix.$uri;
@@ -466,27 +407,6 @@ class SiteImage extends SwatDBDataObject
 		$directory = $this->getFileDirectory($shortname);
 		$filename  = $this->getFilename($shortname);
 		return $directory.DIRECTORY_SEPARATOR.$filename;
-	}
-
-	// }}}
-	// {{{ public function getCDNFilePath()
-
-	/**
-	 * Gets the full CDN file path of a dimension
-	 *
-	 * This includes the directory and the filename.
-	 *
-	 * @return string the full CDN file path of a dimension.
-	 */
-	public function getCDNFilePath($shortname)
-	{
-		$dimension = $this->image_set->getDimensionByShortname($shortname);
-
-		return sprintf('%s/%s/%s/%s',
-			$this->getCDNFileBase(),
-			$this->image_set->shortname,
-			$dimension->shortname,
-			$this->getFilename($shortname));
 	}
 
 	// }}}
@@ -561,14 +481,6 @@ class SiteImage extends SwatDBDataObject
 				'setFileBase().');
 
 		return $this->file_base;
-	}
-
-	// }}}
-	// {{{ protected function getCDNFileBase()
-
-	protected function getCDNFileBase()
-	{
-		return 'images';
 	}
 
 	// }}}
@@ -773,13 +685,6 @@ class SiteImage extends SwatDBDataObject
 			$this->copyFile($image_file, $dimension);
 		} else {
 			$this->saveFile($imagick, $dimension);
-		}
-
-		if ($this->hasCDNObject() && $this->on_cdn) {
-			self::$cdn_object->copyToCDN(
-				$this->getFilePath($dimension->shortname),
-				$this->getCDNFilePath($dimension->shortname),
-				$this->getMimeType($dimension->shortname));
 		}
 			
 		unset($imagick);
@@ -1259,15 +1164,6 @@ class SiteImage extends SwatDBDataObject
 
 		if ($this->filename == '' && $this->image_set->obfuscate_filename) {
 			$this->filename = sha1(uniqid(rand(), true));
-		}
-
-		if ($this->image_set->on_cdn) {
-			if ($this->hasCDNObject()) {
-				$this->on_cdn = true;
-			} else {
-				throw new SwatException('In order to save image to a CDN a '.
-					'SiteCDN must be assigned to the SiteImage object.');
-			}
 		}
 
 		if (!extension_loaded('imagick') || !class_exists('Imagick')) {

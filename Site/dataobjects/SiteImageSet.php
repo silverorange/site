@@ -42,7 +42,7 @@ class SiteImageSet extends SwatDBDataObject
 	 *
 	 * @var boolean
 	 */
-	public $on_cdn;
+	public $use_cdn;
 
 	// }}}
 	// {{{ public function loadByShortname()
