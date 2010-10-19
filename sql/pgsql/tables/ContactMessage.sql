@@ -1,4 +1,4 @@
-create table ContactMessage as (
+create table ContactMessage (
 	id         serial,
 
 	instance   integer references Instance(id),
