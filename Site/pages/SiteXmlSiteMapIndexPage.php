@@ -38,7 +38,7 @@ abstract class SiteXmlSiteMapIndexPage extends SitePageDecorator
 	// }}}
 	// {{{ protected function displayIndex()
 
-	protected function displayIndex($path, Date $last_modified = null)
+	protected function displayIndex($path, SwatDate $last_modified = null)
 	{
 		echo "<sitemap>\n";
 
@@ -47,7 +47,7 @@ abstract class SiteXmlSiteMapIndexPage extends SitePageDecorator
 
 		if ($last_modified !== null)
 			printf("<lastmod>%s</lastmod>\n",
-				$last_modified->getDate(DATE_FORMAT_ISO_EXTENDED));
+				$last_modified->getISO8601());
 
 		echo "</sitemap>\n";
 	}
