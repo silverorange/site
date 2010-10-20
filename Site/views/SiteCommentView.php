@@ -185,7 +185,9 @@ abstract class SiteCommentView extends SiteView
 			// display human-readable date in local time
 			$date = clone $comment->createdate;
 			$date->convertTZ($this->app->default_time_zone);
-			$abbr_tag->setContent($date->format(SwatDate::DF_DATE_TIME));
+			$abbr_tag->setContent(
+				$date->formatLikeIntl(SwatDate::DF_DATE_TIME));
+
 			$abbr_tag->display();
 
 			$permalink_tag->close();
