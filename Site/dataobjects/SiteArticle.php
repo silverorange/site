@@ -64,14 +64,14 @@ class SiteArticle extends SwatDBDataObject
 	/**
 	 * Create date
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $createdate;
 
 	/**
 	 * Modified date
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $modified_date;
 

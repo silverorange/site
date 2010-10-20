@@ -134,14 +134,14 @@ class SiteAccount extends SwatDBDataObject
 	/**
 	 * The date this account was created on
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $createdate;
 
 	/**
 	 * The last date on which this account was logged into
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $last_login;
 
