@@ -41,7 +41,7 @@ class SiteAd extends SwatDBDataObject
 	/**
 	 * The date this advertisement was created
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $createdate;
 

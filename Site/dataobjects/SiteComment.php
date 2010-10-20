@@ -93,7 +93,7 @@ class SiteComment extends SwatDBDataObject
 	/**
 	 * Date this comment was created
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $createdate;
 
