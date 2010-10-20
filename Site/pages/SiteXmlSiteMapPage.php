@@ -54,7 +54,7 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 
 		if ($last_modified !== null)
 			printf("<lastmod>%s</lastmod>\n",
-				$last_modified->getDate(DATE_FORMAT_ISO_EXTENDED));
+				$last_modified->getISO8601());
 
 		if ($frequency !== null)
 			printf("<changefreq>%s</changefreq>\n",
