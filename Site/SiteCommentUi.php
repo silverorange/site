@@ -104,7 +104,7 @@ abstract class SiteCommentUi
 			return;
 		}
 
-		$comment_status = $this->post->comment_status;
+		$comment_status = $this->getCommentStatus();
 		if (($comment_status == SiteCommentStatus::OPEN ||
 			$comment_status == SiteCommentStatus::MODERATED) &&
 			$form->isProcessed() && !$form->hasMessage()) {
@@ -114,7 +114,7 @@ abstract class SiteCommentUi
 			if ($this->ui->getWidget('post_button')->hasBeenClicked()) {
 				$this->saveComment();
 
-				switch ($this->post->comment_status) {
+				switch ($comment_status) {
 				case SiteCommentStatus::OPEN:
 					$uri = $this->getThankYouUri().
 						'#comment'.$this->comment->id;
@@ -181,7 +181,7 @@ abstract class SiteCommentUi
 		$this->comment->ip_address = $ip_address;
 		$this->comment->user_agent = $user_agent;
 
-		switch ($this->post->comment_status) {
+		switch ($this->getCommentStatus()) {
 		case SiteCommentStatus::OPEN:
 			$this->comment->status = SiteComment::STATUS_PUBLISHED;
 			break;
@@ -365,7 +365,7 @@ abstract class SiteCommentUi
 		}
 
 		if ($show_thank_you) {
-			switch ($this->post->comment_status) {
+			switch ($this->getCommentStatus()) {
 			case SiteCommentStatus::OPEN:
 				$message = new SwatMessage($this->getMessage('published'));
 				$this->ui->getWidget('message_display')->add($message,
@@ -405,9 +405,7 @@ abstract class SiteCommentUi
 
 			$message->content_type = 'text/xml';
 
-			$message_display =
-				$this->ui->getWidget('preview_message_display');
-
+			$message_display = $this->ui->getWidget('message_display');
 			$message_display->add($message, SwatMessageDisplay::DISMISS_OFF);
 
 			ob_start();
@@ -476,7 +474,7 @@ abstract class SiteCommentUi
 		// Comment form submits to the top of the comment form if there are
 		// error messages or if the new comment is not immediately visible.
 		// Otherwise the comment form submits to the new comment.
-		$comment_status = $this->post->comment_status;
+		$comment_status = $this->getCommentStatus();
 		if ($this->ui->getWidget('comment_edit_form')->hasMessage() ||
 			$comment_status == SiteCommentStatus::MODERATED ||
 			$comment_status == SiteCommentStatus::LOCKED ||
