@@ -60,12 +60,12 @@ abstract class SiteCommentUi
 	// init phase
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteCommentStatus $post,
+	public function __construct(SiteApplication $app, SiteCommentable $post,
 		$source)
 	{
-		$this->post = $post;
-		$this->app  = $app;
-		$this->source  = $source;
+		$this->post   = $post;
+		$this->app    = $app;
+		$this->source = $source;
 	}
 
 	// }}}
@@ -233,7 +233,7 @@ abstract class SiteCommentUi
 	protected function addCommentToPost(SiteCommentStatus $post,
 		SiteComment $comment)
 	{
-		$post->comments->add($comment);
+		$post->addComment($comment);
 	}
 
 	// }}}
@@ -328,7 +328,7 @@ abstract class SiteCommentUi
 		$ui              = $this->ui;
 		$form            = $ui->getWidget('comment_edit_form');
 		$frame           = $ui->getWidget('comment_edit_frame');
-		//$frame->subtitle = $this->post->getTitle();
+		$frame->subtitle = $this->post->getTitle();
 		$show_thank_you  = array_key_exists(self::THANK_YOU_ID, $_GET);
 
 		switch ($this->getCommentStatus()) {
