@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteContactMessage.php';
  * @see       SiteContactMessage
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteCommentWrapper extends SwatDBRecordsetWrapper
+class SiteContactMessageWrapper extends SwatDBRecordsetWrapper
 {
 	// {{{ protected function init()
 
