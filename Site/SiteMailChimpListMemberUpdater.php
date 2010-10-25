@@ -121,7 +121,7 @@ abstract class SiteMailChimpListMemberUpdater extends SiteCommandLineApplication
 	protected $results = array();
 
 	// }}}
-	// {{{ public funtcion __construct()
+	// {{{ public function __construct()
 
 	public function __construct($id, $filename, $title, $documentation)
 	{
