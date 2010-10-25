@@ -23,20 +23,6 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function getSubjects()
-
-	protected function getSubjects()
-	{
-		$subjects = array(
-			'general' => Site::_('General Question'),
-			'website' => Site::_('Website'),
-			'privacy' => Site::_('Privacy'),
-		);
-
-		return $subjects;
-	}
-
-	// }}}
 
 	// process phase
 	// {{{ protected function saveData()
@@ -59,7 +45,7 @@ class SiteContactPage extends SiteDBEditPage
 	protected function processMessage(SiteContactMessage $message)
 	{
 		$message->email    = $this->ui->getWidget('email')->value;
-		$message->subject  = $this->getSubject();
+		$message->subject  = $this->ui->getWidget('subject')->value;
 		$message->message  = $this->ui->getWidget('message')->value;
 		$message->instance = $this->app->getInstance();
 
@@ -160,20 +146,6 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function getSubject()
-
-	protected function getSubject()
-	{
-		$subject_index = $this->ui->getWidget('subject')->value;
-		$subjects = $this->getSubjects();
-		$subject = sprintf('%s (%s)',
-			$subjects[$subject_index],
-			$this->ui->getWidget('email')->value);
-
-		return $subject;
-	}
-
-	// }}}
 
 	// build phase
 	// {{{ protected function buildContent()
@@ -198,8 +170,12 @@ class SiteContactPage extends SiteDBEditPage
 		$email_to->content = sprintf('<a href="mailto:%1$s">%1$s</a>',
 			$this->app->config->email->contact_address);
 
+		// Dynamic static call to get subjects. This will be more straight-
+		// forward in PHP 5.3.
+		$class_name = SwatDBClassMap::get('SiteContactMessage');
+		$subjects = call_user_func(array($class_name, 'getSubjects'));
 		$subject_flydown = $this->ui->getWidget('subject');
-		$subject_flydown->addOptionsByArray($this->getSubjects());
+		$subject_flydown->addOptionsByArray($subjects);
 	}
 
 	// }}}

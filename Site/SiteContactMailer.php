@@ -137,9 +137,11 @@ class SiteContactMailer extends SiteCommandLineApplication
 
 		$sql = sprintf('select * from ContactMessage
 			where sent_date is null and error_date is null and
-				instance %s %s',
+				instance %s %s
+				and spam = %s',
 			SwatDB::equalityOperator($instance_id),
-			$this->db->quote($instance_id, 'integer'));
+			$this->db->quote($instance_id, 'integer'),
+			$this->db->quote(false, 'boolean'));
 
 		if ($this->debug_domain !== null) {
 			$sql.= sprintf(
@@ -168,7 +170,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$message->reply_to_address = $contact_message->email;
 		$message->to_address       = $this->config->email->contact_address;
 
-		$message->subject   = $contact_message->subject;
+		$message->subject   = $this->getSubject($contact_message);
 		$message->text_body = $this->getTextBody($contact_message);
 		$message->text_body.= $this->getTextBrowserInfo($contact_message);
 
@@ -185,6 +187,30 @@ class SiteContactMailer extends SiteCommandLineApplication
 			$this->getSiteTitle());
 
 		return $from_name;
+	}
+
+	// }}}
+	// {{{ protected function getSubject()
+
+	protected function getSubject(SiteContactMessage $message)
+	{
+		// Dynamic static call to get subjects. This will be more straight-
+		// forward in PHP 5.3.
+		$class_name = SwatDBClassMap::get('SiteContactMessage');
+		$subjects = call_user_func(array($class_name, 'getSubjects'));
+
+		if (array_key_exists($message->subject, $subjects)) {
+			$subject = sprintf('%s (%s)',
+				$subjects[$message->subject],
+				$message->email);
+		} else {
+			$subject = sprintf(
+				Site::_('General Message (%s)'),
+				$message->email);
+		}
+
+
+		return $subject;
 	}
 
 	// }}}
