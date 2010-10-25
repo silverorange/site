@@ -10,7 +10,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  * @copyright 2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteContactmessage extends SwatDBDataObject
+class SiteContactMessage extends SwatDBDataObject
 {
 	// {{{ public properties
 
@@ -131,6 +131,20 @@ class SiteContactmessage extends SwatDBDataObject
 		}
 
 		return $loaded;
+	}
+
+	// }}}
+	// {{{ public static function getSubjects()
+
+	public static function getSubjects()
+	{
+		$subjects = array(
+			'general' => Site::_('General Question'),
+			'website' => Site::_('Website'),
+			'privacy' => Site::_('Privacy'),
+		);
+
+		return $subjects;
 	}
 
 	// }}}
