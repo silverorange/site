@@ -1,9 +1,11 @@
 <?php
 
+require_once 'Services/Akismet2.php';
 require_once 'Swat/SwatUI.php';
 require_once 'Swat/SwatString.php';
+require_once 'Site/dataobjects/SiteContactMessage.php';
 require_once 'Site/SiteMultipartMailMessage.php';
-require_once 'Site/pages/SiteEditPage.php';
+require_once 'Site/pages/SiteDBEditPage.php';
 
 /**
  *
@@ -11,7 +13,7 @@ require_once 'Site/pages/SiteEditPage.php';
  * @copyright 2006-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteContactPage extends SiteEditPage
+class SiteContactPage extends SiteDBEditPage
 {
 	// {{{ protected function getUiXml()
 
@@ -37,11 +39,91 @@ class SiteContactPage extends SiteEditPage
 	// }}}
 
 	// process phase
-	// {{{ protected function save()
+	// {{{ protected function saveData()
 
-	protected function save(SwatForm $form)
+	protected function saveData(SwatForm $form)
 	{
-		$this->sendEmail();
+		$class_name = SwatDBClassMap::get('SiteContactMessage');
+		$contact_message = new $class_name();
+		$contact_message->setDatabase($this->app->db);
+
+		$this->processMessage($contact_message);
+
+		$contact_message->spam = $this->isMessageSpam($contact_message);
+		$contact_message->save();
+	}
+
+	// }}}
+	// {{{ protected function processMessage()
+
+	protected function processMessage(SiteContactMessage $message)
+	{
+		$message->email    = $this->ui->getWidget('email')->value;
+		$message->subject  = $this->getSubject();
+		$message->message  = $this->ui->getWidget('message')->value;
+		$message->instance = $this->app->getInstance();
+
+		if (isset($_SERVER['REMOTE_ADDR'])) {
+			$message->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
+		}
+
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
+			$message->user_agent = substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
+		}
+
+		$message->createdate = new SwatDate();
+		$message->createdate->toUTC();
+	}
+
+	// }}}
+	// {{{ protected function isMessageSpam()
+
+	protected function isMessageSpam(SiteContactMessage $message)
+	{
+		$is_spam = false;
+
+		if ($this->app->config->comment->akismet_key !== null) {
+			$uri = $this->app->getBaseHref();
+			try {
+				$akismet = new Services_Akismet2($uri,
+					$this->app->config->comment->akismet_key);
+
+				$akismet_comment = new Services_Akismet2_Comment(
+					array(
+						'comment_author_email' => $message->email,
+						'comment_content'      => $message->message,
+						'comment_type'         => 'comment',
+						'permalink'            => $uri.$this->source,
+						'user_ip'              => $message->ip_address,
+						'user_agent'           => $message->user_agent,
+					)
+				);
+
+				$is_spam = $akismet->isSpam($akismet_comment, true);
+			} catch (Exception $e) {
+			}
+		}
+
+		return $is_spam;
+	}
+
+	// }}}
+	// {{{ protected function getRollbackMessage()
+
+	protected function getRollbackMessage(SwatForm $form)
+	{
+		$message = new SwatMessage(
+			Site::_('An error has occurred. Your message was not sent.'),
+			'system-error');
+
+		$message->secondary_content = sprintf(Site::_(
+			'If this issue persists, or your message is time sensitive, '.
+			'please send an email directly to <a href="mailto:%1$s">%1$s</a>.'),
+			$this->app->config->email->contact_address);
+
+		$message->content_type = 'text/xml';
+
+		return $message;
 	}
 
 	// }}}
@@ -78,57 +160,6 @@ class SiteContactPage extends SiteEditPage
 	}
 
 	// }}}
-	// {{{ protected function sendEmail()
-
-	protected function sendEmail()
-	{
-		$message = $this->getMessage();
-
-		try {
-			$message->send();
-		} catch (SiteMailException $e) {
-			if (!$this->app->session->isActive())
-				$this->app->session->activate();
-
-			$message = new SwatMessage(
-				Site::_('Sorry, an error has occurred sending your message.'),
-				'error');
-
-			$message->content_type = 'text/xml';
-
-			$message->secondary_content = sprintf(Site::_('This can usually '.
-				'be resolved by trying again later. If the issue persists, or '.
-				'your message is time sensitive, please send an email '.
-				'directly to <a href="mailto:%1$s">%1$s</a>.'),
-				$this->app->config->email->contact_address);
-
-			$this->app->messages->add($message);
-
-			$e->process(false);
-		}
-	}
-
-	// }}}
-	// {{{ protected function getMessage()
-
-	protected function getMessage()
-	{
-		$message = new SiteMultipartMailMessage($this->app);
-
-		$message->smtp_server      = $this->app->config->email->smtp_server;
-		$message->from_address     = $this->app->config->email->website_address;
-		$message->from_name        = $this->getFromName();
-		$message->reply_to_address = $this->ui->getWidget('email')->value;
-		$message->to_address       = $this->app->config->email->contact_address;
-
-		$message->subject   = $this->getSubject();
-		$message->text_body = $this->getTextBody();
-		$message->text_body.= $this->browserInfo();
-
-		return $message;
-	}
-
-	// }}}
 	// {{{ protected function getSubject()
 
 	protected function getSubject()
@@ -143,61 +174,13 @@ class SiteContactPage extends SiteEditPage
 	}
 
 	// }}}
-	// {{{ protected function getTextBody()
-
-	protected function getTextBody()
-	{
-		$text_body = sprintf(Site::_('Email From: %s'),
-			$this->ui->getWidget('email')->value)."\n\n";
-
-		$text_body.= $this->ui->getWidget('message')->value;
-
-		return $text_body;
-	}
-
-	// }}}
-	// {{{ protected function browserInfo()
-
-	protected function browserInfo()
-	{
-		$info = "\n\n-------------------------\n";
-		$info.= "User Information\n";
-
-		if (isset($_SERVER['HTTP_USER_AGENT']))
-			$info.= $_SERVER['HTTP_USER_AGENT'];
-		else
-			$info.= 'Not available';
-
-		return $info;
-	}
-
-	// }}}
-	// {{{ protected function getFromAddress()
-
-	protected function getFromName()
-	{
-		$user_address = sprintf(Site::_('%s via %s'),
-			$this->ui->getWidget('email')->value,
-			$this->getSiteTitle());
-
-		return $user_address;
-	}
-
-	// }}}
-	// {{{ protected function getSiteTitle()
-
-	protected function getSiteTitle()
-	{
-		return $this->app->config->site->title;
-	}
-
-	// }}}
 
 	// build phase
 	// {{{ protected function buildContent()
 
 	protected function buildContent()
 	{
+		// Prepend UI content
 		$this->layout->startCapture('content', true);
 		$this->ui->display();
 		$this->layout->endCapture();

@@ -40,7 +40,7 @@ class SiteContactmessage extends SwatDBDataObject
 	 *
 	 * @var string
 	 */
-	public $bodytext;
+	public $message;
 
 	/**
 	 * Whether or not this contact message is spam
