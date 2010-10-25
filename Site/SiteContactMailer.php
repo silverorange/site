@@ -2,6 +2,7 @@
 
 require_once 'SwatDB/SwatDB.php';
 require_once 'SwatDB/SwatDBClassMap.php';
+require_once 'Site/SiteDatabaseModule.php';
 require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/dataobjects/SiteContactMessageWrapper.php';
 
@@ -92,7 +93,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 			$this->debug(
 				Site::_(
 					sprintf(
-						" => sending order status email to %s ... ",
+						" => sending order status email from %s ... ",
 						$message->email
 					)
 				)
@@ -128,87 +129,21 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$instance_id = $this->getInstanceId();
 
 		$sql = sprintf('select * from ContactMessage
-			where send_date is null and error_date is null and
+			where sent_date is null and error_date is null and
 				instance %s %s',
-			SwatDB::equailtyOperator($instance_id),
+			SwatDB::equalityOperator($instance_id),
 			$this->db->quote($instance_id, 'integer'));
 
 		if ($this->debug_domain !== null) {
 			$sql.= sprintf(
 				' and email like %s',
-				$this->db->quote($this->debug_domain, 'text'));
+				$this->db->quote('%'.$this->debug_domain, 'text'));
 		}
 
 		$sql.= ' order by createdate asc';
 
 		return SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('SiteContactMessageWrapper'));
-	}
-
-	// }}}
-	// {{{ protected function sendEmail()
-
-	protected function sendEmail()
-	{
-		$message = $this->getMessage();
-
-		try {
-			$message->send();
-		} catch (SiteMailException $e) {
-			if (!$this->app->session->isActive())
-				$this->app->session->activate();
-
-			$message = new SwatMessage(
-				Site::_('Sorry, an error has occurred sending your message.'),
-				'error');
-
-			$message->content_type = 'text/xml';
-
-			$message->secondary_content = sprintf(Site::_('This can usually '.
-				'be resolved by trying again later. If the issue persists, or '.
-				'your message is time sensitive, please send an email '.
-				'directly to <a href="mailto:%1$s">%1$s</a>.'),
-				$this->app->config->email->contact_address);
-
-			$this->app->messages->add($message);
-
-			$e->process(false);
-		}
-	}
-
-	// }}}
-
-	// boilerplate
-	// {{{ protected function getDefaultModuleList()
-
-	/**
-	 * Gets the list of modules to load for this search indexer
-	 *
-	 * @return array the list of modules to load for this application.
-	 *
-	 * @see SiteApplication::getDefaultModuleList()
-	 */
-	protected function getDefaultModuleList()
-	{
-		return array(
-			'config'   => 'SiteConfigModule',
-			'database' => 'SiteDatabaseModule',
-		);
-	}
-
-	// }}}
-	// {{{ protected function configure()
-
-	/**
-	 * Configures modules of this application before they are initialized
-	 *
-	 * @param SiteConfigModule $config the config module of this application to
-	 *                                  use for configuration other modules.
-	 */
-	protected function configure(SiteConfigModule $config)
-	{
-		parent::configure($config);
-		$this->database->dsn = $config->database->dsn;
 	}
 
 	// }}}
@@ -272,6 +207,10 @@ class SiteContactMailer extends SiteCommandLineApplication
 			$contact_message->email);
 
 		$text_body.= "\n\n";
+		$text_body.= $contact_message->createdate->formatLikeIntl(
+			'EEEE, MMMM d, YYYY \'at\' h:mm a zzz');
+
+		$text_body.= "\n\n";
 		$text_body.= $contact_message->message;
 
 		return $text_body;
@@ -283,6 +222,41 @@ class SiteContactMailer extends SiteCommandLineApplication
 	protected function getSiteTitle()
 	{
 		return $this->config->site->title;
+	}
+
+	// }}}
+
+	// boilerplate
+	// {{{ protected function getDefaultModuleList()
+
+	/**
+	 * Gets the list of modules to load for this search indexer
+	 *
+	 * @return array the list of modules to load for this application.
+	 *
+	 * @see SiteApplication::getDefaultModuleList()
+	 */
+	protected function getDefaultModuleList()
+	{
+		return array(
+			'config'   => 'SiteConfigModule',
+			'database' => 'SiteDatabaseModule',
+		);
+	}
+
+	// }}}
+	// {{{ protected function configure()
+
+	/**
+	 * Configures modules of this application before they are initialized
+	 *
+	 * @param SiteConfigModule $config the config module of this application to
+	 *                                  use for configuration other modules.
+	 */
+	protected function configure(SiteConfigModule $config)
+	{
+		parent::configure($config);
+		$this->database->dsn = $config->database->dsn;
 	}
 
 	// }}}
