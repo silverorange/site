@@ -168,7 +168,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$message->from_address     = $this->config->email->website_address;
 		$message->from_name        = $this->getFromName($contact_message);
 		$message->reply_to_address = $contact_message->email;
-		$message->to_address       = $this->config->email->contact_address;
+		$message->to_address       = $this->getToAddress($contact_message);
 
 		$message->subject   = $this->getSubject($contact_message);
 		$message->text_body = $this->getTextBody($contact_message);
@@ -187,6 +187,14 @@ class SiteContactMailer extends SiteCommandLineApplication
 			$this->getSiteTitle());
 
 		return $from_name;
+	}
+
+	// }}}
+	// {{{ protected function getToAddress()
+
+	protected function getToAddress(SiteContactMessage $message)
+	{
+		return $this->config->email->contact_address;
 	}
 
 	// }}}
