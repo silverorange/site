@@ -2,6 +2,7 @@
 
 require_once 'SwatDB/SwatDB.php';
 require_once 'SwatDB/SwatDBClassMap.php';
+require_once 'Site/SiteConfigModule.php';
 require_once 'Site/SiteDatabaseModule.php';
 require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/dataobjects/SiteContactMessageWrapper.php';
@@ -26,6 +27,15 @@ class SiteContactMailer extends SiteCommandLineApplication
 	 * @var MDB2_Driver
 	 */
 	public $db;
+
+	// }}}
+	// {{{ protected properties
+
+	/**
+	 * @var string
+	 * @sse SiteContactMailer::setDebugDomain()
+	 */
+	protected $debug_domain = null;
 
 	// }}}
 	// {{{ public function __construct()
@@ -73,7 +83,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 	public function run()
 	{
 		parent::run();
-		$this->sendContactMessages();
+		$this->sendMessages();
 	}
 
 	// }}}
