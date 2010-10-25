@@ -73,7 +73,14 @@ class SiteContactMailer extends SiteCommandLineApplication
 	public function run()
 	{
 		parent::run();
+		$this->sendContactMessages();
+	}
 
+	// }}}
+	// {{{ protected function sendMessages()
+
+	protected function sendMessages()
+	{
 		$messages = $this->getPendingMessages();
 
 		$this->debug(
@@ -207,6 +214,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 			$contact_message->email);
 
 		$text_body.= "\n\n";
+
+		$contact_message->createdate->convertTZ($this->default_time_zone);
 		$text_body.= $contact_message->createdate->formatLikeIntl(
 			'EEEE, MMMM d, YYYY \'at\' h:mm a zzz');
 
