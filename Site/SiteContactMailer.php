@@ -217,7 +217,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 
 		$contact_message->createdate->convertTZ($this->default_time_zone);
 		$text_body.= $contact_message->createdate->formatLikeIntl(
-			'EEEE, MMMM d, YYYY \'at\' h:mm a zzz');
+			Site::_('EEEE, MMMM d, YYYY \'at\' h:mm a zzz'));
 
 		$text_body.= "\n\n";
 		$text_body.= $contact_message->message;
