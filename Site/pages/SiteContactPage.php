@@ -74,23 +74,31 @@ class SiteContactPage extends SiteDBEditPage
 				$akismet = new Services_Akismet2($uri,
 					$this->app->config->comment->akismet_key);
 
-				$akismet_comment = new Services_Akismet2_Comment(
-					array(
-						'comment_author_email' => $message->email,
-						'comment_content'      => $message->message,
-						'comment_type'         => 'comment',
-						'permalink'            => $uri.$this->source,
-						'user_ip'              => $message->ip_address,
-						'user_agent'           => $message->user_agent,
-					)
-				);
+				$is_spam = $akismet->isSpam(
+					$this->getAkismetComment($message), true);
 
-				$is_spam = $akismet->isSpam($akismet_comment, true);
 			} catch (Exception $e) {
 			}
 		}
 
 		return $is_spam;
+	}
+
+	// }}}
+	// {{{ protected function getAkismetComment()
+
+	protected function getAkismetComment(SiteContactMessage $message)
+	{
+		return new Services_Akismet2_Comment(
+			array(
+				'comment_author_email' => $message->email,
+				'comment_content'      => $message->message,
+				'comment_type'         => 'comment',
+				'permalink'            => $uri.$this->source,
+				'user_ip'              => $message->ip_address,
+				'user_agent'           => $message->user_agent,
+			)
+		);
 	}
 
 	// }}}
