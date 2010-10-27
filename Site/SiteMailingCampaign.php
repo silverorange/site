@@ -110,7 +110,7 @@ class SiteMailingCampaign
 		ob_start();
 		$this->data->display($filename);
 		$content = ob_get_clean();
-		$content = $this->replaceMarkers($content);
+		$content = $this->replaceMarkers($content, $format);
 		$content = $this->transform($content, $format);
 
 		return $content;
@@ -191,6 +191,8 @@ class SiteMailingCampaign
 
 		if (mb_detect_encoding($text, 'UTF-8', true) !== 'UTF-8')
 			throw new SiteException('Text output is not valid UTF-8');
+
+		$text = SwatString::stripXHTMLTags($text);
 
 		return $text;
 	}
@@ -320,7 +322,7 @@ class SiteMailingCampaign
 	 *
 	 * @return string the replacement text for the given marker id.
 	 */
-	protected function getReplacementMarkerText($marker_id)
+	protected function getReplacementMarkerText($marker_id, $format)
 	{
 		// by default, always return a blank string as replacement text
 		return '';
@@ -333,17 +335,40 @@ class SiteMailingCampaign
 	 * Replaces markers in campaign with dynamic content
 	 *
 	 * @param string $text the content of the campaign.
+	 * @param string $format the current format of the content.
 	 *
 	 * @return string the campaign content with markers replaced by dynamic
 	 *                 content.
-	 *
-	 * @see SitePage::getReplacementMarkerText()
 	 */
-	protected final function replaceMarkers($text)
+	protected final function replaceMarkers($text, $format)
 	{
 		$marker_pattern = '/<!-- \[(.*?)\] -->/u';
-		$callback = array($this, 'getReplacementMarkerTextByMatches');
+
+		$callback_function = ($format == self::FORMAT_XHTML) ?
+			'getXhtmlReplacementMarkerTextByMatches' :
+			'getTextReplacementMarkerTextByMatches';
+
+		$callback = array($this, $callback_function);
+
 		return preg_replace_callback($marker_pattern, $callback, $text);
+	}
+
+	// }}}
+	// {{{ private final function getReplacementMarkerTextByMatches()
+
+	private final function getXhtmlReplacementMarkerTextByMatches($matches)
+	{
+		return $this->getReplacementMarkerTextByMatches($matches,
+			self::FORMAT_XHTML);
+	}
+
+	// }}}
+	// {{{ private final function getTextReplacementMarkerTextByMatches()
+
+	private final function getTextReplacementMarkerTextByMatches($matches)
+	{
+		return $this->getReplacementMarkerTextByMatches($matches,
+			self::FORMAT_TEXT);
 	}
 
 	// }}}
@@ -354,14 +379,15 @@ class SiteMailingCampaign
 	 * array returned from a PERL regular expression
 	 *
 	 * @param array $matches the PERL regular expression matches array.
+	 * @param string $format the current format of the content.
 	 *
 	 * @return string the replacement text for the first parenthesized
 	 *                 subpattern of the <i>$matches</i> array.
 	 */
-	private final function getReplacementMarkerTextByMatches($matches)
+	private final function getReplacementMarkerTextByMatches($matches, $format)
 	{
 		if (isset($matches[1]))
-			return $this->getReplacementMarkerText($matches[1]);
+			return $this->getReplacementMarkerText($matches[1], $format);
 
 		return '';
 	}
