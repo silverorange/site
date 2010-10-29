@@ -1,9 +1,11 @@
 <?php
 
 require_once 'Swat/SwatHtmlTag.php';
+require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'SwatDB/SwatDBTransaction.php';
 require_once 'Site/dataobjects/SiteImageSet.php';
+require_once 'Site/dataobjects/SiteImageCdnTask.php';
 require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
 require_once 'Site/exceptions/SiteInvalidImageException.php';
 
@@ -128,6 +130,28 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function setOnCDN()
+
+	/**
+	 * Sets the on_cdn column on the image dimension binding
+	 *
+	 * @param boolean $on_cdn the new value for on_cdn.
+	 * @param string $shortname the shortname of the image dimension to update.
+	 */
+	public function setOnCdn($on_cdn, $shortname)
+	{
+		$dimension = $this->getImageSet()->getDimensionByShortname($shortname);
+
+		$sql = sprintf('update ImageDimensionBinding set on_cdn = %s where
+			image = %s and dimension = %s',
+			$this->db->quote($on_cdn, 'boolean'),
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote($dimension->id, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
@@ -182,6 +206,8 @@ class SiteImage extends SwatDBDataObject
 	 */
 	protected function deleteInternal()
 	{
+		$this->deleteCdnFiles();
+
 		$local_files = $this->getLocalFilenamesToDelete();
 
 		parent::deleteInternal();
@@ -199,13 +225,29 @@ class SiteImage extends SwatDBDataObject
 	 */
 	protected function getLocalFilenamesToDelete()
 	{
-		$this->image_set = $this->getImageSet();
 		$filenames = array();
 
-		foreach ($this->image_set->dimensions as $dimension)
+		foreach ($this->getImageSet()->dimensions as $dimension) {
 			$filenames[] = $this->getFilePath($dimension->shortname);
+		}
 
 		return $filenames;
+	}
+
+	// }}}
+	// {{{ protected function deleteCdnFiles()
+
+	protected function deleteCdnFiles()
+	{
+		foreach ($this->getImageSet()->dimensions as $dimension) {
+			$binding = $this->getDimensionBinding($dimension->shortname);
+
+			if ($binding instanceof SiteImageDimensionBinding &&
+				$binding->on_cdn) {
+
+				$this->queueCdnTask('delete', $dimension->shortname);
+			}
+		}
 	}
 
 	// }}}
@@ -367,29 +409,38 @@ class SiteImage extends SwatDBDataObject
 
 	public function getUri($shortname, $prefix = null)
 	{
-		$dimension = $this->image_set->getDimensionByShortname(
-			$shortname);
-
-		$uri = sprintf('%s/%s/%s',
-			$this->image_set->shortname,
-			$dimension->shortname,
-			$this->getFilename($shortname));
-
-		if ($this->getUriBase() !== null) {
-			$uri = $this->getUriBase().'/'.$uri;
-		}
+		$suffix = $this->getUriSuffix($shortname);
 
 		// Don't apply the prefix if the image exists on a CDN since the image
 		// will always be in the same location. We don't need to apply ../ for
 		// images displayed in the admin.
 		$binding = $this->getDimensionBinding($shortname);
 		if ($binding->on_cdn && self::$cdn_base != '') {
-			$uri = self::$cdn_base.$uri;
-		} else if ($prefix !== null && !strpos($uri, '://')) {
-			$uri = $prefix.$uri;
+			$uri = self::$cdn_base.$suffix;
+		} else if ($prefix !== null && !strpos($suffix, '://')) {
+			$uri = $prefix.$suffix;
 		}
 
 		return $uri;
+	}
+
+	// }}}
+	// {{{ public function getUriSuffix()
+
+	public function getUriSuffix($shortname)
+	{
+		$dimension = $this->image_set->getDimensionByShortname($shortname);
+
+		$suffix = sprintf('%s/%s/%s',
+			$this->image_set->shortname,
+			$dimension->shortname,
+			$this->getFilename($shortname));
+
+		if ($this->getUriBase() !== null) {
+			$suffix = $this->getUriBase().'/'.$suffix;
+		}
+
+		return $suffix;
 	}
 
 	// }}}
@@ -686,7 +737,11 @@ class SiteImage extends SwatDBDataObject
 		} else {
 			$this->saveFile($imagick, $dimension);
 		}
-			
+
+		if ($this->getImageSet()->use_cdn) {
+			$this->queueCdnTask('copy', $dimension->shortname);
+		}
+
 		unset($imagick);
 	}
 
@@ -1059,23 +1114,28 @@ class SiteImage extends SwatDBDataObject
 
 	protected function getImageSet()
 	{
-		if ($this->image_set instanceof SiteImageSet)
+		if ($this->image_set instanceof SiteImageSet) {
 			return $this->image_set;
+		}
 
-		if ($this->image_set_shortname === null)
+		if ($this->image_set_shortname == '') {
 			throw new SwatException('To process images, an image type '.
 				'shortname must be defined in the image dataobject.');
+		}
 
 		$class_name = SwatDBClassMap::get('SiteImageSet');
+
 		$image_set = new $class_name();
 		$image_set->setDatabase($this->db);
-		$found = $image_set->loadByShortname($this->image_set_shortname);
 
-		if (!$found)
+		if ($image_set->loadByShortname($this->image_set_shortname) === false) {
 			throw new SwatException(sprintf('Image set “%s” does not exist.',
 				$this->image_set_shortname));
+		}
 
-		return $image_set;
+		$this->image_set = $image_set;
+
+		return $this->image_set;
 	}
 
 	// }}}
@@ -1155,14 +1215,12 @@ class SiteImage extends SwatDBDataObject
 		$wrapper = $this->getImageDimensionBindingWrapperClassName();
 		$this->dimension_bindings = new $wrapper();
 
-		$this->image_set = $this->getImageSet();
-
 		if ($this->original_filename == '') {
 			// extra space is to overcome a UTF-8 problem with basename
 			$this->original_filename = ltrim(basename(' '.$image_file));
 		}
 
-		if ($this->filename == '' && $this->image_set->obfuscate_filename) {
+		if ($this->filename == '' && $this->getImageSet()->obfuscate_filename) {
 			$this->filename = sha1(uniqid(rand(), true));
 		}
 
@@ -1170,6 +1228,27 @@ class SiteImage extends SwatDBDataObject
 			throw new SwatException(
 				'Class Imagick from extension imagick > 2.0.0 not found.');
 		}
+	}
+
+	// }}}
+	// {{{ protected function queueCdnTask()
+
+	/**
+	 * Queues a CDN task to be preformed later
+	 *
+	 * @param string $operation the operation to preform
+	 * @param string $shortname the shortname of the task's image dimension
+	 */
+	protected function queueCdnTask($operation, $shortname)
+	{
+		$class_name = SwatDBClassMap::get('SiteImageCdnTask');
+
+		$task = new $class_name();
+		$task->setDatabase($this->db);
+		$task->operation  = $operation;
+		$task->image_path = $this->getUriSuffix($shortname);
+
+		$task->save();
 	}
 
 	// }}}
