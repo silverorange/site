@@ -20,7 +20,10 @@ require_once 'Site/SiteMailChimpList.php';
  * @copyright 2009-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Don't queue updates when the field already exists. Make sure
- *            queued subscribes haven't unsubscribed?
+ *            queued subscribes haven't unsubscribed? Now that getting the
+ *            member list respects segment options, we can make this much
+ *            smarter, and only grab subsets of members that haven't been
+ *            updated.
  */
 
 abstract class SiteMailChimpListMemberUpdater extends SiteCommandLineApplication
@@ -270,29 +273,16 @@ abstract class SiteMailChimpListMemberUpdater extends SiteCommandLineApplication
 			// comparing counts isn't a perfect comparison metric, but its good
 			// enough for our purposes here.
 			if ($cache_count != $this->results['total_count']) {
-				$members_remaining = true;
-				$email_addresses   = array();
-				$offset            = 0;
+				$email_addresses = array();
+				$members         = $this->list->getMembers();
 
-				while ($members_remaining === true) {
-					$this->debug(sprintf("chunk %s… ",
-						$offset+1));
+				$this->api_calls++;
 
-					$members = $this->list->getMembers($offset,
-						self::CHUNK_SIZE);
-
-					$this->api_calls++;
-
-					if (count($members)) {
-						foreach ($members as $member) {
-							$email_addresses[] = sprintf('(%s)',
-								$this->db->quote($member['email'], 'text'));
-						}
-					} else {
-						$members_remaining = false;
+				if (count($members)) {
+					foreach ($members as $member) {
+						$email_addresses['Email Address'] = sprintf('(%s)',
+							$this->db->quote($member['email'], 'text'));
 					}
-
-					$offset++;
 
 					// attempt to keep memory usage down.
 					unset($members);
