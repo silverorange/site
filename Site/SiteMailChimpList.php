@@ -608,7 +608,7 @@ class SiteMailChimpList extends SiteMailingList
 				$columns = json_decode($member);
 				$first   = false;
 			} else {
-				$member_array = json_decode($member);
+				$member_array = json_decode($member, true);
 				$member_out_array = array();
 				foreach ($member_array as $key => $value) {
 					$member_out_array[$columns[$key]] = $value;
