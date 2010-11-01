@@ -608,14 +608,18 @@ class SiteMailChimpList extends SiteMailingList
 				$columns = json_decode($member);
 				$first   = false;
 			} else {
-				$member_array = json_decode($member, true);
-				$member_out_array = array();
-				foreach ($member_array as $key => $value) {
-					$member_out_array[$columns[$key]] = $value;
-				}
+				// check to make sure the exploded line has a length, as the
+				// results return a blank line at the end that we can ignore.
+				if (strlen($member) > 0) {
+					$member_array = json_decode($member, true);
+					$member_out_array = array();
+					foreach ($member_array as $key => $value) {
+						$member_out_array[$columns[$key]] = $value;
+					}
 
-				if (count($member_out_array)) {
-					$members_out[] = $member_out_array;
+					if (count($member_out_array)) {
+						$members_out[] = $member_out_array;
+					}
 				}
 			}
 		}
