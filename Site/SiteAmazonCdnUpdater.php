@@ -19,6 +19,13 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 	 */
 	public $db;
 
+	/**
+	 * The base directory the files are saved to
+	 *
+	 * @var string
+	 */
+	public $source_dir;
+
 	// }}}
 	// {{{ public function run()
 
@@ -57,8 +64,68 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		$tasks = $this->getTasks();
 
 		foreach ($tasks as $task) {
-			$task->execute($this->cdn);
+			try {
+				switch ($task->operation) {
+					case 'copy':
+						$this->copyImage($task);
+						break;
+					case 'delete':
+						$this->deleteImage($task);
+						break;
+				}
+
+				$task->delete();
+			} catch (SwatFileNotFoundException $e) {
+				$exception = $e;
+				$exception->process(false);
+			} catch (Services_Amazon_S3_Exception $e) {
+				$exception = new SwatException($e);
+				$exception->process(false);
+			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function copyImage()
+
+	/**
+	 * Copies this taks's image to a CDN
+	 *
+	 * @param SiteImageCdnTask $task the copy task.
+	 */
+	protected function copyImage(SiteImageCdnTask $task)
+	{
+		$image     = $this->getImage($this->getImageId($task));
+		$shortname = $this->getDimensionShortname($task);
+
+		if ($image instanceof SiteImage) {
+			$this->cdn->copyFile(
+				$image->getFilePath($shortname),
+				$task->image_path,
+				$image->getMimeType($shortname));
+
+			$image->setOnCdn(true, $shortname);
+		}
+	}
+
+	// }}}
+	// {{{ protected function deleteImage()
+
+	/**
+	 * Deletes this taks's image to a CDN
+	 *
+	 * @param SiteImageCdnTask $task the delete task.
+	 */
+	protected function deleteImage(SiteImageCdnTask $task)
+	{
+		$image     = $this->getImage($this->getImageId($task));
+		$shortname = $this->getDimensionShortname($task);
+
+		if ($image instanceof SiteImage) {
+			$image->setOnCdn(false, $shortname);
+		}
+
+		$this->cdn->deleteFile($task->image_path);
 	}
 
 	// }}}
@@ -76,6 +143,64 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		$sql = 'select * from ImageCdnQueue';
 
 		return SwatDB::query($this->db, $sql, $wrapper);
+	}
+
+	// }}}
+	// {{{ protected function getImage()
+
+	/**
+	 * Gets this task's image
+	 *
+	 * @return SiteImage this task's image.
+	 */
+	protected function getImage($id)
+	{
+		$class_name = SwatDBClassMap::get('SiteImage');
+
+		$image = new $class_name();
+		$image->setDatabase($this->db);
+		$image->setFileBase($this->source_dir);
+
+		if ($image->load($id)) {
+			return $image;
+		} else {
+			return null;
+		}
+	}
+
+	// }}}
+	// {{{ protected function getImageId()
+
+	/**
+	 * Gets the id of this task's image
+	 *
+	 * @param SiteImageCdnTask $task the task who's image id you want.
+	 *
+	 * @return integer the id of the task's image.
+	 */
+	protected function getImageId(SiteImageCdnTask $task)
+	{
+		$ruins  = explode('/', $task->image_path);
+		$debris = explode('.', $ruins[3]);
+
+		return intval($debris[0]);
+	}
+
+	// }}}
+	// {{{ protected function getDimensionShortname()
+
+	/**
+	 * Gets the shortname of this task's image dimension
+	 *
+	 * @param SiteImageCdnTask $task the task who's shortname you want.
+	 *
+	 * @return string the shortname of this task's image dimension.
+	 */
+	protected function getDimensionShortname(SiteImageCdnTask $task)
+	{
+		$debris = explode('/', $task->image_path);
+
+		return $debris[2];
 	}
 
 	// }}}

@@ -2,6 +2,7 @@
 
 require_once 'Services/Amazon/S3.php';
 require_once 'Services/Amazon/S3/AccessControlList.php';
+require_once 'Swat/exceptions/SwatFileNotFoundException.php';
 require_once 'Site/SiteCdn.php';
 require_once 'Site/SiteApplicationModule.php';
 
@@ -80,6 +81,11 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 
 		if ($mime_type != '') {
 			$s3_object->contentType = $mime_type;
+		}
+
+		if ($s3_object->data === false) {
+			throw new SwatFileNotFoundException(Site::_(sprintf(
+				'Unable to open file ‘%s’.', $source)));
 		}
 
 		$s3_object->save();
