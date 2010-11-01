@@ -280,7 +280,7 @@ abstract class SiteMailChimpListMemberUpdater extends SiteCommandLineApplication
 
 				if (count($members)) {
 					foreach ($members as $member) {
-						$email_addresses['email'] = sprintf('(%s)',
+						$email_addresses[] = sprintf('(%s)',
 							$this->db->quote($member['Email Address'], 'text'));
 					}
 
