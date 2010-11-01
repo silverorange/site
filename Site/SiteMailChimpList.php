@@ -550,24 +550,75 @@ class SiteMailChimpList extends SiteMailingList
 	// }}}
 	// {{{ public function getMembers()
 
-	public function getMembers($start = 0, $limit = 100, $since = '')
+	public function getMembers(array $segment_options = array(), $since = '')
 	{
+		$url = $this->app->config->mail_chimp->export_api_url.'list/';
+
 		$members = null;
 
+		$url.= sprintf('?apikey=%s&id=%s&status=%s',
+				urlencode($this->app->config->mail_chimp->api_key),
+				urlencode($this->shortname),
+				urlencode('subscribed'));
+
+		if (count($segment_options) > 0 &&
+			array_key_exists('match', $segment_options) &&
+			array_key_exists('conditions', $segment_options)) {
+			// build the segment array according to the description in the
+			// MailChimp documentation here
+			// http://www.mailchimp.com/api/how-to/#ex3
+			$url.= sprintf('&segment[%s]=%s',
+				'match',
+				$segment_options['match']);
+
+			$count = 0;
+			foreach ($segment_options['conditions'] as $condition) {
+				foreach ($condition as $key => $value) {
+					$url.= sprintf('&segment[%s][%s][%s]=%s',
+						'conditions',
+						$count,
+						$key,
+						urlencode($value));
+				}
+				$count++;
+			}
+		}
+
+		if (strlen($since) > 0) {
+			$url.= sprintf('&since=%s',
+				urlencode($since));
+		}
+
 		try {
-			$members = $this->client->listMembers(
-				$this->app->config->mail_chimp->api_key,
-				$this->shortname,
-				'subscribed',
-				$since,
-				$start,
-				$limit
-				);
-		} catch (XML_RPC2_Exception $e) {
+			$members = file_get_contents($url);
+		} catch (Exception $e) {
 			throw new SiteException($e);
 		}
 
-		return $members;
+		$first = true;
+		$members_out = array();
+		$members = explode("\n", $members);
+		foreach ($members as $member) {
+			if ($first === true) {
+				// first row is the headers of the list, grab it as the keys,
+				// and then reindex the rest of the results so they are usable
+				// by key.
+				$columns = json_decode($member);
+				$first   = false;
+			} else {
+				$member_array = json_decode($member);
+				$member_out_array = array();
+				foreach ($member_array as $key => $value) {
+					$member_out_array[$columns[$key]] = $value;
+				}
+
+				if (count($member_out_array)) {
+					$members_out[] = $member_out_array;
+				}
+			}
+		}
+
+		return $members_out;
 	}
 
 	// }}}
