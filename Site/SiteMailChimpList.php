@@ -552,9 +552,8 @@ class SiteMailChimpList extends SiteMailingList
 
 	public function getMembers(array $segment_options = array(), $since = '')
 	{
-		$url = $this->app->config->mail_chimp->export_api_url.'list/';
-
 		$members = null;
+		$url     = $this->app->config->mail_chimp->export_api_url.'list/';
 
 		$url.= sprintf('?apikey=%s&id=%s&status=%s',
 				urlencode($this->app->config->mail_chimp->api_key),
@@ -589,6 +588,7 @@ class SiteMailChimpList extends SiteMailingList
 				urlencode($since));
 		}
 
+		// TODO: better error handling.
 		try {
 			$members = file_get_contents($url);
 		} catch (Exception $e) {
@@ -602,7 +602,9 @@ class SiteMailChimpList extends SiteMailingList
 			if ($first === true) {
 				// first row is the headers of the list, grab it as the keys,
 				// and then reindex the rest of the results so they are usable
-				// by key.
+				// by key. TODO: when possible use $this->list_merge_array_map
+				// to define the keys instead of the columns passed by MailChimp
+				// so that its consistent.
 				$columns = json_decode($member);
 				$first   = false;
 			} else {
