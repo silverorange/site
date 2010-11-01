@@ -270,6 +270,7 @@ class Site
 
 			// mailchimp
 			'mail_chimp.api_url'        => 'https://us1.api.mailchimp.com/1.2/',
+			'mail_chimp.export_api_url' => 'https://us1.api.mailchimp.com/export/1.0/',
 			'mail_chimp.double_opt_in'  => false,
 			'mail_chimp.api_key'        => null,
 			'mail_chimp.user_id'        => null,
