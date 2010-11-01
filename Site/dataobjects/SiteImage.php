@@ -409,16 +409,16 @@ class SiteImage extends SwatDBDataObject
 
 	public function getUri($shortname, $prefix = null)
 	{
-		$suffix = $this->getUriSuffix($shortname);
+		$uri = $this->getUriSuffix($shortname);
 
 		// Don't apply the prefix if the image exists on a CDN since the image
 		// will always be in the same location. We don't need to apply ../ for
 		// images displayed in the admin.
 		$binding = $this->getDimensionBinding($shortname);
 		if ($binding->on_cdn && self::$cdn_base != '') {
-			$uri = self::$cdn_base.$suffix;
-		} else if ($prefix !== null && !strpos($suffix, '://')) {
-			$uri = $prefix.$suffix;
+			$uri = self::$cdn_base.$uri;
+		} else if ($prefix !== null && !strpos($uri, '://')) {
+			$uri = $prefix.$uri;
 		}
 
 		return $uri;
