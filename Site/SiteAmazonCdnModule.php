@@ -4,7 +4,6 @@ require_once 'Services/Amazon/S3.php';
 require_once 'Services/Amazon/S3/AccessControlList.php';
 require_once 'Site/SiteCdn.php';
 require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/SiteApplicationModuleDependency.php';
 
 /**
  * Application module that provides access to an Amazon S3 bucket.
