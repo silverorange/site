@@ -9,7 +9,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  * advertisements.
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAdReferrer
  */
@@ -58,6 +58,13 @@ class SiteAd extends SwatDBDataObject
 	 * @var integer
 	 */
 	public $total_referrers;
+
+	/**
+	 * Total emails sent with the ad tracker.
+	 *
+	 * @var integer
+	 */
+	public $emails_sent = 0;
 
 	// }}}
 	// {{{ protected function init()
