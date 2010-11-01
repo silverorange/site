@@ -130,7 +130,7 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function setOnCDN()
+	// {{{ public function setOnCdn()
 
 	/**
 	 * Sets the on_cdn column on the image dimension binding
