@@ -38,37 +38,6 @@ class SiteImageCdnTask extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function getImageId()
-
-	/**
-	 * Gets the id of this task's image
-	 *
-	 * @return integer the id of this task's image.
-	 */
-	protected function getImageId()
-	{
-		$ruins  = explode('/', $this->image_path);
-		$debris = explode('.', $ruins[3]);
-
-		return intval($debris[0]);
-	}
-
-	// }}}
-	// {{{ protected function getDimensionShortname()
-
-	/**
-	 * Gets the shortname of this task's image dimension
-	 *
-	 * @return string the shortname of this task's image dimension.
-	 */
-	protected function getDimensionShortname()
-	{
-		$debris = explode('/', $this->image_path);
-
-		return $debris[2];
-	}
-
-	// }}}
 }
 
 ?>
