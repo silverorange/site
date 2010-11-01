@@ -8,10 +8,11 @@ require_once 'Site/SiteMailChimpCampaign.php';
  * @package   Site
  * @copyright 2009-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @todo      Handle addresses somehow magically, perhaps add type checking on
+ *            merge vars, and allow zip to be passed into an address field by
+ *            filling with placeholder data in the other address columns (as
+ *            suggested by mailchimp).
  */
-// TODO: handle addresses somehow magically, perhaps add type checking on merge
-// vars, and allow zip to be passed into an address field by filling with
-// placeholder data in the other address columns (as suggested by mailchimp).
 class SiteMailChimpList extends SiteMailingList
 {
 	// {{{ class constants
