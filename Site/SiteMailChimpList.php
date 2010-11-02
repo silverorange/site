@@ -857,7 +857,7 @@ class SiteMailChimpList extends SiteMailingList
 		// This is the stat we most often want to report back. Standardize here
 		// so that if it changes, we don't have to update everywhere.
 		$stats['successful_sent'] = $stats['emails_sent'] -
-			$stats['hard_bounces']- $stats['soft_bounces'];
+			$stats['hard_bounces'] - $stats['soft_bounces'];
 
 		return $stats;
 	}
