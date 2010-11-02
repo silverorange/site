@@ -66,12 +66,12 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		foreach ($tasks as $task) {
 			try {
 				switch ($task->operation) {
-					case 'copy':
-						$this->copyImage($task);
-						break;
-					case 'delete':
-						$this->deleteImage($task);
-						break;
+				case 'copy':
+					$this->copyImage($task);
+					break;
+				case 'delete':
+					$this->deleteImage($task);
+					break;
 				}
 
 				$task->delete();
