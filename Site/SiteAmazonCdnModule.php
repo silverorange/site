@@ -77,7 +77,8 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	{
 		$s3_object = $this->bucket->getObject($destination);
 		$s3_object->data = file_get_contents($source);
-		$s3_object->acl  = Services_Amazon_S3_AccessControlList::ACL_PUBLIC_READ;
+		$s3_object->acl  =
+			Services_Amazon_S3_AccessControlList::ACL_PUBLIC_READ;
 
 		if ($mime_type != '') {
 			$s3_object->contentType = $mime_type;
