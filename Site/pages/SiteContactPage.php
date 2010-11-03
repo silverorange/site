@@ -89,6 +89,8 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function getAkismetComment(SiteContactMessage $message)
 	{
+		$uri = $this->app->getBaseHref();
+
 		return new Services_Akismet2_Comment(
 			array(
 				'comment_author_email' => $message->email,
