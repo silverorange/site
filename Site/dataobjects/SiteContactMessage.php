@@ -1,6 +1,5 @@
 <?php
 
-
 require_once 'SwatDB/SwatDBDataObject.php';
 
 /**
