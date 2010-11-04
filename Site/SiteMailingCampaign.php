@@ -193,6 +193,7 @@ class SiteMailingCampaign
 			throw new SiteException('Text output is not valid UTF-8');
 
 		$text = SwatString::stripXHTMLTags($text);
+		$text = html_entity_decode($text);
 
 		return $text;
 	}
