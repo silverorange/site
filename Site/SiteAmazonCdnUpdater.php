@@ -104,13 +104,13 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 				$task->dimension->shortname));
 
 			$task->image->setFileBase($this->source_dir);
-/*			$this->cdn->copyFile(
+			$this->cdn->copyFile(
 				$task->image->getFilePath($task->dimension->shortname),
 				$task->image->getUriSuffix($task->dimension->shortname),
 				$task->image->getMimeType($task->dimension->shortname));
 
 			$task->image->setOnCdn(true, $task->dimension->shortname);
-*/
+
 			$this->debug("done.\n");
 		}
 	}
