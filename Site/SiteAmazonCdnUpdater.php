@@ -95,16 +95,14 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 	 */
 	protected function copyImage(SiteImageCdnTask $task)
 	{
-		$image     = $this->getImage($this->getImageId($task));
-		$shortname = $this->getDimensionShortname($task);
-
-		if ($image instanceof SiteImage) {
+		if ($task->image instanceof SiteImage) {
+			$task->image->setFileBase($this->source_dir);
 			$this->cdn->copyFile(
-				$image->getFilePath($shortname),
-				$task->image_path,
-				$image->getMimeType($shortname));
+				$task->image->getFilePath($task->dimension->shortname),
+				$task->image->getUriSuffix($task->dimension->shortname),
+				$task->image->getMimeType($task->dimension->shortname));
 
-			$image->setOnCdn(true, $shortname);
+			$task->image->setOnCdn(true, $task->dimension->shortname);
 		}
 	}
 
@@ -118,14 +116,14 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 	 */
 	protected function deleteImage(SiteImageCdnTask $task)
 	{
-		$image     = $this->getImage($this->getImageId($task));
-		$shortname = $this->getDimensionShortname($task);
-
-		if ($image instanceof SiteImage) {
-			$image->setOnCdn(false, $shortname);
+		if ($task->image instanceof SiteImage) {
+			$task->image->setOnCdn(false, $task->dimension->shortname);
 		}
 
-		$this->cdn->deleteFile($task->image_path);
+		// prevent accidental attempts at deleting the entire bucket
+		if (strlen($task->image_path)) {
+			$this->cdn->deleteFile($task->image_path);
+		}
 	}
 
 	// }}}
@@ -143,64 +141,6 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		$sql = 'select * from ImageCdnQueue';
 
 		return SwatDB::query($this->db, $sql, $wrapper);
-	}
-
-	// }}}
-	// {{{ protected function getImage()
-
-	/**
-	 * Gets this task's image
-	 *
-	 * @return SiteImage this task's image.
-	 */
-	protected function getImage($id)
-	{
-		$class_name = SwatDBClassMap::get('SiteImage');
-
-		$image = new $class_name();
-		$image->setDatabase($this->db);
-		$image->setFileBase($this->source_dir);
-
-		if ($image->load($id)) {
-			return $image;
-		} else {
-			return null;
-		}
-	}
-
-	// }}}
-	// {{{ protected function getImageId()
-
-	/**
-	 * Gets the id of this task's image
-	 *
-	 * @param SiteImageCdnTask $task the task who's image id you want.
-	 *
-	 * @return integer the id of the task's image.
-	 */
-	protected function getImageId(SiteImageCdnTask $task)
-	{
-		$ruins  = explode('/', $task->image_path);
-		$debris = explode('.', $ruins[3]);
-
-		return intval($debris[0]);
-	}
-
-	// }}}
-	// {{{ protected function getDimensionShortname()
-
-	/**
-	 * Gets the shortname of this task's image dimension
-	 *
-	 * @param SiteImageCdnTask $task the task who's shortname you want.
-	 *
-	 * @return string the shortname of this task's image dimension.
-	 */
-	protected function getDimensionShortname(SiteImageCdnTask $task)
-	{
-		$debris = explode('/', $task->image_path);
-
-		return $debris[2];
 	}
 
 	// }}}

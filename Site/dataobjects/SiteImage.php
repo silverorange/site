@@ -136,11 +136,13 @@ class SiteImage extends SwatDBDataObject
 	 * Sets the on_cdn column on the image dimension binding
 	 *
 	 * @param boolean $on_cdn the new value for on_cdn.
-	 * @param string $shortname the shortname of the image dimension to update.
+	 * @param string $dimension_shortname the shortname of the image dimension
+	 *                                     to update.
 	 */
-	public function setOnCdn($on_cdn, $shortname)
+	public function setOnCdn($on_cdn, $dimension_shortname)
 	{
-		$dimension = $this->getImageSet()->getDimensionByShortname($shortname);
+		$dimension = $this->image_set->getDimensionByShortname(
+			$dimension_shortname);
 
 		$sql = sprintf('update ImageDimensionBinding set on_cdn = %s where
 			image = %s and dimension = %s',
@@ -245,7 +247,7 @@ class SiteImage extends SwatDBDataObject
 			if ($binding instanceof SiteImageDimensionBinding &&
 				$binding->on_cdn) {
 
-				$this->queueCdnTask('delete', $dimension->shortname);
+				$this->queueCdnTask('delete', $dimension);
 			}
 		}
 	}
@@ -609,7 +611,7 @@ class SiteImage extends SwatDBDataObject
 				$this->processDimension($image_file, $dimension);
 			}
 
-			// Reset the instances to an empty array. 
+			// Reset the instances to an empty array.
 			$this->imagick_instances = array();
 
 			// save again to record dimensions
@@ -652,7 +654,7 @@ class SiteImage extends SwatDBDataObject
 			$dimension = $this->image_set->getDimensionByShortname($shortname);
 			$this->processDimension($image_file, $dimension);
 
-			// Reset the instances to an empty array. 
+			// Reset the instances to an empty array.
 			$this->imagick_instances = array();
 
 			if ($this->automatically_save) {
@@ -739,7 +741,7 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		if ($this->getImageSet()->use_cdn) {
-			$this->queueCdnTask('copy', $dimension->shortname);
+			$this->queueCdnTask('copy', $dimension);
 		}
 
 		unset($imagick);
@@ -1237,16 +1239,24 @@ class SiteImage extends SwatDBDataObject
 	 * Queues a CDN task to be preformed later
 	 *
 	 * @param string $operation the operation to preform
-	 * @param string $shortname the shortname of the task's image dimension
+	 * @param SiteImageDimension $dimension the image dimension we're queuing
+	 *                                       the action for.
 	 */
-	protected function queueCdnTask($operation, $shortname)
+	protected function queueCdnTask($operation,
+		SiteImageDimension $dimension = null)
 	{
 		$class_name = SwatDBClassMap::get('SiteImageCdnTask');
 
 		$task = new $class_name();
 		$task->setDatabase($this->db);
-		$task->operation  = $operation;
-		$task->image_path = $this->getUriSuffix($shortname);
+		$task->operation = $operation;
+
+		if ($operation == 'copy') {
+			$task->image     = $this;
+			$task->dimension = $dimension;
+		} else {
+			$task->image_path = $this->getUriSuffix($dimension->shortname);
+		}
 
 		$task->save();
 	}
