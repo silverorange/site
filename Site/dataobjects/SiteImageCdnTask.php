@@ -1,6 +1,8 @@
 <?php
 
 require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Site/dataobjects/SiteImage.php';
+require_once 'Site/dataobjects/SiteImageDimension.php';
 
 /**
  * A task that should be preformed to a CDN in the near future
@@ -33,6 +35,12 @@ class SiteImageCdnTask extends SwatDBDataObject
 
 	protected function init()
 	{
+		$this->registerInternalProperty('image',
+			SwatDBClassMap::get('SiteImage'));
+
+		$this->registerInternalProperty('dimension',
+			SwatDBClassMap::get('SiteImageDimension'));
+
 		$this->table    = 'ImageCdnQueue';
 		$this->id_field = 'integer:id';
 	}
