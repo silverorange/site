@@ -62,6 +62,7 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 	protected function runInternal()
 	{
 		$tasks = $this->getTasks();
+		$this->debug(sprintf("Found %s Tasks:\n", count($tasks)), true);
 
 		foreach ($tasks as $task) {
 			try {
@@ -83,6 +84,8 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 				$exception->process(false);
 			}
 		}
+
+		$this->debug("All Done.\n", true);
 	}
 
 	// }}}
@@ -96,13 +99,19 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 	protected function copyImage(SiteImageCdnTask $task)
 	{
 		if ($task->image instanceof SiteImage) {
+			$this->debug(sprintf("Copying image %s, dimension %s ... ",
+				$task->image->id,
+				$task->dimension->shortname));
+
 			$task->image->setFileBase($this->source_dir);
-			$this->cdn->copyFile(
+/*			$this->cdn->copyFile(
 				$task->image->getFilePath($task->dimension->shortname),
 				$task->image->getUriSuffix($task->dimension->shortname),
 				$task->image->getMimeType($task->dimension->shortname));
 
 			$task->image->setOnCdn(true, $task->dimension->shortname);
+*/
+			$this->debug("done.\n");
 		}
 	}
 
@@ -122,7 +131,12 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 
 		// prevent accidental attempts at deleting the entire bucket
 		if (strlen($task->image_path)) {
+			$this->debug(sprintf("Deleting CDN image %s ... ",
+				$task->image_path));
+
 			$this->cdn->deleteFile($task->image_path);
+
+			$this->debug("done.\n");
 		}
 	}
 
@@ -140,7 +154,25 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 
 		$sql = 'select * from ImageCdnQueue';
 
-		return SwatDB::query($this->db, $sql, $wrapper);
+		$tasks = SwatDB::query($this->db, $sql, $wrapper);
+
+		// efficiently load images
+		$image_sql = 'select * from Image where id in (%s)';
+		$images = $tasks->loadAllSubDataObjects(
+			'image',
+			$this->db,
+			$image_sql,
+			SwatDBClassMap::get('SiteImageWrapper'));
+
+		// efficiently load dimensions
+		$dimension_sql = 'select * from ImageDimension where id in (%s)';
+		$dimensions = $tasks->loadAllSubDataObjects(
+			'dimension',
+			$this->db,
+			$dimension_sql,
+			SwatDBClassMap::get('SiteImageDimensionWrapper'));
+
+		return $tasks;
 	}
 
 	// }}}
