@@ -30,6 +30,11 @@ class SiteImageCdnTask extends SwatDBDataObject
 	 */
 	public $image_path;
 
+	/**
+	 * @var SwatDate
+	 */
+	public $error_date;
+
 	// }}}
 	// {{{ protected function init()
 
@@ -40,6 +45,8 @@ class SiteImageCdnTask extends SwatDBDataObject
 
 		$this->registerInternalProperty('dimension',
 			SwatDBClassMap::get('SiteImageDimension'));
+
+		$this->registerDateProperty('error_date');
 
 		$this->table    = 'ImageCdnQueue';
 		$this->id_field = 'integer:id';
