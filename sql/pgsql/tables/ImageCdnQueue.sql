@@ -11,5 +11,7 @@ create table ImageCdnQueue (
 	-- for delete operations
 	image_path varchar(255),
 
+	error_date timestamp,
+
 	primary key(id)
 );

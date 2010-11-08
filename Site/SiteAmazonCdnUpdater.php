@@ -8,6 +8,13 @@ require_once 'Site/SiteAmazonCdnModule.php';
 require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/dataobjects/SiteImageCdnTaskWrapper.php';
 
+/**
+ * Application to process queued entries int he ImageCdnQueue
+ *
+ * @package   Site
+ * @copyright 2010 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ */
 class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 {
 	// {{{ public properties
@@ -65,25 +72,37 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		$this->debug(sprintf("Found %s Tasks:\n", count($tasks)), true);
 
 		foreach ($tasks as $task) {
+			$success = false;
 			try {
 				switch ($task->operation) {
 				case 'copy':
 					$this->copyImage($task);
+					$success = true;
 					break;
 				case 'delete':
 					$this->deleteImage($task);
+					$success = true;
 					break;
 				}
-
-				$task->delete();
 			} catch (SwatFileNotFoundException $e) {
 				$exception = $e;
 				$exception->process(false);
 			} catch (Services_Amazon_S3_Exception $e) {
+				// wrap Services_Amazon_S3_Exception in a SwatException as
+				// Services_Amazon_S3_Exception doesn't have a process method.
 				$exception = new SwatException($e);
 				$exception->process(false);
 			}
+
+			if ($success === true) {
+				$task->delete();
+			} else {
+				$task->error_date = new SwatDate();
+				$task->error_date->toUTC();
+				$task->save();
+			}
 		}
+
 
 		$this->debug("All Done.\n", true);
 	}
@@ -152,7 +171,10 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 	{
 		$wrapper = SwatDBClassMap::get('SiteImageCdnTaskWrapper');
 
-		$sql = 'select * from ImageCdnQueue';
+		$sql = 'select * from ImageCdnQueue where error_date %s %s';
+		$sql = sprintf($sql,
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null));
 
 		$tasks = SwatDB::query($this->db, $sql, $wrapper);
 

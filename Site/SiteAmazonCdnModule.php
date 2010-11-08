@@ -75,6 +75,11 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	 */
 	public function copyFile($source, $destination, $mime_type = null)
 	{
+		if (file_exists($source) === false) {
+			throw new SwatFileNotFoundException(Site::_(sprintf(
+				'File missing ‘%s’.', $source)));
+		}
+
 		$s3_object = $this->bucket->getObject($destination);
 		$s3_object->data = file_get_contents($source);
 		$s3_object->acl  =
