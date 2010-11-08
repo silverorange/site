@@ -97,6 +97,7 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 			if ($success === true) {
 				$task->delete();
 			} else {
+				$this->debug("task error.\n");
 				$task->error_date = new SwatDate();
 				$task->error_date->toUTC();
 				$task->save();
