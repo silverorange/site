@@ -268,16 +268,6 @@ class Site
 			'memcache.resource_cache'      => true,
 			'memcache.resource_cache_stat' => true,
 
-			// mailchimp
-			'mail_chimp.api_url'        => 'https://us1.api.mailchimp.com/1.2/',
-			'mail_chimp.export_api_url' => 'https://us1.api.mailchimp.com/export/1.0/',
-			'mail_chimp.double_opt_in'  => false,
-			'mail_chimp.api_key'        => null,
-			'mail_chimp.user_id'        => null,
-			'mail_chimp.default_list'   => null,
-			'mail_chimp.default_folder' => null,
-			'mail_chimp.preview_url'    => 'http://us1.campaign-archive.com/?u=%s&id=%s',
-
 			// comments
 			'comment.akismet_key'         => null,
 
