@@ -124,14 +124,18 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 				$task->dimension->shortname));
 
 			$task->image->setFileBase($this->source_dir);
-			$this->cdn->copyFile(
+			$copied = $this->cdn->copyFile(
 				$task->image->getFilePath($task->dimension->shortname),
 				$task->image->getUriSuffix($task->dimension->shortname),
 				$task->image->getMimeType($task->dimension->shortname));
 
 			$task->image->setOnCdn(true, $task->dimension->shortname);
 
-			$this->debug("done.\n");
+			if ($copied === true) {
+				$this->debug("done.\n");
+			} else {
+				$this->debug("already on s3 ... skipped.\n");
+			}
 		}
 	}
 
@@ -212,6 +216,11 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		$this->cdn->bucket_id         = $config->amazon->bucket;
 		$this->cdn->access_key_id     = $config->amazon->access_key_id;
 		$this->cdn->access_key_secret = $config->amazon->access_key_secret;
+
+		// Set a "never-expire" policy with a far future max age (10 years) as
+		// suggested http://developer.yahoo.com/performance/rules.html#expires.
+		// We create new image ids when updating an image, so this is safe.
+		$this->cdn->setMaxAge(315360000);
 	}
 
 	// }}}
