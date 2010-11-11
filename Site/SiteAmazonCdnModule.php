@@ -51,11 +51,22 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	/**
 	 * Max age of for the Cache Control header.
 	 *
-	 * In seconds, defaults to 1 hour (cloudfront's minimum cache time).
+	 * Length of time to cache in seconds. Defaults to 1 hour (cloudfront's
+	 * minimum cache time).
 	 *
 	 * @var integer
 	 */
-	protected $max_age = 3600;
+	protected $cache_control_max_age = 3600;
+
+	/**
+	 * Whether or not Cache Control public is set.
+	 *
+	 * Useful to set true when resources should be cached for https requests.
+	 * Defaults to false.
+	 *
+	 * @var boolean
+	 */
+	protected $cache_control_public = false;
 
 	/**
 	 * Whether or not to check the md5 of a file when saving.
@@ -111,25 +122,38 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	}
 
 	// }}}
-	// {{{ public function setMaxAge()
+	// {{{ public function setCacheControlMaxAge()
 
 	/**
 	 * Sets maxium age for cache control
 	 *
 	 * @param integer $max_age the maximum age of the resource in seconds.
 	 */
-	public function setMaxAge($max_age)
+	public function setCacheControlMaxAge($max_age)
 	{
-		$this->max_age = $max_age;
+		$this->cache_control_max_age = $max_age;
+	}
+
+	// }}}
+	// {{{ public function setCacheControlPublic()
+
+	/**
+	 * Sets whether or not to set the cache-control header to include public.
+	 *
+	 * @param boolean $public true if we want it set, false if we don't.
+	 */
+	public function setCacheControlPublic($public = true)
+	{
+		$this->cache_control_public = $public;
 	}
 
 	// }}}
 	// {{{ public function setAcl()
 
 	/**
-	 * Sets maxium age for cache control
+	 * Sets the Access control list for the object.
 	 *
-	 * @param integer $max_age the maximum age of the resource in seconds.
+	 * @param string|Services_Amazon_S3_AccessControlList
 	 */
 	public function setAcl($acl)
 	{
@@ -147,7 +171,8 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	 * @param string $mime_type the MIME type of the file. If null, we grab the
 	 *                           MIME type from the file. Defaults to null.
 	 * @param integer $max_age the maximum age for cache control. If set
-	 *                          overrides $this->max_age. Defaults to null.
+	 *                          overrides $this->cache_control_max_age. Defaults
+	 *                          to null.
 	 *
 	 * @returns boolean $copy whether or not the file has been copied. If false
 	 *                         this means the file was already on s3.
@@ -189,7 +214,12 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 			}
 
 			if ($max_age === null) {
-				$max_age = $this->max_age;
+				$max_age = $this->cache_control_max_age;
+			}
+
+			$cache_control = 'max-age='.$max_age;
+			if ($this->cache_control_public === true) {
+				$cache_control = 'public, '.$cache_control;
 			}
 
 			$s3_object->data         = $file;
@@ -197,7 +227,7 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 			$s3_object->acl          = $this->acl;
 			$s3_object->userMetadata = array('md5' => $md5);
 			$s3_object->httpHeaders  = array(
-				'cache-control' => 'max-age='.$max_age,
+				'cache-control' => $cache_control,
 				);
 
 			$s3_object->save();
