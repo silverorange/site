@@ -6,6 +6,7 @@ require_once 'Site/SiteConfigModule.php';
 require_once 'Site/SiteDatabaseModule.php';
 require_once 'Site/SiteAmazonCdnModule.php';
 require_once 'Site/SiteCommandLineApplication.php';
+require_once 'Site/dataobjects/SiteImageWrapper.php';
 require_once 'Site/dataobjects/SiteImageCdnTaskWrapper.php';
 
 /**
