@@ -217,10 +217,14 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		$this->cdn->access_key_id     = $config->amazon->access_key_id;
 		$this->cdn->access_key_secret = $config->amazon->access_key_secret;
 
-		// Set a "never-expire" policy with a far future max age (10 years) as
-		// suggested http://developer.yahoo.com/performance/rules.html#expires.
-		// We create new image ids when updating an image, so this is safe.
-		$this->cdn->setMaxAge(315360000);
+		/* Set a "never-expire" policy with a far future max age (10 years) as
+		 * suggested http://developer.yahoo.com/performance/rules.html#expires.
+		 * We create new image ids when updating an image, so this is safe. As
+		 * well, set Cache-Control to public, as this allows some browsers to
+		 * cache the images to disk while on https, which is a good win.
+		 */
+		$this->cdn->setCacheControlMaxAge(315360000);
+		$this->cdn->setCacheControlPublic(true);
 	}
 
 	// }}}
