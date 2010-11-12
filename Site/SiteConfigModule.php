@@ -613,13 +613,14 @@ class SiteConfigModule extends SiteApplicationModule
 
 					list($section, $name) = explode('.', $qualified_name, 2);
 
-					// skip sections not included in the current configuration
-					if (!array_key_exists($section, $this->sections))
-						continue;
+					// skip settings that are not defined
+					if (array_key_exists($section, $this->definitions) &&
+						array_key_exists($name, $this->definitions[$section])) {
 
-					$this->$section->$name = $row->value;
-
-					$this->setSource($section, $name, self::SOURCE_DATABASE);
+						$this->$section->$name = $row->value;
+						$this->setSource(
+							$section, $name, self::SOURCE_DATABASE);
+					}
 				}
 			}
 		}
@@ -654,13 +655,14 @@ class SiteConfigModule extends SiteApplicationModule
 
 				list($section, $name) = explode('.', $qualified_name, 2);
 
-				// skip sections not included in the current configuration
-				if (!array_key_exists($section, $this->sections))
-					continue;
+				// skip settings that are not defined
+				if (array_key_exists($section, $this->definitions) &&
+					array_key_exists($name, $this->definitions[$section])) {
 
-				$this->$section->$name = $setting->value;
-
-				$this->setSource($section, $name, self::SOURCE_INSTANCE);
+					$this->$section->$name = $setting->value;
+					$this->setSource(
+						$section, $name, self::SOURCE_DATABASE);
+				}
 			}
 		}
 	}
