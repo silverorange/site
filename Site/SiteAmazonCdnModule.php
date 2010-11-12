@@ -49,6 +49,13 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	protected $bucket;
 
 	/**
+	 * A fileinfo resource for looking up MIME types
+	 *
+	 * @var magic database resource
+	 */
+	protected $finfo;
+
+	/**
 	 * Max age of for the Cache Control header.
 	 *
 	 * Length of time to cache in seconds. Defaults to 1 hour (cloudfront's
@@ -106,6 +113,18 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 			$this->access_key_secret);
 
 		$this->bucket = $s3->getBucket($this->bucket_id);
+	}
+
+	// }}}
+	// {{{ public function getFinfo()
+
+	public function getFinfo()
+	{
+		if ($this->finfo === null) {
+			$this->finfo = finfo_open(FILEINFO_MIME);
+		}
+
+		return $this->finfo;
 	}
 
 	// }}}
@@ -209,7 +228,7 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 
 		if ($copy === true) {
 			if ($mime_type === null) {
-				$finfo     = finfo_open(FILEINFO_MIME);
+				$finfo     = $this->getFinfo();
 				$mime_type = finfo_file($finfo, $from);
 			}
 
