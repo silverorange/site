@@ -20,13 +20,31 @@ class SiteLayout extends SiteObject
 {
 	// {{{ public properties
 
+	/**
+	 * @var SiteWebApplication
+	 */
 	public $app = null;
+
+	/**
+	 * @var SiteLayoutData
+	 */
 	public $data = null;
 
 	// }}}
 	// {{{ protected properties
 
+	/**
+	 * @var SwatHtmlHeadEntrySet
+	 */
 	protected $html_head_entries;
+
+	/**
+	 * @var array
+	 *
+	 * @see SiteLayout::addBodyClass()
+	 * @see SiteLayout::removeBodyClass()
+	 */
+	protected $body_classes = array();
 
 	// }}}
 	// {{{ private properties
@@ -180,6 +198,51 @@ class SiteLayout extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function addBodyClass()
+
+	/**
+	 * Adds a body class to this layout
+	 *
+	 * @param string|array $class either a string or an array containing the
+	 *                             class names to add. If the class names
+	 *                             already exist in this layout, they are
+	 *                             ignored.
+	 *
+	 * @return void
+	 */
+	public function addBodyClass($class)
+	{
+		if (!is_array($class)) {
+			$class = array($class);
+		}
+
+		$this->body_classes = array_unique(
+			array_merge($this->body_classes, $class));
+	}
+
+	// }}}
+	// {{{ public function removeBodyClass()
+
+	/**
+	 * Removes a body class from this layout
+	 *
+	 * @param string|array $class either a string or an array containing the
+	 *                             class names to remove. If the class names
+	 *                             do not exist in this layout, they are
+	 *                             ignored.
+	 *
+	 * @return void
+	 */
+	public function removeBodyClass($class)
+	{
+		if (!is_array($class)) {
+			$class = array($class);
+		}
+
+		$this->body_classes = array_diff($this->body_classes, $class);
+	}
+
+	// }}}
 
 	// complete phase
 	// {{{ public function complete()
@@ -187,6 +250,20 @@ class SiteLayout extends SiteObject
 	public function complete()
 	{
 		$this->completeHtmlHeadEntries();
+		$this->completeBodyClasses();
+	}
+
+	// }}}
+	// {{{ protected function completeBodyClasses()
+
+	protected function completeBodyClasses()
+	{
+		// don't overwrite custom use of body_class data field
+		if (!isset($this->data->body_classes)) {
+			$this->data->body_classes =
+				' class="'.SwatString::minimizeEntities(
+					implode(' ', $this->body_classes)).'"';
+		}
 	}
 
 	// }}}

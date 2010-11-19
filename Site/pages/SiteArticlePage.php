@@ -10,7 +10,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Article page decorator
  *
  * @package   Site
- * @copyright 2004-2008 silverorange
+ * @copyright 2004-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteArticle
  */
@@ -269,6 +269,30 @@ class SiteArticlePage extends SitePathPage
 			return $this->getReplacementMarkerText($matches[1]);
 
 		return '';
+	}
+
+	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+		$this->layout->addBodyClass($this->getBodyClass());
+	}
+
+	// }}}
+	// {{{ protected function getBodyClass()
+
+	protected function getBodyClass()
+	{
+		$class = array();
+		foreach ($this->getPath() as $element) {
+			$class[] = $element->shortname;
+		}
+		$class = implode('-', $class);
+		return 'article-'.$class;
 	}
 
 	// }}}
