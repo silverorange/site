@@ -89,13 +89,15 @@ class SiteLayout extends SiteObject
 
 		$name = $this->current_capture;
 
-		if ($this->data->exists($name))
-			if ($this->capture_prepend)
+		if (isset($this->data->$name)) {
+			if ($this->capture_prepend) {
 				$this->data->$name = ob_get_clean().$this->data->$name;
-			else
+			} else {
 				$this->data->$name.= ob_get_clean();
-		else
+			}
+		} else {
 			$this->data->$name = ob_get_clean();
+		}
 
 		$this->current_capture = null;
 	}
@@ -105,9 +107,10 @@ class SiteLayout extends SiteObject
 
 	public function clear($name)
 	{
-		if (!$this->data->exists($name))
+		if (!isset($this->data->$name)) {
 			throw new SiteException("Layout data property '{$name}' does not ".
 				'exist and cannot be cleared.');
+		}
 
 		$this->data->$name = '';
 	}
