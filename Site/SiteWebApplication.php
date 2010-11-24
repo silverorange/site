@@ -231,13 +231,38 @@ class SiteWebApplication extends SiteApplication
 			}
 		}
 
+		SiteImage::$cdn_base = $this->getCdnBase();
+	}
+
+	// }}}
+	// {{{ protected function getCdnBase()
+
+	/**
+	 * Gets the base cdn
+	 *
+	 * @param boolean $secure whether or not the base cdn should be a secure
+	 *                         URI. The default value of null maintains the
+	 *                         same security as the current page.
+	 *
+	 * @return string the base cdn or null if cdn settings aren't set.
+	 */
+	protected function getCdnBase($secure = null)
+	{
+		$cdn_base = null;
+
 		if ($this->config->uri->cdn_base != '' &&
 			$this->config->uri->secure_cdn_base != '') {
 
-			SiteImage::$cdn_base = (!$this->isSecure()) ?
-				$this->config->uri->cdn_base :
-				$this->config->uri->secure_cdn_base;
+			if ($secure === null) {
+				$secure = $this->isSecure();
+			}
+
+			$cdn_base = ($secure === true) ?
+				$this->config->uri->secure_cdn_base :
+				$this->config->uri->cdn_base;
 		}
+
+		return $cdn_base;
 	}
 
 	// }}}
@@ -641,6 +666,32 @@ class SiteWebApplication extends SiteApplication
 			$base_href = $base_uri;
 
 		return $base_href;
+	}
+
+	// }}}
+	// {{{ public function getBaseCdnHref()
+
+	/**
+	 * Gets the base value for all application cdn anchor hrefs
+	 *
+	 * If the cdn uri settings aren't set up, we fall back to the default base
+	 * anchor values. This allows us to fall back to local images if cdn
+	 * settings get turned off.
+	 *
+	 * @param boolean $secure whether or not the base cdn href should be a
+	 *                         secure URI. The default value of null maintains
+	 *                         the same security as the current page.
+	 *
+	 * @return string the base value for all application cdn anchor hrefs.
+	 */
+	public function getBaseCdnHref($secure = null)
+	{
+		$base_cdn_href = $this->getCdnBase($secure);
+		if ($base_cdn_href === null) {
+			$base_cdn_href = $this->getBaseHref($secure);
+		}
+
+		return $base_cdn_href;
 	}
 
 	// }}}
