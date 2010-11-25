@@ -231,7 +231,10 @@ class SiteWebApplication extends SiteApplication
 			}
 		}
 
-		SiteImage::$cdn_base = $this->getCdnBase();
+		// Not all Site's use SiteImage, so only set the cdn base if it exists.
+		if (class_exists('SiteImage')) {
+			SiteImage::$cdn_base = $this->getCdnBase();
+		}
 	}
 
 	// }}}
