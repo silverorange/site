@@ -417,7 +417,7 @@ class SiteImage extends SwatDBDataObject
 		// will always be in the same location. We don't need to apply ../ for
 		// images displayed in the admin.
 		$binding = $this->getDimensionBinding($shortname);
-		if ($binding->on_cdn && self::$cdn_base != '') {
+		if ($binding->on_cdn && self::$cdn_base != null) {
 			$uri = self::$cdn_base.$uri;
 		} else if ($prefix !== null && !strpos($uri, '://')) {
 			$uri = $prefix.$uri;
@@ -813,14 +813,8 @@ class SiteImage extends SwatDBDataObject
 		if ($imagick->getImageWidth() != $width ||
 			$imagick->getImageHeight() != $height) {
 
-			$offset_x = 0;
-			$offset_y = 0;
-
-			if ($imagick->getImageWidth() > $width)
-				$offset_x = ceil(($imagick->getImageWidth() - $width) / 2);
-
-			if ($imagick->getImageHeight() > $height)
-				$offset_y = ceil(($imagick->getImageHeight() - $height) / 2);
+			list($offset_x, $offset_y) =
+				$this->calculateCropToDimensionOffset($imagick, $dimension);
 
 			$imagick->cropImage($width, $height, $offset_x, $offset_y);
 
@@ -829,6 +823,35 @@ class SiteImage extends SwatDBDataObject
 			// image.
 			$imagick->setImagePage($width, $height, $offset_x, $offset_y);
 		}
+	}
+
+	// }}}
+	// {{{ protected function calculateCropToDimensionOffset()
+
+	/**
+	 * Calculate the offsets when cropping to a dimension
+	 *
+	 * @param Imagick $imagick the imagick instance to work with.
+	 * @param SiteImageDimension $dimension the dimension to process.
+	 *
+	 * @return array The x and y offsets
+	 */
+	protected function calculateCropToDimensionOffset(Imagick $imagick,
+		SiteImageDimension $dimension)
+	{
+		$height = $dimension->max_height;
+		$width = $dimension->max_width;
+
+		$offset_x = 0;
+		$offset_y = 0;
+
+		if ($imagick->getImageWidth() > $width)
+			$offset_x = ceil(($imagick->getImageWidth() - $width) / 2);
+
+		if ($imagick->getImageHeight() > $height)
+			$offset_y = ceil(($imagick->getImageHeight() - $height) / 2);
+
+		return array($offset_x, $offset_y);
 	}
 
 	// }}}
