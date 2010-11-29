@@ -229,7 +229,7 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 		if ($copy === true) {
 			if ($mime_type === null) {
 				$finfo     = $this->getFinfo();
-				$mime_type = finfo_file($finfo, $from);
+				$mime_type = finfo_file($finfo, $source);
 			}
 
 			if ($max_age === null) {
