@@ -8,32 +8,42 @@ require_once 'Site/SiteApplicationModule.php';
  * @package   Site
  * @copyright 2008-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @link      http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html
  */
 class SiteAlternativeTestModule extends SiteApplicationModule
 {
 	// {{{ private properties
 
-	private $test_values = array();
+	private $tests = array();
+	private $slots = array();
 
 	// }}}
 	// {{{ public function init()
 
 	public function init()
 	{
-		if ($this->app->session->isActive())
-			if (!isset($this->app->session->alternative_tests))
-				$this->app->session->alternative_tests = new ArrayObject();
-
-		foreach ($this->test_values as $name => $value)
+		foreach ($this->tests as $name => $value) {
 			$this->initTest($name);
+		}
 	}
 
 	// }}}
 	// {{{ public function registerTest()
 
-	public function registerTest($name, $default_value)
+	public function registerTest($name, $default_value, $slot = null)
 	{
-		$this->test_values[$name] = $default_value;
+		$this->tests[$name] = $default_value;
+
+		// Slots are used by GA custom variables.
+		if ($slot == null) {
+			$slot = (count($this->slots) + 1);
+		}
+
+		if ($slot > 5) {
+			throw new SiteException('Concurrent test limit of 5 exceeded.');
+		}
+
+		$this->slots[$name] = $slot;
 	}
 
 	// }}}
@@ -42,7 +52,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	/**
 	 * Get the modules this module depends on
 	 *
-	 * The site alternative test module depends on the SiteSessionModule.
+	 * The site alternative test module depends on the SiteCookieModule.
 	 *
 	 * @return array an array of {@link SiteApplicationModuleDependency}
 	 *                        objects defining the features this module
@@ -51,7 +61,6 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	public function depends()
 	{
 		$depends = parent::depends();
-		$depends[] = new SiteApplicationModuleDependency('SiteSessionModule');
 		$depends[] = new SiteApplicationModuleDependency('SiteCookieModule');
 		return $depends;
 	}
@@ -61,12 +70,13 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 
 	public function __get($name)
 	{
-		if (!array_key_exists($name, $this->test_values)) {
+		if (!array_key_exists($name, $this->tests)) {
 			throw new SiteException(sprintf(
 				"Test '%s' does not exist.", $name));
 		}
 
-		return $this->test_values[$name];
+		// value is stored as string 1 or 0.
+		return ($this->tests[$name] == '1' ? true : false);
 	}
 
 	// }}}
@@ -74,7 +84,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 
 	public function getAll()
 	{
-		return $this->test_values;
+		return $this->tests;
 	}
 
 	// }}}
@@ -82,34 +92,58 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 
 	protected function initTest($name)
 	{
-		$value = null;
-		$set_cookie = false;
+		$value       = null;
+		$set_cookie  = false;
+		$cookie_name = 'test_'.$name;
 
 		if (isset($_GET['alternatetest']) && $_GET['alternatetest'] == $name
 			&& isset($_GET['alternatetestversion'])) {
-			$value = $_GET['alternatetestversion'];
+			// Cast as boolean so it matches expected values. This should change
+			// if we ever do more than a/b testing.
+			$value = (bool) $_GET['alternatetestversion'];
 			$set_cookie = true;
 		} else {
-			if ($this->app->session->isActive() &&
-				isset($this->app->session->alternative_tests[$name])) {
-					$value = $this->app->session->alternative_tests[$name];
-					$this->app->cookie->removeCookie($name);
-
-			} elseif (isset($this->app->cookie->$name)) {
-				$value = $this->app->cookie->$name;
+			if (isset($this->app->cookie->$cookie_name)) {
+				$value = $this->app->cookie->$cookie_name;
 			} else {
-				$value = (rand(0,1) === 1);
+				$value = (mt_rand(0, 1) === 1);
 				$set_cookie = true;
 			}
 		}
 
-		if ($this->app->session->isActive())
-			$this->app->session->alternative_tests[$name] = $value;
+		// store value as string since a boolean false would delete the cookie.
+		$value = ($value === true) ? '1' : '0';
 
-		if ($set_cookie === true)
-			$this->app->cookie->setCookie($name, $value, 0);
+		if ($set_cookie === true) {
+			// Set the cookie for 2 years, just like the google analytics
+			// cookie. This is overkill, but matches how we're tracking it in
+			// Google Analytics
+			$this->app->cookie->setCookie($cookie_name, $value,
+				strtotime('+2 Years'));
+		}
 
-		$this->test_values[$name] = $value;
+		$this->tests[$name] = $value;
+
+		if ($this->app->hasModule('SiteAnalyticsModule')) {
+			$analytics = $this->app->getModule('SiteAnalyticsModule');
+
+			$slot = $this->slots[$name];
+			// Name and Value have a 64 byte limit according to google
+			// documentation. Since currently value is always 1 chars, limit
+			// name to 63 chars.
+			$name = substr($name, 0, 63);
+
+			$ga_command = array(
+				'_setCustomVar',
+				$slot,
+				$name,
+				$value,
+				'1', // Visitor Level Scope
+				);
+
+			// prepend since it has to happen before the pageview
+			$analytics->prependGoogleAnalyticsCommand($ga_command);
+		}
 	}
 
 	// }}}
