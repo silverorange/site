@@ -120,6 +120,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		'cpc',
 	);
 
+	protected $google_account;
+	protected $ga_commands = array();
+
 	// }}}
 	// {{{ public function init()
 
@@ -286,6 +289,16 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function setGoogleAccount()
+
+	public function setGoogleAccount($account)
+	{
+		$this->google_account = $account;
+
+		$this->initGoogleAnalyticsCommands();
+	}
+
+	// }}}
 	// {{{ public function getAdNetwork()
 
 	/**
@@ -314,6 +327,97 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 
 		return $ad_network;
+	}
+
+	// }}}
+	// {{{ public function pushGoogleAnalyticsCommand()
+
+	public function pushGoogleAnalyticsCommand($command)
+	{
+		$this->ga_commands = array_merge($this->ga_commands, $command);
+	}
+
+	// }}}
+	// {{{ public function prependGoogleAnalyticsCommand()
+
+	public function prependGoogleAnalyticsCommand($command)
+	{
+		array_unshift($this->ga_commands, $command);
+	}
+
+	// }}}
+	// {{{ public function getGoogleAnalyticsInlineJavascript()
+
+	public function getGoogleAnalyticsInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->google_account !== null && count($this->ga_commands)) {
+			$javascript = sprintf("%s\n%s",
+				$this->getGoogleAnalyticsCommandsInlineJavascript(),
+				$this->getGoogleAnalyticsTrackerInlineJavascript());
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getGoogleAnalyticsCommandsInlineJavascript()
+
+	public function getGoogleAnalyticsCommandsInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->google_account !== null && count($this->ga_commands)) {
+			// always set the account first.
+			$commands = $this->getGoogleAnalyticsCommand(array(
+				'_setAccount',
+				$this->google_account));
+
+			foreach ($this->ga_commands as $command) {
+				$commands.= $this->getGoogleAnalyticsCommand($command);
+			}
+
+			$javascript = <<<JS
+var _gaq = _gaq || [];
+%s
+JS;
+
+			$javascript = sprintf($javascript,
+				$commands);
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getGoogleAnalyticsTrackerInlineJavascript()
+
+	public function getGoogleAnalyticsTrackerInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->google_account !== null) {
+			$src = ($this->app->isSecure()) ?
+				'https://ssl.google-analytics.com/ga.js' :
+				'http://www.google-analytics.com/ga.js';
+
+			$javascript = <<<JS
+(function() {
+	var ga = document.createElement('script');
+	ga.type = 'text/javascript';
+	ga.async = true;
+	ga.src = '%s';
+	var s = document.getElementsByTagName('script')[0];
+	s.parentNode.insertBefore(ga, s);
+})();
+JS;
+
+			$javascript = sprintf($javascript,
+				$src);
+		}
+
+		return $javascript;
 	}
 
 	// }}}
@@ -378,6 +482,42 @@ class SiteAnalyticsModule extends SiteApplicationModule
 				}
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function initGoogleAnalyticsCommands()
+
+	protected function initGoogleAnalyticsCommands()
+	{
+		$this->ga_commands = array(
+			'_trackPageview',
+		);
+	}
+
+	// }}}
+	// {{{ protected function getGoogleAnalyticsCommand()
+
+	public function getGoogleAnalyticsCommand($command)
+	{
+		$function = null;
+		$options  = null;
+
+		if (is_array($command)) {
+			$function = array_shift($command);
+
+			if (count($command)) {
+				foreach ($command as $part) {
+					$options.= sprintf(', %s',
+						SwatString::quoteJavaScriptString($part));
+				}
+			}
+		} else {
+			$function = $command;
+		}
+
+		return sprintf("_gaq.push([%s%s]);",
+			SwatString::quoteJavaScriptString($function),
+			$options);
 	}
 
 	// }}}
