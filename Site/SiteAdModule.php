@@ -37,8 +37,8 @@ class SiteAdModule extends SiteApplicationModule
 	 *
 	 * @var string
 	 *
-	 * @see SiteAnalyticsModule::setInboundTrackingId()
-	 * @see SiteAnalyticsModule::cleanInboundTrackingUri()
+	 * @see SiteAdModule::setInboundTrackingId()
+	 * @see SiteAdModule::cleanInboundTrackingUri()
 	 */
 	protected $inbound_tracking_id = 'ad';
 
@@ -49,7 +49,7 @@ class SiteAdModule extends SiteApplicationModule
 	 *
 	 * @var boolean
 	 *
-	 * @see SiteAnalyticsModule::setAutocleanUri()
+	 * @see SiteAdModule::setAutocleanUri()
 	 */
 	protected $autoclean_uri = false;
 
@@ -61,7 +61,7 @@ class SiteAdModule extends SiteApplicationModule
 	 *
 	 * @var boolean
 	 *
-	 * @see SiteAnalyticsModule::setAutocreateAd()
+	 * @see SiteAdModule::setAutocreateAd()
 	 */
 	protected $autocreate_ad = false;
 
@@ -72,7 +72,7 @@ class SiteAdModule extends SiteApplicationModule
 	 *
 	 * @var boolean
 	 *
-	 * @see SiteAnalyticsModule::setTrackAdNetwork()
+	 * @see SiteAdModule::setTrackAdNetwork()
 	 */
 	protected $track_ad_network = false;
 
@@ -81,7 +81,7 @@ class SiteAdModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 *
-	 * @see SiteAnalyticsModule::trackAdNetwork()
+	 * @see SiteAdModule::trackAdNetwork()
 	 */
 	protected $ad_network_tracking_ids = array(
 		'gclid'  => self::AD_NETWORK_GOOGLE,
@@ -95,11 +95,11 @@ class SiteAdModule extends SiteApplicationModule
 	 * This is a secondary value to check when looking up ad network, and
 	 * requires the ads to be properly tagged with Google Analytics utm_*
 	 * variables, including a utm_medium that exists within
-	 * {@link SiteAnalyticsModule::$ad_network_utm_mediums}.
+	 * {@link SiteAdModule::$ad_network_utm_mediums}.
 	 *
 	 * @var array
 	 *
-	 * @see SiteAnalyticsModule::trackAdNetwork()
+	 * @see SiteAdModule::trackAdNetwork()
 	 */
 	protected $ad_network_utm_sources = array(
 		'google'    => self::AD_NETWORK_GOOGLE,
@@ -114,7 +114,7 @@ class SiteAdModule extends SiteApplicationModule
 	 * For the secondary ad network check, all ads need to be tagged with a
 	 * Google Analytics utm_medium from this list.
 	 *
-	 * @see SiteAnalyticsModule::trackAdNetwork()
+	 * @see SiteAdModule::trackAdNetwork()
 	 */
 	protected $ad_network_utm_mediums = array(
 		'cpc',
@@ -124,7 +124,7 @@ class SiteAdModule extends SiteApplicationModule
 	// {{{ public function init()
 
 	/**
-	 * Initializes this analytics module
+	 * Initializes this module
 	 *
 	 * Stores ad object in the session module and initializes ad database
 	 * reference.
@@ -179,7 +179,7 @@ class SiteAdModule extends SiteApplicationModule
 	/**
 	 * Gets the module features this module depends on
 	 *
-	 * The site analytics module depends on the SiteSessionModule and
+	 * The site ad module depends on the SiteSessionModule and
 	 * SiteDatabaseModule features.
 	 *
 	 * @return array an array of {@link SiteApplicationModuleDependency}
