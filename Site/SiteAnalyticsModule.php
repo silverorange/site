@@ -33,6 +33,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected $ga_commands = array();
 
 	// }}}
+	// {{{ public function init()
+
+	public function init()
+	{
+	}
+
+	// }}}
 	// {{{ public function setGoogleAccount()
 
 	public function setGoogleAccount($account)
@@ -73,7 +80,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$javascript = null;
 
-		if ($this->google_account !== null && count($this->ga_commands)) {
+		if ($this->hasGoogleAccount() && count($this->ga_commands)) {
 			$javascript = sprintf("%s\n%s",
 				$this->getGoogleAnalyticsCommandsInlineJavascript(),
 				$this->getGoogleAnalyticsTrackerInlineJavascript());
@@ -89,7 +96,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$javascript = null;
 
-		if ($this->google_account !== null && count($this->ga_commands)) {
+		if ($this->hasGoogleAccount() && count($this->ga_commands)) {
 			// always set the account first.
 			$commands = $this->getGoogleAnalyticsCommand(array(
 				'_setAccount',
@@ -118,7 +125,7 @@ JS;
 	{
 		$javascript = null;
 
-		if ($this->google_account !== null) {
+		if ($this->hasGoogleAccount()) {
 			$src = ($this->app->isSecure()) ?
 				'https://ssl.google-analytics.com/ga.js' :
 				'http://www.google-analytics.com/ga.js';
