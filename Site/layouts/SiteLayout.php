@@ -152,6 +152,7 @@ class SiteLayout extends SiteObject
 
 		$this->data->meta_keywords = '';
 		$this->data->extra_headers = '';
+		$this->data->extra_footers = '';
 	}
 
 	// }}}
