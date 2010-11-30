@@ -150,6 +150,7 @@ class SiteLayout extends SiteObject
 		else
 			$this->data->meta_description = '';
 
+		$this->data->analytics     = '';
 		$this->data->meta_keywords = '';
 		$this->data->extra_headers = '';
 		$this->data->extra_footers = '';
