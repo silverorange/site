@@ -104,7 +104,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 			$set_cookie = true;
 		} else {
 			if (isset($this->app->cookie->$cookie_name)) {
-				$value = $this->app->cookie->$cookie_name;
+				$value = (bool) $this->app->cookie->$cookie_name;
 			} else {
 				$value = (mt_rand(0, 1) === 1);
 				$set_cookie = true;
