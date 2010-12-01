@@ -236,9 +236,11 @@ class Site
 			// Analytics
 			// Google analytics account id (UA-XXXXX-XXX)
 			'analytics.google_account' => null,
+
+			// Ads
 			// Tracking id in URIs
-			'analytics.tracking_id'    => 'utm_source',
-			'analytics.save_referer'   => '1',
+			'ads.tracking_id'          => 'utm_source',
+			'ads.save_referer'         => '1',
 
 			// Session
 			'session.name'             => 'sessionid',
@@ -269,7 +271,7 @@ class Site
 			'memcache.resource_cache_stat' => true,
 
 			// comments
-			'comment.akismet_key'         => null,
+			'comment.akismet_key'      => null,
 
 			// amazon S3
 			'amazon.bucket'            => null,
