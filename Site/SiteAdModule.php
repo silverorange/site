@@ -361,7 +361,7 @@ class SiteAdModule extends SiteApplicationModule
 				 * the referrer. Here we make five attempts before giving up
 				 * and throwing the exception.
 				 */
-				if ($this->app->config->analytics->save_referer) {
+				if ($this->app->config->ads->save_referer) {
 					for ($attempt = 0; true; $attempt++) {
 						try {
 							$this->insertInboundTrackingReferrer($ad);

@@ -103,7 +103,7 @@ class SiteAdDetails extends AdminIndex
 
 	protected function buildHelp()
 	{
-		$inbound_tracking_id = $this->app->config->analytics->tracking_id;
+		$inbound_tracking_id = $this->app->config->ads->tracking_id;
 
 		$help_note = $this->ui->getWidget('ad_tag_help');
 		$help_note->title = sprintf(Site::_(
