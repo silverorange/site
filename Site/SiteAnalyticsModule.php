@@ -37,6 +37,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function init()
 	{
+		$this->initGoogleAnalyticsCommands();
 	}
 
 	// }}}
@@ -45,8 +46,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	public function setGoogleAccount($account)
 	{
 		$this->google_account = $account;
-
-		$this->initGoogleAnalyticsCommands();
 	}
 
 	// }}}
