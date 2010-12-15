@@ -165,11 +165,15 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	public function logout()
 	{
-		unset($this->account);
-		unset($this->_authentication_token);
-		$this->removeAccountCookie();
-		$this->unsetRegisteredDataObjects();
+		if ($this->isLoggedIn()) {
+			unset($this->account);
+			unset($this->_authentication_token);
+
+			$this->unsetRegisteredDataObjects();
+		}
+
 		$this->runLogoutCallbacks();
+		$this->removeAccountCookie();
 	}
 
 	// }}}
