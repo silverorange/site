@@ -262,9 +262,12 @@ class SiteLayout extends SiteObject
 	{
 		// don't overwrite custom use of body_class data field
 		if (!isset($this->data->body_classes)) {
-			$this->data->body_classes =
-				' class="'.SwatString::minimizeEntities(
-					implode(' ', $this->body_classes)).'"';
+			$this->data->body_classes = '';
+			if (count($this->body_classes) > 0) {
+				$this->data->body_classes = sprintf(' class="%s"',
+					SwatString::minimizeEntities(
+						implode(' ', $this->body_classes)));
+			}
 		}
 	}
 
