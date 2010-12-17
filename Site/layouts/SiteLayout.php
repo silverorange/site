@@ -186,7 +186,10 @@ class SiteLayout extends SiteObject
 	// }}}
 	// {{{ public function addHtmlHeadEntry()
 
-	public function addHtmlHeadEntry(SwatHtmlHeadEntry $entry)
+	/**
+	 * @param SwatHtmlHeadEntry|string $entry
+	 */
+	public function addHtmlHeadEntry($entry)
 	{
 		$this->html_head_entries->addEntry($entry);
 	}
