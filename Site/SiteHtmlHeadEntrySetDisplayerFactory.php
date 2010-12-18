@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Concentrate/CacheArray.php';
+require_once 'Concentrate/CacheAPC.php';
 require_once 'Concentrate/CacheMemcache.php';
 require_once 'Concentrate/DataProvider.php';
 require_once 'Swat/SwatHtmlHeadEntrySet.php';
@@ -36,14 +37,19 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 			$resources = $app->config->resources;
 			$memcache  = $app->config->memcache;
 
-			// build cache
+			// build cache hierarchy
+			$cache = new Concentrate_CacheArray();
+
+			$apc_cache = new Concentrate_CacheAPC($memcache->app_ns);
+			$cache->setSubcache($apc_cache);
+
 			if ($memcache->resource_cache) {
 				$memcached = new Memcached();
 				$memcached->addServer($memcache->server, 11211);
-				$cache = new Concentrate_CacheMemcache(
+				$memcache_cache = new Concentrate_CacheMemcache(
 					$memcached, $memcache->app_ns);
-			} else {
-				$cache = new Concentrate_CacheArray();
+
+				$apc_cache->setSubcache($memcache_cache);
 			}
 
 			// build data provider
