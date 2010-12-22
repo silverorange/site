@@ -17,21 +17,17 @@ require_once 'Swat/SwatString.php';
  * session.
  *
  * @package   Site
- * @copyright 2006-2009 silverorange
+ * @copyright 2006-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountSessionModule extends SiteSessionModule
 {
-	// {{{ private properties
-
-	private $data_object_classes = array();
-	private $destroy_on_logout_objects = array();
-
-	// }}}
 	// {{{ protected properties
 
 	protected $login_callbacks = array();
 	protected $logout_callbacks = array();
+	protected $data_object_classes = array();
+	protected $destroy_on_logout_objects = array();
 
 	// }}}
 	// {{{ public function depends()
