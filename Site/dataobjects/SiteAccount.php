@@ -64,7 +64,7 @@ require_once 'Site/dataobjects/SiteAccountWrapper.php';
  * </code>
  *
  * @package   Site
- * @copyright 2005-2007 silverorange
+ * @copyright 2005-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccountWrapper
  */
@@ -159,6 +159,8 @@ class SiteAccount extends SwatDBDataObject
 	 *
 	 * @return boolean true if the loading was successful and false if it was
 	 *                  not.
+	 *
+	 * @sensitive $password
 	 */
 	public function loadWithCredentials($email, $password,
 		SiteInstance $instance = null)
