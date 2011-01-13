@@ -41,7 +41,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
  *    hooks into the Swat UI tree initilization and processing methods.
  *
  * @package   Site
- * @copyright 2008-2009 silverorange
+ * @copyright 2008-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteGadgetSetting
  */
@@ -57,6 +57,27 @@ abstract class SiteGadget extends SwatUIObject
 	 * @see SiteGadget::__construct()
 	 */
 	protected $app;
+
+	/**
+	 * Option url query value to help with links included in the gadget's
+	 * display.
+	 *
+	 * @var string
+	 *
+	 * @see SiteGadget::setAnalyticsQueryValue()
+	 * @see SiteGadget::addAnalyticsQueryString()
+	 */
+	protected $analytics_query_value = null;
+
+	/**
+	 * Field used when {@link SiteGadget::$analytics_query_value} is set.
+	 *
+	 * @var string
+	 *
+	 * @see SiteGadget::setAnalyticsQueryValue()
+	 * @see SiteGadget::addAnalyticsQueryString()
+	 */
+	protected $analytics_query_field = null;
 
 	// }}}
 	// {{{ private properties
@@ -283,6 +304,41 @@ abstract class SiteGadget extends SwatUIObject
 	public final function getAjaxProxyMap()
 	{
 		return $this->ajax_proxy_map;
+	}
+
+	// }}}
+	// {{{ public setAnalyticsQueryValue()
+
+	/**
+	 * Sets an optional query parameter value for tracking links with analytics.
+	 *
+	 * @param string $query_parameter the query parameter to add.
+	 * @param string $query_name the query name to use when added.
+	 */
+	public function setAnalyticsQueryValue($query_parameter,
+		$query_name = 'link')
+	{
+		$this->analytics_query_parameter = $query_parameter;
+		$this->analytics_query_name      = $query_name;
+	}
+
+	// }}}
+	// {{{ public addAnalyticsQueryString()
+
+	/**
+	 * Adds analytic tracking query string to a link.
+	 *
+	 * @param string $link the link to append the analytic tracking string to.
+	 */
+	public function addAnalyticsQueryString($link)
+	{
+		$concatenater = (strpos($link, '?')) ? '&' : '?';
+
+		return spring('%s%s%s=%s',
+			$link,
+			$concatenater,
+			$this->analytics_query_name,
+			$this->analytics_query_parameter);
 	}
 
 	// }}}
