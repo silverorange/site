@@ -88,6 +88,7 @@ class SiteErrorLogger extends SwatErrorLogger
 	 */
 	public function log(SwatError $e)
 	{
+		if ($this->filter($e))
 		$log_path     = $this->getLogPath();
 		$log_filepath = $this->getLogFilePath();
 
@@ -111,6 +112,20 @@ class SiteErrorLogger extends SwatErrorLogger
 
 		// add to syslog
 		$this->logSummary($this->getSummary($e));
+	}
+
+	// }}}
+	// {{{ protected function filter()
+
+	protected function filter(SwatError $e)
+	{
+		if ($e->severity === E_WARNING) {
+			$pattern = '/GC cache entry .* was on gc-list for .* seconds/';
+			if (preg_match($pattern, $e->message))
+				return true;
+		}
+
+		return false;
 	}
 
 	// }}}
