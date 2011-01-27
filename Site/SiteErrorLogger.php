@@ -119,9 +119,9 @@ class SiteErrorLogger extends SwatErrorLogger
 
 	protected function filter(SwatError $e)
 	{
-		if ($e->severity === E_WARNING) {
+		if ($e->getSeverity() === E_WARNING) {
 			$pattern = '/GC cache entry .* was on gc-list for .* seconds/';
-			if (preg_match($pattern, $e->message))
+			if (preg_match($pattern, $e->getMessage()))
 				return true;
 		}
 
