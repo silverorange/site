@@ -89,6 +89,8 @@ class SiteErrorLogger extends SwatErrorLogger
 	public function log(SwatError $e)
 	{
 		if ($this->filter($e))
+			return;
+
 		$log_path     = $this->getLogPath();
 		$log_filepath = $this->getLogFilePath();
 
