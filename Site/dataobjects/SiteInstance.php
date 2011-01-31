@@ -39,8 +39,26 @@ class SiteInstance extends SwatDBDataObject
 	 *
 	 * @return boolean true if the instance was loaded successfully and false
 	 *                  if it was not.
+	 *
+	 * @deprecated Use {@link SiteInstance::loadByShortname()} instead.
 	 */
 	public function loadFromShortname($shortname)
+	{
+		return $this->loadByShortname($shortname);
+	}
+
+	// }}}
+	// {{{ public function loadByShortname()
+
+	/**
+	 * Loads a instance by its shortname
+	 *
+	 * @param string $shortname the shortname of the instance to load.
+	 *
+	 * @return boolean true if the instance was loaded successfully and false
+	 *                  if it was not.
+	 */
+	public function loadByShortname($shortname)
 	{
 		$row = null;
 
