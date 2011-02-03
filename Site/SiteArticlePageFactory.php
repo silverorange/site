@@ -269,6 +269,14 @@ class SiteArticlePageFactory extends SitePageFactory
 			where id = %s',
 			$this->app->db->quote($article->id, 'integer'));
 
+		if ($this->app->hasModule('SiteMultipleInstanceModule')) {
+			$instance = $this->app->instance->getInstance();
+			if ($instance !== null) {
+				$sql.= sprintf(' and (instance is null or instance = %s)',
+					$this->app->db->quote($instance->id, 'integer'));
+			}
+		}
+
 		$count = SwatDB::queryOne($this->app->db, $sql);
 		return ($count !== 0);
 	}
