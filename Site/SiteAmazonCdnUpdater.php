@@ -46,6 +46,7 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 
 		$this->lock();
 		$this->runInternal();
+		$this->debug("All Done.\n", true);
 		$this->unlock();
 	}
 
@@ -64,13 +65,23 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function runInternal()
 
-	/**
-	 * Runs this application
-	 */
 	protected function runInternal()
 	{
-		$tasks = $this->getTasks();
-		$this->debug(sprintf("Found %s Tasks:\n", count($tasks)), true);
+		$this->runImageTasks();
+	}
+
+	// }}}
+	// {{{ protected function runImageTasks()
+
+	/**
+	 * Runs queued image tasks
+	 */
+	protected function runImageTasks()
+	{
+		$tasks = $this->getImageTasks();
+		$this->debug(sprintf("Found %s Image Tasks:\n", count($tasks)), true);
+
+		$this->setImageCdnSettings();
 
 		foreach ($tasks as $task) {
 			$success = false;
@@ -105,8 +116,60 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 			}
 		}
 
+		$this->resetCdnSettings();
+	}
 
-		$this->debug("All Done.\n", true);
+	// }}}
+	// {{{ protected function getImageTasks()
+
+	/**
+	 * Gets all outstanding Image CDN tasks
+	 *
+	 * @return SiteImageCdnTaskWrapper a recordset wrapper of all current tasks.
+	 */
+	protected function getImageTasks()
+	{
+		$wrapper = SwatDBClassMap::get('SiteImageCdnTaskWrapper');
+
+		$sql = 'select * from ImageCdnQueue where error_date %s %s';
+		$sql = sprintf($sql,
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null));
+
+		$tasks = SwatDB::query($this->db, $sql, $wrapper);
+
+		// efficiently load images
+		$image_sql = 'select * from Image where id in (%s)';
+		$images = $tasks->loadAllSubDataObjects(
+			'image',
+			$this->db,
+			$image_sql,
+			SwatDBClassMap::get('SiteImageWrapper'));
+
+		// efficiently load dimensions
+		$dimension_sql = 'select * from ImageDimension where id in (%s)';
+		$dimensions = $tasks->loadAllSubDataObjects(
+			'dimension',
+			$this->db,
+			$dimension_sql,
+			SwatDBClassMap::get('SiteImageDimensionWrapper'));
+
+		return $tasks;
+	}
+
+	// }}}
+	// {{{ protected function setImageCdnSettings()
+
+	protected function setImageCdnSettings()
+	{
+		/* Set a "never-expire" policy with a far future max age (10 years) as
+		 * suggested http://developer.yahoo.com/performance/rules.html#expires.
+		 * We create new image ids when updating an image, so this is safe. As
+		 * well, set Cache-Control to public, as this allows some browsers to
+		 * cache the images to disk while on https, which is a good win.
+		 */
+		$this->cdn->setCacheControlMaxAge(315360000);
+		$this->cdn->setCacheControlPublic(true);
 	}
 
 	// }}}
@@ -155,52 +218,26 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		}
 
 		// prevent accidental attempts at deleting the entire bucket
-		if (strlen($task->image_path)) {
+		if (strlen($task->file_path)) {
 			$this->debug(sprintf("Deleting CDN image %s ... ",
-				$task->image_path));
+				$task->file_path));
 
-			$this->cdn->deleteFile($task->image_path);
+			$this->cdn->deleteFile($task->file_path);
 
 			$this->debug("done.\n");
 		}
 	}
 
 	// }}}
-	// {{{ protected function getTasks()
 
-	/**
-	 * Gets all outstanding CDN tasks
-	 *
-	 * @return SiteImageCdnTaskWrapper a recordset wrapper of all current tasks.
-	 */
-	protected function getTasks()
+	// helper methods
+	// {{{ protected function resetCdnSettings()
+
+	protected function resetCdnSettings()
 	{
-		$wrapper = SwatDBClassMap::get('SiteImageCdnTaskWrapper');
-
-		$sql = 'select * from ImageCdnQueue where error_date %s %s';
-		$sql = sprintf($sql,
-			SwatDB::equalityOperator(null),
-			$this->db->quote(null));
-
-		$tasks = SwatDB::query($this->db, $sql, $wrapper);
-
-		// efficiently load images
-		$image_sql = 'select * from Image where id in (%s)';
-		$images = $tasks->loadAllSubDataObjects(
-			'image',
-			$this->db,
-			$image_sql,
-			SwatDBClassMap::get('SiteImageWrapper'));
-
-		// efficiently load dimensions
-		$dimension_sql = 'select * from ImageDimension where id in (%s)';
-		$dimensions = $tasks->loadAllSubDataObjects(
-			'dimension',
-			$this->db,
-			$dimension_sql,
-			SwatDBClassMap::get('SiteImageDimensionWrapper'));
-
-		return $tasks;
+		// reset CDN settings to our defaults.
+		$this->cdn->setCacheControlMaxAge(3600);
+		$this->cdn->setCacheControlPublic(false);
 	}
 
 	// }}}
@@ -217,15 +254,6 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		$this->cdn->bucket_id         = $config->amazon->bucket;
 		$this->cdn->access_key_id     = $config->amazon->access_key_id;
 		$this->cdn->access_key_secret = $config->amazon->access_key_secret;
-
-		/* Set a "never-expire" policy with a far future max age (10 years) as
-		 * suggested http://developer.yahoo.com/performance/rules.html#expires.
-		 * We create new image ids when updating an image, so this is safe. As
-		 * well, set Cache-Control to public, as this allows some browsers to
-		 * cache the images to disk while on https, which is a good win.
-		 */
-		$this->cdn->setCacheControlMaxAge(315360000);
-		$this->cdn->setCacheControlPublic(true);
 	}
 
 	// }}}
