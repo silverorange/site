@@ -10,10 +10,10 @@ require_once 'Site/dataobjects/SiteImageWrapper.php';
 require_once 'Site/dataobjects/SiteImageCdnTaskWrapper.php';
 
 /**
- * Application to process queued entries int he ImageCdnQueue
+ * Application to process queued SiteCdnTasks
  *
  * @package   Site
- * @copyright 2010 silverorange
+ * @copyright 2010-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAmazonCdnUpdater extends SiteCommandLineApplication
@@ -67,10 +67,13 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 
 	protected function runInternal()
 	{
+		$this->debug("Image Tasks:\n", true);
 		$this->runImageTasks();
 	}
 
 	// }}}
+
+	// image methods
 	// {{{ protected function runImageTasks()
 
 	/**
@@ -82,40 +85,7 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 		$this->debug(sprintf("Found %s Image Tasks:\n", count($tasks)), true);
 
 		$this->setImageCdnSettings();
-
-		foreach ($tasks as $task) {
-			$success = false;
-			try {
-				switch ($task->operation) {
-				case 'copy':
-					$this->copyImage($task);
-					$success = true;
-					break;
-				case 'delete':
-					$this->deleteImage($task);
-					$success = true;
-					break;
-				}
-			} catch (SwatFileNotFoundException $e) {
-				$exception = $e;
-				$exception->process(false);
-			} catch (Services_Amazon_S3_Exception $e) {
-				// wrap Services_Amazon_S3_Exception in a SwatException as
-				// Services_Amazon_S3_Exception doesn't have a process method.
-				$exception = new SwatException($e);
-				$exception->process(false);
-			}
-
-			if ($success === true) {
-				$task->delete();
-			} else {
-				$this->debug("task error.\n");
-				$task->error_date = new SwatDate();
-				$task->error_date->toUTC();
-				$task->save();
-			}
-		}
-
+		$this->runTasks($tasks);
 		$this->resetCdnSettings();
 	}
 
@@ -182,6 +152,7 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 	 */
 	protected function copyImage(SiteImageCdnTask $task)
 	{
+		$success = false;
 		if ($task->image instanceof SiteImage) {
 			$this->debug(sprintf("Copying image %s, dimension %s ... ",
 				$task->image->id,
@@ -193,44 +164,115 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 				$task->image->getUriSuffix($task->dimension->shortname),
 				$task->image->getMimeType($task->dimension->shortname));
 
-			$task->image->setOnCdn(true, $task->dimension->shortname);
+			if ($copied === false) {
+				$this->debug("already on s3 ... skipping ... ");
+			}
 
-			if ($copied === true) {
-				$this->debug("done.\n");
+			$success = true;
+		}
+
+		return $success;
+	}
+
+	// }}}
+
+	// helper methods
+	// {{{ protected function runTasks()
+
+	protected function runTasks(SiteCdnTaskWrapper $tasks)
+	{
+		foreach ($tasks as $task) {
+			$success = false;
+			try {
+				switch ($task->operation) {
+				case 'copy':
+					$success = $this->copyToCdn($task);
+					break;
+				case 'delete':
+					$success = $this->deleteFromCdn($task);
+					break;
+				}
+			} catch (SwatFileNotFoundException $e) {
+				$exception = $e;
+				$exception->process(false);
+			} catch (Services_Amazon_S3_Exception $e) {
+				// wrap Services_Amazon_S3_Exception in a SwatException as
+				// Services_Amazon_S3_Exception doesn't have a process method.
+				$exception = new SwatException($e);
+				$exception->process(false);
+			}
+
+			if ($success === true) {
+				$task->delete();
 			} else {
-				$this->debug("already on s3 ... skipped.\n");
+				$this->debug("task error.\n");
+				$task->error_date = new SwatDate();
+				$task->error_date->toUTC();
+				$task->save();
 			}
 		}
 	}
 
 	// }}}
-	// {{{ protected function deleteImage()
+	// {{{ protected function copyToCdn()
 
 	/**
-	 * Deletes this taks's image to a CDN
+	 * Runs the copy task.
+	 *
+	 * @param SiteCdnTask $task the copy task.
+	 */
+	protected function copyToCdn(SiteCdnTask $task)
+	{
+		$class_name = get_class($task);
+		switch($class_name) {
+		case 'SiteImageCdnTask':
+			$success = $this->copyImage($task);
+			break;
+
+		default:
+			$success = false;
+			$this->debug(sprintf("no copy method defined for %s objects.\n",
+				$class_name));
+
+			break;
+		}
+
+		if ($success === true) {
+			$task->setOnCdn(true);
+			$this->debug("done.\n");
+		} else {
+			$this->debug("error.\n");
+		}
+
+		return $success;
+	}
+
+	// }}}
+	// {{{ protected function deleteFromCdn()
+
+	/**
+	 * Runs the delete task.
 	 *
 	 * @param SiteImageCdnTask $task the delete task.
 	 */
-	protected function deleteImage(SiteImageCdnTask $task)
+	protected function deleteFromCdn(SiteCdnTask $task)
 	{
-		if ($task->image instanceof SiteImage) {
-			$task->image->setOnCdn(false, $task->dimension->shortname);
-		}
-
 		// prevent accidental attempts at deleting the entire bucket
 		if (strlen($task->file_path)) {
-			$this->debug(sprintf("Deleting CDN image %s ... ",
+			$this->debug(sprintf("Deleting %s ... ",
 				$task->file_path));
 
 			$this->cdn->deleteFile($task->file_path);
 
 			$this->debug("done.\n");
 		}
+
+		$task->setOnCdn(false);
+
+		return true;
 	}
 
 	// }}}
-
-	// helper methods
 	// {{{ protected function resetCdnSettings()
 
 	protected function resetCdnSettings()
