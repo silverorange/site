@@ -183,13 +183,21 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 	{
 		foreach ($tasks as $task) {
 			$success = false;
+			$on_cdn  = false;
 			try {
 				switch ($task->operation) {
 				case 'copy':
 					$success = $this->copyToCdn($task);
+					if ($success === true) {
+						$on_cdn = true;
+					}
 					break;
+
 				case 'delete':
 					$success = $this->deleteFromCdn($task);
+					if ($success === true) {
+						$on_cdn = false;
+					}
 					break;
 				}
 			} catch (SwatFileNotFoundException $e) {
@@ -203,6 +211,9 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 			}
 
 			if ($success === true) {
+				$this->debug("done.\n");
+				// save the task's subdataobject on_cdn status, then delete.
+				$task->setOnCdn($on_cdn);
 				$task->delete();
 			} else {
 				$this->debug("task error.\n");
@@ -231,17 +242,10 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 
 		default:
 			$success = false;
-			$this->debug(sprintf("no copy method defined for %s objects.\n",
+			$this->debug(sprintf("no copy method defined for %s objects ... ",
 				$class_name));
 
 			break;
-		}
-
-		if ($success === true) {
-			$task->setOnCdn(true);
-			$this->debug("done.\n");
-		} else {
-			$this->debug("error.\n");
 		}
 
 		return $success;
@@ -263,11 +267,7 @@ class SiteAmazonCdnUpdater extends SiteCommandLineApplication
 				$task->file_path));
 
 			$this->cdn->deleteFile($task->file_path);
-
-			$this->debug("done.\n");
 		}
-
-		$task->setOnCdn(false);
 
 		return true;
 	}
