@@ -1278,7 +1278,7 @@ class SiteImage extends SwatDBDataObject
 			$task->image     = $this;
 			$task->dimension = $dimension;
 		} else {
-			$task->image_path = $this->getUriSuffix($dimension->shortname);
+			$task->file_path = $this->getUriSuffix($dimension->shortname);
 		}
 
 		$task->save();

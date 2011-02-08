@@ -9,7 +9,7 @@ create table ImageCdnQueue (
 	dimension int default null references ImageDimension(id) on delete cascade,
 
 	-- for delete operations
-	image_path varchar(255),
+	file_path varchar(255),
 
 	error_date timestamp,
 
