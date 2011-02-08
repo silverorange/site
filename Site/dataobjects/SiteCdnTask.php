@@ -34,6 +34,11 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	public $error_date;
 
 	// }}}
+	// {{{ abstract public function setOnCdn()
+
+	abstract public function setOnCdn($set_on_cdn = true);
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()

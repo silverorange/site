@@ -14,6 +14,16 @@ require_once 'Site/dataobjects/SiteImageDimension.php';
  */
 class SiteImageCdnTask extends SiteCdnTask
 {
+	// {{{ public function setOnCdn()
+
+	public function setOnCdn($on_cdn = true)
+	{
+		if ($this->image instanceof SiteImage) {
+			$this->image->setOnCdn($on_cdn, $this->dimension->shortname);
+		}
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
