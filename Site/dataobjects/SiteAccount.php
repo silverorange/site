@@ -5,6 +5,7 @@ require_once 'Swat/SwatString.php';
 require_once 'Site/SiteResetPasswordMailMessage.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteAccountWrapper.php';
+require_once 'Site/dataobjects/SiteAccountLoginHistoryWrapper.php';
 
 /**
  * A account for a web application
@@ -262,7 +263,8 @@ class SiteAccount extends SwatDBDataObject
 
 	/**
 	 * Sets the last login date of this account in the database to the
-	 * specified date
+	 * specified date and also records the login in the
+	 * AccountLoginHistory table.
 	 *
 	 * @param SwatDate $date the last login date of this account.
 	 */
@@ -270,6 +272,7 @@ class SiteAccount extends SwatDBDataObject
 	{
 		$this->checkDB();
 
+		// old way: update last_login date field
 		$id_field = new SwatDBField($this->id_field, 'integer');
 		$sql = sprintf('update %s set last_login = %s where %s = %s',
 			$this->table,
@@ -278,6 +281,20 @@ class SiteAccount extends SwatDBDataObject
 			$this->db->quote($this->getId(), $id_field->type));
 
 		SwatDB::exec($this->db, $sql);
+
+		// new way: save to history table
+		$class = SwatDBClassMap::get('SiteAccountLoginHistory');
+		$history = new $class;
+		$history->setDatabase($this->db);
+		$history->account = $this->id;
+		$history->login_date = $date;
+		$history->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
+
+		if (isset($_SERVER['HTTP_USER_AGENT']))
+			$history->user_agent =
+				substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
+
+		$history->save();
 	}
 
 	// }}}
@@ -431,6 +448,21 @@ class SiteAccount extends SwatDBDataObject
 	public function sendNewPasswordMailMessage(
 		SiteApplication $app, $new_password)
 	{
+	}
+
+	// }}}
+
+	// loader methods
+	// {{{ protected function loadLoginHistory()
+
+	protected function loadLoginHistory()
+	{
+		$sql = sprintf('select * from AccountLoginHistory
+			where account = %s',
+			$this->db->quote($this->id, 'integer'));
+
+		return SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('SiteAccountLoginHistoryWrapper'));
 	}
 
 	// }}}
