@@ -147,6 +147,14 @@ class SiteAccount extends SwatDBDataObject
 	public $last_login;
 
 	// }}}
+	// {{{ protected properties
+
+	/**
+	 * @see SiteAccount::getSuspiciousActivity()
+	 */
+	protected $suspicious_activity;
+
+	// }}}
 	// {{{ public function loadWithCredentials()
 
 	/**
@@ -295,6 +303,52 @@ class SiteAccount extends SwatDBDataObject
 				substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
 
 		$history->save();
+	}
+
+	// }}}
+	// {{{ public function getSuspiciousActivity()
+
+	public function getSuspiciousActivity()
+	{
+		if ($this->suspicious_activity === null) {
+			$this->checkDB();
+
+			$sql = sprintf(
+				'select * from SuspiciousAccountView where account = %s',
+				$this->db->quote($this->id, 'integer'));
+
+			$this->suspicious_activity =
+				SwatDB::query($this->db, $sql)->getFirst();
+		}
+
+		return $this->suspicious_activity;
+	}
+
+	// }}}
+	// {{{ public static function getSuspiciousActivitySummary()
+
+	public static function getSuspiciousActivitySummary($activity)
+	{
+		$locale = SwatI18NLocale::get();
+
+		return sprintf(
+			'%s logins in the last hour from ',
+			$locale->formatNumber($activity->login_count)
+		).sprintf(
+			ngettext(
+				'%s user agent and ',
+				'%s user agents and ',
+				$activity->user_agent_count
+			),
+			$locale->formatNumber($activity->user_agent_count)
+		).sprintf(
+			ngettext(
+				'%s IP address.',
+				'%s IP addresses.',
+				$activity->ip_address_count
+			),
+			$locale->formatNumber($activity->ip_address_count)
+		);
 	}
 
 	// }}}
