@@ -58,7 +58,8 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 						$instance_shortname));
 				}
 			} catch (SiteNotFoundException $e) {
-				/* instance not found, display a simple apache-like 404 page
+				/*
+				 * Instance not found, display a simple apache-like 404 page
 				 * we do not have an instance to display a pretty 404 page
 				 * within
 				 */
