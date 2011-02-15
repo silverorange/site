@@ -161,7 +161,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	public function logout()
 	{
-		if ($this->isLoggedIn()) {
+		// Check isActive() instead of isLoggedIn() because we sometimes
+		// call logout() to clear registered session databojects even when
+		// users are not logged in.
+		if ($this->isActive()) {
 			unset($this->account);
 			unset($this->_authentication_token);
 
