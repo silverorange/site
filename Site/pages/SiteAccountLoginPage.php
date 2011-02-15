@@ -7,7 +7,7 @@ require_once 'Site/pages/SitePage.php';
  * Page for logging into an account
  *
  * @package   Site
- * @copyright 2006-2010 silverorange
+ * @copyright 2006-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */
@@ -56,15 +56,10 @@ class SiteAccountLoginPage extends SitePage
 
 	protected function initRelocateUri(SwatForm $form)
 	{
-		$relocate_uri = SiteApplication::initVar('relocate', null,
-			SiteApplication::VAR_GET);
-
-		if ($relocate_uri === null) {
-			$relocate_uri = $form->getHiddenField('relocate_uri');
-		}
-
-		if ($relocate_uri !== null)
+		$relocate_uri = $form->getHiddenField('relocate_uri');
+		if ($relocate_uri !== null) {
 			$this->relocate_uri = $relocate_uri;
+		}
 
 		$form->addHiddenField('relocate_uri', $this->relocate_uri);
 	}
