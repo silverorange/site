@@ -1,12 +1,16 @@
 <?php
 
+require_once 'SwatDB/SwatDBRecordable.php';
+require_once 'Swat/exceptions/SwatClassNotFoundException.php';
+require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/SiteDatabaseModule.php';
 
 /**
  * Web application module for sessions
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteSessionModule extends SiteApplicationModule
@@ -22,6 +26,13 @@ class SiteSessionModule extends SiteApplicationModule
 	 * @var array
 	 */
 	protected $activate_callbacks = array();
+
+	/**
+	 * @var array
+	 *
+	 * @see SiteSessionModule::registerObject()
+	 */
+	protected $registered_objects = array();
 
 	// }}}
 	// {{{ public function __construct()
@@ -156,6 +167,52 @@ class SiteSessionModule extends SiteApplicationModule
 			'callback' => $callback,
 			'parameters' => $parameters
 		);
+	}
+
+	// }}}
+	// {{{ public function registerObject()
+
+	/**
+	 * Registers an object class for a session variable
+	 *
+	 * Registering the object class for a session variable does three things:
+	 *
+	 *  1. Wraps errors when unserializing an unknown class from the session in
+	 *     a catchable exception.
+	 *  2. Automatically restores database connections for classes that are
+	 *     SwatDBRecordable.
+	 *  3. Provides a mechanism to clear a subset of the registered variables.
+	 *
+	 * Note: If a autoloader can be used to automatically load the appropriate
+	 * class definitions when the session is restored.
+	 *
+	 * @param string $name the name of the session variable.
+	 * @param string $class the object class name.
+	 * @param boolean $destroy_on_logout whether or not to destroy the object
+	 *                                    on logout.
+	 */
+	public function registerObject($name, $class, $destroy_on_logout = true)
+	{
+		$this->registered_objects[$name] = array(
+			'class'   => $class,
+			'destroy' => ($destroy_on_logout) ? true : false,
+		);
+	}
+
+	// }}}
+	// {{{ public function unsetRegisteredObjects()
+
+	/**
+	 * Unsets variables registered in the session and marked as
+	 * destroy-on-logout
+	 */
+	public function unsetRegisteredObjects()
+	{
+		foreach ($this->registered_objects as $name => $data) {
+			if ($data['destroy']) {
+				unset($this->$name);
+			}
+		}
 	}
 
 	// }}}
@@ -489,6 +546,89 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ protected function startSession()
+
+	/**
+	 * Starts a session
+	 */
+	protected function startSession()
+	{
+		// Make sure registered object classes exist before starting the
+		// session.
+		$this->checkRegisteredObjectClasses();
+
+		// Start the session.
+		session_start();
+
+		// Explicitly set the session cookie since PHP doesn't do this
+		// sometimes on SSL requests.
+		setcookie(session_name(), session_id(), 0, '/');
+
+		$this->restoreRegisteredObjectDBConnections();
+	}
+
+	// }}}
+	// {{{ protected function restoreRegisteredObjectDBConnections()
+
+	/**
+	 * Restores the database connection resource for objects registered in
+	 * the session that are instances of {@link SwatDBRecordable}
+	 */
+	protected function restoreRegisteredObjectDBConnections()
+	{
+		if (!$this->app->hasModule('SiteDatabaseModule')) {
+			return;
+		}
+
+		$database   = $this->app->getModule('SiteDatabaseModule');
+		$connection = $database->getConnection();
+
+		foreach ($this->registered_objects as $name => $data) {
+			if (isset($this->$name)) {
+
+				if (is_array($this->$name) ||
+					$this->$name instanceof ArrayObject) {
+
+					foreach ($this->$name as $object) {
+						if ($object instanceof SwatDBRecordable) {
+							$object->setDatabase($connection);
+						}
+					}
+
+				} elseif ($this->$name instanceof SwatDBRecordable) {
+					$this->$name->setDatabase($connection);
+				}
+
+			} else {
+				$this->$name = null;
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function checkRegisteredObjectClasses()
+
+	/**
+	 * Checks to make sure class definitions exist for objects registered in the
+	 * session
+	 *
+	 * @throws SwatClassNotFoundException if one or more class definitions do
+	 *         not exist for the registered objects.
+	 */
+	protected function checkRegisteredObjectClasses()
+	{
+		foreach ($this->registered_objects as $name => $data) {
+			$class = $data['class'];
+			if (!class_exists($class)) {
+				throw new SwatClassNotFoundException(sprintf(
+					'The class "%s" does not exist. The class definition must '.
+					'be loaded before the session is restored.',
+					$class), 0, $class);
+			}
+		}
+	}
+
+	// }}}
 	// {{{ private function isValidSessionId()
 
 	private function isValidSessionId($id)
@@ -499,23 +639,6 @@ class SiteSessionModule extends SiteApplicationModule
 			$valid = true;
 
 		return $valid;
-	}
-
-	// }}}
-	// {{{ protected function startSession()
-
-	/**
-	 * Starts a session
-	 */
-	protected function startSession()
-	{
-		session_start();
-
-		/*
-		 * Explicitly set the session cookie since PHP doesn't do this
-		 * sometimes on SSL requests.
-		 */
-		setcookie(session_name(), session_id(), 0, '/');
 	}
 
 	// }}}
