@@ -56,10 +56,20 @@ class SiteAccountLoginPage extends SitePage
 
 	protected function initRelocateUri(SwatForm $form)
 	{
-		$relocate_uri = $form->getHiddenField('relocate_uri');
-		if ($relocate_uri !== null) {
+		$relocate_uri = null;
+
+		$get_uri = SiteApplication::initVar('relocate', null,
+			SiteApplication::VAR_GET);
+
+		// only use relative URIs
+		if (!preg_match('#^(?:[a-zA-Z]+:)?//#', $get_uri))
+			$relocate_uri = $get_uri;
+
+		if ($relocate_uri === null)
+			$relocate_uri = $form->getHiddenField('relocate_uri');
+
+		if ($relocate_uri !== null)
 			$this->relocate_uri = $relocate_uri;
-		}
 
 		$form->addHiddenField('relocate_uri', $this->relocate_uri);
 	}
