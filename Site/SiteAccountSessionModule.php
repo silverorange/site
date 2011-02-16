@@ -1,14 +1,10 @@
 <?php
 
 require_once 'Site/SiteSessionModule.php';
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/exceptions/SiteException.php';
 require_once 'Site/dataobjects/SiteAccount.php';
 require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatDate.php';
 require_once 'Swat/SwatForm.php';
-require_once 'Swat/SwatString.php';
 
 /**
  * Web application module for sessions with accounts.
@@ -17,17 +13,22 @@ require_once 'Swat/SwatString.php';
  * session.
  *
  * @package   Site
- * @copyright 2006-2010 silverorange
+ * @copyright 2006-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountSessionModule extends SiteSessionModule
 {
 	// {{{ protected properties
 
+	/**
+	 * @var array
+	 */
 	protected $login_callbacks = array();
+
+	/**
+	 * @var array
+	 */
 	protected $logout_callbacks = array();
-	protected $data_object_classes = array();
-	protected $destroy_on_logout_objects = array();
 
 	// }}}
 	// {{{ public function depends()
@@ -162,30 +163,16 @@ class SiteAccountSessionModule extends SiteSessionModule
 	public function logout()
 	{
 		// Check isActive() instead of isLoggedIn() because we sometimes
-		// call logout() to clear registered session databojects even when
+		// call logout() to clear registered session objects even when
 		// users are not logged in.
 		if ($this->isActive()) {
 			unset($this->account);
 			unset($this->_authentication_token);
-
-			$this->unsetRegisteredDataObjects();
+			parent::unsetRegisteredObjects();
 		}
 
 		$this->runLogoutCallbacks();
 		$this->removeAccountCookie();
-	}
-
-	// }}}
-	// {{{ public function unsetRegisteredDataObjects()
-
-	/**
-	 * Unsets data objects registered in the session and marked as
-	 * destroy-on-logout
-	 */
-	public function unsetRegisteredDataObjects()
-	{
-		foreach ($this->destroy_on_logout_objects as $name)
-			unset($this->$name);
 	}
 
 	// }}}
@@ -228,33 +215,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 			return null;
 
 		return $this->account->id;
-	}
-
-	// }}}
-	// {{{ public function registerDataObject()
-
-	/**
-	 * Register a dataobject class for a session variable
-	 *
-	 * Dataobjects in the session must be registered so the appropriate classes
-	 * can be loaded before the session is restored. This prevents
-	 * unserializing an unknown class from the session.
-	 *
-	 * Note: If an autoloader is used to load class definitions, this method
-	 * will become obsolete.
-	 *
-	 * @param string $name the name of the session variable.
-	 * @param string $class the dataobject class name.
-	 * @param boolean $destroy_on_logout whether to destroy this dataobject on
-	 *                                    logout.
-	 */
-	public function registerDataObject($name, $class,
-		$destroy_on_logout = true)
-	{
-		$this->data_object_classes[$name] = $class;
-
-		if ($destroy_on_logout)
-			$this->destroy_on_logout_objects[] = $name;
 	}
 
 	// }}}
@@ -313,35 +273,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	protected function startSession()
 	{
-		// make sure dataobject classes are loaded before starting the session
-		foreach ($this->data_object_classes as $name => $class) {
-			if (!class_exists($class))
-				throw new SiteException("Class {$class} does not exist. ".
-					'The class must be loaded before it can be registered '.
-					'in the session.');
-		}
-
 		parent::startSession();
-
-		foreach ($this->data_object_classes as $name => $class) {
-			if (isset($this->$name) && $this->$name !== null) {
-				if (is_array($this->$name) ||
-					$this->$name instanceof ArrayObject) {
-					foreach ($this->$name as $object) {
-						$object->setDatabase(
-							$this->app->database->getConnection());
-					}
-				} else {
-					$this->$name->setDatabase(
-						$this->app->database->getConnection());
-				}
-			} else {
-				$this->$name = null;
-			}
-		}
-
-		if (isset($this->_authentication_token))
+		if (isset($this->_authentication_token)) {
 			SwatForm::setAuthenticationToken($this->_authentication_token);
+		}
 	}
 
 	// }}}
@@ -400,6 +335,42 @@ class SiteAccountSessionModule extends SiteSessionModule
 			return;
 
 		$this->app->cookie->removeCookie('account_id');
+	}
+
+	// }}}
+
+	// deprecated
+	// {{{ public function registerDataObject()
+
+	/**
+	 * Registers an object class for a session variable
+	 *
+	 * @param string $name the name of the session variable.
+	 * @param string $class the object class name.
+	 * @param boolean $destroy_on_logout whether or not to destroy the object
+	 *                                    on logout.
+	 *
+	 * @deprecated Use {@link SiteSessionModule::registerObject()} instead.
+	 */
+	public function registerDataObject($name, $class,
+		$destroy_on_logout = true)
+	{
+		parent::registerObject($name, $class, $destroy_on_logout);
+	}
+
+	// }}}
+	// {{{ public function unsetRegisteredDataObjects()
+
+	/**
+	 * Unsets objects registered in the session and marked as
+	 * destroy-on-logout
+	 *
+	 * @deprecated Use {@link SiteSessionModule::usetRegisteredObjects()}
+	 *             instead.
+	 */
+	public function unsetRegisteredDataObjects()
+	{
+		parent::unsetRegisteredObjects();
 	}
 
 	// }}}
