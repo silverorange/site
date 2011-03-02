@@ -318,8 +318,7 @@ class SiteAccount extends SwatDBDataObject
 				where
 					account = %s
 					and too_many_logins = %s
-					and ip_address_distinct = %s
-					and user_agent_distinct = %s',
+					and (ip_address_distinct = %s or user_agent_distinct = %s)',
 				$this->db->quote($this->id, 'integer'),
 				$this->db->quote(true, 'boolean'),
 				$this->db->quote(true, 'boolean'),
