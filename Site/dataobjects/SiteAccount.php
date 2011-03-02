@@ -314,8 +314,16 @@ class SiteAccount extends SwatDBDataObject
 			$this->checkDB();
 
 			$sql = sprintf(
-				'select * from SuspiciousAccountView where account = %s',
-				$this->db->quote($this->id, 'integer'));
+				'select * from SuspiciousAccountView
+				where
+					account = %s
+					and too_many_logins = %s
+					and ip_address_distinct = %s
+					and user_agent_distinct = %s',
+				$this->db->quote($this->id, 'integer'),
+				$this->db->quote(true, 'boolean'),
+				$this->db->quote(true, 'boolean'),
+				$this->db->quote(true, 'boolean'));
 
 			$this->suspicious_activity =
 				SwatDB::query($this->db, $sql)->getFirst();
@@ -331,24 +339,24 @@ class SiteAccount extends SwatDBDataObject
 	{
 		$locale = SwatI18NLocale::get();
 
-		return sprintf(
-			'%s logins in the last hour from ',
-			$locale->formatNumber($activity->login_count)
-		).sprintf(
-			ngettext(
-				'%s user agent and ',
-				'%s user agents and ',
-				$activity->user_agent_count
-			),
-			$locale->formatNumber($activity->user_agent_count)
-		).sprintf(
-			ngettext(
-				'%s IP address.',
-				'%s IP addresses.',
-				$activity->ip_address_count
-			),
-			$locale->formatNumber($activity->ip_address_count)
+		$summary = Site::_(
+			'In the last week, five or more logins within a '.
+			'one hour period from '
 		);
+
+		if ($activity->user_agent_distinct) {
+			$summary.= Site::_('two or more user agents and ');
+		} else {
+			$summary.= Site::_('one user agent and ');
+		}
+
+		if ($activity->ip_address_distinct) {
+			$summary.= Site::_('two or more IP addresses.');
+		} else {
+			$summary.= Site::_('one IP address.');
+		}
+
+		return $summary;
 	}
 
 	// }}}
