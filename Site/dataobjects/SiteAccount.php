@@ -340,20 +340,20 @@ class SiteAccount extends SwatDBDataObject
 		$locale = SwatI18NLocale::get();
 
 		$summary = Site::_(
-			'In the last week, five or more logins within a '.
-			'one hour period from '
+			'In the last week, 5 or more logins within a '.
+			'1 hour period from '
 		);
 
 		if ($activity->user_agent_distinct) {
-			$summary.= Site::_('two or more user agents and ');
+			$summary.= Site::_('2 or more user agents and ');
 		} else {
-			$summary.= Site::_('one user agent and ');
+			$summary.= Site::_('1 user agent and ');
 		}
 
 		if ($activity->ip_address_distinct) {
-			$summary.= Site::_('two or more IP addresses.');
+			$summary.= Site::_('2 or more IP addresses.');
 		} else {
-			$summary.= Site::_('one IP address.');
+			$summary.= Site::_('1 IP address.');
 		}
 
 		return $summary;
