@@ -1,4 +1,4 @@
-create or replace view SuspiciousAccountView as
+create or replace view SuspiciousAccountLoginView as
 	select
 		account,
 		lag(login_date, 2, null) over AccountWindow as last_suspicious_login,
@@ -28,3 +28,12 @@ create or replace view SuspiciousAccountView as
 		rows between unbounded preceding and unbounded following
 	)
 	order by account, login_date desc;
+
+create or replace view SuspiciousAccountView as
+	select account,
+		max(last_suspicious_login) as last_suspicious_login,
+		bool_or(ip_address_distinct) as ip_address_distinct,
+		bool_or(user_agent_distinct) as user_agent_distinct
+	from SuspiciousAccountLoginView
+	group by SuspiciousAccountLoginView.account
+	order by max(last_suspicious_login) desc;
