@@ -5,9 +5,10 @@ require_once 'Swat/SwatString.php';
 /**
  * Parses the bodytext of a comment
  *
- * Allowed tags are '<a href="">', '<strong>', '<em>' and '<code>'. Missing
- * closing tags are automatically closed and closing tags with missing opening
- * tags are displayed as plain text.
+ * Allowed tags are <i>&lt;a href=""&gt;</i>, <i>&lt;strong&gt;</i>,
+ * <i>&lt;em&gt;</i> and <i>&lt;code&gt;</i>. Missing closing tags are
+ * automatically closed and closing tags with missing opening tags are
+ * displayed as plain text.
  *
  * Example:
  *
