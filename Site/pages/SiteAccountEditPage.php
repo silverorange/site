@@ -274,6 +274,9 @@ class SiteAccountEditPage extends SiteDBEditPage
 	{
 		parent::buildNavBar();
 
+		if (!property_exists($this->layout, 'navbar'))
+			return;
+
 		$form = $this->ui->getWidget('edit_form');
 		if ($this->isNew($form)) {
 			$this->layout->navbar->createEntry(Site::_('Create a New Account'));

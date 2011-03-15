@@ -119,6 +119,10 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 	protected function buildNavBar()
 	{
 		parent::buildNavBar();
+
+		if (!property_exists($this->layout, 'navbar'))
+			return;
+
 		$this->layout->navbar->createEntry(Site::_('New Password'));
 	}
 
