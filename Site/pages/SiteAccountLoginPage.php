@@ -102,7 +102,7 @@ class SiteAccountLoginPage extends SitePage
 			$password = $this->ui->getWidget('password')->value;
 
 			if ($this->app->session->login($email, $password)) {
-				$this->app->cart->save();
+				$this->postLoginProcess();
 				$this->app->relocate($this->relocate_uri);
 			} else {
 				$message = new SwatMessage(Site::_('Login Incorrect'),
@@ -120,6 +120,15 @@ class SiteAccountLoginPage extends SitePage
 				$this->ui->getWidget('message_display')->add($message);
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function postLoginProcess()
+
+	protected function postLoginProcess()
+	{
+		// TODO: why is there a 'cart' reference in Site?
+		$this->app->cart->save();
 	}
 
 	// }}}
