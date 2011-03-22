@@ -10,14 +10,14 @@ require_once 'Site/pages/SiteUiPage.php';
  * Base class for edit pages
  *
  * @package   Site
- * @copyright 2008-2009 silverorange
+ * @copyright 2008-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteEditPage extends SiteUiPage
 {
 	// {{{ class constants
 
-	const RELOCATE_URL_FIELD = '_relocate_url';
+	const RELOCATE_URI_FIELD = '_relocate_uri';
 
 	// }}}
 	// {{{ protected function isNew()
@@ -136,16 +136,22 @@ abstract class SiteEditPage extends SiteUiPage
 	abstract protected function relocate(SwatForm $form);
 
 	// }}}
-	// {{{ protected function relocateToRefererUrl()
+	// {{{ protected function relocateToRefererUri()
 
-	protected function relocateToRefererUrl(SwatForm $form, $default_relocate)
+	protected function relocateToRefererUri(SwatForm $form, $default_relocate)
 	{
-		$url = $form->getHiddenField(self::RELOCATE_URL_FIELD);
+		$uri = $form->getHiddenField(self::RELOCATE_URI_FIELD);
 
-		if ($url === null)
-			$url = $default_relocate;
+		if ($uri === null) {
+			// backwards compatibility with old URL field
+			$uri = $form->getHiddenField('_relocate_url');
+		}
 
-		$this->app->relocate($url);
+		if ($uri === null) {
+			$uri = $default_relocate;
+		}
+
+		$this->app->relocate($uri);
 	}
 
 	// }}}
@@ -299,15 +305,19 @@ abstract class SiteEditPage extends SiteUiPage
 
 	protected function buildForm(SwatForm $form)
 	{
-		$form->action = $this->source;
+		if ($this->source != '') {
+			$form->action = $this->source;
+		} else {
+			$form->action = '.';
+		}
 
 		if (!$form->isProcessed() && !$this->isNew($form))
 			$this->load($form);
 
-		if ($form->getHiddenField(self::RELOCATE_URL_FIELD) === null) {
-			$url = $this->getRefererUrl();
-			if ($url !== null) {
-				$form->addHiddenField(self::RELOCATE_URL_FIELD, $url);
+		if ($form->getHiddenField(self::RELOCATE_URI_FIELD) === null) {
+			$uri = $this->getRefererUri();
+			if ($uri !== null) {
+				$form->addHiddenField(self::RELOCATE_URI_FIELD, $uri);
 			}
 		}
 	}
@@ -355,15 +365,39 @@ abstract class SiteEditPage extends SiteUiPage
 	}
 
 	// }}}
-	// {{{ protected function getRefererUrl()
+	// {{{ protected function getRefererUri()
 
-	protected function getRefererUrl()
+	protected function getRefererUri()
 	{
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			return $_SERVER['HTTP_REFERER'];
 		} else {
 			return null;
 		}
+	}
+
+	// }}}
+
+	// deprecated API
+	// {{{ protected function relocateToRefererUrl()
+
+	/**
+	 * @deprecated Use {@link SiteEditForm::relocateToRefererUri()} instead.
+	 */
+	protected function relocateToRefererUrl(SwatForm $form, $default_relocate)
+	{
+		$this->relocateToRefererUri($form, $default_relocate);
+	}
+
+	// }}}
+	// {{{ protected function getRefererUrl()
+
+	/**
+	 * @deprecated Use {@link SiteEditPage::getRefererUri()} instead.
+	 */
+	protected function getRefererUrl()
+	{
+		return $this->getRefererUri();
 	}
 
 	// }}}
