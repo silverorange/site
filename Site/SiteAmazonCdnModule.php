@@ -3,17 +3,17 @@
 require_once 'Services/Amazon/S3.php';
 require_once 'Services/Amazon/S3/AccessControlList.php';
 require_once 'Swat/exceptions/SwatFileNotFoundException.php';
-require_once 'Site/SiteCdn.php';
-require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/SiteCdnModule.php';
+require_once 'Site/exceptions/SiteCdnException.php';
 
 /**
  * Application module that provides access to an Amazon S3 bucket.
  *
  * @package   Site
- * @copyright 2010 silverorange
+ * @copyright 2010-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
+class SiteAmazonCdnModule extends SiteCdnModule
 {
 	// {{{ public properties
 
@@ -56,26 +56,6 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	protected $finfo;
 
 	/**
-	 * Max age of for the Cache Control header.
-	 *
-	 * Length of time to cache in seconds. Defaults to 1 hour (cloudfront's
-	 * minimum cache time).
-	 *
-	 * @var integer
-	 */
-	protected $cache_control_max_age = 3600;
-
-	/**
-	 * Whether or not Cache Control public is set.
-	 *
-	 * Useful to set true when resources should be cached for https requests.
-	 * Defaults to false.
-	 *
-	 * @var boolean
-	 */
-	protected $cache_control_public = false;
-
-	/**
 	 * Whether or not to check the md5 of a file when saving.
 	 *
 	 * If true, check to see if the object already exists and checks the current
@@ -88,17 +68,6 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	 * @var boolean
 	 */
 	protected $check_md5 = true;
-
-	/**
-	 * Access control list for the object
-	 *
-	 * This may be one of the predefined ACLs specified by a
-	 * Services_Amazon_S3_AccessControlList::ACL_xxx constant, or a
-	 * Services_Amazon_S3_AccessControlList instance.
-	 *
-	 * @var string|Services_Amazon_S3_AccessControlList
-	 */
-	protected $acl = Services_Amazon_S3_AccessControlList::ACL_PUBLIC_READ;
 
 	// }}}
 	// {{{ public function init()
@@ -116,18 +85,6 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	}
 
 	// }}}
-	// {{{ public function getFinfo()
-
-	public function getFinfo()
-	{
-		if ($this->finfo === null) {
-			$this->finfo = finfo_open(FILEINFO_MIME);
-		}
-
-		return $this->finfo;
-	}
-
-	// }}}
 	// {{{ public function setCheckMd5()
 
 	/**
@@ -137,46 +94,7 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	 */
 	public function setCheckMd5($check_md5 = true)
 	{
-		$this->check_md5 = $check_md5;
-	}
-
-	// }}}
-	// {{{ public function setCacheControlMaxAge()
-
-	/**
-	 * Sets maxium age for cache control
-	 *
-	 * @param integer $max_age the maximum age of the resource in seconds.
-	 */
-	public function setCacheControlMaxAge($max_age)
-	{
-		$this->cache_control_max_age = $max_age;
-	}
-
-	// }}}
-	// {{{ public function setCacheControlPublic()
-
-	/**
-	 * Sets whether or not to set the cache-control header to include public.
-	 *
-	 * @param boolean $public true if we want it set, false if we don't.
-	 */
-	public function setCacheControlPublic($public = true)
-	{
-		$this->cache_control_public = $public;
-	}
-
-	// }}}
-	// {{{ public function setAcl()
-
-	/**
-	 * Sets the Access control list for the object.
-	 *
-	 * @param string|Services_Amazon_S3_AccessControlList
-	 */
-	public function setAcl($acl)
-	{
-		$this->acl = $acl;
+		$this->check_md5 = (bool) $check_md5;
 	}
 
 	// }}}
@@ -189,70 +107,60 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	 * @param string $destination the destination path of the file to copy.
 	 * @param string $mime_type the MIME type of the file. If null, we grab the
 	 *                           MIME type from the file. Defaults to null.
-	 * @param integer $max_age the maximum age for cache control. If set
-	 *                          overrides $this->cache_control_max_age. Defaults
-	 *                          to null.
+	 * @param integer $access_type the access type, public/private, of the file.
+	 *                              Defaults to 'public'.
+	 * @param array $http_headers HTTP headers associated with the file.
+	 *                             Defaults to an empty array.
+	 * @param array $metadata metadata associated with the file.
+	 *                         Defaults to an empty array.
 	 *
-	 * @returns boolean $copy whether or not the file has been copied. If false
-	 *                         this means the file was already on s3.
+	 * @throws SwatFileNotFoundException if the source file doesn't exist
+	 * @throws SiteCdnException if the CDN encounters any problems
 	 */
 	public function copyFile($source, $destination, $mime_type = null,
-		$max_age = null)
+		$access_type = 'public', $http_headers = array(), $metadata = array())
 	{
-		if (file_exists($source) === false) {
-			throw new SwatFileNotFoundException(Site::_(sprintf(
-				'File missing ‘%s’.', $source)));
-		}
+		try {
+			if (file_exists($source) === false) {
+				throw new SwatFileNotFoundException(sprintf(
+					Site::_('Unable to locate file ‘%s’.'), $source));
+			}
 
-		$file = file_get_contents($source);
-		if ($file === false) {
-			throw new SwatFileNotFoundException(Site::_(sprintf(
-				'Unable to open file ‘%s’.', $source)));
-		}
+			$file = file_get_contents($source);
+			if ($file === false) {
+				throw new SwatFileNotFoundException(sprintf(
+					Site::_('Unable to open file ‘%s’.'), $source));
+			}
 
-		$s3_object = $this->bucket->getObject($destination);
-		$md5       = md5($file);
-		$copy      = true;
+			$metadata['md5'] = md5($file);
 
-		if ($this->check_md5 == true) {
-			// check for existing object.
-			if ($s3_object->load(
-				Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY)) {
-				if (array_key_exists('md5', $s3_object->userMetadata)) {
-					if ($s3_object->userMetadata['md5'] == $md5) {
-						$copy = false;
-					}
+			$s3_object = $this->bucket->getObject($destination);
+
+			$copy = true;
+			$type = Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY;
+			if ($this->check_md5 && $s3_object->load($type) &&
+				array_key_exists('md5', $s3_object->userMetadata)) {
+
+				$copy = ($s3_object->userMetadata['md5'] !== $metadata['md5']);
+			}
+
+			if ($copy) {
+				if ($mime_type === null) {
+					$finfo     = $this->getFinfo();
+					$mime_type = finfo_file($finfo, $source);
 				}
+
+				$s3_object->data         = $file;
+				$s3_object->contentType  = $mime_type;
+				$s3_object->acl          = $this->getAcl($access_type);
+				$s3_object->httpHeaders  = $http_headers;
+				$s3_object->userMetadata = $metadata;
+
+				$s3_object->save();
 			}
+		} catch (Services_Amazon_S3_Exception $e) {
+			throw new SiteCdnException($e);
 		}
-
-		if ($copy === true) {
-			if ($mime_type === null) {
-				$finfo     = $this->getFinfo();
-				$mime_type = finfo_file($finfo, $source);
-			}
-
-			if ($max_age === null) {
-				$max_age = $this->cache_control_max_age;
-			}
-
-			$cache_control = 'max-age='.$max_age;
-			if ($this->cache_control_public === true) {
-				$cache_control = 'public, '.$cache_control;
-			}
-
-			$s3_object->data         = $file;
-			$s3_object->contentType  = $mime_type;
-			$s3_object->acl          = $this->acl;
-			$s3_object->userMetadata = array('md5' => $md5);
-			$s3_object->httpHeaders  = array(
-				'cache-control' => $cache_control,
-				);
-
-			$s3_object->save();
-		}
-
-		return $copy;
 	}
 
 	// }}}
@@ -262,11 +170,60 @@ class SiteAmazonCdnModule extends SiteApplicationModule implements SiteCdn
 	 * Deletes a file from the Amazon S3 bucket
 	 *
 	 * @param string $file_path the path, in the bucket, of the file to delete.
+	 *
+	 * @throws SwatFileNotFoundException if the file doesn't exist
+	 * @throws SiteCdnException if the CDN encounters any problems
 	 */
 	public function deleteFile($file_path)
 	{
-		$s3_object = $this->bucket->getObject($file_path);
-		$s3_object->delete();
+		try {
+			if (strlen($file_path) === 0) {
+				throw new SwatFileNotFoundException(
+					Site::_('Unable to delete file with empty path.'));
+			}
+
+			$s3_object = $this->bucket->getObject($file_path);
+			$load_type = Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY;
+
+			if (!$s3_object->load($load_type)) {
+				throw new SwatFileNotFoundException(sprintf(
+					Site::_('Unable to locate file ‘%s’ on the CDN.'),
+						$file_path));
+			}
+
+			$s3_object->delete();
+		} catch (Services_Amazon_S3_Exception $e) {
+			throw new SiteCdnException($e);
+		}
+	}
+
+	// }}}
+	// {{{ protected function getFinfo()
+
+	protected function getFinfo()
+	{
+		if ($this->finfo === null) {
+			$this->finfo = finfo_open(FILEINFO_MIME);
+		}
+
+		return $this->finfo;
+	}
+
+	// }}}
+	// {{{ protected function getAcl()
+
+	protected function getAcl($access_type)
+	{
+		switch ($access_type) {
+		case 'private':
+			$acl = Services_Amazon_S3_AccessControlList::ACL_AUTHENTICATED_READ;
+			break;
+		default:
+			$acl = Services_Amazon_S3_AccessControlList::ACL_PUBLIC_READ;
+			break;
+		}
+
+		return $acl;
 	}
 
 	// }}}
