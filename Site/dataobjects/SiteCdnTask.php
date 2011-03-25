@@ -34,9 +34,30 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	public $error_date;
 
 	// }}}
-	// {{{ abstract public function setOnCdn()
+	// {{{ abstract public function run()
 
-	abstract public function setOnCdn($set_on_cdn = true);
+	/**
+	 * Copies a file to the CDN
+	 *
+	 * @param SiteCdn $cdn the CDN this task is executed on.
+	 */
+	abstract public function run(SiteCdnModule $cdn);
+
+	// }}}
+	// {{{ abstract public function getAttemptDescription()
+
+	/**
+	 * Gets a string describing the what this task is attempting to achieve
+	 */
+	abstract public function getAttemptDescription();
+
+	// }}}
+	// {{{ abstract public function getResultDescription()
+
+	/**
+	 * Gets a string describing the what this task did achieve
+	 */
+	abstract public function getResultDescription();
 
 	// }}}
 	// {{{ protected function init()
