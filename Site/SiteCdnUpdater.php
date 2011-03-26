@@ -25,11 +25,11 @@ class SiteCdnUpdater extends SiteCommandLineApplication
 	public $db;
 
 	/**
-	 * The base directory the files are saved to
+	 * The directory containing the image hierarchy
 	 *
 	 * @var string
 	 */
-	public $source_dir;
+	public $image_dir;
 
 	// }}}
 	// {{{ protected properties
@@ -103,7 +103,7 @@ class SiteCdnUpdater extends SiteCommandLineApplication
 
 		foreach ($tasks as $task) {
 			if ($task->image instanceof SiteImage) {
-				$task->image->setFileBase($this->source_dir);
+				$task->image->setFileBase($this->image_dir);
 			}
 
 			$this->tasks[] = $task;
