@@ -39,6 +39,7 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 	protected function initInternal()
 	{
 		parent::initInternal();
+
 		$this->ui->loadFromXML($this->ui_xml);
 
 		if (!$this->app->hasModule('SiteMultipleInstanceModule')) {
@@ -87,12 +88,8 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 
 			if (count($changed_settings > 0)) {
 				$this->app->config->save($changed_settings);
+				$this->app->messages->add($this->getSavedMessage());
 			}
-
-			$message = new SwatMessage(Site::_(
-				'Instance configuration settings have been updated.'));
-
-			$this->app->messages->add($message);
 		} else if ($this->ui->getWidget('default_button')->hasBeenClicked()) {
 			$instance_id = $this->app->getInstanceId();
 
@@ -104,16 +101,40 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 
 				SwatDB::exec($this->app->db, $sql);
 
-				$message = new SwatMessage(Site::_(
-					'Instance configuration settings have been restored to '.
-					'defaults.'));
-
-				$message->secondary_content = Site::_(
-					'Reload this page to see your changes.');
-
-				$this->app->messages->add($message);
+				$this->app->messages->add($this->getRestoredMessage());
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function getSavedMessage()
+
+	protected function getSavedMessage()
+	{
+		return new SwatMessage(
+			Site::_(
+				'Instance configuration settings have been updated.'
+			)
+		);
+	}
+
+	// }}}
+	// {{{ protected function getRestoredMessage()
+
+	protected function getRestoredMessage()
+	{
+		$message = new SwatMessage(
+			Site::_(
+				'Instance configuration settings have been restored to '.
+				'defaults.'
+			)
+		);
+
+		$message->secondary_content = Site::_(
+			'Reload this page to see your changes.'
+		);
+
+		return $message;
 	}
 
 	// }}}
