@@ -2,6 +2,7 @@ create table Instance (
 	id        int not null identity,
 
 	shortname varchar(255) null,
+	title varchar(255) null,
 
 	primary key (id)
 );
