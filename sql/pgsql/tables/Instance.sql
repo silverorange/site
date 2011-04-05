@@ -1,6 +1,7 @@
 create table Instance (
 	id serial,
 	shortname varchar(255),
+	title varchar(255),
 	primary key (id)
 );
 

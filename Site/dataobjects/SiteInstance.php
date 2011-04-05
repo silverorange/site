@@ -29,6 +29,13 @@ class SiteInstance extends SwatDBDataObject
 	 */
 	public $shortname;
 
+	/**
+	 * The title of this instance
+	 *
+	 * @var string
+	 */
+	public $title;
+
 	// }}}
 	// {{{ public function loadFromShortname()
 
