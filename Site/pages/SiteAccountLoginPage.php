@@ -105,16 +105,26 @@ class SiteAccountLoginPage extends SitePage
 				$this->postLoginProcess();
 				$this->app->relocate($this->relocate_uri);
 			} else {
-				$message = new SwatMessage(Site::_('Login Incorrect'),
-					SwatMessage::WARNING);
+				$message = new SwatMessage(
+					Site::_('Login Incorrect'),
+					'warning'
+				);
 
 				$message->secondary_content = sprintf(
 					'<ul><li>%s</li><li>%s</li></ul>',
-					Site::_('Please check the spelling on your email '.
-						'address or password.'),
-					sprintf(Site::_('Password is case-sensitive. Make sure '.
-						'your %sCaps Lock%s key is off.'),
-						'<kbd>', '</kbd>'));
+					Site::_(
+						'Please check the spelling on your email '.
+						'address or password.'
+					),
+					sprintf(
+						Site::_(
+							'Password is case-sensitive. Make sure '.
+							'your %sCaps Lock%s key is off.'
+						),
+						'<kbd>',
+						'</kbd>'
+					)
+				);
 
 				$message->content_type = 'text/xml';
 				$this->ui->getWidget('message_display')->add($message);
