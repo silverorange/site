@@ -20,6 +20,11 @@
 				<property name="title" translatable="yes">Email Address</property>
 				<widget class="SwatEntry" id="search_email" />
 			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Instance</property>
+				<property name="visible" type="boolean">false</property>
+				<widget class="SwatFlydown" id="search_instance" />
+			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button">
 					<property name="title" translatable="yes">Search</property>

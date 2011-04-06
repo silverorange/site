@@ -22,6 +22,13 @@
 						<property name="text" type="data">email</property>
 					</object>
 				</object>
+				<object class="AdminTableViewOrderableColumn" id="instance">
+					<property name="title" translatable="yes">Instance</property>
+					<property name="visible" type="boolean">false</property>
+					<object class="SwatNullTextCellRenderer">
+						<property name="text" type="data">instance.title</property>
+					</object>
+				</object>
 			</widget>
 			<widget class="AdminPagination" id="pager">
 				<property name="link">Account</property>
