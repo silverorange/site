@@ -40,6 +40,20 @@ class SiteAccountIndex extends AdminSearch
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
 		$this->ui->loadFromXML($this->search_xml);
 		$this->ui->loadFromXML($this->ui_xml);
+
+		if ($this->app->getInstance() === null &&
+			$this->ui->hasWidget('search_instance')) {
+
+			$search_instance = $this->ui->getWidget('search_instance');
+			$search_instance->show_blank = true;
+			$options = SwatDB::getOptionArray($this->app->db,
+				'Instance', 'title', 'id', 'title');
+
+			if (count($options) > 1) {
+				$search_instance->addOptionsByArray($options);
+				$search_instance->parent->visible = true;
+			}
+		}
 	}
 
 	// }}}
@@ -62,6 +76,24 @@ class SiteAccountIndex extends AdminSearch
 	// }}}
 
 	// build phase
+	// {{{ protected function buildInternal()
+
+	protected function buildInternal()
+	{
+		parent::buildInternal();
+
+		$view = $this->ui->getWidget('index_view');
+
+		if ($view->hasColumn('instance') &&
+			$this->ui->hasWidget('search_instance')) {
+
+			$view->getColumn('instance')->visible =
+				($this->ui->getWidget('search_instance')->value === null) &&
+				$this->ui->getWidget('search_instance')->parent->visible;
+		}
+	}
+
+	// }}}
 	// {{{ protected function getWhereClause()
 
 	protected function getWhereClause()
@@ -73,33 +105,46 @@ class SiteAccountIndex extends AdminSearch
 		 */
 		$where = 'Account.fullname is not null';
 
+		foreach ($this->getWhereClauses() as $clause)
+			$where.= $clause->getClause($this->app->db);
+
+		return $where;
+	}
+
+	// }}}
+	// {{{ protected function getWhereClauses()
+
+	protected function getWhereClauses()
+	{
+		$clauses = array();
+
+		// instance
 		$instance_id = $this->app->getInstanceId();
-		$where.= sprintf(' and Account.instance %s %s',
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'));
+		if ($instance_id === null && $this->ui->hasWidget('search_instance'))
+			$instance_id = $this->ui->getWidget('search_instance')->value;
+
+		if ($instance_id !== null) {
+			$clause = new AdminSearchClause('integer:instance');
+			$clause->table = 'Account';
+			$clause->value = $instance_id;
+			$clauses['instance'] = $clause;
+		}
 
 		// fullname
 		$clause = new AdminSearchClause('fullname');
 		$clause->table = 'Account';
 		$clause->value = $this->ui->getWidget('search_fullname')->value;
 		$clause->operator = AdminSearchClause::OP_CONTAINS;
-		$where.= $clause->getClause($this->app->db);
+		$clauses['fullname'] = $clause;
 
 		// email
-		$emailClause = new AdminSearchClause('email');
-		$emailClause->table = 'Account';
-		$emailClause->value = $this->ui->getWidget('search_email')->value;
-		$emailClause->operator = AdminSearchClause::OP_CONTAINS;
-		$where.= $emailClause->getClause($this->app->db);
+		$clause = new AdminSearchClause('email');
+		$clause->table = 'Account';
+		$clause->value = $this->ui->getWidget('search_email')->value;
+		$clause->operator = AdminSearchClause::OP_CONTAINS;
+		$clauses['email'] = $clause;
 
-		return $where;
-	}
-
-	// }}}
-	// {{{ protected function getFullnameWhereClause()
-
-	protected function getFullnameWhereClause()
-	{
+		return $clauses;
 	}
 
 	// }}}
@@ -147,7 +192,8 @@ class SiteAccountIndex extends AdminSearch
 
 	protected function getSQL()
 	{
-		return 'select Account.id, Account.fullname, Account.email
+		return 'select Account.id, Account.fullname,
+			Account.email, Account.instance
 			from Account
 			where %s
 			order by %s';
