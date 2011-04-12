@@ -9,12 +9,34 @@ require_once 'Site/SiteApplicationModule.php';
  * could be added.
  *
  * @package   Site
- * @copyright 2007-2010 silverorange
+ * @copyright 2007-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
+	// {{{ class constants
+
+	/**
+	 * Total number of available slots for custom variables.
+	 */
+	const CUSTOM_VARIABLE_SLOTS = 5;
+
+	/**
+	 * Slot reserved for the opt out custom variable.
+	 */
+	const CUSTOM_VARIABLE_OPT_OUT_SLOT = 5;
+
+	/**
+	 * Available scopes for custom variables.
+	 */
+	const CUSTOM_VARIABLE_SCOPE_VISITOR = 1;
+	const CUSTOM_VARIABLE_SCOPE_SESSION = 2;
+	const CUSTOM_VARIABLE_SCOPE_PAGE    = 3;
+
+	// }}}
+	// {{{ protected properties
+
 	/**
 	 * Google Analytics Account
 	 *
@@ -38,6 +60,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	public function init()
 	{
 		$this->initGoogleAnalyticsCommands();
+		$this->initOptOut();
 	}
 
 	// }}}
@@ -155,6 +178,24 @@ JS;
 		$this->ga_commands = array(
 			'_trackPageview',
 		);
+	}
+
+	// }}}
+	// {{{ protected function initOptOut()
+
+	protected function initOptOut()
+	{
+		if (isset($_GET['AnalyticsOptOut'])) {
+			$ga_command = array(
+				'_setCustomVar',
+				self::CUSTOM_VARIABLE_OPT_OUT_SLOT,
+				'AnalyticsOptOut',
+				1,
+				self::CUSTOM_VARIABLE_SCOPE_VISITOR,
+				);
+
+			$this->prependGoogleAnalyticsCommand($ga_command);
+		}
 	}
 
 	// }}}
