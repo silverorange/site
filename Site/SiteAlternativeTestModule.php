@@ -6,7 +6,7 @@ require_once 'Site/SiteApplicationModule.php';
  * Web application module for testing alternatives.
  *
  * @package   Site
- * @copyright 2008-2010 silverorange
+ * @copyright 2008-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html
  */
@@ -34,16 +34,23 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	{
 		$this->tests[$name] = $default_value;
 
-		// Slots are used by GA custom variables.
-		if ($slot == null) {
-			$slot = (count($this->slots) + 1);
-		}
+		// Slots are used by GA custom variables, hence slots only matter if we
+		// have an Analytics Module
+		if ($this->app->hasModule('SiteAnalyticsModule')) {
+			if ($slot == null) {
+				$slot = (count($this->slots) + 1);
+			}
 
-		if ($slot > 5) {
-			throw new SiteException('Concurrent test limit of 5 exceeded.');
-		}
+			if ($slot > SiteAnalyticsModule::CUSTOM_VARIABLE_SLOTS &&
+				$slot != SiteAnalyticsModule::CUSTOM_VARIABLE_OPT_OUT_SLOT) {
+				throw new SiteException(sprintf(
+					'Concurrent test limit of %s exceeded. Slot %s reserved.',
+					SiteAnalyticsModule::CUSTOM_VARIABLE_SLOTS,
+					SiteAnalyticsModule::OPT_OUT_SLOT));
+			}
 
-		$this->slots[$name] = $slot;
+			$this->slots[$name] = $slot;
+		}
 	}
 
 	// }}}
@@ -138,7 +145,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 				$slot,
 				$name,
 				$value,
-				'1', // Visitor Level Scope
+				SiteAnalyticsModule::CUSTOM_VARIABLE_SCOPE_VISITOR,
 				);
 
 			// prepend since it has to happen before the pageview
