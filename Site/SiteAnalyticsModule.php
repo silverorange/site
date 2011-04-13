@@ -23,11 +23,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	const CUSTOM_VARIABLE_SLOTS = 5;
 
 	/**
-	 * Slot reserved for the opt out custom variable.
-	 */
-	const CUSTOM_VARIABLE_OPT_OUT_SLOT = 5;
-
-	/**
 	 * Available scopes for custom variables.
 	 */
 	const CUSTOM_VARIABLE_SCOPE_VISITOR = 1;
@@ -186,12 +181,11 @@ JS;
 	protected function initOptOut()
 	{
 		if (isset($_GET['AnalyticsOptOut'])) {
+			// _setVar is deprecated, but you cannot filter website profiles on
+			// CustomVariable's, so we have to use it.
 			$ga_command = array(
-				'_setCustomVar',
-				self::CUSTOM_VARIABLE_OPT_OUT_SLOT,
+				'_setVar',
 				'AnalyticsOptOut',
-				1,
-				self::CUSTOM_VARIABLE_SCOPE_VISITOR,
 				);
 
 			$this->prependGoogleAnalyticsCommand($ga_command);
