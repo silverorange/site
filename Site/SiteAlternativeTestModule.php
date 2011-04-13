@@ -41,12 +41,10 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 				$slot = (count($this->slots) + 1);
 			}
 
-			if ($slot > SiteAnalyticsModule::CUSTOM_VARIABLE_SLOTS &&
-				$slot != SiteAnalyticsModule::CUSTOM_VARIABLE_OPT_OUT_SLOT) {
+			if ($slot > SiteAnalyticsModule::CUSTOM_VARIABLE_SLOTS) {
 				throw new SiteException(sprintf(
-					'Concurrent test limit of %s exceeded. Slot %s reserved.',
-					SiteAnalyticsModule::CUSTOM_VARIABLE_SLOTS,
-					SiteAnalyticsModule::OPT_OUT_SLOT));
+					'Concurrent test limit of %s exceeded.',
+					SiteAnalyticsModule::CUSTOM_VARIABLE_SLOTS));
 			}
 
 			$this->slots[$name] = $slot;
