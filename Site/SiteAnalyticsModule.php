@@ -40,6 +40,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected $google_account;
 
 	/**
+	 * Flag to tell whether the user has opted out of analytics.
+	 *
+	 * @var boolean
+	 */
+	protected $analytics_opt_out = false;
+
+	/**
 	 * Stack of commands to send to google analytics
 	 *
 	 * Each entry is an array where the first value is the google analytics
@@ -54,8 +61,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function init()
 	{
-		$this->initGoogleAnalyticsCommands();
 		$this->initOptOut();
+
+		// skip init of the commands if we're opted out.
+		if ($this->analytics_opt_out === false)
+			$this->initGoogleAnalyticsCommands();
 	}
 
 	// }}}
@@ -67,11 +77,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function hasGoogleAccount()
+	// {{{ public function hasGoogleAnalytics()
 
-	public function hasGoogleAccount()
+	public function hasGoogleAnalytics()
 	{
-		return ($this->google_account != '');
+		return ($this->google_account != '' &&
+			$this->analytics_opt_out === false);
 	}
 
 	// }}}
@@ -97,7 +108,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$javascript = null;
 
-		if ($this->hasGoogleAccount() && count($this->ga_commands)) {
+		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
 			$javascript = sprintf("%s\n%s",
 				$this->getGoogleAnalyticsCommandsInlineJavascript(),
 				$this->getGoogleAnalyticsTrackerInlineJavascript());
@@ -113,7 +124,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$javascript = null;
 
-		if ($this->hasGoogleAccount() && count($this->ga_commands)) {
+		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
 			// always set the account first.
 			$commands = $this->getGoogleAnalyticsCommand(array(
 				'_setAccount',
@@ -142,7 +153,7 @@ JS;
 	{
 		$javascript = null;
 
-		if ($this->hasGoogleAccount()) {
+		if ($this->hasGoogleAnalytics()) {
 			$src = ($this->app->isSecure()) ?
 				'https://ssl.google-analytics.com/ga.js' :
 				'http://www.google-analytics.com/ga.js';
@@ -180,15 +191,28 @@ JS;
 
 	protected function initOptOut()
 	{
-		if (isset($_GET['AnalyticsOptOut'])) {
-			// _setVar is deprecated, but you cannot filter website profiles on
-			// CustomVariable's, so we have to use it.
-			$ga_command = array(
-				'_setVar',
-				'AnalyticsOptOut',
-				);
+		$cookie_module = null;
 
-			$this->prependGoogleAnalyticsCommand($ga_command);
+		if ($this->app->hasModule('SiteCookieModule')) {
+			$cookie_module = $this->app->getModule('SiteCookieModule');
+
+			if (isset($cookie_module->AnalyticsOptOut)) {
+				$this->analytics_opt_out = true;
+			}
+		}
+
+		if (isset($_GET['AnalyticsOptOut'])) {
+			$this->analytics_opt_out = true;
+			if ($cookie_module === null) {
+				$e = new SiteException('Attempting to set Analytics Opt Out '.
+					'Cookie with no SiteCookieModule available.');
+
+				$e->processAndContinue();
+			} else {
+				// 10 years should be equivalent to never expiring.
+				$cookie_module->setCookie('AnalyticsOptOut', '1',
+					strtotime('+10 Years'));
+			}
 		}
 	}
 
