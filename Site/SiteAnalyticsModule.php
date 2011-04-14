@@ -201,6 +201,20 @@ JS;
 			}
 		}
 
+		if (isset($_GET['AnalyticsOptIn'])) {
+			$this->analytics_opt_out = false;
+			if ($cookie_module === null) {
+				$e = new SiteException('Attempting to remove Analytics Opt '.
+					'Out Cookie with no SiteCookieModule available.');
+
+				$e->processAndContinue();
+			} else {
+				$cookie_module->removeCookie('AnalyticsOptOut');
+			}
+		}
+
+		// Opt Out trumps opt in if you include them both flags in your query
+		// string for some reason.
 		if (isset($_GET['AnalyticsOptOut'])) {
 			$this->analytics_opt_out = true;
 			if ($cookie_module === null) {
