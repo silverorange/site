@@ -6,7 +6,8 @@ require_once 'Site/pages/SitePage.php';
  * A page to display exceptions
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2011 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteExceptionPage extends SitePage
 {
@@ -36,20 +37,35 @@ class SiteExceptionPage extends SitePage
 	public function build()
 	{
 		parent::build();
+		$this->setHttpStatusHeader($this->getHttpStatusCode());
+	}
 
-		$title = $this->getTitle();
+	// }}}
+	// {{{ protected function buildTitle()
 
-		if (isset($this->layout->navbar))
-			$this->layout->navbar->createEntry($title);
+	protected function buildTitle()
+	{
+		$this->layout->data->title = $this->getTitle();
+	}
 
-		$status = $this->getHttpStatusCode();
-		$this->setHttpStatusHeader($status);
+	// }}}
+	// {{{ protected function buildContent()
 
-		$this->layout->data->title = $title;
-
+	protected function buildContent()
+	{
 		$this->layout->startCapture('content');
-		$this->display($status);
+		$this->display($this->getHttpStatusCode());
 		$this->layout->endCapture();
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		if (isset($this->layout->navbar)) {
+			$this->layout->navbar->createEntry($this->getTitle());
+		}
 	}
 
 	// }}}
@@ -60,8 +76,9 @@ class SiteExceptionPage extends SitePage
 		printf('<p>%s</p>', $this->getSummary($status));
 		$this->displaySuggestions();
 
-		if ($this->exception !== null)
-			$this->exception->process(false);
+		if ($this->exception !== null) {
+			$this->exception->processAndContinue();
+		}
 	}
 
 	// }}}
@@ -90,9 +107,7 @@ class SiteExceptionPage extends SitePage
 
 	protected function getSuggestions()
 	{
-		$suggestions = array();
-
-		return $suggestions;
+		return array();
 	}
 
 	// }}}
@@ -112,13 +127,14 @@ class SiteExceptionPage extends SitePage
 
 	protected function getTitle()
 	{
-		if ($this->exception === null)
+		if ($this->exception === null) {
 			$title = Site::_('Unknown Error');
-		elseif ($this->exception instanceof SiteException && 
-			$this->exception->title !== null)
+		} elseif ($this->exception instanceof SiteException &&
+			$this->exception->title !== null) {
 				$title = $this->exception->title;
-		else
+		} else {
 			$title = Site::_('Error');
+		}
 
 		return $title;
 	}
@@ -128,7 +144,7 @@ class SiteExceptionPage extends SitePage
 
 	protected function getSummary($status)
 	{
-		switch($status) {
+		switch ($status) {
 		case 404:
 			return Site::_('Sorry, we couldn’t find the page you were looking for.');
 		case 403:
