@@ -69,6 +69,7 @@ class SiteHttpErrorPage extends SitePage
 
 		$this->sendHttpStatusHeader();
 		$this->layout->data->title  = $this->getTitle();
+		$this->layout->data->site_title = $this->app->config->site->title;
 
 		$this->layout->startCapture('content');
 		$this->display();
