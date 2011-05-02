@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/SiteConfigModule.php';
 require_once 'Site/SiteDatabaseModule.php';
+require_once 'Site/SiteMultipleInstanceModule.php';
 require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteMultipartMailMessage.php';
 require_once 'Site/dataobjects/SiteContactMessageWrapper.php';
@@ -15,7 +16,7 @@ require_once 'Site/dataobjects/SiteContactMessageWrapper.php';
  * are addressed to support staff for the website.
  *
  * @package   Site
- * @copyright 2010 silverorange
+ * @copyright 2010-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactMailer extends SiteCommandLineApplication
@@ -45,6 +46,15 @@ class SiteContactMailer extends SiteCommandLineApplication
 	{
 		parent::__construct($id, $filename, $title, $documentation);
 
+		$instance = new SiteCommandLineArgument(array('-i', '--instance'),
+			'setInstance', 'Required. Sets the site instance for which to '.
+			'run this application.');
+
+		$instance->addParameter('string',
+			'instance name must be specified.');
+
+		$this->addCommandLineArgument($instance);
+
 		$debug_domain = new SiteCommandLineArgument(
 			array('-d', '--debug-domain'),
 			'setDebugDomain',
@@ -59,6 +69,16 @@ class SiteContactMailer extends SiteCommandLineApplication
 
 		$this->addCommandLineArgument($debug_domain);
 
+	}
+
+	// }}}
+	// {{{ public function setInstance()
+
+	public function setInstance($shortname)
+	{
+		putenv(sprintf('instance=%s', $shortname));
+		$this->instance->init();
+		$this->config->init();
 	}
 
 	// }}}
@@ -295,6 +315,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return array(
 			'config'   => 'SiteConfigModule',
 			'database' => 'SiteDatabaseModule',
+			'instance' => 'SiteMultipleInstanceModule',
 		);
 	}
 
