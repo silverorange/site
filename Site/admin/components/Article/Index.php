@@ -13,7 +13,7 @@ require_once 'include/SiteArticleVisibilityCellRenderer.php';
  * Index page for Articles
  *
  * @package   Site
- * @copyright 2005-2007 silverorange
+ * @copyright 2005-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticleIndex extends AdminIndex
@@ -28,6 +28,11 @@ class SiteArticleIndex extends AdminIndex
 	 */
 	protected $ui_xml = 'Site/admin/components/Article/index.xml';
 
+	/**
+	 * @var SiteArticle
+	 */
+	protected $article;
+
 	// }}}
 
 	// init phase
@@ -39,6 +44,25 @@ class SiteArticleIndex extends AdminIndex
 		$this->ui->loadFromXML($this->ui_xml);
 
 		$this->id = SiteApplication::initVar('id');
+
+		$this->initArticle();
+	}
+
+	// }}}
+	// {{{ protected function initArticle()
+
+	protected function initArticle()
+	{
+		$class = SwatDBClassMap::get('SiteArticle');
+
+		$this->article = new $class();
+		$this->article->setDatabase($this->app->db);
+
+		if (($this->id != '') && (!$this->article->load($this->id))) {
+			throw new AdminNotFoundException(
+				sprintf(Site::_('Article with id ‘%s’ not found.'),
+					$this->id));
+		}
 	}
 
 	// }}}
@@ -105,14 +129,13 @@ class SiteArticleIndex extends AdminIndex
 	{
 		parent::buildInternal();
 
-		$articles_frame = $this->ui->getWidget('articles_frame');
-
 		if ($this->id != 0) {
 			// show the detail frame
 			$details_frame = $this->ui->getWidget('details_frame');
 			$details_frame->visible = true;
 
 			// move the articles frame inside of the detail frame
+			$articles_frame = $this->ui->getWidget('articles_frame');
 			$articles_frame->parent->remove($articles_frame);
 			$details_frame->add($articles_frame);
 			$articles_frame->title = Site::_('Sub-Articles');
@@ -155,46 +178,50 @@ class SiteArticleIndex extends AdminIndex
 		$details_view->getField('visibility')->getFirstRenderer()->db =
 			$this->app->db;
 
-		$class = SwatDBClassMap::get('SiteArticle');
-		$article = new $class();
-		$article->setDatabase($this->app->db);
-		$found = $article->load($this->id);
+		if ($this->article->bodytext !== null)
+			$this->article->bodytext = SwatString::condense(SwatString::toXHTML(
+				$this->article->bodytext));
 
-		if (!$found)
-			throw new AdminNotFoundException(
-				sprintf(Site::_('Article with id ‘%s’ not found.'),
-					$this->id));
-
-		if ($article->bodytext !== null)
-			$article->bodytext = SwatString::condense(SwatString::toXHTML(
-				$article->bodytext));
-
-		if ($article->description !== null)
-			$article->description = SwatString::condense(SwatString::toXHTML(
-				$article->description));
+		if ($this->article->description !== null)
+			$this->article->description =
+				SwatString::condense(SwatString::toXHTML(
+					$this->article->description));
 
 		$details_frame->title = Site::_('Article');
-		$details_frame->subtitle = $article->title;
-		$details_view->data = $article;
+		$details_frame->subtitle = $this->article->title;
+		$details_view->data = $this->article;
 
-		// set link id
-		$this->ui->getWidget('details_toolbar')->setToolLinkValues($this->id);
+		$this->buildDetailsToolbar();
 
 		// build navbar
 		$this->navbar->popEntry();
 		$this->navbar->addEntry(new SwatNavBarEntry(Site::_('Articles'),
 			'Article'));
 
-		if ($article->parent != null) {
+		if ($this->article->parent != null) {
 			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
-				'getArticleNavBar', array($article->parent->id));
+				'getArticleNavBar', array($this->article->parent->id));
 
 			foreach ($navbar_rs as $elem)
 				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,
 					'Article/Index?id='.$elem->id));
 		}
 
-		$this->navbar->addEntry(new SwatNavBarEntry($article->title));
+		$this->navbar->addEntry(new SwatNavBarEntry($this->article->title));
+	}
+
+	// }}}
+	// {{{ protected function buildDetailsToolbar()
+
+	protected function buildDetailsToolbar()
+	{
+		$details_toolbar = $this->ui->getWidget('details_toolbar');
+		$details_toolbar->setToolLinkValues($this->article->id);
+
+		// show the on site link
+		$site_link = $this->ui->getWidget('view_on_site');
+		$site_link->sensitive = $this->article->enabled;
+		$site_link->value     = $this->article->path;
 	}
 
 	// }}}
