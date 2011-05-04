@@ -17,6 +17,10 @@
 				<property name="link">Article/Delete?id=%s</property>
 				<property name="stock_id">delete</property>
 			</widget>
+			<widget class="SwatToolLink" id="view_on_site">
+				<property name="title" translatable="yes">View on Site</property>
+				<property name="link">../%s</property>
+			</widget>
 		</widget>
 		<widget class="SwatContentBlock" id="details_block" />
 		<widget class="SwatDetailsView" id="details_view">
