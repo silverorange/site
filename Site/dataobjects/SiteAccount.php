@@ -367,6 +367,7 @@ class SiteAccount extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 
 		$this->registerDateProperty('createdate');
+		$this->registerDateProperty('last_login');
 
 		$this->registerInternalProperty('instance',
 			SwatDBClassMap::get('SiteInstance'));
