@@ -89,7 +89,7 @@ class SiteAccountEdit extends AdminDBEdit
 		if ($found && $this->account->id !== $account->id) {
 			$message = new SwatMessage(
 				Site::_('An account already exists with this email address.'),
-				SwatMessage::ERROR);
+				'error');
 
 			$message->content_type = 'text/xml';
 			$email->addMessage($message);

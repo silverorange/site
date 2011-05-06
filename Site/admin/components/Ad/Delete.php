@@ -23,8 +23,8 @@ class SiteAdDelete extends AdminDBDelete
 		$sql = $this->getDeleteSql();
 		$num = SwatDB::exec($this->app->db, $sql);
 		$message = new SwatMessage(sprintf(Site::ngettext(
-			'One ad has been deleted.', '%d ads have been deleted.', $num),
-			SwatString::numberFormat($num)), SwatMessage::NOTIFICATION);
+			'One ad has been deleted.', '%s ads have been deleted.', $num),
+			SwatString::numberFormat($num)), 'notice');
 
 		$this->app->messages->add($message);
 	}
