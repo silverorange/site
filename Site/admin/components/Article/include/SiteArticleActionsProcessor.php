@@ -66,7 +66,7 @@ class SiteArticleActionsProcessor
 
 				$message = new SwatMessage(sprintf(Site::ngettext(
 					'One article has been shown in the menu.',
-					'%d articles have been shown in the menu.', $num),
+					'%s articles have been shown in the menu.', $num),
 					SwatString::numberFormat($num)));
 
 				break;
@@ -77,7 +77,7 @@ class SiteArticleActionsProcessor
 
 				$message = new SwatMessage(sprintf(Site::ngettext(
 					'One article has been hidden from the menu.',
-					'%d articles have been hidden from the menu.', $num),
+					'%s articles have been hidden from the menu.', $num),
 					SwatString::numberFormat($num)));
 
 				break;
@@ -88,7 +88,7 @@ class SiteArticleActionsProcessor
 
 				$message = new SwatMessage(sprintf(Site::ngettext(
 					'One article has been made searchable.',
-					'%d articles have been made searchable.', $num),
+					'%s articles have been made searchable.', $num),
 					SwatString::numberFormat($num)));
 
 				break;
@@ -99,7 +99,7 @@ class SiteArticleActionsProcessor
 
 				$message = new SwatMessage(sprintf(Site::ngettext(
 					'One article has been hidden from the search results.',
-					'%d articles have been hidden from the search results.',
+					'%s articles have been hidden from the search results.',
 					$num), SwatString::numberFormat($num)));
 
 				break;
@@ -110,7 +110,7 @@ class SiteArticleActionsProcessor
 
 				$message = new SwatMessage(sprintf(Site::ngettext(
 					'One article has been enabled.',
-					'%d articles have been enabled.', $num),
+					'%s articles have been enabled.', $num),
 					SwatString::numberFormat($num)));
 
 				break;
@@ -121,7 +121,7 @@ class SiteArticleActionsProcessor
 
 				$message = new SwatMessage(sprintf(Site::ngettext(
 					'One article has been disabled.',
-					'%d articles have been disabled.', $num),
+					'%s articles have been disabled.', $num),
 					SwatString::numberFormat($num)));
 
 				break;

@@ -82,7 +82,7 @@ class SiteArticleEdit extends AdminDBEdit
 		} elseif (!$this->validateShortname($shortname->value)) {
 			$message = new SwatMessage(
 				Site::_('Shortname already exists and must be unique.'),
-				SwatMessage::ERROR);
+				'error');
 
 			$shortname->addMessage($message);
 		}
