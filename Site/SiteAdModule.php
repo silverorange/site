@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteAdReferrer.php';
  * Web application module for handling ad tracking
  *
  * @package   Site
- * @copyright 2007-2010 silverorange
+ * @copyright 2007-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Make sure kwid works for Microsoft adCenter
  */
@@ -23,7 +23,6 @@ class SiteAdModule extends SiteApplicationModule
 	 * Value was not loaded and the default value is used.
 	 */
 	const AD_NETWORK_GOOGLE    = 1;
-	const AD_NETWORK_YAHOO     = 2;
 	const AD_NETWORK_MICROSOFT = 3;
 
 	// }}}
@@ -85,7 +84,6 @@ class SiteAdModule extends SiteApplicationModule
 	 */
 	protected $ad_network_tracking_ids = array(
 		'gclid'  => self::AD_NETWORK_GOOGLE,
-		'OVNDID' => self::AD_NETWORK_YAHOO,
 		'kwid'   => self::AD_NETWORK_MICROSOFT,
 	);
 
@@ -105,7 +103,6 @@ class SiteAdModule extends SiteApplicationModule
 		'google'    => self::AD_NETWORK_GOOGLE,
 		'microsoft' => self::AD_NETWORK_MICROSOFT,
 		'bing'      => self::AD_NETWORK_MICROSOFT,
-		'yahoo'     => self::AD_NETWORK_YAHOO,
 	);
 
 	/**
