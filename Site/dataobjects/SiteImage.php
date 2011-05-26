@@ -798,8 +798,7 @@ class SiteImage extends SwatDBDataObject
 				($new_width / $imagick->getImageWidth()));
 		}
 
-		$this->setDimensionDpi($imagick, $dimension,
-			$imagick->getImageWidth(), $new_width);
+		$this->setDimensionDpi($imagick, $dimension, $new_width);
 
 		$imagick->resizeImage($new_width, $new_height,
 			$this->getResizeFilter($dimension), 1);
@@ -898,8 +897,7 @@ class SiteImage extends SwatDBDataObject
 			$new_height = ceil($imagick->getImageHeight() *
 				($new_width / $imagick->getImageWidth()));
 
-			$this->setDimensionDpi($imagick, $dimension,
-				$imagick->getImageWidth(), $new_width);
+			$this->setDimensionDpi($imagick, $dimension, $new_width);
 
 			$imagick->resizeImage($new_width, $new_height,
 				$this->getResizeFilter($dimension), 1);
@@ -919,8 +917,7 @@ class SiteImage extends SwatDBDataObject
 			$new_width = ceil($imagick->getImageWidth() *
 				($new_height / $imagick->getImageHeight()));
 
-			$this->setDimensionDpi($imagick, $dimension,
-				$imagick->getimagewidth(), $new_width);
+			$this->setDimensionDpi($imagick, $dimension, $new_width);
 
 			$imagick->resizeImage($new_width, $new_height,
 				$this->getResizeFilter($dimension), 1);
@@ -939,8 +936,15 @@ class SiteImage extends SwatDBDataObject
 	// {{{ protected function setDimensionDpi()
 
 	protected function setDimensionDpi(Imagick $imagick,
-		SiteImageDimension $dimension, $original_width = 1, $resized_width = 1)
+		SiteImageDimension $dimension, $resized_width = null)
 	{
+		if ($resized_width === null) {
+			$resized_width = 1;
+			$original_width = 1;
+		} else {
+			$original_width = $this->getOriginalImagick()->getImageWidth();
+		}
+
 		$dpi = ($this->original_dpi === null) ? $dimension->dpi :
 			round($this->original_dpi / ($original_width / $resized_width));
 
@@ -1132,6 +1136,17 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		return $imagick;
+	}
+
+	// }}}
+	// {{{ protected function getOriginalImagick()
+
+	/**
+	 * Gets a the Imagick instance for the original file
+	 */
+	protected function getOriginalImagick()
+	{
+		return reset($this->imagick_instances);
 	}
 
 	// }}}
