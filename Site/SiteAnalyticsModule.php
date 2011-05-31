@@ -183,6 +183,7 @@ JS;
 	{
 		$this->ga_commands = array(
 			'_trackPageview',
+			'_trackPageLoadTime',
 		);
 	}
 
