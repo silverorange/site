@@ -14,8 +14,9 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 {
 	// {{{ private properties
 
-	private $tests = array();
-	private $slots = array();
+	private $tests    = array();
+	private $slots    = array();
+	private $cleanups = array();
 
 	// }}}
 	// {{{ public function init()
@@ -24,6 +25,10 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	{
 		foreach ($this->tests as $name => $value) {
 			$this->initTest($name);
+		}
+
+		foreach ($this->cleanups as $name => $slot) {
+			$this->cleanupTest($name, $slot);
 		}
 	}
 
@@ -48,6 +53,36 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 			}
 
 			$this->slots[$name] = $slot;
+		}
+	}
+
+	// }}}
+	// {{{ public function registerCleanup()
+
+	public function registerCleanup($name, $slot = null)
+	{
+		$this->cleanups[$name] = $slot;
+	}
+
+	// }}}
+	// {{{ public function cleanupTest()
+
+	public function cleanupTest($name, $slot = null)
+	{
+		$cookie_name = $this->getCookieName($name);
+
+		if (isset($this->app->cookie->$cookie_name))
+			$this->app->cookie->removeCookie($cookie_name);
+
+		if ($slot !== null && $this->app->hasModule('SiteAnalyticsModule')) {
+			$analytics = $this->app->getModule('SiteAnalyticsModule');
+
+			$ga_command = array(
+				'_deleteCustomVar',
+				$slot,
+				);
+
+			$analytics->prependGoogleAnalyticsCommand($ga_command);
 		}
 	}
 
@@ -99,7 +134,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	{
 		$value       = null;
 		$set_cookie  = false;
-		$cookie_name = 'test_'.$name;
+		$cookie_name = $this->getCookieName($name);
 
 		if (isset($_GET['alternatetest']) && $_GET['alternatetest'] == $name
 			&& isset($_GET['alternatetestversion'])) {
@@ -154,6 +189,14 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 			// prepend since it has to happen before the pageview
 			$analytics->prependGoogleAnalyticsCommand($ga_command);
 		}
+	}
+
+	// }}}
+	// {{{ protected function getCookieName()
+
+	protected function getCookieName($name)
+	{
+		return 'test_'.$name;
 	}
 
 	// }}}
