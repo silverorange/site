@@ -107,6 +107,11 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 			// if we ever do more than a/b testing.
 			$value = (bool) $_GET['alternatetestversion'];
 			$set_cookie = true;
+		} elseif (isset($_GET[$name.'_test'])) {
+			// Cast as boolean so it matches expected values. This should change
+			// if we ever do more than a/b testing.
+			$value = (bool) $_GET[$name.'_test'];
+			$set_cookie = true;
 		} else {
 			if (isset($this->app->cookie->$cookie_name)) {
 				$value = (bool) $this->app->cookie->$cookie_name;
