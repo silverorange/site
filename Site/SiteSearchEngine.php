@@ -233,6 +233,7 @@ abstract class SiteSearchEngine extends SwatObject
 
 				if ($results !== false) {
 					$results->setDatabase($this->app->db);
+					$results->reindex();
 				}
 			}
 		}
