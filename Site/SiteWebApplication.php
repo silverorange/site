@@ -654,19 +654,15 @@ class SiteWebApplication extends SiteApplication
 	 */
 	public function getBaseHref($secure = null)
 	{
-		if ($secure === null)
-			$secure = $this->secure;
+		$base_href = $this->getRootBaseHref($secure);
 
-		if ($secure)
-			$base_uri = $this->secure_base_uri;
-		else
-			$base_uri = $this->base_uri;
+		if (isset($this->mobile)) {
+			if ($this->mobile->isMobileUrl() &&
+				$this->mobile->getPrefix() !== null) {
 
-		if (substr($base_uri, 0, 1) == '/')
-			$base_href = $this->getProtocol($secure).
-				$this->getServerName($secure).$base_uri;
-		else
-			$base_href = $base_uri;
+				$base_href.= $this->mobile->getPrefix().'/';
+			}
+		}
 
 		return $base_href;
 	}
@@ -732,6 +728,74 @@ class SiteWebApplication extends SiteApplication
 			$uri = $this->uri;
 
 		return $uri;
+	}
+
+	// }}}
+	// {{{ public function getSwitchMobileLink()
+
+	/**
+	 * Gets the link to switch to the mobile, or non-mobile url
+	 *
+	 * @param boolean $mobile If true, the link is for the mobile version
+	 *                        of the site, if false, for the non-mobile version.
+	 * @param string $source  Optional additional source path to append tot the
+	 *                        base link.
+	 *
+	 * @return string the link to switch the mobile url of the site
+	 */
+	public function getSwitchMobileLink($mobile = true, $source = null)
+	{
+		$link = $this->getRootBaseHref();
+
+		if (!isset($this->mobile)) {
+			throw new SwatException(
+				'This site does not have a SiteMobileModule');
+		}
+
+		if ($mobile && $this->mobile->getPrefix() !== null) {
+			$link.'/'.$this->mobile->getPrefix();
+		}
+
+		if ($source !== null) {
+			$link.= $source;
+		}
+
+		$link.= sprintf('?%s=%s',
+			$this->mobile->getSwitchGetVar(),
+			$mobile ? '1' : '0');
+
+		return $link;
+	}
+
+	// }}}
+	// {{{ protected function getRootBaseHref()
+
+	/**
+	 * Gets the root part of the base-href (usually the protocol and domain)
+	 *
+	 * @param boolean $secure whether or not the base href should be a secure
+	 *                         URI. The default value of null maintains the
+	 *                         same security as the current page.
+	 *
+	 * @return string the root base href.
+	 */
+	protected function getRootBaseHref($secure = null)
+	{
+		if ($secure === null)
+			$secure = $this->secure;
+
+		if ($secure)
+			$base_uri = $this->secure_base_uri;
+		else
+			$base_uri = $this->base_uri;
+
+		if (substr($base_uri, 0, 1) == '/')
+			$base_href = $this->getProtocol($secure).
+				$this->getServerName($secure).$base_uri;
+		else
+			$base_href = $base_uri;
+
+		return $base_href;
 	}
 
 	// }}}
