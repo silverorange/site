@@ -162,8 +162,6 @@ class SiteMobileModule extends SiteApplicationModule
 
 	public function isMobileBrowser()
 	{
-		return true;
-
 		// regexp from http://detectmobilebrowser.com/
 		$useragent = $_SERVER['HTTP_USER_AGENT'];
 
