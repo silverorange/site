@@ -941,8 +941,10 @@ class SiteImage extends SwatDBDataObject
 		if ($resized_width === null) {
 			$resized_width = 1;
 			$original_width = 1;
-		} else {
+		} elseif ($this->getOriginalImagick() !== false) {
 			$original_width = $this->getOriginalImagick()->getImageWidth();
+		} else {
+			$original_width = $imagick->getImageWidth();
 		}
 
 		$dpi = ($this->original_dpi === null) ? $dimension->dpi :
