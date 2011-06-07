@@ -90,16 +90,6 @@ class SiteMobileModule extends SiteApplicationModule
 			'maximum-scale=1.0, user-scalable=no';
 
 		$meta_tag->display();
-
-		$meta_tag = new SwatHtmlTag('meta');
-		$meta_tag->name = 'apple-mobile-web-app-capable';
-		$meta_tag->content = 'yes';
-		$meta_tag->display();
-
-		$meta_tag = new SwatHtmlTag('meta');
-		$meta_tag->name = 'apple-mobile-web-app-status-bar-style';
-		$meta_tag->content = 'black-translucent';
-		$meta_tag->display();
 	}
 
 	// }}}
