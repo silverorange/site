@@ -150,10 +150,19 @@ class SiteLayout extends SiteObject
 		else
 			$this->data->meta_description = '';
 
-		$this->data->analytics     = '';
-		$this->data->meta_keywords = '';
-		$this->data->extra_headers = '';
-		$this->data->extra_footers = '';
+		$this->data->analytics        = '';
+		$this->data->meta_keywords    = '';
+		$this->data->extra_headers    = '';
+		$this->data->extra_footers    = '';
+		$this->data->mobile_meta_tags = '';
+
+		if (isset($this->app->mobile) && $this->app->mobile->isMobileUrl()) {
+			$this->addBodyClass('mobile');
+
+			ob_start();
+			$this->app->mobile->displayMobileMetaTags();
+			$this->data->mobile_meta_tags = ob_get_clean();
+		}
 	}
 
 	// }}}

@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swat/SwatHtmlTag.php';
 require_once 'Site/SiteApplicationModule.php';
 require_once 'Site/exceptions/SiteException.php';
 
@@ -71,6 +72,34 @@ class SiteMobileModule extends SiteApplicationModule
 	public function getPrefix()
 	{
 		return $this->prefix;
+	}
+
+	// }}}
+	// {{{ public function displayMobileMetaTags()
+
+	/**
+	 * Display mobile meta tags for mobile-layouts.
+	 *
+	 * This is used in SiteLayout which sets SiteLayout::$data->mobile_meta_tags
+	 */
+	public function displayMobileMetaTags()
+	{
+		$meta_tag = new SwatHtmlTag('meta');
+		$meta_tag->name = 'viewport';
+		$meta_tag->content = 'width=device-width, initial-scale=1.0, '.
+			'maximum-scale=1.0, user-scalable=no';
+
+		$meta_tag->display();
+
+		$meta_tag = new SwatHtmlTag('meta');
+		$meta_tag->name = 'apple-mobile-web-app-capable';
+		$meta_tag->content = 'yes';
+		$meta_tag->display();
+
+		$meta_tag = new SwatHtmlTag('meta');
+		$meta_tag->name = 'apple-mobile-web-app-status-bar-style';
+		$meta_tag->content = 'black-translucent';
+		$meta_tag->display();
 	}
 
 	// }}}
