@@ -234,8 +234,10 @@ class Site
 			'errors.fatal_severity'    => null,
 
 			// Analytics
-			// Google analytics account id (UA-XXXXX-XXX)
-			'analytics.google_account' => null,
+			// Google analytics website property id (UA-XXXXX-XXX)
+			'analytics.google_account'    => null,
+			// Google analytics account id (XXXXXXXX)
+			'analytics.google_account_id' => null,
 
 			// Ads
 			// Tracking id in URIs
