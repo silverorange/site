@@ -54,7 +54,7 @@ class SiteSearchPagination extends SwatPagination
 	{
 		parent::process();
 
-		if ($this->type !== null &&	isset($_GET['type'])) {
+		if ($this->type !== null && isset($_GET['type'])) {
 			if ($_GET['type'] === $this->type && isset($_GET['page']))
 				$this->setCurrentPage($_GET['page']);
 		} else {
