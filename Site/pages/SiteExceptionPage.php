@@ -145,6 +145,8 @@ class SiteExceptionPage extends SitePage
 	protected function getSummary($status)
 	{
 		switch ($status) {
+		case 401:
+			return Site::_('Sorry, you must log in to view this page.');
 		case 404:
 			return Site::_('Sorry, we couldn’t find the page you were looking for.');
 		case 403:
@@ -161,6 +163,9 @@ class SiteExceptionPage extends SitePage
 	protected function setHttpStatusHeader($status)
 	{
 		switch ($status) {
+		case 401:
+			header('HTTP/1.0 401 Unauthorized');
+			break;
 		case 403:
 			header('HTTP/1.0 403 Forbidden');
 			break;
