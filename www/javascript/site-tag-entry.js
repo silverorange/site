@@ -27,6 +27,7 @@ function SiteTagEntry(id, data_store, initial_selected_tag_array,
 	this.initial_selected_tag_array = initial_selected_tag_array;
 
 	this.allow_adding_tags = allow_adding_tags;
+	this.display_shortname = true;
 
 	this.selected_tag_array = [];
 	this.new_tag_array = [];
@@ -58,6 +59,9 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 	this.main_container.insertBefore(this.array_element,
 		this.main_container.firstChild);
 
+	var that = this;
+	console.log(that.display_shortname);
+
 	// create auto-complete widget
 	this.auto_complete = new YAHOO.widget.AutoComplete(
 		this.input_element, this.id + '_container', this.data_store, {
@@ -76,10 +80,13 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 				var title = item[0];
 				var shortname = item[1];
 
-				if (title.toLowerCase() == shortname.toLowerCase())
+				if (!that.display_shortname ||
+					title.toLowerCase() == shortname.toLowerCase()) {
+
 					return title;
-				else
+				} else {
 					return title + ' (' + shortname + ')';
+				}
 			}
 	});
 
