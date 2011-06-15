@@ -45,6 +45,13 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 */
 	public $json_server;
 
+	/*
+	 * Whether or not to display the tag shortname in brackets
+	 *
+	 * @var boolean
+	 */
+	public $display_shortname = true;
+
 	// }}}
 	// {{{ protected properties
 
@@ -324,6 +331,11 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		if ($this->maximum_tags !== null) {
 			$javascript.= sprintf("\n%s_obj.maximum_tags = %d;",
 				$this->id, $this->maximum_tags);
+		}
+
+		if (!$this->display_shortname) {
+			$javascript.= sprintf("\n%s_obj.display_shortname = false;",
+				$this->id);
 		}
 
 		return $javascript;
