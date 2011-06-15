@@ -60,7 +60,6 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 		this.main_container.firstChild);
 
 	var that = this;
-	console.log(that.display_shortname);
 
 	// create auto-complete widget
 	this.auto_complete = new YAHOO.widget.AutoComplete(
