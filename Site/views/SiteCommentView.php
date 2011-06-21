@@ -103,7 +103,7 @@ abstract class SiteCommentView extends SiteView
 	// }}}
 
 	// part display methods
-	// {{{ protected function getRelativeUri()
+	// {{{ abstract protected function getRelativeUri()
 
 	abstract protected function getRelativeUri(SiteComment $comment);
 
