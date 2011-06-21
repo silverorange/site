@@ -67,15 +67,8 @@ abstract class SiteCommentIndex extends AdminPage
 		$this->ui->getWidget('comment_replicator')->add(
 			$this->comment_display);
 
-		$visibility_options = array(
-			self::SHOW_UNAPPROVED => Site::_('Pending Comments'),
-			self::SHOW_ALL        => Site::_('All Comments'),
-			self::SHOW_ALL_SPAM   => Site::_('All Comments, Including Spam'),
-			self::SHOW_SPAM       => Site::_('Spam Only'),
-		);
-
 		$visibility = $this->ui->getWidget('search_visibility');
-		$visibility->addOptionsByArray($visibility_options);
+		$visibility->addOptionsByArray($this->getVisibilityOptions());
 		$visibility->value = $this->getDefaultVisibilityValue();
 
 		$this->processSearchUi();
@@ -262,6 +255,19 @@ abstract class SiteCommentIndex extends AdminPage
 	protected function getDefaultVisibilityValue()
 	{
 		return self::SHOW_ALL;
+	}
+
+	// }}}
+	// {{{ protected function getVisibilityOptions()
+
+	protected function getVisibilityOptions()
+	{
+		return array(
+			self::SHOW_UNAPPROVED => Site::_('Pending Comments'),
+			self::SHOW_ALL        => Site::_('All Comments'),
+			self::SHOW_ALL_SPAM   => Site::_('All Comments, Including Spam'),
+			self::SHOW_SPAM       => Site::_('Spam Only'),
+		);
 	}
 
 	// }}}
