@@ -2,7 +2,7 @@
  * Control for selecting multiple tags from a array of tags
  *
  * @package   Site
- * @copyright 2007-2009 silverorange
+ * @copyright 2007-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 
@@ -27,7 +27,7 @@ function SiteTagEntry(id, data_store, initial_selected_tag_array,
 	this.initial_selected_tag_array = initial_selected_tag_array;
 
 	this.allow_adding_tags = allow_adding_tags;
-	this.display_shortname = true;
+	this.show_shortname = true;
 
 	this.selected_tag_array = [];
 	this.new_tag_array = [];
@@ -79,7 +79,7 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 				var title = item[0];
 				var shortname = item[1];
 
-				if (!that.display_shortname ||
+				if (!that.show_shortname ||
 					title.toLowerCase() == shortname.toLowerCase()) {
 
 					return title;

@@ -12,10 +12,11 @@ require_once 'Swat/SwatMessage.php';
 require_once 'Swat/SwatYUI.php';
 
 /**
- * Control for creating new tags and selecting multiple tags from a array of tags
+ * Control for creating new tags and selecting multiple tags from a array of
+ * tags
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteTagEntry extends SwatInputControl implements SwatState
@@ -50,7 +51,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 *
 	 * @var boolean
 	 */
-	public $display_shortname = true;
+	public $show_shortname = true;
 
 	// }}}
 	// {{{ protected properties
@@ -333,8 +334,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 				$this->id, $this->maximum_tags);
 		}
 
-		if (!$this->display_shortname) {
-			$javascript.= sprintf("\n%s_obj.display_shortname = false;",
+		if (!$this->show_shortname) {
+			$javascript.= sprintf("\n%s_obj.show_shortname = false;",
 				$this->id);
 		}
 
