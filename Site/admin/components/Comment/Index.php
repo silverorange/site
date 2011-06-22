@@ -227,6 +227,7 @@ abstract class SiteCommentIndex extends AdminPage
 
 			$this->where_clause = $where;
 		}
+
 		return $this->where_clause;
 	}
 
