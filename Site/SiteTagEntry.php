@@ -168,7 +168,12 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 			$tag_strings = $data[$this->id];
 
 			foreach ($tag_strings as $string) {
-				$this->selected_tag_array[$string] = $string;
+				if (isset($this->tag_array[$string])) {
+					$this->selected_tag_array[$string] =
+						$this->tag_array[$string];
+				} else {
+					$this->selected_tag_array[$string] = $string;
+				}
 			}
 		}
 
