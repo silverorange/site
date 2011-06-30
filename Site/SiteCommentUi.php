@@ -430,6 +430,7 @@ abstract class SiteCommentUi
 
 		$tag->type = 'submit';
 		$tag->name = 'post_button';
+		$tag->class = 'swat-button site-comment-post-button';
 		$tag->value = Site::_('Post');
 
 		return $tag;
