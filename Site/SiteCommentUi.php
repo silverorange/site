@@ -394,14 +394,11 @@ abstract class SiteCommentUi
 		if ($this->comment instanceof SiteComment &&
 			$this->ui->getWidget('preview_button')->hasBeenClicked()) {
 
-			$button_tag = new SwatHtmlTag('input');
-			$button_tag->type = 'submit';
-			$button_tag->name = 'post_button';
-			$button_tag->value = Site::_('Post');
+			$tag = $this->getCommentPreviewPostInputTag();
 
 			$message = new SwatMessage($this->getMessage('preview-message'));
 			$message->secondary_content = sprintf(
-				$this->getMessage('preview-message-subtitle'), $button_tag);
+				$this->getMessage('preview-message-subtitle'), $tag);
 
 			$message->content_type = 'text/xml';
 
@@ -422,6 +419,20 @@ abstract class SiteCommentUi
 
 			$container->visible = true;
 		}
+	}
+
+	// }}}
+	// {{{ protected function getCommentPreviewPostInputTag()
+
+	protected function getCommentPreviewPostInputTag()
+	{
+		$tag = new SwatHtmlTag('input');
+
+		$tag->type = 'submit';
+		$tag->name = 'post_button';
+		$tag->value = Site::_('Post');
+
+		return $tag;
 	}
 
 	// }}}
