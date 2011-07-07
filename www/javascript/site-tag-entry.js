@@ -124,8 +124,6 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 	this.auto_complete.itemMouseOutEvent.subscribe(
 		this.itemUnSelected, this, true);
 
-	var that = this;
-
 	YAHOO.util.Event.addListener(this.input_element, 'keydown',
 		function(e, entry) {
 			// capture enter key for new tags
@@ -133,11 +131,11 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 
 				YAHOO.util.Event.stopEvent(e);
 
-				if (!that.item_selected) {
+				if (!this.item_selected) {
 					entry.createTag();
 				}
 			}
-		}, this);
+		}, this, true);
 
 	YAHOO.util.Event.addListener(this.input_element, 'keyup',
 		this.updateAddTagElement, this, true);
@@ -233,9 +231,9 @@ SiteTagEntry.prototype.canAddTag = function(tag_name)
 		return false;
 	}
 
-	// tag already added
+	// tag already added (check title)
 	for (var i = 0; i < this.selected_tag_array.length; i++) {
-		var tag = this.selected_tag_array[i][1];
+		var tag = this.selected_tag_array[i][0];
 		if (tag.toUpperCase() == tag_name.toUpperCase()) {
 			return false;
 		}
@@ -284,13 +282,25 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	// trim tag string
 	tag_name = tag_name.replace(/^\s+|\s+$/g, '');
 
-	if (tag_name.length == 0)
+	if (tag_name.length == 0) {
+		this.input_element.value = '';
 		return;
+	}
 
+	// make sure new tag we typped in doesn't match a selected tag
+	for (var i = 0; i < this.selected_tag_array.length; i++) {
+		var tag = this.selected_tag_array[i][0];
+		if (tag.toUpperCase() == tag_name.toUpperCase()) {
+			this.updateAddTagElement();
+			return;
+		}
+	}
+
+	// make sure tag we clicked on in autocomplete doesn't match a selected tag
 	for (var i = 0; i < this.selected_tag_array.length; i++) {
 		var tag = this.selected_tag_array[i][1];
 		if (tag.toUpperCase() == tag_name.toUpperCase()) {
-			this.input_element.value = '';
+			this.updateAddTagElement();
 			return;
 		}
 	}
@@ -298,7 +308,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	for (var i = 0; i < this.new_tag_array.length; i++) {
 		var tag = this.new_tag_array[i];
 		if (tag.toUpperCase() == tag_name.toUpperCase()) {
-			this.input_element.value = '';
+			this.updateAddTagElement();
 			return;
 		}
 	}
@@ -478,6 +488,7 @@ SiteTagEntry.prototype.removeTag = function(tag_name)
 	}
 
 	this.updateVisibility();
+	this.updateAddTagElement();
 }
 
 // }}}
