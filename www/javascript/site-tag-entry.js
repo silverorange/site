@@ -142,6 +142,16 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 			}
 		}, this);
 
+	this.addDelimiterListener();
+
+	this.updateVisibility();
+}
+
+// }}}
+// {{{ addDelimiterListener()
+
+SiteTagEntry.prototype.addDelimiterListener = function()
+{
 	// use key-up instead of key-down to prevent annoying problem where the
 	// auto-complete container pops open after adding the tag
 	YAHOO.util.Event.addListener(this.input_element, 'keyup',
@@ -160,8 +170,6 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 				entry.addTag(tag_name);
 			}
 		}, this);
-
-	this.updateVisibility();
 }
 
 // }}}
@@ -256,7 +264,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 
 	var anchor_tag = document.createElement('a');
 	anchor_tag.id = this.id + '_tag_remove_' + tag_name;
-	anchor_tag.href = '#';
+	anchor_tag.href = '#remove';
 	anchor_tag.appendChild(document.createTextNode(
 		SiteTagEntry.remove_text));
 

@@ -111,7 +111,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		SwatWidget::display();
 
 		$div_tag = new SwatHtmlTag('div');
-		$div_tag->class = 'site-tag-entry';
+		$div_tag->class = $this->getCSSClassString();
 		$div_tag->id = $this->id;
 		$div_tag->open();
 
@@ -282,6 +282,22 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	}
 
 	// }}}
+	// {{{ protected function getCSSClassNames()
+
+	/**
+	 * Gets the array of CSS classes that are applied to this tag entry
+	 *
+	 * @return array the array of CSS classes that are applied to this
+	 *                tag entry.
+	 */
+	protected function getCSSClassNames()
+	{
+		$classes = array('site-tag-entry');
+		$classes = array_merge($classes, parent::getCSSClassNames());
+		return $classes;
+	}
+
+	// }}}
 	// {{{ protected function getInlineJavaScript()
 
 	/**
@@ -327,9 +343,10 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 					SwatString::minimizeEntities($tag)));
 		}
 
-		$javascript.= sprintf("var %1\$s_obj = new SiteTagEntry(".
-			"'%1\$s', %2\$s, [%3\$s], %4\$s);",
+		$javascript.= sprintf("var %1\$s_obj = new %2\$s(".
+			"'%1\$s', %3\$s, [%4\$s], %5\$s);",
 			$this->id,
+			$this->getJavaScriptClassName(),
 			$data_store,
 			implode(',', $selected_tag_array),
 			$this->allow_adding_tags ? 'true' : 'false');
@@ -366,6 +383,14 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 			"SiteTagEntry.remove_text = {$remove_text};\n".
 			"SiteTagEntry.new_text    = {$new_text};\n".
 			"SiteTagEntry.add_text    = {$add_text};\n";
+	}
+
+	// }}}
+	// {{{ protected function getJavaScriptClassName()
+
+	protected function getJavaScriptClassName()
+	{
+		return 'SiteTagEntry';
 	}
 
 	// }}}
