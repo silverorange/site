@@ -376,14 +376,19 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 		hidden_tag.type = 'hidden';
 		hidden_tag.name = this.id + '_new[]';
 		hidden_tag.value = tag_name;
-		var title_node = document.createTextNode(
-			title + ' ' + SiteTagEntry.new_text + ' ');
+		var title_node = document.createTextNode(title + ' ');
+
+		var new_node = document.createElement('span');
+		new_node.className = 'site-tag-entry-new';
+		new_node.appendChild(document.createTextNode(SiteTagEntry.new_text));
 
 		YAHOO.util.Dom.addClass(li_tag, 'new-tag');
 		li_tag.appendChild(hidden_tag);
+
 		this.new_tag_array.push(tag_name);
 	} else {
 		var title_node = document.createTextNode(title + ' ');
+		var new_node = null;
 		var hidden_tag = document.createElement('input');
 		hidden_tag.type = 'hidden';
 		hidden_tag.name = this.id + '[]';
@@ -392,6 +397,10 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	}
 
 	li_tag.appendChild(title_node);
+	if (new_node) {
+		li_tag.appendChild(new_node);
+		li_tag.appendChild(document.createTextNode(' '));
+	}
 	li_tag.appendChild(anchor_tag);
 
 	// add array node
