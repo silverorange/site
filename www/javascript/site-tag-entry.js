@@ -93,10 +93,7 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 		this.addTagFromAutoComplete, this, true);
 
 	if (this.allow_adding_tags) {
-		this.a_tag = document.createElement('a');
-		this.a_tag.className = 'site-tag-entry-add-tag';
-		this.a_tag.href = '#';
-		this.a_tag.title = SiteTagEntry.add_text;
+		this.a_tag = this.getAddTagElement();
 		YAHOO.util.Event.addListener(this.a_tag, 'click',
 			function(e, entry) {
 				YAHOO.util.Event.preventDefault(e);
@@ -127,24 +124,53 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 	this.auto_complete.itemMouseOutEvent.subscribe(
 		this.itemUnSelected, this, true);
 
-	var self = this;
+	var that = this;
 
 	YAHOO.util.Event.addListener(this.input_element, 'keydown',
 		function(e, entry) {
 			// capture enter key for new tags
 			if (YAHOO.util.Event.getCharCode(e) == 13) {
 
-				//alert(entry.auto_complete.isFocused());
 				YAHOO.util.Event.stopEvent(e);
 
-				if (!self.item_selected)
+				if (!that.item_selected) {
 					entry.createTag();
+				}
 			}
 		}, this);
+
+	YAHOO.util.Event.addListener(this.input_element, 'keyup',
+		this.updateAddTagElement, this, true);
 
 	this.addDelimiterListener();
 
 	this.updateVisibility();
+	this.updateAddTagElement();
+}
+
+// }}}
+// {{{ updateAddTagElement()
+
+SiteTagEntry.prototype.updateAddTagElement = function()
+{
+	if (this.canAddTag(this.input_element.value)) {
+		YAHOO.util.Dom.removeClass(this.a_tag,
+			'site-tag-entry-add-insensitive');
+	} else {
+		YAHOO.util.Dom.addClass(this.a_tag, 'site-tag-entry-add-insensitive');
+	}
+}
+
+// }}}
+// {{{ getAddTagElement()
+
+SiteTagEntry.prototype.getAddTagElement = function()
+{
+	var tag = document.createElement('a');
+	tag.className = 'site-tag-entry-add-tag';
+	tag.href = '#add';
+	tag.title = SiteTagEntry.add_text;
+	return tag;
 }
 
 // }}}
@@ -182,6 +208,63 @@ SiteTagEntry.prototype.addTagFromAutoComplete = function(
 	var tag_title = elItem[2][0];
 
 	this.addTag(tag_name, tag_title);
+}
+
+// }}}
+// {{{ canAddTag()
+
+SiteTagEntry.prototype.canAddTag = function(tag_name)
+{
+	var total_tags = this.selected_tag_array.length +
+		this.new_tag_array.length;
+
+	// can't add more than maximum tags
+	if (this.maximum_tags > 0 && total_tags >= this.maximum_tags) {
+		return false;
+	}
+
+	this.item_selected = false;
+
+	// trim tag string
+	tag_name = tag_name.replace(/^\s+|\s+$/g, '');
+
+	// no empty string tags
+	if (tag_name.length == 0) {
+		return false;
+	}
+
+	// tag already added
+	for (var i = 0; i < this.selected_tag_array.length; i++) {
+		var tag = this.selected_tag_array[i][1];
+		if (tag.toUpperCase() == tag_name.toUpperCase()) {
+			return false;
+		}
+	}
+
+	// tag already added
+	for (var i = 0; i < this.new_tag_array.length; i++) {
+		var tag = this.new_tag_array[i];
+		if (tag.toUpperCase() == tag_name.toUpperCase()) {
+			return false;
+		}
+	}
+
+	// make sure it's in the data provider if we don't allow adding new tags
+	if (!this.allow_adding_tags && this.data_store.data) {
+		var found = false;
+		for (var i = 0; i < this.data_store.data.length; i++) {
+			var tag = this.data_store.data[i][1];
+			if (tag.toUpperCase() == tag_name.toUpperCase()) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 // }}}

@@ -96,6 +96,7 @@ li.site-tag-prehighlight {
 	margin-left: 2px;
 	padding: 0 0 2px 16px;
 	font-size: 85%;
+	color: #438d04;
 }
 /* IE hack to prevent image from displaying underneath input */
 * html .site-tag-entry .site-tag-entry-add-tag {
@@ -107,6 +108,13 @@ li.site-tag-prehighlight {
 	left: 154px;
 	top: 2px;
 	zoom: 1;
+}
+
+.site-tag-entry .site-tag-entry-add-insensitive {
+	background-image: url(../../swat/images/swat-tool-link-create-insensitive.png);
+	color: #bbb;
+	text-decoration: none;
+	cursor: default;
 }
 
 .site-tag-entry a {
