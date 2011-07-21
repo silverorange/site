@@ -160,9 +160,11 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 
 		$data = &$this->getForm()->getFormData();
 		$new_key = $this->id.'_new';
-		if (isset($data[$new_key]) && is_array($data[$new_key]))
-			foreach ($data[$new_key] as $new_tag)
-				$this->insertTag($new_tag);
+		if (isset($data[$new_key]) && is_array($data[$new_key])) {
+			foreach ($data[$new_key] as $index => $new_tag) {
+				$this->insertTag($new_tag, $index);
+			}
+		}
 
 		if (isset($data[$this->id]) && is_array($data[$this->id])) {
 			$tag_strings = $data[$this->id];
@@ -399,7 +401,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	/**
 	 * Creates a new tag
 	 */
-	abstract protected function insertTag($title);
+	abstract protected function insertTag($title, $index);
 
 	// }}}
 }
