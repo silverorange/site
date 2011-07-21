@@ -346,9 +346,38 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	if (new_tag && !this.allow_adding_tags)
 		return;
 
-	if (new_tag)
+	if (new_tag) {
 		var title = tag_name;
+	}
 
+	if (new_tag) {
+		this.new_tag_array.push(tag_name);
+	}
+
+	// add array node
+	var li_tag = this.getTagElement(tag_name, title, new_tag);
+	if (this.array_element.lastChild) {
+		YAHOO.util.Dom.removeClass(this.array_element.lastChild,
+			'site-tag-last');
+	}
+	this.array_element.appendChild(li_tag);
+
+	var in_attributes = { opacity: { from: 0, to: 1 } };
+	var in_animation = new YAHOO.util.Anim(li_tag, in_attributes,
+		0.5, YAHOO.util.Easing.easeIn);
+
+	in_animation.animate();
+
+	// clear input value once a value is chosen
+	this.input_element.value = '';
+	this.updateVisibility();
+}
+
+// }}}
+// {{{ createNewTagNode()
+
+SiteTagEntry.prototype.getTagElement = function(tag_name, title, new_tag)
+{
 	// create new array node
 	var li_tag = document.createElement('li');
 	li_tag.id = this.id + '_tag_' + tag_name;
@@ -384,8 +413,6 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 
 		YAHOO.util.Dom.addClass(li_tag, 'new-tag');
 		li_tag.appendChild(hidden_tag);
-
-		this.new_tag_array.push(tag_name);
 	} else {
 		var title_node = document.createTextNode(title + ' ');
 		var new_node = null;
@@ -403,23 +430,8 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	}
 	li_tag.appendChild(anchor_tag);
 
-	// add array node
-	if (this.array_element.lastChild) {
-		YAHOO.util.Dom.removeClass(this.array_element.lastChild,
-			'site-tag-last');
-	}
-	this.array_element.appendChild(li_tag);
-
-	var in_attributes = { opacity: { from: 0, to: 1 } };
-	var in_animation = new YAHOO.util.Anim(li_tag, in_attributes,
-		0.5, YAHOO.util.Easing.easeIn);
-
-	in_animation.animate();
-
-	// clear input value once a value is chosen
-	this.input_element.value = '';
-	this.updateVisibility();
-}
+	return li_tag;
+};
 
 // }}}
 // {{{ createTag()
