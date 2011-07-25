@@ -21,10 +21,6 @@
 .site-tag-entry .site-tag-autocomplete-container {
 	position: relative;
 }
-/* for IE z-index of absolute divs inside relative divs issue */
-.site-tag-entry .site-tag-autocomplete-container {
-	z-index: 9000
-}
 
 .site-tag-autocomplete-container {
 	margin-top: 2px;
