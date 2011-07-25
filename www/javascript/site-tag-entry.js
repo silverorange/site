@@ -61,6 +61,9 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 
 	var that = this;
 
+	// Fix for IE z-index of absolute divs inside relative divs issue
+	SwatZIndexManager.raiseElement(this.input_element.parentNode);
+
 	// create auto-complete widget
 	this.auto_complete = new YAHOO.widget.AutoComplete(
 		this.input_element, this.id + '_container', this.data_store, {

@@ -90,6 +90,9 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		$yui = new SwatYUI(array('autocomplete'));
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
+		$this->addJavaScript('packages/swat/javascript/swat-z-index-manager.js',
+			Swat::PACKAGE_ID);
+
 		$this->addJavaScript('packages/site/javascript/site-tag-entry.js',
 			Site::PACKAGE_ID);
 
