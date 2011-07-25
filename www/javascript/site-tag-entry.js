@@ -124,7 +124,7 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 	this.auto_complete.itemMouseOutEvent.subscribe(
 		this.itemUnSelected, this, true);
 
-	YAHOO.util.Event.addListener(this.input_element, 'keydown',
+	YAHOO.util.Event.on(this.input_element, 'keydown',
 		function(e, entry) {
 			// capture enter key for new tags
 			if (YAHOO.util.Event.getCharCode(e) == 13) {
@@ -137,8 +137,21 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 			}
 		}, this, true);
 
-	YAHOO.util.Event.addListener(this.input_element, 'keyup',
+	YAHOO.util.Event.on(this.input_element, 'keyup',
 		this.updateAddTagElement, this, true);
+
+	// support mouse paste beginning the autocomplete and updating the add
+	// button
+	YAHOO.util.Event.on(this.input_element, 'paste',
+		function(e) {
+			YAHOO.lang.later(100, this, function() {
+				if (this.auto_complete._sInitInputValue !==
+					this.input_element.value) {
+					this.auto_complete.sendQuery(this.input_element.value);
+				}
+				this.updateAddTagElement();
+			});
+		}, this, true);
 
 	this.addDelimiterListener();
 
