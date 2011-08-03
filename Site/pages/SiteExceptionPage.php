@@ -76,7 +76,8 @@ class SiteExceptionPage extends SitePage
 		printf('<p>%s</p>', $this->getSummary($status));
 		$this->displaySuggestions();
 
-		if ($this->exception !== null) {
+		if ($this->exception instanceof SwatException &&
+			!($this->exception instanceof SiteNotAuthorizedException)) {
 			$this->exception->processAndContinue();
 		}
 	}
