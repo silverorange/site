@@ -10,7 +10,7 @@ require_once 'Mail/mime.php';
  * Multipart text/html email message
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMultipartMailMessage extends SiteObject
@@ -72,6 +72,13 @@ class SiteMultipartMailMessage extends SiteObject
 	 * @var string
 	 */
 	public $reply_to_address = null;
+
+	/**
+	 * Return path for bounces.
+	 *
+	 * @var string
+	 */
+	public $return_path = null;
 
 	/**
 	 * Text body
@@ -165,6 +172,9 @@ class SiteMultipartMailMessage extends SiteObject
 
 		if ($this->reply_to_address !== null)
 			$headers['Reply-To'] = $this->reply_to_address;
+
+		if ($this->return_path !== null)
+			$headers['Return-Path'] = $this->return_path;
 
 		$headers['To'] =
 			sprintf('"%s" <%s>', $this->to_name, $this->to_address);
