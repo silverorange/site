@@ -112,9 +112,14 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 	protected function validateEmail(SwatForm $form)
 	{
-		$email = $this->ui->getWidget('email');
-		if ($email->hasMessage())
+		if (!$this->ui->hasWidget('email')) {
 			return;
+		}
+
+		$email = $this->ui->getWidget('email');
+		if ($email->hasMessage()) {
+			return;
+		}
 
 		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
 			$this->app->instance->getInstance() : null;
