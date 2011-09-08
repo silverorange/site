@@ -33,6 +33,22 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 
 	// }}}
 
+	// init phase
+	// {{{ public function init()
+
+	public function init()
+	{
+		parent::init();
+
+		if ($this->app->session instanceof SiteAccountSessionModule &&
+			$this->app->session->isLoggedIn()) {
+			$this->ui->getWidget('email')->value =
+				$this->app->session->account->email;
+		}
+	}
+
+	// }}}
+
 	// process phase
 	// {{{ public function process()
 
