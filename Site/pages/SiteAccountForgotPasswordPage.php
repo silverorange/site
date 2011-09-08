@@ -147,7 +147,7 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 
 		$this->ui->getWidget('password_form')->action = $this->source;
 
-		$email = $this->app->initVar('email');
+		$email = SiteApplication::initVar('email');
 		if ($email !== null) {
 			$this->ui->getWidget('email')->value = $email;
 		}
