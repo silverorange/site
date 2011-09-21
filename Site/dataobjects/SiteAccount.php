@@ -513,6 +513,24 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function isCorrectPassword()
+
+	public function isCorrectPassword($password)
+	{
+		$salt = $this->password_salt;
+
+		// salt may be base64 encoded
+		$decoded_salt = base64_decode($salt);
+		if ($decoded_salt !== false) {
+			$salt = $decoded_salt;
+		}
+
+		$salted_password = $password.$salt;
+
+		return ($this->password === md5($salted_password));
+	}
+
+	// }}}
 
 	// loader methods
 	// {{{ protected function loadLoginHistory()
