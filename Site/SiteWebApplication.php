@@ -2,6 +2,7 @@
 
 require_once 'Site/SiteApplication.php';
 require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SiteXhtmlExceptionPage.php';
 
 /**
  * Base class for a web application
@@ -9,21 +10,11 @@ require_once 'Site/pages/SitePage.php';
  * Web-applicaitions are set up to resolve pages and handle page requests.
  *
  * @package   Site
- * @copyright 2006-2010 silverorange
+ * @copyright 2006-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteWebApplication extends SiteApplication
 {
-	// {{{ public properties
-
-	/**
-	 * Source of the exception page
-	 *
-	 * @var string
-	 */
-	public $exception_page_source = 'exception';
-
-	// }}}
 	// {{{ protected properties
 
 	/**
@@ -173,11 +164,14 @@ class SiteWebApplication extends SiteApplication
 			echo $page_data['content'];
 
 		} catch (Exception $e) {
-			$this->replacePage($this->exception_page_source);
+			$this->loadExceptionPage();
 
-			if ($this->page instanceof SiteExceptionPage)
+			if ($this->page instanceof SiteExceptionPage) {
 				$this->page->setException($e);
+			}
 
+			$this->page->layout->init();
+			$this->page->init();
 			$this->page->layout->build();
 			$this->page->build();
 			$this->page->layout->finalize();
@@ -507,6 +501,15 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
+	// {{{ protected function loadExceptionPage()
+
+	protected function loadExceptionPage()
+	{
+		$source = $this->normalizeSource(self::initVar('source'));
+		$this->page = $this->resolveExceptionPage($source);
+	}
+
+	// }}}
 	// {{{ protected function resolvePage()
 
 	/**
@@ -523,6 +526,25 @@ class SiteWebApplication extends SiteApplication
 	{
 		$layout = $this->resolveLayout($source);
 		return new SitePage($this, $layout);
+	}
+
+	// }}}
+	// {{{ protected function resolveExceptionPage()
+
+	/**
+	 * Resolves an exception page for a particular source
+	 *
+	 * Sub-classes are encouraged to override this method to create different
+	 * exception page instances for different sources.
+	 *
+	 * @param string $source the source to use to resolve the exception page.
+	 *
+	 * @return SitePage the exception page corresponding the given source.
+	 */
+	protected function resolveExceptionPage($source)
+	{
+		$layout = $this->resolveLayout($source);
+		return new SiteXhtmlExceptionPage($this, $layout);
 	}
 
 	// }}}
@@ -824,10 +846,6 @@ class SiteWebApplication extends SiteApplication
 	 */
 	protected function checkSecure($source)
 	{
-		// never relocate an exception page
-		if ($source === $this->exception_page_source)
-			return;
-
 		foreach ($this->getSecureSourceList() as $pattern) {
 			$pattern = str_replace('|', '\|', $pattern);
 			$regexp = '|'.$pattern.'|u';
