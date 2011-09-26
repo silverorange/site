@@ -181,6 +181,11 @@ class SiteMobileModule extends SiteApplicationModule
 
 	public function isMobileBrowser()
 	{
+		// if user-agent header is not present, assume desktop
+		if (!isset($_SERVER['HTTP_USER_AGENT'])) {
+			return false;
+		}
+
 		// regexp from http://detectmobilebrowser.com/
 		$useragent = $_SERVER['HTTP_USER_AGENT'];
 
