@@ -17,6 +17,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	private $tests    = array();
 	private $slots    = array();
 	private $cleanups = array();
+	private $variants = 1;
 
 	// }}}
 	// {{{ public function init()
@@ -35,7 +36,8 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function registerTest()
 
-	public function registerTest($name, $default_value, $slot = null)
+	public function registerTest($name, $default_value = 0, $variants = 1,
+		$slot = null)
 	{
 		$this->tests[$name] = $default_value;
 
@@ -54,6 +56,16 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 
 			$this->slots[$name] = $slot;
 		}
+
+		$this->variants = intval($variants);
+	}
+
+	// }}}
+	// {{{ public function setVariants()
+
+	public function setVariants($variants)
+	{
+		$this->variants = intval($variants);
 	}
 
 	// }}}
@@ -115,8 +127,14 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 				"Test '%s' does not exist.", $name));
 		}
 
-		// value is stored as string 1 or 0.
-		return ($this->tests[$name] == '1' ? true : false);
+		$value = $this->tests[$name];
+
+		// if we only have 1 variant, return as a boolean
+		if ($this->variants == 1) {
+			$value = ($value == '1' ? true : false);
+		}
+
+		return $value;
 	}
 
 	// }}}
@@ -138,26 +156,26 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 
 		if (isset($_GET['alternatetest']) && $_GET['alternatetest'] == $name
 			&& isset($_GET['alternatetestversion'])) {
-			// Cast as boolean so it matches expected values. This should change
-			// if we ever do more than a/b testing.
-			$value = (bool) $_GET['alternatetestversion'];
+			$value = intval($_GET['alternatetestversion']);
 			$set_cookie = true;
 		} elseif (isset($_GET[$name.'_test'])) {
-			// Cast as boolean so it matches expected values. This should change
-			// if we ever do more than a/b testing.
-			$value = (bool) $_GET[$name.'_test'];
+			$value = intval($_GET[$name.'_test']);
 			$set_cookie = true;
 		} else {
 			if (isset($this->app->cookie->$cookie_name)) {
-				$value = (bool) $this->app->cookie->$cookie_name;
+				$value = intval($this->app->cookie->$cookie_name);
 			} else {
-				$value = (mt_rand(0, 1) === 1);
+				$value = mt_rand(0, $this->variants);
 				$set_cookie = true;
 			}
 		}
 
-		// store value as string since a boolean false would delete the cookie.
-		$value = ($value === true) ? '1' : '0';
+		if ($value > $this->variants) {
+			throw new SiteException(sprintf(
+				"'%s' is not a valid value for the test '%s'.",
+				$name,
+				$value));
+		}
 
 		if ($set_cookie === true) {
 			// Set the cookie for 2 years, just like the google analytics
