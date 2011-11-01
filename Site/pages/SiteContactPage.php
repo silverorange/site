@@ -10,7 +10,7 @@ require_once 'Site/pages/SiteDBEditPage.php';
 /**
  *
  * @package   Site
- * @copyright 2006-2010 silverorange
+ * @copyright 2006-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactPage extends SiteDBEditPage
@@ -20,6 +20,22 @@ class SiteContactPage extends SiteDBEditPage
 	protected function getUiXml()
 	{
 		return 'Site/pages/contact.xml';
+	}
+
+	// }}}
+
+	// init phase
+	// {{{ protected function initInternal()
+
+	protected function initInternal()
+	{
+		parent::initInternal();
+
+		// Don't bother with the Auth Token to prevent authentication error
+		// messages as it is unnecessary here. This can happen when users keep
+		// the contact page open in a separate tab and regenerate their session
+		// id by switching from http to https.
+		$this->ui->getWidget('contact_form')->clearAuthenticationToken();
 	}
 
 	// }}}
