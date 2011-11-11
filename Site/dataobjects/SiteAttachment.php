@@ -10,6 +10,7 @@ require_once 'Site/dataobjects/SiteAttachmentCdnTask.php';
  * @package   Site
  * @copyright 2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @todo      Delete local files.
  */
 class SiteAttachment extends SwatDBDataObject
 {
