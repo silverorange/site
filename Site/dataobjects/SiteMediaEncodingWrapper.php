@@ -20,7 +20,7 @@ class SiteMediaEncodingWrapper extends SwatDBRecordsetWrapper
 		parent::init();
 
 		$this->row_wrapper_class =
-			SwatDBClasMap::get('MediaEncoding');
+			SwatDBClasMap::get('SiteMediaEncoding');
 
 		$this->index_field = 'id';
 	}

@@ -115,7 +115,7 @@ class SiteMediaSet extends SwatDBDataObject
 			}
 		}
 
-		throw new SwatException(sprintf('Media encoding “%s” does not exist.',
+		throw new SiteException(sprintf('Media encoding “%s” does not exist.',
 			$shortname));
 	}
 
@@ -137,7 +137,7 @@ class SiteMediaSet extends SwatDBDataObject
 			}
 		}
 
-		throw new SwatException(sprintf('Media encoding “%s” does not exist.',
+		throw new SiteException(sprintf('Media encoding “%s” does not exist.',
 			$id));
 	}
 
@@ -153,11 +153,13 @@ class SiteMediaSet extends SwatDBDataObject
 	 */
 	public function getPlayerByShortname($shortname)
 	{
-		foreach ($this->players as $player)
-			if ($player->shortname === $shortname)
+		foreach ($this->players as $player) {
+			if ($player->shortname === $shortname) {
 				return $player;
+			}
+		}
 
-		throw new SwatException(sprintf('Media player “%s” does not exist.',
+		throw new SiteException(sprintf('Media player “%s” does not exist.',
 			$shortname));
 	}
 
@@ -224,7 +226,7 @@ class SiteMediaSet extends SwatDBDataObject
 			$this->db->quote($this->id, 'integer'));
 
 		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('MediaPlayerWrapper'));
+			SwatDBClassMap::get('SiteMediaPlayerWrapper'));
 	}
 
 	// }}}
