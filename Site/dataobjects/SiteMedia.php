@@ -10,6 +10,8 @@ require_once 'Site/dataobjects/SiteMediaEncodingBindingWrapper.php';
  * @package   Site
  * @copyright 2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @todo      Delete local and cdn files on delete like SiteImage and
+ *            SiteAttachment.
  */
 class SiteMedia extends SwatDBDataObject
 {
