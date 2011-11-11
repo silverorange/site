@@ -16,66 +16,28 @@ require_once 'Site/dataobjects/SiteMediaEncoding.php';
  */
 class SiteMediaCdnTask extends SiteCdnTask
 {
-	// {{{ private properties
-
-	/**
-	 * Whether or not this task was successfully completed
-	 *
-	 * @var boolean
-	 */
-	private $success = false;
-
-	// }}}
-
 	// public methods
-	// {{{ public function run()
-
-	public function run(SiteCdnModule $cdn)
-	{
-		switch ($this->operation) {
-		case 'copy':
-			$this->copyMedia($cdn);
-			break;
-		case 'delete':
-			$this->deleteMedia($cdn);
-			break;
-		default:
-			$this->error();
-			break;
-		}
-	}
-
-	// }}}
 	// {{{ public function getAttemptDescription()
 
 	public function getAttemptDescription()
 	{
 		switch ($this->operation) {
-		case 'copy':
+		case SiteCdnTask::COPY_OPERATION:
 			$attempt = sprintf(
-				Site::_('Copying the %s encoding of media %s ... '),
-				$this->encoding->shortname, $this->media->id);
-
-			break;
-		case 'delete':
-			$attempt = sprintf(Site::_('Deleting ‘%s’ ... '),
-				$this->file_path);
+				Site::_('Copying the ‘%s’ encoding of media ‘%s’ ... '),
+				$this->encoding->shortname,
+				$this->media->id);
 
 			break;
 		default:
-			$attempt = sprintf(Site::_('Unknown operation ‘%s’ ... '),
+			$attempt = sprintf($this->getAttemptDescriptionString(),
+				Site::_('image'),
+				$this->image->id,
+				$this->file_path,
 				$this->operation);
 		}
 
 		return $attempt;
-	}
-
-	// }}}
-	// {{{ public function getResultDescription()
-
-	public function getResultDescription()
-	{
-		return (($this->success) ? Site::_('done.') : Site::_('error.'))."\n";
 	}
 
 	// }}}
@@ -97,21 +59,9 @@ class SiteMediaCdnTask extends SiteCdnTask
 	}
 
 	// }}}
-	// {{{ protected function error()
+	// {{{ protected function copyItem()
 
-	protected function error()
-	{
-		$this->success = false;
-
-		$this->error_date = new SwatDate();
-		$this->error_date->toUTC();
-		$this->save();
-	}
-
-	// }}}
-	// {{{ protected function copyMedia()
-
-	protected function copyMedia(SiteCdnModule $cdn)
+	protected function copyItem(SiteCdnModule $cdn)
 	{
 		try {
 			$transaction = new SwatDBTransaction($this->db);
@@ -154,9 +104,9 @@ class SiteMediaCdnTask extends SiteCdnTask
 	}
 
 	// }}}
-	// {{{ protected function deleteMedia()
+	// {{{ protected function deleteItem()
 
-	protected function deleteMedia(SiteCdnModule $cdn)
+	protected function deleteItem(SiteCdnModule $cdn)
 	{
 		try {
 			$transaction = new SwatDBTransaction($this->db);
@@ -212,14 +162,13 @@ class SiteMediaCdnTask extends SiteCdnTask
 
 	protected function getHttpHeaders()
 	{
-		$disposition = sprintf('attachment; filename="%s"',
+		$headers = parent::getHttpHeaders();
+
+		$headers['content-disposition'] = sprintf('attachment; filename="%s"',
 			$this->media->getContentDispositionFilename(
 				$this->encoding->shortname));
 
-		return array(
-			'cache-control'       => 'public, max-age=315360000',
-			'content-disposition' => $disposition,
-		);
+		return $headers;
 	}
 
 	// }}}

@@ -15,66 +15,28 @@ require_once 'Site/dataobjects/SiteImageDimension.php';
  */
 class SiteImageCdnTask extends SiteCdnTask
 {
-	// {{{ private properties
-
-	/**
-	 * Whether or not this task was successfully completed
-	 *
-	 * @var boolean
-	 */
-	private $success = false;
-
-	// }}}
-
 	// public methods
-	// {{{ public function run()
-
-	public function run(SiteCdnModule $cdn)
-	{
-		switch ($this->operation) {
-		case 'copy':
-			$this->copyImage($cdn);
-			break;
-		case 'delete':
-			$this->deleteImage($cdn);
-			break;
-		default:
-			$this->error();
-			break;
-		}
-	}
-
-	// }}}
 	// {{{ public function getAttemptDescription()
 
 	public function getAttemptDescription()
 	{
 		switch ($this->operation) {
-		case 'copy':
-			$attempt = sprintf(Site::_('Copying image %s, dimension %s ... '),
-				$this->image->id,
-				$this->dimension->id);
-
-			break;
-		case 'delete':
-			$attempt = sprintf(Site::_('Deleting ‘%s’ ... '),
-				$this->file_path);
+		case SiteCdnTask::COPY_OPERATION:
+			$attempt = sprintf(
+				Site::_('Copying the dimension ‘%s’ of image ‘%s’, ... '),
+				$this->dimension->shortname,
+				$this->image->id);
 
 			break;
 		default:
-			$attempt = sprintf(Site::_('Unknown operation ‘%s’ ... '),
+			$attempt = sprintf($this->getAttemptDescriptionString(),
+				Site::_('image'),
+				$this->image->id,
+				$this->file_path,
 				$this->operation);
 		}
 
 		return $attempt;
-	}
-
-	// }}}
-	// {{{ public function getResultDescription()
-
-	public function getResultDescription()
-	{
-		return (($this->success) ? Site::_('done.') : Site::_('error.'))."\n";
 	}
 
 	// }}}
@@ -96,21 +58,9 @@ class SiteImageCdnTask extends SiteCdnTask
 	}
 
 	// }}}
-	// {{{ protected function error()
+	// {{{ protected function copyItem()
 
-	protected function error()
-	{
-		$this->success = false;
-
-		$this->error_date = new SwatDate();
-		$this->error_date->toUTC();
-		$this->save();
-	}
-
-	// }}}
-	// {{{ protected function copyImage()
-
-	protected function copyImage(SiteCdnModule $cdn)
+	protected function copyItem(SiteCdnModule $cdn)
 	{
 		try {
 			$transaction = new SwatDBTransaction($this->db);
@@ -150,9 +100,9 @@ class SiteImageCdnTask extends SiteCdnTask
 	}
 
 	// }}}
-	// {{{ protected function deleteImage()
+	// {{{ protected function deleteItem()
 
-	protected function deleteImage(SiteCdnModule $cdn)
+	protected function deleteItem(SiteCdnModule $cdn)
 	{
 		try {
 			$transaction = new SwatDBTransaction($this->db);
@@ -201,22 +151,6 @@ class SiteImageCdnTask extends SiteCdnTask
 	protected function getAccessType()
 	{
 		return 'public';
-	}
-
-	// }}}
-	// {{{ protected function getHttpHeaders()
-
-	protected function getHttpHeaders()
-	{
-		/* Set a "never-expire" policy with a far future max age (10 years) as
-		 * suggested http://developer.yahoo.com/performance/rules.html#expires.
-		 * We create new image ids when updating an image, so this is safe. As
-		 * well, set Cache-Control to public, as this allows some browsers to
-		 * cache the images to disk while on https, which is a good win.
-		 */
-		return array(
-			'cache-control' => 'public, max-age=315360000',
-		);
 	}
 
 	// }}}
