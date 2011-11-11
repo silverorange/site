@@ -23,7 +23,7 @@ class SiteMedia extends SwatDBDataObject
 	public $id;
 
 	/**
-	 * BTOR key
+	 * BOTR key
 	 *
 	 * @var string
 	 */
@@ -187,7 +187,7 @@ class SiteMedia extends SwatDBDataObject
 		}
 
 		if ($binding === null) {
-			throw new SwatException(sprintf(
+			throw new SiteException(sprintf(
 				'Encoding “%s” does not exist for media “%s”.',
 					$encoding_shortname, $this->id));
 		}
@@ -207,7 +207,7 @@ class SiteMedia extends SwatDBDataObject
 		}
 
 		if ($binding === null) {
-			throw new SwatException(sprintf(
+			throw new SiteException(sprintf(
 				'Encoding “%s” does not exist for media “%s”.',
 					$encoding_shortname, $this->id));
 		}
@@ -244,7 +244,8 @@ class SiteMedia extends SwatDBDataObject
 
 		foreach ($this->encoding_bindings as $binding) {
 			if ((($smallest === null) && ($binding->width !== null)) ||
-				(($smallest !== null) && ($binding->width < $smallest->width))) {
+				(($smallest !== null) &&
+					($binding->width < $smallest->width))) {
 				$smallest = $binding;
 			}
 		}
@@ -432,7 +433,7 @@ class SiteMedia extends SwatDBDataObject
 	protected function getFileBase()
 	{
 		if ($this->file_base === null) {
-			throw new SwatException('File base has not been set.');
+			throw new SiteException('File base has not been set.');
 		}
 
 		return $this->file_base;

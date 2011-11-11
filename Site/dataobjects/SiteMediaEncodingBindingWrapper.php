@@ -37,7 +37,7 @@ class SiteMediaEncodingBindingWrapper extends SwatDBRecordsetWrapper
 		parent::init();
 
 		$this->row_wrapper_class =
-			SwatDBClassMap::get('MediaEncodingBinding');
+			SwatDBClassMap::get('SiteMediaEncodingBinding');
 
 		$this->index_field = 'media_encoding';
 	}

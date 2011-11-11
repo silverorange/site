@@ -100,9 +100,10 @@ class SiteMediaEncoding extends SwatDBDataObject
 		$sub_sql = sprintf('select id from MediaSet where shortname = %s',
 			$this->db->quote($set_shortname, 'text'));
 
-		if ($instance instanceof SiteInstance)
+		if ($instance instanceof SiteInstance) {
 			$sub_sql.= sprintf(' and (instance is null or instance = %s)',
 				$instance->id);
+		}
 
 		$sql = 'select * from %s where shortname = %s and media_set in (%s)';
 
