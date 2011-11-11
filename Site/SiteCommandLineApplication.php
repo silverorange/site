@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Site/SiteApplication.php';
-require_once 'Site/exceptions/SiteException.php';
+require_once 'Site/exceptions/SiteCommandLineException.php';
 require_once 'Site/SiteCommandLineArgument.php';
 
 /**
@@ -14,7 +14,7 @@ require_once 'Site/SiteCommandLineArgument.php';
  * method.
  *
  * @package   Site
- * @copyright 2006-2009 silverorange
+ * @copyright 2006-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommandLineApplication extends SiteApplication
@@ -109,15 +109,15 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 * @param string $documentation optional text describing the purpose of
 	 *                               this application.
 	 *
-	 * @throws SiteException if this application is not created in a command-
-	 *                        line environment.
+	 * @throws SiteCommandLineException if this application is not created in a
+	 *                                   commandline environment.
 	 */
 	public function __construct($id, $config_filename, $title,
 		$documentation = null)
 	{
 		if (!isset($_SERVER['argv'])) {
-			throw new SiteException('Command line applications must be run '.
-				'from the command line.');
+			throw new SiteCommandLineException('Command line applications '.
+				'must be run from the command line.');
 		}
 
 		parent::__construct($id, $config_filename);
@@ -308,8 +308,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 					}
 
 					if (!$reflector->hasMethod($argument->getMethod()))
-						throw new SiteException(sprintf('Application '.
-							"argument calls undefined method '%s'.",
+						throw new SiteCommandLineException(sprintf(
+							"Application argument calls undefined method '%s'.",
 							$argument->getMethod()));
 
 					$method = $reflector->getMethod($argument->getMethod());
