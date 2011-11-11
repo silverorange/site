@@ -247,7 +247,7 @@ class SiteImage extends SwatDBDataObject
 			if ($binding instanceof SiteImageDimensionBinding &&
 				$binding->on_cdn) {
 
-				$this->queueCdnTask('delete', $dimension);
+				$this->queueCdnTask(SiteCdnTask::DELETE_OPERATION, $dimension);
 			}
 		}
 	}
@@ -741,7 +741,7 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		if ($this->getImageSet()->use_cdn) {
-			$this->queueCdnTask('copy', $dimension);
+			$this->queueCdnTask(SiteCdnTask::COPY_OPERATION, $dimension);
 		}
 
 		unset($imagick);
@@ -1291,7 +1291,7 @@ class SiteImage extends SwatDBDataObject
 		$task->setDatabase($this->db);
 		$task->operation = $operation;
 
-		if ($operation == 'copy') {
+		if ($operation == SiteCdnTask::COPY_OPERATION) {
 			$task->image     = $this;
 			$task->dimension = $dimension;
 		} else {

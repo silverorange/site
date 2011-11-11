@@ -298,7 +298,7 @@ class SiteMedia extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function onCdn()
+	// {{{ public function encodingOnCdn()
 
 	/**
 	 * Checks whether a media encoding binding exists on the cdn
