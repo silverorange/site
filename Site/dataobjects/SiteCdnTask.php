@@ -107,24 +107,24 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ abstract public function getAttemptDescription()
+	// {{{ abstract protected function copyItem()
 
 	/**
 	 * Attempts to copy an item to the CDN
 	 *
 	 * @param SiteCdn $cdn the CDN this task is executed on.
 	 */
-	abstract public function copyItem(SiteCdnModule $cdn);
+	abstract protected function copyItem(SiteCdnModule $cdn);
 
 	// }}}
-	// {{{ abstract public function getAttemptDescription()
+	// {{{ abstract protected function deleteItem()
 
 	/**
 	 * Attempts to delete an item from the CDN
 	 *
 	 * @param SiteCdn $cdn the CDN this task is executed on.
 	 */
-	abstract public function deleteItem(SiteCdnModule $cdn);
+	abstract protected function deleteItem(SiteCdnModule $cdn);
 
 	// }}}
 	// {{{ protected function error()
