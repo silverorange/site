@@ -14,68 +14,16 @@ require_once 'Site/dataobjects/SiteAttachment.php';
  */
 class SiteAttachmentCdnTask extends SiteCdnTask
 {
-	// {{{ private properties
-
-	/**
-	 * Whether or not this task was successfully completed
-	 *
-	 * @var boolean
-	 */
-	private $success = false;
-
-	// }}}
-
 	// public methods
-	// {{{ public function run()
-
-	public function run(SiteCdnModule $cdn)
-	{
-		switch ($this->operation) {
-		case 'copy':
-			$this->copyAttachment($cdn);
-			break;
-		case 'delete':
-			$this->deleteAttachment($cdn);
-			break;
-		default:
-			$this->error();
-			break;
-		}
-	}
-
-	// }}}
 	// {{{ public function getAttemptDescription()
 
 	public function getAttemptDescription()
 	{
-		switch ($this->operation) {
-		case 'copy':
-			$attempt = sprintf(
-				Site::_('Copying attachment %s ... '),
-				$this->attachment->id);
-
-			break;
-		case 'delete':
-			$attempt = sprintf(
-				Site::_('Deleting ‘%s’ ... '),
-				$this->file_path);
-
-			break;
-		default:
-			$attempt = sprintf(
-				Site::_('Unknown operation ‘%s’ ... '),
-				$this->operation);
-		}
-
-		return $attempt;
-	}
-
-	// }}}
-	// {{{ public function getResultDescription()
-
-	public function getResultDescription()
-	{
-		return (($this->success) ? Site::_('done.') : Site::_('error.'))."\n";
+		return sprintf($this->getAttemptDescriptionString(),
+			Site::_('attachment'),
+			$this->attachment->id,
+			$this->file_path,
+			$this->operation);
 	}
 
 	// }}}
@@ -94,21 +42,9 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 	}
 
 	// }}}
-	// {{{ protected function error()
+	// {{{ protected function copyItem()
 
-	protected function error()
-	{
-		$this->success = false;
-
-		$this->error_date = new SwatDate();
-		$this->error_date->toUTC();
-		$this->save();
-	}
-
-	// }}}
-	// {{{ protected function copyAttachment()
-
-	protected function copyAttachment(SiteCdnModule $cdn)
+	protected function copyItem(SiteCdnModule $cdn)
 	{
 		try {
 			$transaction = new SwatDBTransaction($this->db);
@@ -149,9 +85,9 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 	}
 
 	// }}}
-	// {{{ protected function deleteAttachment()
+	// {{{ protected function deleteItem()
 
-	protected function deleteAttachment(SiteCdnModule $cdn)
+	protected function deleteItem(SiteCdnModule $cdn)
 	{
 		try {
 			$transaction = new SwatDBTransaction($this->db);
@@ -207,13 +143,12 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 
 	protected function getHttpHeaders()
 	{
-		$disposition = sprintf('attachment; filename="%s"',
+		$headers = parent::getHttpHeaders();
+
+		$headers['content-disposition'] = sprintf('attachment; filename="%s"',
 			$this->attachment->getContentDispositionFilename());
 
-		return array(
-			'cache-control'       => 'public, max-age=315360000',
-			'content-disposition' => $disposition,
-		);
+		return $headers;
 	}
 
 	// }}}
