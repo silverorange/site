@@ -40,6 +40,14 @@ class SiteAttachment extends SwatDBDataObject
 	public $original_filename;
 
 	/**
+	 * CDN filename if obfuscated filenames are useod for this attachment's
+	 * attachment set
+	 *
+	 * @var string
+	 */
+	public $filename;
+
+	/**
 	 * Mime type
 	 *
 	 * @var string
@@ -66,7 +74,7 @@ class SiteAttachment extends SwatDBDataObject
 	/**
 	 * The date that this attachment was created
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $createdate;
 
@@ -74,19 +82,23 @@ class SiteAttachment extends SwatDBDataObject
 	// {{{ protected properties
 
 	/**
-	 * TODO
 	 * @var string
+	 *
+	 * @see SiteAttachment::setCDNBase()
 	 */
-	protected $attachment_set_shortname;
-
-	// }}}
-	// {{{ private properties
+	protected static $cdn_base;
 
 	/**
 	 * TODO
 	 * @var string
 	 */
-	private $file_base;
+	protected $attachment_set_shortname;
+
+	/**
+	 * TODO
+	 * @var string
+	 */
+	protected $file_base;
 
 	// }}}
 	// {{{ protected function init()
@@ -100,6 +112,14 @@ class SiteAttachment extends SwatDBDataObject
 
 		$this->registerInternalProperty('attachment_set',
 			SwatDBClassMap::get('SiteAttachmentSet'));
+	}
+
+	// }}}
+	// {{{ public static function setCDNBase()
+
+	public static function setCDNBase($base)
+	{
+		self::$cdn_base = $base;
 	}
 
 	// }}}
@@ -137,16 +157,23 @@ class SiteAttachment extends SwatDBDataObject
 
 	public function getHumanFileType()
 	{
-		switch ($this->mime_type) {
-		case 'video/mp4':       return 'MP4';
-		case 'audio/mp4':       return 'MP4';
-		case 'audio/mpeg':      return 'MP3';
-		case 'application/zip': return 'Zip';
-		case 'application/pdf': return 'PDF';
-		default:
+		$map = array(
+			'audio/mp4'          => Site::_('M4A'),
+			'video/mp4'          => Site::_('MP4'),
+			'video/mpeg'         => Site::_('MP3'),
+			'application/zip'    => Site::_('ZIP'),
+			'application/pdf'    => Site::_('PDF'),
+			'image/jpeg'         => Site::_('JPEG Image'),
+			'application/msword' => Site::_('Word Document'),
+			'text/html'          => Site::_('Web Document'),
+		);
+
+		if (!array_key_exists($this->mime_type, $map)) {
 			throw new SiteException(sprintf(
 				'Unknown mime type %s', $this->mime_type));
 		}
+
+		return $map[$this->mime_type];
 	}
 
 	// }}}
@@ -167,6 +194,7 @@ class SiteAttachment extends SwatDBDataObject
 	{
 		$uri = $this->getUriSuffix();
 
+		// TODO: throw an exception if on_cdn isn't true
 		if ($this->on_cdn && self::$cdn_base != '') {
 			$uri = self::$cdn_base.$uri;
 		} else if ($prefix != '' && !strpos($uri, '://')) {
@@ -228,7 +256,13 @@ class SiteAttachment extends SwatDBDataObject
 
 	public function getFilename()
 	{
-		return sprintf('%s.%s', $this->id, $this->getExtension());
+		if ($this->getAttachmentSet()->obfuscate_filename) {
+			$prefix = $this->filename;
+		} else {
+			$prefix = $this->id;
+		}
+
+		return sprintf('%s.%s', $prefix, $this->getExtension());
 	}
 
 	// }}}
@@ -269,12 +303,18 @@ class SiteAttachment extends SwatDBDataObject
 
 	public function process($file_path)
 	{
+		$this->checkDB();
+
 		try {
 			$transaction = new SwatDBTransaction($this->db);
 
 			$directory = $this->getFileDirectory();
 			if (!file_exists($directory) && !mkdir($directory, 0777, true)) {
 				throw new SiteException('Unable to create directory.');
+			}
+
+			if ($this->getAttachmentSet()->obfuscate_filename) {
+				$this->filename = sha1(uniqid(rand(), tue));
 			}
 
 			$this->save();
@@ -303,10 +343,13 @@ class SiteAttachment extends SwatDBDataObject
 			return $this->attachment_set;
 		}
 
+		$this->checkDB();
+
 		if ($this->attachment_set_shortname == '') {
-			throw new SiteException('To process attachment, a '.
-				'SiteAttachmentType shortname must be defined in the '.
-				'SiteAttachment dataobject.');
+			throw new SiteException('To process this attachment, a '.
+				'SiteAttachmentType shortname must be set for the '.
+				'$attachment_set_shortname property of this object. Usually '.
+				'a default value is set in the class definition.');
 		}
 
 		$class_name = SwatDBClassMap::get('SiteAttachmentSet');
@@ -314,7 +357,7 @@ class SiteAttachment extends SwatDBDataObject
 		$attachment_set->setDatabase($this->db);
 
 		if (!$attachment_set->loadByShortname(
-				$this->attachment_set_shortname)) {
+			$this->attachment_set_shortname)) {
 			throw new SiteException(sprintf(
 				'Attachment set “%s” does not exist.',
 					$this->attachment_set_shortname));
@@ -367,6 +410,8 @@ class SiteAttachment extends SwatDBDataObject
 	 */
 	protected function queueCdnTask($operation)
 	{
+		$this->checkDB();
+
 		$class_name = SwatDBClassMap::get('SiteAttachmentCdnTask');
 		$task = new $class_name();
 		$task->setDatabase($this->db);
