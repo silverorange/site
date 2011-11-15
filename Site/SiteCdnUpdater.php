@@ -3,6 +3,8 @@
 require_once 'SwatDB/SwatDB.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/SiteCommandLineApplication.php';
+require_once 'Site/SiteConfigModule.php';
+require_once 'Site/SiteDatabaseModule.php';
 require_once 'Site/dataobjects/SiteImageWrapper.php';
 require_once 'Site/dataobjects/SiteImageCdnTaskWrapper.php';
 
@@ -13,7 +15,7 @@ require_once 'Site/dataobjects/SiteImageCdnTaskWrapper.php';
  * @copyright 2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteCdnUpdater extends SiteCommandLineApplication
+abstract class SiteCdnUpdater extends SiteCommandLineApplication
 {
 	// {{{ public properties
 
@@ -129,6 +131,29 @@ class SiteCdnUpdater extends SiteCommandLineApplication
 		}
 
 		$this->debug(Site::_('All Done.')."\n", true);
+	}
+
+	// }}}
+
+	// boilerplate code
+	// {{{ protected function configure()
+
+	protected function configure(SiteConfigModule $config)
+	{
+		parent::configure($config);
+
+		$this->database->dsn = $config->database->dsn;
+	}
+
+	// }}}
+	// {{{ protected function getDefaultModuleList()
+
+	protected function getDefaultModuleList()
+	{
+		return array(
+			'config'   => 'SiteConfigModule',
+			'database' => 'SiteDatabaseModule',
+		);
 	}
 
 	// }}}
