@@ -5,6 +5,7 @@ require_once 'SwatDB/SwatDBTransaction.php';
 require_once 'Site/dataobjects/SiteCdnTask.php';
 require_once 'Site/dataobjects/SiteImage.php';
 require_once 'Site/dataobjects/SiteImageDimension.php';
+require_once 'Site/exceptions/SiteCdnException.php';
 
 /**
  * A task that should be performed on a CDN in the near future
@@ -88,12 +89,10 @@ class SiteImageCdnTask extends SiteCdnTask
 		} catch (SwatDBException $e) {
 			$transaction->rollback();
 			$e->processAndContinue();
-		} catch (SwatFileNotFoundException $e) {
+		} catch (Exception $e) {
 			$transaction->rollback();
-			$e->processAndContinue();
-			$this->error();
-		} catch (SiteCdnException $e) {
-			$transaction->rollback();
+
+			$e = new SiteCdnException($e);
 			$e->processAndContinue();
 			$this->error();
 		}
@@ -123,12 +122,10 @@ class SiteImageCdnTask extends SiteCdnTask
 		} catch (SwatDBException $e) {
 			$transaction->rollback();
 			$e->processAndContinue();
-		} catch (SwatFileNotFoundException $e) {
+		} catch (Exception $e) {
 			$transaction->rollback();
-			$e->processAndContinue();
-			$this->error();
-		} catch (SiteCdnException $e) {
-			$transaction->rollback();
+
+			$e = new SiteCdnException($e);
 			$e->processAndContinue();
 			$this->error();
 		}
