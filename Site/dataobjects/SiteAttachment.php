@@ -40,7 +40,7 @@ class SiteAttachment extends SwatDBDataObject
 	public $original_filename;
 
 	/**
-	 * CDN filename if obfuscated filenames are useod for this attachment's
+	 * CDN filename if obfuscated filenames are used for this attachment's
 	 * attachment set
 	 *
 	 * @var string
@@ -194,7 +194,6 @@ class SiteAttachment extends SwatDBDataObject
 	{
 		$uri = $this->getUriSuffix();
 
-		// TODO: throw an exception if on_cdn isn't true
 		if ($this->on_cdn && self::$cdn_base != '') {
 			$uri = self::$cdn_base.$uri;
 		} else if ($prefix != '' && !strpos($uri, '://')) {
