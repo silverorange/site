@@ -156,7 +156,7 @@ abstract class SiteCdnTask extends SwatDBDataObject
 			$description_string = Site::_('Copying %1$s ‘%2$s’ ... ');
 			break;
 		case self::DELETE_OPERATION:
-			$description_string = Site::_('Deleting ‘%2$s’ ... ');
+			$description_string = Site::_('Deleting ‘%3$s’ ... ');
 			break;
 		default:
 			$description_string = Site::_('Unknown operation ‘%4$s’ ... ');

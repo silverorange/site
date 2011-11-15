@@ -23,7 +23,7 @@ class SiteImageCdnTask extends SiteCdnTask
 		switch ($this->operation) {
 		case SiteCdnTask::COPY_OPERATION:
 			$attempt = sprintf(
-				Site::_('Copying the dimension ‘%s’ of image ‘%s’, ... '),
+				Site::_('Copying the dimension ‘%s’ of image ‘%s’ ... '),
 				$this->dimension->shortname,
 				$this->image->id);
 
@@ -31,7 +31,7 @@ class SiteImageCdnTask extends SiteCdnTask
 		default:
 			$attempt = sprintf($this->getAttemptDescriptionString(),
 				Site::_('image'),
-				$this->image->id,
+				$this->getInternalValue('image'),
 				$this->file_path,
 				$this->operation);
 		}
