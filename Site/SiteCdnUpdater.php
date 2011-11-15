@@ -5,8 +5,12 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteConfigModule.php';
 require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/dataobjects/SiteImageWrapper.php';
+require_once 'Site/dataobjects/SiteAttachmentCdnTaskWrapper.php';
+require_once 'Site/dataobjects/SiteAttachmentWrapper.php';
 require_once 'Site/dataobjects/SiteImageCdnTaskWrapper.php';
+require_once 'Site/dataobjects/SiteImageWrapper.php';
+require_once 'Site/dataobjects/SiteMediaCdnTaskWrapper.php';
+require_once 'Site/dataobjects/SiteMediaWrapper.php';
 
 /**
  * Application to process queued SiteCdnTasks
@@ -26,15 +30,29 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 	 */
 	public $db;
 
+	// }}}
+	// {{{ protected properties
+
+	/**
+	 * The directory containing the attachment hierarchy
+	 *
+	 * @var string
+	 */
+	protected $attachment_file_base;
+
 	/**
 	 * The directory containing the image hierarchy
 	 *
 	 * @var string
 	 */
-	public $image_dir;
+	protected $image_file_base;
 
-	// }}}
-	// {{{ protected properties
+	/**
+	 * The directory containing the media hierarchy
+	 *
+	 * @var string
+	 */
+	protected $media_file_base;
 
 	/**
 	 * An array of the tasks to run
@@ -42,6 +60,30 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 	 * @var array
 	 */
 	protected $tasks = array();
+
+	// }}}
+	// {{{ public function setAttachmentFileBase()
+
+	public function setAttachmentFileBase($attachment_file_base)
+	{
+		$this->attachment_file_base = $attachment_file_base;
+	}
+
+	// }}}
+	// {{{ public function setImageFileBase()
+
+	public function setImageFileBase($image_file_base)
+	{
+		$this->image_file_base = $image_file_base;
+	}
+
+	// }}}
+	// {{{ public function setMediaFileBase()
+
+	public function setMediaFileBase($media_file_base)
+	{
+		$this->media_file_base = $media_file_base;
+	}
 
 	// }}}
 	// {{{ public function run()
@@ -81,6 +123,45 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 	 */
 	protected function initTasks()
 	{
+		$this->initAttachmentTasks();
+		$this->initImageTasks();
+		$this->initMediaTasks();
+	}
+
+	// }}}
+	// {{{ protected function initAttachmentTasks()
+
+	protected function initAttachmentTasks()
+	{
+		$sql = sprintf(
+			'select * from AttachmentCdnQueue where error_date %s %s',
+			SwatDB::equalityOperator(null), $this->db->quote(null));
+
+		$tasks = SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('SiteAttachmentCdnTaskWrapper'));
+
+		// efficiently load attachments
+		$attachment_sql = 'select * from Attachment where id in (%s)';
+		$attachments = $tasks->loadAllSubDataObjects(
+			'attachment',
+			$this->db,
+			$attachment_sql,
+			SwatDBClassMap::get('SiteAttachmentWrapper'));
+
+		foreach ($tasks as $task) {
+			if ($task->attachment instanceof SiteAttachment) {
+				$task->attachment->setFileBase($this->attachment_file_base);
+			}
+
+			$this->tasks[] = $task;
+		}
+	}
+
+	// }}}
+	// {{{ protected function initImageTasks()
+
+	protected function initImageTasks()
+	{
 		$sql = sprintf('select * from ImageCdnQueue where error_date %s %s',
 			SwatDB::equalityOperator(null), $this->db->quote(null));
 
@@ -105,7 +186,43 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 
 		foreach ($tasks as $task) {
 			if ($task->image instanceof SiteImage) {
-				$task->image->setFileBase($this->image_dir);
+				$task->image->setFileBase($this->image_file_base);
+			}
+
+			$this->tasks[] = $task;
+		}
+	}
+
+	// }}}
+	// {{{ protected function initMediaTasks()
+
+	protected function initMediaTasks()
+	{
+		$sql = sprintf('select * from MediaCdnQueue where error_date %s %s',
+			SwatDB::equalityOperator(null), $this->db->quote(null));
+
+		$tasks = SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('SiteMediaCdnTaskWrapper'));
+
+		// efficiently load media
+		$media_sql = 'select * from Media where id in (%s)';
+		$media = $tasks->loadAllSubDataObjects(
+			'media',
+			$this->db,
+			$media_sql,
+			SwatDBClassMap::get('SiteMediaWrapper'));
+
+		// efficiently load encodings
+		$encoding_sql = 'select * from MediaEncoding where id in (%s)';
+		$encodings = $tasks->loadAllSubDataObjects(
+			'encoding',
+			$this->db,
+			$encoding_sql,
+			SwatDBClassMap::get('SiteMediaEncodingWrapper'));
+
+		foreach ($tasks as $task) {
+			if ($task->media instanceof SiteMedia) {
+				$task->media->setFileBase($this->media_file_base);
 			}
 
 			$this->tasks[] = $task;
