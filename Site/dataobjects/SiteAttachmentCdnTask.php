@@ -21,7 +21,7 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 	{
 		return sprintf($this->getAttemptDescriptionString(),
 			Site::_('attachment'),
-			$this->attachment->id,
+			$this->getInternalValue('attachment'),
 			$this->file_path,
 			$this->operation);
 	}

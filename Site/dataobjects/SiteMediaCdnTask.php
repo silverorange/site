@@ -32,7 +32,7 @@ class SiteMediaCdnTask extends SiteCdnTask
 		default:
 			$attempt = sprintf($this->getAttemptDescriptionString(),
 				Site::_('image'),
-				$this->image->id,
+				$this->getInternalValue('media'),
 				$this->file_path,
 				$this->operation);
 		}
