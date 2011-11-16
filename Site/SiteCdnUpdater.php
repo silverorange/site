@@ -94,6 +94,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 	public function run()
 	{
 		$this->initInternal();
+		$this->initTasks();
 
 		$this->lock();
 		$this->runInternal();
@@ -112,7 +113,6 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 	{
 		$this->initModules();
 		$this->parseCommandLineArguments();
-		$this->initTasks();
 	}
 
 	// }}}
