@@ -16,8 +16,8 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	/**
 	 * Common CDN operations.
 	 */
-	const COPY_OPERATION   = 'copy';
-	const DELETE_OPERATION = 'delete';
+	const COPY   = 'copy';
+	const DELETE = 'delete';
 
 	// }}}
 	// {{{ public properties
@@ -63,10 +63,10 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	public function run(SiteCdnModule $cdn)
 	{
 		switch ($this->operation) {
-		case self::COPY_OPERATION:
+		case self::COPY:
 			$this->copyItem($cdn);
 			break;
-		case self::DELETE_OPERATION:
+		case self::DELETE:
 			$this->deleteItem($cdn);
 			break;
 		default:
@@ -152,10 +152,10 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	protected function getAttemptDescriptionString()
 	{
 		switch ($this->operation) {
-		case self::COPY_OPERATION:
+		case self::COPY:
 			$description_string = Site::_('Copying %1$s ‘%2$s’ ... ');
 			break;
-		case self::DELETE_OPERATION:
+		case self::DELETE:
 			$description_string = Site::_('Deleting ‘%3$s’ ... ');
 			break;
 		default:

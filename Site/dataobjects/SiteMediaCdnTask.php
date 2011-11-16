@@ -22,7 +22,7 @@ class SiteMediaCdnTask extends SiteCdnTask
 	public function getAttemptDescription()
 	{
 		switch ($this->operation) {
-		case SiteCdnTask::COPY_OPERATION:
+		case SiteCdnTask::COPY:
 			$attempt = sprintf(
 				Site::_('Copying the ‘%s’ encoding of media ‘%s’ ... '),
 				$this->encoding->shortname,
