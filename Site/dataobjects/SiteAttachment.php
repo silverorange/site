@@ -135,21 +135,23 @@ class SiteAttachment extends SwatDBDataObject
 
 	public function getExtension()
 	{
-		switch ($this->mime_type) {
-		case 'video/mp4':
-			return 'mp4';
-		case 'audio/mp4':
-			return 'mp4';
-		case 'audio/mpeg':
-			return 'mp3';
-		case 'application/zip':
-			return 'zip';
-		case 'application/pdf':
-			return 'pdf';
-		default:
+		$map = array(
+			'audio/mp4'          => 'mp4', // should be m4a?
+			'video/mp4'          => 'mp4',
+			'video/mpeg'         => 'mp3',
+			'application/zip'    => 'zip',
+			'application/pdf'    => 'pdf',
+			'image/jpeg'         => 'jpg',
+			'application/msword' => 'doc',
+			'text/html'          => 'html',
+		);
+
+		if (!array_key_exists($this->mime_type, $map)) {
 			throw new SiteException(sprintf(
 				'Unknown mime type %s', $this->mime_type));
 		}
+
+		return $map[$this->mime_type];
 	}
 
 	// }}}
