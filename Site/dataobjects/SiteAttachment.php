@@ -133,10 +133,19 @@ class SiteAttachment extends SwatDBDataObject
 	// }}}
 	// {{{ public function getExtension()
 
+	/**
+	 * Returns the extension of the attachment based on  mime type.
+	 *
+	 * For MPEG-4 Audio, we use the non-standard but universally accepted m4a
+	 * extension. See wikipedia for more details
+	 * {@link http://en.wikipedia.org/wiki/.m4a}
+	 *
+	 * @returns string The extension of the file.
+	 */
 	public function getExtension()
 	{
 		$map = array(
-			'audio/mp4'          => 'mp4', // should be m4a?
+			'audio/mp4'          => 'm4a',
 			'video/mp4'          => 'mp4',
 			'video/mpeg'         => 'mp3',
 			'application/zip'    => 'zip',
