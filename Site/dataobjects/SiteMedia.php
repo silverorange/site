@@ -18,6 +18,13 @@ class SiteMedia extends SwatDBDataObject
 	// {{{ public properties
 
 	/**
+	 * The base uri for CDN hosted media
+	 *
+	 * @var string
+	 */
+	public static $cdn_base;
+
+	/**
 	 * The unique identifier of this media
 	 *
 	 * @var integer
@@ -25,18 +32,32 @@ class SiteMedia extends SwatDBDataObject
 	public $id;
 
 	/**
-	 * BOTR key
-	 *
-	 * @var string
-	 */
-	public $key;
-
-	/**
 	 * Title
 	 *
 	 * @var string
 	 */
 	public $title;
+
+	/**
+	 * Filename
+	 *
+	 * @var string
+	 */
+	public $filename;
+
+	/**
+	 * Original Filename
+	 *
+	 * @var string
+	 */
+	public $original_filename;
+
+	/**
+	 * Description
+	 *
+	 * @var string
+	 */
+	public $description;
 
 	/**
 	 * Whether or not the media is Downloadable
@@ -59,13 +80,6 @@ class SiteMedia extends SwatDBDataObject
 	 */
 	public $createdate;
 
-	/**
-	 * The date that the status of a media file was in a failed state.
-	 *
-	 * @var Date
-	 */
-	public $error_date;
-
 	// }}}
 	// {{{ protected properties
 
@@ -73,6 +87,11 @@ class SiteMedia extends SwatDBDataObject
 	 * @var string
 	 */
 	protected $file_base;
+
+	/**
+	 * @var string
+	 */
+	protected $media_set_shortname;
 
 	// }}}
 	// {{{ protected function init()
@@ -83,7 +102,6 @@ class SiteMedia extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 
 		$this->registerDateProperty('createdate');
-		$this->registerDateProperty('error_date');
 
 		$this->registerInternalProperty('media_set',
 			SwatDBClassMap::get('SiteMediaSet'));
@@ -178,15 +196,27 @@ class SiteMedia extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getMimeType()
+
+	public function getMimeType($encoding_shortname)
+	{
+		$binding = $this->getEncodingBinding($encoding_shortname);
+
+		if ($binding === null) {
+			throw new SiteException(sprintf(
+				'Encoding “%s” does not exist for media “%s”.',
+					$encoding_shortname, $this->id));
+		}
+
+		return $binding->media_type->mime_type;
+	}
+
+	// }}}
 	// {{{ public function getHumanFileType()
 
-	public function getHumanFileType($encoding_shortname = null)
+	public function getHumanFileType($encoding_shortname)
 	{
-		if ($encoding_shortname === null) {
-			$binding = $this->getLargestEncodingBinding();
-		} else {
-			$binding = $this->getEncodingBinding($encoding_shortname);
-		}
+		$binding = $this->getEncodingBinding($encoding_shortname);
 
 		if ($binding === null) {
 			throw new SiteException(sprintf(
@@ -195,6 +225,26 @@ class SiteMedia extends SwatDBDataObject
 		}
 
 		return $binding->getHumanFileType();
+	}
+
+	// }}}
+	// {{{ public function getFileSize()
+
+	public function getFileSize($encoding_shortname)
+	{
+		if ($encoding_shortname === null) {
+			$binding = $this->getLargestEncodingBinding();
+		} else {
+			$binding = $this->getEncodingBinding($encoding_shortname);
+		}
+
+		if ($binding === null) {
+			throw new SwatException(sprintf(
+				'Encoding “%s” does not exist for media “%s”.',
+					$encoding_shortname, $this->id));
+		}
+
+		return $binding->filesize;
 	}
 
 	// }}}
@@ -218,9 +268,9 @@ class SiteMedia extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function getLargestVideoEncodingBinding()
+	// {{{ public function getLargestEncodingBinding()
 
-	public function getLargestVideoEncodingBinding()
+	public function getLargestEncodingBinding()
 	{
 		$largest = null;
 
@@ -229,30 +279,12 @@ class SiteMedia extends SwatDBDataObject
 				$largest = $binding;
 			}
 
-			if ($binding->width > $largest->width) {
+			if ($binding->filesize > $largest->filesize) {
 				$largest = $binding;
 			}
 		}
 
 		return $largest;
-	}
-
-	// }}}
-	// {{{ public function getSmallestVideoEncodingBinding()
-
-	public function getSmallestVideoEncodingBinding()
-	{
-		$smallest = null;
-
-		foreach ($this->encoding_bindings as $binding) {
-			if ((($smallest === null) && ($binding->width !== null)) ||
-				(($smallest !== null) &&
-					($binding->width < $smallest->width))) {
-				$smallest = $binding;
-			}
-		}
-
-		return $smallest;
 	}
 
 	// }}}
@@ -323,24 +355,116 @@ class SiteMedia extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function load()
+
+	public function load($id)
+	{
+		$loaded = parent::load($id);
+
+		if ($loaded &&
+			$this->media_set_shortname !== null &&
+			$this->media_set->shortname !== $this->media_set_shortname) {
+			throw new SiteException('Trying to load media with the wrong '.
+				'media set. This may happen if the wrong wrapper class is '.
+				'used.');
+		}
+
+		return $loaded;
+	}
+
+	// }}}
 	// {{{ protected function loadEncodingBindings()
 
 	protected function loadEncodingBindings()
 	{
-		// Load encodings by size, but put nulls first since those would be
-		// audio only encodings.
 		$sql = sprintf('select * from MediaEncodingBinding
 			where MediaEncodingBinding.media = %s
-			order by width asc nulls first',
-			$this->db->quote($this->id, 'integer'));
+			order by %s',
+			$this->db->quote($this->id, 'integer'),
+			$this->getEncodingsOrderBy());
 
 		return SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('SiteMediaEncodingBindingWrapper'));
 	}
 
 	// }}}
+	// {{{ protected function getEncodingsOrderBy()
+
+	protected function getEncodingsOrderBy()
+	{
+		return 'id';
+	}
+
+	// }}}
+	// {{{ protected function getSerializableSubDataObjects()
+
+	protected function getSerializableSubDataObjects()
+	{
+		return array(
+			'media_set',
+			'encoding_bindings',
+		);
+	}
+
+	// }}}
+	// {{{ protected function getSerializablePrivateProperties()
+
+	protected function getSerializablePrivateProperties()
+	{
+		return array_merge(parent::getSerializablePrivateProperties(), array(
+			'media_set_shortname',
+		));
+	}
+
+	// }}}
+
+	// Processing methods
+	// {{{ protected function queueCdnTask()
+
+	/**
+	 * Queues a CDN task to be preformed later
+	 *
+	 * @param string $operation the operation to preform
+	 */
+	protected function queueCdnTask($operation, SiteMediaEncoding $encoding)
+	{
+		$task = new SiteMediaCdnTask();
+		$task->setDatabase($this->db);
+		$task->operation = $operation;
+
+		if ($operation == SiteCdnTask::COPY) {
+			$task->media    = $this->id;
+			$task->encoding = $encoding->id;
+		} else {
+			$task->file_path = $this->getUriSuffix();
+		}
+
+		$task->save();
+	}
+
+	// }}}
 
 	// File and URI methods
+	// {{{ public function getUri()
+
+	public function getUri($shortname, $prefix = '')
+	{
+		$uri = $this->getUriSuffix($shortname);
+
+		// Don't apply the prefix if the media exists on a CDN since the media
+		// will always be in the same location. We don't need to apply ../ for
+		// media displayed in the admin.
+		$binding = $this->getEncodingBinding($shortname);
+		if ($binding->on_cdn && self::$cdn_base != '') {
+			$uri = self::$cdn_base.$uri;
+		} else if ($prefix != '' && !strpos($uri, '://')) {
+			$uri = $prefix.$uri;
+		}
+
+		return $uri;
+	}
+
+	// }}}
 	// {{{ public function getUriSuffix()
 
 	public function getUriSuffix($encoding_shortname)
@@ -407,7 +531,7 @@ class SiteMedia extends SwatDBDataObject
 	{
 		$binding = $this->getEncodingBinding($encoding_shortname);
 
-		$filename = sprintf('%s - %s.%s',
+		$filename = sprintf('%s.%s',
 			$encoding_shortname,
 			$binding->media_type->extension);
 

@@ -1,8 +1,10 @@
 create table MediaSet (
 	id serial,
 
-	instance integer not null references Instance(id) on delete cascade,
-	shortname varchar(255),
+	instance           integer default null references Instance(id) on delete cascade,
+	shortname          varchar(255),
+	use_cdn            boolean not null default false,
+	obfuscate_filename boolean not null default false,
 
 	primary key (id)
 );

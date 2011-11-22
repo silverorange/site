@@ -3,7 +3,6 @@
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteInstance.php';
 require_once 'Site/dataobjects/SiteMediaEncodingWrapper.php';
-require_once 'Site/dataobjects/SiteMediaPlayerWrapper.php';
 
 /**
  * A media set object
@@ -31,6 +30,20 @@ class SiteMediaSet extends SwatDBDataObject
 	 * @var string
 	 */
 	public $shortname;
+
+	/**
+	 * Obfuscate filename
+	 *
+	 * @var boolean
+	 */
+	public $obfuscate_filename;
+
+	/**
+	 * Whether or not images added to this media set should be saved to a CDN
+	 *
+	 * @var boolean
+	 */
+	public $use_cdn;
 
 	// }}}
 	// {{{ public function loadByShortname()
@@ -142,28 +155,6 @@ class SiteMediaSet extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function getPlayerByShortname()
-
-	/**
-	 * Gets a player of this set based on its shortname
-	 *
-	 * @param string $shortname the shortname of the player
-	 *
-	 * @return MediaPlayer the player with the given shortname
-	 */
-	public function getPlayerByShortname($shortname)
-	{
-		foreach ($this->players as $player) {
-			if ($player->shortname === $shortname) {
-				return $player;
-			}
-		}
-
-		throw new SiteException(sprintf('Media player “%s” does not exist.',
-			$shortname));
-	}
-
-	// }}}
 	// {{{ protected function init()
 
 	protected function init()
@@ -199,34 +190,22 @@ class SiteMediaSet extends SwatDBDataObject
 	{
 		$sql = 'select * from MediaEncoding
 			where media_set = %s
-			order by width desc';
+			order by %s';
 
 		$sql = sprintf($sql,
-			$this->db->quote($this->id, 'integer'));
+			$this->db->quote($this->id, 'integer'),
+			$this->getEncodingsOrderBy());
 
 		return SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('SiteMediaEncodingWrapper'));
 	}
 
 	// }}}
-	// {{{ protected function loadPlayers()
+	// {{{ protected function getEncodingsOrderBy()
 
-	/**
-	 * Loads the players belonging to this set
-	 *
-	 * @return SiteMediaPlayerWrapper a set of player data objects
-	 */
-	protected function loadPlayers()
+	protected function getEncodingsOrderBy()
 	{
-		$sql = 'select * from MediaPlayer
-			where media_set = %s
-			order by width desc';
-
-		$sql = sprintf($sql,
-			$this->db->quote($this->id, 'integer'));
-
-		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteMediaPlayerWrapper'));
+		return 'id';
 	}
 
 	// }}}
