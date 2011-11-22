@@ -147,7 +147,7 @@ class SiteAttachment extends SwatDBDataObject
 		$map = array(
 			'audio/mp4'          => 'm4a',
 			'video/mp4'          => 'mp4',
-			'video/mpeg'         => 'mp3',
+			'audio/mpeg'         => 'mp3',
 			'application/zip'    => 'zip',
 			'application/pdf'    => 'pdf',
 			'image/jpeg'         => 'jpg',
@@ -171,7 +171,7 @@ class SiteAttachment extends SwatDBDataObject
 		$map = array(
 			'audio/mp4'          => Site::_('M4A'),
 			'video/mp4'          => Site::_('MP4'),
-			'video/mpeg'         => Site::_('MP3'),
+			'audio/mpeg'         => Site::_('MP3'),
 			'application/zip'    => Site::_('ZIP'),
 			'application/pdf'    => Site::_('PDF'),
 			'image/jpeg'         => Site::_('JPEG Image'),
