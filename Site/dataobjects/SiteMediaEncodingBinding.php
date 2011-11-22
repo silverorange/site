@@ -15,20 +15,6 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 	// {{{ public properties
 
 	/**
-	 * Width
-	 *
-	 * @var integer
-	 */
-	public $width;
-
-	/**
-	 * Height
-	 *
-	 * @var integer
-	 */
-	public $height;
-
-	/**
 	 * File size in bytes.
 	 *
 	 * Stored as float to prevent integer overflow.
@@ -36,13 +22,6 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 	 * @var float
 	 */
 	public $filesize;
-
-	/**
-	 * BOTR key
-	 *
-	 * @var string
-	 */
-	public $key;
 
 	/**
 	 * Whether or not this encoding has been copied to the CDN
@@ -81,14 +60,18 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 
 	public function getHumanFileType()
 	{
-		switch ($this->media_type->mime_type) {
-		case 'video/mp4':       return 'MP4';
-		case 'audio/mp4':       return 'MP4';
-		case 'audio/mpeg':      return 'MP3';
-		default:
+		$map = array(
+			'video/mp4'  => Site::_('MP4'),
+			'audio/mp4'  => Site::_('M4A'),
+			'audio/mpeg' => Site::_('MP3'),
+		);
+
+		if (!array_key_exists($this->mime_type, $map)) {
 			throw new SiteException(sprintf(
-				'Unknown mime type %s', $this->media_type->mime_type));
+				'Unknown mime type %s', $this->mime_type));
 		}
+
+		return $map[$this->mime_type];
 	}
 
 	// }}}

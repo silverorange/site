@@ -58,8 +58,9 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 
 			$sql = sprintf('select * from MediaEncodingBinding
 				where MediaEncodingBinding.media in (%s)
-				order by media, width asc nulls first',
-				implode(',', $ids));
+				order by %s',
+				implode(',', $ids),
+				$this->getEncodingsOrderBy());
 
 			$wrapper_class = SwatDBClassMap::get(
 				'SiteMediaEncodingBindingWrapper');
@@ -90,6 +91,14 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 			$wrapper->reindex();
 			$last_media->encoding_bindings = $wrapper;
 		}
+	}
+
+	// }}}
+	// {{{ protected function getEncodingsOrderBy()
+
+	protected function getEncodingsOrderBy()
+	{
+		return 'media';
 	}
 
 	// }}}

@@ -27,8 +27,16 @@ class SiteMediaSetWrapper extends SwatDBRecordsetWrapper
 				'MediaEncoding',
 				'media_set',
 				'',
-				'media_set, width desc');
+				$this->getEncodingsOrderBy());
 		}
+	}
+
+	// }}}
+	// {{{ protected function getEncodingsOrderBy()
+
+	protected function getEncodingsOrderBy()
+	{
+		return 'media_set';
 	}
 
 	// }}}

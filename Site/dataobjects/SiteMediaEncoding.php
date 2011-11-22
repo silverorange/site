@@ -32,34 +32,11 @@ class SiteMediaEncoding extends SwatDBDataObject
 	public $shortname;
 
 	/**
-	 * BOTR key
-	 *
-	 * @var string
-	 */
-	public $key;
-
-	/**
-	 * BOTR template ID
-	 *
-	 * Supposedly deprecated, still needed for direct download links to media.
-	 *
-	 * @var integer
-	 */
-	public $template_id;
-
-	/**
 	 * Title
 	 *
 	 * @var string
 	 */
 	public $title;
-
-	/**
-	 * Width in pixels
-	 *
-	 * @var integer
-	 */
-	public $width;
 
 	/**
 	 * Whether or not this is a default encoding for all media

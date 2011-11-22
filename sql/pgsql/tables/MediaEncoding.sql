@@ -1,16 +1,15 @@
 create table MediaEncoding (
 	id serial,
 
-	media_set integer not null references MediaSet(id) on delete cascade,
-	default_type integer references MediaType(id) on delete cascade,
-	key varchar(50),
-	template_id integer,
+	media_set    integer not null references MediaSet(id) on delete cascade,
+	default_type integer references MediaType(id) on delete set null,
+
+	title     varchar(255),
 	shortname varchar(255),
-	title varchar(255),
-	width integer,
+
 	default_encoding boolean not null default true,
 
 	primary key(id)
 );
 
-CREATE INDEX MediaEncoding_shortname_index ON MediaEncoding(shortname);
+create index MediaEncoding_shortname_index on MediaEncoding(shortname);
