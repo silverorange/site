@@ -330,7 +330,7 @@ class SiteAttachment extends SwatDBDataObject
 			$this->save();
 
 			if ($this->getAttachmentSet()->use_cdn) {
-				$this->queueCdnTask(SiteCdnTask::COPY);
+				$this->queueCdnTask('copy');
 			}
 
 			if (!copy($file_path, $this->getFilePath())) {
@@ -404,7 +404,7 @@ class SiteAttachment extends SwatDBDataObject
 	protected function deleteInternal()
 	{
 		if ($this->on_cdn) {
-			$this->queueCdnTask(SiteCdnTask::DELETE);
+			$this->queueCdnTask('delete');
 		}
 
 		parent::deleteInternal();
@@ -427,7 +427,7 @@ class SiteAttachment extends SwatDBDataObject
 		$task->setDatabase($this->db);
 		$task->operation = $operation;
 
-		if ($operation == SiteCdnTask::COPY) {
+		if ($operation == 'copy') {
 			$task->attachment = $this;
 		} else {
 			$task->file_path = $this->getUriSuffix();
