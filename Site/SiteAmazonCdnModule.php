@@ -114,12 +114,17 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 * @param array $metadata metadata associated with the file.
 	 *                         Defaults to an empty array.
 	 *
+	 * @returns boolean true if the file was copied, false if a file with the
+	 *                   same path and md5 already exists on s3.
+	 *
 	 * @throws SwatFileNotFoundException if the source file doesn't exist
 	 * @throws SiteCdnException if the CDN encounters any problems
 	 */
 	public function copyFile($source, $destination, $mime_type = null,
 		$access_type = 'public', $http_headers = array(), $metadata = array())
 	{
+		$copied = false;
+
 		try {
 			if (file_exists($source) === false) {
 				throw new SwatFileNotFoundException(sprintf(
@@ -145,6 +150,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			}
 
 			if ($copy) {
+				$copied = true;
 				if ($mime_type === null) {
 					$finfo     = $this->getFinfo();
 					$mime_type = finfo_file($finfo, $source);
@@ -161,6 +167,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		} catch (Services_Amazon_S3_Exception $e) {
 			throw new SiteCdnException($e);
 		}
+
+		return $copied;
 	}
 
 	// }}}
