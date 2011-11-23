@@ -111,6 +111,8 @@ class SiteAccountEdit extends AdminDBEdit
 
 		$this->account->save();
 
+		$this->updateBindings();
+
 		$message = new SwatMessage(sprintf(
 			Site::_('Account “%s” has been saved.'),
 				$this->account->getFullname()));
@@ -125,6 +127,13 @@ class SiteAccountEdit extends AdminDBEdit
 	{
 		$this->account->email = $this->ui->getWidget('email')->value;
 		$this->account->fullname = $this->ui->getWidget('fullname')->value;
+	}
+
+	// }}}
+	// {{{ protected function updateBindings()
+
+	protected function updateBindings()
+	{
 	}
 
 	// }}}
