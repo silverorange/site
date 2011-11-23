@@ -432,7 +432,7 @@ class SiteMedia extends SwatDBDataObject
 		$task->setDatabase($this->db);
 		$task->operation = $operation;
 
-		if ($operation == SiteCdnTask::COPY) {
+		if ($operation == 'copy') {
 			$task->media    = $this->id;
 			$task->encoding = $encoding->id;
 		} else {
