@@ -592,68 +592,28 @@ class SiteBotrMediaToaster
 	// {{{ public function getMediaPlayer()
 
 	public function getMediaPlayer(SiteBotrMedia $media,
-		SiteBotrMediaPlayer $player, $start_position = 0,
-		$record_end_point = false)
+		SiteBotrMediaPlayer $player)
 	{
-		return $this->getMediaPlayerByKeys($media->key, $player->key,
-			$player->getDimensions(), $start_position, $record_end_point);
+		return $this->getMediaPlayerByKeys($media->key, $player->key);
 	}
 
 	// }}}
 	// {{{ public function getMediaPlayerByKeys()
 
-	public function getMediaPlayerByKeys($media_key, $player_key,
-		array $dimensions, $start_position = 0, $record_end_point = false)
+	public function getMediaPlayerByKeys($media_key, $player_key)
 	{
+		$path = sprintf('players/%s-%s.js', $media_key, $player_key);
+		$src  = $this->getContentPath($path);
+
+		$script = new SwatHtmlTag('script');
+		$script->src = $src;
+
+		// explicitly open and close the script tag. The self-closing script tag
+		// causes problems with the Botr javascript, and caused content on the
+		// page to disappear in Firefox.
 		ob_start();
-
-		$path      = sprintf('players/%s-%s.js', $media_key, $player_key);
-		$src       = $this->getContentPath($path);
-		$id        = uniqid('video-', true);
-		$player_id = sprintf('botr_%s_%s_div', $media_key, $player_key);
-
-		$div = new SwatHtmlTag('div');
-		$div->id = $id;
-		$div->class = 'video-player';
-		$div->style = sprintf(
-			'width: %spx; height: %spx;',
-			$dimensions[0],
-			$dimensions[1]);
-
-		$div->open();
-
-		$javascript = sprintf(
-			"YAHOO.util.Event.onDOMReady(function() {\n\n".
-				"\tdocument.write = function(t) {};\n\n".
-				"\tvar player = document.createElement('div');\n".
-				"\tplayer.id = %s;\n\n".
-				"\tvar script = document.createElement('script');\n".
-				"\tscript.type = 'text/javascript';\n".
-				"\tscript.src = %s;\n\n".
-				"\tvar container = document.getElementById(%s);\n".
-				"\tcontainer.appendChild(player);\n".
-				"\tcontainer.appendChild(script);\n\n",
-			SwatString::quoteJavaScriptString($player_id),
-			SwatString::quoteJavaScriptString($src),
-			SwatString::quoteJavaScriptString($id));
-
-		if ($start_position > 0 || $record_end_point) {
-			$this->html_head_entry_set->addEntry(
-				new SwatJavaScriptHtmlHeadEntry('javascript/media-player.js'));
-
-			$javascript.= sprintf(
-				"\tvar botr_%s_player = new MediaPlayer(%s, %s, %s);\n\n",
-				$media_key,
-				SwatString::quoteJavaScriptString($media_key.'_'.$player_key),
-				$start_position,
-				($record_end_point) ? 'true' : 'false');
-		}
-
-		$javascript.= "});";
-
-		Swat::displayInlineJavaScript($javascript);
-
-		$div->close();
+		$script->open();
+		$script->close();
 
 		return ob_get_clean();
 	}
