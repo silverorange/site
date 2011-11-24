@@ -7,6 +7,11 @@ create table MediaEncodingBinding (
 
 	on_cdn boolean not null default false,
 
+	-- SiteBotrMedia Specific Fields
+	key varchar(50),
+	width integer,
+	height integer,
+
 	primary key(media, media_encoding)
 );
 

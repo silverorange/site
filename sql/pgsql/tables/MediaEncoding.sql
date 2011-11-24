@@ -9,6 +9,11 @@ create table MediaEncoding (
 
 	default_encoding boolean not null default true,
 
+	-- SiteBotrMedia Specific Fields
+	key varchar(50),
+	template_id integer,
+	width integer,
+
 	primary key(id)
 );
 
