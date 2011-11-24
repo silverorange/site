@@ -13,5 +13,8 @@ create table Media (
 
 	createdate timestamp,
 
+	-- SiteBotrMedia specific fields
+	key varchar(50),
+
 	primary key (id)
 );
