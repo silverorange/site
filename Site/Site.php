@@ -279,6 +279,17 @@ class Site
 			'amazon.bucket'            => null,
 			'amazon.access_key_id'     => null,
 			'amazon.access_key_secret' => null,
+
+			// Botr Media
+			'botr.key'                    => null,
+			'botr.secret'                 => null,
+			'botr.base'                   => 'http://content.bitsontherun.com/',
+			'botr.secure_base'            => 'https://content.bitsontherun.com/',
+			'botr.content_signing'        => true,
+			'botr.public_content_expiry'  => '+1 Year',
+			'botr.private_content_expiry' => '+1 Minute',
+			'botr.dashboard_username'     => null,
+			'botr.dashboard_password'     => null,
 		);
 	}
 
