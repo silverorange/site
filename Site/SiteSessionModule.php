@@ -15,6 +15,27 @@ require_once 'Site/SiteDatabaseModule.php';
  */
 class SiteSessionModule extends SiteApplicationModule
 {
+	// {{{ class constants
+
+	/**
+	 * Class constant indicating session id should be regenerated
+	 *
+	 * @see SiteAccountSessionModule::login()
+	 * @see SiteAccountSessionModule::loginById()
+	 * @see SiteAccountSessionModule::loginByAccount()
+	 */
+	const REGENERATE_ID = true;
+
+	/**
+	 * Class constant indicating session id should not be regenerated
+	 *
+	 * @see SiteAccountSessionModule::login()
+	 * @see SiteAccountSessionModule::loginById()
+	 * @see SiteAccountSessionModule::loginByAccount()
+	 */
+	const NO_REGENERATE_ID = false;
+
+	// }}}
 	// {{{ protected properties
 
 	/**
@@ -374,7 +395,10 @@ class SiteSessionModule extends SiteApplicationModule
 	public function regenerateId()
 	{
 		$old_id = $this->getSessionId();
+
+		// regenerate id, this resends the session cookie
 		session_regenerate_id();
+
 		$new_id = $this->getSessionId();
 
 		foreach ($this->regenerate_id_callbacks as $callback) {
@@ -382,8 +406,9 @@ class SiteSessionModule extends SiteApplicationModule
 			$parameters = $callback['parameters'];
 
 			// if there are no parameters, use old_id and new_id as parameters
-			if ($parameters == null)
+			if ($parameters == null) {
 				$parameters = array($old_id, $new_id);
+			}
 
 			call_user_func_array($function, $parameters);
 		}
@@ -562,7 +587,9 @@ class SiteSessionModule extends SiteApplicationModule
 
 		// Explicitly set the session cookie since PHP doesn't do this
 		// sometimes on SSL requests.
-		setcookie(session_name(), session_id(), 0, '/');
+		if (ini_get('session.use_cookies') == 1) {
+			setcookie(session_name(), session_id(), 0, '/');
+		}
 
 		$this->restoreRegisteredObjectDBConnections();
 	}

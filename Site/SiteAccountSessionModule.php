@@ -58,12 +58,17 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 *
 	 * @param string $email the email address of the account to login.
 	 * @param string $password the password of the account to login.
+	 * @param boolean $regenerate_id optional. Whether or not to regenerate
+	 *                                the session identifier on successful
+	 *                                login. Defaults to
+	 *                                {@link SiteSessionModule::REGENERATE_ID}.
 	 *
 	 * @return boolean true if the account was successfully logged in and false
 	 *                       if the email/password pair did not match an
 	 *                       account.
 	 */
-	public function login($email, $password)
+	public function login($email, $password,
+		$regenerate_id = SiteSessionModule::REGENERATE_ID)
 	{
 		if ($this->isLoggedIn())
 			$this->logout();
@@ -77,7 +82,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 			$this->activate();
 			$this->account = $account;
 
-			$this->regenerateId();
+			if ($regenerate_id) {
+				$this->regenerateId();
+			}
+
 			$this->setAccountCookie();
 			$this->runLoginCallbacks();
 
@@ -97,11 +105,16 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * Logs the current session into a {@link SiteAccount} using an id
 	 *
 	 * @param integer $id The id of the {@link SiteAccount} to log into.
+	 * @param boolean $regenerate_id optional. Whether or not to regenerate
+	 *                                the session identifier on successful
+	 *                                login. Defaults to
+	 *                                {@link SiteSessionModule::REGENERATE_ID}.
 	 *
 	 * @return boolean true if the account was successfully logged in and false
 	 *                       if the id does not match an account.
 	 */
-	public function loginById($id)
+	public function loginById($id,
+		$regenerate_id = SiteSessionModule::REGENERATE_ID)
 	{
 		if ($this->isLoggedIn())
 			$this->logout();
@@ -112,7 +125,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 			$this->activate();
 			$this->account = $account;
 
-			$this->regenerateId();
+			if ($regenerate_id) {
+				$this->regenerateId();
+			}
+
 			$this->setAccountCookie();
 			$this->runLoginCallbacks();
 
@@ -132,17 +148,26 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * Logs the current session into the specified {@link SiteAccount}
 	 *
 	 * @param SiteAccount $account The account to log into.
+	 * @param boolean $regenerate_id optional. Whether or not to regenerate
+	 *                                the session identifier on successful
+	 *                                login. Defaults to
+	 *                                {@link SiteSessionModule::REGENERATE_ID}.
 	 *
 	 * @return boolean true.
 	 */
-	public function loginByAccount(SiteAccount $account)
+	public function loginByAccount(SiteAccount $account,
+		$regenerate_id = SiteSessionModule::REGENERATE_ID)
 	{
 		if ($this->isLoggedIn())
 			$this->logout();
 
 		$this->activate();
 		$this->account = $account;
-		$this->regenerateId();
+
+		if ($regenerate_id) {
+			$this->regenerateId();
+		}
+
 		$this->setAccountCookie();
 		$this->runLoginCallbacks();
 
