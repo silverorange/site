@@ -675,9 +675,12 @@ class SiteBotrMediaToaster
 	 * See {@link http://developer.longtailvideo.com/botr/system-api/urls/videos.html}
 	 *
 	 * @param SiteBotrMedia The media to download
-	 * @param SiteBotrMediaEncoding The encoded version of the media to download.
-	 *                      If null, it will always return the H264 320
-	 *                      encoding.
+	 * @param SiteBotrMediaEncoding The encoded version of the media to
+	 *                      download. If null, the BOTR API documentation says
+	 *                      it will always return the BOTR default h264 320px
+	 *                      encoding, but this is currently broken and reported.
+	 *                      Until BOTR's bug is fixed, it returns the largest
+	 *                      encoding available.
 	 *
 	 * @return string The uri of the direct download.
 	 */
@@ -688,15 +691,15 @@ class SiteBotrMediaToaster
 
 		if ($encoding === null) {
 			// Default extension for default encoding is always .mp4
-			$extension   = 'mp4';
-			$template_id = null;
+			$extension    = 'mp4';
+			$encoding_key = null;
 		} else {
-			$template_id = $encoding->template_id;
-			$binding     = $media->getEncodingBinding($encoding->shortname);
-			$extension   = $binding->media_type->extension;
+			$encoding_key = $encoding->key;
+			$binding      = $media->getEncodingBinding($encoding->shortname);
+			$extension    = $binding->media_type->extension;
 		}
 
-		return $this->getMediaDownloadByKeys($media->key, $template_id,
+		return $this->getMediaDownloadByKeys($media->key, $encoding_key,
 			$extension);
 	}
 
@@ -709,16 +712,16 @@ class SiteBotrMediaToaster
 	 * See {@link http://developer.longtailvideo.com/botr/system-api/urls/videos.html}
 	 *
 	 * @param media_key
-	 * @param media_encoding_template_id
+	 * @param encoding_key
 	 * @param extension
 	 *
 	 * @return string The uri of the direct download.
 	 */
-	public function getMediaDownloadByKeys($media_key,
-		$media_encoding_template_id = null, $extension = 'mp4')
+	public function getMediaDownloadByKeys($media_key, $encoding_key = null,
+		$extension = 'mp4')
 	{
-		if ($media_encoding_template_id != null) {
-			$media_key.= '-'.$media_encoding_template_id;
+		if ($encoding_key != null) {
+			$media_key.= '-'.$encoding_key;
 		}
 
 		$path = sprintf('videos/%s.%s',
