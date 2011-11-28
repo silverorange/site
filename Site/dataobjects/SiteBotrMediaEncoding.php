@@ -21,15 +21,6 @@ class SiteBotrMediaEncoding extends SiteMediaEncoding
 	public $key;
 
 	/**
-	 * BOTR template ID
-	 *
-	 * Supposedly deprecated, still needed for direct download links to media.
-	 *
-	 * @var integer
-	 */
-	public $template_id;
-
-	/**
 	 * Width in pixels
 	 *
 	 * @var integer

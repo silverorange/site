@@ -11,7 +11,6 @@ create table MediaEncoding (
 
 	-- SiteBotrMedia Specific Fields
 	key varchar(50),
-	template_id integer,
 	width integer,
 
 	primary key(id)
