@@ -194,23 +194,24 @@ class SiteMediaSet extends SwatDBDataObject
 
 		$sql = sprintf($sql,
 			$this->db->quote($this->id, 'integer'),
-			$this->getEncodingsOrderBy());
+			$this->getMediaEncodingOrderBy());
 
-		return SwatDB::query($this->db, $sql, $this->getEncodingWrapper());
+		return SwatDB::query($this->db, $sql,
+			$this->getMediaEncodingWrapperClass());
 	}
 
 	// }}}
-	// {{{ protected function getEncodingWrapper()
+	// {{{ protected function getMediaEncodingWrapperClass()
 
-	protected function getEncodingWrapper()
+	protected function getMediaEncodingWrapperClass()
 	{
 		return SwatDBClassMap::get('SiteMediaEncodingWrapper');
 	}
 
 	// }}}
-	// {{{ protected function getEncodingsOrderBy()
+	// {{{ protected function getMediaEncodingOrderBy()
 
-	protected function getEncodingsOrderBy()
+	protected function getMediaEncodingOrderBy()
 	{
 		return 'id';
 	}

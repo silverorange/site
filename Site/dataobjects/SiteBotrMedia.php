@@ -115,17 +115,17 @@ class SiteBotrMedia extends SiteMedia
 	}
 
 	// }}}
-	// {{{ protected function getEncodingBindingWrapper()
+	// {{{ protected function getMediaEncodingBindingWrapperClass()
 
-	protected function getEncodingBindingWrapper()
+	protected function getMediaEncodingBindingWrapperClass()
 	{
 		return SwatDBClassMap::get('SiteBotrMediaEncodingBindingWrapper');
 	}
 
 	// }}}
-	// {{{ protected function getEncodingBindingsOrderBy()
+	// {{{ protected function getMediaEncodingBindingsOrderBy()
 
-	protected function getEncodingBindingsOrderBy()
+	protected function getMediaEncodingBindingsOrderBy()
 	{
 		// Load encodings by size, but put nulls first since those would be
 		// audio only encodings.

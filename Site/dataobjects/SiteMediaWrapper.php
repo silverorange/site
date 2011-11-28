@@ -26,7 +26,7 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 				'media_set',
 				$this->db,
 				'select * from MediaSet where id in (%s)',
-				$this->getMediaSetWrapper());
+				$this->getMediaSetWrapperClass());
 		}
 
 		$this->attachEncodingBindings();
@@ -60,9 +60,9 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 				where MediaEncodingBinding.media in (%s)
 				order by %s',
 				implode(',', $ids),
-				$this->getEncodingsOrderBy());
+				$this->getMediaEncodingBindingOrderBy());
 
-			$wrapper_class = $this->getMediaEncodingBindingWrapper();
+			$wrapper_class = $this->getMediaEncodingBindingWrapperClass();
 
 			$bindings = SwatDB::query($this->db, $sql,
 				$wrapper_class);
@@ -94,25 +94,25 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 	}
 
 	// }}}
-	// {{{ protected function getMediaSetWrapper()
+	// {{{ protected function getMediaSetWrapperClass()
 
-	protected function getMediaSetWrapper()
+	protected function getMediaSetWrapperClass()
 	{
 		return SwatDBClassMap::get('SiteMediaSetWrapper');
 	}
 
 	// }}}
-	// {{{ protected function getMediaEncodingBindingWrapper()
+	// {{{ protected function getMediaEncodingBindingWrapperClass()
 
-	protected function getMediaEncodingBindingWrapper()
+	protected function getMediaEncodingBindingWrapperClass()
 	{
 		return SwatDBClassMap::get('SiteMediaEncodingBindingWrapper');
 	}
 
 	// }}}
-	// {{{ protected function getEncodingsOrderBy()
+	// {{{ protected function getMediaEncodingBindingOrderBy()
 
-	protected function getEncodingsOrderBy()
+	protected function getMediaEncodingBindingOrderBy()
 	{
 		return 'media';
 	}
