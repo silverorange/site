@@ -201,13 +201,13 @@ class SiteAttachment extends SwatDBDataObject
 	// }}}
 	// {{{ public function getUri()
 
-	public function getUri()
+	public function getUri($prefix = '')
 	{
 		$uri = $this->getUriSuffix();
 
 		if ($this->on_cdn && self::$cdn_base != '') {
 			$uri = self::$cdn_base.$uri;
-		} else if ($prefix != '' && !strpos($uri, '://')) {
+		} elseif ($prefix != '' && !strpos($uri, '://')) {
 			$uri = $prefix.$uri;
 		}
 
