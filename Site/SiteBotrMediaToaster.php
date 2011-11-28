@@ -676,30 +676,17 @@ class SiteBotrMediaToaster
 	 *
 	 * @param SiteBotrMedia The media to download
 	 * @param SiteBotrMediaEncoding The encoded version of the media to
-	 *                      download. If null, the BOTR API documentation says
-	 *                      it will always return the BOTR default h264 320px
-	 *                      encoding, but this is currently broken and reported.
-	 *                      Until BOTR's bug is fixed, it returns the largest
-	 *                      encoding available.
+	 *                      download.
 	 *
 	 * @return string The uri of the direct download.
 	 */
 	public function getMediaDownload(SiteBotrMedia $media,
-		SiteBotrMediaEncoding $encoding = null)
+		SiteBotrMediaEncoding $encoding)
 	{
-		$key = $media->key;
+		$binding   = $media->getEncodingBinding($encoding->shortname);
+		$extension = $binding->media_type->extension;
 
-		if ($encoding === null) {
-			// Default extension for default encoding is always .mp4
-			$extension    = 'mp4';
-			$encoding_key = null;
-		} else {
-			$encoding_key = $encoding->key;
-			$binding      = $media->getEncodingBinding($encoding->shortname);
-			$extension    = $binding->media_type->extension;
-		}
-
-		return $this->getMediaDownloadByKeys($media->key, $encoding_key,
+		return $this->getMediaDownloadByKeys($media->key, $encoding->key,
 			$extension);
 	}
 
@@ -717,12 +704,10 @@ class SiteBotrMediaToaster
 	 *
 	 * @return string The uri of the direct download.
 	 */
-	public function getMediaDownloadByKeys($media_key, $encoding_key = null,
+	public function getMediaDownloadByKeys($media_key, $encoding_key,
 		$extension = 'mp4')
 	{
-		if ($encoding_key != null) {
-			$media_key.= '-'.$encoding_key;
-		}
+		$media_key.= '-'.$encoding_key;
 
 		$path = sprintf('videos/%s.%s',
 			$media_key,
