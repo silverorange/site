@@ -707,10 +707,9 @@ class SiteBotrMediaToaster
 	public function getMediaDownloadByKeys($media_key, $encoding_key,
 		$extension = 'mp4')
 	{
-		$media_key.= '-'.$encoding_key;
-
-		$path = sprintf('videos/%s.%s',
+		$path = sprintf('videos/%s-%s.%s',
 			$media_key,
+			$encoding_key,
 			$extension);
 
 		return $this->getContentPath($path);
