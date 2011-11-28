@@ -45,9 +45,9 @@ class SiteBotrMediaSet extends SiteMediaSet
 	}
 
 	// }}}
-	// {{{ protected function getEncodingsOrderBy()
+	// {{{ protected function getMediaEncodingOrderBy()
 
-	protected function getEncodingsOrderBy()
+	protected function getMediaEncodingOrderBy()
 	{
 		return 'width desc';
 	}

@@ -25,25 +25,25 @@ class SiteBotrMediaWrapper extends SiteMediaWrapper
 	}
 
 	// }}}
-	// {{{ protected function getMediaSetWrapper()
+	// {{{ protected function getMediaSetWrapperClass()
 
-	protected function getMediaSetWrapper()
+	protected function getMediaSetWrapperClass()
 	{
 		return SwatDBClassMap::get('SiteBotrMediaSetWrapper');
 	}
 
 	// }}}
-	// {{{ protected function getMediaEncodingBindingWrapper()
+	// {{{ protected function getMediaEncodingBindingWrapperClass()
 
-	protected function getMediaEncodingBindingWrapper()
+	protected function getMediaEncodingBindingWrapperClass()
 	{
 		return SwatDBClassMap::get('SiteBotrMediaEncodingBindingWrapper');
 	}
 
 	// }}}
-	// {{{ protected function getEncodingsOrderBy()
+	// {{{ protected function getMediaEncodingBindingOrderBy()
 
-	protected function getEncodingsOrderBy()
+	protected function getMediaEncodingBindingOrderBy()
 	{
 		// order by width with nulls first so that encodings are ordered from
 		// audio (no width), then from smallest to largest encoding.
