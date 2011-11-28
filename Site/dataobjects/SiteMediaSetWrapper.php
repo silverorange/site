@@ -23,12 +23,20 @@ class SiteMediaSetWrapper extends SwatDBRecordsetWrapper
 		if ($recordset !== null) {
 			$this->loadAllSubRecordsets(
 				'encodings',
-				SwatDBClassMap::get('SiteMediaEncodingWrapper'),
+				$this->getEncodingWrapper(),
 				'MediaEncoding',
 				'media_set',
 				'',
 				$this->getEncodingsOrderBy());
 		}
+	}
+
+	// }}}
+	// {{{ protected function getEncodingWrapper()
+
+	protected function getEncodingWrapper()
+	{
+		return SwatDBClassMap::get('SiteMediaEncodingWrapper');
 	}
 
 	// }}}

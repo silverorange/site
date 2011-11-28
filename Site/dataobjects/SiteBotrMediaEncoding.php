@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/dataobjects/SiteMediaEncoding.php';
+require_once 'Site/dataobjects/SiteBotrMediaSet.php';
 
 /**
  * A BOTR-specific media encoding object
@@ -26,6 +27,17 @@ class SiteBotrMediaEncoding extends SiteMediaEncoding
 	 * @var integer
 	 */
 	public $width;
+
+	// }}}
+	// {{{ protected function init()
+
+	protected function init()
+	{
+		parent::init();
+
+		$this->registerInternalProperty('media_set',
+			SwatDBClassMap::get('SiteBotrMediaSet'));
+	}
 
 	// }}}
 }

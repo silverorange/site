@@ -381,16 +381,24 @@ class SiteMedia extends SwatDBDataObject
 			where MediaEncodingBinding.media = %s
 			order by %s',
 			$this->db->quote($this->id, 'integer'),
-			$this->getEncodingsOrderBy());
+			$this->getEncodingBindingsOrderBy());
 
 		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteMediaEncodingBindingWrapper'));
+			$this->getEncodingBindingWrapper());
 	}
 
 	// }}}
-	// {{{ protected function getEncodingsOrderBy()
+	// {{{ protected function getEncodingBindingWrapper()
 
-	protected function getEncodingsOrderBy()
+	protected function getEncodingBindingWrapper()
+	{
+		return SwatDBClassMap::get('SiteMediaEncodingBindingWrapper');
+	}
+
+	// }}}
+	// {{{ protected function getEncodingBindingsOrderBy()
+
+	protected function getEncodingBindingsOrderBy()
 	{
 		return 'id';
 	}

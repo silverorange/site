@@ -26,7 +26,7 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 				'media_set',
 				$this->db,
 				'select * from MediaSet where id in (%s)',
-				SwatDBClassMap::get('SiteMediaSetWrapper'));
+				$this->getMediaSetWrapper());
 		}
 
 		$this->attachEncodingBindings();
@@ -62,10 +62,10 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 				implode(',', $ids),
 				$this->getEncodingsOrderBy());
 
-			$wrapper_class = SwatDBClassMap::get(
-				'SiteMediaEncodingBindingWrapper');
+			$wrapper_class = $this->getMediaEncodingBindingWrapper();
 
-			$bindings = SwatDB::query($this->db, $sql, $wrapper_class);
+			$bindings = SwatDB::query($this->db, $sql,
+				$wrapper_class);
 
 			if (count($bindings) == 0) {
 				return;
@@ -91,6 +91,22 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 			$wrapper->reindex();
 			$last_media->encoding_bindings = $wrapper;
 		}
+	}
+
+	// }}}
+	// {{{ protected function getMediaSetWrapper()
+
+	protected function getMediaSetWrapper()
+	{
+		return SwatDBClassMap::get('SiteMediaSetWrapper');
+	}
+
+	// }}}
+	// {{{ protected function getMediaEncodingBindingWrapper()
+
+	protected function getMediaEncodingBindingWrapper()
+	{
+		return SwatDBClassMap::get('SiteMediaEncodingBindingWrapper');
 	}
 
 	// }}}
