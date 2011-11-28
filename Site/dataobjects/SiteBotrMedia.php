@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/dataobjects/SiteMedia.php';
+require_once 'Site/dataobjects/SiteBotrMediaEncodingBindingWrapper.php';
 
 /**
  * A BOTR-specific media object
@@ -103,9 +104,28 @@ class SiteBotrMedia extends SiteMedia
 	}
 
 	// }}}
-	// {{{ protected function getEncodingsOrderBy()
+	// {{{ protected function init()
 
-	protected function getEncodingsOrderBy()
+	protected function init()
+	{
+		parent::init();
+
+		$this->registerInternalProperty('media_set',
+			SwatDBClassMap::get('SiteBotrMediaSet'));
+	}
+
+	// }}}
+	// {{{ protected function getEncodingBindingWrapper()
+
+	protected function getEncodingBindingWrapper()
+	{
+		return SwatDBClassMap::get('SiteBotrMediaEncodingBindingWrapper');
+	}
+
+	// }}}
+	// {{{ protected function getEncodingBindingsOrderBy()
+
+	protected function getEncodingBindingsOrderBy()
 	{
 		// Load encodings by size, but put nulls first since those would be
 		// audio only encodings.

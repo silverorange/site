@@ -2,6 +2,7 @@
 
 require_once 'Site/dataobjects/SiteMediaSet.php';
 require_once 'Site/dataobjects/SiteBotrMediaPlayerWrapper.php';
+require_once 'Site/dataobjects/SiteBotrMediaEncodingWrapper.php';
 
 /**
  * A BOTR-specific media set object
@@ -36,6 +37,14 @@ class SiteBotrMediaSet extends SiteMediaSet
 	// }}}
 
 	// loader methods
+	// {{{ protected function getEncodingWrapper()
+
+	protected function getEncodingWrapper()
+	{
+		return SwatDBClassMap::get('SiteBotrMediaEncodingWrapper');
+	}
+
+	// }}}
 	// {{{ protected function getEncodingsOrderBy()
 
 	protected function getEncodingsOrderBy()

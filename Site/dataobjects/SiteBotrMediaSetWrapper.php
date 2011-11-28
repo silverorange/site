@@ -12,6 +12,14 @@ require_once 'Site/dataobjects/SiteMediaSetWrapper.php';
  */
 class SiteBotrMediaSetWrapper extends SiteMediaSetWrapper
 {
+	// {{{ protected function getEncodingWrapper()
+
+	protected function getEncodingWrapper()
+	{
+		return SwatDBClassMap::get('SiteBotrMediaEncodingWrapper');
+	}
+
+	// }}}
 	// {{{ protected function getEncodingsOrderBy()
 
 	protected function getEncodingsOrderBy()
