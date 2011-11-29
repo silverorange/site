@@ -66,12 +66,12 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 			'audio/mpeg' => Site::_('MP3'),
 		);
 
-		if (!array_key_exists($this->mime_type, $map)) {
+		if (!array_key_exists($this->media_type->mime_type, $map)) {
 			throw new SiteException(sprintf(
-				'Unknown mime type %s', $this->mime_type));
+				'Unknown mime type %s', $this->media_type->mime_type));
 		}
 
-		return $map[$this->mime_type];
+		return $map[$this->media_type->mime_type];
 	}
 
 	// }}}
