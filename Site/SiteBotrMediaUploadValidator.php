@@ -5,8 +5,9 @@ require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
 /**
  * Application to validate FTP uploaded media to Botr.
  *
- * @package   CourseHost
+ * @package   Site
  * @copyright 2011 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMediaUploadValidator
 	extends SiteBotrMediaToasterCommandLineApplication

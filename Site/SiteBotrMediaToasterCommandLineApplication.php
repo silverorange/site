@@ -10,8 +10,9 @@ require_once 'Site/SiteBotrMediaToaster.php';
 /**
  * Abstract application for applications that access media on bits on the run.
  *
- * @package   CourseHost
+ * @package   Site
  * @copyright 2011 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteBotrMediaToasterCommandLineApplication
 	extends SiteCommandLineApplication
