@@ -175,6 +175,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 				'video',
 				'videos',
 				'samples',
+				'video-extras',
 				);
 
 			foreach (new RecursiveIteratorIterator($iterator) as
