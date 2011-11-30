@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteAccountWrapper.php';
  * Index page for Accounts
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountIndex extends AdminSearch
@@ -157,30 +157,44 @@ class SiteAccountIndex extends AdminSearch
 		$sql = $this->getSQL();
 		$sql = sprintf($sql,
 			$this->getWhereClause(),
-			$this->getOrderByClause($view,
-				'fullname, email'));
+			$this->getOrderByClause($view, $this->getDefaultOrderBy()));
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 
-		$accounts = SwatDB::query($this->app->db, $sql, 'SiteAccountWrapper');
+		$accounts = SwatDB::query($this->app->db, $sql);
 
-		if (count($accounts) > 0)
+		if (count($accounts) > 0) {
 			$this->ui->getWidget('results_message')->content =
 				$pager->getResultsMessage('result', 'results');
+		}
 
+		$class_name = SwatDBClassMap::get('SiteAccount');
 		$store = new SwatTableStore();
-		foreach ($accounts as $account) {
-			$ds = $this->getDetailsStore($account);
-			$store->add($ds);
+		foreach ($accounts as $row) {
+			if ($row instanceof SiteAccount) {
+				$account = $row;
+			} else {
+				$account = new $class_name($row);
+				$account->setDatabase($this->app->db);
+			}
+			$store->add($this->getDetailsStore($account, $row));
 		}
 
 		return $store;
 	}
 
 	// }}}
+	// {{{ protected function getDefaultOrderBy()
+
+	protected function getDefaultOrderBy()
+	{
+		return 'fullname, email';
+	}
+
+	// }}}
 	// {{{ protected function getDetailsStore()
 
-	protected function getDetailsStore(SiteAccount $account)
+	protected function getDetailsStore(SiteAccount $account, $row)
 	{
 		$ds = new SwatDetailsStore($account);
 		$ds->fullname = $account->getFullname();
