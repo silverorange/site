@@ -3,7 +3,7 @@
 require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
 
 /**
- * Application to validate FTP uploaded media to Botr.
+ * Application to validate FTP uploaded media to BOTR.
  *
  * @package   Site
  * @copyright 2011 silverorange
@@ -195,11 +195,13 @@ class SiteBotrMediaUploadValidator
 					$this->valid_tag_md5,
 					$this->invalid_tag_filesize,
 					$this->invalid_tag_md5,
+					$this->duplicate_tag,
+					$this->original_missing_tag,
 					));
 		}
 
 		$this->debug(sprintf(
-			"Reset validation tags for %s media files on Botr.\n",
+			"Reset validation tags for %s media files on BOTR.\n",
 			$this->locale->formatNumber(count($media))));
 	}
 
@@ -243,7 +245,7 @@ class SiteBotrMediaUploadValidator
 		$source_files = $this->getSourceFiles();
 		$tags_to_add  = array();
 
-		$this->debug(sprintf("Found %s media files on Botr, %s source files.\n",
+		$this->debug(sprintf("Found %s media files on BOTR, %s source files.\n",
 			$this->locale->formatNumber(count($media)),
 			$this->locale->formatNumber(count($source_files))));
 
@@ -318,7 +320,7 @@ class SiteBotrMediaUploadValidator
 				$this->failed_files[$filename]['path']  = $info['path'];
 				$this->failed_files[$filename]['size']  = $info['size'];
 				$this->failed_files[$filename]['error'] = sprintf(
-					'Source file ‘%s’ not found on Botr',
+					'Source file ‘%s’ not found on BOTR',
 					$filename);
 			}
 		}
@@ -381,7 +383,7 @@ class SiteBotrMediaUploadValidator
 				$result['valid']    = false;
 				$result['tags'][]   = $this->invalid_tag_md5;
 				$result['errors'][] = sprintf(
-					'md5 mismatch. Botr: %s, Source: %s.',
+					'md5 mismatch. BOTR: %s, Source: %s.',
 					$media_file['md5'],
 					$this->source_files[$filename]['md5']);
 			}
@@ -404,7 +406,7 @@ class SiteBotrMediaUploadValidator
 				$result['valid']    = true;
 				$result['tags'][]   = $this->invalid_tag_filesize;
 				$result['errors'][] = sprintf(
-					'Size mismatch. Botr: %s bytes, Source: %s bytes.',
+					'Size mismatch. BOTR: %s bytes, Source: %s bytes.',
 					$original['filesize'],
 					$source_size);
 			}
@@ -420,10 +422,10 @@ class SiteBotrMediaUploadValidator
 	{
 		$this->debug(sprintf("%s valid media files (%s originals to ".
 			"download), %s duplicates and %s failed validation.\n",
-			SwatString::numberFormat(count($this->valid_files)),
-			SwatString::numberFormat(count($this->originals_to_download)),
-			SwatString::numberFormat(count($this->duplicate_files)),
-			SwatString::numberFormat(count($this->failed_files))));
+			$this->locale->formatNumber(count($this->valid_files)),
+			$this->locale->formatNumber(count($this->originals_to_download)),
+			$this->locale->formatNumber(count($this->duplicate_files)),
+			$this->locale->formatNumber(count($this->failed_files))));
 
 		if (count($this->duplicate_files) > 0) {
 			$this->debug("\nDuplicates:\n");
