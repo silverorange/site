@@ -265,20 +265,6 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
-	// {{{ protected function mediaFileIsMarkedEncoded()
-
-	protected function mediaFileIsMarkedEncoded(array $media_file)
-	{
-		$valid = false;
-
-		if ((strpos($media_file['tags'], $this->encoded_tag) !== false)) {
-			$valid = true;
-		}
-
-		return $valid;
-	}
-
-	// }}}
 	// {{{ protected function displayResults()
 
 	protected function displayResults()
