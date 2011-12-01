@@ -68,6 +68,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected $invalid_tag_md5      = 'invalid.md5';
 	protected $original_missing_tag = 'original_missing';
 	protected $duplicate_tag        = 'duplicate';
+	protected $encoded_tag          = 'encoded';
 
 	protected $locale;
 

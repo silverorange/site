@@ -27,18 +27,39 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	protected $encoding_profiles = array();
 
 	/**
+	 * Number of media files with all encodings complete.
+	 *
+	 * @var integer
+	 */
+	protected $complete_files = 0;
+
+	/**
+	 * Number of media files with encoding currently running.
+	 *
+	 * @var integer
+	 */
+	protected $current_media_files_encoding_count = 0;
+
+	/**
 	 * Number of media files with encoding jobs started.
 	 *
 	 * @var integer
 	 */
-	protected $media_files_encoding_count = 0;
+	protected $new_media_files_encoding_count = 0;
 
 	/**
 	 * Number of encoding jobs started.
 	 *
 	 * @var integer
 	 */
-	protected $encoding_jobs_count = 0;
+	protected $new_encoding_jobs_count = 0;
+
+	/**
+	 * Number of encoding jobs currently running.
+	 *
+	 * @var integer
+	 */
+	protected $current_encoding_jobs_count = 0;
 
 	// }}}
 	// {{{ public function runInternal()
@@ -119,13 +140,60 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 		// check all media for encodings they are missing, and if missing, start
 		// the encode job.
 		foreach ($media as $media_file) {
-			// only worry about videos for now.
-			if ($media_file['mediatype'] == 'video') {
-				$current_encodings = $this->toaster->getEncodingsByKey(
-					$media_file['key']);
+			if ($this->mediaFileIsMarkedEncoded($media_file)) {
+				$this->complete_files++;
+			} elseif ($media_file['mediatype'] == 'video') {
+				// only worry about video for now, audio will be ignored.
+				$key               = $media_file['key'];
+				$current_keys      = array();
+				$current_encodings = $this->toaster->getEncodingsByKey($key);
+				$new_jobs          = 0;
+				$current_jobs      = 0;
+				$complete_jobs     = 0;
+				$failed_jobs       = 0;
+				$complete          = true;
 
-				$current_keys = array();
 				foreach ($current_encodings as $encoding) {
+					switch ($encoding['status']) {
+					case 'Waiting for original':
+					case 'Queued':
+					case 'Encoding':
+					case 'Re-encoding':
+					case 'Uploading to CDN':
+						$current_jobs++;
+						$complete = false;
+						break;
+
+					case 'Ready':
+						$complete_jobs++;
+						break;
+
+					case 'Failed':
+					case 'Upload to CDN failed':
+						$failed_jobs++;
+						$complete = false;
+						$e = new SiteCommandLineException(sprintf('Media %s '.
+							'returned failed status for %s encoding %s',
+							$key,
+							$encoding['template']['format']['name'],
+							$encoding['key']));
+
+						$e->processAndContinue();
+						break;
+
+					default:
+						$complete = false;
+						$e = new SiteCommandLineException(sprintf('Media %s '.
+							'returned unknown status ‘%s’ for %s encoding %s',
+							$key,
+							$encoding['status'],
+							$encoding['template']['format']['name'],
+							$encoding['key']));
+
+						$e->processAndContinue();
+						break;
+					}
+
 					if ($encoding['template']['format']['key'] == 'original') {
 						$original_width = $encoding['width'];
 					}
@@ -133,7 +201,6 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 					$current_keys[] = $encoding['template']['key'];
 				}
 
-				$new_encodings = 0;
 				foreach ($this->encoding_profiles as
 					$profile_key => $profile) {
 					// don't re-apply, and check to make sure we're not
@@ -145,27 +212,59 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 						// or if it perfectly matches the width of the original.
 						if ($profile['default'] == 'video' ||
 							$profile['width'] == $original_width) {
-							$new_encodings++;
+							$new_jobs++;
+							$complete = false;
 							$this->toaster->encodeMediaByKeys(
-								$media_file['key'],
+								$key,
 								$profile_key);
 						}
 					}
 				}
 
-				$this->debug(sprintf("Media: %s ... %s current encodings ... ".
-					"%s new encodings added.\nFilename: %s\n\n",
-					$media_file['key'],
-					$this->locale->formatNumber(count($current_keys)),
-					$this->locale->formatNumber($new_encodings),
+				$this->debug(sprintf("Media: %s ... %s complete encodings ... ".
+					"%s existing encoding jobs, %s new encodings jobs added.\n".
+					"%s failed encoding jobs.\n".
+					"Filename: %s\n\n",
+					$key,
+					$this->locale->formatNumber($complete_jobs),
+					$this->locale->formatNumber($current_jobs),
+					$this->locale->formatNumber($new_jobs),
+					$this->locale->formatNumber($failed_jobs),
 					$media_file['title']));
 
-				if ($new_encodings > 0) {
-					$this->media_files_encoding_count++;
-					$this->encoding_jobs_count += $new_encodings;
+				if ($new_jobs > 0) {
+					$this->new_media_files_encoding_count++;
+					$this->new_encoding_jobs_count += $new_jobs;
+				}
+
+				if ($current_jobs > 0) {
+					$this->current_media_files_encoding_count++;
+					$this->current_encoding_jobs_count += $current_jobs;
+				}
+
+				// mark as encoded.
+				if ($complete) {
+					$this->complete_files++;
+					$this->toaster->updateMediaAddTagsByKey(
+						$key,
+						array($this->encoded_tag));
 				}
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function mediaFileIsMarkedEncoded()
+
+	protected function mediaFileIsMarkedEncoded(array $media_file)
+	{
+		$valid = false;
+
+		if ((strpos($media_file['tags'], $this->encoded_tag) !== false)) {
+			$valid = true;
+		}
+
+		return $valid;
 	}
 
 	// }}}
@@ -174,10 +273,18 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	protected function displayResults()
 	{
 		$this->debug(sprintf(
-			"%s media files found, %s encoding jobs added for %s files.\n\n",
+			"%s media files found.\n".
+			"%s completely encoded.\n".
+			"%s existing jobs for %s files.\n".
+			"%s encoding jobs added for %s files.\n\n",
 			$this->locale->formatNumber(count($this->getMedia())),
-			$this->locale->formatNumber($this->encoding_jobs_count),
-			$this->locale->formatNumber($this->media_files_encoding_count)));
+			$this->locale->formatNumber($this->complete_files),
+			$this->locale->formatNumber($this->current_encoding_jobs_count),
+			$this->locale->formatNumber(
+				$this->current_media_files_encoding_count),
+			$this->locale->formatNumber($this->new_encoding_jobs_count),
+			$this->locale->formatNumber(
+				$this->new_media_files_encoding_count)));
 	}
 
 	// }}}
