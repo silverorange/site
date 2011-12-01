@@ -380,6 +380,15 @@ class SiteBotrMediaUploadValidator
 			}
 		}
 
+		if (count($result['errors'])) {
+			$e = new SiteCommandLineException(sprintf(
+				"Media %s validation error:\n%s".
+				$media_file['key'],
+				implode("\n", $result['errors'])));
+
+			$e->processAndContinue();
+		}
+
 		return $result;
 	}
 
