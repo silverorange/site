@@ -332,38 +332,6 @@ class SiteBotrMediaUploadValidator
 	}
 
 	// }}}
-	// {{{ protected function mediaFileIsMarkedValid()
-
-	protected function mediaFileIsMarkedValid(array $media_file)
-	{
-		$valid = false;
-
-		if ((strpos($media_file['tags'], $this->valid_tag_filesize)
-			!== false) ||
-			(strpos($media_file['tags'], $this->valid_tag_md5) !== false)) {
-			$valid = true;
-		}
-
-		return $valid;
-	}
-
-	// }}}
-	// {{{ protected function mediaFileIsMarkedInvalid()
-
-	protected function mediaFileIsMarkedInvalid(array $media_file)
-	{
-		$invalid = false;
-
-		if ((strpos($media_file['tags'], $this->invalid_tag_filesize)
-			!== false) ||
-			(strpos($media_file['tags'], $this->invalid_tag_md5) !== false)) {
-			$invalid = true;
-		}
-
-		return $invalid;
-	}
-
-	// }}}
 	// {{{ protected function validateMediaFile()
 
 	protected function validateMediaFile($filename, array $media_file)
