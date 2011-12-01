@@ -34,6 +34,13 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	protected $complete_files = 0;
 
 	/**
+	 * Number of media files marked invalid.
+	 *
+	 * @var integer
+	 */
+	protected $invalid_files = 0;
+
+	/**
 	 * Number of media files with encoding currently running.
 	 *
 	 * @var integer
@@ -140,7 +147,11 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 		// check all media for encodings they are missing, and if missing, start
 		// the encode job.
 		foreach ($media as $media_file) {
-			if ($this->mediaFileIsMarkedEncoded($media_file)) {
+			if ($this->mediaFileIsMarkedInvalid($media_file)) {
+				// don't bother checking for valid files, as files with
+				// originals still to download aren't marked valid.
+				$this->invalid_files++;
+			} elseif ($this->mediaFileIsMarkedEncoded($media_file)) {
 				$this->complete_files++;
 			} elseif ($media_file['mediatype'] == 'video') {
 				// only worry about video for now, audio will be ignored.
@@ -274,10 +285,11 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$this->debug(sprintf(
 			"%s media files found.\n".
-			"%s completely encoded.\n".
+			"%s invalid files, %s completely encoded.\n".
 			"%s existing jobs for %s files.\n".
 			"%s encoding jobs added for %s files.\n\n",
 			$this->locale->formatNumber(count($this->getMedia())),
+			$this->locale->formatNumber($this->invalid_files),
 			$this->locale->formatNumber($this->complete_files),
 			$this->locale->formatNumber($this->current_encoding_jobs_count),
 			$this->locale->formatNumber(
