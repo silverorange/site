@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swat/SwatViewSelection.php';
 require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
 require_once 'Site/dataobjects/SiteBotrMedia.php';
 require_once 'Site/dataobjects/SiteBotrMediaSet.php';
@@ -55,6 +56,14 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	protected $media_to_import;
 
 	/**
+	 * Array of media that has been imported, but that we want to check for new
+	 * encoding bindings.
+	 *
+	 * @var array
+	 */
+	protected $media_to_recheck;
+
+	/**
 	 * Count of files imported into the database
 	 *
 	 * @var integer
@@ -62,11 +71,27 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	protected $imported_count = 0;
 
 	/**
+	 * Count of files that had encodings added.
+	 *
+	 * @var integer
+	 */
+	protected $encodings_added_count = 0;
+
+	/**
 	 * Count of files already imported into the database
 	 *
 	 * @var integer
 	 */
 	protected $already_imported_count = 0;
+
+	/**
+	 * Array of media objects that exist in the site's database
+	 *
+	 * Indexed by BOTR key.
+	 *
+	 * @var array
+	 */
+	protected $existing_media_objects;
 
 	/**
 	 * Whether or not to force import of all files on bits on the run.
@@ -166,10 +191,14 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 			$this->resetMedia();
 		}
 
-		$this->getMediaToImport();
+		$this->initMediaToImport();
 
 		if (count($this->media_to_import)) {
 			$this->importMedia();
+		}
+
+		if (count($this->media_to_recheck)) {
+			$this->importMissingMediaEncodings();
 		}
 
 		$this->displayResults();
@@ -182,19 +211,23 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$media = $this->getMedia();
 
+		$this->debug(sprintf("Resetting %s media files on BOTR ... ",
+			SwatString::numberFormat(count($media))));
+
 		foreach ($media as $media_file) {
 			$this->toaster->updateMediaRemoveTagsByKey($media_file['key'],
 				array($this->imported_tag));
 		}
 
-		$this->debug(sprintf("Reset %s media files on BOTR.\n",
-			SwatString::numberFormat(count($media))));
+		$this->resetMediaCache();
+
+		$this->debug("done.\n");
 	}
 
 	// }}}
-	// {{{ protected function getMediaToImport()
+	// {{{ protected function initMediaToImport()
 
-	protected function getMediaToImport()
+	protected function initMediaToImport()
 	{
 		$encoded_count = 0;
 		$media         = $this->getMedia();
@@ -206,11 +239,11 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 				// script. As well, Media that already exist in the media table
 				// can't be reimported.
 				if ($this->force_import ||
-					strpos($media_file['tags'], $this->imported_tag) === false) {
-					if ($this->checkExistingMedia($media_file['key']) === true) {
-						// already imported, tag just missing on BOTR.
-						$this->updateMediaOnBotr($media_file);
+					strpos($media_file['tags'], $this->imported_tag) ===
+					false) {
+					if ($this->mediaRowExists($media_file['key']) === true) {
 						$this->already_imported_count++;
+						$this->media_to_recheck[] = $media_file;
 					} else {
 						$this->media_to_import[] = $media_file;
 					}
@@ -221,17 +254,19 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		}
 
 		$this->debug(sprintf("%s files on BOTR, %s completely encoded.\n".
-			"%s files already imported, %s new files to import.\n\n",
+			"%s files already imported, %s new files to import, %s to recheck.".
+			"\n\n",
 			count($media),
 			$encoded_count,
 			$this->already_imported_count,
-			count($this->media_to_import)));
+			count($this->media_to_import),
+			count($this->media_to_recheck)));
 	}
 
 	// }}}
-	// {{{ protected function checkExistingMedia()
+	// {{{ protected function mediaRowExists()
 
-	protected function checkExistingMedia($key)
+	protected function mediaRowExists($key)
 	{
 		if ($this->existing_keys === null) {
 			$this->existing_keys = SwatDB::getOptionArray($this->db, 'Media',
@@ -255,6 +290,33 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 				$this->saveMedia($media_file);
 				$this->updateMediaOnBotr($media_file);
 				$this->imported_count++;
+				$transaction->commit();
+			} catch (Exception $e) {
+				$transaction->rollback();
+				throw $e;
+			}
+
+			$this->debug("done.\n");
+		}
+
+		$this->debug("\n");
+	}
+
+	// }}}
+	// {{{ protected function importMissingMediaEncodings()
+
+	protected function importMissingMediaEncodings()
+	{
+		$this->initMediaObjects();
+
+		foreach($this->media_to_recheck as $media_file) {
+			$this->debug(sprintf('Media: %s ... ',
+				$media_file['key']));
+
+			$transaction = new SwatDBTransaction($this->db);
+			try {
+				$this->updateBindings($media_file);
+				$this->updateMediaOnBotr($media_file);
 				$transaction->commit();
 			} catch (Exception $e) {
 				$transaction->rollback();
@@ -293,6 +355,44 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+	// {{{ protected function updateBindings()
+
+	protected function updateBindings($media_file)
+	{
+		$encodings = $this->toaster->getEncodingsByKey($media_file['key']);
+
+		$existing_count = count($encodings);
+		$added_count    = 0;
+
+		$this->debug(sprintf('found %s encodings ... ',
+			$existing_count));
+
+		foreach ($encodings as $encoding) {
+			// we ignore originals
+			if ($encoding['template']['format']['key'] != 'original') {
+				$media_object =
+					$this->existing_media_objects[$media_file['key']];
+
+				if (!$media_object->encodingExists($encoding['width'])) {
+					$added_count++;
+					$existing_count--;
+					$this->encodings_added_count++;
+
+					$binding_object = $this->getMediaEncodingBindingObject(
+						$media_object, $encoding);
+
+					$binding_object->save();
+				}
+			}
+		}
+
+		$this->debug(sprintf("%s already exist, %s inserted... ",
+			$existing_count,
+			$added_count));
+	}
+
+	// }}}
+
 	// {{{ protected function getMediaObject()
 
 	protected function getMediaObject(array $media_file)
@@ -357,16 +457,40 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+	// {{{ protected function initExistingMediaObjects()
+
+	protected function initExistingMediaObjects()
+	{
+		if ($this->existing_media_objects == null) {
+			$sql = 'select * from Media where key in (%s)';
+			$sql = sprintf($sql,
+				SwatDB::implodeSelection($this->db,
+					new SwatViewSelection($this->existing_keys),
+					'text'));
+
+			$objects = SwatDB::query($this->db, $sql,
+				SwatDBClassMap::get('SiteBotrMediaWrapper'));
+
+			$this->existing_media_objects = array();
+			foreach ($objects as $object) {
+				$this->existing_media_objects[$object->key] = $object;
+			}
+		}
+	}
+
+	// }}}
 	// {{{ protected function displayResults()
 
 	protected function displayResults()
 	{
 		$this->debug(sprintf(
 			"%s media files found, %s files already imported.\n".
-			"%s ready to import.\n".
-			"%s successfully imported.\n\n",
+			"%s to recheck, %s new bindings added.\n".
+			"%s ready to import, %s successfully imported.\n\n",
 			$this->locale->formatNumber(count($this->getMedia())),
 			$this->locale->formatNumber($this->already_imported_count),
+			$this->locale->formatNumber(count($this->media_to_recheck)),
+			$this->locale->formatNumber($this->encodings_added_count),
 			$this->locale->formatNumber(count($this->media_to_import)),
 			$this->locale->formatNumber($this->imported_count)));
 	}
