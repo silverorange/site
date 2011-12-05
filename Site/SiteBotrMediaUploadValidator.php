@@ -200,6 +200,8 @@ class SiteBotrMediaUploadValidator
 					));
 		}
 
+		$this->resetMediaCache();
+
 		$this->debug(sprintf(
 			"Reset validation tags for %s media files on BOTR.\n",
 			$this->locale->formatNumber(count($media))));
@@ -227,6 +229,12 @@ class SiteBotrMediaUploadValidator
 
 				$this->toaster->updateMediaByKey($media_file['key'], $values);
 			}
+		}
+
+		// reset the cache so that its up to date with the original filenames
+		// when we use it later.
+		if ($count) {
+			$this->resetMediaCache();
 		}
 
 		$this->debug(sprintf("%s updated.\n",

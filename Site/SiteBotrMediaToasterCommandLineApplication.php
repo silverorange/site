@@ -297,6 +297,14 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+	// {{{ protected function resetMediaCache()
+
+	protected function resetMediaCache()
+	{
+		$this->media = null;
+	}
+
+	// }}}
 	// {{{ protected function mediaFileIsMarkedValid()
 
 	protected function mediaFileIsMarkedValid(array $media_file)
