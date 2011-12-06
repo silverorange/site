@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/dataobjects/SiteMediaSetWrapper.php';
+require_once 'Site/dataobjects/SiteBotrMediaSet.php';
 
 /**
  * A recordset wrapper class for SiteBotrMediaSet objects
