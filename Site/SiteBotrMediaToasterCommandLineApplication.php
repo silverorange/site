@@ -70,6 +70,8 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected $duplicate_tag        = 'duplicate';
 	protected $encoded_tag          = 'encoded';
 	protected $imported_tag         = 'imported';
+	protected $delete_tag           = 'delete';
+	protected $ignored_tag          = 'ignored';
 
 	protected $locale;
 
@@ -341,13 +343,29 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 	protected function mediaFileIsMarkedEncoded(array $media_file)
 	{
-		$valid = false;
+		$encoded = false;
 
 		if ((strpos($media_file['tags'], $this->encoded_tag) !== false)) {
-			$valid = true;
+			$encoded = true;
 		}
 
-		return $valid;
+		return $encoded;
+	}
+
+	// }}}
+	// {{{ protected function mediaFileIsIgnorable()
+
+	protected function mediaFileIsIgnorable(array $media_file)
+	{
+		$ignorable = false;
+
+		if ((strpos($media_file['tags'], $this->delete_tag) !== false) ||
+			(strpos($media_file['tags'], $this->ignored_tag) !== false)) {
+			$invalid = true;
+		}
+
+
+		return $ignorable;
 	}
 
 	// }}}

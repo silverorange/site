@@ -276,6 +276,8 @@ class SiteBotrMediaUploadValidator
 				$this->mediaFileIsMarkedInvalid($media_file)) {
 				$valid    = false;
 				$errors[] = $media_file['tags'];
+			}  elseif ($this->mediaFileIsIgnorable($media_file)) {
+				// do nothing. we should make this part of the debugged display
 			} else {
 				if (array_key_exists($filename, $source_files)) {
 					$result = $this->validateMediaFile($filename, $media_file);

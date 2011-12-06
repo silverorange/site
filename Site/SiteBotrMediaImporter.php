@@ -233,7 +233,10 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$media         = $this->getMedia();
 
 		foreach ($media as $media_file) {
-			if ($this->mediaFileIsMarkedEncoded($media_file)) {
+			if ($this->mediaFileIsIgnorable($media_file)) {
+				// don't import files that are marked as ignorable (aka deleted
+				// or ignored). we should make this part of the debugged display
+			} elseif ($this->mediaFileIsMarkedEncoded($media_file)) {
 				$encoded_count++;
 				// media tagged "imported" have already been processed by this
 				// script. As well, Media that already exist in the media table

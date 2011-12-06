@@ -147,9 +147,11 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 		// check all media for encodings they are missing, and if missing, start
 		// the encode job.
 		foreach ($media as $media_file) {
-			if ($this->mediaFileIsMarkedInvalid($media_file)) {
+			if ($this->mediaFileIsMarkedInvalid($media_file) ||
+				$this->mediaFileIsMarkedEncoded($media_file)) {
 				// don't bother checking for valid files, as files with
-				// originals still to download aren't marked valid.
+				// originals still to download aren't marked valid and files
+				// marked ignorable aren't to be encoded.
 				$this->invalid_files++;
 			} elseif ($this->mediaFileIsMarkedEncoded($media_file)) {
 				$this->complete_files++;
