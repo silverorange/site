@@ -236,8 +236,14 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 	protected function getExtension($filename)
 	{
+		$extension = null;
+
 		$info = pathinfo($filename);
-		return $info['extension'];
+		if (isset($info['extension'])) {
+			$extension = $info['extension'];
+		}
+
+		return $extension;
 	}
 
 	// }}}
