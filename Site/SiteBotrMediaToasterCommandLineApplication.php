@@ -57,7 +57,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	 *
 	 * @var array
 	 */
-	protected $media = array();
+	protected $media;
 
 	/**
 	 * Array of media dataobjects that exist in the site's database
@@ -433,8 +433,74 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 			$invalid = true;
 		}
 
-
 		return $ignorable;
+	}
+
+	// }}}
+	// {{{ protected function mediaFileOriginalIsDownloadable()
+
+	protected function mediaFileOriginalIsDownloadable(array $media_file)
+	{
+		$downloadable = false;
+
+		// don't download originals for videos that are marked to be downloaded,
+		// and only download the originals for those marked with the original
+		// missing.
+		if ((strpos($media_file['tags'], $this->delete_tag) === false) &&
+			(strpos($media_file['tags'], $this->original_missing_tag)
+				!= false)) {
+			$downloadable = true;
+		}
+
+		return $downloadable;
+	}
+
+	// }}}
+	// {{{ protected function download($from, $to)
+
+	protected function download($source, $destination, $prefix = null,
+		$filesize_to_check = null)
+	{
+		// separate the prefix with a dash for prettier temp filenames
+		if ($prefix !== null) {
+			$prefix.='-';
+		}
+
+		// add SiteBotrMedia to the prefix for easier searching on the temp
+		// filename.
+		$prefix    = 'SiteBotrMedia-'.$prefix;
+		$info      = pathinfo($destination);
+		$directory = $info['dirname'];
+		$temp_file = tempnam(sys_get_temp_dir(), $prefix);
+
+		if (!file_exists($directory) && !mkdir($directory, 0777, true)) {
+			throw new SiteCommandLineException(sprintf(
+				'Unable to create directory “%s.”', $directory));
+		}
+
+		if (!copy($source, $temp_file)) {
+			throw new SiteCommandLineException(sprintf(
+				'Unable to download “%s” to “%s.”', $source, $temp_path));
+		}
+
+		/* TODO - > 2gb filesize support */
+		if ($filesize_to_check < 2147483648) {
+			$local_filesize = filesize($temp_file);
+			if ($local_filesize != $filesize_to_check) {
+				unlink($temp_file);
+				throw new SiteCommandLineException(sprintf(
+					"Downloaded file size mismatch\n".
+					"%s bytes on BOTR\n".
+					"%s bytes locally.",
+					$filesize_to_check,
+					$local_filesize));
+			}
+		}
+
+		if (!rename($temp_file, $destination)) {
+			throw new SiteCommandLineException(sprintf(
+				'Unable to move “%s” to “%s.”', $temp_file, $destination));
+		}
 	}
 
 	// }}}
