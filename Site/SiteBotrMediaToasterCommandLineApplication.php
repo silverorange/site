@@ -13,6 +13,8 @@ require_once 'Site/SiteBotrMediaToaster.php';
  * @package   Site
  * @copyright 2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @todo      do something better with the isMarkedX() methods. Maybe move the
+ *            tags to constants.
  */
 abstract class SiteBotrMediaToasterCommandLineApplication
 	extends SiteCommandLineApplication
@@ -55,7 +57,16 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	 *
 	 * @var array
 	 */
-	protected $media;
+	protected $media = array();
+
+	/**
+	 * Array of media dataobjects that exist in the site's database
+	 *
+	 * Indexed by BOTR key.
+	 *
+	 * @var array
+	 */
+	protected $media_objects = array();
 
 	/**
 	 * Various tags added to metadata on BOTR to mark status of video.
@@ -302,6 +313,58 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		}
 
 		return $this->media;
+	}
+
+	// }}}
+	// {{{ protected function getMediaObjects()
+
+	protected function getMediaObjects()
+	{
+		if ($this->media_objects == null) {
+			$sql = $this->getMediaObjectSql();
+
+			$objects = SwatDB::query($this->db, $sql,
+				SwatDBClassMap::get('SiteBotrMediaWrapper'));
+
+			$this->media_objects = array();
+			foreach ($objects as $object) {
+				$this->media_objects[$object->key] = $object;
+			}
+		}
+
+		return $this->media_objects;
+	}
+
+	// }}}
+	// {{{ protected function getMediaObjectSql()
+
+	protected function getMediaObjectSql()
+	{
+		$where = $this->getMediaObjectWhere();
+		$join  = $this->getMediaObjectJoin();
+
+		$sql = sprintf(
+			'select Media.* from Media %s where 1=1 %s',
+			$join,
+			$where);
+
+		return $sql;
+	}
+
+	// }}}
+	// {{{ protected function getMediaObjectWhere()
+
+	protected function getMediaObjectWhere()
+	{
+		return null;
+	}
+
+	// }}}
+	// {{{ protected function getMediaObjectJoin()
+
+	protected function getMediaObjectJoin()
+	{
+		return null;
 	}
 
 	// }}}
