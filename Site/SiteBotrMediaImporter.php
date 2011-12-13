@@ -204,7 +204,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$media = $this->getMedia();
 
 		$this->debug(sprintf("Resetting %s media files on BOTR ... ",
-			SwatString::numberFormat(count($media))));
+			$this->locale->formatNumber(count($media))));
 
 		foreach ($media as $media_file) {
 			$this->toaster->updateMediaRemoveTagsByKey($media_file['key'],
@@ -251,11 +251,11 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$this->debug(sprintf("%s files on BOTR, %s completely encoded.\n".
 			"%s files already imported, %s new files to import, %s to recheck.".
 			"\n\n",
-			count($media),
-			$encoded_count,
-			$this->already_imported_count,
-			count($this->media_to_import),
-			count($this->media_to_recheck)));
+			$this->locale->formatNumber(count($media)),
+			$this->locale->formatNumber($encoded_count),
+			$this->locale->formatNumber($this->already_imported_count),
+			$this->locale->formatNumber(count($this->media_to_import)),
+			$this->locale->formatNumber(count($this->media_to_recheck))));
 	}
 
 	// }}}
@@ -361,7 +361,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$added_count    = 0;
 
 		$this->debug(sprintf('found %s encodings ... ',
-			$existing_count));
+			$this->locale->formatNumber($existing_count)));
 
 		foreach ($encodings as $encoding) {
 			// we ignore originals
@@ -381,8 +381,8 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		}
 
 		$this->debug(sprintf("%s already exist, %s inserted... ",
-			$existing_count,
-			$added_count));
+			$this->locale->formatNumber($existing_count),
+			$this->locale->formatNumber($added_count)));
 	}
 
 	// }}}
