@@ -13,6 +13,7 @@ require_once 'Site/dataobjects/SiteBotrMediaSet.php';
  *
  * @package   Site
  * @copyright 2011 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Support for importing into multiple MediaSets (perhaps based on
  *            the encoding profiles present on the Media we're importing).
  */
@@ -83,15 +84,6 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	 * @var integer
 	 */
 	protected $already_imported_count = 0;
-
-	/**
-	 * Array of media objects that exist in the site's database
-	 *
-	 * Indexed by BOTR key.
-	 *
-	 * @var array
-	 */
-	protected $existing_media_objects;
 
 	/**
 	 * Whether or not to force import of all files on bits on the run.
@@ -363,6 +355,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	protected function updateBindings($media_file)
 	{
 		$encodings = $this->toaster->getEncodingsByKey($media_file['key']);
+		$existing_media_objects = $this->getMediaObjects();
 
 		$existing_count = count($encodings);
 		$added_count    = 0;
@@ -373,9 +366,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		foreach ($encodings as $encoding) {
 			// we ignore originals
 			if ($encoding['template']['format']['key'] != 'original') {
-				$media_object =
-					$this->existing_media_objects[$media_file['key']];
-
+				$media_object = $existing_media_objects[$media_file['key']];
 				if (!$media_object->encodingExists($encoding['width'])) {
 					$added_count++;
 					$existing_count--;
@@ -460,25 +451,18 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
-	// {{{ protected function initExistingMediaObjects()
+	// {{{ protected function getMediaObjectWhere()
 
-	protected function initExistingMediaObjects()
+	protected function getMediaObjectWhere()
 	{
-		if ($this->existing_media_objects == null) {
-			$sql = 'select * from Media where key in (%s)';
-			$sql = sprintf($sql,
-				SwatDB::implodeSelection($this->db,
-					new SwatViewSelection($this->existing_keys),
-					'text'));
+		$where = parent::getMediaObjectWhere();
 
-			$objects = SwatDB::query($this->db, $sql,
-				SwatDBClassMap::get('SiteBotrMediaWrapper'));
+		$where.= sprintf(' and key in (%s)',
+			SwatDB::implodeSelection($this->db,
+				new SwatViewSelection($this->existing_keys),
+				'text'));
 
-			$this->existing_media_objects = array();
-			foreach ($objects as $object) {
-				$this->existing_media_objects[$object->key] = $object;
-			}
-		}
+		return $where;
 	}
 
 	// }}}
