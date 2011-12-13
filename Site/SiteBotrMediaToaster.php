@@ -342,6 +342,32 @@ class SiteBotrMediaToaster
 	}
 
 	// }}}
+	// {{{ public function getPassthrough()
+
+	public function getPassthrough(SiteBotrMedia $media)
+	{
+		return $this->getPassthroughByKey($media->key);
+	}
+
+	// }}}
+	// {{{ public function getPassthroughByKey()
+
+	public function getPassthroughByKey($key)
+	{
+		$passthrough = false;
+		$encodings   = $this->getEncodingsByKey($key);
+
+		foreach ($encodings as $encoding) {
+			if ($encoding['template']['format']['key'] == 'passthrough') {
+				$passthrough = $encoding;
+				break;
+			}
+		}
+
+		return $passthrough;
+	}
+
+	// }}}
 	// {{{ public function getEncodingByWidth()
 
 	public function getEncodingByWidth($key, $width)
