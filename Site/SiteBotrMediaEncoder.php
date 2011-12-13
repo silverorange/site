@@ -27,6 +27,17 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	protected $encoding_profiles = array();
 
 	/**
+	 * Key of the passthrough profile.
+	 *
+	 * A special case profile only used when originals are missing. This then
+	 * needs to be encoded so that we can download the original (as the original
+	 * encoding is frustratingly unavailable for download).
+	 *
+	 * @var string
+	 */
+	protected $passthrough_profile_key;
+
+	/**
 	 * Number of media files with all encodings complete.
 	 *
 	 * @var integer
@@ -67,6 +78,13 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	 * @var integer
 	 */
 	protected $current_encoding_jobs_count = 0;
+
+	/**
+	 * Number of new passthrough encodings added.
+	 *
+	 * @var integer
+	 */
+	protected $new_passthrough_encoding_jobs = 0;
 
 	// }}}
 	// {{{ public function runInternal()
@@ -124,6 +142,10 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 					$default_count++;
 				}
 			}
+
+			if ($profile['format']['key'] == 'passthrough') {
+				$this->passthrough_profile_key = $profile['key'];
+			}
 		}
 
 		$optional_count = count($this->encoding_profiles) - $default_count;
@@ -147,6 +169,18 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 		// check all media for encodings they are missing, and if missing, start
 		// the encode job.
 		foreach ($media as $media_file) {
+			// special case for originals missing download that runs
+			// independently
+			if ($this->mediaFileOriginalIsDownloadable($media_file)) {
+				if ($this->toaster->getPassthroughByKey($media_file['key']) ===
+					false) {
+					$this->toaster->encodeMediaByKeys($media_file['key'],
+						$this->passthrough_profile_key);
+
+					$this->new_passthrough_encoding_jobs++;
+				}
+			}
+
 			if ($this->mediaFileIsMarkedInvalid($media_file) ||
 				$this->mediaFileIsMarkedEncoded($media_file)) {
 				// don't bother checking for valid files, as files with
@@ -274,11 +308,13 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 		$this->debug(sprintf(
 			"%s media files found.\n".
 			"%s invalid files, %s completely encoded.\n".
+			"%s passthrough encoding jobs added.\n".
 			"%s existing jobs for %s files.\n".
 			"%s encoding jobs added for %s files.\n\n",
 			$this->locale->formatNumber(count($this->getMedia())),
 			$this->locale->formatNumber($this->invalid_files),
 			$this->locale->formatNumber($this->complete_files),
+			$this->locale->formatNumber($this->new_passthrough_encoding_jobs),
 			$this->locale->formatNumber($this->current_encoding_jobs_count),
 			$this->locale->formatNumber(
 				$this->current_media_files_encoding_count),
