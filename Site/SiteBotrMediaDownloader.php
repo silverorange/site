@@ -111,7 +111,7 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		foreach ($media as $media_object) {
 			$bindings = array();
 
-			$this->debug(sprintf("%s - Media: %s Key: %s ... \n",
+			$this->debug(sprintf("%s - Media id: %s Key: %s ... \n",
 				$this->locale->formatNumber($count++),
 				$media_object->id,
 				$media_object->key));
@@ -197,40 +197,13 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		SiteBotrMediaEncodingBinding $binding,
 		SiteBotrMediaEncoding $encoding)
 	{
-		$temp_file   = tempnam(sys_get_temp_dir(), $media_object->id.'-');
 		$destination = $media_object->getFilePath($encoding->shortname);
-		$directory   = $media_object->getFileDirectory($encoding->shortname);
+		$prefix      = $media_object->id;
+		$filesize    = $binding->filesize;
 		$source      = $this->toaster->getMediaDownload($media_object,
 			$encoding);
 
-		if (!file_exists($directory) && !mkdir($directory, 0777, true)) {
-			throw new SiteCommandLineException(sprintf(
-				'Unable to create directory “%s.”', $directory));
-		}
-
-		if (!copy($source, $temp_file)) {
-			throw new SiteCommandLineException(sprintf(
-				'Unable to download “%s” to “%s.”', $source, $temp_path));
-		}
-
-		/* TODO - > 2gb filesize support */
-		if ($binding->filesize < 2147483648) {
-			$local_filesize = filesize($temp_file);
-			if ($local_filesize !== $binding->filesize) {
-				unlink($temp_file);
-				throw new SiteCommandLineException(sprintf(
-					"Downloaded file size mismatch\n".
-					"%s bytes on BOTR\n".
-					"%s bytes locally.",
-					$binding->filesize,
-					$local_filesize));
-			}
-		}
-
-		if (!rename($temp_file, $destination)) {
-			throw new SiteCommandLineException(sprintf(
-				'Unable to move “%s” to “%s.”', $temp_file, $destination));
-		}
+		$this->download($source, $destination, $prefix, $filesize);
 	}
 
 	// }}}
