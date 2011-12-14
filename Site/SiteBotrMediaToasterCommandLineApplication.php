@@ -83,6 +83,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected $imported_tag         = 'imported';
 	protected $delete_tag           = 'delete';
 	protected $ignored_tag          = 'ignored';
+	protected $original_deleted_tag = 'original.deleted';
 
 	protected $locale;
 
