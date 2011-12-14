@@ -23,35 +23,15 @@ class SiteBotrMediaOriginalDownloader
 
 		$media = $this->getMedia();
 		foreach ($media as $key => $media_file) {
-			if ($this->mediaFileOriginalIsDownloadable($media_file)) {
+			if ($this->mediaFileOriginalIsDownloadable($media_file) !== false) {
 				$originals_to_download[$key] = $media_file;
 			}
 		}
-
 		$this->debug(sprintf("%s files on BOTR, %s originals to download.\n\n",
 			$this->locale->formatNumber(count($media)),
 			$this->locale->formatNumber(count($originals_to_download))));
 
 		$this->downloadOriginals($originals_to_download);
-	}
-
-	// }}}
-	// {{{ protected function mediaFileOriginalIsDownloadable()
-
-	protected function mediaFileOriginalIsDownloadable(array $media_file)
-	{
-		$downloadable = false;
-
-		// don't download originals for videos that are marked to be downloaded,
-		// and only download the originals for those marked with the original
-		// missing.
-		if ((strpos($media_file['tags'], $this->delete_tag) === false) &&
-			(strpos($media_file['tags'], $this->original_missing_tag)
-				!= false)) {
-			$downloadable = true;
-		}
-
-		return $downloadable;
 	}
 
 	// }}}
@@ -70,43 +50,62 @@ class SiteBotrMediaOriginalDownloader
 
 				$e->processAndContinue();
 			} else {
+				$filename = $media_file['custom']['original_filename'];
+				$info     = pathinfo($filename);
+
+				if (!isset($info['extension'])) {
+					// edge case for videos missing their extension on upload.
+					// this should never happen, but let us know if it does and
+					// still download the file.
+					$e = new SiteCommandLineException(sprintf(
+						'Original filename ‘%s’ on media ‘%s’ missing '.
+							'extension',
+						$filename,
+						$key));
+
+					$e->processAndContinue();
+				}
+
 				// we have to use the passthrough because you can't download
 				// the original.
 				$passthrough = $this->toaster->getPassthroughByKey($key);
-				$original    = $this->toaster->getOriginalByKey($key);
-				$source      = $this->toaster->getMediaDownloadByKeys($key,
-					$passthrough['template']['key']);
-var_dump($source);
 
-var_dump($key);
-var_dump($original['key']);
-var_dump($passthrough['key']);
-$this->toaster->deleteEncodingByKey($passthrough['key']);
-$this->toaster->deleteEncodingByKey($original['key']);
-exit;
-//PDc7v5sO
-				$destination = sprintf('%s/%s',
-					$this->getDestinationDirectory($key),
-					$media_file['custom']['original_filename']);
-var_dump($source); var_dump($destination);
-exit;
-				$this->download($source, $destination, $key, $filesize);
+				$this->debug(sprintf("%s - Media: %s ",
+					$this->locale->formatNumber($count++),
+					$media_file['key']));
 
-				// delete passthrough and originals. the remove the
-				// download_pending tag
-				//$this->list->deleteEncodingByKey();
-				//$this->list->deleteEncodingByKey();
-				//$this->list->updateMediaRemoveTagsByKey($key,
-				//	array($this->original_missing_tag));
+				if ($passthrough !== null &&
+					$passthrough['status'] == 'Ready') {
+					$this->debug(sprintf("(%s) ... ",
+						SwatString::byteFormat($passthrough['filesize'])));
+
+					$source = $this->toaster->getMediaDownloadByKeys($key,
+						$passthrough['template']['key']);
+
+					$destination = sprintf('%s/%s',
+						$this->getDestinationDirectory($key),
+						$media_file['custom']['original_filename']);
+
+					try {
+						$this->download($source, $destination, $key,
+							$passthrough['filesize']);
+
+						// remove the download_pending tag. Original and
+						// passthrough deletion happens in the
+						// SiteBotrMediaDeleter script
+						$this->toaster->updateMediaRemoveTagsByKey($key,
+							array($this->original_missing_tag));
+
+						$this->debug("done.\n");
+					} catch (Exception $e) {
+						$e = new SiteCommandLineException($e);
+						$e->processAndContinue();
+						$this->debug("error.\n");
+					}
+				} else {
+					$this->debug("passthrough missing - skipping.\n");
+				}
 			}
-
-
-
-			$this->debug(sprintf("%s - Media: %s (%s) ... \n",
-				$this->locale->formatNumber($count++),
-				$media_file['key'],
-				SwatString::byteFormat($binding->filesize)));
-
 		}
 	}
 
