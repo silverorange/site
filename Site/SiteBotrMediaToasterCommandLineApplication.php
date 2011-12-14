@@ -445,8 +445,10 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 		// don't download originals for videos that are marked to be downloaded,
 		// and only download the originals for those marked with the original
-		// missing.
+		// missing. Ignore videos that aren't imported or are marked to be
+		// deleted.
 		if ((strpos($media_file['tags'], $this->delete_tag) === false) &&
+			((strpos($media_file['tags'], $this->imported_tag) != false)) &&
 			(strpos($media_file['tags'], $this->original_missing_tag)
 				!= false)) {
 			$downloadable = true;
@@ -461,6 +463,11 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected function download($source, $destination, $prefix = null,
 		$filesize_to_check = null)
 	{
+		if (file_exists($destination)) {
+			throw new SiteCommandLineException(sprintf(
+				'File already exists “%s”', $destination));
+		}
+
 		// separate the prefix with a dash for prettier temp filenames
 		if ($prefix !== null) {
 			$prefix.='-';
