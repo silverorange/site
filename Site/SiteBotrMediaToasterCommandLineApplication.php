@@ -302,10 +302,10 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	// }}}
 	// {{{ protected function getMedia()
 
-	protected function getMedia()
+	protected function getMedia(array $options = array())
 	{
 		if ($this->media === null) {
-			$media = $this->toaster->listMedia();
+			$media = $this->toaster->listMedia($options);
 
 			foreach ($media as $media_file) {
 				$this->media[$media_file['key']] = $media_file;
