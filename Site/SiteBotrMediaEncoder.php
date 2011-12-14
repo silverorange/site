@@ -170,9 +170,13 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 		// the encode job.
 		foreach ($media as $media_file) {
 			// special case for originals missing download that runs
-			// independently
+			// independently. Only make the passthrough if the video is tagged
+			// as original missing, no passthrough already exists and the
+			// original still exists on BOTR
 			if ($this->mediaFileOriginalIsDownloadable($media_file)) {
 				if ($this->toaster->getPassthroughByKey($media_file['key']) ===
+					false &&
+					$this->toaster->getOriginalByKey($media_file['key']) !==
 					false) {
 					$this->toaster->encodeMediaByKeys($media_file['key'],
 						$this->passthrough_profile_key);
@@ -182,7 +186,7 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 			}
 
 			if ($this->mediaFileIsMarkedInvalid($media_file) ||
-				$this->mediaFileIsMarkedEncoded($media_file)) {
+				$this->mediaFileIsIgnorable($media_file)) {
 				// don't bother checking for valid files, as files with
 				// originals still to download aren't marked valid and files
 				// marked ignorable aren't to be encoded.
