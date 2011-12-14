@@ -203,7 +203,7 @@ class SiteBotrMediaToaster
 			if (array_search($key, $valid_options)) {
 				$settings[$key] = $value;
 			} else {
-				throw SiteBotrMediaToasterException(
+				throw new SiteBotrMediaToasterException(
 					sprintf('listMedia() does not support %s option', $key));
 			}
 		}
