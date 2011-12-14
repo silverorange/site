@@ -183,8 +183,12 @@ class SiteBotrMediaToaster
 
 	public function listMedia(array $options = array())
 	{
-		$media         = array();
-		$settings      = array();
+		$media    = array();
+		$settings = array(
+			'result_limit'  => self::CHUNK_SIZE,
+			'result_offset' => 0,
+			);
+
 		$valid_options = array(
 			'tags',
 			'tags_mode',
@@ -200,18 +204,13 @@ class SiteBotrMediaToaster
 			);
 
 		foreach ($options as $key => $value) {
-			if (array_search($key, $valid_options)) {
+			if (array_search($key, $valid_options) !== false) {
 				$settings[$key] = $value;
 			} else {
 				throw new SiteBotrMediaToasterException(
 					sprintf('listMedia() does not support %s option', $key));
 			}
 		}
-
-		$settings = array(
-			'result_limit'  => self::CHUNK_SIZE,
-			'result_offset' => 0,
-			);
 
 		$chunk = $this->callBackend('/videos/list', $settings);
 
