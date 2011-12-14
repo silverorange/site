@@ -248,6 +248,28 @@ class SiteBotrMediaToaster
 	}
 
 	// }}}
+	// {{{ public function deleteMedia()
+
+	public function deleteMedia(SiteBotrMedia $media)
+	{
+		return $this->deleteMediaByKey($media->key);
+	}
+
+	// }}}
+	// {{{ public function deleteMediaByKey()
+
+	public function deleteMediaByKey($key)
+	{
+		$options = array(
+			'video_key' => $key,
+			);
+
+		$response = $this->callBackend('/videos/delete', $options);
+
+		return ($response['status'] == 'ok');
+	}
+
+	// }}}
 	// {{{ public function encodeMedia()
 
 	public function encodeMedia(SiteBotrMedia $media,
@@ -290,7 +312,7 @@ class SiteBotrMediaToaster
 
 		$response = $this->callBackend('/videos/conversions/delete', $options);
 
-		return true;
+		return ($response['status'] == 'ok');
 	}
 
 	// }}}
@@ -607,9 +629,9 @@ class SiteBotrMediaToaster
 			'template_key' => $profile_id,
 			);
 
-		$profile = $this->callBackend('/accounts/templates/delete', $settings);
+		$response = $this->callBackend('/accounts/templates/delete', $settings);
 
-		return ($profile['status'] == 'ok');
+		return ($response['status'] == 'ok');
 	}
 
 	// }}}
