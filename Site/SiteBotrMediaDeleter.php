@@ -67,41 +67,42 @@ class SiteBotrMediaDeleter extends SiteBotrMediaToasterCommandLineApplication
 		$this->debug(sprintf("Found %s media files to delete.\n",
 			$this->locale->formatNumber(count($media_to_delete))));
 
-		foreach ($media_to_delete as $key => $media_file) {
-			$delete = true;
+		if (count($media_to_delete)) {
+			foreach ($media_to_delete as $key => $media_file) {
+				$delete = true;
 
-			$this->debug(sprintf("Deleting Media ‘%s’ ... ",
-				$key));
+				$this->debug(sprintf("Deleting Media ‘%s’ ... ",
+					$key));
 
-			// if we have a timestamp, compare it, otherwise just delete.
-			if (isset($media_file['custom']['delete_timestamp'])) {
-				$threshold = new SwatDate();
-				$threshold->toUTC();
+				// if we have a timestamp, compare it, otherwise just delete.
+				if (isset($media_file['custom']['delete_timestamp'])) {
+					$threshold = new SwatDate();
+					$threshold->toUTC();
 
-				// seriously, there must be a better way to create a date from
-				// timestamp
-				$delete_date = new SwatDate(
-					'@'.$media_file['custom']['delete_timestamp']);
+					// seriously, there must be a better way to create a new
+					// SwatDate from a timestamp
+					$delete_date = new SwatDate(
+						'@'.$media_file['custom']['delete_timestamp']);
 
-				$delete_date->toUTC();
-				$delete_date->addDays(self::DELETE_THRESHOLD);
+					$delete_date->toUTC();
+					$delete_date->addDays(self::DELETE_THRESHOLD);
 
-				if ($delete_date->after($threshold)) {
-					$delete = false;
+					if ($delete_date->after($threshold)) {
+						$delete = false;
+					}
+				}
+
+				if ($delete) {
+					$this->toaster->deleteMediaByKey($key);
+					$this->files_deleted_count++;
+					$this->debug("done.\n");
+				} else {
+					$this->files_pending_count++;
+					$this->debug(sprintf("skipped ... will be deleted on %s.\n",
+						$delete_date->format(SwatDate::DF_DATE_TIME_LONG)));
 				}
 			}
-
-			if ($delete) {
-				$this->toaster->deleteMediaByKey($key);
-				$this->files_deleted_count++;
-				$this->debug("done.\n");
-			} else {
-				$this->files_pending_count++;
-				$this->debug(sprintf("skipped ... will be deleted on %s.\n",
-					$delete_date->format(SwatDate::DF_DATE_TIME_LONG)));
-			}
 		}
-
 		$this->debug("\n");
 		$this->resetMediaCache();
 	}
