@@ -335,8 +335,10 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$imported_count = 0;
 		$encodings = $this->toaster->getEncodingsByKey($media_file['key']);
 		foreach($encodings as $encoding) {
-			// originals aren't saved in the db as EncodingBindings, so ignore
-			if ($encoding['template']['format']['key'] != 'original') {
+			// originals and passthroughs aren't saved in the db as
+			// EncodingBindings, so ignore
+			if ($encoding['template']['format']['key'] != 'original' &&
+				$encoding['template']['format']['key'] != 'passthrough') {
 				$binding_object = $this->getMediaEncodingBindingObject(
 					$media_object, $encoding);
 
