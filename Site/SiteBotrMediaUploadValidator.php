@@ -22,6 +22,14 @@ class SiteBotrMediaUploadValidator
 	protected $valid_files = array();
 
 	/**
+	 * Array of filenames and source sizes for files which we can't look up
+	 * because of our lame 32bit nature.
+	 *
+	 * @var array
+	 */
+	protected $large_file_reference;
+
+	/**
 	 * Array of files which have been uploaded more than once.
 	 *
 	 * @var array
@@ -117,6 +125,21 @@ class SiteBotrMediaUploadValidator
 	}
 
 	// }}}
+	// {{{ public function setLargeFileReference()
+
+	public function setLargeFileReference($filename)
+	{
+		if (file_exists($filename)) {
+			if (($handle = fopen($filename, "r")) !== false) {
+				while (($line = fgetcsv($handle)) !== false) {
+					$this->large_file_reference[$line[0]] = $line[1];
+				}
+				fclose($handle);
+			}
+		}
+	}
+
+	// }}}
 	// {{{ public function setRecheckInvalidFiles()
 
 	public function setRecheckInvalidFiles()
@@ -141,7 +164,14 @@ class SiteBotrMediaUploadValidator
 	{
 		parent::addSourceFile($key, $path, $file);
 
-		$this->source_files[$key]['size'] = $file->getSize();
+		// use the large file reference if its available.
+		$info = pathinfo($path);
+		if (isset($this->large_file_reference[$info['basename']])) {
+			$this->source_files[$key]['size'] =
+				$this->large_file_reference[$info['basename']];
+		} else {
+			$this->source_files[$key]['size'] = $file->getSize();
+		}
 	}
 
 	// }}}
@@ -361,9 +391,10 @@ class SiteBotrMediaUploadValidator
 				$result['valid']    = false;
 				$result['tags'][]   = $this->invalid_tag_md5;
 				$result['errors'][] = sprintf(
-					'md5 mismatch. BOTR: %s, Source: %s.',
+					"md5 mismatch. BOTR: %s, Source: %s.\nFilename: %s",
 					$media_file['md5'],
-					$this->source_files[$filename]['md5']);
+					$this->source_files[$filename]['md5'],
+					$filename);
 			}
 		}
 
@@ -384,15 +415,17 @@ class SiteBotrMediaUploadValidator
 				$result['valid']    = true;
 				$result['tags'][]   = $this->invalid_tag_filesize;
 				$result['errors'][] = sprintf(
-					'Size mismatch. BOTR: %s bytes, Source: %s bytes.',
+					"Size mismatch. BOTR: %s bytes, Source: %s bytes.\n".
+					"Filename: %s",
 					$original['filesize'],
-					$source_size);
+					$source_size,
+					$filename);
 			}
 		}
 
 		if (count($result['errors'])) {
 			$e = new SiteCommandLineException(sprintf(
-				"Media %s validation error:\n%s".
+				"Media %s validation error:\n%s",
 				$media_file['key'],
 				implode("\n", $result['errors'])));
 
