@@ -366,8 +366,10 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 			$this->locale->formatNumber($existing_count)));
 
 		foreach ($encodings as $encoding) {
-			// we ignore originals
-			if ($encoding['template']['format']['key'] != 'original') {
+			// originals and passthroughs aren't saved in the db as
+			// EncodingBindings, so ignore
+			if ($encoding['template']['format']['key'] != 'original' &&
+				$encoding['template']['format']['key'] != 'passthrough') {
 				$media_object = $existing_media_objects[$media_file['key']];
 				if (!$media_object->encodingExists($encoding['width'])) {
 					$added_count++;
