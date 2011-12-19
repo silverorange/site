@@ -148,7 +148,7 @@ class SiteBotrMediaDeleter extends SiteBotrMediaToasterCommandLineApplication
 					$this->debug("done.");
 				}
 			} else {
-				$this->debug("cannot bed deleted.");
+				$this->debug("cannot be deleted.");
 			}
 			$this->debug("\n");
 		}
