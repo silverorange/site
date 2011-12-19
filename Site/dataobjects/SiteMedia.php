@@ -378,8 +378,7 @@ class SiteMedia extends SwatDBDataObject
 	protected function loadEncodingBindings()
 	{
 		$sql = sprintf('select * from MediaEncodingBinding
-			where MediaEncodingBinding.media = %s
-			order by %s',
+			where MediaEncodingBinding.media = %s %s',
 			$this->db->quote($this->id, 'integer'),
 			$this->getMediaEncodingBindingsOrderBy());
 
@@ -400,7 +399,7 @@ class SiteMedia extends SwatDBDataObject
 
 	protected function getMediaEncodingBindingsOrderBy()
 	{
-		return 'id';
+		return '';
 	}
 
 	// }}}
