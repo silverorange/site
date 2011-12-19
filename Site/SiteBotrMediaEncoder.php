@@ -328,6 +328,15 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+	// {{{ protected function getDefaultMediaOptions()
+
+	protected function getDefaultMediaOptions()
+	{
+		// override status filter in parent
+		return array();
+	}
+
+	// }}}
 }
 
 ?>
