@@ -129,7 +129,7 @@ class SiteBotrMedia extends SiteMedia
 	{
 		// Load encodings by size, but put nulls first since those would be
 		// audio only encodings.
-		return 'width asc nulls first';
+		return 'order by width asc nulls first';
 	}
 
 	// }}}
