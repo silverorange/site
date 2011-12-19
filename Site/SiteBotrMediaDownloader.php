@@ -203,6 +203,9 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		$source      = $this->toaster->getMediaDownload($media_object,
 			$encoding);
 
+		$this->debug(sprintf("\n\t => %s ... ",
+			$destination));
+
 		$this->download($source, $destination, $prefix, $filesize);
 	}
 
