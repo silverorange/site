@@ -305,6 +305,11 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 	protected function getMedia(array $options = array())
 	{
+		// local options come second so they overwrite any defaults.
+		$options = array_merge(
+			$this->getDefaultMediaOptions(),
+			$options);
+
 		if ($this->media === null) {
 			$media = $this->toaster->listMedia($options);
 
@@ -314,6 +319,16 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		}
 
 		return $this->media;
+	}
+
+	// }}}
+	// {{{ protected function getDefaultMediaOptions()
+
+	protected function getDefaultMediaOptions()
+	{
+		return array(
+			'statuses_filter' => 'ready',
+		);
 	}
 
 	// }}}
@@ -438,6 +453,20 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+	// {{{ protected function mediaFileIsMarkedDeleted()
+
+	protected function mediaFileIsMarkedDeleted(array $media_file)
+	{
+		$deleted = false;
+
+		if ((strpos($media_file['tags'], $this->delete_tag) !== false)) {
+			$deleted = true;
+		}
+
+		return $deleted;
+	}
+
+	// }}}
 	// {{{ protected function mediaFileOriginalIsDownloadable()
 
 	protected function mediaFileOriginalIsDownloadable(array $media_file)
@@ -464,6 +493,13 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected function download($source, $destination, $prefix = null,
 		$filesize_to_check = null)
 	{
+		// 32 bit php FTL
+		if ($filesize_to_check > 2147483647) {
+			throw new SiteCommandLineException(sprintf(
+				'File too large to download %s.',
+				SwatString::byteFormat($filesize_to_check)));
+		}
+
 		if (file_exists($destination)) {
 			throw new SiteCommandLineException(sprintf(
 				'File already exists “%s”', $destination));
@@ -488,11 +524,11 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 		if (!copy($source, $temp_file)) {
 			throw new SiteCommandLineException(sprintf(
-				'Unable to download “%s” to “%s.”', $source, $temp_path));
+				'Unable to download “%s” to “%s.”', $source, $temp_file));
 		}
 
 		/* TODO - > 2gb filesize support */
-		if ($filesize_to_check < 2147483648) {
+		if ($filesize_to_check < 2147483647) {
 			$local_filesize = filesize($temp_file);
 			if ($local_filesize != $filesize_to_check) {
 				unlink($temp_file);
