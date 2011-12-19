@@ -87,6 +87,9 @@ class SiteBotrMediaOriginalDownloader
 						$media_file['custom']['original_filename']);
 
 					try {
+						$this->debug(sprintf("\n\t => %s ... ",
+							$destination));
+
 						$this->download($source, $destination, $key,
 							$passthrough['filesize']);
 
