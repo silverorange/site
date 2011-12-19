@@ -295,7 +295,11 @@ class SiteBotrMediaUploadValidator
 			$tags             = array();
 			$errors           = array();
 
-			if (array_key_exists($filename, $this->valid_files)) {
+			if ($this->mediaFileIsMarkedDeleted($media_file)) {
+				// don't bother validating media marked for deletion. Do this
+				// before dupes to prevent a deleted video being marked a dupe.
+				$valid = true;
+			} elseif (array_key_exists($filename, $this->valid_files)) {
 				$dupe   = true;
 				$tags[] = $this->duplicate_tag;
 				$this->duplicate_files[$filename][] =
@@ -308,6 +312,7 @@ class SiteBotrMediaUploadValidator
 				$errors[] = $media_file['tags'];
 			}  elseif ($this->mediaFileIsIgnorable($media_file)) {
 				// do nothing. we should make this part of the debugged display
+				$valid = true;
 			} else {
 				if (array_key_exists($filename, $source_files)) {
 					$result = $this->validateMediaFile($filename, $media_file);
