@@ -521,7 +521,7 @@ abstract class SiteCommentUi
 	public function getHtmlHeadEntrySet()
 	{
 		return $this->ui->getRoot()->getHtmlHeadEntrySet();
-	} 
+	}
 
 	// }}}
 }
