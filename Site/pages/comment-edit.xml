@@ -2,6 +2,8 @@
 <!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
 <swatml>
 	<widget class="SwatForm" id="comment_edit_form">
+		<widget class="SwatMessageDisplay" id="message_display" />
+		<!-- the 'preview_message_display' is deprecated, use 'message_display' instead -->
 		<widget class="SwatMessageDisplay" id="preview_message_display" />
 		<widget class="SwatContainer" id="comment_preview_container">
 			<property name="visible" type="boolean">false</property>
@@ -9,7 +11,6 @@
 		</widget>
 		<widget class="SwatFrame" id="comment_edit_frame">
 			<property name="title" translatable="yes">Post a Comment</property>
-			<widget class="SwatMessageDisplay" id="message_display" />
 			<widget class="SwatDisplayableContainer" id="comment_edit_details">
 				<widget class="SwatFormField" id="fullname_field">
 					<property name="title" translatable="yes">Name</property>
@@ -42,7 +43,6 @@
 				<widget class="SwatTextarea" id="bodytext">
 					<property name="required" type="boolean">true</property>
 					<property name="rows" type="integer">8</property>
-					<property name="resizeable" type="boolean">false</property>
 					<property name="maxlength" type="integer">8000</property>
 				</widget>
 			</widget>
