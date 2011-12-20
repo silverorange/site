@@ -127,10 +127,10 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 			break;
 		}
 
-		$this->comment->fullname   = $this->getParameter('fullname', true);
-		$this->comment->link       = $this->getParameter('link',     false);
-		$this->comment->email      = $this->getParameter('email',    true);
-		$this->comment->bodytext   = $this->getParameter('bodytext', true);
+		$this->comment->fullname   = $this->getFullname();
+		$this->comment->link       = $this->getLink();
+		$this->comment->email      = $this->getEmail();
+		$this->comment->bodytext   = $this->getBodytext();
 		$this->comment->ip_address = $this->getIPAddress();
 		$this->comment->user_agent = $this->getUserAgent();
 		$this->comment->createdate = $now;
@@ -164,7 +164,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$value = SiteApplication::initVar(
 			$name, null, SiteApplication::VAR_POST);
 
-		if ($value === null && $required) {
+		if ($value == '' && $required) {
 			throw new SiteCommentJSONException(
 				sprintf(
 					Site::_('The %s field is required.'),
@@ -174,6 +174,38 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		}
 
 		return $value;
+	}
+
+	// }}}
+	// {{{ protected function getFullname()
+
+	protected function getFullname()
+	{
+		return $this->getParameter('fullname', true);
+	}
+
+	// }}}
+	// {{{ protected function getLink()
+
+	protected function getLink()
+	{
+		return $this->getParameter('link', false);
+	}
+
+	// }}}
+	// {{{ protected function getEmail()
+
+	protected function getEmail()
+	{
+		return $this->getParameter('email', true);
+	}
+
+	// }}}
+	// {{{ protected function getBodytext()
+
+	protected function getBodytext()
+	{
+		return $this->getParameter('bodytext', true);
 	}
 
 	// }}}
