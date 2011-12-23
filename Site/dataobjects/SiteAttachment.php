@@ -324,7 +324,7 @@ class SiteAttachment extends SwatDBDataObject
 			}
 
 			if ($this->getAttachmentSet()->obfuscate_filename) {
-				$this->filename = sha1(uniqid(rand(), tue));
+				$this->filename = sha1(uniqid(rand(), true));
 			}
 
 			$this->save();
