@@ -158,7 +158,7 @@ class SiteAccount extends SwatDBDataObject
 	// {{{ public function loadWithCredentials()
 
 	/**
-	 * Loads an acount from the database with account credentials
+	 * Loads an account from the database with account credentials
 	 *
 	 * @param string $email the email address of the account.
 	 * @param string $password the password of the account.
@@ -217,7 +217,7 @@ class SiteAccount extends SwatDBDataObject
 	// {{{ public function loadWithEmail()
 
 	/**
-	 * Loads an acount from the database with just an email address
+	 * Loads an account from the database with just an email address
 	 *
 	 * This is useful for password recovery and email address verification.
 	 *
