@@ -70,6 +70,17 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	protected $check_md5 = true;
 
+	/**
+	 * Whether or not to update metadata if saving an file that already exists.
+	 *
+	 * If true, and the object already exists, update the existing metadata on
+	 * the object when attempting a copy. If false, do nothing on copy. Defaults
+	 * to true.
+	 *
+	 * @var boolean
+	 */
+	protected $update_metadata = true;
+
 	// }}}
 	// {{{ public function init()
 
@@ -96,6 +107,21 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	public function setCheckMd5($check_md5 = true)
 	{
 		$this->check_md5 = (bool) $check_md5;
+	}
+
+	// }}}
+	// {{{ public function setUpdateMetadata()
+
+	/**
+	 * Sets whether or not to update metadata when attempting to copy a file
+	 * that already exists on the CDN.
+	 *
+	 * @param boolean $update_metadata true if we want to update the file, false
+	 *                                  if we don't.
+	 */
+	public function setUpdateMetadata($update_metadata = true)
+	{
+		$this->update_metadata = (bool) $update_metadata;
 	}
 
 	// }}}
@@ -132,22 +158,19 @@ class SiteAmazonCdnModule extends SiteCdnModule
 					Site::_('Unable to locate file ‘%s’.'), $source));
 			}
 
-			$file = file_get_contents($source);
-			if ($file === false) {
-				throw new SwatFileNotFoundException(sprintf(
-					Site::_('Unable to open file ‘%s’.'), $source));
-			}
-
-			$metadata['md5'] = md5($file);
+			$metadata['md5'] = md5_file($source);
 
 			$s3_object = $this->bucket->getObject($destination);
+			$copy      = true;
+			$update    = false;
 
-			$copy = true;
-			$type = Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY;
-			if ($this->check_md5 && $s3_object->load($type) &&
+			if ($this->check_md5 &&
+				$s3_object->load(
+					Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY) &&
 				array_key_exists('md5', $s3_object->userMetadata)) {
 
 				$copy = ($s3_object->userMetadata['md5'] !== $metadata['md5']);
+				$update = ($copy === false && $this->update_metadata);
 			}
 
 			if ($copy) {
@@ -157,6 +180,12 @@ class SiteAmazonCdnModule extends SiteCdnModule
 					$mime_type = finfo_file($finfo, $source);
 				}
 
+				$file = file_get_contents($source);
+				if ($file === false) {
+					throw new SwatFileNotFoundException(sprintf(
+						Site::_('Unable to open file ‘%s’.'), $source));
+				}
+
 				$s3_object->data         = $file;
 				$s3_object->contentType  = $mime_type;
 				$s3_object->acl          = $this->getAcl($access_type);
@@ -164,6 +193,9 @@ class SiteAmazonCdnModule extends SiteCdnModule
 				$s3_object->userMetadata = $metadata;
 
 				$s3_object->save();
+			} elseif ($update) {
+				$copied = $this->updateFile($destination, $mime_type,
+					$access_type, $http_headers, $metadata);
 			}
 		} catch (Services_Amazon_S3_Exception $e) {
 			throw new SiteCdnException($e);
