@@ -6,7 +6,7 @@ require_once 'SiteApplicationModule.php';
  * Base class for application modules that provide access to a CDN
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCdnModule extends SiteApplicationModule
@@ -24,6 +24,21 @@ abstract class SiteCdnModule extends SiteApplicationModule
 	 * @param array $metadata an array of metadata associated with the file.
 	 */
 	abstract public function copyFile($source, $destination, $mime_type = null,
+		$access_type = null, $http_headers = array(), $metadata = array());
+
+	// }}}
+	// {{{ abstract public function copyFile()
+
+	/**
+	 * Copies a file to the CDN
+	 *
+	 * @param string $path the path of the file to update.
+	 * @param string $mime_type the MIME type of the file.
+	 * @param string $access_type the access type, public/private, of the file.
+	 * @param array $http_headers an array of headers associated with the file.
+	 * @param array $metadata an array of metadata associated with the file.
+	 */
+	abstract public function updateFileMetadata($path, $mime_type = null,
 		$access_type = null, $http_headers = array(), $metadata = array());
 
 	// }}}
