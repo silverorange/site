@@ -5,12 +5,13 @@ require_once 'Services/Amazon/S3/AccessControlList.php';
 require_once 'Swat/exceptions/SwatFileNotFoundException.php';
 require_once 'Site/SiteCdnModule.php';
 require_once 'Site/exceptions/SiteCdnException.php';
+//require_once 'Site/exceptions/SiteAmazonCdnFilesizeException.php';
 
 /**
  * Application module that provides access to an Amazon S3 bucket.
  *
  * @package   Site
- * @copyright 2010-2011 silverorange
+ * @copyright 2010-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAmazonCdnModule extends SiteCdnModule
@@ -107,7 +108,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 * @param string $destination the destination path of the file to copy.
 	 * @param string $mime_type the MIME type of the file. If null, we grab the
 	 *                           MIME type from the file. Defaults to null.
-	 * @param integer $access_type the access type, public/private, of the file.
+	 * @param string $access_type the access type, public/private, of the file.
 	 *                              Defaults to 'public'.
 	 * @param array $http_headers HTTP headers associated with the file.
 	 *                             Defaults to an empty array.
@@ -169,6 +170,71 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		}
 
 		return $copied;
+	}
+
+	// }}}
+	// {{{ public function updateFile()
+
+	/**
+	 * Copies a file to the Amazon S3 bucket
+	 *
+	 * @param string $path the path of the file to update.
+	 * @param string $access_type the access type, public/private, of the file.
+	 *                              Defaults to 'public'.
+	 * @param array $http_headers HTTP headers associated with the file.
+	 *                             Defaults to an empty array.
+	 * @param array $metadata metadata associated with the file.
+	 *                         Defaults to an empty array.
+	 *
+	 * @returns boolean true if the file was copied, false otherwise.
+	 *
+	 * @throws SiteCdnException if the CDN encounters any problems
+	 */
+	public function updateFileMetadata($path, $mime_type = null,
+		$access_type = 'public', $http_headers = array(), $metadata = array())
+	{
+		$updated = false;
+
+		try {
+			$s3_object = $this->bucket->getObject($path);
+
+			// load existing metadata so we can re-save what doesn't change
+			$s3_object->load(
+				Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY);
+
+			// preserve mime_type if no new mime_type has been set.
+			$s3_object->contentType = ($mime_type === null) ?
+				$s3_object->contentType :
+				$mime_type;
+
+			// preserve acl if no new acl has been set.
+			$s3_object->acl = ($access_type === null) ?
+				$s3_object->acl :
+				$this->getAcl($access_type);
+
+			// merge existing headers and metadata with new values instead
+			// of completely overwriting. This is so we can only update one
+			// of the values instead of having to set everything from
+			// scratch.
+			$s3_object->httpHeaders = array_merge(
+				$s3_object->httpHeaders,
+				$http_headers);
+
+			$s3_object->userMetadata = array_merge(
+				$s3_object->userMetadata,
+				$metadata);
+
+			// false as second parameter prevents the metadata being copied
+			// wholesale from the original, and allows the file to copy in
+			// place with the new metadata.
+			$s3_object->copyFrom($s3_object, false);
+
+			$updated = true;
+		} catch (Services_Amazon_S3_Exception $e) {
+			throw new SiteCdnException($e);
+		}
+
+		return $updated;
 	}
 
 	// }}}
