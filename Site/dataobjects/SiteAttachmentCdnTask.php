@@ -47,40 +47,21 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 
 	protected function copyItem(SiteCdnModule $cdn)
 	{
-		try {
-			$transaction = new SwatDBTransaction($this->db);
+		if ($this->hasAttachment()) {
+			// Perform all DB actions first. That way we can roll them back if
+			// anything goes wrong with the CDN operation.
+			$this->attachment->on_cdn = true;
+			$this->attachment->save();
 
-			// Perform all DB actions first. That way we can roll them back
-			// if anything goes wrong with the CDN operation.
-			if ($this->hasAttachment()) {
-				$this->attachment->on_cdn = true;
-				$this->attachment->save();
-			}
-
-			$this->delete();
-
-			if ($this->hasAttachment()) {
-				$cdn->copyFile(
-					$this->attachment->getFilePath(),
-					$this->attachment->getUriSuffix(),
-					$this->attachment->mime_type,
-					$this->getAccessType(),
-					$this->getHttpHeaders());
-			}
-
-			$transaction->commit();
-
-			$this->success = true;
-		} catch (SwatDBException $e) {
-			$transaction->rollback();
-			$e->processAndContinue();
-		} catch (Exception $e) {
-			$transaction->rollback();
-
-			$e = new SiteCdnException($e);
-			$e->processAndContinue();
-			$this->error();
+			$cdn->copyFile(
+				$this->attachment->getFilePath(),
+				$this->attachment->getUriSuffix(),
+				$this->attachment->mime_type,
+				$this->getAccessType(),
+				$this->getHttpHeaders());
 		}
+
+		return true;
 	}
 
 	// }}}
@@ -88,32 +69,15 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 
 	protected function updateItemMetadata(SiteCdnModule $cdn)
 	{
-		try {
-			$transaction = new SwatDBTransaction($this->db);
-
-			$this->delete();
-
-			if ($this->hasAttachment()) {
-				$cdn->updateFileMetadata(
-					$this->attachment->getUriSuffix(),
-					$this->attachment->mime_type,
-					$this->getAccessType(),
-					$this->getHttpHeaders());
-			}
-
-			$transaction->commit();
-
-			$this->success = true;
-		} catch (SwatDBException $e) {
-			$transaction->rollback();
-			$e->processAndContinue();
-		} catch (Exception $e) {
-			$transaction->rollback();
-
-			$e = new SiteCdnException($e);
-			$e->processAndContinue();
-			$this->error();
+		if ($this->hasAttachment()) {
+			$cdn->updateFileMetadata(
+				$this->attachment->getUriSuffix(),
+				$this->attachment->mime_type,
+				$this->getAccessType(),
+				$this->getHttpHeaders());
 		}
+
+		return true;
 	}
 
 	// }}}
@@ -121,33 +85,14 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 
 	protected function deleteItem(SiteCdnModule $cdn)
 	{
-		try {
-			$transaction = new SwatDBTransaction($this->db);
-
-			// Perform all DB actions first. That way we can roll them back
-			// if anything goes wrong with the CDN operation.
-			if ($this->hasAttachment()) {
-				$this->attachment->on_cdn = false;
-				$this->attachment->save();
-			}
-
-			$this->delete();
-
-			$cdn->deleteFile($this->file_path);
-
-			$transaction->commit();
-
-			$this->success = true;
-		} catch (SwatDBException $e) {
-			$transaction->rollback();
-			$e->processAndContinue();
-		} catch (Exception $e) {
-			$transaction->rollback();
-
-			$e = new SiteCdnException($e);
-			$e->processAndContinue();
-			$this->error();
+		// Perform all DB actions first. That way we can roll them back if
+		// anything goes wrong with the CDN operation.
+		if ($this->hasAttachment()) {
+			$this->attachment->on_cdn = false;
+			$this->attachment->save();
 		}
+
+		return parent::deleteItem();
 	}
 
 	// }}}
