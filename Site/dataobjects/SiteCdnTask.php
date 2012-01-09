@@ -53,19 +53,38 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	 */
 	public function run(SiteCdnModule $cdn)
 	{
-		switch ($this->operation) {
-		case 'copy':
-			$this->copyItem($cdn);
-			break;
-		case 'delete':
-			$this->deleteItem($cdn);
-			break;
-		case 'update':
-			$this->updateItemMetadata($cdn);
-			break;
-		default:
+		try {
+			$transaction = new SwatDBTransaction($this->db);
+
+			// always delete the object, will be rolled back by the transaction
+			// if anything fails
+			$this->delete();
+
+			switch ($this->operation) {
+			case 'copy':
+				$this->success = $this->copyItem($cdn);
+				break;
+			case 'delete':
+				$this->success = $this->deleteItem($cdn);
+				break;
+			case 'update':
+				$this->success = $this->updateItemMetadata($cdn);
+				break;
+			default:
+				$this->error();
+				break;
+			}
+
+			$transaction->commit();
+		} catch (SwatDBException $e) {
+			$transaction->rollback();
+			$e->processAndContinue();
+		} catch (Exception $e) {
+			$transaction->rollback();
+
+			$e = new SiteCdnException($e);
+			$e->processAndContinue();
 			$this->error();
-			break;
 		}
 	}
 
@@ -128,7 +147,12 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	 *
 	 * @param SiteCdn $cdn the CDN this task is executed on.
 	 */
-	abstract protected function deleteItem(SiteCdnModule $cdn);
+	protected function deleteItem(SiteCdnModule $cdn)
+	{
+		$cdn->deleteFile($this->file_path);
+
+		return true;
+	}
 
 	// }}}
 	// {{{ protected function error()

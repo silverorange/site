@@ -72,42 +72,23 @@ class SiteMediaCdnTask extends SiteCdnTask
 
 	protected function copyItem(SiteCdnModule $cdn)
 	{
-		try {
-			$transaction = new SwatDBTransaction($this->db);
+		if ($this->hasMediaAndEncoding()) {
+			// Perform all DB actions first. That way we can roll them back if
+			// anything goes wrong with the CDN operation.
+			$this->media->setOnCdn(true, $this->encoding->shortname);
 
-			// Perform all DB actions first. That way we can roll them back
-			// if anything goes wrong with the CDN operation.
-			if ($this->hasMediaAndEncoding()) {
-				$this->media->setOnCdn(true, $this->encoding->shortname);
-			}
+			$binding = $this->media->getEncodingBinding(
+				$this->encoding->shortname);
 
-			$this->delete();
-
-			if ($this->hasMediaAndEncoding()) {
-				$binding = $this->media->getEncodingBinding(
-					$this->encoding->shortname);
-
-				$cdn->copyFile(
-					$this->media->getFilePath($this->encoding->shortname),
-					$this->media->getUriSuffix($this->encoding->shortname),
-					$binding->media_type->mime_type,
-					$this->getAccessType(),
-					$this->getHttpHeaders());
-			}
-
-			$transaction->commit();
-
-			$this->success = true;
-		} catch (SwatDBException $e) {
-			$transaction->rollback();
-			$e->processAndContinue();
-		} catch (Exception $e) {
-			$transaction->rollback();
-
-			$e = new SiteCdnException($e);
-			$e->processAndContinue();
-			$this->error();
+			$cdn->copyFile(
+				$this->media->getFilePath($this->encoding->shortname),
+				$this->media->getUriSuffix($this->encoding->shortname),
+				$binding->media_type->mime_type,
+				$this->getAccessType(),
+				$this->getHttpHeaders());
 		}
+
+		return true;
 	}
 
 	// }}}
@@ -115,35 +96,18 @@ class SiteMediaCdnTask extends SiteCdnTask
 
 	protected function updateItemMetadata(SiteCdnModule $cdn)
 	{
-		try {
-			$transaction = new SwatDBTransaction($this->db);
+		if ($this->hasMediaAndEncoding()) {
+			$binding = $this->media->getEncodingBinding(
+				$this->encoding->shortname);
 
-			$this->delete();
-
-			if ($this->hasMediaAndEncoding()) {
-				$binding = $this->media->getEncodingBinding(
-					$this->encoding->shortname);
-
-				$cdn->updateFileMetadata(
-					$this->media->getUriSuffix($this->encoding->shortname),
-					$binding->media_type->mime_type,
-					$this->getAccessType(),
-					$this->getHttpHeaders());
-			}
-
-			$transaction->commit();
-
-			$this->success = true;
-		} catch (SwatDBException $e) {
-			$transaction->rollback();
-			$e->processAndContinue();
-		} catch (Exception $e) {
-			$transaction->rollback();
-
-			$e = new SiteCdnException($e);
-			$e->processAndContinue();
-			$this->error();
+			$cdn->updateFileMetadata(
+				$this->media->getUriSuffix($this->encoding->shortname),
+				$binding->media_type->mime_type,
+				$this->getAccessType(),
+				$this->getHttpHeaders());
 		}
+
+		return true;
 	}
 
 	// }}}
@@ -151,32 +115,13 @@ class SiteMediaCdnTask extends SiteCdnTask
 
 	protected function deleteItem(SiteCdnModule $cdn)
 	{
-		try {
-			$transaction = new SwatDBTransaction($this->db);
-
-			// Perform all DB actions first. That way we can roll them back
-			// if anything goes wrong with the CDN operation.
-			if ($this->hasMediaAndEncoding()) {
-				$this->media->setOnCdn(false, $this->encoding->shortname);
-			}
-
-			$this->delete();
-
-			$cdn->deleteFile($this->file_path);
-
-			$transaction->commit();
-
-			$this->success = true;
-		} catch (SwatDBException $e) {
-			$transaction->rollback();
-			$e->processAndContinue();
-		} catch (Exception $e) {
-			$transaction->rollback();
-
-			$e = new SiteCdnException($e);
-			$e->processAndContinue();
-			$this->error();
+		// Perform all DB actions first. That way we can roll them back if
+		// anything goes wrong with the CDN operation.
+		if ($this->hasMediaAndEncoding()) {
+			$this->media->setOnCdn(false, $this->encoding->shortname);
 		}
+
+		return parent::deleteItem();
 	}
 
 	// }}}
