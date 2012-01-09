@@ -11,7 +11,7 @@ require_once 'Site/exceptions/SiteCdnException.php';
  * A task that should be preformed to a CDN in the near future
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMediaCdnTask extends SiteCdnTask
@@ -29,6 +29,15 @@ class SiteMediaCdnTask extends SiteCdnTask
 				$this->media->id);
 
 			break;
+
+		case 'update':
+			$attempt = sprintf(Site::_(
+				'Updating metadata for the ‘%s’ encoding of media ‘%s’ ... '),
+				$this->encoding->shortname,
+				$this->media->id);
+
+			break;
+
 		default:
 			$attempt = sprintf($this->getAttemptDescriptionString(),
 				Site::_('image'),
@@ -80,6 +89,42 @@ class SiteMediaCdnTask extends SiteCdnTask
 
 				$cdn->copyFile(
 					$this->media->getFilePath($this->encoding->shortname),
+					$this->media->getUriSuffix($this->encoding->shortname),
+					$binding->media_type->mime_type,
+					$this->getAccessType(),
+					$this->getHttpHeaders());
+			}
+
+			$transaction->commit();
+
+			$this->success = true;
+		} catch (SwatDBException $e) {
+			$transaction->rollback();
+			$e->processAndContinue();
+		} catch (Exception $e) {
+			$transaction->rollback();
+
+			$e = new SiteCdnException($e);
+			$e->processAndContinue();
+			$this->error();
+		}
+	}
+
+	// }}}
+	// {{{ protected function updateItemMetadata()
+
+	protected function updateItemMetadata(SiteCdnModule $cdn)
+	{
+		try {
+			$transaction = new SwatDBTransaction($this->db);
+
+			$this->delete();
+
+			if ($this->hasMediaAndEncoding()) {
+				$binding = $this->media->getEncodingBinding(
+					$this->encoding->shortname);
+
+				$cdn->updateFileMetadata(
 					$this->media->getUriSuffix($this->encoding->shortname),
 					$binding->media_type->mime_type,
 					$this->getAccessType(),

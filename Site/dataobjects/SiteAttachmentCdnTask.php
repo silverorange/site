@@ -10,7 +10,7 @@ require_once 'Site/exceptions/SiteCdnException.php';
  * An attachment task that should be preformed to a CDN in the near future
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAttachmentCdnTask extends SiteCdnTask
@@ -62,6 +62,39 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 			if ($this->hasAttachment()) {
 				$cdn->copyFile(
 					$this->attachment->getFilePath(),
+					$this->attachment->getUriSuffix(),
+					$this->attachment->mime_type,
+					$this->getAccessType(),
+					$this->getHttpHeaders());
+			}
+
+			$transaction->commit();
+
+			$this->success = true;
+		} catch (SwatDBException $e) {
+			$transaction->rollback();
+			$e->processAndContinue();
+		} catch (Exception $e) {
+			$transaction->rollback();
+
+			$e = new SiteCdnException($e);
+			$e->processAndContinue();
+			$this->error();
+		}
+	}
+
+	// }}}
+	// {{{ protected function updateItemMetadata()
+
+	protected function updateItemMetadata(SiteCdnModule $cdn)
+	{
+		try {
+			$transaction = new SwatDBTransaction($this->db);
+
+			$this->delete();
+
+			if ($this->hasAttachment()) {
+				$cdn->updateFileMetadata(
 					$this->attachment->getUriSuffix(),
 					$this->attachment->mime_type,
 					$this->getAccessType(),

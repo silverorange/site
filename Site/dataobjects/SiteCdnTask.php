@@ -6,7 +6,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  * A task that should be preformed to a CDN in the near future
  *
  * @package   Site
- * @copyright 2010-2011 silverorange
+ * @copyright 2010-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCdnTask extends SwatDBDataObject
@@ -60,6 +60,9 @@ abstract class SiteCdnTask extends SwatDBDataObject
 		case 'delete':
 			$this->deleteItem($cdn);
 			break;
+		case 'update':
+			$this->updateItemMetadata($cdn);
+			break;
 		default:
 			$this->error();
 			break;
@@ -108,6 +111,16 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	abstract protected function copyItem(SiteCdnModule $cdn);
 
 	// }}}
+	// {{{ abstract protected function updateItemMetadata()
+
+	/**
+	 * Attempts to update metadata an item that already exists on the CDN
+	 *
+	 * @param SiteCdn $cdn the CDN this task is executed on.
+	 */
+	abstract protected function updateItemMetadata(SiteCdnModule $cdn);
+
+	// }}}
 	// {{{ abstract protected function deleteItem()
 
 	/**
@@ -148,6 +161,11 @@ abstract class SiteCdnTask extends SwatDBDataObject
 			break;
 		case 'delete':
 			$description_string = Site::_('Deleting ‘%3$s’ ... ');
+			break;
+		case 'update':
+			$description_string =
+				Site::_('Updating metadata on %1$s ‘%2$s’ ... ');
+
 			break;
 		default:
 			$description_string = Site::_('Unknown operation ‘%4$s’ ... ');

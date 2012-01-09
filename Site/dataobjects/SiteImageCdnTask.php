@@ -11,7 +11,7 @@ require_once 'Site/exceptions/SiteCdnException.php';
  * A task that should be performed on a CDN in the near future
  *
  * @package   Site
- * @copyright 2010-2011 silverorange
+ * @copyright 2010-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImageCdnTask extends SiteCdnTask
@@ -29,6 +29,15 @@ class SiteImageCdnTask extends SiteCdnTask
 				$this->image->id);
 
 			break;
+
+		case 'update':
+			$attempt = sprintf(Site::_(
+				'Updating metadata for the dimension ‘%s’ of image ‘%s’ ... '),
+				$this->dimension->shortname,
+				$this->image->id);
+
+			break;
+
 		default:
 			$attempt = sprintf($this->getAttemptDescriptionString(),
 				Site::_('image'),
@@ -82,6 +91,37 @@ class SiteImageCdnTask extends SiteCdnTask
 					$this->getAccessType(),
 					$this->getHttpHeaders());
 			}
+
+			$transaction->commit();
+
+			$this->success = true;
+		} catch (SwatDBException $e) {
+			$transaction->rollback();
+			$e->processAndContinue();
+		} catch (Exception $e) {
+			$transaction->rollback();
+
+			$e = new SiteCdnException($e);
+			$e->processAndContinue();
+			$this->error();
+		}
+	}
+
+	// }}}
+	// {{{ protected function updateItemMetadata()
+
+	protected function updateItemMetadata(SiteCdnModule $cdn)
+	{
+		try {
+			$transaction = new SwatDBTransaction($this->db);
+
+			$this->delete();
+
+			$cdn->updateFileMetadata(
+				$this->image->getUriSuffix($this->dimension->shortname),
+				$this->image->getMimeType($this->dimension->shortname),
+				$this->getAccessType(),
+				$this->getHttpHeaders());
 
 			$transaction->commit();
 
