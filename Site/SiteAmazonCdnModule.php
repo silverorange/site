@@ -194,7 +194,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 				$s3_object->save();
 			} elseif ($update) {
-				$copied = $this->updateFile($destination, $mime_type,
+				$copied = $this->updateFileMetadata($destination, $mime_type,
 					$access_type, $http_headers, $metadata);
 			}
 		} catch (Services_Amazon_S3_Exception $e) {
