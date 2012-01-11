@@ -65,7 +65,7 @@ require_once 'Site/dataobjects/SiteAccountLoginHistoryWrapper.php';
  * </code>
  *
  * @package   Site
- * @copyright 2005-2011 silverorange
+ * @copyright 2005-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccountWrapper
  */
@@ -150,6 +150,15 @@ class SiteAccount extends SwatDBDataObject
 	// {{{ protected properties
 
 	/**
+	 * The password for this account
+	 *
+	 * Note: This should NEVER be saved. Not ever.
+	 *
+	 * @var string
+	 */
+	protected $unencrypted_password;
+
+	/**
 	 * @see SiteAccount::getSuspiciousActivity()
 	 */
 	protected $suspicious_activity;
@@ -187,19 +196,24 @@ class SiteAccount extends SwatDBDataObject
 
 		$salt = SwatDB::queryOne($this->db, $sql);
 
-		if ($salt === null)
+		if ($salt === null) {
 			return false;
+		}
 
-		// salt might be base-64 encoded
-		$decoded_salt = base64_decode($salt, true);
-		if ($decoded_salt !== false)
-			$salt = $decoded_salt;
+		$password_salt = base64_decode($salt, true);
+
+		// salt may not be base64 encoded
+		if ($password_salt === false) {
+			$password_salt = $salt;
+		}
+
+		$password_hash = $this->calculatePasswordHash($password, $password_salt);
 
 		$sql = sprintf('select id from %s
 			where lower(email) = lower(%s) and password = %s',
 			$this->table,
 			$this->db->quote($email, 'text'),
-			$this->db->quote(md5($password.$salt), 'text'));
+			$this->db->quote($password_hash, 'text'));
 
 		if ($instance !== null)
 			$sql.= sprintf(' and instance = %s',
@@ -382,91 +396,96 @@ class SiteAccount extends SwatDBDataObject
 	 * Sets this account's password
 	 *
 	 * The password is salted with a 16-byte salt and encrypted with one-way
-	 * encryption.  The salt is stored separately and is base-64 encoded.
+	 * encryption. The salt is stored separately and is base-64 encoded.
 	 *
 	 * @param string $password the password for this account.
 	 */
 	public function setPassword($password)
 	{
-		$salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
-		$this->password_salt = base64_encode($salt);
-		$this->password = md5($password.$salt);
+		$password_salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
+		$password_hash = $this->calculatePasswordHash($password, $password_salt);
+
+		$this->unencrypted_password = $password;
+
+		$this->setPasswordHash($password_hash, $password_salt);
 	}
 
 	// }}}
+	// {{{ public function setPasswordHash()
+
+	public function setPasswordHash($password_hash, $password_salt)
+	{
+		$this->password = $password_hash;
+		$this->password_salt = base64_encode($password_salt);
+	}
+
+	// }}}
+	// {{{ public function calculatePasswordHash()
+
+	public function calculatePasswordHash($password, $password_salt)
+	{
+		return md5($password.$password_salt);
+	}
+
+	// }}}
+	// {{{ public function getPasswordHash()
+
+	public function getPasswordHash()
+	{
+		return $this->password;
+	}
+
+	// }}}
+	// {{{ public function getPasswordSalt()
+
+	public function getPasswordSalt()
+	{
+		$password_salt = base64_decode($this->password_salt, true);
+
+		// salt may not be base64 encoded
+		if ($password_salt === false) {
+			$password_salt = $this->password_salt;
+		}
+
+		return $password_salt;
+	}
+
+	// }}}
+	// {{{ public function isCorrectPassword()
+
+	public function isCorrectPassword($password)
+	{
+		$password_salt = $this->getPasswordSalt();
+		$password_hash = $this->calculatePasswordHash($password, $password_salt);
+
+		return ($this->getPasswordHash() === $password_hash);
+	}
+
+	// }}}
+
+	// reset password methods
 	// {{{ public function resetPassword()
 
 	/**
-	 * Resets this account's password
+	 * Creates a unique tag that can be used to reset this account's password
 	 *
-	 * Creates a unique tag that can be emailed to the account holder as part of
-	 * a url that allows them to update their password.
-	 *
-	 * @param SiteApplication $app the application resetting this account's
-	 *                              password.
-	 *
-	 * @return string $password_tag a hashed tag to verify the account
+	 * @param SiteApplication $app the application generating the new password.
 	 */
 	public function resetPassword(SiteApplication $app)
 	{
 		$this->checkDB();
 
-		$password_tag = SwatString::hash(uniqid(rand(), true));
-
-		/*
-		 * Update the database with new password tag. Don't use the regular
-		 * dataobject saving here in case other fields have changed.
-		 */
 		$id_field = new SwatDBField($this->id_field, 'integer');
-		$sql = sprintf('update %s set password_tag = %s where %s = %s',
-			$this->table,
-			$this->db->quote($password_tag, 'text'),
-			$id_field->name,
-			$this->db->quote($this->{$id_field->name}, $id_field->type));
 
-		SwatDB::exec($this->db, $sql);
+		$fields = $this->getResetPasswordFields();
+		$values = $this->getResetPasswordValues($app);
 
-		return $password_tag;
-	}
-
-	// }}}
-	// {{{ public function generateNewPassword()
-
-	/**
-	 * Generates a new password for this account, saves it, and emails it to
-	 * this account's holder
-	 *
-	 * @param SiteApplication $app the application generating the new password.
-	 *
-	 * @return string $new_password the new password in plaintext
-	 *
-	 * @see SiteAccount::resetPassword()
-	 */
-	public function generateNewPassword(SiteApplication $app)
-	{
-		require_once 'Text/Password.php';
-
-		$new_password      = Text_Password::Create();
-		$new_password_salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
-
+		// Update the database with new password tag. Don't use the regular
+		// dataobject saving here in case other fields have changed.
 		$transaction = new SwatDBTransaction($this->db);
 		try {
-			/*
-			 * Update the database with new password. Don't use the regular
-			 * dataobject saving here in case other fields have changed.
-			 */
-			$id_field = new SwatDBField($this->id_field, 'integer');
-
-			$sql = sprintf(
-				'update %s set password = %s, password_salt = %s where %s = %s',
-				$this->table,
-				$app->db->quote(md5($new_password.$new_password_salt), 'text'),
-				$app->db->quote(base64_encode($new_password_salt), 'text'),
-				$id_field->name,
-				$this->db->quote($this->{$id_field->name}, $id_field->type)
-			);
-
-			SwatDB::exec($app->db, $sql);
+			SwatDB::updateRow($this->db, $this->table, $fields, $values,
+				$id_field, $this->{$id_field->name});
 
 			$transaction->commit();
 		} catch (Exception $e) {
@@ -474,7 +493,8 @@ class SiteAccount extends SwatDBDataObject
 			throw $e;
 		}
 
-		return $new_password;
+		// Update the object's properties with the new values
+		$this->updateResetPasswordValues($values);
 	}
 
 	// }}}
@@ -485,49 +505,171 @@ class SiteAccount extends SwatDBDataObject
 	 * resetting his or her password
 	 *
 	 * @param SiteApplication $app the application sending mail.
-	 * @param string $password_link a URL indicating the page at which the
-	 *                               account holder may complete the reset-
-	 *                               password process.
 	 *
 	 * @see StoreAccount::resetPassword()
 	 */
-	public function sendResetPasswordMailMessage(
-		SiteApplication $app, $password_link)
+	public function sendResetPasswordMailMessage(SiteApplication $app)
 	{
+		if ($this->password_tag == '') {
+			throw new SiteException(
+				'This account’s password tag has not been set. '.
+				'Before a reset password mail message can be sent '.
+				'resetPassword() must be called.');
+		}
+
+		$title = $app->config->site->title;
+		$link = $app->getBaseHref().'account/resetpassword/'.
+			$this->password_tag;
+
+		$email = new SiteResetPasswordMailMessage(
+			$app, $this, $link, $title);
+
+		$email->smtp_server = $app->config->email->smtp_server;
+		$email->from_address = $app->config->email->service_address;
+		$email->from_name = sprintf('%s Customer Service', $title);
+		$email->subject = sprintf('Reset Your %s Password', $title);
+
+		$email->send();
 	}
 
 	// }}}
-	// {{{ public function sendNewPasswordMailMessage()
+	// {{{ protected function getResetPasswordFields()
+
+	protected function getResetPasswordFields()
+	{
+		return array(
+			'text:password_tag',
+		);
+	}
+
+	// }}}
+	// {{{ protected function getResetPasswordValues()
+
+	protected function getResetPasswordValues()
+	{
+		return array(
+			'password_tag' => SwatString::hash(uniqid(rand(), true)),
+		);
+	}
+
+	// }}}
+	// {{{ protected function updateResetPasswordValues()
+
+	protected function updateResetPasswordValues($values)
+	{
+		$this->password_tag = $values['password_tag'];
+	}
+
+	// }}}
+
+	// generate password methods
+	// {{{ public function generatePassword()
+
+	/**
+	 * Generates a password for this account, and saves it to the database
+	 *
+	 * @param SiteApplication $app the application generating the new password.
+	 */
+	public function generatePassword(SiteApplication $app)
+	{
+		$this->checkDB();
+
+		$id_field = new SwatDBField($this->id_field, 'integer');
+
+		$fields = $this->getGeneratePasswordFields();
+		$values = $this->getGeneratePasswordValues($app);
+
+		// Update the database with new password. Don't use the regular
+		// dataobject saving here in case other fields have changed.
+		$transaction = new SwatDBTransaction($this->db);
+		try {
+			SwatDB::updateRow($this->db, $this->table, $fields, $values,
+				$id_field, $this->{$id_field->name});
+
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
+
+		// Update the object's properties with the new values
+		$this->updateGeneratePasswordValues($values);
+	}
+
+	// }}}
+	// {{{ public function sendGeneratePasswordMailMessage()
 
 	/**
 	 * Emails this account's holder with his or her new generated password
 	 *
 	 * @param SiteApplication $app the application sending mail.
-	 * @param string $new_password this account's new password.
 	 *
-	 * @see SiteAccount::generateNewPassword()
+	 * @see SiteAccount::generatePassword()
 	 */
-	public function sendNewPasswordMailMessage(
-		SiteApplication $app, $new_password)
+	public function sendGeneratePasswordMailMessage(SiteApplication $app)
 	{
+		if ($this->unencrypted_password == '') {
+			throw new SiteException(
+				'This account’s password has not been updated. '.
+				'Before a new password mail message can be sent '.
+				'generatePassword() must be called.');
+		}
+
+		$title = $app->config->site->title;
+		$password = $this->unencrypted_password;
+
+		$email = new SiteNewPasswordMailMessage(
+			$app, $this, $password, $title);
+
+		$email->smtp_server = $app->config->email->smtp_server;
+		$email->from_address = $app->config->email->service_address;
+		$email->from_name = sprintf('%s Customer Service', $title);
+		$email->subject = sprintf('Your New %s Password', $title);
+
+		$email->send();
 	}
 
 	// }}}
-	// {{{ public function isCorrectPassword()
+	// {{{ protected function getGeneratePasswordFields()
 
-	public function isCorrectPassword($password)
+	protected function getGeneratePasswordFields()
 	{
-		$salt = $this->password_salt;
+		return array(
+			'text:password',
+			'text:password_salt',
+		);
+	}
 
-		// salt may be base64 encoded
-		$decoded_salt = base64_decode($salt);
-		if ($decoded_salt !== false) {
-			$salt = $decoded_salt;
-		}
+	// }}}
+	// {{{ protected function getGeneratePasswordValues()
 
-		$salted_password = $password.$salt;
+	protected function getGeneratePasswordValues(SiteApplication $app)
+	{
+		require_once 'Text/Password.php';
 
-		return ($this->password === md5($salted_password));
+		$password = Text_Password::Create();
+
+		$password_salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
+		$password_hash = $this->calculatePasswordHash($password, $password_salt);
+
+		return array(
+			'password' => $password_hash,
+			'password_salt' => base64_encode($password_salt),
+			'unencrypted_password' => $password,
+		);
+	}
+
+	// }}}
+	// {{{ protected function updateGeneratePasswordValues()
+
+	protected function updateGeneratePasswordValues($values)
+	{
+		$this->unencrypted_password = $values['unencrypted_password'];
+
+		$password_hash = $values['password'];
+		$password_salt = base64_decode($values['password_salt'], true);
+
+		$this->setPasswordHash($password_hash, $password_salt);
 	}
 
 	// }}}

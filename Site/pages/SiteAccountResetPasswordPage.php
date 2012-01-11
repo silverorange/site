@@ -9,7 +9,7 @@ require_once 'Swat/SwatUI.php';
  * Users are required to enter a new password.
  *
  * @package   Site
- * @copyright 2006-2009 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  * @see       SiteAccountForgotPasswordPage
@@ -154,9 +154,12 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 
 	protected function updatePassword()
 	{
+		$account  = $this->app->session->account;
+
 		$password = $this->ui->getWidget('password')->value;
-		$this->app->session->account->setPassword($password);
-		$this->app->session->account->password_tag = null;
+
+		$account->setPassword($password);
+		$account->password_tag = null;
 	}
 
 	// }}}

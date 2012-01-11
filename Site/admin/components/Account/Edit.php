@@ -10,7 +10,7 @@ require_once 'Swat/SwatDate.php';
  * Edit page for Accounts
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountEdit extends AdminDBEdit
@@ -113,11 +113,7 @@ class SiteAccountEdit extends AdminDBEdit
 
 		$this->updateBindings();
 
-		$message = new SwatMessage(sprintf(
-			Site::_('Account “%s” has been saved.'),
-				$this->account->getFullname()));
-
-		$this->app->messages->add($message);
+		$this->app->messages->add($this->getUpdateMessage());
 	}
 
 	// }}}
@@ -134,6 +130,16 @@ class SiteAccountEdit extends AdminDBEdit
 
 	protected function updateBindings()
 	{
+	}
+
+	// }}}
+	// {{{ protected function getUpdateMessage()
+
+	protected function getUpdateMessage()
+	{
+		return new SwatMessage(sprintf(
+			Site::_('Account “%s” has been saved.'),
+				$this->account->getFullname()));
 	}
 
 	// }}}

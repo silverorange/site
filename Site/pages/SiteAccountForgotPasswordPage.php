@@ -9,7 +9,7 @@ require_once 'Site/pages/SiteUiPage.php';
  * Page for requesting a new password for forgotten account passwords
  *
  * @package   Site
- * @copyright 2006-2010 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  * @see       SiteAccountResetPasswordPage
@@ -118,20 +118,9 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 			$message = $this->getAccountNotFoundMessage();
 			$this->ui->getWidget('email')->addMessage($message);
 		} else {
-			$password_tag  = $this->account->resetPassword($this->app);
-			$password_link = $this->getResetPasswordLink($password_tag);
-			$this->account->sendResetPasswordMailMessage($this->app,
-				$password_link);
+			$this->account->resetPassword($this->app);
+			$this->account->sendResetPasswordMailMessage($this->app);
 		}
-	}
-
-	// }}}
-	// {{{ protected function getResetPasswordLink()
-
-	protected function getResetPasswordLink($password_tag)
-	{
-		return $this->app->getBaseHref().
-			'account/resetpassword/'.$password_tag;
 	}
 
 	// }}}
