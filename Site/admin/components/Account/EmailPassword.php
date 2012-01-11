@@ -10,7 +10,7 @@ require_once 'SwatDB/SwatDB.php';
  * to the account holder
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountEmailPassword extends AdminConfirmation
@@ -75,8 +75,8 @@ class SiteAccountEmailPassword extends AdminConfirmation
 		$form = $this->ui->getWidget('confirmation_form');
 
 		if ($form->button->id == 'yes_button') {
-			$password = $this->account->generateNewPassword($this->app);
-			$this->account->sendNewPasswordMailMessage($this->app, $password);
+			$this->account->generatePassword($this->app);
+			$this->account->sendGeneratePasswordMailMessage($this->app);
 
 			$message = new SwatMessage(sprintf(
 				Site::_('%1$s’s password has been reset and has been emailed '.

@@ -6,7 +6,7 @@ require_once 'Site/pages/SiteEditPage.php';
  * Page for changing the password of an account
  *
  * @package   Site
- * @copyright 2006-2008 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */
@@ -58,8 +58,8 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 
 	protected function save(SwatForm $form)
 	{
-		$password = $this->ui->getWidget('password')->value;
-		$this->app->session->account->setPassword($password);
+		$this->updatePassword();
+
 		$this->app->session->account->save();
 
 		$message = new SwatMessage(Site::_(
@@ -100,6 +100,18 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 	protected function relocate(SwatForm $form)
 	{
 		$this->app->relocate('account');
+	}
+
+	// }}}
+	// {{{ protected function updatePassword()
+
+	protected function updatePassword()
+	{
+		$account  = $this->app->session->account;
+
+		$password = $this->ui->getWidget('password')->value;
+
+		$account->setPassword($password);
 	}
 
 	// }}}
