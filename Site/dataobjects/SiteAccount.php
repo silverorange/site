@@ -2,6 +2,7 @@
 
 require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatString.php';
+require_once 'Site/SiteNewPasswordMailMessage.php';
 require_once 'Site/SiteResetPasswordMailMessage.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteAccountWrapper.php';
@@ -511,10 +512,10 @@ class SiteAccount extends SwatDBDataObject
 	public function sendResetPasswordMailMessage(SiteApplication $app)
 	{
 		if ($this->password_tag == '') {
-			throw new SiteException(
+			throw new SiteException(Site::_(
 				'This account’s password tag has not been set. '.
 				'Before a reset password mail message can be sent '.
-				'resetPassword() must be called.');
+				'resetPassword() must be called.'));
 		}
 
 		$title = $app->config->site->title;
@@ -609,10 +610,10 @@ class SiteAccount extends SwatDBDataObject
 	public function sendGeneratePasswordMailMessage(SiteApplication $app)
 	{
 		if ($this->unencrypted_password == '') {
-			throw new SiteException(
+			throw new SiteException(Site::_(
 				'This account’s password has not been updated. '.
 				'Before a new password mail message can be sent '.
-				'generatePassword() must be called.');
+				'generatePassword() must be called.'));
 		}
 
 		$title = $app->config->site->title;
