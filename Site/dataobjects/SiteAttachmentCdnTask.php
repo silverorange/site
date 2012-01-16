@@ -92,7 +92,7 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 			$this->attachment->save();
 		}
 
-		return parent::deleteItem();
+		return parent::deleteItem($cdn);
 	}
 
 	// }}}

@@ -115,7 +115,7 @@ class SiteImageCdnTask extends SiteCdnTask
 			$this->image->setOnCdn(false, $this->dimension->shortname);
 		}
 
-		return parent::deleteItem();
+		return parent::deleteItem($cdn);
 	}
 
 	// }}}

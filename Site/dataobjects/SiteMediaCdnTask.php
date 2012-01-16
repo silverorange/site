@@ -121,7 +121,7 @@ class SiteMediaCdnTask extends SiteCdnTask
 			$this->media->setOnCdn(false, $this->encoding->shortname);
 		}
 
-		return parent::deleteItem();
+		return parent::deleteItem($cdn);
 	}
 
 	// }}}
