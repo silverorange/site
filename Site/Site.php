@@ -9,7 +9,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Container for package wide static methods
  *
  * @package   Site
- * @copyright 2005-2006 silverorange
+ * @copyright 2005-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class Site
@@ -290,6 +290,9 @@ class Site
 			'botr.private_content_expiry' => '+1 Minute',
 			'botr.dashboard_username'     => null,
 			'botr.dashboard_password'     => null,
+
+			// Expiry dates for the privateer data deleter
+			'expiry.contact_messages' => '1 year',
 		);
 	}
 
