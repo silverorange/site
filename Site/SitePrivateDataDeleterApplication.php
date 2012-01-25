@@ -166,7 +166,7 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 
 	// }}}
 
-	// TODO: doesn't SiteCommandLIneApp do all of below
+	// boilerplate
 	// {{{ protected function getDefaultModuleList()
 
 	/**
@@ -183,21 +183,6 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 			'database' => 'SiteDatabaseModule',
 			'instance' => 'SiteMultipleInstanceModule',
 		);
-	}
-
-	// }}}
-	// {{{ protected function addConfigDefinitions()
-
-	/**
-	 * Adds configuration definitions to the config module of this application
-	 *
-	 * @param SiteConfigModule $config the config module of this application to
-	 *                                  witch to add the config definitions.
-	 */
-	protected function addConfigDefinitions(SiteConfigModule $config)
-	{
-		parent::addConfigDefinitions($config);
-		$config->addDefinitions(Site::getConfigDefinitions());
 	}
 
 	// }}}
