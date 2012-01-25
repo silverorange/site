@@ -28,15 +28,16 @@ class SiteContactMessageDeleter extends SitePrivateDataDeleter
 				Site::_('No expired contact messages found.')."\n");
 		} else {
 			$this->app->debug(sprintf(
-				Site::_('Found %s contact messages for deletion...')."\n\n",
+				Site::_('Found %s contact messages for deletion...')."\n",
 				$total));
 
 			if (!$this->app->isDryRun()) {
 				$delete_count = $this->deleteContactMessages();
-				$this->app->debug(' '.Site::_('%s deleted.')."\n");
+				$this->app->debug(sprintf(' '.Site::_('%s deleted.')."\n",
+					$delete_count));
 			} else {
 				$this->app->debug(' '.
-					Site::_('not deleting because dry-run is on')."\n");
+					Site::_('=> not deleting because dry-run is on'));
 			}
 
 			$this->app->debug("\n".
@@ -50,7 +51,7 @@ class SiteContactMessageDeleter extends SitePrivateDataDeleter
 	/**
 	 * Deletes all expired contact messages
 	 */
-	protected function deletContactMessages()
+	protected function deleteContactMessages()
 	{
 		$sql = sprintf('delete from ContactMessage %s',
 			$this->getWhereClause());
