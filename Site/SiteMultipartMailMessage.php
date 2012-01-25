@@ -10,7 +10,7 @@ require_once 'Mail/mime.php';
  * Multipart text/html email message
  *
  * @package   Site
- * @copyright 2006-2011 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMultipartMailMessage extends SiteObject
@@ -192,6 +192,10 @@ class SiteMultipartMailMessage extends SiteObject
 		// send email
 		$result = $mailer->send($this->getRecipients(), $headers, $body);
 
+		if ($this->app->config->email->log) {
+			$this->logMessage();
+		}
+
 		if (PEAR::isError($result))
 			throw new SiteMailException($result);
 	}
@@ -210,6 +214,54 @@ class SiteMultipartMailMessage extends SiteObject
 		$recipients = array_merge($recipients, $this->bcc_list);
 
 		return implode(', ', $recipients);
+	}
+
+	// }}}
+	// {{{ protected function logMessage()
+
+	protected function logMessage()
+	{
+		// Log details that would be useful for statistics.
+		$sql = 'insert into SiteEmailLog
+			(createdate, instance, type, attachment_count, attachment_size,
+			to_address, from_address, recipient_type) values %s';
+
+		$values_sql = '(now(), %s, %s, %s, %s, %%s, %s, %%s)';
+
+		$attachment_size = 0;
+		if (count($this->attachments)) {
+			foreach ($this->attachments as $attachment) {
+				$attachment_size += filesize($attachment);
+			}
+		}
+
+		$values_sql = sprintf($values_sql,
+			$this->app->db->quote($this->app->getInstanceId(), 'integer'),
+			$this->app->db->quote(get_class($this), 'text'),
+			$this->app->db->quote(count($this->attachments), 'integer'),
+			$this->app->db->quote($attachment_size, 'integer'),
+			$this->app->db->quote($this->from_address), 'text');
+
+		$values = array();
+		$values[] = sprintf($values_sql,
+			$this->app->db->quote($this->to_address, 'text'),
+			$this->app->db->quote('to', 'text'));
+
+		foreach ($this->cc_list as $recipient) {
+			$values[] = sprintf($values_sql,
+				$this->app->db->quote($recipient, 'text'),
+				$this->app->db->quote('cc', 'text'));
+		}
+
+		foreach ($this->bcc_list as $recipient) {
+			$values[] = sprintf($values_sql,
+				$this->app->db->quote($recipient, 'text'),
+				$this->app->db->quote('bcc', 'text'));
+		}
+
+		$sql = sprintf($sql, implode(',', $values));
+
+		SwatDB::exec($this->app->db, $sql);
 	}
 
 	// }}}

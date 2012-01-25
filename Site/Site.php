@@ -253,6 +253,7 @@ class Site
 
 			// Email
 			'email.smtp_server'        => null,
+			'email.log'                => true,
 
 			// to address for contact-us emails
 			'email.contact_address'    => null,
