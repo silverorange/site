@@ -169,7 +169,9 @@ class SiteMobileModule extends SiteApplicationModule
 				$this->app->relocate($this->app->getSwitchMobileLink(false,
 					$source));
 			}
-		} elseif ($try_mobile && $this->isMobileBrowser()) {
+		} elseif ($has_mobile_access && $try_mobile &&
+			$this->isMobileBrowser()) {
+
 			// try to go to mobile site
 			$this->app->relocate($this->app->getSwitchMobileLink(true,
 				$source));
@@ -181,6 +183,8 @@ class SiteMobileModule extends SiteApplicationModule
 
 	public function isMobileBrowser()
 	{
+		return true;
+
 		// if user-agent header is not present, assume desktop
 		if (!isset($_SERVER['HTTP_USER_AGENT'])) {
 			return false;
@@ -433,7 +437,7 @@ class SiteMobileModule extends SiteApplicationModule
 	 */
 	protected function attemptMobileRelocate()
 	{
-		return true;
+		return (boolean) $this->app->config->mobile->auto_relocate;
 	}
 
 	// }}}
