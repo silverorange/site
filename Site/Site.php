@@ -281,6 +281,9 @@ class Site
 			'amazon.access_key_id'     => null,
 			'amazon.access_key_secret' => null,
 
+			// mobile
+			'mobile.auto_relocate'        => false,
+
 			// Botr Media
 			'botr.key'                    => null,
 			'botr.secret'                 => null,
