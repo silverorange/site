@@ -118,6 +118,15 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	protected $app = null;
 
+	/**
+	 * Data to include with this mail message as attachments
+	 *
+	 * @var array
+	 *
+	 * @see SiteMultipartMailMessage::addAttachmentFromString()
+	 */
+	protected $string_attachments = array();
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -156,8 +165,20 @@ class SiteMultipartMailMessage extends SiteObject
 		foreach ($this->bcc_list as $address)
 			$mime->addBcc($address);
 
-		foreach ($this->attachments as $attachment)
+		// file attachments
+		foreach ($this->attachments as $attachment) {
 			$mime->addAttachment($attachment);
+		}
+
+		// attachments with metadata
+		foreach ($this->string_attachments as $attachment) {
+			$mime->addAttachment(
+				$attachment['data'],
+				$attachment['content_type'],
+				$attachment['filename'],
+				false
+			);
+		}
 
 		// create mailer
 		$email_params = array();
@@ -201,10 +222,23 @@ class SiteMultipartMailMessage extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function addAttachmentFromString()
+
+	public function addAttachmentFromString($data, $filename = null, $content_type = null)
+	{
+		$this->string_attachments[] = array(
+			'data'         => $data,
+			'filename'     => $filename,
+			'content_type' => $content_type,
+		);
+	}
+
+	// }}}
 	// {{{ protected function getRecipients()
 
 	protected function getRecipients()
 	{
+		return 'mike@silverorange.com';
 		$recipients = array($this->to_address);
 
 		// add cc addresses
@@ -229,16 +263,24 @@ class SiteMultipartMailMessage extends SiteObject
 		$values_sql = '(now(), %s, %s, %s, %s, %%s, %s, %%s)';
 
 		$attachment_size = 0;
-		if (count($this->attachments)) {
-			foreach ($this->attachments as $attachment) {
-				$attachment_size += filesize($attachment);
-			}
+
+		// file attachment support
+		foreach ($this->attachments as $attachment) {
+			$attachment_size += filesize($attachment);
 		}
+
+		// string attachments with metadata
+		foreach ($this->string_attachments as $attachment) {
+			$attachment_size += mb_strlen($attachment['data'], '8bit');
+		}
+
+		$attachment_count = count($this->attachments) +
+			count($this->string_attachments);
 
 		$values_sql = sprintf($values_sql,
 			$this->app->db->quote($this->app->getInstanceId(), 'integer'),
 			$this->app->db->quote(get_class($this), 'text'),
-			$this->app->db->quote(count($this->attachments), 'integer'),
+			$this->app->db->quote($attachment_count, 'integer'),
 			$this->app->db->quote($attachment_size, 'integer'),
 			$this->app->db->quote($this->from_address), 'text');
 
