@@ -166,10 +166,18 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 			if ($this->check_md5 &&
 				$s3_object->load(
-					Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY) &&
-				array_key_exists('md5', $s3_object->userMetadata)) {
+					Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY)) {
 
-				$copy = ($s3_object->userMetadata['md5'] !== $metadata['md5']);
+				// This takes advantage of the fact that the ETag is currently
+				// the md5. This will need to change if amazon changes the eTag
+				// value. We'll only need to use the ETag value when trying to
+				// compare manually uploaded files for the first time - if it
+				// matches the local files md5 we'll then set the user metadata
+				// md5 field and use that going forward.
+				$s3_md5 = (array_key_exists('md5', $s3_object->userMetadata)) ?
+					$s3_object->userMetadata['md5'] : $s3_object->eTag;
+
+				$copy   = ($s3_md5 !== $metadata['md5']);
 				$update = ($copy === false && $this->update_metadata);
 			}
 
