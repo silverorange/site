@@ -7,6 +7,7 @@ create table MediaCdnQueue (
 	-- the cdn, but not deleting from the database.
 	media int default null references Media(id) on delete cascade,
 	encoding int default null references MediaEncoding(id) on delete cascade,
+	override_http_headers text,
 
 	-- for delete operations
 	file_path varchar(255),
