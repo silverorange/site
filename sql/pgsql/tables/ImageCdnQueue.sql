@@ -7,6 +7,7 @@ create table ImageCdnQueue (
 	-- the cdn, but not deleting from the database.
 	image int default null references Image(id) on delete cascade,
 	dimension int default null references ImageDimension(id) on delete cascade,
+	override_http_headers text,
 
 	-- for delete operations
 	file_path varchar(255),
