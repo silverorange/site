@@ -138,6 +138,22 @@ class SiteImageCdnTask extends SiteCdnTask
 	}
 
 	// }}}
+	// {{{ protected function getHttpHeaders()
+
+	protected function getHttpHeaders()
+	{
+		$headers = parent::getHttpHeaders();
+
+		if (strlen($this->override_http_headers)) {
+			$headers = array_merge(
+				$headers,
+				unserialize($this->override_http_headers));
+		}
+
+		return $headers;
+	}
+
+	// }}}
 }
 
 ?>

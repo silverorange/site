@@ -123,6 +123,12 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 		$headers['content-disposition'] = sprintf('attachment; filename="%s"',
 			$this->attachment->getContentDispositionFilename());
 
+		if (strlen($this->override_http_headers)) {
+			$headers = array_merge(
+				$headers,
+				unserialize($this->override_http_headers));
+		}
+
 		return $headers;
 	}
 

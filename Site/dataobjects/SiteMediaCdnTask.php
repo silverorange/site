@@ -154,6 +154,12 @@ class SiteMediaCdnTask extends SiteCdnTask
 			$this->media->getContentDispositionFilename(
 				$this->encoding->shortname));
 
+		if (strlen($this->override_http_headers)) {
+			$headers = array_merge(
+				$headers,
+				unserialize($this->override_http_headers));
+		}
+
 		return $headers;
 	}
 
