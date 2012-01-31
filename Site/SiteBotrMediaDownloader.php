@@ -9,7 +9,7 @@ require_once 'Site/dataobjects/SiteMediaCdnTask.php';
  * These videos are then queued for uploading to S3.
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      When we upgrade to a version of PHP that supports the curl option
  *            CURLOPT_MAX_RECV_SPEED_LARGE (>= PHP 5.4), switch to curl for the
@@ -220,9 +220,13 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		$task = new $class_name();
 		$task->setDatabase($this->db);
 
-		$task->media     = $media;
-		$task->encoding  = $encoding;
-		$task->operation = 'copy';
+		$task->media        = $media;
+		$task->encoding     = $encoding;
+		$task->operation    = 'copy';
+		$task->http_headers = serialize(array(
+			'content-disposition' => sprintf('attachment; filename="%s"',
+				$media->getContentDispositionFilename($encoding->shortname)),
+			));
 
 		$task->save();
 	}
