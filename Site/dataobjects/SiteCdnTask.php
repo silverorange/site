@@ -24,6 +24,15 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	public $operation;
 
 	/**
+	 * A serialized string of http headers to use with the task.
+	 *
+	 * If set, these will override any headers set by the class.
+	 *
+	 * @var string
+	 */
+	public $override_http_headers;
+
+	/**
 	 * @var string
 	 */
 	public $file_path;
