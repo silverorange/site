@@ -183,8 +183,6 @@ class SiteMobileModule extends SiteApplicationModule
 
 	public function isMobileBrowser()
 	{
-		return true;
-
 		// if user-agent header is not present, assume desktop
 		if (!isset($_SERVER['HTTP_USER_AGENT'])) {
 			return false;
@@ -441,7 +439,6 @@ class SiteMobileModule extends SiteApplicationModule
 	}
 
 	// }}}
-
 }
 
 ?>
