@@ -220,10 +220,10 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		$task = new $class_name();
 		$task->setDatabase($this->db);
 
-		$task->media        = $media;
-		$task->encoding     = $encoding;
-		$task->operation    = 'copy';
-		$task->http_headers = serialize(array(
+		$task->media     = $media;
+		$task->encoding  = $encoding;
+		$task->operation = 'copy';
+		$task->override_http_headers = serialize(array(
 			'content-disposition' => sprintf('attachment; filename="%s"',
 				$media->getContentDispositionFilename($encoding->shortname)),
 			));
