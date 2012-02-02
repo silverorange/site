@@ -63,8 +63,11 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 * file's md5 against the new file's md5 before copying. Defaults to true.
 	 *
 	 * md5 is always saved in a custom metadata field. ETag isn't used because
-	 * amazon doesn't guarantee it to always be the file's md5, even though it
-	 * appears as though it always is.
+	 * amazon doesn't guarantee it to always be the file's md5. Files uploaded
+	 * as multi-part requests do not have an ETag that matches the source files
+	 * md5. Multi-part uploads generate a custom ETag, and can be distinguished
+	 * by the fact they end with a dash and then a number. See
+	 * {@link https://forums.aws.amazon.com/thread.jspa?messageID=203436&#203510}
 	 *
 	 * @var boolean
 	 */
@@ -168,14 +171,22 @@ class SiteAmazonCdnModule extends SiteCdnModule
 				$s3_object->load(
 					Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY)) {
 
-				// This takes advantage of the fact that the ETag is currently
-				// the md5. This will need to change if amazon changes the eTag
-				// value. We'll only need to use the ETag value when trying to
-				// compare manually uploaded files for the first time - if it
-				// matches the local files md5 we'll then set the user metadata
-				// md5 field and use that going forward.
+				// Fallback to comparing the ETag to the local md5 if the custom
+				// custom metadata md5 doesn't exist (for example if the file
+				// was not uploaded by the SiteAmazonCdnModule.
 				$s3_md5 = (array_key_exists('md5', $s3_object->userMetadata)) ?
 					$s3_object->userMetadata['md5'] : $s3_object->eTag;
+
+				// ETag's with a dash are from multi-part uploads and do not
+				// match the local md5. Throw an exception when this happens
+				// instead of trying to re-copy the file as this usually happens
+				// when large files are manually uploaded, and we don't want to
+				// have to upload them again.
+				if (strpos($s3_md5, '-') !== false) {
+					throw new SiteCdnException(sprintf(Site::_(
+						'Attempting to compare a multi-part upload ETag to a '.
+						'local MD5.')));
+				}
 
 				$copy   = ($s3_md5 !== $metadata['md5']);
 				$update = ($copy === false && $this->update_metadata);
