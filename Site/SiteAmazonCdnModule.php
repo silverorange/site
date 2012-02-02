@@ -162,6 +162,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			}
 
 			$metadata['md5'] = md5_file($source);
+			$http_headers['Content-MD5'] =
+				$this->hex_to_base64($metadata['md5']);
 
 			$s3_object = $this->bucket->getObject($destination);
 			$copy      = true;
@@ -349,6 +351,26 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		}
 
 		return $acl;
+	}
+
+	// }}}
+	// {{{ protected function getAcl()
+
+	/**
+	 * Convert a HEX value to Base64.
+	 *
+	 * @param string $str (Required) Value to convert.
+	 * @return string Base64-encoded string.
+	 */
+	protected function hex_to_base64($str)
+	{
+		$raw = '';
+
+		for ($i = 0; $i < strlen($str); $i += 2) {
+			$raw .= chr(hexdec(substr($str, $i, 2)));
+		}
+
+		return base64_encode($raw);
 	}
 
 	// }}}
