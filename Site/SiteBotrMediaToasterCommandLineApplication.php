@@ -11,7 +11,7 @@ require_once 'Site/SiteBotrMediaToaster.php';
  * Abstract application for applications that access media on bits on the run.
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      do something better with the isMarkedX() methods. Maybe move the
  *            tags to constants.
@@ -545,6 +545,51 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 			throw new SiteCommandLineException(sprintf(
 				'Unable to move “%s” to “%s.”', $temp_file, $destination));
 		}
+	}
+
+	// }}}
+	// {{{ protected function setOriginalFilenames()
+
+	protected function setOriginalFilenames()
+	{
+		$media = $this->getMedia();
+		$count = 0;
+
+		$this->debug('Updating missing original filenames... ');
+
+		foreach ($media as $media_file) {
+			if (!isset($media_file['custom']['original_filename'])) {
+				$count++;
+				// save fields on Botr.
+				$values = array(
+					'custom' => array(
+						'original_filename' =>
+							$this->getOriginalFilename($media_file),
+						),
+					);
+
+				$this->toaster->updateMediaByKey($media_file['key'], $values);
+			}
+		}
+
+		// reset the cache so that its up to date with the original filenames
+		// when we use it later.
+		if ($count) {
+			$this->resetMediaCache();
+		}
+
+		$this->debug(sprintf("%s updated.\n",
+			$this->locale->formatNumber($count)));
+	}
+
+	// }}}
+	// {{{ protected function getOriginalFilename()
+
+	protected function getOriginalFilename(array $media_file)
+	{
+		return (isset($media_file['custom']['original_filename'])) ?
+			$media_file['custom']['original_filename'] :
+			trim($media_file['title']);
 	}
 
 	// }}}

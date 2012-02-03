@@ -8,7 +8,7 @@ require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
  * records in the database.
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Allow encoding to arbitrary encoding profiles. Also add flag to
  *            call getDistinctDimensions() and getEncodingProfiles() with nicely
@@ -93,6 +93,7 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$this->debug("Starting encoding jobs...\n");
 		//$this->getDistinctDimensions();
+		$this->setOriginalFilenames();
 		$this->getEncodingProfiles();
 		$this->startEncodingJobs();
 		$this->displayResults();

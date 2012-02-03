@@ -6,7 +6,7 @@ require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
  * Application to validate FTP uploaded media to BOTR.
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMediaUploadValidator
@@ -235,40 +235,6 @@ class SiteBotrMediaUploadValidator
 		$this->debug(sprintf(
 			"Reset validation tags for %s media files on BOTR.\n",
 			$this->locale->formatNumber(count($media))));
-	}
-
-	// }}}
-	// {{{ protected function setOriginalFilenames()
-
-	protected function setOriginalFilenames()
-	{
-		$media = $this->getMedia();
-		$count = 0;
-
-		$this->debug('Updating missing original filenames... ');
-
-		foreach ($media as $media_file) {
-			if (!isset($media_file['custom']['original_filename'])) {
-				$count++;
-				// save fields on Botr.
-				$values = array(
-					'custom' => array(
-						'original_filename' => trim($media_file['title']),
-						),
-					);
-
-				$this->toaster->updateMediaByKey($media_file['key'], $values);
-			}
-		}
-
-		// reset the cache so that its up to date with the original filenames
-		// when we use it later.
-		if ($count) {
-			$this->resetMediaCache();
-		}
-
-		$this->debug(sprintf("%s updated.\n",
-			$this->locale->formatNumber($count)));
 	}
 
 	// }}}
