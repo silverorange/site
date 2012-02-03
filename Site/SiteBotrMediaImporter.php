@@ -12,7 +12,7 @@ require_once 'Site/dataobjects/SiteBotrMediaSet.php';
  *  - Mark Media as imported.
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Support for importing into multiple MediaSets (perhaps based on
  *            the encoding profiles present on the Media we're importing).
@@ -409,7 +409,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$media_object->createdate->toUTC();
 
 		$media_object->original_filename =
-			$media_file['custom']['original_filename'];
+			$this->getOriginalFilename($media_file);
 
 		return $media_object;
 	}
