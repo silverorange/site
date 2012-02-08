@@ -5,7 +5,6 @@ require_once 'Services/Amazon/S3/AccessControlList.php';
 require_once 'Swat/exceptions/SwatFileNotFoundException.php';
 require_once 'Site/SiteCdnModule.php';
 require_once 'Site/exceptions/SiteCdnException.php';
-//require_once 'Site/exceptions/SiteAmazonCdnFilesizeException.php';
 
 /**
  * Application module that provides access to an Amazon S3 bucket.
