@@ -2,7 +2,6 @@
 
 require_once 'Turing/TuringSeleniumTest.php';
 
-
 /**
  * Test contact us form
  *
