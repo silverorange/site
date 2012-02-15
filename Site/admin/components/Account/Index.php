@@ -6,12 +6,13 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatTableStore.php';
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'Site/dataobjects/SiteAccountWrapper.php';
+require_once 'Site/admin/SiteAccountSearch.php';
 
 /**
  * Index page for Accounts
  *
  * @package   Site
- * @copyright 2006-2011 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountIndex extends AdminSearch
@@ -66,10 +67,6 @@ class SiteAccountIndex extends AdminSearch
 		parent::processInternal();
 
 		$pager = $this->ui->getWidget('pager');
-		$pager->total_records = SwatDB::queryOne($this->app->db,
-			sprintf('select count(id) from Account where %s',
-				$this->getWhereClause()));
-
 		$pager->process();
 	}
 
@@ -94,70 +91,27 @@ class SiteAccountIndex extends AdminSearch
 	}
 
 	// }}}
-	// {{{ protected function getWhereClause()
-
-	protected function getWhereClause()
-	{
-		/**
-		 * The only way an account fullname can be null is if we've cleared the
-		 * data from it with the privacy scripts - we don't ever want to display
-		 * these accounts in the search results
-		 */
-		$where = 'Account.fullname is not null';
-
-		foreach ($this->getWhereClauses() as $clause)
-			$where.= $clause->getClause($this->app->db);
-
-		return $where;
-	}
-
-	// }}}
-	// {{{ protected function getWhereClauses()
-
-	protected function getWhereClauses()
-	{
-		$clauses = array();
-
-		// instance
-		$instance_id = $this->app->getInstanceId();
-		if ($instance_id === null && $this->ui->hasWidget('search_instance'))
-			$instance_id = $this->ui->getWidget('search_instance')->value;
-
-		if ($instance_id !== null) {
-			$clause = new AdminSearchClause('integer:instance');
-			$clause->table = 'Account';
-			$clause->value = $instance_id;
-			$clauses['instance'] = $clause;
-		}
-
-		// fullname
-		$clause = new AdminSearchClause('fullname');
-		$clause->table = 'Account';
-		$clause->value = $this->ui->getWidget('search_fullname')->value;
-		$clause->operator = AdminSearchClause::OP_CONTAINS;
-		$clauses['fullname'] = $clause;
-
-		// email
-		$clause = new AdminSearchClause('email');
-		$clause->table = 'Account';
-		$clause->value = $this->ui->getWidget('search_email')->value;
-		$clause->operator = AdminSearchClause::OP_CONTAINS;
-		$clauses['email'] = $clause;
-
-		return $clauses;
-	}
-
-	// }}}
 	// {{{ protected function getTableModel()
 
 	protected function getTableModel(SwatView $view)
 	{
-		$pager = $this->ui->getWidget('pager');
+		$search = $this->getAccountSearch();
 
-		$sql = $this->getSQL();
-		$sql = sprintf($sql,
-			$this->getWhereClause(),
-			$this->getOrderByClause($view, $this->getDefaultOrderBy()));
+		$pager = $this->ui->getWidget('pager');
+		$pager->total_records = SwatDB::queryOne(
+			$this->app->db,
+			sprintf(
+				'select count(id) from Account where %s',
+				$search->getWhereClause()
+			)
+		);
+
+		$sql = sprintf(
+			$this->getSQL(),
+			$search->getJoinClause(),
+			$search->getWhereClause(),
+			$this->getOrderByClause($view, $search->getOrderByClause())
+		);
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 
@@ -184,14 +138,6 @@ class SiteAccountIndex extends AdminSearch
 	}
 
 	// }}}
-	// {{{ protected function getDefaultOrderBy()
-
-	protected function getDefaultOrderBy()
-	{
-		return 'fullname, email';
-	}
-
-	// }}}
 	// {{{ protected function getDetailsStore()
 
 	protected function getDetailsStore(SiteAccount $account, $row)
@@ -209,8 +155,17 @@ class SiteAccountIndex extends AdminSearch
 		return 'select Account.id, Account.fullname,
 			Account.email, Account.instance
 			from Account
+			%s
 			where %s
 			order by %s';
+	}
+
+	// }}}
+	// {{{ protected function getAccountSearch()
+
+	protected function getAccountSearch()
+	{
+		return new SiteAccountSearch($this->app, $this->ui);
 	}
 
 	// }}}
