@@ -1,13 +1,17 @@
 <?php
 
+require_once 'Swat/SwatString.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteMediaType.php';
 
 /**
  * A media encoding binding object
  *
+ * This represents a physical encoding of a media resource. For example, a
+ * single media object may have an encoding for both WebM and H.264.
+ *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMediaEncodingBinding extends SwatDBDataObject

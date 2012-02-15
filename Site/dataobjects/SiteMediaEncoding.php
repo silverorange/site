@@ -1,14 +1,20 @@
 <?php
 
 require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Site/dataobjects/SiteInstance.php';
 require_once 'Site/dataobjects/SiteMediaSet.php';
 require_once 'Site/dataobjects/SiteMediaType.php';
 
 /**
  * A media encoding object
  *
+ * This represents an particular encoding of media in a media set. It is not
+ * a physical file, but is a definition of how files should be encoded. For
+ * example, a media set for product videos might include two encodings for
+ * WebM and H.264.
+ *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMediaEncoding extends SwatDBDataObject
