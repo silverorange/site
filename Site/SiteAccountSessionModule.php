@@ -78,7 +78,15 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
 			$this->app->instance->getInstance() : null;
 
-		if ($account->loadWithCredentials($email, $password, $instance)) {
+		if ($account->loadEmail($email, $instance) &&
+			$account->isCorrectPassword($password)) {
+
+			// No Crypt?! Crypt!
+			if (!$account->isCryptPassword()) {
+				$account->setPassword($password);
+				$account->save();
+			}
+
 			$this->activate();
 			$this->account = $account;
 
