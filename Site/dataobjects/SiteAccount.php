@@ -28,7 +28,7 @@ require_once 'Site/dataobjects/SiteAccountLoginHistoryWrapper.php';
  * </code>
  *
  * - Create a new SiteAccount object with a blank constructor. Call the
- *   {@link SiteAccount::load()} or {@link SiteAccount::loadWithCredentials}
+ *   {@link SiteAccount::load()} or {@link SiteAccount::loadWithEmail}
  *   method on the object instance. Modify some properties and call the save()
  *   method. The modified properties are updated in the database.
  *
@@ -40,9 +40,11 @@ require_once 'Site/dataobjects/SiteAccountLoginHistoryWrapper.php';
  * $account->email = 'new_address@example.com';
  * $account->save();
  *
- * // using loadWithCredentials()
+ * // using loadWithEmail()
  * $account = new SiteAccount();
- * if ($account->loadWithCredentials('test@example.com', 'secretpassword')) {
+ * if ($account->loadEmail('test@example.com') &&
+ *     $account->isCorrectPassword('secretpassword')) {
+ *
  *     echo 'Hello ' . $account->fullname;
  *     $account->email = 'new_address@example.com';
  *     $account->save();
@@ -75,10 +77,14 @@ class SiteAccount extends SwatDBDataObject
 	// {{{ class constants
 
 	/**
-	 * Length of salt value used to protect accounts's passwords from
-	 * dictionary attacks
+	 * The salt length determines how much extra entropy is added to the hash
 	 */
 	const PASSWORD_SALT_LENGTH = 16;
+
+	/**
+	 * The prefix used by crypt to determine which hash to use
+	 */
+	const PASSWORD_CRYPT_PREFIX = '$6$';
 
 	// }}}
 	// {{{ public properties
@@ -163,70 +169,6 @@ class SiteAccount extends SwatDBDataObject
 	 * @see SiteAccount::getSuspiciousActivity()
 	 */
 	protected $suspicious_activity;
-
-	// }}}
-	// {{{ public function loadWithCredentials()
-
-	/**
-	 * Loads an account from the database with account credentials
-	 *
-	 * @param string $email the email address of the account.
-	 * @param string $password the password of the account.
-	 * @param SiteInstance $instance Optional site instance for this account.
-	 *                               Used when the site implements
-	 *                               {@link SiteMultipleInstanceModule}.
-	 *
-	 * @return boolean true if the loading was successful and false if it was
-	 *                  not.
-	 *
-	 * @sensitive $password
-	 */
-	public function loadWithCredentials($email, $password,
-		SiteInstance $instance = null)
-	{
-		$this->checkDB();
-
-		$sql = sprintf('select password_salt from %s
-			where lower(email) = lower(%s)',
-			$this->table,
-			$this->db->quote($email, 'text'));
-
-		if ($instance !== null)
-			$sql.= sprintf(' and instance = %s',
-				$this->db->quote($instance->id, 'integer'));
-
-		$salt = SwatDB::queryOne($this->db, $sql);
-
-		if ($salt === null) {
-			return false;
-		}
-
-		$password_salt = base64_decode($salt, true);
-
-		// salt may not be base64 encoded
-		if ($password_salt === false) {
-			$password_salt = $salt;
-		}
-
-		$password_hash = $this->calculatePasswordHash($password, $password_salt);
-
-		$sql = sprintf('select id from %s
-			where lower(email) = lower(%s) and password = %s',
-			$this->table,
-			$this->db->quote($email, 'text'),
-			$this->db->quote($password_hash, 'text'));
-
-		if ($instance !== null)
-			$sql.= sprintf(' and instance = %s',
-				$this->db->quote($instance->id, 'integer'));
-
-		$id = SwatDB::queryOne($this->db, $sql);
-
-		if ($id === null)
-			return false;
-
-		return $this->load($id);
-	}
 
 	// }}}
 	// {{{ public function loadWithEmail()
@@ -396,70 +338,56 @@ class SiteAccount extends SwatDBDataObject
 	/**
 	 * Sets this account's password
 	 *
-	 * The password is salted with a 16-byte salt and encrypted with one-way
-	 * encryption. The salt is stored separately and is base-64 encoded.
+	 * The password encrypted using crypt(3).
 	 *
 	 * @param string $password the password for this account.
 	 */
 	public function setPassword($password)
 	{
-		$password_salt = SwatString::getSalt(self::PASSWORD_SALT_LENGTH);
-		$password_hash = $this->calculatePasswordHash($password, $password_salt);
+		$salt = self::PASSWORD_CRYPT_PREFIX.
+			SwatString::getCryptSalt(self::PASSWORD_SALT_LENGTH);
 
-		$this->unencrypted_password = $password;
-
-		$this->setPasswordHash($password_hash, $password_salt);
-	}
-
-	// }}}
-	// {{{ public function setPasswordHash()
-
-	public function setPasswordHash($password_hash, $password_salt)
-	{
-		$this->password = $password_hash;
-		$this->password_salt = base64_encode($password_salt);
-	}
-
-	// }}}
-	// {{{ public function calculatePasswordHash()
-
-	public function calculatePasswordHash($password, $password_salt)
-	{
-		return md5($password.$password_salt);
-	}
-
-	// }}}
-	// {{{ public function getPasswordHash()
-
-	public function getPasswordHash()
-	{
-		return $this->password;
-	}
-
-	// }}}
-	// {{{ public function getPasswordSalt()
-
-	public function getPasswordSalt()
-	{
-		$password_salt = base64_decode($this->password_salt, true);
-
-		// salt may not be base64 encoded
-		if ($password_salt === false) {
-			$password_salt = $this->password_salt;
-		}
-
-		return $password_salt;
+		$this->password = crypt($password, $salt);
+		$this->password_salt = null;
 	}
 
 	// }}}
 	// {{{ public function isCorrectPassword()
 
+	/**
+	 * Checks if the given password is this account's password
+	 *
+	 * @return boolean true if passwords match, false if not.
+	 */
 	public function isCorrectPassword($password)
 	{
-		$password_salt = $this->getPasswordSalt();
-		$password_hash = $this->calculatePasswordHash($password, $password_salt);
+		if ($this->isCryptPassword()) {
+			$hash = crypt($password, $this->password);
+		} else {
+			$salt = base64_decode($this->password_salt, true);
 
-		return ($this->getPasswordHash() === $password_hash);
+			// salt may not be base64 encoded
+			if ($salt === false) {
+				$salt = $this->password_salt;
+			}
+
+			$hash = md5($password.$salt);
+		}
+
+		return ($this->password === $hash);
+	}
+
+	// }}}
+	// {{{ public function isCryptPassword()
+
+	/**
+	 * Checks if this account's password has been hashed by crypt(3)
+	 *
+	 * @return boolean true if the password was hashed with crypt(3)
+	 */
+	public function isCryptPassword()
+	{
+		return (substr($this->password, 0, 3) === self::PASSWORD_CRYPT_PREFIX);
 	}
 
 	// }}}
