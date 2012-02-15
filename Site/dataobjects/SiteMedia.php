@@ -2,13 +2,14 @@
 
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteMediaSet.php';
+require_once 'Site/dataobjects/SiteMediaCdnTask.php';
 require_once 'Site/dataobjects/SiteMediaEncodingBindingWrapper.php';
 
 /**
  * A media object
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Delete local and cdn files on delete like SiteImage and
  *            SiteAttachment.
@@ -64,7 +65,7 @@ class SiteMedia extends SwatDBDataObject
 	 *
 	 * @var boolean
 	 */
-	public $downloadable = false;
+	public $downloadable;
 
 	/**
 	 * Duration (in seconds)
@@ -76,7 +77,7 @@ class SiteMedia extends SwatDBDataObject
 	/**
 	 * The date that this media was created
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $createdate;
 
@@ -214,9 +215,13 @@ class SiteMedia extends SwatDBDataObject
 	// }}}
 	// {{{ public function getHumanFileType()
 
-	public function getHumanFileType($encoding_shortname)
+	public function getHumanFileType($encoding_shortname = null)
 	{
-		$binding = $this->getEncodingBinding($encoding_shortname);
+		if ($encoding_shortname === null) {
+			$binding = $this->getLargestEncodingBinding();
+		} else {
+			$binding = $this->getEncodingBinding($encoding_shortname);
+		}
 
 		if ($binding === null) {
 			throw new SiteException(sprintf(
@@ -230,7 +235,7 @@ class SiteMedia extends SwatDBDataObject
 	// }}}
 	// {{{ public function getFileSize()
 
-	public function getFileSize($encoding_shortname)
+	public function getFileSize($encoding_shortname = null)
 	{
 		if ($encoding_shortname === null) {
 			$binding = $this->getLargestEncodingBinding();
@@ -319,6 +324,8 @@ class SiteMedia extends SwatDBDataObject
 	 */
 	public function setOnCdn($on_cdn, $encoding_shortname)
 	{
+		$this->checkDB();
+
 		$encoding = $this->media_set->getEncodingByShortname(
 			$encoding_shortname);
 

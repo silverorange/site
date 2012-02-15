@@ -117,7 +117,8 @@ class SiteAudioMedia extends SiteMedia
 				'shortname must be defined in the media dataobject.');
 		}
 
-		$media_set = new SiteMediaSet();
+		$class_name = SwatDBClassMap::get('SiteMediaSet');
+		$media_set = new $class_name();
 		$media_set->setDatabase($this->db);
 
 		if ($media_set->loadByShortname($this->media_set_shortname) === false) {
