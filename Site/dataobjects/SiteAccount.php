@@ -42,7 +42,7 @@ require_once 'Site/dataobjects/SiteAccountLoginHistoryWrapper.php';
  *
  * // using loadWithEmail()
  * $account = new SiteAccount();
- * if ($account->loadEmail('test@example.com') &&
+ * if ($account->loadWithEmail('test@example.com') &&
  *     $account->isCorrectPassword('secretpassword')) {
  *
  *     echo 'Hello ' . $account->fullname;

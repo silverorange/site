@@ -78,7 +78,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
 			$this->app->instance->getInstance() : null;
 
-		if ($account->loadEmail($email, $instance) &&
+		if ($account->loadWithEmail($email, $instance) &&
 			$account->isCorrectPassword($password)) {
 
 			// No Crypt?! Crypt!
