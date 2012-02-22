@@ -74,20 +74,13 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 	protected function validate(SwatForm $form)
 	{
 		$account = $this->app->session->account;
-
 		$old_password = $this->ui->getWidget('old_password');
 
-		$salt = $account->password_salt;
-		// salt might be base-64 encoded
-		$decoded_salt = base64_decode($salt, true);
-		if ($decoded_salt !== false)
-			$salt = $decoded_salt;
-
-		$value = md5($old_password->value.$salt);
-
-		if ($value != $account->password) {
-			$message = new SwatMessage(Site::_('Your password is incorrect.'),
-				SwatMessage::ERROR);
+		if ($account->isCorrectPassword($old_password->value)) {
+			$message = new SwatMessage(
+				Site::_('Your password is incorrect.'),
+				'error'
+			);
 
 			$message->content_type = 'text/xml';
 			$old_password->addMessage($message);
