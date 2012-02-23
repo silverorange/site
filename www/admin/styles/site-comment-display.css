@@ -11,13 +11,13 @@
 }
 
 .site-comment-red .site-comment-display-content {
-	border: 1px solid #dc6e66;
+	border: 1px solid #d69692;
 	background: #ffe3e0;
 }
 
 .site-comment-yellow .site-comment-display-content {
-	border: 1px solid #facd00;
-	background: #ff9;
+	border: 1px solid #f0dca1;
+	background: #fffbc9;
 }
 
 .site-comment-green .site-comment-display-content {
