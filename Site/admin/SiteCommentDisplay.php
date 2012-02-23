@@ -12,7 +12,7 @@ require_once 'XML/RPCAjax.php';
  * delete and mark as spam
  *
  * @package   Site
- * @copyright 2008-2009 silverorange
+ * @copyright 2008-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentDisplay extends SwatControl
@@ -265,12 +265,23 @@ abstract class SiteCommentDisplay extends SwatControl
 
 		$spam = ($this->comment->spam) ? 'true' : 'false';
 		$status = $this->comment->status;
+		$edit_uri = SwatString::quoteJavaScriptString($this->getEditUri());
 
 		$javascript.= sprintf(
-			"var %s_obj = new SiteCommentDisplay('%s', %s, %s);",
-			$this->id, $this->id, $status, $spam);
+			"var %s_obj = new SiteCommentDisplay('%s', %s, %s, %s);",
+			$this->id, $this->id, $status, $spam, $edit_uri);
 
 		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getEditUri()
+
+	protected function getEditUri()
+	{
+		return sprintf('%s/Edit?id=%s',
+			$this->getCommentComponent(),
+			$this->comment->id);
 	}
 
 	// }}}
@@ -295,6 +306,7 @@ abstract class SiteCommentDisplay extends SwatControl
 	 */
 	protected function getInlineJavaScriptTranslations()
 	{
+		$edit_text    = SwatString::quoteJavaScriptString(Site::_('Edit'));
 		$approve_text = SwatString::quoteJavaScriptString(Site::_('Approve'));
 		$deny_text    = SwatString::quoteJavaScriptString(Site::_('Deny'));
 		$publish_text = SwatString::quoteJavaScriptString(Site::_('Publish'));
@@ -321,6 +333,7 @@ abstract class SiteCommentDisplay extends SwatControl
 			Site::_('Delete comment?'));
 
 		return
+			"SiteCommentDisplay.edit_text   = {$edit_text};\n".
 			"SiteCommentDisplay.approve_text   = {$approve_text};\n".
 			"SiteCommentDisplay.deny_text      = {$deny_text};\n".
 			"SiteCommentDisplay.publish_text   = {$publish_text};\n".

@@ -1,8 +1,9 @@
-function SiteCommentDisplay(id, comment_status, spam)
+function SiteCommentDisplay(id, comment_status, spam, edit_uri)
 {
 	this.id = id;
 	this.comment_status = comment_status;
 	this.comment_spam = spam;
+	this.edit_uri = edit_uri;
 
 	var id_split = id.split('_', 2);
 	this.comment_id = (id_split[1]) ? id_split[1] : id_split[0];
@@ -18,6 +19,7 @@ function SiteCommentDisplay(id, comment_status, spam)
 	this.status_container = document.getElementById(this.id + '_status');
 }
 
+SiteCommentDisplay.edit_text      = 'Edit';
 SiteCommentDisplay.approve_text   = 'Approve';
 SiteCommentDisplay.deny_text      = 'Deny';
 SiteCommentDisplay.publish_text   = 'Publish';
@@ -44,6 +46,12 @@ SiteCommentDisplay.comment_component = 'Comment';
 SiteCommentDisplay.prototype.initControls = function()
 {
 	var controls_div = document.getElementById(this.id + '_controls');
+
+	this.edit_button = document.createElement('input');
+	this.edit_button.type = 'button';
+	this.edit_button.value = SiteCommentDisplay.edit_text;
+	YAHOO.util.Event.on(this.edit_button, 'click',
+		function (e) { window.location = this.edit_uri; }, this, true);
 
 	this.approve_button = document.createElement('input');
 	this.approve_button.type = 'button';
@@ -98,6 +106,8 @@ SiteCommentDisplay.prototype.initControls = function()
 		}
 	}
 
+	controls_div.appendChild(this.edit_button);
+	controls_div.appendChild(document.createTextNode(' '));
 	controls_div.appendChild(this.approve_button);
 	controls_div.appendChild(document.createTextNode(' '));
 	controls_div.appendChild(this.deny_button);
