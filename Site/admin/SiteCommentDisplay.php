@@ -20,12 +20,12 @@ abstract class SiteCommentDisplay extends SwatControl
 	// {{{ public properties
 
 	/**
-	 * Admin component that contains the AJAX server for xml-rpc-ajax client
-	 * operations
-	 *
-	 * This component <em>must</em> contain a sub-component named 'AjaxServer'.
-	 *
-	 * By default, the admin component of the current page is used
+	 * @var boolean
+	 */
+	public $show_controls = true;
+
+	/**
+	 * @var string
 	 */
 	public $comment_component = null;
 
@@ -51,7 +51,7 @@ abstract class SiteCommentDisplay extends SwatControl
 	 *
 	 * @see SiteCommentDisplay::getView()
 	 */
-	protected static $view;
+	protected $view;
 
 	// }}}
 	// {{{ public function __construct()
@@ -109,7 +109,17 @@ abstract class SiteCommentDisplay extends SwatControl
 
 		$this->displayRow();
 
-		Swat::displayInlineJavaScript($this->getInlineJavaScript());
+		if ($this->show_controls) {
+			Swat::displayInlineJavaScript($this->getInlineJavaScript());
+		}
+	}
+
+	// }}}
+	// {{{ public function setView()
+
+	public function setView(SiteCommentView $view)
+	{
+		$this->view = $view;
 	}
 
 	// }}}
@@ -146,11 +156,13 @@ abstract class SiteCommentDisplay extends SwatControl
 
 	protected function displayControls()
 	{
-		$controls_div = new SwatHtmlTag('div');
-		$controls_div->id = $this->id.'_controls';
-		$controls_div->class = 'site-comment-display-controls';
-		$controls_div->open();
-		$controls_div->close();
+		if ($this->show_controls) {
+			$controls_div = new SwatHtmlTag('div');
+			$controls_div->id = $this->id.'_controls';
+			$controls_div->class = 'site-comment-display-controls';
+			$controls_div->open();
+			$controls_div->close();
+		}
 	}
 
 	// }}}
@@ -185,14 +197,15 @@ abstract class SiteCommentDisplay extends SwatControl
 
 	protected function getView()
 	{
-		if (self::$view === null && $this->app !== null) {
-			self::$view = SiteViewFactory::get($this->app, 'comment');
-			self::$view->setPartMode('bodytext', SiteView::MODE_SUMMARY);
-			self::$view->setPartMode('permalink', SiteView::MODE_ALL, false);
-			self::$view->setPartMode('author', SiteView::MODE_ALL, false);
-			self::$view->setPartMode('link', SiteView::MODE_ALL, false);
+		if ($this->view === null && $this->app !== null) {
+			$this->view = SiteViewFactory::get($this->app, 'comment');
+			$this->view->setPartMode('bodytext', SiteView::MODE_SUMMARY);
+			$this->view->setPartMode('permalink', SiteView::MODE_ALL, false);
+			$this->view->setPartMode('author', SiteView::MODE_ALL, false);
+			$this->view->setPartMode('link', SiteView::MODE_ALL, false);
 		}
-		return self::$view;
+
+		return $this->view;
 	}
 
 	// }}}
@@ -255,8 +268,9 @@ abstract class SiteCommentDisplay extends SwatControl
 			$javascript = $this->getInlineJavaScriptTranslations();
 
 			$javascript.= sprintf(
-				'SiteCommentDisplay.comment_component = \'%s\';',
-				$this->getCommentComponent());
+				"SiteCommentDisplay.comment_component = %s;\n",
+				SwatString::quoteJavaScriptString(
+					$this->getCommentComponent()));
 
 			$shown = true;
 		} else {
@@ -268,10 +282,25 @@ abstract class SiteCommentDisplay extends SwatControl
 		$edit_uri = SwatString::quoteJavaScriptString($this->getEditUri());
 
 		$javascript.= sprintf(
-			"var %s_obj = new SiteCommentDisplay('%s', %s, %s, %s);",
-			$this->id, $this->id, $status, $spam, $edit_uri);
+			"var %s_obj = new %s(%s, %s, %s, %s, %s);",
+			$this->id,
+			$this->getJavaScriptClassName(),
+			SwatString::quoteJavaScriptString($this->id),
+			SwatString::quoteJavaScriptString($this->comment->id),
+			$status,
+			$spam,
+			$edit_uri
+		);
 
 		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getJavaScriptClassName()
+
+	protected function getJavaScriptClassName()
+	{
+		return 'SiteCommentDisplay';
 	}
 
 	// }}}
