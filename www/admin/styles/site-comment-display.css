@@ -5,11 +5,13 @@
 }
 
 .site-comment-display .site-comment-display-content {
-	border-radius: 2px;
 	border: 1px solid #000;
 	padding: 0.5em;
 	margin: 0.5em 0;
 	position: relative;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
 }
 
 .site-comment-red .site-comment-display-content {
