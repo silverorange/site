@@ -1,22 +1,21 @@
-function SiteCommentDisplay(id, comment_status, spam, edit_uri)
+function SiteCommentDisplay(id, comment_id, comment_status, spam, edit_uri)
 {
 	this.id = id;
+	this.comment_id = comment_id;
 	this.comment_status = comment_status;
 	this.comment_spam = spam;
 	this.edit_uri = edit_uri;
-
-	var id_split = id.split('_', 2);
-	this.comment_id = (id_split[1]) ? id_split[1] : id_split[0];
 
 	if (!SiteCommentDisplay.xml_rpc_client) {
 		SiteCommentDisplay.xml_rpc_client = new XML_RPC_Client(
 			SiteCommentDisplay.comment_component + '/AjaxServer');
 	}
 
-	this.initControls();
-	this.initConfirmation();
 	this.container = document.getElementById(this.id);
 	this.status_container = document.getElementById(this.id + '_status');
+
+	this.initControls();
+	this.initConfirmation();
 }
 
 SiteCommentDisplay.edit_text      = 'Edit';
