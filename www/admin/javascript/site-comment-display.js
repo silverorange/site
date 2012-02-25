@@ -444,6 +444,7 @@ SiteCommentDisplay.prototype.cancelDelete = function()
 }
 
 // }}}
+// {{{ hideControls()
 
 SiteCommentDisplay.prototype.hideControls = function()
 {
@@ -451,9 +452,14 @@ SiteCommentDisplay.prototype.hideControls = function()
 		this.controls_animation.stop(false);
 	}
 
-	this.controls_animation = new YAHOO.util.Anim(this.controls, { opacity: { to: 0 } }, 0.5);
+	this.controls_animation = new YAHOO.util.Anim(
+		this.controls, { opacity: { to: 0.2 } }, 0.5);
+
 	this.controls_animation.animate();
 };
+
+// }}}
+// {{{ showControls()
 
 SiteCommentDisplay.prototype.showControls = function()
 {
@@ -463,6 +469,7 @@ SiteCommentDisplay.prototype.showControls = function()
 	YAHOO.util.Dom.setStyle(this.controls, 'opacity', 1);
 };
 
+// }}}
 // {{{ static setTextContent()
 
 SiteCommentDisplay.setTextContent = function(element, text)
