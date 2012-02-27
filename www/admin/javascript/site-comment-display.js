@@ -1,3 +1,5 @@
+// {{{ function SiteCommentDisplay()
+
 function SiteCommentDisplay(id, comment_id, comment_status, spam, edit_uri)
 {
 	this.id = id;
@@ -18,37 +20,14 @@ function SiteCommentDisplay(id, comment_id, comment_status, spam, edit_uri)
 
 	this.initControls();
 	this.initConfirmation();
-	this.hideControls();
+	this.hideActions();
 
 	this.controls_animation = null;
-
-	YAHOO.util.Event.on(this.comment, 'mouseover', function(e) {
-		this.showControls();
-	}, this, true);
-
-	YAHOO.util.Event.on(this.controls, 'mouseover', function(e) {
-		this.showControls();
-	}, this, true);
-
-	YAHOO.util.Event.on(this.container, 'mouseout', function(e) {
-		var hide = true;
-		var target = YAHOO.util.Event.getRelatedTarget(e);
-		if (target == this.comment || target == this.controls) {
-			hide = false;
-		} else {
-			while (target.parentNode) {
-				target = target.parentNode;
-				if (target == this.comment || target == this.controls) {
-					hide = false;
-					break;
-				}
-			}
-		}
-		if (hide) {
-			this.hideControls();
-		}
-	}, this, true);
+	this.actions_animation = null;
+	this.actions_shown = false;
 }
+
+// }}}
 
 SiteCommentDisplay.edit_text      = 'Edit';
 SiteCommentDisplay.approve_text   = 'Approve';
@@ -59,6 +38,7 @@ SiteCommentDisplay.spam_text      = 'Spam';
 SiteCommentDisplay.not_spam_text  = 'Not Spam';
 SiteCommentDisplay.delete_text    = 'Delete';
 SiteCommentDisplay.cancel_text    = 'Cancel';
+SiteCommentDisplay.actions_text   = 'Actions';
 
 SiteCommentDisplay.status_spam_text        = 'Spam';
 SiteCommentDisplay.status_pending_text     = 'Pending';
@@ -77,6 +57,22 @@ SiteCommentDisplay.comment_component = 'Comment';
 SiteCommentDisplay.prototype.initControls = function()
 {
 	this.controls = document.getElementById(this.id + '_controls');
+
+	this.actions_container = document.createElement('div');
+	this.actions_container.className = 'site-comment-display-actions';
+
+	this.actions_content = document.createElement('div');
+	this.actions_content.className = 'site-comment-display-actions-content';
+
+	this.actions_arrow = document.createElement('div');
+	this.actions_arrow.className = 'site-comment-display-actions-arrow';
+
+	this.actions_button = document.createElement('input');
+	this.actions_button.type = 'button';
+	this.actions_button.value = SiteCommentDisplay.actions_text;
+	this.actions_button.className = 'site-comment-display-actions-button';
+	YAHOO.util.Event.on(this.actions_button, 'click',
+		this.toggleActions, this, true);
 
 	this.edit_button = document.createElement('input');
 	this.edit_button.type = 'button';
@@ -137,17 +133,23 @@ SiteCommentDisplay.prototype.initControls = function()
 		}
 	}
 
-	this.controls.appendChild(this.edit_button);
-	this.controls.appendChild(document.createTextNode(' '));
-	this.controls.appendChild(this.approve_button);
-	this.controls.appendChild(document.createTextNode(' '));
-	this.controls.appendChild(this.deny_button);
-	this.controls.appendChild(document.createTextNode(' '));
-	this.controls.appendChild(this.publish_toggle_button);
-	this.controls.appendChild(document.createTextNode(' '));
-	this.controls.appendChild(this.spam_toggle_button);
-	this.controls.appendChild(document.createTextNode(' '));
-	this.controls.appendChild(this.delete_button);
+	this.actions_content.appendChild(this.delete_button);
+	this.actions_content.appendChild(document.createTextNode(' '));
+	this.actions_content.appendChild(this.spam_toggle_button);
+	this.actions_content.appendChild(document.createTextNode(' '));
+	this.actions_content.appendChild(this.deny_button);
+	this.actions_content.appendChild(document.createTextNode(' '));
+	this.actions_content.appendChild(this.approve_button);
+	this.actions_content.appendChild(document.createTextNode(' '));
+	this.actions_content.appendChild(this.publish_toggle_button);
+	this.actions_content.appendChild(document.createTextNode(' '));
+	this.actions_content.appendChild(this.edit_button);
+
+	this.actions_container.appendChild(this.actions_content);
+	this.actions_container.appendChild(this.actions_arrow);
+
+	this.controls.appendChild(this.actions_button);
+	this.controls.appendChild(this.actions_container);
 }
 
 // }}}
@@ -167,7 +169,7 @@ SiteCommentDisplay.prototype.initConfirmation = function()
 
 	this.confirmation_cancel = document.createElement('input');
 	this.confirmation_cancel.type ='button';
-	this.confirmation_cancel.value = 'Cancel'; //TODO
+	this.confirmation_cancel.value = SiteCommentDisplay.cancel_text;
 	this.confirmation.appendChild(this.confirmation_cancel);
 	YAHOO.util.Event.on(this.confirmation_cancel, 'click', this.cancelDelete,
 		this, true);
@@ -428,7 +430,7 @@ SiteCommentDisplay.prototype.confirmDelete = function()
 
 	var region = YAHOO.util.Dom.getRegion(this.confirmation);
 	YAHOO.util.Dom.setXY(this.confirmation,
-		[parent_region.right - (region.right - region.left),
+		[parent_region.left,
 		parent_region.top]);
 
 	this.confirmation_cancel.focus();
@@ -444,32 +446,76 @@ SiteCommentDisplay.prototype.cancelDelete = function()
 }
 
 // }}}
-// {{{ hideControls()
+// {{{ toggleActions()
 
-SiteCommentDisplay.prototype.hideControls = function()
+SiteCommentDisplay.prototype.toggleActions = function()
 {
-	if (this.controls_animation && this.controls_animation.isAnimated()) {
-		this.controls_animation.stop(false);
+	if (this.actions_shown) {
+		this.hideActions();
+	} else {
+		this.showActions();
 	}
-
-	this.controls_animation = new YAHOO.util.Anim(
-		this.controls, { opacity: { to: 0.2 } }, 0.5);
-
-	this.controls_animation.animate();
 };
 
 // }}}
-// {{{ showControls()
+// {{{ hideActions()
 
-SiteCommentDisplay.prototype.showControls = function()
+SiteCommentDisplay.prototype.hideActions = function()
 {
-	if (this.controls_animation && this.controls_animation.isAnimated()) {
-		this.controls_animation.stop(false);
+	if (this.actions_animation && this.actions_animation.isAnimated()) {
+		this.actions_animation.stop(false);
 	}
-	YAHOO.util.Dom.setStyle(this.controls, 'opacity', 1);
+
+	this.actions_animation = new YAHOO.util.Anim(
+		this.actions_container, { opacity: { to: 0 } }, 0.4,
+		YAHOO.util.Easing.easeOut);
+
+	this.actions_animation.onComplete.subscribe(function() {
+		this.actions_container.style.display = 'block';
+	}, this, true);
+
+	this.actions_animation.animate();
+	this.actions_shown = false;
+
+	YAHOO.util.Event.removeListener(
+		document, 'click', this.handleDocumentClick);
 };
 
 // }}}
+// {{{ showActions()
+
+SiteCommentDisplay.prototype.showActions = function()
+{
+	if (this.actions_animation && this.actions_animation.isAnimated()) {
+		this.actions_animation.stop(false);
+	}
+	YAHOO.util.Dom.setStyle(this.actions_container, 'opacity', 1);
+	this.actions_container.style.display = 'block';
+	this.actions_shown = true;
+	YAHOO.util.Event.addListener(
+		document, 'click', this.handleDocumentClick, this, true);
+};
+
+// }}}
+
+SiteCommentDisplay.prototype.handleDocumentClick = function(e)
+{
+	var in_menu = false;
+	var target = YAHOO.util.Event.getTarget(e);
+
+	while (target.parentNode) {
+		if (target == this.actions_container || target == this.actions_button) {
+			in_menu = true;
+			break;
+		}
+		target = target.parentNode;
+	}
+
+	if (!in_menu) {
+		this.hideActions();
+	}
+};
+
 // {{{ static setTextContent()
 
 SiteCommentDisplay.setTextContent = function(element, text)
