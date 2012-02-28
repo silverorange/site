@@ -6,7 +6,7 @@ require_once 'Site/dataobjects/SiteMedia.php';
  * An audio specific media object
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  */
 class SiteAudioMedia extends SiteMedia
 {
