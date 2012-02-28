@@ -12,7 +12,8 @@ require_once 'Site/dataobjects/SiteMediaEncodingBindingWrapper.php';
  * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Delete local and cdn files on delete like SiteImage and
- *            SiteAttachment.
+ *            SiteAttachment. Support MediaSet.obfuscate_filename on
+ *            process/save.
  */
 class SiteMedia extends SwatDBDataObject
 {
@@ -535,7 +536,13 @@ class SiteMedia extends SwatDBDataObject
 	{
 		$binding = $this->getEncodingBinding($encoding_shortname);
 
-		return sprintf('%s.%s', $this->id, $binding->media_type->extension);
+		if ($this->getMediaSet()->obfuscate_filename) {
+			$filename = $this->filename;
+		} else {
+			$filename = $this->id;
+		}
+
+		return sprintf('%s.%s', $filename, $binding->media_type->extension);
 	}
 
 	// }}}
