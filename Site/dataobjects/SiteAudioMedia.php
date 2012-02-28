@@ -134,22 +134,6 @@ class SiteAudioMedia extends SiteMedia
 	// }}}
 
 	// File and URI methods
-	// {{{ public function getFilename()
-
-	public function getFilename($encoding_shortname)
-	{
-		$binding = $this->getEncodingBinding($encoding_shortname);
-
-		if ($this->getMediaSet()->obfuscate_filename) {
-			$filename = $this->filename;
-		} else {
-			$filename = $this->id;
-		}
-
-		return sprintf('%s.%s', $filename, $binding->media_type->extension);
-	}
-
-	// }}}
 	// {{{ public function getContentDispositionFilename()
 
 	public function getContentDispositionFilename($encoding_shortname)
