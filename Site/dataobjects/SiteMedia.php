@@ -458,6 +458,34 @@ class SiteMedia extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getMediaSet()
+
+	protected function getMediaSet()
+	{
+		if ($this->media_set instanceof SiteMediaSet) {
+			return $this->media_set;
+		}
+
+		if ($this->media_set_shortname == '') {
+			throw new SiteException('To process media, a media set '.
+				'shortname must be defined in the media dataobject.');
+		}
+
+		$class_name = SwatDBClassMap::get('SiteMediaSet');
+		$media_set = new $class_name();
+		$media_set->setDatabase($this->db);
+
+		if ($media_set->loadByShortname($this->media_set_shortname) === false) {
+			throw new SiteException(sprintf('Media set “%s” does not exist.',
+				$this->media_set_shortname));
+		}
+
+		$this->media_set = $media_set;
+
+		return $this->media_set;
+	}
+
+	// }}}
 
 	// File and URI methods
 	// {{{ public function getUri()
