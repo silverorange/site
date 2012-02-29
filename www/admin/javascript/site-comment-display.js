@@ -471,7 +471,7 @@ SiteCommentDisplay.prototype.hideActions = function()
 		YAHOO.util.Easing.easeOut);
 
 	this.actions_animation.onComplete.subscribe(function() {
-		this.actions_container.style.display = 'block';
+		this.actions_container.style.display = 'none';
 	}, this, true);
 
 	this.actions_animation.animate();
@@ -497,6 +497,7 @@ SiteCommentDisplay.prototype.showActions = function()
 };
 
 // }}}
+// {{{ handleDocumentClick()
 
 SiteCommentDisplay.prototype.handleDocumentClick = function(e)
 {
@@ -516,6 +517,7 @@ SiteCommentDisplay.prototype.handleDocumentClick = function(e)
 	}
 };
 
+// }}}
 // {{{ static setTextContent()
 
 SiteCommentDisplay.setTextContent = function(element, text)
