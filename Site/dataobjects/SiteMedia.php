@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteMediaSet.php';
 require_once 'Site/dataobjects/SiteMediaCdnTask.php';
 require_once 'Site/dataobjects/SiteMediaEncodingBindingWrapper.php';
+require_once 'Site/dataobjects/SiteMediaCdnTask.php';
 
 /**
  * A media object
@@ -11,9 +12,7 @@ require_once 'Site/dataobjects/SiteMediaEncodingBindingWrapper.php';
  * @package   Site
  * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
- * @todo      Delete local and cdn files on delete like SiteImage and
- *            SiteAttachment. Support MediaSet.obfuscate_filename on
- *            process/save.
+ * @todo      Support MediaSet.obfuscate_filename on process/save.
  */
 class SiteMedia extends SwatDBDataObject
 {
@@ -434,24 +433,108 @@ class SiteMedia extends SwatDBDataObject
 	// }}}
 
 	// Processing methods
+	// {{{ protected function deleteInternal()
+
+	/**
+	 * Deletes this object from the database and any media files
+	 * corresponding to this object that are local or on the CDN.
+	 */
+	protected function deleteInternal()
+	{
+		$this->deleteCdnFiles();
+
+		$local_files = $this->getLocalFilenamesToDelete();
+
+		parent::deleteInternal();
+
+		$this->deleteLocalFiles($local_files);
+	}
+
+	// }}}
+	// {{{ protected function deleteCdnFiles()
+
+	protected function deleteCdnFiles()
+	{
+		foreach ($this->media_set->encodings as $encoding) {
+			$binding = $this->getEncodingBinding($encoding->shortname);
+
+			if ($binding instanceof SiteMediaEncodingBinding &&
+				$binding->on_cdn == false) {
+				$this->queueCdnTask('delete', $encoding);
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function getLocalFilenamesToDelete()
+
+	/**
+	 * Gets an array of files names to delete when deleting this object
+	 *
+	 * @return array an array of filenames.
+	 */
+	protected function getLocalFilenamesToDelete()
+	{
+		$filenames = array();
+
+		foreach ($this->media_set->encodings as $encoding) {
+			$binding = $this->getEncodingBinding($encoding->shortname);
+
+			if ($binding instanceof SiteMediaEncodingBinding) {
+				$filenames[] = $this->getUriSuffix($encoding->shortname);
+			}
+		}
+
+		return $filenames;
+	}
+
+	// }}}
+	// {{{ protected function deleteLocalFiles()
+
+	/**
+	 * Deletes each file in a given set of filenames
+	 *
+	 * @param array $filenames an array of filenames to delete.
+	 */
+	protected function deleteLocalFiles(array $filenames)
+	{
+		foreach ($filenames as $filename) {
+			if (file_exists($filename)) {
+				unlink($filename);
+			}
+		}
+	}
+
+	// }}}
 	// {{{ protected function queueCdnTask()
 
 	/**
 	 * Queues a CDN task to be preformed later
 	 *
 	 * @param string $operation the operation to preform
+	 * @param SiteMediaEncoding $encoding the media encoding we're queuing the
+	 *                                     action for.
 	 */
-	protected function queueCdnTask($operation, SiteMediaEncoding $encoding)
+	protected function queueCdnTask($operation,
+		SiteMediaEncoding $encoding)
 	{
-		$task = new SiteMediaCdnTask();
+		$this->checkDB();
+
+		$class_name = SwatDBClassMap::get('SiteMediaCdnTask');
+		$task = new $class_name();
 		$task->setDatabase($this->db);
 		$task->operation = $operation;
 
 		if ($operation == 'copy') {
-			$task->media    = $this->id;
-			$task->encoding = $encoding->id;
+			$task->attachment   = $this;
+			$task->encoding     = $encoding;
+			$task->http_headers = serialize(array(
+				'content-disposition' => sprintf('attachment; filename="%s"',
+					$media->getContentDispositionFilename(
+						$encoding->shortname)),
+				));
 		} else {
-			$task->file_path = $this->getUriSuffix();
+			$task->file_path = $this->getUriSuffix($encoding->shortname);
 		}
 
 		$task->save();
@@ -580,9 +663,7 @@ class SiteMedia extends SwatDBDataObject
 	{
 		$binding = $this->getEncodingBinding($encoding_shortname);
 
-		$filename = sprintf('%s.%s',
-			$encoding_shortname,
-			$binding->media_type->extension);
+		$filename = $this->getFilename($encoding_shortname);
 
 		// Convert to an ASCII string. Approximate non ACSII characters.
 		$filename = iconv('UTF-8', 'ASCII//TRANSLIT', $filename);
