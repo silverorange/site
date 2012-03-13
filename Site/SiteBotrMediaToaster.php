@@ -13,14 +13,29 @@ require_once 'Site/dataobjects/SiteBotrMediaPlayer.php';
  * Amiga computers were amazing.
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMediaToaster
 {
 	// {{{ class constants
 
+	/**
+	 * On operations that can be paged, number of records to return with each
+	 * call.
+	 *
+	 * Must be kept low enough to not timeout. Default if 50, and maximum is
+	 * 1000.
+	 *
+	 * @var integer
+	 */
 	const CHUNK_SIZE = 50;
+
+	/**
+	 * Error code returned when attempting to do operations on media that
+	 * doesn't exist.
+	 */
+	const NOT_FOUND_ERROR_CODE = 'NotFound';
 
 	// }}}
 	// {{{ protected properties
