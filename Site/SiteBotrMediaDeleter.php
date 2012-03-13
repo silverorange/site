@@ -10,24 +10,12 @@ require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
  * and passthrough encodings deleted.
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 
 class SiteBotrMediaDeleter extends SiteBotrMediaToasterCommandLineApplication
 {
-
-	// {{{ class constants
-
-	/**
-	 * Number of days a video should remain on BOTR after it has been marked
-	 * for deletion.
-	 *
-	 * @var integer
-	 */
-	const DELETE_THRESHOLD = '7';
-
-	// }}}
 	// {{{ protected properties
 
 	/**
@@ -85,7 +73,8 @@ class SiteBotrMediaDeleter extends SiteBotrMediaToasterCommandLineApplication
 						'@'.$media_file['custom']['delete_timestamp']);
 
 					$delete_date->toUTC();
-					$delete_date->addDays(self::DELETE_THRESHOLD);
+					$delete_date->addDays(
+						$this->config->media->days_to_delete_threshold);
 
 					if ($delete_date->after($threshold)) {
 						$delete = false;
