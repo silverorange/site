@@ -284,6 +284,9 @@ class Site
 			// mobile
 			'mobile.auto_relocate'        => false,
 
+			// media
+			'media.days_to_delete_threshold' => 7, // in days
+
 			// Botr Media
 			'botr.key'                    => null,
 			'botr.secret'                 => null,
