@@ -446,7 +446,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 		if ((strpos($media_file['tags'], $this->delete_tag) !== false) ||
 			(strpos($media_file['tags'], $this->ignored_tag) !== false)) {
-			$invalid = true;
+			$ignorable = true;
 		}
 
 		return $ignorable;
