@@ -52,6 +52,70 @@ SiteCommentDisplay.STATUS_UNPUBLISHED = 2;
 
 SiteCommentDisplay.comment_component = 'Comment';
 
+// {{{ getEditButtonText()
+
+SiteCommentDisplay.prototype.getEditButtonText = function()
+{
+	return SiteCommentDisplay.edit_text;
+};
+
+// }}}
+// {{{ getApproveButtonText()
+
+SiteCommentDisplay.prototype.getApproveButtonText = function()
+{
+	return SiteCommentDisplay.approve_text;
+};
+
+// }}}
+// {{{ getDenyButtonText()
+
+SiteCommentDisplay.prototype.getDenyButtonText = function()
+{
+	return SiteCommentDisplay.deny_text;
+};
+
+// }}}
+// {{{ getPublishButtonText()
+
+SiteCommentDisplay.prototype.getPublishButtonText = function()
+{
+	return SiteCommentDisplay.publish_text;
+};
+
+// }}}
+// {{{ getUnpublishButtonText()
+
+SiteCommentDisplay.prototype.getUnpublishButtonText = function()
+{
+	return SiteCommentDisplay.unpublish_text;
+};
+
+// }}}
+// {{{ getSpamButtonText()
+
+SiteCommentDisplay.prototype.getSpamButtonText = function()
+{
+	return SiteCommentDisplay.spam_text;
+};
+
+// }}}
+// {{{ getNotSpamButtonText()
+
+SiteCommentDisplay.prototype.getNotSpamButtonText = function()
+{
+	return SiteCommentDisplay.not_spam_text;
+};
+
+// }}}
+// {{{ getDeleteButtonText()
+
+SiteCommentDisplay.prototype.getDeleteButtonText = function()
+{
+	return SiteCommentDisplay.delete_text;
+};
+
+// }}}
 // {{{ initControls()
 
 SiteCommentDisplay.prototype.initControls = function()
@@ -76,46 +140,46 @@ SiteCommentDisplay.prototype.initControls = function()
 
 	this.edit_button = document.createElement('input');
 	this.edit_button.type = 'button';
-	this.edit_button.value = SiteCommentDisplay.edit_text;
+	this.edit_button.value = this.getEditButtonText();
 	YAHOO.util.Event.on(this.edit_button, 'click',
 		function (e) { window.location = this.edit_uri; }, this, true);
 
 	this.approve_button = document.createElement('input');
 	this.approve_button.type = 'button';
-	this.approve_button.value = SiteCommentDisplay.approve_text;
+	this.approve_button.value = this.getApproveButtonText();
 	YAHOO.util.Event.on(this.approve_button, 'click',
 		this.publish, this, true);
 
 	this.deny_button = document.createElement('input');
 	this.deny_button.type = 'button';
-	this.deny_button.value = SiteCommentDisplay.deny_text;
+	this.deny_button.value = this.getDenyButtonText();
 	YAHOO.util.Event.on(this.deny_button, 'click',
 		this.unpublish, this, true);
 
 	this.publish_toggle_button = document.createElement('input');
 	this.publish_toggle_button.type = 'button';
-	this.publish_toggle_button.value = SiteCommentDisplay.publish_text;
+	this.publish_toggle_button.value = this.getPublishButtonText();
 	YAHOO.util.Event.on(this.publish_toggle_button, 'click',
 		this.togglePublished, this, true);
 
 	this.spam_toggle_button = document.createElement('input');
 	this.spam_toggle_button.type = 'button';
-	this.spam_toggle_button.value = SiteCommentDisplay.spam_text;
+	this.spam_toggle_button.value = this.getSpamButtonText();
 	YAHOO.util.Event.on(this.spam_toggle_button, 'click',
 		this.toggleSpam, this, true);
 
 	this.delete_button = document.createElement('input');
 	this.delete_button.type = 'button';
-	this.delete_button.value = SiteCommentDisplay.delete_text;
+	this.delete_button.value = this.getDeleteButtonText();
 	YAHOO.util.Event.on(this.delete_button, 'click',
 		this.confirmDelete, this, true);
 
 	if (this.comment_status == SiteCommentDisplay.STATUS_PUBLISHED) {
-		this.publish_toggle_button.value = SiteCommentDisplay.unpublish_text;
+		this.publish_toggle_button.value = this.getUnpublishButtonText();
 	}
 
 	if (this.comment_spam) {
-		this.spam_toggle_button.value = SiteCommentDisplay.not_spam_text;
+		this.spam_toggle_button.value = this.getNotSpamButtonText();
 		this.approve_button.style.display = 'none';
 		this.deny_button.style.display = 'none';
 		this.publish_toggle_button.style.display = 'none';
@@ -178,7 +242,7 @@ SiteCommentDisplay.prototype.initConfirmation = function()
 
 	this.confirmation_ok = document.createElement('input');
 	this.confirmation_ok.type ='button';
-	this.confirmation_ok.value = SiteCommentDisplay.delete_text;
+	this.confirmation_ok.value = this.getDeleteButtonText();
 	this.confirmation.appendChild(this.confirmation_ok);
 	YAHOO.util.Event.on(this.confirmation_ok, 'click', this.deleteComment,
 		this, true);
@@ -201,7 +265,7 @@ SiteCommentDisplay.prototype.publish = function()
 		that.approve_button.style.display = 'none';
 		that.deny_button.style.display = 'none';
 		that.publish_toggle_button.style.display = 'inline';
-		that.publish_toggle_button.value = SiteCommentDisplay.unpublish_text;
+		that.publish_toggle_button.value = that.getUnpublishButtonText();
 
 		YAHOO.util.Dom.removeClass(that.container, 'site-comment-red');
 		YAHOO.util.Dom.removeClass(that.container, 'site-comment-yellow');
@@ -230,7 +294,7 @@ SiteCommentDisplay.prototype.unpublish = function()
 		that.approve_button.style.display = 'none';
 		that.deny_button.style.display = 'none';
 		that.publish_toggle_button.style.display = 'inline';
-		that.publish_toggle_button.value = SiteCommentDisplay.publish_text;
+		that.publish_toggle_button.value = that.getPublishButtonText();
 
 		YAHOO.util.Dom.removeClass(that.container, 'site-comment-green');
 		YAHOO.util.Dom.removeClass(that.container, 'site-comment-yellow');
@@ -271,7 +335,7 @@ SiteCommentDisplay.prototype.spam = function()
 		that.approve_button.style.display = 'none';
 		that.deny_button.style.display = 'none';
 		that.publish_toggle_button.style.display = 'none';
-		that.spam_toggle_button.value = SiteCommentDisplay.not_spam_text;
+		that.spam_toggle_button.value = that.getNotSpamButtonText();
 
 		YAHOO.util.Dom.removeClass(that.container, 'site-comment-green');
 		YAHOO.util.Dom.removeClass(that.container, 'site-comment-yellow');
@@ -297,7 +361,7 @@ SiteCommentDisplay.prototype.notSpam = function()
 	{
 		that.comment_spam = false;
 
-		that.spam_toggle_button.value = SiteCommentDisplay.spam_text;
+		that.spam_toggle_button.value = that.getSpamButtonText();
 
 		YAHOO.util.Dom.removeClass(that.container, 'site-comment-red');
 
