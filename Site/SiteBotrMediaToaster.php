@@ -31,12 +31,6 @@ class SiteBotrMediaToaster
 	 */
 	const CHUNK_SIZE = 50;
 
-	/**
-	 * Error code returned when attempting to do operations on media that
-	 * doesn't exist.
-	 */
-	const NOT_FOUND_ERROR_CODE = 'NotFound';
-
 	// }}}
 	// {{{ protected properties
 
