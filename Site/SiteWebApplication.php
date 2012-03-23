@@ -749,6 +749,14 @@ class SiteWebApplication extends SiteApplication
 		else
 			$uri = $this->uri;
 
+
+		// trim mobile prefix from beginning of relative uri
+		if (isset($this->mobile) && $this->mobile->isMobileUrl() &&
+				$this->mobile->getPrefix() !== null) {
+
+			$uri = substr($uri, strlen($this->mobile->getPrefix()) + 1);
+		}
+
 		return $uri;
 	}
 
