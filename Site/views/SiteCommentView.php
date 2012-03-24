@@ -26,6 +26,24 @@ require_once 'Site/SiteCommentFilter.php';
  */
 abstract class SiteCommentView extends SiteView
 {
+	// {{{ protected properties
+
+	/** 
+	 * @var integer
+	 *
+	 * @see SiteCommentView::setBodytextSummaryLength()
+	 */
+	protected $bodytext_summary_length = 400;
+
+	// }}}
+	// {{{ public function setBodytextSummaryLength()
+
+	public function setBodytextSummaryLength($length)
+	{
+		$this->bodytext_summary_length = (integer)$length;
+	}
+
+	// }}}
 	// {{{ protected function define()
 
 	protected function define()
@@ -219,10 +237,17 @@ abstract class SiteCommentView extends SiteView
 		case SiteView::MODE_SUMMARY:
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'comment-content';
-			$div_tag->setContent(SwatString::ellipsizeRight(
-				SwatString::condense(SiteCommentFilter::toXhtml(
-					$comment->bodytext)), 400), 'text/xml');
-
+			$div_tag->setContent(
+				SwatString::ellipsizeRight(
+					SwatString::condense(
+						SiteCommentFilter::toXhtml(
+							$comment->bodytext
+						)
+					),
+					$this->bodytext_summary_length
+				),
+				'text/xml'
+			);
 			$div_tag->display();
 			break;
 		}
