@@ -22,6 +22,35 @@ class SiteBotrMedia extends SiteMedia
 	public $key;
 
 	// }}}
+	// {{{ public function encodingExistsByKey()
+
+	public function encodingExistsByKey($key)
+	{
+		$binding = $this->getEncodingBindingByKey($key);
+
+		return ($binding instanceof SiteMediaEncodingBinding);
+	}
+
+	// }}}
+	// {{{ public function getEncodingBindingByKey()
+
+	public function getEncodingBindingByKey($key)
+	{
+		$encoding = $this->media_set->getEncodingByKey($key);
+
+		foreach ($this->encoding_bindings as $binding) {
+			$id = ($binding->media_encoding instanceof SiteBotrMediaEncoding) ?
+				$binding->media_encoding->id : $binding->media_encoding;
+
+			if ($encoding->id === $id) {
+				return $binding;
+			}
+		}
+
+		return null;
+	}
+
+	// }}}
 	// {{{ public function getHumanFileType()
 
 	public function getHumanFileType($encoding_shortname = null)
