@@ -13,6 +13,7 @@ require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
  * @todo      Allow encoding to arbitrary encoding profiles. Also add flag to
  *            call getDistinctDimensions() and getEncodingProfiles() with nicely
  *            returned info (or possibly import the profiles into MediaEncoding.
+ *            Allow setting audio encodings only on certain media by tag.
  */
 
 class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
@@ -92,11 +93,22 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	protected function runInternal()
 	{
 		$this->debug("Starting encoding jobs...\n");
+		//$this->resetTitles();
 		//$this->getDistinctDimensions();
 		$this->setOriginalFilenames();
 		$this->getEncodingProfiles();
 		$this->startEncodingJobs();
 		$this->displayResults();
+	}
+
+	// }}}
+	// {{{ protected function getResetTags()
+
+	protected function getResetTags()
+	{
+		return array(
+			$this->encoded_tag,
+		);
 	}
 
 	// }}}
@@ -110,13 +122,45 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 			$original = $this->toaster->getOriginalByKey($media_file['key']);
 			$key = $original['width'].'x'.$original['height'];
 			if (isset($dimensions[$key])) {
-				$dimensions[$key]++;
+				$dimensions[$key]['count']++;
 			} else {
-				$dimensions[$key] = 1;
+				$dimensions[$key]['count'] = 1;
+				$dimensions[$key]['ratio'] = $original['width'] /
+					$original['height'];
 			}
 		}
 
 		var_dump($dimensions);
+	}
+
+	// }}}
+	// {{{ protected function resetTitles()
+
+	protected function resetTitles()
+	{
+		$media = $this->getMedia();
+		$count = 0;
+
+		$this->debug('Resetting titles to original filename... ');
+
+		foreach ($media as $media_file) {
+			if (isset($media_file['custom']['original_filename']) &&
+				$media_file['title'] == '') {
+				$info  = pathinfo($media_file['custom']['original_filename']);
+				$title = $info['filename'];
+
+				$count++;
+				// save fields on Botr.
+				$values = array(
+					'title' => $title,
+					);
+
+				$this->toaster->updateMediaByKey($media_file['key'], $values);
+			}
+		}
+
+		$this->debug(sprintf("%s titles reset.\n",
+			$this->locale->formatNumber($count)));
 	}
 
 	// }}}
@@ -129,17 +173,14 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 
 		foreach($profiles as $profile) {
 			/*
-			 * only check for profiles meant for video and ignore required
-			 * profiles as they are always applied on all media. This logic will
-			 * have to change as we add audio, or have profiles we want to apply
-			 * to both, such as an audio profile that gets used for both video
-			 * and audio.
+			 * Exclude profiles meant for audio files only, and required
+			 * profiles that BOTR always builds. Audio only processing isn't
+			 * supported.
 			 */
-			if (($profile['default'] == 'video' ||
-				$profile['default'] == 'none') &&
+			if ($profile['default'] != 'audio' &&
 				$profile['required'] === false) {
 				$this->encoding_profiles[$profile['key']] = $profile;
-				if ($profile['default'] == 'video') {
+				if ($profile['default'] != 'none') {
 					$default_count++;
 				}
 			}
@@ -195,7 +236,7 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 			} elseif ($this->mediaFileIsMarkedEncoded($media_file)) {
 				$this->complete_files++;
 			} elseif ($media_file['mediatype'] == 'video') {
-				// only worry about video for now, audio will be ignored.
+				// We only support video files.
 				$key               = $media_file['key'];
 				$current_keys      = array();
 				$current_encodings = $this->toaster->getEncodingsByKey($key);
@@ -259,10 +300,10 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 					// attempting to upscale.
 					if (array_search($profile_key, $current_keys) === false &&
 						$profile['width'] <= $original_width) {
-
 						// only apply the encoding if its marked as a default,
 						// or if it perfectly matches the width of the original.
 						if ($profile['default'] == 'video' ||
+							$profile['default'] == 'all' ||
 							$profile['width'] == $original_width) {
 							$new_jobs++;
 							$complete = false;
