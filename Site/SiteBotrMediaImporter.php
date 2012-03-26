@@ -340,8 +340,10 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 				$binding_object = $this->getMediaEncodingBindingObject(
 					$media_object, $encoding);
 
-				$binding_object->save();
-				$imported_count++;
+				if ($binding_object instanceof SiteBotrMediaEncodingBinding) {
+					$binding_object->save();
+					$imported_count++;
+				}
 			}
 		}
 
@@ -370,16 +372,24 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 				$encoding['template']['format']['key'] != 'passthrough') {
 				$media_object = $existing_media_objects[$media_file['key']];
 
-				if (!$media_object->encodingExistsByKey(
-					$encoding['template']['key'])) {
-					$added_count++;
-					$existing_count--;
-					$this->encodings_added_count++;
+				try {
+					if (!$media_object->encodingExistsByKey(
+						$encoding['template']['key'])) {
+						$binding_object = $this->getMediaEncodingBindingObject(
+							$media_object, $encoding);
 
-					$binding_object = $this->getMediaEncodingBindingObject(
-						$media_object, $encoding);
+						if ($binding_object instanceof
+							SiteBotrMediaEncodingBinding) {
+							$added_count++;
+							$existing_count--;
+							$this->encodings_added_count++;
 
-					$binding_object->save();
+							$binding_object->save();
+						}
+					}
+				} catch(SiteException $e) {
+					$e = new SiteCommandLineException($e);
+					$e->processAndContinue($e);
 				}
 			}
 		}
@@ -420,17 +430,24 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	protected function getMediaEncodingBindingObject(
 		SiteBotrMedia $media_object, array $encoding)
 	{
-		$media_encoding = $this->media_set->getEncodingByKey(
-			$encoding['template']['key']);
+		$binding_object = null;
 
-		$binding_object = clone $this->media_encoding_binding_template;
-		$binding_object->media          = $media_object->id;
-		$binding_object->media_encoding = $media_encoding->id;
-		$binding_object->media_type     = $media_encoding->default_type;
-		$binding_object->key            = $encoding['key'];
-		$binding_object->filesize       = $encoding['filesize'];
-		$binding_object->width          = $encoding['width'];
-		$binding_object->height         = $encoding['height'];
+		try {
+			$media_encoding = $this->media_set->getEncodingByKey(
+				$encoding['template']['key']);
+
+			$binding_object = clone $this->media_encoding_binding_template;
+			$binding_object->media          = $media_object->id;
+			$binding_object->media_encoding = $media_encoding->id;
+			$binding_object->media_type     = $media_encoding->default_type;
+			$binding_object->key            = $encoding['key'];
+			$binding_object->filesize       = $encoding['filesize'];
+			$binding_object->width          = $encoding['width'];
+			$binding_object->height         = $encoding['height'];
+		} catch(Exception $e) {
+			$e = new SiteCommandLineException($e);
+			$e->processAndContinue();
+		}
 
 		return $binding_object;
 	}
