@@ -8,7 +8,7 @@ require_once 'Site/dataobjects/SiteBotrMediaEncodingWrapper.php';
  * A BOTR-specific media set object
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMediaSet extends SiteMediaSet
@@ -37,9 +37,10 @@ class SiteBotrMediaSet extends SiteMediaSet
 	// }}}
 
 	// loader methods
-	// {{{ protected function getEncodingWrapper()
+	// }}}
+	// {{{ protected function getMediaEncodingWrapperClass()
 
-	protected function getEncodingWrapper()
+	protected function getMediaEncodingWrapperClass()
 	{
 		return SwatDBClassMap::get('SiteBotrMediaEncodingWrapper');
 	}
