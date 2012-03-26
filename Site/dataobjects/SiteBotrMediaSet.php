@@ -13,6 +13,74 @@ require_once 'Site/dataobjects/SiteBotrMediaEncodingWrapper.php';
  */
 class SiteBotrMediaSet extends SiteMediaSet
 {
+	// {{{ public function hasEncodingByKey()
+
+	/**
+	 * Checks existance of an encoding by its shortname
+	 *
+	 * @param string $key the key of the encoding
+	 *
+	 * @return boolean whether the encoding with the given shortname exists
+	 */
+	public function hasEncodingByKey($key)
+	{
+		$found = false;
+
+		foreach ($this->encodings as $encoding) {
+			if ($encoding->key === $key) {
+				$found = true;
+				break;
+			}
+		}
+
+		return $found;
+	}
+
+	// }}}
+	// {{{ public function getEncodingByKey()
+
+	/**
+	 * Gets an encoding of this set based on its shortname
+	 *
+	 * @param string $key the key of the encoding
+	 *
+	 * @return SiteBotrMediaEncoding the encoding with the given shortname
+	 */
+	public function getEncodingByKey($key)
+	{
+		foreach ($this->encodings as $encoding) {
+			if ($encoding->key === $key) {
+				return $encoding;
+			}
+		}
+
+		throw new SiteException(sprintf('Media encoding “%s” does not exist.',
+			$key));
+	}
+
+	// }}}
+	// {{{ public function getEncodingShortnameByKey()
+
+	/**
+	 * Gets the shortname of an encoding of this set based on its key
+	 *
+	 * @param string $key the key of the encoding
+	 *
+	 * @return string the shortname of the encoding
+	 */
+	public function getEncodingShortnameByKey($key)
+	{
+		foreach ($this->encodings as $encoding) {
+			if ($encoding->key === $key) {
+				return $encoding->shortname;
+			}
+		}
+
+		throw new SiteException(sprintf('Media encoding “%s” does not exist.',
+			$key));
+	}
+
+	// }}}
 	// {{{ public function getPlayerByShortname()
 
 	/**
