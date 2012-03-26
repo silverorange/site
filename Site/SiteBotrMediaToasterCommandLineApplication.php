@@ -39,6 +39,16 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected $toaster;
 
 	/**
+	 * Whether or not to reset the tags used by the script on files that have
+	 * already been tagged.
+	 *
+	 * If true, this will return media to a virgin state for the calling script.
+	 *
+	 * @var boolean
+	 */
+	protected $reset_tags;
+
+	/**
 	 * Array of source files to validate.
 	 *
 	 * @var array
@@ -103,6 +113,14 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 		$this->addCommandLineArgument($instance);
 
+		$reset_tags = new SiteCommandLineArgument(
+			array('--reset-tags'),
+			'setResetTags',
+			'Optional. Resets tags used by the script on the media.');
+
+		$this->addCommandLineArgument($reset_tags);
+
+
 		$this->initModules();
 		$this->parseCommandLineArguments();
 
@@ -120,6 +138,14 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+	// {{{ public function setResetTags()
+
+	public function setResetTags()
+	{
+		$this->reset_tags = true;
+	}
+
+	// }}}
 	// {{{ public function run()
 
 	/**
@@ -130,6 +156,11 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$this->lock();
 
 		$this->initInternal();
+
+		if ($this->reset_tags) {
+			$this->resetTags();
+		}
+
 		$this->runInternal();
 
 		$this->debug("All done.\n", true);
@@ -152,7 +183,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 	// }}}
 
-	// init
+	// init phase
 	// {{{ protected function initInternal()
 
 	protected function initInternal()
@@ -169,6 +200,42 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+
+	// run phase
+	// {{{ protected function resetTags()
+
+	protected function resetTags()
+	{
+		$media = $this->getMedia();
+		$tags  = $this->getResetTags();
+
+		if (count($tags)) {
+			foreach ($media as $media_file) {
+				$this->toaster->updateMediaRemoveTagsByKey($media_file['key'],
+					$tags);
+			}
+
+			$this->resetMediaCache();
+
+			$this->debug(sprintf(
+				"Reset %s tags for %s media files on BOTR.\n",
+				SwatString::toList(array_values($this->getResetTags()), '&',
+					', ', false),
+				$this->locale->formatNumber(count($media))));
+		}
+	}
+
+	// }}}
+	// {{{ protected function getResetTags()
+
+	protected function getResetTags()
+	{
+		return array();
+	}
+
+	// }}}
+
+	// helper methods
 	// {{{ protected function getSourceFiles()
 
 	protected function getSourceFiles()
