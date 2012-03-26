@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteBotrMediaEncodingBindingWrapper.php';
  * A BOTR-specific media object
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMedia extends SiteMedia
@@ -101,6 +101,25 @@ class SiteBotrMedia extends SiteMedia
 		}
 
 		return $smallest;
+	}
+
+	// }}}
+	// {{{ public function getDefaultAudioEncoding()
+
+	public function getDefaultAudioEncoding()
+	{
+		$audio = null;
+
+		foreach ($this->encoding_bindings as $binding) {
+			// Return first encoding that has an audio mime type. This can be
+			// improved in the future.
+			if (strpos($binding->media_type->mime_type, 'audio') !== false) {
+				$audio = $binding;
+				break;
+			}
+		}
+
+		return $audio;
 	}
 
 	// }}}
