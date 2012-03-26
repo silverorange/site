@@ -302,8 +302,6 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 
 	protected function importMissingMediaEncodings()
 	{
-		$this->initMediaObjects();
-
 		foreach($this->media_to_recheck as $media_file) {
 			$this->debug(sprintf('Media: %s ... ',
 				$media_file['key']));
@@ -371,7 +369,9 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 			if ($encoding['template']['format']['key'] != 'original' &&
 				$encoding['template']['format']['key'] != 'passthrough') {
 				$media_object = $existing_media_objects[$media_file['key']];
-				if (!$media_object->encodingExists($encoding['width'])) {
+
+				if (!$media_object->encodingExistsByKey(
+					$encoding['template']['key'])) {
 					$added_count++;
 					$existing_count--;
 					$this->encodings_added_count++;
@@ -420,8 +420,8 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	protected function getMediaEncodingBindingObject(
 		SiteBotrMedia $media_object, array $encoding)
 	{
-		$media_encoding = $this->media_set->getEncodingByShortname(
-			$encoding['width']);
+		$media_encoding = $this->media_set->getEncodingByKey(
+			$encoding['template']['key']);
 
 		$binding_object = clone $this->media_encoding_binding_template;
 		$binding_object->media          = $media_object->id;
