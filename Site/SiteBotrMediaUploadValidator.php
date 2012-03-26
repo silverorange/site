@@ -63,16 +63,6 @@ class SiteBotrMediaUploadValidator
 	private $recheck_invalid_files = false;
 
 	/**
-	 * Whether or not to force validation of all files on bits on the run.
-	 *
-	 * If true, this resets all the media on bits on the run as not validated,
-	 * which causes all media to be revalidated.
-	 *
-	 * @var boolean
-	 */
-	private $force_validation = false;
-
-	/**
 	 * Whether or not to automatically mark large (>2GB) files as valid.
 	 *
 	 * If true, and we are validating by filesize this will set these files as
@@ -91,14 +81,6 @@ class SiteBotrMediaUploadValidator
 
 	public function __construct($id, $filename, $title, $documentation)
 	{
-		$force_validation = new SiteCommandLineArgument(
-			array('--force-validation'),
-			'setForceValidation',
-			'Optional. Forces all files to be validated, even if they have '.
-			'been previously validated.');
-
-		$this->addCommandLineArgument($force_validation);
-
 		$recheck_invalid_files = new SiteCommandLineArgument(
 			array('--recheck-invalid-files'),
 			'setRecheckInvalidFiles',
@@ -114,14 +96,6 @@ class SiteBotrMediaUploadValidator
 		$this->addCommandLineArgument($mark_large_files_valid);
 
 		parent::__construct($id, $filename, $title, $documentation);
-	}
-
-	// }}}
-	// {{{ public function setForceValidation()
-
-	public function setForceValidation()
-	{
-		$this->force_validation = true;
 	}
 
 	// }}}
@@ -202,39 +176,24 @@ class SiteBotrMediaUploadValidator
 	{
 		$this->debug("Validating media from source files...\n");
 
-		if ($this->force_validation) {
-			$this->resetMedia();
-		}
-
 		$this->setOriginalFilenames();
 		$this->validateUploads();
 		$this->displayValidationResults();
 	}
 
 	// }}}
-	// {{{ protected function resetMedia()
+	// {{{ protected function getResetTags()
 
-	protected function resetMedia()
+	protected function getResetTags()
 	{
-		$media = $this->getMedia();
-
-		foreach ($media as $media_file) {
-			$this->toaster->updateMediaRemoveTagsByKey($media_file['key'],
-				array(
-					$this->valid_tag_filesize,
-					$this->valid_tag_md5,
-					$this->invalid_tag_filesize,
-					$this->invalid_tag_md5,
-					$this->duplicate_tag,
-					$this->original_missing_tag,
-					));
-		}
-
-		$this->resetMediaCache();
-
-		$this->debug(sprintf(
-			"Reset validation tags for %s media files on BOTR.\n",
-			$this->locale->formatNumber(count($media))));
+		return array(
+			$this->valid_tag_filesize,
+			$this->valid_tag_md5,
+			$this->invalid_tag_filesize,
+			$this->invalid_tag_md5,
+			$this->duplicate_tag,
+			$this->original_missing_tag,
+		);
 	}
 
 	// }}}
