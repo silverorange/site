@@ -526,11 +526,11 @@ class SiteMedia extends SwatDBDataObject
 		$task->operation = $operation;
 
 		if ($operation == 'copy') {
-			$task->media        = $this;
-			$task->encoding     = $encoding;
-			$task->http_headers = serialize(array(
+			$task->media    = $this;
+			$task->encoding = $encoding;
+			$task->override_http_headers = serialize(array(
 				'content-disposition' => sprintf('attachment; filename="%s"',
-					$media->getContentDispositionFilename(
+					$this->getContentDispositionFilename(
 						$encoding->shortname)),
 				));
 		} else {
