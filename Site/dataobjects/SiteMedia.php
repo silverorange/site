@@ -109,6 +109,19 @@ class SiteMedia extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getTitle()
+
+	/**
+	 * Returns the title of the media object.
+	 *
+	 * @returns string
+	 */
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	// }}}
 	// {{{ public function getFormattedDuration()
 
 	/**
