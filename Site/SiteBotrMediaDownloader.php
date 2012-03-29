@@ -159,11 +159,22 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 			}
 
 			foreach ($bindings as $encoding => $binding) {
-				$this->downloadAndQueueBinding($media_object, $binding);
+				if ($this->isDownloadable($media_object, $binding)) {
+					$this->downloadAndQueueBinding($media_object, $binding);
+				}
 			}
 
 			$this->debug("\n");
 		}
+	}
+
+	// }}}
+	// {{{ protected function isDownloadable()
+
+	protected function isDownloadable(SiteBotrMedia $media_object,
+		SiteBotrMediaEncodingBinding $binding)
+	{
+		return true;
 	}
 
 	// }}}
@@ -188,7 +199,7 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 			try {
 				$this->downloadFile($media_object, $binding, $encoding);
 
-				if ($this->canQueueMediaObject($media_object, $binding)) {
+				if ($this->isQueueable($media_object, $binding)) {
 					$this->queueCdnTask($media_object, $encoding);
 				}
 
@@ -201,9 +212,9 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
-	// {{{ protected function canQueueMediaObject()
+	// {{{ protected function isQueueable()
 
-	protected function canQueueMediaObject(SiteBotrMedia $media_object,
+	protected function isQueueable(SiteBotrMedia $media_object,
 		SiteBotrMediaEncodingBinding $binding)
 	{
 		// make sure the media set is supposed to be on the cdn.
