@@ -187,7 +187,11 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		} else {
 			try {
 				$this->downloadFile($media_object, $binding, $encoding);
-				$this->queueCdnTask($media_object, $encoding);
+
+				if ($media_object->media_set->use_cdn) {
+					$this->queueCdnTask($media_object, $encoding);
+				}
+
 				$this->debug("done.\n");
 			} catch (SwatException $e) {
 				$e->processAndContinue();
