@@ -188,7 +188,7 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 			try {
 				$this->downloadFile($media_object, $binding, $encoding);
 
-				if ($media_object->media_set->use_cdn) {
+				if ($this->canQueueMediaObject($media_object, $binding)) {
 					$this->queueCdnTask($media_object, $encoding);
 				}
 
@@ -198,6 +198,16 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 				$this->debug("error.\n");
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function canQueueMediaObject()
+
+	protected function canQueueMediaObject(SiteBotrMedia $media_object,
+		SiteBotrMediaEncodingBinding $binding)
+	{
+		// make sure the media set is supposed to be on the cdn.
+		return ($media_object->media_set->on_cdn);
 	}
 
 	// }}}
