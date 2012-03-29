@@ -133,6 +133,11 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 							$media_object->getSmallestVideoEncodingBinding();
 						break;
 
+					case 'audio':
+						$binding =
+							$media_object->getDefaultAudioEncoding();
+						break;
+
 					default:
 						$binding =
 							$media_object->getEncodingBinding($shortname);
@@ -140,9 +145,10 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 					}
 
 					// index by $binding->media_encoding, which is an id - this
-					// means if the largest or smallest is also an explicitly
-					// defined shortname in $download_dimension_shortnames we
-					// won't attempt to download it twice.
+					// means if the largest, smallest or audio is also an
+					// explicitly defined shortname in
+					// $download_dimension_shortnames we won't attempt to
+					// download it twice.
 					$bindings[$binding->media_encoding] = $binding;
 				}
 			} else {
