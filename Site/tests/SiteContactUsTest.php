@@ -64,12 +64,12 @@ abstract class SiteContactUsTest extends TuringSeleniumTest
 		$this->assertNoErrors();
 
 		$this->assertTrue(
-			$this->isTextPresent('The Your Email field is required.'),
+			$this->isTextPresent('Your Email is required.'),
 			'Email address required message not present.'
 		);
 
 		$this->assertTrue(
-			$this->isTextPresent('The Message field is required.'),
+			$this->isTextPresent('Message is required.'),
 			'Message required message not present.'
 		);
 	}
