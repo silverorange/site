@@ -161,6 +161,13 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 			foreach ($bindings as $encoding => $binding) {
 				if ($this->isDownloadable($media_object, $binding)) {
 					$this->downloadAndQueueBinding($media_object, $binding);
+				} else {
+					$encoding = $media_object->media_set->encodings->getByIndex(
+						$binding->media_encoding);
+
+					$this->debug(sprintf(
+						"\t“%s” encoding not downloadable.\n",
+						$encoding->shortname));
 				}
 			}
 
@@ -218,7 +225,7 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		SiteBotrMediaEncodingBinding $binding)
 	{
 		// make sure the media set is supposed to be on the cdn.
-		return ($media_object->media_set->on_cdn);
+		return ($media_object->media_set->use_cdn);
 	}
 
 	// }}}
