@@ -149,7 +149,9 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 					// explicitly defined shortname in
 					// $download_dimension_shortnames we won't attempt to
 					// download it twice.
-					$bindings[$binding->media_encoding] = $binding;
+					if ($binding !== null) {
+						$bindings[$binding->media_encoding] = $binding;
+					}
 				}
 			} else {
 				// fall back to downloading all encodings.
