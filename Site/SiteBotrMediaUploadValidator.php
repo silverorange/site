@@ -227,8 +227,12 @@ class SiteBotrMediaUploadValidator
 			} elseif (array_key_exists($filename, $this->valid_files)) {
 				$dupe   = true;
 				$tags[] = $this->duplicate_tag;
-				$this->duplicate_files[$filename][] =
-					$source_files[$filename]['path'];
+				if (isset($source_files[$filename])) {
+					$this->duplicate_files[$filename][] =
+						$source_files[$filename]['path'];
+				} else {
+					$this->duplicate_files[$filename][] = 'no local copy';
+				}
 			} elseif ($this->mediaFileIsMarkedValid($media_file)) {
 				$valid = true;
 			} elseif (!$this->recheck_invalid_files &&
