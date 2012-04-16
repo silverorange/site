@@ -10,7 +10,7 @@ require_once 'Site/pages/SiteXhtmlExceptionPage.php';
  * Web-applicaitions are set up to resolve pages and handle page requests.
  *
  * @package   Site
- * @copyright 2006-2011 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteWebApplication extends SiteApplication
@@ -53,8 +53,25 @@ class SiteWebApplication extends SiteApplication
 	 */
 	protected $page = null;
 
-	// }}}
+	/**
+	 * The P3P policy location for this application
+	 *
+	 * @var string
+	 *
+	 * @see SiteWebApplication::setP3PPolicyURI()
+	 */
+	protected $p3p_policy_uri = '';
 
+	/**
+	 * The P3P compact policy of this application
+	 *
+	 * @var string
+	 *
+	 * @see SiteWebApplication::setP3PCompactPolicy()
+	 */
+	protected $p3p_compact_policy = '';
+
+	// }}}
 	// {{{ public static function cleanUriGetVar()
 
 	/**
@@ -127,6 +144,8 @@ class SiteWebApplication extends SiteApplication
 			if (!$cached) {
 				$page_data = array();
 
+				$this->setP3PHeaders();
+
 				$this->loadPage();
 				$this->page->layout->init();
 				$this->page->init();
@@ -164,6 +183,9 @@ class SiteWebApplication extends SiteApplication
 			echo $page_data['content'];
 
 		} catch (Exception $e) {
+
+			$this->setP3PHeaders();
+
 			$this->loadExceptionPage();
 
 			if ($this->page instanceof SiteExceptionPage) {
@@ -180,6 +202,58 @@ class SiteWebApplication extends SiteApplication
 
 			// display exception page (never cached)
 			$this->page->layout->display();
+		}
+	}
+
+	// }}}
+	// {{{ public function setP3PPolicyURI()
+
+	/**
+	 * Sets the URI for the full P3P policy for this application
+	 *
+	 * Use this method if the application needs to specify both a P3P compact
+	 * policy header and a P3P header linking to a full XML privacy policy.
+	 *
+	 * @param string $uri the URI of the full P3P XML document.
+	 *
+	 * @see http://www.w3.org/P3P/
+	 * @see http://en.wikipedia.org/wiki/P3P
+	 */
+	public function setP3PPolicyURI($uri)
+	{
+		$this->p3p_policy_uri = $uri;
+	}
+
+	// }}}
+	// {{{ public function setP3PCompactPolicy()
+
+	/**
+	 * Sets the P3P compact policy value for this application
+	 *
+	 * @param string $policy the P3P compact policy.
+	 *
+	 * @see http://www.w3.org/P3P/
+	 * @see http://en.wikipedia.org/wiki/P3P
+	 */
+	public function setP3PCompactPolicy($policy)
+	{
+		$this->p3p_compact_policy = $policy;
+	}
+
+	// }}}
+	// {{{ protected function setP3PHeaders()
+
+	protected function setP3PHeaders()
+	{
+		if ($this->p3p_compact_policy != '') {
+			header('p3p: '.$this->p3p_compact_policy);
+			if ($this->p3p_policy_uri != '') {
+				header('p3p: '.$this->p3p_policy_uri, false);
+			}
+		} else {
+			if ($this->p3p_policy_uri != '') {
+				header('p3p: '.$this->p3p_policy_uri);
+			}
 		}
 	}
 
@@ -260,6 +334,23 @@ class SiteWebApplication extends SiteApplication
 		}
 
 		return $cdn_base;
+	}
+
+	// }}}
+	// {{{ protected function configure()
+
+	/**
+	 * Configures modules of this application before they are initialized
+	 *
+	 * @param SiteConfigModule $config the config module of this application to
+	 *                                  use for configuration other modules.
+	 */
+	protected function configure(SiteConfigModule $config)
+	{
+		parent::configure($config);
+
+		$this->setP3PPolicyURI($config->p3p->policy_uri);
+		$this->setP3PCompactPolicy($config->p3p->compact_policy);
 	}
 
 	// }}}
@@ -768,7 +859,7 @@ class SiteWebApplication extends SiteApplication
 	 *
 	 * @param boolean $mobile If true, the link is for the mobile version
 	 *                        of the site, if false, for the non-mobile version.
-	 * @param string $source  Optional additional source path to append tot the
+	 * @param string $source  Optional additional source path to append to the
 	 *                        base link.
 	 *
 	 * @return string the link to switch the mobile url of the site

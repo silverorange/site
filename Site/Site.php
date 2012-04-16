@@ -300,6 +300,10 @@ class Site
 
 			// Expiry dates for the privateer data deleter
 			'expiry.contact_messages' => '1 year',
+
+			// P3P headers. See http://en.wikipedia.org/wiki/P3P
+			'p3p.compact_policy' => null,
+			'p3p.policy_uri'     => null,
 		);
 	}
 
