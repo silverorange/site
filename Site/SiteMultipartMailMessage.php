@@ -222,6 +222,32 @@ class SiteMultipartMailMessage extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function addCc()
+
+	/**
+	 * Adds an email address to the bcc list
+	 *
+	 * @param string $email the email address to add.
+	 */
+	public function addCc($email)
+	{
+		$this->cc_list[] = $email;
+	}
+
+	// }}}
+	// {{{ public function addBcc()
+
+	/**
+	 * Adds an email address to the bcc list
+	 *
+	 * @param string $email the email address to add.
+	 */
+	public function addBcc($email)
+	{
+		$this->bcc_list[] = $email;
+	}
+
+	// }}}
 	// {{{ public function addAttachmentFromString()
 
 	public function addAttachmentFromString($data, $filename = null, $content_type = null)
