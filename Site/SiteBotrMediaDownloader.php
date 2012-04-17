@@ -81,7 +81,8 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 
 	protected function runInternal()
 	{
-		$this->debug("Downloading Media...\n");
+		$this->debug(sprintf("Downloading %s Media...\n",
+			$this->media_set_shortname));
 
 		$media = $this->getMediaObjects();
 
