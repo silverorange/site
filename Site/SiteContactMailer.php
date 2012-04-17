@@ -200,6 +200,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$message->from_name        = $this->getFromName($contact_message);
 		$message->reply_to_address = $contact_message->email;
 		$message->to_address       = $this->getToAddress($contact_message);
+		$message->cc_list          = $this->getCcList($contact_message);
+		$message->bcc_list         = $this->getBccList($contact_message);
 
 		$message->subject   = $this->getSubject($contact_message);
 		$message->text_body = $this->getTextBody($contact_message);
@@ -226,6 +228,34 @@ class SiteContactMailer extends SiteCommandLineApplication
 	protected function getToAddress(SiteContactMessage $message)
 	{
 		return $this->config->email->contact_address;
+	}
+
+	// }}}
+	// {{{ protected function getCcList()
+
+	protected function getCcList(SiteContactMessage $message)
+	{
+		$list = array();
+
+		if ($this->config->email->contact_cc_list != '') {
+			$list = explode(';', $this->config->email->contact_cc_list);
+		}
+
+		return $list;
+	}
+
+	// }}}
+	// {{{ protected function getBccList()
+
+	protected function getBccList(SiteContactMessage $message)
+	{
+		$list = array();
+
+		if ($this->config->email->contact_bcc_list != '') {
+			$list = explode(';', $this->config->email->contact_bcc_list);
+		}
+
+		return $list;
 	}
 
 	// }}}
