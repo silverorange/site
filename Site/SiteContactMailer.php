@@ -16,7 +16,7 @@ require_once 'Site/dataobjects/SiteContactMessageWrapper.php';
  * are addressed to support staff for the website.
  *
  * @package   Site
- * @copyright 2010-2011 silverorange
+ * @copyright 2010-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactMailer extends SiteCommandLineApplication
@@ -131,7 +131,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 			$this->debug(
 				Site::_(
 					sprintf(
-						" => sending order status email from %s ... ",
+						" => sending contact email from %s ... ",
 						$message->email
 					)
 				)
