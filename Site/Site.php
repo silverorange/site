@@ -258,6 +258,11 @@ class Site
 			// to address for contact-us emails
 			'email.contact_address'    => null,
 
+			// CC and BCC lists for contact-us emails
+			// addresses are delimited by ; characters
+			'email.contact_cc_list'    => null,
+			'email.contact_bcc_list'   => null,
+
 			// from address for contact-us emails (from "the website" to client)
 			'email.website_address'    => null,
 
