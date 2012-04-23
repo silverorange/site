@@ -64,6 +64,9 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	public function setMediaSet($media_set_shortname)
 	{
 		$this->media_set_shortname = $media_set_shortname;
+
+		// reset any cached media objects.
+		$this->media_objects = null;
 	}
 
 	// }}}
