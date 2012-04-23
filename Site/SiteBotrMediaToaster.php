@@ -426,7 +426,7 @@ class SiteBotrMediaToaster
 	 *
 	 * @param todo
 	 *
-	 * @return ?
+	 * @return boolean. True on success.
 	 */
 	public function updateMedia(SiteBotrMedia $media, array $options = array())
 	{
@@ -522,7 +522,7 @@ class SiteBotrMediaToaster
 	 *
 	 * @param todo
 	 *
-	 * @return ?
+	 * @return boolean. True on success.
 	 */
 	public function updateMediaByKey($key, array $options = array())
 	{
@@ -596,7 +596,7 @@ class SiteBotrMediaToaster
 	 *
 	 * @param todo
 	 *
-	 * @return ?
+	 * @return boolean. True on success.
 	 */
 	public function createEncodingProfile($name, $format, $video_quality = 5,
 		$audio_quality = 5, $width = 320, $upscale = false, $default = 'none')
@@ -629,7 +629,7 @@ class SiteBotrMediaToaster
 	 *
 	 * @param encoding_key string key of the encoding profile to delete.
 	 *
-	 * @return ?
+	 * @return boolean. True on success.
 	 */
 	public function deleteEncodingProfile($encoding_key)
 	{
@@ -643,6 +643,58 @@ class SiteBotrMediaToaster
 	}
 
 	// }}}
+	// {{{ public function updateMediaThumbnail()
+
+	/**
+	 * Updates a media file's thumbnail from a timestamp on the original video.
+	 *
+	 * If the video doesn't have an original version this will fail.
+	 *
+	 * @param video_key string key of the video to update.
+	 * @param position float video frame position in seconds from which
+	 *                        thumbnail should be generated. Seconds can be
+	 *                        given as a whole number (e.g: 7) or with the
+	 *                        fractions (e.g.: 7.42).
+	 *
+	 * @return boolean. True on success.
+	 */
+	public function updateMediaThumbnail(SiteBotrMedia $media, $position)
+	{
+		return $this->updateMediaThumbnailByKey($media->key, $position);
+	}
+
+	// }}}
+	// {{{ public function updateMediaThumbnailByKey()
+
+	/**
+	 * Updates a media file's thumbnail from a timestamp on the original video.
+	 *
+	 * If the video doesn't have an original version this will fail.
+	 *
+	 * See {@link http://developer.longtailvideo.com/botr/system-api/methods/videos/thumbnails/update.html}
+	 *
+	 * @param video_key string key of the video to update.
+	 * @param position float video frame position in seconds from which
+	 *                        thumbnail should be generated. Seconds can be
+	 *                        given as a whole number (e.g: 7) or with the
+	 *                        fractions (e.g.: 7.42).
+	 *
+	 * @return boolean. True on success.
+	 */
+	public function updateMediaThumbnailByKey($video_key, $position)
+	{
+		$settings = array(
+			'video_key' => $video_key,
+			'position'  => $position,
+			);
+
+		$response = $this->callBackend('/videos/thumbnails/update', $settings);
+
+		return ($response['status'] == 'ok');
+	}
+
+	// }}}
+
 
 	// Content Display Methods
 	// {{{ public function getMediaPlayer()
