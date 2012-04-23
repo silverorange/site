@@ -627,14 +627,14 @@ class SiteBotrMediaToaster
 	 *
 	 * See {@link http://developer.longtailvideo.com/botr/system-api/methods/accounts/templates/delete.html}
 	 *
-	 * @param profile_id string string id of the encoding profile to delete.
+	 * @param encoding_key string key of the encoding profile to delete.
 	 *
 	 * @return ?
 	 */
-	public function deleteEncodingProfile($profile_id)
+	public function deleteEncodingProfile($encoding_key)
 	{
 		$settings = array(
-			'template_key' => $profile_id,
+			'template_key' => $encoding_key,
 			);
 
 		$response = $this->callBackend('/accounts/templates/delete', $settings);
