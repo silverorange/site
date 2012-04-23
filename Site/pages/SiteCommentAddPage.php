@@ -363,6 +363,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->response = array(
 			'status'         => 'success',
 			'view'           => $view_content,
+			'id'             => $this->comment->id,
 			'comment_status' => $this->comment->status,
 		);
 	}
