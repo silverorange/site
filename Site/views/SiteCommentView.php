@@ -69,7 +69,7 @@ abstract class SiteCommentView extends SiteView
 
 		$div_tag = new SwatHtmlTag('div');
 		$div_tag->id = 'comment'.$comment->id;
-		$div_tag->class = implode(' ', $this->getCSSClassNames());
+		$div_tag->class = implode(' ', $this->getCSSClassNames($comment));
 
 		$div_tag->open();
 		$this->displayHeader($comment);
@@ -121,7 +121,7 @@ abstract class SiteCommentView extends SiteView
 	// }}}
 	// {{{ protected function getCSSClassNames()
 
-	protected function getCSSClassNames()
+	protected function getCSSClassNames(SiteComment $comment)
 	{
 		return array('comment');
 	}
