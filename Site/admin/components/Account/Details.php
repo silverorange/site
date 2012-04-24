@@ -96,7 +96,10 @@ class SiteAccountDetails extends AdminIndex
 
 	protected function getAccountDetailsStore()
 	{
-		return new SwatDetailsStore($this->getAccount());
+		$account = $this->getAccount();
+		$ds = new SwatDetailsStore($account);
+		$ds->fullname = $account->getFullname();
+		return $ds;
 	}
 
 	// }}}
@@ -105,7 +108,6 @@ class SiteAccountDetails extends AdminIndex
 	protected function buildAccountDetails()
 	{
 		$ds = $this->getAccountDetailsStore();
-		$ds->fullname = $this->account->getFullname();
 
 		$details_frame = $this->ui->getWidget('details_frame');
 		$details_frame->title = Site::_('Account');
