@@ -8,7 +8,7 @@ require_once 'Site/dataobjects/SiteAttachmentCdnTask.php';
  * An attachment
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Delete local files.
  */
@@ -281,7 +281,12 @@ class SiteAttachment extends SwatDBDataObject
 	public function getContentDispositionFilename()
 	{
 		// Convert to an ASCII string. Approximate non ACSII characters.
-		$filename = iconv('UTF-8', 'ASCII//TRANSLIT', $this->original_filename);
+		$filename = iconv(
+			'UTF-8', 'ASCII//TRANSLIT',
+			($this->filename != '') ?
+				$this->filename :
+				$this->original_filename
+		);
 
 		// Format the filename according to the qtext syntax in RFC 822
 		$filename = str_replace(array("\\", "\r", "\""),
@@ -429,6 +434,14 @@ class SiteAttachment extends SwatDBDataObject
 
 		if ($operation == 'copy') {
 			$task->attachment = $this;
+			$task->override_http_headers = serialize(
+				array(
+					'content-disposition' => sprintf(
+						'attachment; filename="%s"',
+						$this->getContentDispositionFilename()
+					),
+				)
+			);
 		} else {
 			$task->file_path = $this->getUriSuffix();
 		}
