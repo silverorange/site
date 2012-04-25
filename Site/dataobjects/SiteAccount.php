@@ -255,9 +255,24 @@ class SiteAccount extends SwatDBDataObject
 		$history->login_date = $date;
 		$history->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
 
-		if (isset($_SERVER['HTTP_USER_AGENT']))
-			$history->user_agent =
-				substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
+
+			$user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+			// Filter bad character encoding. If invalid, assume ISO-8859-1
+			// encoding and convert to UTF-8.
+			if (!SwatString::validateUtf8($user_agent)) {
+				$user_agent = iconv('ISO-8859-1', 'UTF-8', $user_agent);
+			}
+
+			// Only save if the user-agent was successfully converted to UTF-8.
+			if ($user_agent !== false) {
+				// set max length based on database field length
+				$user_agent = substr($user_agent, 0, 255);
+				$history->user_agent = $user_agent;
+			}
+
+		}
 
 		$history->save();
 	}
