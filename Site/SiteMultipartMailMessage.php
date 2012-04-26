@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swat/SwatDate.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/exceptions/SiteMailException.php';
 
@@ -119,6 +120,13 @@ class SiteMultipartMailMessage extends SiteObject
 	protected $app = null;
 
 	/**
+	 * Date of the email.
+	 *
+	 * @var SwatDate
+	 */
+	protected $date;
+
+	/**
 	 * Data to include with this mail message as attachments
 	 *
 	 * @var array
@@ -138,6 +146,9 @@ class SiteMultipartMailMessage extends SiteObject
 	public function __construct(SiteApplication $app)
 	{
 		$this->app = $app;
+
+		$this->date = new SwatDate();
+		$this->date->toUTC();
 	}
 
 	// }}}
@@ -153,8 +164,12 @@ class SiteMultipartMailMessage extends SiteObject
 		$mime = new Mail_mime($crlf);
 
 		$mime->setSubject($this->subject);
-		$mime->setFrom(sprintf('"%s" <%s>',
-			$this->from_name, $this->from_address));
+		$mime->setFrom(
+			$this->geAddressHeader(
+				$this->from_address,
+				$this->from_name
+			)
+		);
 
 		$mime->setTXTBody($this->text_body);
 		$mime->setHTMLBody($this->html_body);
@@ -191,14 +206,18 @@ class SiteMultipartMailMessage extends SiteObject
 		// create additional mail headers
 		$headers = array();
 
+		$headers['Date'] = $this->date->getRFC822();
+
 		if ($this->reply_to_address !== null)
 			$headers['Reply-To'] = $this->reply_to_address;
 
 		if ($this->return_path !== null)
 			$headers['Return-Path'] = $this->return_path;
 
-		$headers['To'] =
-			sprintf('"%s" <%s>', $this->to_name, $this->to_address);
+		$headers['To'] = $this->geAddressHeader(
+			$this->to_address,
+			$this->to_name
+		);
 
 		// create email body and headers
 		$mime_params = array();
@@ -250,13 +269,26 @@ class SiteMultipartMailMessage extends SiteObject
 	// }}}
 	// {{{ public function addAttachmentFromString()
 
-	public function addAttachmentFromString($data, $filename = null, $content_type = null)
+	public function addAttachmentFromString($data, $filename = null,
+		$content_type = null)
 	{
 		$this->string_attachments[] = array(
 			'data'         => $data,
 			'filename'     => $filename,
 			'content_type' => $content_type,
 		);
+	}
+
+	// }}}
+	// {{{ protected function geAddressHeader()
+
+	protected function geAddressHeader($address, $name = '')
+	{
+		$header = ($name == '') ?
+			'"%s" <%s>' :
+			'%s';
+
+		return sprintf($header, $address, $name);
 	}
 
 	// }}}
@@ -285,7 +317,7 @@ class SiteMultipartMailMessage extends SiteObject
 			(createdate, instance, type, attachment_count, attachment_size,
 			to_address, from_address, recipient_type) values %s';
 
-		$values_sql = '(now(), %s, %s, %s, %s, %%s, %s, %%s)';
+		$values_sql = '(%s, %s, %s, %s, %s, %%s, %s, %%s)';
 
 		$attachment_size = 0;
 
@@ -303,6 +335,7 @@ class SiteMultipartMailMessage extends SiteObject
 			count($this->string_attachments);
 
 		$values_sql = sprintf($values_sql,
+			$this->app->db->quote($this->date, 'date'),
 			$this->app->db->quote($this->app->getInstanceId(), 'integer'),
 			$this->app->db->quote(get_class($this), 'text'),
 			$this->app->db->quote($attachment_count, 'integer'),
