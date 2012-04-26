@@ -209,7 +209,7 @@ class SiteMultipartMailMessage extends SiteObject
 		if ($this->return_path !== null)
 			$headers['Return-Path'] = $this->return_path;
 
-		$headers['Date'] = $this->date->getRFC822();
+		$headers['Date'] = $this->date->getRFC2822();
 
 		$headers['To'] = $this->geAddressHeader(
 			$this->to_address,
