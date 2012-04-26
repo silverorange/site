@@ -206,18 +206,18 @@ class SiteMultipartMailMessage extends SiteObject
 		// create additional mail headers
 		$headers = array();
 
-		$headers['Date'] = $this->date->getRFC822();
-
-		if ($this->reply_to_address !== null)
-			$headers['Reply-To'] = $this->reply_to_address;
-
 		if ($this->return_path !== null)
 			$headers['Return-Path'] = $this->return_path;
+
+		$headers['Date'] = $this->date->getRFC822();
 
 		$headers['To'] = $this->geAddressHeader(
 			$this->to_address,
 			$this->to_name
 		);
+
+		if ($this->reply_to_address !== null)
+			$headers['Reply-To'] = $this->reply_to_address;
 
 		// create email body and headers
 		$mime_params = array();
