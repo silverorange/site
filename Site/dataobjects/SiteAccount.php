@@ -248,7 +248,7 @@ class SiteAccount extends SwatDBDataObject
 		SwatDB::exec($this->db, $sql);
 
 		// new way: save to history table
-		$history = $this->getNewLoginHistory();
+		$history = $this->getNewLoginHistory($date);
 		$history->save();
 	}
 
@@ -323,7 +323,7 @@ class SiteAccount extends SwatDBDataObject
 	// }}}
 	// {{{ protected function getNewLoginHistory()
 
-	protected function getNewLoginHistory()
+	protected function getNewLoginHistory(SwatDate $date)
 	{
 		$class = SwatDBClassMap::get('SiteAccountLoginHistory');
 
