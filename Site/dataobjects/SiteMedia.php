@@ -472,7 +472,7 @@ class SiteMedia extends SwatDBDataObject
 			$binding = $this->getEncodingBinding($encoding->shortname);
 
 			if ($binding instanceof SiteMediaEncodingBinding &&
-				$binding->on_cdn == false) {
+				$binding->on_cdn == true) {
 				$this->queueCdnTask('delete', $encoding);
 			}
 		}
