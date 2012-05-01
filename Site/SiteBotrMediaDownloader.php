@@ -276,22 +276,6 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
-	// {{{ protected function getMediaObjectSql()
-
-	protected function getMediaObjectSql()
-	{
-		$where = $this->getMediaObjectWhere();
-		$join  = $this->getMediaObjectJoin();
-
-		$sql = sprintf(
-			'select Media.* from Media %s where 1=1 %s',
-			$join,
-			$where);
-
-		return $sql;
-	}
-
-	// }}}
 	// {{{ protected function getMediaObjectWhere()
 
 	protected function getMediaObjectWhere()
