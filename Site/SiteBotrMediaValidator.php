@@ -193,7 +193,7 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 	protected function runInternal()
 	{
 		$this->setOriginalFilenames();
-		//$this->validateUploads();
+		$this->validateUploads();
 		$this->validateMediaObjects();
 		$this->displayValidationResults();
 	}
@@ -447,6 +447,8 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 				$this->debug("missing on BOTR.\n");
 			}
 		}
+
+		$this->debug("Done Validating media objects.\n\n");
 	}
 
 	// }}}
