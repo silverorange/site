@@ -427,7 +427,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$join  = $this->getMediaObjectJoin();
 
 		$sql = sprintf(
-			'select Media.* from Media %s where 1=1 %s',
+			'select Media.* from Media %s where 1=1 %s order by Media.id',
 			$join,
 			$where);
 
