@@ -51,6 +51,23 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 	 */
 	protected $originals_to_download = array();
 
+	/**
+	 * Array of media objects that have had tags fixed on BOTR.
+	 *
+	 * Bad tags are deleted or ignored tags. If those are set, the row should
+	 * no longer be in our database. So the tags must have been set in error.
+	 *
+	 * @var array
+	 */
+	protected $fixed_objects = array();
+
+	/**
+	 * Array of media objects from our database that are missing on BOTR
+	 *
+	 * @var array
+	 */
+	protected $missing_objects = array();
+
 	// }}}
 	// {{{ private properties
 
@@ -175,10 +192,9 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 
 	protected function runInternal()
 	{
-		$this->debug("Validating media from source files...\n");
-
 		$this->setOriginalFilenames();
-		$this->validateUploads();
+		//$this->validateUploads();
+		$this->validateMediaObjects();
 		$this->displayValidationResults();
 	}
 
@@ -202,6 +218,12 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 
 	protected function validateUploads()
 	{
+		$this->debug("Validating media from source files...\n");
+
+		// reset cache to make sure we get any tags set by other validation
+		// methods.
+		$this->resetMediaCache();
+
 		// TODO: if Botr adds ability to search by negative keywords, search for
 		// media that don't have the validated tag. If this happens, we can
 		// also get rid of the tag check in the foreach loop over the media.
@@ -371,16 +393,78 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+	// {{{ protected function validateMediaObjects()
+
+	protected function validateMediaObjects()
+	{
+		$this->debug("Validating media objects in the database...\n");
+
+		$media_objects = $this->getMediaObjects();
+
+		// reset cache to make sure we get any tags set by other validation
+		// methods.
+		$this->resetMediaCache();
+		$media = $this->getMedia();
+
+		$this->debug(sprintf("Found %s media objects to validate.\n",
+			$this->locale->formatNumber(count($media_objects))));
+
+		$ignorable_tags = array(
+			$this->ignored_tag,
+			$this->delete_tag,
+		);
+
+		foreach ($media_objects as $media_object) {
+			if (isset($media[$media_object->key])) {
+				$media_file = $media[$media_object->key];
+
+				$this->debug(sprintf('Media id ‘%s’ with key ‘%s’ ... ',
+					$media_object->id,
+					$media_object->key));
+
+				if ($this->mediaFileIsIgnorable($media_file)) {
+					$this->toaster->updateMediaRemoveTagsByKey(
+						$media_object->key,
+						$ignorable_tags
+					);
+
+					$this->fixed_objects[] = $media_object;
+
+					$this->debug("tags fixed ... ");
+				}
+
+				$this->debug("ok.\n");
+			} else {
+				$e = new SiteCommandLineException(sprintf(
+					'Media id ‘%s’ with key ‘%s’ in database, missing on BOTR.',
+					$media_object->id,
+					$media_object->key));
+
+				$e->processAndContinue();
+
+				$this->missing_objects[] = $media_object;
+
+				$this->debug("missing on BOTR.\n");
+			}
+		}
+	}
+
+	// }}}
 	// {{{ protected function displayValidationResults()
 
 	protected function displayValidationResults()
 	{
 		$this->debug(sprintf("%s valid media files (%s originals to ".
-			"download), %s duplicates and %s failed validation.\n",
+			"download), %s duplicates and %s failed validation.\n".
+			"%s media objects in the database, %s files with tags fixed, ".
+			"%s missing on BOTR.",
 			$this->locale->formatNumber(count($this->valid_files)),
 			$this->locale->formatNumber(count($this->originals_to_download)),
 			$this->locale->formatNumber(count($this->duplicate_files)),
-			$this->locale->formatNumber(count($this->failed_files))));
+			$this->locale->formatNumber(count($this->failed_files)),
+			$this->locale->formatNumber(count($this->getMediaObjects())),
+			$this->locale->formatNumber(count($this->fixed_objects)),
+			$this->locale->formatNumber(count($this->missing_objects))));
 
 		if (count($this->duplicate_files) > 0) {
 			$this->debug("\nDuplicates:\n");
@@ -392,7 +476,7 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 		}
 
 		if (count($this->failed_files)) {
-			$this->debug("\nFailed:\n");
+			$this->debug("\nValidation Failed:\n");
 			foreach ($this->failed_files as $filename => $info) {
 				$path = (array_key_exists('path', $info)) ?
 					$info['path'] : 'n/a';
