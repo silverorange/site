@@ -933,9 +933,11 @@ class SiteBotrMediaToaster
 	{
 		$message = null;
 
-		// all api responses should return an array. if we receive something
-		// else back, var_dump it so we know what it is.
-		if (is_array($response) == false) {
+		if ($response === false) {
+			$message = 'API Unavailable';
+		} elseif (is_array($response) == false) {
+			// all api responses should return an array. if we receive something
+			// else back, var_dump it so we know what it is.
 			ob_start();
 			var_dump($response);
 			$message = sprintf('Unexpected Response: %s',
