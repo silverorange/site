@@ -433,7 +433,11 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$binding_object = null;
 
 		try {
-			$media_encoding = $this->media_set->getEncodingByKey(
+			// load the media_object's media_set instead of $this->media_set to
+			// ensure that we get the correct media_set when getting new
+			// bindings for an existing object. Works for new media_objects as
+			// the internal media_set has been set by now.
+			$media_encoding = $media_object->media_set->getEncodingByKey(
 				$encoding['template']['key']);
 
 			$binding_object = clone $this->media_encoding_binding_template;
