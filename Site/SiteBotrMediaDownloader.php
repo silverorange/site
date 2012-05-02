@@ -282,7 +282,7 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$where = parent::getMediaObjectWhere();
 
-		$where.= sprintf(' and downloadable = %s',
+		$where.= sprintf(' and Media.downloadable = %s',
 			$this->db->quote(true, 'boolean'));
 
 		if ($this->media_set_shortname !== null) {
