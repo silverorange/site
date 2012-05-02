@@ -540,8 +540,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	{
 		$downloadable = false;
 
-		// don't download originals for videos that are marked to be downloaded,
-		// and only download the originals for those marked with the original
+		// Only download the originals for those marked with the original
 		// missing. Ignore videos that aren't imported or are marked to be
 		// deleted.
 		if ((strpos($media_file['tags'], $this->delete_tag) === false) &&
