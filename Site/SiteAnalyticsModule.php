@@ -245,16 +245,10 @@ JS;
 		if (is_array($command)) {
 			$method = array_shift($command);
 
-			$numeric_parameters = $this->methodHasNumericParameters($method);
-
 			if (count($command)) {
 				foreach ($command as $part) {
-					if ($numeric_parameters == false || !is_int($part)) {
-						$part = SwatString::quoteJavaScriptString($part);
-					}
-
 					$options.= sprintf(', %s',
-						$part);
+						SwatString::quoteJavaScriptString($part));
 				}
 			}
 		} else {
@@ -264,21 +258,6 @@ JS;
 		return sprintf("_gaq.push([%s%s]);",
 			SwatString::quoteJavaScriptString($method),
 			$options);
-	}
-
-	// }}}
-	// {{{ protected function methodHasNumericParameters()
-
-	protected function methodHasNumericParameters($method)
-	{
-		// The majority of methods still quote numbers as strings, but newer
-		// functions don't, so white list them below. This list is not
-		// exhaustive and should be added to when using a new analytics method.
-		$numeric_parameter_methods = array(
-			'_setSiteSpeedSampleRate',
-		);
-
-		return (in_array($method, $numeric_parameter_methods));
 	}
 
 	// }}}
