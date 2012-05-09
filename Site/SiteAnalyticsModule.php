@@ -9,7 +9,7 @@ require_once 'Site/SiteApplicationModule.php';
  * could be added.
  *
  * @package   Site
- * @copyright 2007-2011 silverorange
+ * @copyright 2007-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
  */
@@ -182,6 +182,10 @@ JS;
 	protected function initGoogleAnalyticsCommands()
 	{
 		$this->ga_commands = array(
+			array(
+				'_setSiteSpeedSampleRate',
+				100
+			),
 			'_trackPageview',
 		);
 	}
@@ -235,25 +239,46 @@ JS;
 
 	protected function getGoogleAnalyticsCommand($command)
 	{
-		$function = null;
-		$options  = null;
+		$method  = null;
+		$options = null;
 
 		if (is_array($command)) {
-			$function = array_shift($command);
+			$method = array_shift($command);
+
+			$numeric_parameters = $this->methodHasNumericParameters($method);
 
 			if (count($command)) {
 				foreach ($command as $part) {
+					if ($numeric_parameters == false || !is_int($part)) {
+						$part = SwatString::quoteJavaScriptString($part);
+					}
+
 					$options.= sprintf(', %s',
-						SwatString::quoteJavaScriptString($part));
+						$part);
 				}
 			}
 		} else {
-			$function = $command;
+			$method = $command;
 		}
 
 		return sprintf("_gaq.push([%s%s]);",
-			SwatString::quoteJavaScriptString($function),
+			SwatString::quoteJavaScriptString($method),
 			$options);
+	}
+
+	// }}}
+	// {{{ protected function methodHasNumericParameters()
+
+	protected function methodHasNumericParameters($method)
+	{
+		// The majority of methods still quote numbers as strings, but newer
+		// functions don't, so white list them below. This list is not
+		// exhaustive and should be added to when using a new analytics method.
+		$numeric_parameter_methods = array(
+			'_setSiteSpeedSampleRate',
+		);
+
+		return (in_array($method, $numeric_parameter_methods));
 	}
 
 	// }}}
