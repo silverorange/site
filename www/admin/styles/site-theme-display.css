@@ -5,7 +5,7 @@
 }
 
 /* IE min-height hack */
-* html .site-theme-display {
+.ie6 .site-theme-display {
 	height: 104px;
 }
 

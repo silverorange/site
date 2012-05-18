@@ -12,10 +12,13 @@
 	margin-bottom: 1em;
 }
 
-.site-tag-entry input { /* abs for ie quirks */
-	_position: absolute;
+.site-tag-entry input {
 	z-index: 0;
 	vertical-align: middle;
+}
+
+.ie6 .site-tag-entry input {
+	position: absolute; /* abs for ie quirks */
 }
 
 .site-tag-entry .site-tag-autocomplete-container {
@@ -73,8 +76,10 @@ li.site-tag-prehighlight {
 	border-bottom: 1px solid #eee;
 	padding: 2px 4px;
 	list-style-type: none;
-	_background: #fff; /* For IE6 opacity fading */
-	*background: #fff; /* For IE7 opacity fading */
+}
+
+.ie6 .site-tag-array li {
+	background: #fff; /* For IE6 opacity fading */
 }
 
 .site-tag-array li.new-tag {
@@ -94,8 +99,9 @@ li.site-tag-prehighlight {
 	font-size: 85%;
 	color: #438d04;
 }
-/* IE hack to prevent image from displaying underneath input */
-* html .site-tag-entry .site-tag-entry-add-tag {
+
+/* prevent image from displaying underneath input in IE6 */
+.ie6 .site-tag-entry .site-tag-entry-add-tag {
 	position: relative;
 	display: block;
 	padding: 0;
