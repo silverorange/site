@@ -23,12 +23,12 @@
 	padding: 0.2em 0;
 }
 
-* html .swat-tile-view .swat-tile span.title {
+.ie6 .swat-tile-view .swat-tile span.title {
 	height: 2.4em;
 }
 
-.swat-tile-view .swat-tile a span.title {
-	cursor: pointer; /* for Ie6 */
+.ie6 .swat-tile-view .swat-tile a span.title {
+	cursor: pointer;
 }
 
 .swat-tile-view .swat-tile .site-image-wrapper {
@@ -43,7 +43,4 @@
 	padding: 2px;
 	border: 1px solid #ddd;
 	background: #ccc;
-}
-
-* html .swat-tile-view .site-image-wrapper img {
 }
