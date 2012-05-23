@@ -22,7 +22,7 @@ require_once 'Site/exceptions/SiteException.php';
  * </code>
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */
@@ -82,20 +82,16 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 	 */
 	public function send()
 	{
-		if ($this->account->email === null)
+		if ($this->account->email == '') {
 			throw new SiteException('Account requires an email address to '.
 				'reset password. Make sure email is loaded on the account '.
 				'object.');
-
-		if ($this->account->getFullname() === null)
-			throw new SiteException('Account requires a fullname to reset '.
-				'password. Make sure the getFullname() method returns a '.
-				'fullname.');
+		}
 
 		$this->to_address = $this->account->email;
-		$this->to_name = $this->account->getFullname();
-		$this->text_body = $this->getTextBody();
-		$this->html_body = $this->getHtmlBody();
+		$this->to_name    = $this->getFullname();
+		$this->text_body  = $this->getTextBody();
+		$this->html_body  = $this->getHtmlBody();
 
 		parent::send();
 	}
@@ -165,6 +161,21 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 			'information is safe. Simply ignore this email and continue '.
 			'using your existing password.'),
 				$this->application_title));
+	}
+
+	// }}}
+	// {{{ protected function getFullname()
+
+	protected function getFullname()
+	{
+		$fullname = $this->getAccount->getFullname();
+
+		if ($fullname == '') {
+			// in case account doesn't have a fullname for some reason
+			$fullname = $this->account->email;
+		}
+
+		return $fullname;
 	}
 
 	// }}}
