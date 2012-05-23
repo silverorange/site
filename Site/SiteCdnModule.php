@@ -27,10 +27,10 @@ abstract class SiteCdnModule extends SiteApplicationModule
 		$access_type = null, $http_headers = array(), $metadata = array());
 
 	// }}}
-	// {{{ abstract public function copyFile()
+	// {{{ abstract public function updateFileMetadata()
 
 	/**
-	 * Copies a file to the CDN
+	 * Updates a file's metadata
 	 *
 	 * @param string $path the path of the file to update.
 	 * @param string $mime_type the MIME type of the file.
