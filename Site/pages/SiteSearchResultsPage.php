@@ -38,7 +38,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	/**
 	 * The fulltext result object
 	 *
-	 * @var SiteFulltextResult
+	 * @var SiteFulltextSearchResult
 	 */
 	protected $fulltext_result;
 
@@ -490,8 +490,9 @@ class SiteSearchResultsPage extends SiteArticlePage
 	/**
 	 * Build article search results
 	 *
-	 * @param SiteFulltextResult $fulltext_result Optional fulltext result to
-	 *                                             pass to article search engine.
+	 * @param SiteFulltextSearchResult $fulltext_result Optional fulltext
+	 *                                                   result to pass to
+	 *                                                   article search engine.
 	 */
 	protected function buildArticles($fulltext_result)
 	{
