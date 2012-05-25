@@ -10,7 +10,7 @@ require_once 'XML/RPCAjax.php';
  * A form with a upload progress bar
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      test JavaScript progressive-enhancement support
  */
@@ -33,18 +33,7 @@ class SiteUploadProgressForm extends SwatForm
 	public function __construct($id = null)
 	{
 		parent::__construct($id);
-
 		$this->requires_id = true;
-
-		$yui = new SwatYUI(array('event', 'animation'));
-		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
-
-		$ajax = new XML_RPCAjax();
-		$this->html_head_entry_set->addEntrySet($ajax->getHtmlHeadEntrySet());
-
-		$this->addJavaScript(
-			'packages/site/javascript/site-upload-progress-bar.js',
-			Site::PACKAGE_ID);
 	}
 
 	// }}}
@@ -76,18 +65,38 @@ class SiteUploadProgressForm extends SwatForm
 	}
 
 	// }}}
+	// {{{ public function display()
+
+	public function display(SwatDisplayContext $context)
+	{
+		if (!$this->visible) {
+			return;
+		}
+
+		parent::display();
+
+		$ajax = new XML_RPCAjax();
+
+		$context->addYUI('event', 'animation');
+		$context->addScript($ajax->getHtmlHeadEntrySet());
+		$context->addScript(
+			'packages/site/javascript/site-upload-progress-bar.js'
+		);
+	}
+
+	// }}}
 	// {{{ protected function displayChildren()
 
-	protected function displayChildren()
+	protected function displayChildren(SwatDisplayContext $context)
 	{
 		$hidden_input_tag = new SwatHtmlTag('input');
 		$hidden_input_tag->type = 'hidden';
 		$hidden_input_tag->id = $this->id.'_identifier';
 		$hidden_input_tag->name = 'UPLOAD_IDENTIFIER';
 		$hidden_input_tag->value = $this->id.'_'.uniqid();
-		$hidden_input_tag->display();
+		$hidden_input_tag->display($context);
 
-		parent::displayChildren();
+		parent::displayChildren($context);
 	}
 
 	// }}}

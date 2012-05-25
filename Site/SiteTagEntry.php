@@ -16,7 +16,7 @@ require_once 'Swat/SwatYUI.php';
  * tags
  *
  * @package   Site
- * @copyright 2008-2011 silverorange
+ * @copyright 2008-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteTagEntry extends SwatInputControl implements SwatState
@@ -84,20 +84,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	public function __construct($id = null)
 	{
 		parent::__construct($id);
-
 		$this->requires_id = true;
-
-		$yui = new SwatYUI(array('autocomplete'));
-		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
-
-		$this->addJavaScript('packages/swat/javascript/swat-z-index-manager.js',
-			Swat::PACKAGE_ID);
-
-		$this->addJavaScript('packages/site/javascript/site-tag-entry.js',
-			Site::PACKAGE_ID);
-
-		$this->addStyleSheet('packages/site/styles/site-tag-entry.css',
-			Site::PACKAGE_ID);
 	}
 
 	// }}}
@@ -106,41 +93,47 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	/**
 	 * Displays this tag entry control
 	 */
-	public function display()
+	public function display(SwatDisplayContext $context)
 	{
-		if (!$this->visible)
+		if (!$this->visible) {
 			return;
+		}
 
-		SwatWidget::display();
+		SwatWidget::display($context);
 
 		$div_tag = new SwatHtmlTag('div');
 		$div_tag->class = $this->getCSSClassString();
 		$div_tag->id = $this->id;
-		$div_tag->open();
+		$div_tag->open($context);
 
 		$autocomplete_div = new SwatHtmlTag('div');
 		$autocomplete_div->class = 'site-tag-autocomplete-container';
-		$autocomplete_div->open();
+		$autocomplete_div->open($context);
 
 		$input_tag = new SwatHtmlTag('input');
 		$input_tag->name = $this->id.'_value';
 		$input_tag->id = $this->id.'_value';
 
-		if (!$this->isSensitive())
+		if (!$this->isSensitive()) {
 			$input_tag->disabled = 'disabled';
+		}
 
-		$input_tag->display();
+		$input_tag->display($context);
 
 		$container_tag = new SwatHtmlTag('div');
 		$container_tag->class = 'site-tag-container';
 		$container_tag->id = $this->id.'_container';
 		$container_tag->setContent('');
-		$container_tag->display();
+		$container_tag->display($context);
 
-		$autocomplete_div->close();
-		$div_tag->close();
+		$autocomplete_div->close($context);
+		$div_tag->close($context);
 
-		Swat::displayInlineJavaScript($this->getInlineJavaScript());
+		$context->addYUI('autocomplete');
+		$context->addStyleSheet('packages/site/styles/site-tag-entry.css');
+		$context->addScript('packages/swat/javascript/swat-z-index-manager.js');
+		$context->addScript('packages/site/javascript/site-tag-entry.js');
+		$context->addInlineScript($this->getInlineJavaScript());
 	}
 
 	// }}}

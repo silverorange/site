@@ -117,7 +117,7 @@ class SiteSearchPagination extends SwatPagination
 	/**
 	 * Displays a smart list of pages
 	 */
-	protected function displayPages()
+	protected function displayPages(SwatDisplayContext $context)
 	{
 		$j = 0;
 
@@ -176,19 +176,19 @@ class SiteSearchPagination extends SwatPagination
 				if ($j + 1 != $i) {
 					// ellipses
 					$span->setContent('…');
-					$span->display();
+					$span->display($context);
 				}
 
 				if ($i == $this->current_page) {
 					$current->setContent((string)$i);
-					$current->display();
+					$current->display($context);
 				} else {
 					$anchor->href = sprintf($link, (string)$i);
 					$anchor->title =
 						sprintf(Swat::_('Go to page %d'), ($i));
 
 					$anchor->setContent((string)($i));
-					$anchor->display();
+					$anchor->display($context);
 				}
 
 				$j = $i;
@@ -199,7 +199,7 @@ class SiteSearchPagination extends SwatPagination
 			$this->total_records > $this->max_accurate_records) {
 			// ellipses
 			$span->setContent('…');
-			$span->display();
+			$span->display($context);
 		}
 	}
 

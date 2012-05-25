@@ -8,7 +8,7 @@ require_once 'Swat/SwatImageCellRenderer.php';
  * A cell renderer for SiteImages
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImageCellRenderer extends SwatCellRenderer
@@ -109,39 +109,28 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	}
 
 	// }}}
-	// {{{ public function getHtmlHeadEntrySet()
-
-	public function getHtmlHeadEntrySet()
-	{
-		$set = parent::getHtmlHeadEntrySet();
-
-		$set->addEntry(new SwatStyleSheetHtmlHeadEntry(
-			'packages/site/styles/site-image-cell-renderer.css',
-			Site::PACKAGE_ID));
-
-		$set->addEntrySet($this->image_cell_renderer->getHtmlHeadEntrySet());
-		return $set;
-	}
-
-	// }}}
 	// {{{ public function render()
 
-	public function render()
+	public function render(SwatDisplayContext $context)
 	{
-		if (!$this->visible)
+		if (!$this->visible) {
 			return;
+		}
+
+		parent::render($context);
 
 		if ($this->link !== null) {
 			$a_tag = new SwatHtmlTag('a');
 
-			if ($this->link_value === null)
+			if ($this->link_value === null) {
 				$a_tag->href = $this->link;
-			elseif (is_array($this->link_value))
+			} elseif (is_array($this->link_value)) {
 				$a_tag->href = vsprintf($this->link, $this->link_value);
-			else
+			} else {
 				$a_tag->href = sprintf($this->link, $this->link_value);
+			}
 
-			$a_tag->open();
+			$a_tag->open($context);
 		}
 
 		$this->buildImageCellRenderer($this->image_cell_renderer);
@@ -149,32 +138,40 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		$image_wrapper_tag = new SwatHtmlTag('span');
 		$image_wrapper_tag->class = 'site-image-wrapper';
 
-		$image_wrapper_tag->open();
-		$this->image_cell_renderer->render();
-		$image_wrapper_tag->close();
+		$image_wrapper_tag->open($context);
+		$this->image_cell_renderer->render($context);
+		$image_wrapper_tag->close($context);
 
 		if ($this->display_title) {
 			$title = $this->image->getTitle();
 
-			if ($title !== null)
+			if ($title !== null) {
 				$title = SwatString::condense($title, self::MAX_TITLE_LENGTH);
+			}
 
 			$span_tag = new SwatHtmlTag('span');
 			$span_tag->class = 'title';
 
-			if ($title === null)
+			if ($title === null) {
 				$span_tag->setContent(''); // prevent self-closing span tag
-			else
+			} else {
 				$span_tag->setContent($title);
+			}
 
-			if (strlen($title) > self::MAX_TITLE_LENGTH)
+			if (strlen($title) > self::MAX_TITLE_LENGTH) {
 				$span_tag->title = $title;
+			}
 
-			$span_tag->display();
+			$span_tag->display($context);
 		}
 
-		if ($this->link !== null)
-			$a_tag->close();
+		if ($this->link !== null) {
+			$a_tag->close($context);
+		}
+
+		$context->addStyleSheet(
+			'packages/site/styles/site-image-cell-renderer.css'
+		);
 	}
 
 	// }}}

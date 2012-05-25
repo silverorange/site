@@ -17,7 +17,7 @@ require_once 'Site/gadgets/SiteGadget.php';
  * have the special CSS class 'site-sidebar-gadget-last' applied.
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteGadget
  */
@@ -81,17 +81,18 @@ class SiteSidebar extends SwatWidget implements SwatUIParent
 	 * 'site-sidebar-gadget-first' applied. Similarly, the last gadget will
 	 * have the special CSS class 'site-sidebar-gadget-last' applied.
 	 */
-	public function display()
+	public function display(SwatDisplayContext $context)
 	{
-		if (!$this->visible)
+		if (!$this->visible) {
 			return;
+		}
 
-		parent::display();
+		parent::display($context);
 
 		$div_tag = new SwatHtmlTag('div');
 		$div_tag->id = $this->id;
 		$div_tag->class = 'site-sidebar';
-		$div_tag->open();
+		$div_tag->open($context);
 
 		$first = reset($this->gadgets);
 		$iterator = new SwatDBReadaheadIterator($this->gadgets);
@@ -101,22 +102,24 @@ class SiteSidebar extends SwatWidget implements SwatUIParent
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'site-sidebar-gadget';
 
-			if ($first === $gadget)
+			if ($first === $gadget) {
 				$div_tag->class.= ' site-sidebar-gadget-first';
+			}
 
-			if ($iterator->isLast())
+			if ($iterator->isLast()) {
 				$div_tag->class.= ' site-sidebar-gadget-last';
+			}
 
 			$div_tag->class.= $this->getGadgetCSSClassName($gadget);
 
-			$div_tag->open();
+			$div_tag->open($context);
 
-			$gadget->display();
+			$gadget->display($context);
 
-			$div_tag->close();
+			$div_tag->close($context);
 		}
 
-		$div_tag->close();
+		$div_tag->close($context);
 	}
 
 	// }}}

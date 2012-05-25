@@ -9,16 +9,20 @@ require_once 'Swat/SwatButton.php';
  * style but not button names.
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2012 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteUnnamedButton extends SwatButton
 {
 	// {{{ public function display()
 
-	public function display()
+	public function display(SwatDisplayContext $context)
 	{
-		if (!$this->visible)
+		if (!$this->visible) {
 			return;
+		}
+
+		SawtControl::display($context);
 
 		$form = $this->getFirstAncestor('SwatForm');
 		$primary = ($form !== null &&
@@ -30,10 +34,11 @@ class SiteUnnamedButton extends SwatButton
 		$input_tag->value = $this->title;
 		$input_tag->class = $this->getCSSClassString();
 
-		if ($this->access_key != '')
+		if ($this->access_key != '') {
 			$input_tag->accesskey = $this->access_key;
+		}
 
-		$input_tag->display();
+		$input_tag->display($context);
 	}
 
 	// }}}

@@ -9,9 +9,9 @@ require_once 'Swat/SwatForm.php';
  * This is useful if the form's method is set to HTTP GET.
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
- * @see SwatForm::setMethod()
+ * @see       SwatForm::setMethod()
  */
 class SiteSearchForm extends SwatForm
 {
@@ -40,7 +40,7 @@ class SiteSearchForm extends SwatForm
 	// }}}
 	// {{{ protected function displayHiddenFields()
 
-	protected function displayHiddenFields()
+	protected function displayHiddenFields(SwatDisplayContext $context)
 	{
 		/*
 		 * Override to not output any hidden fields since search forms use the
