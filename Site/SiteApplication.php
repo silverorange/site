@@ -728,7 +728,7 @@ abstract class SiteApplication extends SiteObject
 	// {{{ public function deleteCacheValue()
 
 	/**
-	 * Get a cached value
+	 * Deletes a value from the cache by key
 	 *
 	 * @param string $key
 	 * @param string $name_space
