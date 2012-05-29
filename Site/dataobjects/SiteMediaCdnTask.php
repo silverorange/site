@@ -23,16 +23,9 @@ class SiteMediaCdnTask extends SiteCdnTask
 	{
 		switch ($this->operation) {
 		case 'copy':
-			$attempt = sprintf(
-				Site::_('Copying the ‘%s’ encoding of media ‘%s’ ... '),
-				$this->encoding->shortname,
-				$this->media->id);
-
-			break;
-
 		case 'update':
-			$attempt = sprintf(Site::_(
-				'Updating metadata for the ‘%s’ encoding of media ‘%s’ ... '),
+			$attempt = sprintf(
+				Site::_('Updating the ‘%s’ encoding of media ‘%s’ ... '),
 				$this->encoding->shortname,
 				$this->media->id);
 
@@ -40,7 +33,7 @@ class SiteMediaCdnTask extends SiteCdnTask
 
 		default:
 			$attempt = sprintf($this->getAttemptDescriptionString(),
-				Site::_('image'),
+				Site::_('media'),
 				$this->getInternalValue('media'),
 				$this->file_path,
 				$this->operation);
@@ -68,52 +61,38 @@ class SiteMediaCdnTask extends SiteCdnTask
 	}
 
 	// }}}
-	// {{{ protected function copyItem()
+	// {{{ protected function copy()
 
-	protected function copyItem(SiteCdnModule $cdn)
+	protected function copy(SiteCdnModule $cdn)
 	{
 		if ($this->hasMediaAndEncoding()) {
+			$shortname = $this->encoding->shortname;
+
 			// Perform all DB actions first. That way we can roll them back if
 			// anything goes wrong with the CDN operation.
-			$this->media->setOnCdn(true, $this->encoding->shortname);
+			$this->media->setOnCdn(true, $shortname);
 
-			$binding = $this->media->getEncodingBinding(
-				$this->encoding->shortname);
+			$headers = $this->media->getHttpHeaders($shortname);
+
+			if (strlen($this->override_http_headers)) {
+				$headers = array_merge(
+					$headers, unserialize($this->override_http_headers)
+				);
+			}
 
 			$cdn->copyFile(
-				$this->media->getFilePath($this->encoding->shortname),
-				$this->media->getUriSuffix($this->encoding->shortname),
-				$binding->media_type->mime_type,
-				$this->getAccessType(),
-				$this->getHttpHeaders());
+				$this->media->getUriSuffix($shortname),
+				$this->media->getFilePath($shortname),
+				$headers,
+				$this->getAccessType()
+			);
 		}
-
-		return true;
 	}
 
 	// }}}
-	// {{{ protected function updateItemMetadata()
+	// {{{ protected function remove()
 
-	protected function updateItemMetadata(SiteCdnModule $cdn)
-	{
-		if ($this->hasMediaAndEncoding()) {
-			$binding = $this->media->getEncodingBinding(
-				$this->encoding->shortname);
-
-			$cdn->updateFileMetadata(
-				$this->media->getUriSuffix($this->encoding->shortname),
-				$binding->media_type->mime_type,
-				$this->getAccessType(),
-				$this->getHttpHeaders());
-		}
-
-		return true;
-	}
-
-	// }}}
-	// {{{ protected function deleteItem()
-
-	protected function deleteItem(SiteCdnModule $cdn)
+	protected function remove(SiteCdnModule $cdn)
 	{
 		// Perform all DB actions first. That way we can roll them back if
 		// anything goes wrong with the CDN operation.
@@ -121,7 +100,9 @@ class SiteMediaCdnTask extends SiteCdnTask
 			$this->media->setOnCdn(false, $this->encoding->shortname);
 		}
 
-		return parent::deleteItem($cdn);
+		$cdn->removeFile(
+			$this->file_path
+		);
 	}
 
 	// }}}
@@ -133,34 +114,6 @@ class SiteMediaCdnTask extends SiteCdnTask
 	{
 		return (($this->media instanceof SiteMedia) &&
 			($this->encoding instanceof SiteMediaEncoding));
-	}
-
-	// }}}
-	// {{{ protected function getAccessType()
-
-	protected function getAccessType()
-	{
-		return 'private';
-	}
-
-	// }}}
-	// {{{ protected function getHttpHeaders()
-
-	protected function getHttpHeaders()
-	{
-		$headers = parent::getHttpHeaders();
-
-		$headers['content-disposition'] = sprintf('attachment; filename="%s"',
-			$this->media->getContentDispositionFilename(
-				$this->encoding->shortname));
-
-		if (strlen($this->override_http_headers)) {
-			$headers = array_merge(
-				$headers,
-				unserialize($this->override_http_headers));
-		}
-
-		return $headers;
 	}
 
 	// }}}

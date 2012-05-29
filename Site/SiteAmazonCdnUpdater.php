@@ -19,7 +19,7 @@ class SiteAmazonCdnUpdater extends SiteCdnUpdater
 	{
 		parent::configure($config);
 
-		$this->cdn->bucket_id         = $config->amazon->bucket;
+		$this->cdn->bucket            = $config->amazon->bucket;
 		$this->cdn->access_key_id     = $config->amazon->access_key_id;
 		$this->cdn->access_key_secret = $config->amazon->access_key_secret;
 	}

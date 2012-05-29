@@ -16,40 +16,23 @@ abstract class SiteCdnModule extends SiteApplicationModule
 	/**
 	 * Copies a file to the CDN
 	 *
-	 * @param string $source the source path of the file to copy.
-	 * @param string $destination the destination path of the file to copy.
-	 * @param string $mime_type the MIME type of the file.
+	 * @param string $filename the name of the file to update.
+	 * @param string $source the local source of the file.
+	 * @param array $headers an array of headers associated with the file.
 	 * @param string $access_type the access type, public/private, of the file.
-	 * @param array $http_headers an array of headers associated with the file.
-	 * @param array $metadata an array of metadata associated with the file.
 	 */
-	abstract public function copyFile($source, $destination, $mime_type = null,
-		$access_type = null, $http_headers = array(), $metadata = array());
+	abstract public function copyFile($filename, $source, $headers,
+		$access_type);
 
 	// }}}
-	// {{{ abstract public function updateFileMetadata()
+	// {{{ abstract public function removeFile()
 
 	/**
-	 * Updates a file's metadata
+	 * Removes a file from the CDN
 	 *
-	 * @param string $path the path of the file to update.
-	 * @param string $mime_type the MIME type of the file.
-	 * @param string $access_type the access type, public/private, of the file.
-	 * @param array $http_headers an array of headers associated with the file.
-	 * @param array $metadata an array of metadata associated with the file.
+	 * @param string $filename the name of the file to delete.
 	 */
-	abstract public function updateFileMetadata($path, $mime_type = null,
-		$access_type = null, $http_headers = array(), $metadata = array());
-
-	// }}}
-	// {{{ abstract public function deleteFile()
-
-	/**
-	 * Deletes a file from the CDN
-	 *
-	 * @param string $file_path the path, on the CDN, of the file to delete.
-	 */
-	abstract public function deleteFile($file_path);
+	abstract public function removeFile($filename);
 
 	// }}}
 }
