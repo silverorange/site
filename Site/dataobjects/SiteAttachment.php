@@ -296,6 +296,31 @@ class SiteAttachment extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getHttpHeaders()
+
+	public function getHttpHeaders()
+	{
+		$headers = array();
+
+		// Set a "never-expire" policy with a far future max age (10 years) as
+		// suggested http://developer.yahoo.com/performance/rules.html#expires.
+		// As well, set Cache-Control to public, as this allows some browsers to
+		// cache the images to disk while on https, which is a good win. This
+		// depends on setting new object ids when updating the object, if this
+		// isn't true of a subclass this will have to be overwritten.
+		$headers['Cache-Control'] = 'public, max-age=315360000';
+
+		$headers['Content-Type'] = $this->mime_type;
+		$headers['Content-Length'] = $this->file_size;
+		$headers['Content-Disposition'] = sprintf(
+			'attachment; filename="%s"',
+			$this->getContentDispositionFilename()
+		);
+
+		return $headers;
+	}
+
+	// }}}
 	// {{{ public function load()
 
 	public function load($id)
@@ -432,14 +457,14 @@ class SiteAttachment extends SwatDBDataObject
 		$task->setDatabase($this->db);
 		$task->operation = $operation;
 
-		if ($operation == 'copy') {
+		if (($operation == 'copy') || ($operation == 'update')) {
 			$task->attachment = $this;
 			$task->override_http_headers = serialize(
 				array(
-					'content-disposition' => sprintf(
+					'Content-Disposition' => sprintf(
 						'attachment; filename="%s"',
 						$this->getContentDispositionFilename()
-					),
+					)
 				)
 			);
 		} else {

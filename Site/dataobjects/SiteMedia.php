@@ -538,14 +538,18 @@ class SiteMedia extends SwatDBDataObject
 		$task->setDatabase($this->db);
 		$task->operation = $operation;
 
-		if ($operation == 'copy') {
+		if (($operation == 'copy') || ($operation == 'update')) {
 			$task->media    = $this;
 			$task->encoding = $encoding;
-			$task->override_http_headers = serialize(array(
-				'content-disposition' => sprintf('attachment; filename="%s"',
-					$this->getContentDispositionFilename(
-						$encoding->shortname)),
-				));
+			$task->override_http_headers = serialize(
+				array(
+					'Content-Disposition' => sprintf(
+						'attachment; filename="%s"',
+						$this->getContentDispositionFilename(
+							$encoding->shortname)
+					)
+				)
+			);
 		} else {
 			$task->file_path = $this->getUriSuffix($encoding->shortname);
 		}
@@ -674,8 +678,6 @@ class SiteMedia extends SwatDBDataObject
 
 	public function getContentDispositionFilename($encoding_shortname)
 	{
-		$binding = $this->getEncodingBinding($encoding_shortname);
-
 		$filename = $this->getFilename($encoding_shortname);
 
 		// Convert to an ASCII string. Approximate non ACSII characters.
@@ -686,6 +688,33 @@ class SiteMedia extends SwatDBDataObject
 			array("\\\\", "\\\r", "\\\""), $filename);
 
 		return $filename;
+	}
+
+	// }}}
+	// {{{ public function getHttpHeaders()
+
+	public function getHttpHeaders($encoding_shortname)
+	{
+		$headers = array();
+
+		// Set a "never-expire" policy with a far future max age (10 years) as
+		// suggested http://developer.yahoo.com/performance/rules.html#expires.
+		// As well, set Cache-Control to public, as this allows some browsers to
+		// cache the images to disk while on https, which is a good win. This
+		// depends on setting new object ids when updating the object, if this
+		// isn't true of a subclass this will have to be overwritten.
+		$headers['Cache-Control'] = 'public, max-age=315360000';
+
+		$binding = $this->getEncodingBinding($encoding_shortname);
+
+		$headers['Content-Type'] = $binding->media_type->mime_type;
+		$headers['Content-Length'] = $binding->filesize;
+		$headers['Content-Disposition'] = sprintf(
+			'attachment; filename="%s"',
+			$this->getContentDispositionFilename($encoding_shortname)
+		);
+
+		return $headers;
 	}
 
 	// }}}
