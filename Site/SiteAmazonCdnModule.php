@@ -1,8 +1,6 @@
 <?php
 
-require_once 'Services/Amazon/S3.php';
-require_once 'Services/Amazon/S3/AccessControlList.php';
-require_once 'Swat/exceptions/SwatFileNotFoundException.php';
+require_once 'AWSSDKforPHP/sdk.class.php';
 require_once 'Site/SiteCdnModule.php';
 require_once 'Site/exceptions/SiteCdnException.php';
 
@@ -22,7 +20,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 *
 	 * @var string
 	 */
-	public $bucket_id;
+	public $bucket;
 
 	/**
 	 * The key to use for accessing the bucket
@@ -42,46 +40,11 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	// {{{ protected properties
 
 	/**
-	 * The Amazon S3 bucket
+	 * The Amazon S3 accessor
 	 *
-	 * @var Services_Amazon_S3_Resource_Bucket
+	 * @var AmazonS3
 	 */
-	protected $bucket;
-
-	/**
-	 * A fileinfo resource for looking up MIME types
-	 *
-	 * @var magic database resource
-	 */
-	protected $finfo;
-
-	/**
-	 * Whether or not to check the md5 of a file when saving.
-	 *
-	 * If true, check to see if the object already exists and checks the current
-	 * file's md5 against the new file's md5 before copying. Defaults to true.
-	 *
-	 * md5 is always saved in a custom metadata field. ETag isn't used because
-	 * amazon doesn't guarantee it to always be the file's md5. Files uploaded
-	 * as multi-part requests do not have an ETag that matches the source files
-	 * md5. Multi-part uploads generate a custom ETag, and can be distinguished
-	 * by the fact they end with a dash and then a number. See
-	 * {@link https://forums.aws.amazon.com/thread.jspa?messageID=203436&#203510}
-	 *
-	 * @var boolean
-	 */
-	protected $check_md5 = true;
-
-	/**
-	 * Whether or not to update metadata if saving an file that already exists.
-	 *
-	 * If true, and the object already exists, update the existing metadata on
-	 * the object when attempting a copy. If false, do nothing on copy. Defaults
-	 * to true.
-	 *
-	 * @var boolean
-	 */
-	protected $update_metadata = true;
+	protected $s3;
 
 	// }}}
 	// {{{ public function init()
@@ -91,39 +54,12 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public function init()
 	{
-		$s3 = Services_Amazon_S3::getAccount(
-			$this->access_key_id,
-			$this->access_key_secret);
-
-		$this->bucket = $s3->getBucket($this->bucket_id);
-	}
-
-	// }}}
-	// {{{ public function setCheckMd5()
-
-	/**
-	 * Sets whether or not to check the md5 field;
-	 *
-	 * @param boolean $check_md5 true if we want to check it, false if we don't.
-	 */
-	public function setCheckMd5($check_md5 = true)
-	{
-		$this->check_md5 = (bool) $check_md5;
-	}
-
-	// }}}
-	// {{{ public function setUpdateMetadata()
-
-	/**
-	 * Sets whether or not to update metadata when attempting to copy a file
-	 * that already exists on the CDN.
-	 *
-	 * @param boolean $update_metadata true if we want to update the file, false
-	 *                                  if we don't.
-	 */
-	public function setUpdateMetadata($update_metadata = true)
-	{
-		$this->update_metadata = (bool) $update_metadata;
+		$this->s3 = new AmazonS3(
+			array(
+				'key' => $this->access_key_id,
+				'secret' => $this->access_key_secret,
+			)
+		);
 	}
 
 	// }}}
@@ -132,239 +68,109 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	/**
 	 * Copies a file to the Amazon S3 bucket
 	 *
-	 * @param string $source the source path of the file to copy.
-	 * @param string $destination the destination path of the file to copy.
-	 * @param string $mime_type the MIME type of the file. If null, we grab the
-	 *                           MIME type from the file. Defaults to null.
+	 * @param string $filename the name of the file to create/replace.
+	 * @param string $source the source file to copy to S3.
+	 * @param array $headers an array of HTTP headers associated with the file.
 	 * @param string $access_type the access type, public/private, of the file.
-	 *                              Defaults to 'public'.
-	 * @param array $http_headers HTTP headers associated with the file.
-	 *                             Defaults to an empty array.
-	 * @param array $metadata metadata associated with the file.
-	 *                         Defaults to an empty array.
-	 *
-	 * @returns boolean true if the file was copied, false if a file with the
-	 *                   same path and md5 already exists on s3.
-	 *
-	 * @throws SwatFileNotFoundException if the source file doesn't exist
-	 * @throws SiteCdnException if the CDN encounters any problems
-	 */
-	public function copyFile($source, $destination, $mime_type = null,
-		$access_type = 'public', $http_headers = array(), $metadata = array())
-	{
-		$copied = false;
-
-		try {
-			if (file_exists($source) === false) {
-				throw new SwatFileNotFoundException(sprintf(
-					Site::_('Unable to locate file ‘%s’.'), $source));
-			}
-
-			$metadata['md5'] = md5_file($source);
-			$http_headers['Content-MD5'] =
-				$this->hexToBase64($metadata['md5']);
-
-			$s3_object = $this->bucket->getObject($destination);
-			$copy      = true;
-			$update    = false;
-
-			if ($this->check_md5 &&
-				$s3_object->load(
-					Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY)) {
-
-				// Fallback to comparing the ETag to the local md5 if the custom
-				// custom metadata md5 doesn't exist (for example if the file
-				// was not uploaded by the SiteAmazonCdnModule.
-				$s3_md5 = (array_key_exists('md5', $s3_object->userMetadata)) ?
-					$s3_object->userMetadata['md5'] : $s3_object->eTag;
-
-				// ETag's with a dash are from multi-part uploads and do not
-				// match the local md5. Throw an exception when this happens
-				// instead of trying to re-copy the file as this usually happens
-				// when large files are manually uploaded, and we don't want to
-				// have to upload them again.
-				if (strpos($s3_md5, '-') !== false) {
-					throw new SiteCdnException(sprintf(Site::_(
-						'Attempting to compare a multi-part upload ETag to a '.
-						'local MD5.')));
-				}
-
-				$copy   = ($s3_md5 !== $metadata['md5']);
-				$update = ($copy === false && $this->update_metadata);
-			}
-
-			if ($copy) {
-				$copied = true;
-				if ($mime_type === null) {
-					$finfo     = $this->getFinfo();
-					$mime_type = finfo_file($finfo, $source);
-				}
-
-				$file = file_get_contents($source);
-				if ($file === false) {
-					throw new SwatFileNotFoundException(sprintf(
-						Site::_('Unable to open file ‘%s’.'), $source));
-				}
-
-				$s3_object->data         = $file;
-				$s3_object->contentType  = $mime_type;
-				$s3_object->acl          = $this->getAcl($access_type);
-				$s3_object->httpHeaders  = $http_headers;
-				$s3_object->userMetadata = $metadata;
-
-				$s3_object->save();
-			} elseif ($update) {
-				$copied = $this->updateFileMetadata($destination, $mime_type,
-					$access_type, $http_headers, $metadata);
-			}
-		} catch (Services_Amazon_S3_Exception $e) {
-			throw new SiteCdnException($e);
-		}
-
-		return $copied;
-	}
-
-	// }}}
-	// {{{ public function updateFile()
-
-	/**
-	 * Copies a file to the Amazon S3 bucket
-	 *
-	 * @param string $path the path of the file to update.
-	 * @param string $access_type the access type, public/private, of the file.
-	 *                              Defaults to 'public'.
-	 * @param array $http_headers HTTP headers associated with the file.
-	 *                             Defaults to an empty array.
-	 * @param array $metadata metadata associated with the file.
-	 *                         Defaults to an empty array.
-	 *
-	 * @returns boolean true if the file was copied, false otherwise.
 	 *
 	 * @throws SiteCdnException if the CDN encounters any problems
 	 */
-	public function updateFileMetadata($path, $mime_type = null,
-		$access_type = 'public', $http_headers = array(), $metadata = array())
+	public function copyFile($filename, $source, $headers, $access_type)
 	{
-		$updated = false;
-
-		try {
-			$s3_object = $this->bucket->getObject($path);
-
-			// load existing metadata so we can re-save what doesn't change
-			$s3_object->load(
-				Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY);
-
-			// preserve mime_type if no new mime_type has been set.
-			$s3_object->contentType = ($mime_type === null) ?
-				$s3_object->contentType :
-				$mime_type;
-
-			// preserve acl if no new acl has been set.
-			$s3_object->acl = ($access_type === null) ?
-				$s3_object->acl :
-				$this->getAcl($access_type);
-
-			// merge existing headers and metadata with new values instead
-			// of completely overwriting. This is so we can only update one
-			// of the values instead of having to set everything from
-			// scratch.
-			$s3_object->httpHeaders = array_merge(
-				$s3_object->httpHeaders,
-				$http_headers);
-
-			$s3_object->userMetadata = array_merge(
-				$s3_object->userMetadata,
-				$metadata);
-
-			// false as second parameter prevents the metadata being copied
-			// wholesale from the original, and allows the file to copy in
-			// place with the new metadata.
-			$s3_object->copyFrom($s3_object, false);
-
-			$updated = true;
-		} catch (Services_Amazon_S3_Exception $e) {
-			throw new SiteCdnException($e);
+		if (!is_file($source)) {
+			throw new SiteCdnException(
+				sprintf(Site::_('“%s” is not a regular file.'), $source)
+			);
 		}
 
-		return $updated;
+		if (!is_readable($source)) {
+			throw new SiteCdnException(
+				sprintf(Site::_('Unable to read “%s.”'), $source)
+			);
+		}
+
+		$headers['x-amz-meta-md5'] = md5_file($source);
+
+		$acl = AmazonS3::ACL_PRIVATE;
+
+		if (strcasecmp($access_type, 'public') === 0) {
+			$acl = AmazonS3::ACL_PUBLIC;
+		}
+
+		$metadata = $this->s3->get_object_metadata($this->bucket, $filename);
+
+		$new_md5 = $headers['x-amz-meta-md5'];
+		$old_md5 = isset($metadata['Headers']['x-amz-meta-md5']) ?
+			$metadata['Headers']['x-amz-meta-md5'] : '';
+
+		if (($old_md5 != '') && ($new_md5 === $old_md5)) {
+			$this->handleResponse(
+				$this->s3->update_object(
+					$this->bucket,
+					$filename,
+					array(
+						'acl' => $acl,
+						'headers' => $headers,
+					)
+				)
+			);
+		} else {
+			$this->handleResponse(
+				$this->s3->create_object(
+					$this->bucket,
+					$filename,
+					array(
+						'acl' => $acl,
+						'headers' => $headers,
+						'fileUpload' => $source,
+					)
+				)
+			);
+		}
 	}
 
 	// }}}
-	// {{{ public function deleteFile()
+	// {{{ public function removeFile()
 
 	/**
-	 * Deletes a file from the Amazon S3 bucket
+	 * Removes a file from the Amazon S3 bucket
 	 *
-	 * @param string $file_path the path, in the bucket, of the file to delete.
+	 * @param string $filename the name of the file to remove.
 	 *
-	 * @throws SwatFileNotFoundException if the file doesn't exist
 	 * @throws SiteCdnException if the CDN encounters any problems
 	 */
-	public function deleteFile($file_path)
+	public function removeFile($filename)
 	{
-		try {
-			if (strlen($file_path) === 0) {
-				throw new SwatFileNotFoundException(
-					Site::_('Unable to delete file with empty path.'));
-			}
-
-			$s3_object = $this->bucket->getObject($file_path);
-			$load_type = Services_Amazon_S3_Resource_Object::LOAD_METADATA_ONLY;
-
-			if (!$s3_object->load($load_type)) {
-				throw new SwatFileNotFoundException(sprintf(
-					Site::_('Unable to locate file ‘%s’ on the CDN.'),
-						$file_path));
-			}
-
-			$s3_object->delete();
-		} catch (Services_Amazon_S3_Exception $e) {
-			throw new SiteCdnException($e);
-		}
+		$this->handleResponse(
+			$this->s3->delete_object(
+				$this->bucket,
+				$filename
+			)
+		);
 	}
 
 	// }}}
-	// {{{ protected function getFinfo()
-
-	protected function getFinfo()
-	{
-		if ($this->finfo === null) {
-			$this->finfo = finfo_open(FILEINFO_MIME);
-		}
-
-		return $this->finfo;
-	}
-
-	// }}}
-	// {{{ protected function getAcl()
-
-	protected function getAcl($access_type)
-	{
-		switch ($access_type) {
-		case 'private':
-			$acl = Services_Amazon_S3_AccessControlList::ACL_AUTHENTICATED_READ;
-			break;
-		default:
-			$acl = Services_Amazon_S3_AccessControlList::ACL_PUBLIC_READ;
-			break;
-		}
-
-		return $acl;
-	}
-
-	// }}}
-	// {{{ protected function hexToBase64()
+	// {{{ protected function handleResponse()
 
 	/**
-	 * Converts a hexadecimal value to base-64
+	 * Handles a response from a CDN operation
 	 *
-	 * @param string $string the hexadecimal calue to convert.
+	 * @param CFResponse $response the response to the CDN operation.
 	 *
-	 * @return string a base-64-encoded string.
+	 * @throws SiteCdnException if the response indicates an error
 	 */
-	protected function hexToBase64($string)
+	protected function handleResponse(CFResponse $response)
 	{
-		return base64_encode(pack('H*', $string));
+		echo $response->status.' ... ';
+		if (!$response->isOK()) {
+			if ($response->body instanceof SimpleXMLElement) {
+				$message = $response->body->asXML();
+			} else {
+				$message = 'No error response body provided.';
+			}
+
+			throw new SiteCdnException($message, $response->status);
+		}
 	}
 
 	// }}}

@@ -43,9 +43,9 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 	}
 
 	// }}}
-	// {{{ protected function copyItem()
+	// {{{ protected function copy()
 
-	protected function copyItem(SiteCdnModule $cdn)
+	protected function copy(SiteCdnModule $cdn)
 	{
 		if ($this->hasAttachment()) {
 			// Perform all DB actions first. That way we can roll them back if
@@ -53,37 +53,27 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 			$this->attachment->on_cdn = true;
 			$this->attachment->save();
 
+			$headers = $this->attachment->getHttpHeaders();
+
+			if (strlen($this->override_http_headers)) {
+				$headers = array_merge(
+					$headers, unserialize($this->override_http_headers)
+				);
+			}
+
 			$cdn->copyFile(
+				$this->attachment->getUriSuffix(),
 				$this->attachment->getFilePath(),
-				$this->attachment->getUriSuffix(),
-				$this->attachment->mime_type,
-				$this->getAccessType(),
-				$this->getHttpHeaders());
+				$headers,
+				$this->getAccessType()
+			);
 		}
-
-		return true;
 	}
 
 	// }}}
-	// {{{ protected function updateItemMetadata()
+	// {{{ protected function remove()
 
-	protected function updateItemMetadata(SiteCdnModule $cdn)
-	{
-		if ($this->hasAttachment()) {
-			$cdn->updateFileMetadata(
-				$this->attachment->getUriSuffix(),
-				$this->attachment->mime_type,
-				$this->getAccessType(),
-				$this->getHttpHeaders());
-		}
-
-		return true;
-	}
-
-	// }}}
-	// {{{ protected function deleteItem()
-
-	protected function deleteItem(SiteCdnModule $cdn)
+	protected function remove(SiteCdnModule $cdn)
 	{
 		// Perform all DB actions first. That way we can roll them back if
 		// anything goes wrong with the CDN operation.
@@ -92,7 +82,9 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 			$this->attachment->save();
 		}
 
-		return parent::deleteItem($cdn);
+		$cdn->removeFile(
+			$this->file_path
+		);
 	}
 
 	// }}}
@@ -103,33 +95,6 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 	protected function hasAttachment()
 	{
 		return ($this->attachment instanceof SiteAttachment);
-	}
-
-	// }}}
-	// {{{ protected function getAccessType()
-
-	protected function getAccessType()
-	{
-		return 'private';
-	}
-
-	// }}}
-	// {{{ protected function getHttpHeaders()
-
-	protected function getHttpHeaders()
-	{
-		$headers = parent::getHttpHeaders();
-
-		$headers['content-disposition'] = sprintf('attachment; filename="%s"',
-			$this->attachment->getContentDispositionFilename());
-
-		if (strlen($this->override_http_headers)) {
-			$headers = array_merge(
-				$headers,
-				unserialize($this->override_http_headers));
-		}
-
-		return $headers;
 	}
 
 	// }}}

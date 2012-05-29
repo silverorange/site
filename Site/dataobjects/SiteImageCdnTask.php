@@ -23,16 +23,9 @@ class SiteImageCdnTask extends SiteCdnTask
 	{
 		switch ($this->operation) {
 		case 'copy':
-			$attempt = sprintf(
-				Site::_('Copying the dimension ‘%s’ of image ‘%s’ ... '),
-				$this->dimension->shortname,
-				$this->image->id);
-
-			break;
-
 		case 'update':
-			$attempt = sprintf(Site::_(
-				'Updating metadata for the dimension ‘%s’ of image ‘%s’ ... '),
+			$attempt = sprintf(
+				Site::_('Updating the dimension ‘%s’ of image ‘%s’ ... '),
 				$this->dimension->shortname,
 				$this->image->id);
 
@@ -68,46 +61,38 @@ class SiteImageCdnTask extends SiteCdnTask
 	}
 
 	// }}}
-	// {{{ protected function copyItem()
+	// {{{ protected function copy()
 
-	protected function copyItem(SiteCdnModule $cdn)
+	protected function copy(SiteCdnModule $cdn)
 	{
 		if ($this->hasImageAndDimension()) {
+			$shortname = $this->dimension->shortname;
+
 			// Perform all DB actions first. That way we can roll them back if
 			// anything goes wrong with the CDN operation.
-			$this->image->setOnCdn(true, $this->dimension->shortname);
+			$this->image->setOnCdn(true, $shortname);
+
+			$headers = $this->image->getHttpHeaders($shortname);
+
+			if (strlen($this->override_http_headers)) {
+				$headers = array_merge(
+					$headers, unserialize($this->override_http_headers)
+				);
+			}
 
 			$cdn->copyFile(
-				$this->image->getFilePath($this->dimension->shortname),
-				$this->image->getUriSuffix($this->dimension->shortname),
-				$this->image->getMimeType($this->dimension->shortname),
-				$this->getAccessType(),
-				$this->getHttpHeaders());
+				$this->image->getUriSuffix($shortname),
+				$this->image->getFilePath($shortname),
+				$headers,
+				$this->getAccessType()
+			);
 		}
-
-		return true;
 	}
 
 	// }}}
-	// {{{ protected function updateItemMetadata()
+	// {{{ protected function remove()
 
-	protected function updateItemMetadata(SiteCdnModule $cdn)
-	{
-		if ($this->hasImageAndDimension()) {
-			$cdn->updateFileMetadata(
-				$this->image->getUriSuffix($this->dimension->shortname),
-				$this->image->getMimeType($this->dimension->shortname),
-				$this->getAccessType(),
-				$this->getHttpHeaders());
-		}
-
-		return true;
-	}
-
-	// }}}
-	// {{{ protected function deleteItem()
-
-	protected function deleteItem(SiteCdnModule $cdn)
+	protected function remove(SiteCdnModule $cdn)
 	{
 		// Perform all DB actions first. That way we can roll them back if
 		// anything goes wrong with the CDN operation.
@@ -115,7 +100,9 @@ class SiteImageCdnTask extends SiteCdnTask
 			$this->image->setOnCdn(false, $this->dimension->shortname);
 		}
 
-		return parent::deleteItem($cdn);
+		$cdn->removeFile(
+			$this->file_path
+		);
 	}
 
 	// }}}
@@ -135,22 +122,6 @@ class SiteImageCdnTask extends SiteCdnTask
 	protected function getAccessType()
 	{
 		return 'public';
-	}
-
-	// }}}
-	// {{{ protected function getHttpHeaders()
-
-	protected function getHttpHeaders()
-	{
-		$headers = parent::getHttpHeaders();
-
-		if (strlen($this->override_http_headers)) {
-			$headers = array_merge(
-				$headers,
-				unserialize($this->override_http_headers));
-		}
-
-		return $headers;
 	}
 
 	// }}}
