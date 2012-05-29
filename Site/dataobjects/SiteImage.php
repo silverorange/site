@@ -13,7 +13,7 @@ require_once 'Site/exceptions/SiteInvalidImageException.php';
  * An image data object
  *
  * @package   Site
- * @copyright 2008-2010 silverorange
+ * @copyright 2008-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImage extends SwatDBDataObject
@@ -513,6 +513,26 @@ class SiteImage extends SwatDBDataObject
 	public function setFileBase($path)
 	{
 		$this->file_base = $path;
+	}
+
+	// }}}
+	// {{{ public function getHttpHeaders()
+
+	public function getHttpHeaders($dimension_shortname)
+	{
+		$headers = array();
+
+		// Set a "never-expire" policy with a far future max age (10 years) as
+		// suggested http://developer.yahoo.com/performance/rules.html#expires.
+		// As well, set Cache-Control to public, as this allows some browsers to
+		// cache the images to disk while on https, which is a good win. This
+		// depends on setting new object ids when updating the object, if this
+		// isn't true of a subclass this will have to be overwritten.
+		$headers['Cache-Control'] = 'public, max-age=315360000';
+
+		$headers['Content-Type'] = $this->getMimeType($dimension_shortname);
+
+		return $headers;
 	}
 
 	// }}}
@@ -1291,7 +1311,7 @@ class SiteImage extends SwatDBDataObject
 		$task->setDatabase($this->db);
 		$task->operation = $operation;
 
-		if ($operation == 'copy') {
+		if (($operation == 'copy') || ($operation == 'update')) {
 			$task->image     = $this;
 			$task->dimension = $dimension;
 		} else {
