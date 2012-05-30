@@ -150,7 +150,7 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 
 	protected function getFullname()
 	{
-		$fullname = $this->getAccount->getFullname();
+		$fullname = $this->account->getFullname();
 
 		if ($fullname == '') {
 			// in case account doesn't have a fullname for some reason
