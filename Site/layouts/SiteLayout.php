@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swat/SwatHtmlHeadEntrySet.php';
+require_once 'Swat/SwatDisplayContext.php';
 require_once 'Swat/SwatHtmlHeadEntrySetDisplayer.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/SiteApplication.php';
@@ -13,7 +13,7 @@ require_once 'Concentrate/CLI.php';
  * Base class for a layout
  *
  * @package   Site
- * @copyright 2005-2010 silverorange
+ * @copyright 2005-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteLayout extends SiteObject
@@ -34,17 +34,17 @@ class SiteLayout extends SiteObject
 	// {{{ protected properties
 
 	/**
-	 * @var SwatHtmlHeadEntrySet
-	 */
-	protected $html_head_entries;
-
-	/**
 	 * @var array
 	 *
 	 * @see SiteLayout::addBodyClass()
 	 * @see SiteLayout::removeBodyClass()
 	 */
 	protected $body_classes = array();
+
+	/**
+	 * @var SwatDisplayContext
+	 */
+	protected $display_context;
 
 	// }}}
 	// {{{ private properties
@@ -59,7 +59,7 @@ class SiteLayout extends SiteObject
 	public function __construct(SiteApplication $app, $filename = null)
 	{
 		$this->app = $app;
-		$this->html_head_entries = new SwatHtmlHeadEntrySet();
+		$this->display_context = new SwatDisplayContext();
 
 		if ($filename === null)
 			$filename = 'Site/layouts/xhtml/default.php';
@@ -134,6 +134,22 @@ class SiteLayout extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function getDisplayContext()
+
+	public function getDisplayContext()
+	{
+		return $this->display_context;
+	}
+
+	// }}}
+	// {{{ public function setDisplayContext()
+
+	public function setDisplayContext(SwatDisplayContext $context)
+	{
+		$this->display_context = $context;
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ public function init()
@@ -197,18 +213,95 @@ class SiteLayout extends SiteObject
 
 	/**
 	 * @param SwatHtmlHeadEntry|string $entry
+	 * @deprecated Use SiteLayout::addScript() and SiteLayout::addStyleSheet().
 	 */
 	public function addHtmlHeadEntry($entry)
 	{
-		$this->html_head_entries->addEntry($entry);
+		switch ($entry->getType()) {
+		case 'SwatJavaScriptHtmlHeadEntry':
+			$this->addScript($entry);
+			break;
+
+		case 'SwatStyleSheetHtmlHeadEntry':
+			$this->addStyleSheet($entry);
+			break;
+
+		case 'SwatCommentHtmlHeadEntry':
+			$this->addComment($entry);
+			break;
+
+		case 'SwatLinkHtmlHeadEntry':
+			$this->addLink($entry);
+			break;
+		}
 	}
 
 	// }}}
 	// {{{ public function addHtmlHeadEntrySet()
 
+	/**
+	 * @deprecated Use SiteLayout::addStyleSheet() and SiteLayout::addScript()
+	 */
 	public function addHtmlHeadEntrySet(SwatHtmlHeadEntrySet $set)
 	{
-		$this->html_head_entries->addEntrySet($set);
+		foreach ($set as $entry) {
+			$this->addHtmlHeadEntry($entry);
+		}
+	}
+
+	// }}}
+	// {{{ public function addStyleSheet()
+
+	/**
+	 * @param string|SwatStyleSheetHtmlHeadEntry $style
+	 */
+	public function addStyleSheet($style)
+	{
+		$this->display_context->addStyleSheet($style);
+	}
+
+	// }}}
+	// {{{ public function addScript()
+
+	/**
+	 * @param string|SwatJavaScriptHtmlHeadEntry $script
+	 */
+	public function addScript($script)
+	{
+		$this->display_context->addScript($script);
+	}
+
+	// }}}
+	// {{{ public function addLink()
+
+	/**
+	 * @param SwatLinkHtmlHeadEntry $link
+	 */
+	public function addLink(SwatLinkHtmlHeadEntry $link)
+	{
+		$this->display_context->addLink($link);
+	}
+
+	// }}}
+	// {{{ public function addComment()
+
+	/**
+	 * @param string|SwatCommentHtmlHeadEntry $comment
+	 */
+	public function addComment($comment)
+	{
+		$this->display_context->addComment($comment);
+	}
+
+	// }}}
+	// {{{ public function addInlineScript()
+
+	/**
+	 * @param string $script
+	 */
+	public function addInlineScript($script)
+	{
+		$this->display_context->addInlineScript($script);
 	}
 
 	// }}}
@@ -312,14 +405,25 @@ class SiteLayout extends SiteObject
 			$this->getMinifyEnabledByFlagFile());
 
 		$this->startCapture('html_head_entries');
+		//$this->displayLinks($displayer, $tag, $combine, $minify);
+		echo <<<HTML
+		<style>
+		@font-face {
+			font-family: 'CartoGothicStdBook';
+			src: url('fonts/CartoGothicStd-Book-webfont.eot');
+			src: local('☺'), url('fonts/CartoGothicStd-Book-webfont.woff') format('woff'), url('fonts/CartoGothicStd-Book-webfont.ttf') format('truetype'), url('../fonts/CartoGothicStd-Book-webfont.svg#webfontiSSvHuvy') format('svg');
+			font-weight: normal;
+			font-style: normal;
+		}
+		</style>
+HTML;
+		$this->displayStyleSheets($displayer, $tag, $combine, $minify);
+		$this->displayComments($displayer, $tag, $combine, $minify);
+		$this->endCapture();
 
-		$displayer->display(
-			$this->html_head_entries,
-			$this->app->getBaseHref(),
-			$tag,
-			$combine,
-			$minify);
-
+		$this->startCapture('foot_entries');
+		$this->displayScripts($displayer, $tag, $combine, $minify);
+		$this->displayInlineScripts($tag, $combine, $minify);
 		$this->endCapture();
 	}
 
@@ -383,6 +487,74 @@ class SiteLayout extends SiteObject
 		}
 
 		return $tag;
+	}
+
+	// }}}
+	// {{{ protected function displayScripts()
+
+	protected function displayScripts(SwatHtmlHeadEntrySetDisplayer $displayer,
+		$tag, $combine, $minify)
+	{
+		$displayer->display(
+			$this->display_context->getScripts(),
+			$this->app->getBaseHref(),
+			$tag,
+			$combine,
+			$minify
+		);
+	}
+
+	// }}}
+	// {{{ protected function displayStyleSheets()
+
+	protected function displayStyleSheets(
+		SwatHtmlHeadEntrySetDisplayer $displayer, $tag, $combine, $minify)
+	{
+		$displayer->display(
+			$this->display_context->getStyleSheets(),
+			$this->app->getBaseHref(),
+			$tag,
+			$combine,
+			$minify
+		);
+	}
+
+	// }}}
+	// {{{ protected function displayLinks()
+
+	protected function displayLinks(SwatHtmlHeadEntrySetDisplayer $displayer,
+		$tag, $combine, $minify)
+	{
+		$displayer->display(
+			$this->display_context->getLinks(),
+			$this->app->getBaseHref(),
+			$tag,
+			$combine,
+			$minify
+		);
+	}
+
+	// }}}
+	// {{{ protected function displayComments()
+
+	protected function displayComments(SwatHtmlHeadEntrySetDisplayer $displayer,
+		$tag, $combine, $minify)
+	{
+		$displayer->display(
+			$this->display_context->getComments(),
+			$this->app->getBaseHref(),
+			$tag,
+			$combine,
+			$minify
+		);
+	}
+
+	// }}}
+	// {{{ protected function displayInlineScripts()
+
+	protected function displayInlineScripts($tag, $combine, $minify)
+	{
+		$this->display_context->getInlineScripts()->display();
 	}
 
 	// }}}
