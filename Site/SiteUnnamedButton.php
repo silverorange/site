@@ -22,7 +22,7 @@ class SiteUnnamedButton extends SwatButton
 			return;
 		}
 
-		SawtControl::display($context);
+		SwatControl::display($context);
 
 		$form = $this->getFirstAncestor('SwatForm');
 		$primary = ($form !== null &&
