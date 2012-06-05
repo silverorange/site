@@ -161,7 +161,6 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	protected function handleResponse(CFResponse $response)
 	{
-		echo $response->status.' ... ';
 		if (!$response->isOK()) {
 			if ($response->body instanceof SimpleXMLElement) {
 				$message = $response->body->asXML();
