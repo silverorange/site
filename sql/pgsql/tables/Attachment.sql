@@ -5,8 +5,11 @@ create table Attachment (
 		references AttachmentSet(id) on delete cascade,
 
 	title varchar(255) not null,
-	filename varchar(255),
+
+	obfuscated_id varchar(255),
+	human_filename varchar(255),
 	original_filename varchar(255),
+
 	createdate timestamp,
 	-- store file size as a decimal to support large file sizes as we can't
 	-- support bigints. length of field assumes attachments won't be larger than
