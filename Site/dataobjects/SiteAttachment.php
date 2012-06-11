@@ -24,6 +24,13 @@ class SiteAttachment extends SwatDBDataObject
 	public $id;
 
 	/**
+	 * The obfuscated unique identifier of this attachment
+	 *
+	 * @var string
+	 */
+	public $obfuscated_id;
+
+	/**
 	 * The title of this attachment.
 	 *
 	 * Title is also used for ordering attachments.
@@ -35,17 +42,22 @@ class SiteAttachment extends SwatDBDataObject
 	/**
 	 * Original filename
 	 *
+	 * When serving the file this filename is second choice for the
+	 * Content-Disposition HTTP header.
+	 *
 	 * @var string
 	 */
 	public $original_filename;
 
 	/**
-	 * CDN filename if obfuscated filenames are used for this attachment's
-	 * attachment set
+	 * The optional, human friendly, filename of this attachment
+	 *
+	 * When serving the file this filename is first choice for the
+	 * Content-Disposition HTTP header.
 	 *
 	 * @var string
 	 */
-	public $filename;
+	public $human_filename;
 
 	/**
 	 * Mime type
@@ -267,32 +279,12 @@ class SiteAttachment extends SwatDBDataObject
 	public function getFilename()
 	{
 		if ($this->getAttachmentSet()->obfuscate_filename) {
-			$prefix = $this->filename;
+			$prefix = $this->obfuscated_id;
 		} else {
 			$prefix = $this->id;
 		}
 
 		return sprintf('%s.%s', $prefix, $this->getExtension());
-	}
-
-	// }}}
-	// {{{ public function getContentDispositionFilename()
-
-	public function getContentDispositionFilename()
-	{
-		// Convert to an ASCII string. Approximate non ACSII characters.
-		$filename = iconv(
-			'UTF-8', 'ASCII//TRANSLIT',
-			($this->filename != '') ?
-				$this->filename :
-				$this->original_filename
-		);
-
-		// Format the filename according to the qtext syntax in RFC 822
-		$filename = str_replace(array("\\", "\r", "\""),
-			array("\\\\", "\\\r", "\\\""), $filename);
-
-		return $filename;
 	}
 
 	// }}}
@@ -312,9 +304,22 @@ class SiteAttachment extends SwatDBDataObject
 
 		$headers['Content-Type'] = $this->mime_type;
 		$headers['Content-Length'] = $this->file_size;
+
+		// Convert to an ASCII string. Approximate non ACSII characters.
+		$filename = iconv(
+			'UTF-8', 'ASCII//TRANSLIT',
+			($this->human_filename != '') ?
+				$this->human_filename :
+				$this->original_filename
+		);
+
+		// Format the filename according to the qtext syntax in RFC 822
+		$filename = str_replace(array("\\", "\r", "\""),
+			array("\\\\", "\\\r", "\\\""), $filename);
+
 		$headers['Content-Disposition'] = sprintf(
 			'attachment; filename="%s"',
-			$this->getContentDispositionFilename()
+			$filename
 		);
 
 		return $headers;
@@ -348,19 +353,19 @@ class SiteAttachment extends SwatDBDataObject
 		try {
 			$transaction = new SwatDBTransaction($this->db);
 
-			$directory = $this->getFileDirectory();
-			if (!file_exists($directory) && !mkdir($directory, 0777, true)) {
-				throw new SiteException('Unable to create directory.');
-			}
-
 			if ($this->getAttachmentSet()->obfuscate_filename) {
-				$this->filename = sha1(uniqid(rand(), true));
+				$this->obfuscated_id = sha1(uniqid(rand(), true));
 			}
 
 			$this->save();
 
 			if ($this->getAttachmentSet()->use_cdn) {
 				$this->queueCdnTask('copy');
+			}
+
+			$directory = $this->getFileDirectory();
+			if (!file_exists($directory) && !mkdir($directory, 0777, true)) {
+				throw new SiteException('Unable to create directory.');
 			}
 
 			if (!copy($file_path, $this->getFilePath())) {
@@ -459,14 +464,6 @@ class SiteAttachment extends SwatDBDataObject
 
 		if (($operation == 'copy') || ($operation == 'update')) {
 			$task->attachment = $this;
-			$task->override_http_headers = serialize(
-				array(
-					'Content-Disposition' => sprintf(
-						'attachment; filename="%s"',
-						$this->getContentDispositionFilename()
-					)
-				)
-			);
 		} else {
 			$task->file_path = $this->getUriSuffix();
 		}
