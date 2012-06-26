@@ -14,7 +14,7 @@ require_once 'Site/exceptions/SiteException.php';
  * also be used to detect if the site is the mobile version.
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMobileModule extends SiteApplicationModule
@@ -420,6 +420,67 @@ class SiteMobileModule extends SiteApplicationModule
 				/ix', substr($useragent, 0, 4)));
 
 		return $match;
+	}
+
+	// }}}
+	// {{{ public function isHandheld()
+
+	/**
+	 * Gets whether or not the browser is a handheld device
+	 *
+	 * Handheld devices include phones (iPhone, Nexus S, etc) and media
+	 * players (iPod, Zune, etc). Tablets are NOT considered handheld
+	 * devices.
+	 *
+	 * @return boolean true if the browser is a handheld device. Otherwise
+	 *                 false.
+	 */
+	public function isHandheld()
+	{
+		$exp = '/
+			[\s\(]Android[\s;-].*\sMobile[\s;]
+			|
+			iPhone
+			|
+			iPod
+			/x';
+
+		return (isset($_SERVER['HTTP_USER_AGENT']) &&
+			preg_match($exp, $_SERVER['HTTP_USER_AGENT']) === 1);
+	}
+
+	// }}}
+	// {{{ public function getViewport()
+
+	/**
+	 * Gets a meta tag containing the default viewport parameters
+	 *
+	 * The viewport is set to device-width for handheld browsers and set to
+	 * a specificed width for other browsers.
+	 *
+	 * @param integer $width the default page width for non-handheld
+	 *                       browsers.
+	 *
+	 * @return SwatHtmlTag
+	 */
+	public function getViewport($width = 980)
+	{
+		$meta = new SwatHtmlTag('meta');
+		$meta->name = 'viewport';
+
+		if ($this->isHandheld()) {
+			$meta->content =
+				'width=device-width, '.
+				'initial-scale=1.0, '.
+				'maximum-scale=1.0, '.
+				'minimum-scale=1.0';
+		} else {
+			$meta->content =
+				'width='.intval($width).', '.
+				'maximum-scale=1.0';
+		}
+
+		return $meta;
 	}
 
 	// }}}
