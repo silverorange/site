@@ -450,6 +450,32 @@ class SiteMobileModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function isIOS()
+
+	/**
+	 * Gets whether or not the browser is Safari running on iOS
+	 *
+	 * @return boolean true if the browser is Safari on iOS, otherwise false.
+	 */
+	public function isIOS()
+	{
+		$exp = '/
+			(
+			iPad
+			|
+			iPhone
+			|
+			iPod
+			)
+			.*
+			\sSafari
+			/x';
+
+		return (isset($_SERVER['HTTP_USER_AGENT']) &&
+			preg_match($exp, $_SERVER['HTTP_USER_AGENT']) === 1);
+	}
+
+	// }}}
 	// {{{ public function getViewport()
 
 	/**
