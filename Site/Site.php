@@ -185,6 +185,14 @@ class Site
 	public static function getConfigDefinitions()
 	{
 		return array(
+			// Accounts
+			// How long a persistent login cookie will exist in seconds.
+			// Default value is 28 days.
+			'account.persistent_login_time' => 2419200,
+
+			// Whether or not persistent logins are enabled.
+			'account.persistent_login_enabled' => false,
+
 			// Meta description for HTML head
 			'site.meta_description'    => null,
 

@@ -208,6 +208,47 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function loadByLoginTag()
+
+	/**
+	 * Loads this account from the database by one of its login tags
+	 *
+	 * @param string $login_tag the login tag to use.
+	 * @param SiteInstance $instance Optional site instance for this account.
+	 *                               Used when the site implements
+	 *                               {@link SiteMultipleInstanceModule}.
+	 *
+	 * @return boolean true if the loading was successful and false if it was
+	 *                  not.
+	 */
+	public function loadByLoginTag($login_tag, SiteInstance $instance = null)
+	{
+		$this->checkDB();
+
+		$sql = sprintf(
+			'select account from AccountLoginTag
+				inner join Account on Account.id = AccountLoginTag.account
+			where tag = %s',
+			$this->db->quote($login_tag, 'text')
+		);
+
+		if ($instance !== null) {
+			$sql.= sprintf(
+				' and Account.instance = %s',
+				$this->db->quote($instance->id, 'integer')
+			);
+		}
+
+		$id = SwatDB::queryOne($this->db, $sql);
+
+		if ($id === null) {
+			return false;
+		}
+
+		return $this->load($id);
+	}
+
+	// }}}
 	// {{{ public function getFullName()
 
 	/**
@@ -655,6 +696,19 @@ class SiteAccount extends SwatDBDataObject
 
 		return SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('SiteAccountLoginHistoryWrapper'));
+	}
+
+	// }}}
+	// {{{ protected function loadLoginTags()
+
+	protected function loadLoginTags()
+	{
+		$sql = sprintf(
+			'select * from AccountLoginTag where account = %s',
+			$this->db->quote($this->id, 'integer'));
+
+		return SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('SiteAccountLoginTagWrapper'));
 	}
 
 	// }}}
