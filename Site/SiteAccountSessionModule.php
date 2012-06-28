@@ -2,6 +2,7 @@
 
 require_once 'Site/SiteSessionModule.php';
 require_once 'Site/dataobjects/SiteAccount.php';
+require_once 'Site/dataobjects/SiteAccountLoginTag.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatDate.php';
 require_once 'Swat/SwatForm.php';
@@ -13,7 +14,7 @@ require_once 'Swat/SwatForm.php';
  * session.
  *
  * @package   Site
- * @copyright 2006-2011 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountSessionModule extends SiteSessionModule
@@ -29,6 +30,27 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * @var array
 	 */
 	protected $logout_callbacks = array();
+
+	// }}}
+	// {{{ public function init()
+
+	/**
+	 * Initializes this session module
+	 */
+	public function init()
+	{
+		parent::init();
+
+		$cookie = $this->app->getModule('SiteCookieModule');
+		$config = $this->app->getModule('SiteConfigModule');
+
+		// If persistent logins are enabled and a login cookie is present,
+		// try to log in.
+		if ($config->account->persistent_login_enabled &&
+			!$this->isLoggedIn() && isset($cookie->login)) {
+			$this->loginByTag($cookie->login);
+		}
+	}
 
 	// }}}
 	// {{{ public function depends()
@@ -188,6 +210,38 @@ class SiteAccountSessionModule extends SiteSessionModule
 	}
 
 	// }}}
+	// {{{ public function loginByTag()
+
+	/**
+	 * Logs the current session into a {@link SiteAccount} using a persistent
+	 * login tag
+	 *
+	 * @param string $tag the persistent login tag value to use.
+	 * @param boolean $regenerate_id optional. Whether or not to regenerate
+	 *                                the session identifier on successful
+	 *                                login. Defaults to
+	 *                                {@link SiteSessionModule::REGENERATE_ID}.
+	 *
+	 * @return boolean true if the account was successfully logged in and false
+	 *                       if the tag does not match an account.
+	 */
+	public function loginByTag($tag,
+		$regenerate_id = SiteSessionModule::REGENERATE_ID)
+	{
+		$logged_in = false;
+
+		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
+			$this->app->instance->getInstance() : null;
+
+		$account = $this->getNewAccountObject();
+		if ($account->loadByLoginTag($tag, $instance)) {
+			$logged_in = $this->loginByAccount($account, $regenerate_id);
+		}
+
+		return $logged_in;
+	}
+
+	// }}}
 	// {{{ public function logout()
 
 	/**
@@ -195,6 +249,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	public function logout()
 	{
+		$this->unsetLoginCookie();
+
 		// Check isActive() instead of isLoggedIn() because we sometimes
 		// call logout() to clear registered session objects even when
 		// users are not logged in.
@@ -278,7 +334,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 	// {{{ public function registerLogoutCallback()
 
 	/**
-	 * Registers a callback function that is executed when a logout is
+	 * Registers a callback function that is executed after a logout is
 	 * performed
 	 *
 	 * @param callback $callback the callback to call when a logout is
@@ -296,6 +352,98 @@ class SiteAccountSessionModule extends SiteSessionModule
 			'callback' => $callback,
 			'parameters' => $parameters
 		);
+	}
+
+	// }}}
+	// {{{ public function setLoginCookie()
+
+	/**
+	 * Sets the cookie used for persistent logins
+	 *
+	 * Persistent login cookie may only be set if this session is logged in.
+	 *
+	 * @return true if the cookie was set, false if it was not.
+	 */
+	public function setLoginCookie()
+	{
+		if (!$this->isLoggedIn()) {
+			return false;
+		}
+
+		$cookie = $this->app->getModule('SiteCookieModule');
+		$config = $this->app->getModule('SiteConfigModule');
+
+		$now = new SwatDate();
+		$now->toUTC();
+
+		$date = clone $now;
+		$date->addSeconds($config->account->persistent_login_time);
+
+		$tag    = base64_encode(SwatString::getSalt(16));
+		$expiry = $date->getTimestamp();
+
+		$transaction = new SwatDBTransaction($this->app->db);
+		try {
+			$class = SwatDBClassMap::get('SiteAccountLoginTag');
+			$login_tag = new $class();
+
+			$login_tag->account    = $this->account;
+			$login_tag->tag        = $tag;
+			$login_tag->login_date = $now;
+			$login_tag->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
+
+			if (isset($_SERVER['HTTP_USER_AGENT'])) {
+
+				$user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+				// Filter bad character encoding. If invalid, assume ISO-8859-1
+				// encoding and convert to UTF-8.
+				if (!SwatString::validateUtf8($user_agent)) {
+					$user_agent = iconv('ISO-8859-1', 'UTF-8', $user_agent);
+				}
+
+				// Only save if the user-agent was successfully converted to
+				// UTF-8.
+				if ($user_agent !== false) {
+					// set max length based on database field length
+					$user_agent = substr($user_agent, 0, 255);
+					$login_tag->user_agent = $user_agent;
+				}
+
+			}
+
+			$login_tag->setDatabase($this->app->db);
+			$login_tag->save();
+
+			$cookie->setCookie('login', $tag, $expiry);
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			$this->unsetLoginCookie();
+			throw $e;
+		}
+
+		return true;
+	}
+
+	// }}}
+	// {{{ public function unsetLoginCookie()
+
+	public function unsetLoginCookie()
+	{
+		$cookie = $this->app->getModule('SiteCookieModule');
+
+		if (isset($cookie->login) && $this->isLoggedIn()) {
+			$sql = sprintf(
+				'delete from AccountLoginTag
+				where tag = %s and account = %s',
+				$this->app->db->quote($cookie->login, 'text'),
+				$this->app->db->quote($this->account->id, 'integer')
+			);
+			SwatDB::exec($this->app->db, $sql);
+		}
+
+		$cookie->removeCookie('login');
 	}
 
 	// }}}
