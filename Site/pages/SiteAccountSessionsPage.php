@@ -27,8 +27,10 @@ class SiteAccountSessionsPage extends SiteUiPage
 
 	public function init()
 	{
+		// redirect to login page if not logged in
 		if (!$this->app->session->isLoggedIn()) {
-			$this->app->relocate('account/login');
+			$uri = sprintf('account/login?relocate=%s', $this->source);
+			$this->app->relocate($uri);
 		}
 
 		parent::init();
@@ -47,7 +49,7 @@ class SiteAccountSessionsPage extends SiteUiPage
 
 		echo '<div class="account-sessions-current">';
 
-		$header = new SwatHtmlTag('h3');
+		$header = new SwatHtmlTag('h4');
 		$header->setContent(Site::_('Current Session'));
 		$header->display();
 
@@ -73,8 +75,8 @@ class SiteAccountSessionsPage extends SiteUiPage
 		if ($count > 0) {
 			echo '<div class="account-sessions-other">';
 
-			$header = new SwatHtmlTag('h3');
-			$header->setContent(Site::_('Active Sessions on Other Devices'));
+			$header = new SwatHtmlTag('h4');
+			$header->setContent(Site::_('On Other Devices'));
 			$header->display();
 
 			echo '<ul class="account-sessions-other-list">';
@@ -300,36 +302,47 @@ class SiteAccountSessionsPage extends SiteUiPage
 
 		echo '<li>';
 
+		echo '<span class="session">';
+
+		$device_span = new SwatHtmlTag('span');
+		$device_span->class = 'session-device';
+		$device_span->setContent(
+			sprintf(
+				Site::_('%s on %s'),
+				$this->getBrowser($user_agent),
+				$this->getOS($user_agent)
+			)
+		);
+		$device_span->display();
+
+		echo ' ';
+
 		if ($interval->days < 1) {
 
-			$span = new SwatHtmlTag('span');
-			$span->setContent(
-				sprintf(
-					Site::_('%s on %s (logged in less than a day ago)'),
-					$this->getBrowser($user_agent),
-					$this->getOS($user_agent)
-				)
-			);
+			$date_span = new SwatHtmlTag('span');
+			$date_span->class = 'session-date';
+			$date_span->setContent(Site::_('(logged in less than a day ago)'));
+			$date_span->display();
 
 		} else {
 
-			$span = new SwatHtmlTag('span');
-			$span->setContent(
+			$date_span = new SwatHtmlTag('span');
+			$date_span->class = 'session-date';
+			$date_span->setContent(
 				sprintf(
 					Site::ngettext(
-						'%s on %s (logged in %s day ago)',
-						'%s on %s (logged in %s days ago)',
+						'(logged in %s day ago)',
+						'(logged in %s days ago)',
 						$interval->days
 					),
-					$this->getBrowser($user_agent),
-					$this->getOS($user_agent),
 					$locale->formatNumber($interval->days)
 				)
 			);
+			$date_span->display();
 
 		}
 
-		$span->display();
+		echo '</span>';
 
 		if ($logout) {
 			echo '<input type="submit" class="button compact-button gray-button" value="End Session" />';
