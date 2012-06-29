@@ -7,6 +7,7 @@ require_once 'Site/SiteResetPasswordMailMessage.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteAccountWrapper.php';
 require_once 'Site/dataobjects/SiteAccountLoginHistoryWrapper.php';
+require_once 'Site/dataobjects/SiteAccountLoginTagWrapper.php';
 
 /**
  * A account for a web application
