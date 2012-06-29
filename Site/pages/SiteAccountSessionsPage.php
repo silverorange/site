@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/pages/SiteUiPage.php';
+require_once 'Site/pages/SiteDBEditPage.php';
 
 /**
  * Page for listing current persistent login sessions
@@ -11,8 +11,16 @@ require_once 'Site/pages/SiteUiPage.php';
  * @see       SiteAccount
  * @see       SiteAccountLoginTag
  */
-class SiteAccountSessionsPage extends SiteUiPage
+class SiteAccountSessionsPage extends SiteDBEditPage
 {
+	// {{{ protected properties
+
+	/**
+	 * @var array
+	 */
+	protected $logout_buttons = array();
+
+	// }}}
 	// {{{ protected function getUiXml()
 
 	protected function getUiXml()
@@ -34,6 +42,110 @@ class SiteAccountSessionsPage extends SiteUiPage
 		}
 
 		parent::init();
+	}
+
+	// }}}
+	// {{{ protected function initInternal()
+
+	protected function initInternal()
+	{
+		parent::initInternal();
+		$this->initLogoutButtons();
+	}
+
+	// }}}
+	// {{{ protected function initLogoutButtons()
+
+	protected function initLogoutButtons()
+	{
+		$form = $this->ui->getWidget('sessions_form');
+
+		foreach ($this->app->session->account->login_tags as $login_tag) {
+			$button = $this->createLogoutButton($login_tag);
+			$this->logout_buttons[$login_tag->id] = $button;
+			$form->add($button);
+		}
+	}
+
+	// }}}
+	// {{{ protected function createLogoutButton()
+
+	protected function createLogoutButton(SiteAccountLoginTag $tag)
+	{
+		$button = new SwatButton();
+		$button->id = 'logout_button_'.$tag->id;
+		$button->title = Site::_('End Session');
+		$button->visible = false;
+		return $button;
+	}
+
+	// }}}
+
+	// process phase
+	// {{{ protected function saveData()
+
+	protected function saveData(SwatForm $form)
+	{
+		foreach ($this->logout_buttons as $id => $button) {
+			if ($button->hasBeenClicked()) {
+				$this->deleteLoginTag($id);
+				break;
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function relocate()
+
+	protected function relocate(SwatForm $form)
+	{
+		$this->relocateToRefererUri($form, 'account');
+	}
+
+	// }}}
+	// {{{ protected function deleteLoginTag()
+
+	protected function deleteLoginTag($id)
+	{
+		$login_tag = (isset($this->app->session->account->login_tags[$id]))
+			? $this->app->session->account->login_tags[$id]
+			: null;
+
+		if ($login_tag instanceof SiteAccountLoginTag) {
+			$login_tag->delete();
+			$message = $this->getLogoutMessage($login_tag);
+		} else {
+			$message = new SwatMessage(Site::_('Session has been ended.'));
+		}
+
+		$this->app->messages->add($message);
+	}
+
+	// }}}
+	// {{{ protected function getLogoutMessage()
+
+	protected function getLogoutMessage(SiteAccountLoginTag $login_tag)
+	{
+		$message = new SwatMessage(
+			sprintf(
+				Site::_('%s on %s session has been ended.'),
+				SwatString::minimizeEntities(
+					$this->getBrowser($login_tag->user_agent)
+				),
+				SwatString::minimizeEntities(
+					$this->getOS($login_tag->user_agent)
+				)
+			)
+		);
+
+		$view_link = new SwatHtmlTag('a');
+		$view_link->href = 'account/sessions';
+		$view_link->setContent(Site::_('remaining active sessions'));
+
+		$message->secondary_content = sprintf(Site::_('View %s.'), $view_link);
+		$message->content_type = 'text/xml';
+
+		return $message;
 	}
 
 	// }}}
@@ -273,7 +385,7 @@ class SiteAccountSessionsPage extends SiteUiPage
 		}
 
 
-		$this->displayLoginInformation($user_agent, $login_date, false);
+		$this->displayLoginInformation($user_agent, $login_date);
 	}
 
 	// }}}
@@ -281,9 +393,14 @@ class SiteAccountSessionsPage extends SiteUiPage
 
 	protected function displayLoginTag(SiteAccountLoginTag $login_tag)
 	{
+		$button = (isset($this->logout_buttons[$login_tag->id]))
+			? $this->logout_buttons[$login_tag->id]
+			: null;
+
 		$this->displayLoginInformation(
 			$login_tag->user_agent,
-			$login_tag->login_date
+			$login_tag->login_date,
+			$button
 		);
 	}
 
@@ -291,7 +408,7 @@ class SiteAccountSessionsPage extends SiteUiPage
 	// {{{ protected function displayLoginInformation()
 
 	protected function displayLoginInformation($user_agent,
-		SwatDate $login_date, $logout = true)
+		SwatDate $login_date, SwatWidget $logout_button = null)
 	{
 		$locale = SwatI18NLocale::get();
 
@@ -344,8 +461,10 @@ class SiteAccountSessionsPage extends SiteUiPage
 
 		echo '</span>';
 
-		if ($logout) {
-			echo '<input type="submit" class="button compact-button gray-button" value="End Session" />';
+		if ($logout_button instanceof SwatWidget) {
+			$logout_button->visible = true;
+			$logout_button->display();
+			$logout_button->visible = false;
 		}
 
 		echo '</li>';
