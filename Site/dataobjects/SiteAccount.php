@@ -705,7 +705,8 @@ class SiteAccount extends SwatDBDataObject
 	protected function loadLoginTags()
 	{
 		$sql = sprintf(
-			'select * from AccountLoginTag where account = %s',
+			'select * from AccountLoginTag where account = %s
+			order by login_date desc',
 			$this->db->quote($this->id, 'integer'));
 
 		return SwatDB::query($this->db, $sql,
