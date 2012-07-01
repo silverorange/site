@@ -3,6 +3,8 @@ create table AccountLoginTag (
 
 	account    integer not null references Account(id) on delete cascade,
 	tag        varchar(255) not null,
+	session_id varchar(255) not null,
+	createdate timestamp not null,
 	login_date timestamp not null,
 	ip_address varchar(15) not null,
 	user_agent varchar(255),

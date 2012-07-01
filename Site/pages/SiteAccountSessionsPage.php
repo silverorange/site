@@ -112,6 +112,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 			: null;
 
 		if ($login_tag instanceof SiteAccountLoginTag) {
+			$this->endSession($login_tag);
 			$login_tag->delete();
 			$message = $this->getLogoutMessage($login_tag);
 		} else {
@@ -119,6 +120,38 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		}
 
 		$this->app->messages->add($message);
+	}
+
+	// }}}
+	// {{{ protected function endSession()
+
+	protected function endSession(SiteAccountLoginTag $tag)
+	{
+		// extra sanity check so you are only ending your own sessions
+		if ($tag->getInternalValue('account') !==
+			$this->app->session->account->id) {
+			return;
+		}
+
+		$current_session_id = $this->app->session->getSessionId();
+		$tag_session_id     = $tag->session_id;
+
+		// end current session
+		session_write_close();
+
+		// start login tag session
+		session_id($tag_session_id);
+		session_start();
+
+		// clear all session data
+		$_SESSION = array();
+
+		// destroy session file
+		session_destroy();
+
+		// resume current session
+		session_id($current_session_id);
+		session_start();
 	}
 
 	// }}}

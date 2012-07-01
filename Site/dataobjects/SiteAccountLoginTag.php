@@ -24,6 +24,11 @@ class SiteAccountLoginTag extends SwatDBDataObject
 	/**
 	 * @var SwatDate
 	 */
+	public $createdate;
+
+	/**
+	 * @var SwatDate
+	 */
 	public $login_date;
 
 	/**
@@ -41,6 +46,11 @@ class SiteAccountLoginTag extends SwatDBDataObject
 	 */
 	public $tag;
 
+	/**
+	 * @var string
+	 */
+	public $session_id;
+
 	// }}}
 	// {{{ protected function init()
 
@@ -49,6 +59,7 @@ class SiteAccountLoginTag extends SwatDBDataObject
 		$this->table = 'AccountLoginTag';
 		$this->id_field = 'integer:id';
 
+		$this->registerDateProperty('createdate');
 		$this->registerDateProperty('login_date');
 
 		$this->registerInternalProperty('account',
