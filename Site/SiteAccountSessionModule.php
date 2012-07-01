@@ -235,7 +235,30 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 		$account = $this->getNewAccountObject();
 		if ($account->loadByLoginTag($tag, $instance)) {
+
+			// log in account
 			$logged_in = $this->loginByAccount($account, $regenerate_id);
+
+			// update login tag session id and date
+			$login_date= new SwatDate();
+			$login_date->toUTC();
+
+			$sql = sprintf(
+				'update AccountLoginTag set session_id = %s, login_date = %s
+				where tag = %s',
+				$this->app->db->quote($this->getSessionId(), 'text'),
+				$this->app->db->quote($login_date->getISO8601(), 'date'),
+				$this->app->db->quote($tag, 'text')
+			);
+
+			if ($instance instanceof SiteMultipleInstanceModule) {
+				$sql.= sprintf(
+					' and instance = %s',
+					$this->app->db->quote($instance->id, 'integer')
+				);
+			}
+
+			SwatDB::exec($this->app->db, $sql);
 		}
 
 		return $logged_in;
@@ -389,6 +412,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 			$login_tag->account    = $this->account;
 			$login_tag->tag        = $tag;
+			$login_tag->session_id = $this->getSessionId();
+			$login_tag->createdate = $now;
 			$login_tag->login_date = $now;
 			$login_tag->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
 
