@@ -76,7 +76,8 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		$account = $this->app->session->account;
 		$old_password = $this->ui->getWidget('old_password');
 
-		if (!$account->isCorrectPassword($old_password->value)) {
+		if (!$old_password->hasMessage() &&
+			!$account->isCorrectPassword($old_password->value)) {
 			$message = new SwatMessage(
 				Site::_('Your password is incorrect.'),
 				'error'
