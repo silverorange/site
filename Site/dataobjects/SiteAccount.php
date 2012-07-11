@@ -289,6 +289,11 @@ class SiteAccount extends SwatDBDataObject
 
 		SwatDB::exec($this->db, $sql);
 
+		// set date on current object and update property hash so the
+		// date property is not modified (we just saved it)
+		$this->last_login = $date;
+		$this->generatePropertyHash('last_login');
+
 		// new way: save to history table
 		$history = $this->getNewLoginHistory($date);
 		$history->save();
