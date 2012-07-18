@@ -265,7 +265,9 @@ class SiteWebApplication extends SiteApplication
 	 */
 	protected function parseUri()
 	{
-		$this->secure = isset($_SERVER['HTTPS']);
+		$this->secure = (isset($_SERVER['HTTPS']) ||
+			(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+			$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'));
 
 		// check for session module
 		if (isset($this->session) &&
