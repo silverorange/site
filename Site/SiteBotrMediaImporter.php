@@ -482,10 +482,13 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$where = parent::getMediaObjectWhere();
 
-		$where.= sprintf(' and key in (%s)',
-			SwatDB::implodeSelection($this->db,
-				new SwatViewSelection($this->existing_keys),
-				'text'));
+		$where.= sprintf(
+			' and key in (%s)',
+			$this->db->datatype->implodeArray(
+				$this->existing_keys,
+				'text'
+			)
+		);
 
 		return $where;
 	}
