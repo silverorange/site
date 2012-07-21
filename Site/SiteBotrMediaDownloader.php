@@ -66,12 +66,12 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	{
 		parent::__construct($id, $filename, $title, $documentation);
 
-		$force_queue_cdn_tasks = new SiteCommandLineArgument(
+		$force_cdn_upload = new SiteCommandLineArgument(
 			array('--force-cdn-upload'),
 			'setForceCdnUpload',
 			'Optional. Re-queues all downloadable media.');
 
-		$this->addCommandLineArgument($queue_cdn_tasks);
+		$this->addCommandLineArgument($force_cdn_upload);
 
 		$this->initModules();
 		$this->parseCommandLineArguments();
