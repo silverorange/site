@@ -120,7 +120,6 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 		$this->addCommandLineArgument($reset_tags);
 
-
 		$this->initModules();
 		$this->parseCommandLineArguments();
 
