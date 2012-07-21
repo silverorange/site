@@ -64,8 +64,6 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 
 	public function __construct($id, $filename, $title, $documentation)
 	{
-		parent::__construct($id, $filename, $title, $documentation);
-
 		$force_cdn_upload = new SiteCommandLineArgument(
 			array('--force-cdn-upload'),
 			'setForceCdnUpload',
@@ -73,10 +71,7 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 
 		$this->addCommandLineArgument($force_cdn_upload);
 
-		$this->initModules();
-		$this->parseCommandLineArguments();
-
-		$this->locale = SwatI18NLocale::get();
+		parent::__construct($id, $filename, $title, $documentation);
 	}
 
 	// }}}
