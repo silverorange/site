@@ -49,6 +49,36 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	 */
 	protected $encodings_downloaded = array();
 
+	/**
+	 * Whether or not to re-queue all media cdn upload tasks.
+	 *
+	 * If true, this will queue all downloadable media, not just media that
+	 * hasn't been downloaded before
+	 *
+	 * @var boolean
+	 */
+	protected $force_cdn_upload = false;
+
+	// }}}
+	// {{{ public function __construct()
+
+	public function __construct($id, $filename, $title, $documentation)
+	{
+		parent::__construct($id, $filename, $title, $documentation);
+
+		$force_queue_cdn_tasks = new SiteCommandLineArgument(
+			array('--force-cdn-upload'),
+			'setForceCdnUpload',
+			'Optional. Re-queues all downloadable media.');
+
+		$this->addCommandLineArgument($queue_cdn_tasks);
+
+		$this->initModules();
+		$this->parseCommandLineArguments();
+
+		$this->locale = SwatI18NLocale::get();
+	}
+
 	// }}}
 	// {{{ public function setFileBase()
 
@@ -75,6 +105,14 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	public function addDownloadDimension($shortname)
 	{
 		$this->download_dimension_shortnames[] = $shortname;
+	}
+
+	// }}}
+	// {{{ public function setForceCdnUpload()
+
+	public function setForceCdnUpload()
+	{
+		$this->force_cdn_upload = true;
 	}
 
 	// }}}
@@ -207,7 +245,16 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		$file_path = $media_object->getFilePath($encoding->shortname);
 
 		if (file_exists($file_path)) {
-			$this->debug("already downloaded.\n");
+			$this->debug("already downloaded.");
+
+			if ($this->force_cdn_upload) {
+				if ($this->isQueueable($media_object, $binding)) {
+					$this->debug(" Queued for CDN upload.");
+					$this->queueCdnTask($media_object, $encoding);
+				}
+			}
+
+			$this->debug("\n");
 		} else {
 			try {
 				$this->downloadFile($media_object, $binding, $encoding);
