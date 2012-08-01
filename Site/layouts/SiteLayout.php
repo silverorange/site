@@ -143,6 +143,8 @@ class SiteLayout extends SiteObject
 		$this->data->basehref = $this->app->getBaseHref();
 		$this->data->title = '';
 		$this->data->html_title = '';
+		$this->data->site_title =
+				SwatString::minimizeEntities($this->app->config->site->title);
 
 		if (isset($this->app->config->site->meta_description)) {
 			$this->data->meta_description =
