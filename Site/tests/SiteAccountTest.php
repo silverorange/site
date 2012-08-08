@@ -67,11 +67,7 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 
 		$this->waitForPageToLoad(30000);
 
-		$this->type('fullname',         self::$account_name);
-		$this->type('email',            self::$account_email);
-		$this->type('confirm_email',    self::$account_email);
-		$this->type('password',         self::$account_password);
-		$this->type('confirm_password', self::$account_password);
+		$this->enterNewAccountFields();
 
 		$this->click('submit_button');
 		$this->waitForPageToLoad(30000);
@@ -163,6 +159,18 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 			$this->isTextPresent(self::$account_email),
 			'Email address not present on account details page.'
 		);
+	}
+
+	// }}}
+	// {{{ protected function enterAccountFields()
+
+	protected function enterNewAccountFields()
+	{
+		$this->type('fullname',         self::$account_name);
+		$this->type('email',            self::$account_email);
+		$this->type('confirm_email',    self::$account_email);
+		$this->type('password',         self::$account_password);
+		$this->type('confirm_password', self::$account_password);
 	}
 
 	// }}}
