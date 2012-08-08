@@ -21,6 +21,16 @@ abstract class SiteContactUsTest extends TuringSeleniumTest
 	abstract protected function getSubjectCount();
 
 	// }}}
+	// {{{ protected function getThankYouMessageContent()
+
+	protected function getThankYouMessageContent()
+	{
+		return 'Thank You For Your Message';
+	}
+
+	// }}}
+
+	// tests
 	// {{{ public function testPageLoad()
 
 	public function testPageLoad()
@@ -110,7 +120,7 @@ abstract class SiteContactUsTest extends TuringSeleniumTest
 		$this->assertNoErrors();
 
 		$this->assertTrue(
-			$this->isTextPresent('Thank You For Your Message'),
+			$this->isTextPresent($this->getThankYouMessageContent()),
 			'Thank you message not present after submitting contact message.'
 		);
 	}
