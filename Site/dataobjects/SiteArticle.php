@@ -51,7 +51,7 @@ class SiteArticle extends SwatDBDataObject
 	 * Optional HTML title
 	 *
 	 * If set, the article page HTML title uses this value. Otherwise, the
-	 * article page uses the article title from {@link SiteArticle::$title}
+	 * article page uses the article title from {@link SiteArticle::$title}.
 	 *
 	 * @var string
 	 */
