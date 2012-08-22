@@ -13,7 +13,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  * the {@link SiteArticle::$parent} property.
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticle extends SwatDBDataObject
@@ -46,6 +46,16 @@ class SiteArticle extends SwatDBDataObject
 	 * @var string
 	 */
 	public $title;
+
+	/**
+	 * Optional HTML title
+	 *
+	 * If set, the article page HTML title uses this value. Otherwise, the
+	 * article page uses the article title from {@link SiteArticle::$title}
+	 *
+	 * @var string
+	 */
+	public $html_title;
 
 	/**
 	 * User visible description

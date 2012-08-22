@@ -10,7 +10,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Article page decorator
  *
  * @package   Site
- * @copyright 2004-2010 silverorange
+ * @copyright 2004-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteArticle
  */
@@ -96,6 +96,13 @@ class SiteArticlePage extends SitePathPage
 	{
 		$this->layout->data->title =
 			SwatString::minimizeEntities((string)$this->article->title);
+
+		// If HTML title is set, set the layout HTML title
+		if ($this->article->html_title != '') {
+			$this->layout->data->html_title = SwatString::minimizeEntities(
+				(string)$this->article->html_title
+			);
+		}
 	}
 
 	// }}}
