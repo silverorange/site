@@ -2,6 +2,7 @@ create table Article (
 	id serial,
 	parent int, -- constraint added below
 	title varchar(255),
+	html_title varchar(255),
 	description text,
 	bodytext text,
 	createdate timestamp not null default LOCALTIMESTAMP,

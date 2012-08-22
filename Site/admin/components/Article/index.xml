@@ -36,6 +36,12 @@
 					<property name="text" type="data">title</property>
 				</object>
 			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">HTML Title</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">html_title</property>
+				</object>
+			</object>
 			<object class="SwatDetailsViewField" id="visibility">
 				<property name="title" translatable="yes">Visibility</property>
 				<object class="SiteArticleVisibilityCellRenderer">
