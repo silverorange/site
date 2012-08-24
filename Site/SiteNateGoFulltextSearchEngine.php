@@ -9,7 +9,7 @@ require_once 'NateGoSearch/NateGoSearchPSpellSpellChecker.php';
  * A fulltext search engine that uses NateGoSearch
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2012 silverorange
  */
 class SiteNateGoFulltextSearchEngine extends SwatObject
 	implements SiteFulltextSearchEngine
@@ -36,6 +36,13 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	 * @var array
 	 */
 	protected $types = array();
+
+	/**
+	 * An array of popular keywords passed to the query object.
+	 *
+	 * @var array
+	 */
+	protected $popular_words = array();
 
 	// }}}
 	// {{{ public function __construct()
@@ -64,10 +71,22 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	 *
 	 * @param array $types
 	 */
-	public function setTypes($types)
+	public function setTypes(array $types)
 	{
-		// TODO: if $types is not array throw an exception
 		$this->types = $types;
+	}
+
+	// }}}
+	// {{{ public function setPopularKeywords()
+
+	/**
+	 * Set the popular keywords for this search engine.
+	 *
+	 * @param array $popular_keywords the array of popular keywords to add.
+	 */
+	public function setPopularKeywords(array $popular_keywords)
+	{
+		$this->popular_keywords = $popular_keywords;
 	}
 
 	// }}}
@@ -87,6 +106,10 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 
 		$query = new NateGoSearchQuery($this->db);
 		$query->addBlockedWords(NateGoSearchQuery::getDefaultBlockedWords());
+		$query->addPopularWords(
+			NateGoSearchQuery::getDefaultPopularWords($this->app->db));
+
+		$query->addPopularWords($this->popular_keywords);
 		$query->setSpellChecker($spell_checker);
 
 		foreach ($this->types as $type)
