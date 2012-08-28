@@ -610,6 +610,16 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 			throw new SiteCommandLineException(sprintf(
 				'Unable to move “%s” to “%s.”', $temp_file, $destination));
 		}
+
+		// update permissions (-rw-rw----)
+		if (!chmod($destination, 0660)) {
+			throw new SiteCommandLineException(
+				sprintf(
+					'Unable to change permissions on “%s.”',
+					$destination
+				)
+			);
+		}
 	}
 
 	// }}}
