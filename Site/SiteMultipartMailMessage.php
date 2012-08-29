@@ -165,7 +165,7 @@ class SiteMultipartMailMessage extends SiteObject
 
 		$mime->setSubject($this->subject);
 		$mime->setFrom(
-			$this->geAddressHeader(
+			$this->getAddressHeader(
 				$this->from_address,
 				$this->from_name
 			)
@@ -211,7 +211,7 @@ class SiteMultipartMailMessage extends SiteObject
 
 		$headers['Date'] = $this->date->getRFC2822();
 
-		$headers['To'] = $this->geAddressHeader(
+		$headers['To'] = $this->getAddressHeader(
 			$this->to_address,
 			$this->to_name
 		);
@@ -280,13 +280,13 @@ class SiteMultipartMailMessage extends SiteObject
 	}
 
 	// }}}
-	// {{{ protected function geAddressHeader()
+	// {{{ protected function getAddressHeader()
 
-	protected function geAddressHeader($address, $name = '')
+	protected function getAddressHeader($address, $name = '')
 	{
-		$header = ($name == '') ?
-			'"%s" <%s>' :
-			'%s';
+		$header = ($name != '') ?
+			'"%2$s" <%1$s>' :
+			'%1$s';
 
 		return sprintf($header, $address, $name);
 	}
