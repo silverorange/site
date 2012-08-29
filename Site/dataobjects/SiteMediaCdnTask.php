@@ -61,6 +61,16 @@ class SiteMediaCdnTask extends SiteCdnTask
 	}
 
 	// }}}
+	// {{{ protected function getLocalFilePath()
+
+	protected function getLocalFilePath()
+	{
+		return ($this->hasMediaAndEncoding()) ?
+			$this->media->getFilePath($this->encoding->shortname) :
+			null;
+	}
+
+	// }}}
 	// {{{ protected function copy()
 
 	protected function copy(SiteCdnModule $cdn)

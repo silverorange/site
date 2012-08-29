@@ -33,6 +33,11 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	public $override_http_headers;
 
 	/**
+	 * The remote file path for the content on the CDN.
+	 *
+	 * Only set and used for the delete/remove operations since the dataobjects
+	 * are already deleted and we can't rebuild the path.
+	 *
 	 * @var string
 	 */
 	public $file_path;
@@ -62,14 +67,23 @@ abstract class SiteCdnTask extends SwatDBDataObject
 			switch ($this->operation) {
 			case 'copy':
 			case 'update':
-				$this->copy($cdn);
+				if ($this->checkLocalFile()) {
+					$this->copy($cdn);
+				}
+
 				break;
 			case 'delete':
 			case 'remove':
 				$this->remove($cdn);
 				break;
 			default:
-				$this->error();
+				throw new SiteCdnException(
+					sprintf(
+						'Unknown operation ‘%s.’',
+						$this->operation
+					)
+				);
+
 				break;
 			}
 
@@ -120,6 +134,34 @@ abstract class SiteCdnTask extends SwatDBDataObject
 
 		$this->id_field = 'integer:id';
 	}
+
+	// }}}
+	// {{{ protected function checkLocalFile()
+
+	/**
+	 * Checks to make sure the local file exists and is readable.
+	 */
+	protected function checkLocalFile()
+	{
+		$file_path = $this->getLocalFilePath();
+
+		if (!is_readable($file_path)) {
+			throw new SiteCdnException(
+				sprintf(
+					'Unable to open “%s” for reading.',
+					$file_path
+				)
+			);
+		}
+	}
+
+	// }}}
+	// {{{ abstract protected function getLocalFilePath()
+
+	/**
+	 * Gets the file path to the local file being referenced by the CDN task.
+	 */
+	abstract protected function getLocalFilePath();
 
 	// }}}
 	// {{{ abstract protected function copy()
