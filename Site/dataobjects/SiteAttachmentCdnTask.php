@@ -43,6 +43,16 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 	}
 
 	// }}}
+	// {{{ protected function getLocalFilePath()
+
+	protected function getLocalFilePath()
+	{
+		return ($this->hasAttachment()) ?
+			$this->attachment->getFilePath() :
+			null;
+	}
+
+	// }}}
 	// {{{ protected function copy()
 
 	protected function copy(SiteCdnModule $cdn)

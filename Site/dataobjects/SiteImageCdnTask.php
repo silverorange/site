@@ -61,6 +61,16 @@ class SiteImageCdnTask extends SiteCdnTask
 	}
 
 	// }}}
+	// {{{ protected function getLocalFilePath()
+
+	protected function getLocalFilePath()
+	{
+		return ($this->hasImageAndDimension()) ?
+			$this->image->getFilePath($this->dimension->shortname) :
+			null;
+	}
+
+	// }}}
 	// {{{ protected function copy()
 
 	protected function copy(SiteCdnModule $cdn)
