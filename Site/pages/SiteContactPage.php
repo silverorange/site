@@ -10,7 +10,7 @@ require_once 'Site/pages/SiteDBEditPage.php';
 /**
  *
  * @package   Site
- * @copyright 2006-2011 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactPage extends SiteDBEditPage
@@ -36,6 +36,28 @@ class SiteContactPage extends SiteDBEditPage
 		// the contact page open in a separate tab and regenerate their session
 		// id by switching from http to https.
 		$this->ui->getWidget('contact_form')->clearAuthenticationToken();
+
+		$this->initSubject();
+	}
+
+	// }}}
+	// {{{ protected function initSubject()
+
+	protected function initSubject()
+	{
+		$subject = SiteApplication::initVar('subject', null,
+			SiteApplication::VAR_GET);
+
+		if ($subject !== null) {
+			// Dynamic static call to get subjects. This will be more straight-
+			// forward in PHP 5.3.
+			$class_name = SwatDBClassMap::get('SiteContactMessage');
+			$subjects = call_user_func(array($class_name, 'getSubjects'));
+
+			if (array_key_exists($subject, $subjects)) {
+				$this->ui->getWidget('subject')->value = $subject;
+			}
+		}
 	}
 
 	// }}}
