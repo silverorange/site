@@ -107,8 +107,8 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 		$query = new NateGoSearchQuery($this->db);
 		$query->addBlockedWords(NateGoSearchQuery::getDefaultBlockedWords());
 		$query->addPopularWords(
-			NateGoSearchQuery::getDefaultPopularWords($this->db));
-
+			NateGoSearchQuery::getSearchHistoryPopularWords($this->db)
+		);
 		$query->addPopularWords($this->popular_keywords);
 		$query->setSpellChecker($spell_checker);
 
