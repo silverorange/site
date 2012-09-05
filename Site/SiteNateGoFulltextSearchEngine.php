@@ -42,7 +42,7 @@ class SiteNateGoFulltextSearchEngine extends SwatObject
 	 *
 	 * @var array
 	 */
-	protected $popular_words = array();
+	protected $popular_keywords = array();
 
 	// }}}
 	// {{{ public function __construct()
