@@ -315,6 +315,10 @@ class SiteLayout extends SiteObject
 		$minify = ($resources->minify &&
 			$this->getMinifyEnabledByFlagFile());
 
+		// get compile option
+		$compile = ($resources->compile &&
+			$this->getCompileEnabledByFlagFile());
+
 		$this->startCapture('html_head_entries');
 
 		$displayer->display(
@@ -322,7 +326,9 @@ class SiteLayout extends SiteObject
 			$this->app->getBaseHref(),
 			$tag,
 			$combine,
-			$minify);
+			$minify,
+			$compile
+		);
 
 		$this->endCapture();
 	}
@@ -341,6 +347,24 @@ class SiteLayout extends SiteObject
 		$www_root = dirname($_SERVER['SCRIPT_FILENAME']);
 		$filename = $www_root.DIRECTORY_SEPARATOR.
 			Concentrate_CLI::FILENAME_FLAG_COMBINED;
+
+		return file_exists($filename);
+	}
+
+	// }}}
+	// {{{ protected function getCompileEnabledByFlagFile()
+
+	/**
+	 * Gets whether or not the flag file generated during the concentrate build
+	 * exists
+	 *
+	 * @return boolean true if the file exists, false if it does not.
+	 */
+	protected function getCompileEnabledByFlagFile()
+	{
+		$www_root = dirname($_SERVER['SCRIPT_FILENAME']);
+		$filename = $www_root.DIRECTORY_SEPARATOR.
+			Concentrate_CLI::FILENAME_FLAG_COMPILED;
 
 		return file_exists($filename);
 	}
