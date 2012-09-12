@@ -212,6 +212,9 @@ class Site
 			// Whether or not to minify resources
 			'resources.minify'         => false,
 
+			// Whether or not to use compiled resources
+			'resources.compile'        => false,
+
 			// DSN of database
 			'database.dsn'             => null,
 
