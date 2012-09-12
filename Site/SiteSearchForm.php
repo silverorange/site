@@ -22,6 +22,7 @@ class SiteSearchForm extends SwatForm
 		parent::__construct();
 
 		$this->setMethod(SwatForm::METHOD_GET);
+		$this->requires_id = false;
 	}
 
 	// }}}
