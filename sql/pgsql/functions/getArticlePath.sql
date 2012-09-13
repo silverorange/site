@@ -1,10 +1,10 @@
 /*
  * Returns the path string of an article.
  *
- * @param_parent INTEGER: the id of the category to search from.
+ * @param_parent INTEGER: the id of the article to search from.
  *
- * Returns a VARCHAR containing the path string for the given category. If the
- * category does not exist, NULL is returned.
+ * Returns a VARCHAR containing the path string for the given article. If the
+ * article does not exist, NULL is returned.
  */
 CREATE OR REPLACE FUNCTION getArticlePath(INTEGER) RETURNS VARCHAR(255) AS $$
 	DECLARE
