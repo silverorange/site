@@ -2,6 +2,7 @@ create table ContactMessage (
 	id         serial,
 
 	instance   integer references Instance(id),
+	class_name varchar(255) not null,
 	subject    varchar(255) not null,
 	email      varchar(255) not null,
 	message    text not null,
