@@ -31,6 +31,14 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ protected function getContactAddress()
+
+	protected function getContactAddress()
+	{
+		return $this->app->config->email->contact_address;
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -176,7 +184,7 @@ class SiteContactPage extends SiteDBEditPage
 		$message->secondary_content = sprintf(Site::_(
 			'If this issue persists, or your message is time sensitive, '.
 			'please send an email directly to <a href="mailto:%1$s">%1$s</a>.'),
-			$this->app->config->email->contact_address);
+			$this->getContactAddress());
 
 		$message->content_type = 'text/xml';
 
@@ -239,7 +247,7 @@ class SiteContactPage extends SiteDBEditPage
 		$email_to = $this->ui->getWidget('email_to');
 		$email_to->content_type = 'text/xml';
 		$email_to->content = sprintf('<a href="mailto:%1$s">%1$s</a>',
-			$this->app->config->email->contact_address);
+			$this->getContactAddress());
 
 		// Dynamic static call to get subjects. This will be more straight-
 		// forward in PHP 5.3.
