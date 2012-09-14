@@ -23,6 +23,14 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ protected function getContactMessageClassName()
+
+	protected function getContactMessageClassName()
+	{
+		$class_name = SwatDBClassMap::get('SiteContactMessage');
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -51,7 +59,7 @@ class SiteContactPage extends SiteDBEditPage
 		if ($subject !== null) {
 			// Dynamic static call to get subjects. This will be more straight-
 			// forward in PHP 5.3.
-			$class_name = SwatDBClassMap::get('SiteContactMessage');
+			$class_name = $this->getContactMessageClassName();
 			$subjects = call_user_func(array($class_name, 'getSubjects'));
 
 			if (array_key_exists($subject, $subjects)) {
@@ -67,7 +75,7 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function saveData(SwatForm $form)
 	{
-		$class_name = SwatDBClassMap::get('SiteContactMessage');
+		$class_name = $this->getContactMessageClassName();
 		$contact_message = new $class_name();
 		$contact_message->setDatabase($this->app->db);
 
@@ -235,7 +243,7 @@ class SiteContactPage extends SiteDBEditPage
 
 		// Dynamic static call to get subjects. This will be more straight-
 		// forward in PHP 5.3.
-		$class_name = SwatDBClassMap::get('SiteContactMessage');
+		$class_name = $this->getContactMessageClassName();
 		$subjects = call_user_func(array($class_name, 'getSubjects'));
 		$subject_flydown = $this->ui->getWidget('subject');
 		$subject_flydown->addOptionsByArray($subjects);
