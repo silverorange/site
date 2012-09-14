@@ -98,13 +98,21 @@ class SiteContactMailer extends SiteCommandLineApplication
 	// }}}
 	// {{{ public function getBaseClassName()
 
-	public function getBaseClassName($base_class_name)
+	public function getBaseClassName()
 	{
 		if ($this->base_class_name === null) {
 			$this->base_class_name = 'SiteContactMessage';
 		}
 
 		return $this->base_class_name;
+	}
+
+	// }}}
+	// {{{ public function getClassName()
+
+	public function getClassName()
+	{
+		return SwatDBClassMap::get($this->getBaseClassName());
 	}
 
 	// }}}
@@ -199,6 +207,17 @@ class SiteContactMailer extends SiteCommandLineApplication
 			SwatDB::equalityOperator($instance_id),
 			$this->db->quote($instance_id, 'integer'),
 			$this->db->quote(false, 'boolean'));
+
+		if ($this->getBaseClassName() == 'SiteContactMessage') {
+			$class_name_sql = ' and (class_name = %s or class_name is null)';
+		} else {
+			$class_name_sql = ' and class_name = %s';
+		}
+
+		$sql.= sprintf(
+			$class_name_sql,
+			$this->db->quote($this->getClassName(), 'text')
+		);
 
 		if ($this->debug_domain !== null) {
 			$sql.= sprintf(
@@ -298,7 +317,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 	{
 		// Dynamic static call to get subjects. This will be more straight-
 		// forward in PHP 5.3.
-		$class_name = SwatDBClassMap::get($this->getBaseClassName());
+		$class_name = $this->getClassName();
 		$subjects = call_user_func(array($class_name, 'getSubjects'));
 
 		if (array_key_exists($message->subject, $subjects)) {
