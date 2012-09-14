@@ -6,7 +6,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  * Contact message
  *
  * @package   Site
- * @copyright 2010 silverorange
+ * @copyright 2010-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactMessage extends SwatDBDataObject
@@ -19,6 +19,17 @@ class SiteContactMessage extends SwatDBDataObject
 	 * @var integer
 	 */
 	public $id;
+
+	/**
+	 * Original class name of the SiteContactMessage when saved.
+	 *
+	 * This value can be optionally used when sending contact messages for
+	 * differentiating between different contact forms on a single instance or
+	 * non-instanced website.
+	 *
+	 * @var string
+	 */
+	public $class_name;
 
 	/**
 	 * Email address of the contacter

@@ -27,7 +27,7 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function getContactMessageClassName()
 	{
-		$class_name = SwatDBClassMap::get('SiteContactMessage');
+		return SwatDBClassMap::get('SiteContactMessage');
 	}
 
 	// }}}
@@ -89,6 +89,7 @@ class SiteContactPage extends SiteDBEditPage
 
 		$this->processMessage($contact_message);
 
+		$contact_message->class_name = $class_name;
 		$contact_message->spam = $this->isMessageSpam($contact_message);
 		$contact_message->save();
 	}
