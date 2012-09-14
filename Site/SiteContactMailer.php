@@ -208,8 +208,15 @@ class SiteContactMailer extends SiteCommandLineApplication
 
 		$sql.= ' order by createdate asc';
 
-		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteContactMessageWrapper'));
+		return SwatDB::query($this->db, $sql, $this->getWrapper());
+	}
+
+	// }}}
+	// {{{ protected function getWrapper()
+
+	protected function getWrapper()
+	{
+		return SwatDBClassMap::get('SiteContactMessageWrapper');
 	}
 
 	// }}}
