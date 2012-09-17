@@ -153,6 +153,8 @@ abstract class SiteCdnTask extends SwatDBDataObject
 				)
 			);
 		}
+
+		return true;
 	}
 
 	// }}}
