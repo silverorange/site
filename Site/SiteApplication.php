@@ -15,7 +15,7 @@ require_once 'Swat/exceptions/SwatException.php';
  * Base class for an application
  *
  * @package   Site
- * @copyright 2004-2010 silverorange
+ * @copyright 2004-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteApplication extends SiteObject
@@ -244,10 +244,34 @@ abstract class SiteApplication extends SiteObject
 		$id = null;
 		$instance = $this->getInstance();
 
-		if ($instance !== null)
+		if ($instance !== null) {
 			$id = $instance->id;
+		}
 
 		return $id;
+	}
+
+	// }}}
+	// {{{ public function getInstanceShortname()
+
+	/**
+	 * Helper method to get the shortname of the current instance
+	 *
+	 * @return string the current instance shortname or null if no instance
+	 *                 exists.
+	 *
+	 * @see SiteMultipleInstanceModule
+	 */
+	public function getInstanceShortname()
+	{
+		$shortname = null;
+		$instance = $this->getInstance();
+
+		if ($instance !== null) {
+			$shortname = $instance->id;
+		}
+
+		return $shortname;
 	}
 
 	// }}}
