@@ -268,7 +268,7 @@ abstract class SiteApplication extends SiteObject
 		$instance = $this->getInstance();
 
 		if ($instance !== null) {
-			$shortname = $instance->id;
+			$shortname = $instance->shortname;
 		}
 
 		return $shortname;
