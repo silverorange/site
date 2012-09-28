@@ -10,7 +10,7 @@ require_once 'Site/pages/SiteUiPage.php';
  * Base class for edit pages
  *
  * @package   Site
- * @copyright 2008-2011 silverorange
+ * @copyright 2008-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteEditPage extends SiteUiPage
@@ -44,8 +44,9 @@ abstract class SiteEditPage extends SiteUiPage
 
 	public function process()
 	{
-		foreach ($this->getForms() as $form)
+		foreach ($this->getForms() as $form) {
 			$this->processForm($form);
+		}
 	}
 
 	// }}}
@@ -112,8 +113,9 @@ abstract class SiteEditPage extends SiteUiPage
 	{
 		$valid = true;
 
-		if ($form->hasMessage())
+		if ($form->hasMessage()) {
 			$valid = false;
+		}
 
 		foreach ($form->getChildren('SwatMessageDisplay') as $message_display) {
 			if ($message_display->getMessageCount() > 0) {
@@ -160,8 +162,9 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function assignUiValuesToObject(
 		SwatDBDataObject $object, array $names)
 	{
-		foreach ($names as $name)
+		foreach ($names as $name) {
 			$this->assignUiValueToObject($object, $name);
+		}
 	}
 
 	// }}}
@@ -217,8 +220,9 @@ abstract class SiteEditPage extends SiteUiPage
 		$count = 1;
 		$shortname = $shortname_base;
 
-		while ($this->validateShortname($shortname) === false)
+		while ($this->validateShortname($shortname) === false) {
 			$shortname = $shortname_base.$count++;
+		}
 
 		return $shortname;
 	}
@@ -261,8 +265,9 @@ abstract class SiteEditPage extends SiteUiPage
 				$message_display = $this->getMessageDisplay($form);
 				if ($message_display !== null) {
 					$message = $this->getInvalidMessage($form);
-					if ($message !== null)
+					if ($message !== null) {
 						$message_display->add($message);
+					}
 				}
 			}
 		}
@@ -296,8 +301,9 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function buildInternal()
 	{
 		parent::buildInternal();
-		foreach ($this->getForms() as $form)
+		foreach ($this->getForms() as $form) {
 			$this->buildForm($form);
+		}
 	}
 
 	// }}}
@@ -311,8 +317,9 @@ abstract class SiteEditPage extends SiteUiPage
 			$form->action = '.';
 		}
 
-		if (!$form->isProcessed() && !$this->isNew($form))
+		if (!$form->isProcessed() && !$this->isNew($form)) {
 			$this->load($form);
+		}
 
 		if ($form->getHiddenField(self::RELOCATE_URI_FIELD) === null) {
 			$uri = $this->getRefererUri();
@@ -335,8 +342,9 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function assignObjectValuesToUi(
 		SwatDBDataObject $object, array $names)
 	{
-		foreach ($names as $name)
+		foreach ($names as $name) {
 			$this->assignObjectValueToUi($object, $name);
+		}
 	}
 
 	// }}}
