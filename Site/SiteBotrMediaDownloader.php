@@ -328,8 +328,12 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 			$this->db->quote(true, 'boolean'));
 
 		if ($this->media_set_shortname !== null) {
-			$where.= sprintf(' and MediaSet.shortname = %s',
-				$this->db->quote($this->media_set_shortname, 'text'));
+			$where.= sprintf(
+				' and MediaSet.shortname = %s and MediaSet.instance %s %s',
+				$this->db->quote($this->media_set_shortname, 'text'),
+				SwatDB::equalityOperator($this->getInstanceId()),
+				$this->db->quote($this->getInstanceId(), 'integer')
+			);
 		}
 
 		return $where;
