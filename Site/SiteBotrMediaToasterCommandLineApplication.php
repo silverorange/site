@@ -438,7 +438,8 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	/**
 	 * Fake expected behaviour for negative filtering.
 	 *
-	 * This may make more sense in SiteBotrMediaToaster
+	 * This may make more sense in SiteBotrMediaToaster. If so it should be
+	 * improved to match the various rules BOTR's API supports when searching.
 	 *
 	 * @return boolean whether or not the row should be filtered from the
 	 *                  results
