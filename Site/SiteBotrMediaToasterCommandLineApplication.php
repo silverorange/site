@@ -79,6 +79,18 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected $media_objects = array();
 
 	/**
+	 * Search filters to limit BOTR media lookups by.
+	 *
+	 * An array of search terms when doing the Botr API call, with the array key
+	 * as the field to search and the array value as the search string. See
+	 * {@link http://developer.longtailvideo.com/botr/system-api/methods/videos/list.html BOTR Documentation}
+	 * for details on writing search filters.
+	 *
+	 * @var string
+	 */
+	protected $search_filters = array();
+
+	/**
 	 * Various tags added to metadata on BOTR to mark status of video.
 	 *
 	 * @var string
@@ -142,6 +154,14 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	public function setResetTags()
 	{
 		$this->reset_tags = true;
+	}
+
+	// }}}
+	// {{{ public function addSearchFilter()
+
+	public function addSearchFilter($search_term, $search_field = '*')
+	{
+		$this->search_filters[$search_field] = $search_term;
 	}
 
 	// }}}
@@ -374,6 +394,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		// local options come second so they overwrite any defaults.
 		$options = array_merge(
 			$this->getDefaultMediaOptions(),
+			$this->getSearchFilterOptions(),
 			$options);
 
 		if ($this->media === null) {
@@ -392,9 +413,33 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 	protected function getDefaultMediaOptions()
 	{
-		return array(
+		$options = array(
 			'statuses_filter' => 'ready',
 		);
+
+		if (count($this->search_filters)) {
+			foreach ($this->search_filters as $field => $term) {
+				$options['search:'.$field] = $term;
+			}
+		}
+
+		return $options;
+	}
+
+	// }}}
+	// {{{ protected function getSearchFilterOptions()
+
+	protected function getSearchFilterOptions()
+	{
+		$options = array();
+
+		if (count($this->search_filters)) {
+			foreach ($this->search_filters as $field => $term) {
+				$options['search:'.$field] = $term;
+			}
+		}
+
+		return $options;
 	}
 
 	// }}}
