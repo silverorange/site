@@ -210,10 +210,16 @@ class SiteBotrMediaToaster
 			'end_date',
 			'result_limit',
 			'result_offset',
+			'search',
 			);
 
 		foreach ($options as $key => $value) {
-			if (array_search($key, $valid_options) !== false) {
+			// special case for search as it's a key prefix.
+			$lookup_key = (substr($key, 0, 6) === 'search') ?
+				'search' :
+				$key;
+
+			if (array_search($lookup_key, $valid_options) !== false) {
 				$settings[$key] = $value;
 			} else {
 				throw new SiteBotrMediaToasterException(
