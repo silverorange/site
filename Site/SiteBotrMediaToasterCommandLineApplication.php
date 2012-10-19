@@ -79,16 +79,28 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected $media_objects = array();
 
 	/**
-	 * Search filters to limit BOTR media lookups by.
+	 * Search filters when looking up BOTR media by API.
 	 *
 	 * An array of search terms when doing the Botr API call, with the array key
 	 * as the field to search and the array value as the search string. See
 	 * {@link http://developer.longtailvideo.com/botr/system-api/methods/videos/list.html BOTR Documentation}
 	 * for details on writing search filters.
 	 *
-	 * @var string
+	 * @var array
 	 */
 	protected $search_filters = array();
+
+	/**
+	 * Search filters to exclude by when looking up BOTR media by API.
+	 *
+	 * An array of search terms when doing the Botr API call, with the array key
+	 * as the field to search and the array value as the search string. As BOTR
+	 * does not support any concept of filtering negatively, this are run after
+	 * we lookup the media, and fake the behaviour expected.
+	 *
+	 * @var array
+	 */
+	protected $exclusion_filters = array();
 
 	/**
 	 * Various tags added to metadata on BOTR to mark status of video.
@@ -162,6 +174,14 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	public function addSearchFilter($search_term, $search_field = '*')
 	{
 		$this->search_filters[$search_field] = $search_term;
+	}
+
+	// }}}
+	// {{{ public function addExclusionFilter()
+
+	public function addExclusionFilter($search_term, $search_field = '*')
+	{
+		$this->exclusion_filters[$search_field] = $search_term;
 	}
 
 	// }}}
@@ -398,14 +418,68 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 			$options);
 
 		if ($this->media === null) {
+			$this->media = array();
+
 			$media = $this->toaster->listMedia($options);
 
 			foreach ($media as $media_file) {
-				$this->media[$media_file['key']] = $media_file;
+				if (!$this->excludeMediaFile($media_file)) {
+					$this->media[$media_file['key']] = $media_file;
+				}
 			}
 		}
 
 		return $this->media;
+	}
+
+	// }}}
+	// {{{ protected function excludeMediaFile()
+
+	/**
+	 * Fake expected behaviour for negative filtering.
+	 *
+	 * This may make more sense in SiteBotrMediaToaster
+	 *
+	 * @return boolean whether or not the row should be filtered from the
+	 *                  results
+	 */
+	protected function excludeMediaFile(array $media_file)
+	{
+		$exclude = false;
+
+		foreach ($this->exclusion_filters as $filter_key => $filter_term) {
+			if ($filter_key == '*') {
+				// TODO: search recursively through any arrays.
+				foreach ($media_file as $key => $value) {
+					if (stripos($value, $filter_term) !== false) {
+						$exclude = true;
+						break;
+					}
+				}
+			} else {
+				// only need to support one level of nested search terms.
+				$filter_key_parts = explode('.', $filter_key, 2);
+
+				if (count($filter_key_parts) > 1) {
+					if (isset(
+							$media_file[$filter_key_parts[0]][$filter_key_parts[1]]
+						) && stripos(
+							$media_file[$filter_key_parts[0]][$filter_key_parts[1]],
+							$filter_term
+						) !== false) {
+						$exclude = true;
+					}
+				} else {
+					if (array_key_exists($key, $media_file)) {
+						if (stripos($attribute_value, $filter_term) !== false) {
+							$exclude = true;
+						}
+					}
+				}
+			}
+		}
+
+		return $exclude;
 	}
 
 	// }}}
