@@ -444,7 +444,13 @@ class SiteAttachment extends SwatDBDataObject
 			$this->queueCdnTask('delete');
 		}
 
+		$local_file = $this->getFilePath();
+
 		parent::deleteInternal();
+
+		if (file_exists($local_file)) {
+			unlink($local_file);
+		}
 	}
 
 	// }}}
