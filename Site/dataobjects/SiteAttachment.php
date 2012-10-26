@@ -165,7 +165,7 @@ class SiteAttachment extends SwatDBDataObject
 			'image/jpeg'               => 'jpg',
 			'application/msword'       => 'doc',
 			'text/html'                => 'html',
-			'application/vnd.ms-excel' => 'xlsx'
+			'application/vnd.ms-excel' => 'xls',
 		);
 
 		if (!array_key_exists($this->mime_type, $map)) {
