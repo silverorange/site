@@ -157,14 +157,15 @@ class SiteAttachment extends SwatDBDataObject
 	public function getExtension()
 	{
 		$map = array(
-			'audio/mp4'          => 'm4a',
-			'video/mp4'          => 'mp4',
-			'audio/mpeg'         => 'mp3',
-			'application/zip'    => 'zip',
-			'application/pdf'    => 'pdf',
-			'image/jpeg'         => 'jpg',
-			'application/msword' => 'doc',
-			'text/html'          => 'html',
+			'audio/mp4'                => 'm4a',
+			'video/mp4'                => 'mp4',
+			'audio/mpeg'               => 'mp3',
+			'application/zip'          => 'zip',
+			'application/pdf'          => 'pdf',
+			'image/jpeg'               => 'jpg',
+			'application/msword'       => 'doc',
+			'text/html'                => 'html',
+			'application/vnd.ms-excel' => 'xlsx'
 		);
 
 		if (!array_key_exists($this->mime_type, $map)) {
@@ -181,14 +182,15 @@ class SiteAttachment extends SwatDBDataObject
 	public function getHumanFileType()
 	{
 		$map = array(
-			'audio/mp4'          => Site::_('M4A'),
-			'video/mp4'          => Site::_('MP4'),
-			'audio/mpeg'         => Site::_('MP3'),
-			'application/zip'    => Site::_('ZIP'),
-			'application/pdf'    => Site::_('PDF'),
-			'image/jpeg'         => Site::_('JPEG Image'),
-			'application/msword' => Site::_('Word Document'),
-			'text/html'          => Site::_('Web Document'),
+			'audio/mp4'                => Site::_('M4A'),
+			'video/mp4'                => Site::_('MP4'),
+			'audio/mpeg'               => Site::_('MP3'),
+			'application/zip'          => Site::_('ZIP'),
+			'application/pdf'          => Site::_('PDF'),
+			'image/jpeg'               => Site::_('JPEG Image'),
+			'application/msword'       => Site::_('Word Document'),
+			'text/html'                => Site::_('Web Document'),
+			'application/vnd.ms-excel' => Site::_('Excel Document'),
 		);
 
 		if (!array_key_exists($this->mime_type, $map)) {
