@@ -166,6 +166,8 @@ class SiteAttachment extends SwatDBDataObject
 			'application/msword'       => 'doc',
 			'text/html'                => 'html',
 			'application/vnd.ms-excel' => 'xls',
+			'application/vnd.openxmlformats-officedocument'.
+				'.wordprocessingml.document' => 'xlsx',
 		);
 
 		if (!array_key_exists($this->mime_type, $map)) {
@@ -191,6 +193,8 @@ class SiteAttachment extends SwatDBDataObject
 			'application/msword'       => Site::_('Word Document'),
 			'text/html'                => Site::_('Web Document'),
 			'application/vnd.ms-excel' => Site::_('Excel Document'),
+			'application/vnd.openxmlformats-officedocument'.
+				'.wordprocessingml.document' => Site::_('Excel Document'),
 		);
 
 		if (!array_key_exists($this->mime_type, $map)) {
