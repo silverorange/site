@@ -48,7 +48,9 @@ class SiteNotifierModule extends SiteApplicationModule
 		try {
 			$config = $this->app->getModule('SiteConfigModule');
 
-			if ($config->notifier->address != '') {
+			if ($config->notifier->address != '' &&
+				$config->notifier->site != '') {
+
 				$sender = new Net_Notifier_Sender(
 					$config->notifier->address,
 					$config->notifier->timeout
