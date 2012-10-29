@@ -320,6 +320,11 @@ class Site
 			// P3P headers. See http://en.wikipedia.org/wiki/P3P
 			'p3p.compact_policy' => null,
 			'p3p.policy_uri'     => null,
+
+			// Sending notifications using Net_Notifier
+			'notifier.address' => null,
+			'notifier.site'    => null, // site identifier
+			'notifier.timeout' => 200, // in milliseconds
 		);
 	}
 

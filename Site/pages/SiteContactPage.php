@@ -92,6 +92,24 @@ class SiteContactPage extends SiteDBEditPage
 		$contact_message->class_name = $class_name;
 		$contact_message->spam = $this->isMessageSpam($contact_message);
 		$contact_message->save();
+
+		$this->sendNotification($contact_message);
+	}
+
+	// }}}
+	// {{{ protected function sendNotification()
+
+	protected function sendNotification(SiteContactMessage $message)
+	{
+		if (!$message->spam && isset($this->app->notifier)) {
+			$this->app->notifier->send(
+				'contact',
+				array(
+					'site'    => $this->app->config->notifier->site,
+					'subject' => $message->subject,
+				)
+			);
+		}
 	}
 
 	// }}}
