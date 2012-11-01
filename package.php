@@ -67,6 +67,7 @@ $package->addPackageDepWithChannel('optional', 'BotrAPI', 'pear.silverorange.com
 $package->addPackageDepWithChannel('required', 'Text_Password', 'pear.php.net', '1.1.1');
 $package->addPackageDepWithChannel('optional', 'Services_Akismet2', 'pear.php.net', '0.2.0');
 $package->addPackageDepWithChannel('optional', 'sdk', 'pear.amazonwebservices.com', '1.5.6');
+$package->addPackageDepWithChannel('optional', 'Net_Notifier', 'pear.silverorange.com', '0.1.0');
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
 $package->addExtensionDep('optional', 'uploadprogress', '0.3.0');
 $package->addExtensionDep('optional', 'memcached', '0.1.5');
