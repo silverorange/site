@@ -279,8 +279,15 @@ abstract class SiteApplication extends SiteObject
 
 	public function addToSearchQueue($document_type, $document_id)
 	{
-		$manager = $this->db->manager;
-		if (!in_array('nategosearchqueue', $manager->listTables())) {
+		static $nate_go_search_check = null;
+
+		if ($nate_go_search_check === null) {
+			$manager = $this->db->manager;
+			$nate_go_search_check =
+				(!in_array('nategosearchqueue', $manager->listTables()));
+		}
+
+		if ($nate_go_search_check === false) {
 			return;
 		}
 
