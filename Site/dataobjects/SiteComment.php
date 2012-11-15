@@ -188,6 +188,25 @@ class SiteComment extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function setStatus()
+
+	/**
+	 * Set the status of the comment
+	 *
+	 * @param integer $status Status constant
+	 * @param SiteApplication $app Site application
+	 */
+	public function setStatus($status, SiteApplication $app)
+	{
+		$this->status = $status;
+
+		if ($this->status == self::STATUS_PUBLISHED) {
+			$this->clearCache($app);
+			$this->addToSearchQueue($app);
+		}
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
@@ -199,6 +218,20 @@ class SiteComment extends SwatDBDataObject
 
 		$this->table = 'Comment';
 		$this->id_field = 'integer:id';
+	}
+
+	// }}}
+	// {{{ protected function clearCache()
+
+	protected function clearCache(SiteApplication $app)
+	{
+	}
+
+	// }}}
+	// {{{ protected function addToSearchQueue()
+
+	protected function addToSearchQueue(SiteApplication $app)
+	{
 	}
 
 	// }}}

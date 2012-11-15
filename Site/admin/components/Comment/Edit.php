@@ -92,7 +92,8 @@ class SiteCommentEdit extends AdminDBEdit
 		$this->comment->status   = $values['status'];
 
 		if ($this->comment->status === null) {
-			$this->comment->status = SiteComment::STATUS_PUBLISHED;
+			$this->comment->setStatus(SiteComment::STATUS_PUBLISHED,
+				$this->app);
 		}
 
 		$this->comment->bodytext = $values['bodytext'];
