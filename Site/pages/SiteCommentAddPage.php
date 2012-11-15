@@ -151,9 +151,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->comment->spam = $this->isSpam();
 		$this->item->addComment($this->comment);
 		$this->item->save();
-
-		$this->addToSearchQueue();
-		$this->clearCache();
+		$this->comment->postSave($this->app);
 	}
 
 	// }}}
@@ -234,20 +232,6 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		}
 
 		return $user_agent;
-	}
-
-	// }}}
-	// {{{ protected function clearCache()
-
-	protected function clearCache()
-	{
-	}
-
-	// }}}
-	// {{{ protected function addToSearchQueue()
-
-	protected function addToSearchQueue()
-	{
 	}
 
 	// }}}
