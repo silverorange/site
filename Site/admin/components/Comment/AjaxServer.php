@@ -107,7 +107,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		$comment = $this->getComment($comment_id);
 		if ($comment !== null) {
 			if ($comment->status !== SiteComment::STATUS_PUBLISHED) {
-				$comment->status = SiteComment::STATUS_PUBLISHED;
+				$comment->setStatus(SiteComment::STATUS_PUBLISHED, $this->app);
 				$comment->save();
 				$this->flushCache();
 			}
@@ -131,7 +131,9 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		$comment = $this->getComment($comment_id);
 		if ($comment !== null) {
 			if ($comment->status !== SiteComment::STATUS_UNPUBLISHED) {
-				$comment->status = SiteComment::STATUS_UNPUBLISHED;
+				$comment->setStatus(
+					SiteComment::STATUS_UNPUBLISHED, $this->app);
+
 				$comment->save();
 				$this->flushCache();
 			}
