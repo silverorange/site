@@ -7,7 +7,6 @@ require_once 'Site/SiteViewFactory.php';
 require_once 'Site/SiteCommentStatus.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Services/Akismet2.php';
-require_once 'NateGoSearch/NateGoSearch.php';
 
 /**
  * Handle the init, processing, and display of a comment UI
@@ -219,15 +218,6 @@ abstract class SiteCommentUi
 		$this->comment->spam = $this->isCommentSpam($this->comment);
 		$this->addCommentToPost($this->post, $this->comment);
 		$this->post->save();
-		$this->addToSearchQueue();
-
-		// clear posts cache if comment is visible
-		if (isset($this->app->memcache)) {
-			if (!$this->comment->spam &&
-				$this->comment->status === SiteComment::STATUS_PUBLISHED) {
-				$this->clearCache();
-			}
-		}
 	}
 
 	// }}}
@@ -294,20 +284,6 @@ abstract class SiteCommentUi
 		}
 
 		return $is_spam;
-	}
-
-	// }}}
-	// {{{ protected function addToSearchQueue()
-
-	protected function addToSearchQueue()
-	{
-	}
-
-	// }}}
-	// {{{ protected function clearCache()
-
-	protected function clearCache()
-	{
 	}
 
 	// }}}
