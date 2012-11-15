@@ -107,9 +107,9 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		$comment = $this->getComment($comment_id);
 		if ($comment !== null) {
 			if ($comment->status !== SiteComment::STATUS_PUBLISHED) {
-				$comment->setStatus(SiteComment::STATUS_PUBLISHED, $this->app);
+				$comment->status = SiteComment::STATUS_PUBLISHED;
 				$comment->save();
-				$this->flushCache();
+				$comment->postSave($this->app);
 			}
 		}
 
@@ -131,11 +131,9 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		$comment = $this->getComment($comment_id);
 		if ($comment !== null) {
 			if ($comment->status !== SiteComment::STATUS_UNPUBLISHED) {
-				$comment->setStatus(
-					SiteComment::STATUS_UNPUBLISHED, $this->app);
-
+				$comment->status = SiteComment::STATUS_UNPUBLISHED;
 				$comment->save();
-				$this->flushCache();
+				$comment->postSave($this->app);
 			}
 		}
 
@@ -157,7 +155,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		$comment = $this->getComment($comment_id);
 		if ($comment !== null) {
 			$comment->delete();
-			$this->flushCache();
+			$comment->clearCache($this->app);
 		}
 
 		return true;
@@ -199,14 +197,6 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		} else {
 			return null;
 		}
-	}
-
-	// }}}
-	// {{{ protected function flushCache()
-
-	protected function flushCache()
-	{
-
 	}
 
 	// }}}

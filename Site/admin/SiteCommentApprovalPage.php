@@ -26,10 +26,9 @@ abstract class SiteCommentApprovalPage extends AdminApproval
 
 	protected function approve()
 	{
-		$this->data_object->setStatus(SiteComment::STATUS_PUBLISHED,
-			$this->app);
-
+		$this->data_object->status = SiteComment::STATUS_PUBLISHED;
 		$this->data_object->save();
+		$this->data_object->postSave($this->app);
 	}
 
 	// }}}
@@ -37,10 +36,9 @@ abstract class SiteCommentApprovalPage extends AdminApproval
 
 	protected function delete()
 	{
-		$this->data_object->setStatus(SiteComment::STATUS_UNPUBLISHED,
-			$this->app);
-
+		$this->data_object->status = SiteComment::STATUS_UNPUBLISHED;
 		$this->data_object->save();
+		$this->data_object->postSave($this->app);
 	}
 
 	// }}}

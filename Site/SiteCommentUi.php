@@ -182,14 +182,9 @@ abstract class SiteCommentUi
 
 		switch ($this->getCommentStatus()) {
 		case SiteCommentStatus::OPEN:
-			$this->comment->setStatus(SiteComment::STATUS_PUBLISHED,
-				$this->app);
-			break;
-
+			$this->comment->status = SiteComment::STATUS_PUBLISHED;
 		case SiteCommentStatus::MODERATED:
-			$this->comment->setStatus(SiteComment::STATUS_PENDING,
-				$this->app);
-
+			$this->comment->status = SiteComment::STATUS_PENDING;
 			break;
 		}
 
@@ -218,6 +213,7 @@ abstract class SiteCommentUi
 		$this->comment->spam = $this->isCommentSpam($this->comment);
 		$this->addCommentToPost($this->post, $this->comment);
 		$this->post->save();
+		$this->comment->postSave($this->app);
 	}
 
 	// }}}

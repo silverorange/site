@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Swat/SwatString.php';
 require_once 'Site/SiteCommentFilter.php';
+require_once 'NateGoSearch/NateGoSearch.php';
 
 /**
  * A comment on a site
@@ -188,22 +189,26 @@ class SiteComment extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function setStatus()
+	// {{{ public function postSave()
 
 	/**
-	 * Set the status of the comment
+	 * Run post-save methods for the comment
 	 *
-	 * @param integer $status Status constant
 	 * @param SiteApplication $app Site application
 	 */
-	public function setStatus($status, SiteApplication $app)
+	public function postSave(SiteApplication $app)
 	{
-		$this->status = $status;
-
-		if ($this->status == self::STATUS_PUBLISHED) {
+		if ($this->status == self::STATUS_PUBLISHED && !$this->spam) {
 			$this->clearCache($app);
 			$this->addToSearchQueue($app);
 		}
+	}
+
+	// }}}
+	// {{{ public function clearCache()
+
+	public function clearCache(SiteApplication $app)
+	{
 	}
 
 	// }}}
@@ -218,13 +223,6 @@ class SiteComment extends SwatDBDataObject
 
 		$this->table = 'Comment';
 		$this->id_field = 'integer:id';
-	}
-
-	// }}}
-	// {{{ protected function clearCache()
-
-	protected function clearCache(SiteApplication $app)
-	{
 	}
 
 	// }}}
