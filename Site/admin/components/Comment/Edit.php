@@ -92,36 +92,19 @@ class SiteCommentEdit extends AdminDBEdit
 		$this->comment->status   = $values['status'];
 
 		if ($this->comment->status === null) {
-			$this->comment->setStatus(SiteComment::STATUS_PUBLISHED,
-				$this->app);
+			$this->comment->status = SiteComment::STATUS_PUBLISHED;
 		}
 
 		$this->comment->bodytext = $values['bodytext'];
 
 		if ($this->comment->isModified()) {
 			$this->comment->save();
-
-			$this->addToSearchQueue();
-			$this->clearCache();
+			$this->comment->postSave($this->app);
 
 			$message = new SwatMessage(Site::_('Comment has been saved.'));
 
 			$this->app->messages->add($message);
 		}
-	}
-
-	// }}}
-	// {{{ protected function addToSearchQueue()
-
-	protected function addToSearchQueue()
-	{
-	}
-
-	// }}}
-	// {{{ protected function clearCache()
-
-	protected function clearCache()
-	{
 	}
 
 	// }}}
