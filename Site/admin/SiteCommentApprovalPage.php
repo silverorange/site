@@ -36,9 +36,8 @@ abstract class SiteCommentApprovalPage extends AdminApproval
 
 	protected function delete()
 	{
-		$this->data_object->status = SiteComment::STATUS_UNPUBLISHED;
-		$this->data_object->save();
-		$this->data_object->postSave($this->app);
+		$this->data_object->delete();
+		$this->data_object->clearCache($this->app);
 	}
 
 	// }}}
