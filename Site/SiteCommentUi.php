@@ -183,6 +183,8 @@ abstract class SiteCommentUi
 		switch ($this->getCommentStatus()) {
 		case SiteCommentStatus::OPEN:
 			$this->comment->status = SiteComment::STATUS_PUBLISHED;
+			break;
+
 		case SiteCommentStatus::MODERATED:
 			$this->comment->status = SiteComment::STATUS_PENDING;
 			break;
