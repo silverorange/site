@@ -7,7 +7,7 @@ require_once 'Site/pages/SitePage.php';
  * Page for logging into an account
  *
  * @package   Site
- * @copyright 2006-2011 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */
@@ -171,17 +171,18 @@ class SiteAccountLoginPage extends SitePage
 
 	protected function getForgotPasswordLink()
 	{
-		$email = $this->ui->getWidget('email_address');
-		$link = sprintf(Site::_(' %sForgot your password?%s'),
-			'<a href="account/forgotpassword%s">', '</a>');
+		$href = 'account/forgotpassword';
 
-		if (!$email->hasMessage() && $email != null) {
-			$link_value = sprintf('?email=%s', urlencode($email->value));
-		} else {
-			$link_value = null;
+		$email = $this->ui->getWidget('email_address');
+		if (!$email->hasMessage() && trim($email->value) != '') {
+			$href.= '?email='.urlencode($email->value);
 		}
 
-		return sprintf($link, $link_value);
+		$link = new SwatHtmlTag('a');
+		$link->setContent(Site::_('Forgot your password?'));
+		$link->href = $href;
+
+		return $link;
 	}
 
 	// }}}
