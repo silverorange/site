@@ -27,6 +27,11 @@
 						<property name="text" type="data">instance.title</property>
 					</object>
 				</object>
+				<object class="SwatTableViewColumn" id="details">
+					<object class="SwatTextCellRenderer">
+						<property name="text" type="data">details</property>
+					</object>
+				</object>
 			</widget>
 			<widget class="AdminPagination" id="pager">
 				<property name="link">Account/Suspicious</property>

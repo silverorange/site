@@ -89,8 +89,7 @@ class SiteAccountSuspicious extends AdminIndex
 				$where_clause));
 
 		$sql = sprintf(
-			'select Account.*
-			from Account
+			'select * from Account
 			inner join SuspiciousAccountView on
 				SuspiciousAccountView.account = Account.id
 			where %s
@@ -100,25 +99,24 @@ class SiteAccountSuspicious extends AdminIndex
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 
-		$accounts = SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('SiteAccountWrapper'));
+		$rows = SwatDB::query($this->app->db, $sql);
 
+		$class_name = SwatDBClassMap::get('SiteAccount');
 		$store = new SwatTableStore();
-		foreach ($accounts as $account) {
-			$store->add($this->getDetailsStore($account));
+
+		foreach ($rows as $row) {
+			$account = new $class_name($row);
+			$account->setDatabase($this->app->db);
+
+			$ds = new SwatDetailsStore($account);
+			$ds->fullname = $account->getFullName();
+			$ds->details  = SiteAccount::getSuspiciousActivitySummary(
+				$row);
+
+			$store->add($ds);
 		}
 
 		return $store;
-	}
-
-	// }}}
-	// {{{ protected function getDetailsStore()
-
-	protected function getDetailsStore(SiteAccount $account)
-	{
-		$ds = new SwatDetailsStore($account);
-		$ds->fullname = $account->getFullname();
-		return $ds;
 	}
 
 	// }}}
