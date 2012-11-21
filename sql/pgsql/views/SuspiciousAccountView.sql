@@ -1,30 +1,18 @@
 create or replace view SuspiciousAccountView as
-	select
-		account,
-		lag(login_date, 2, null) over AccountWindow as last_suspicious_login,
-		case
-			when lag(login_date, 2, null) over AccountWindow - lead(login_date, 2, null) over AccountWindow < interval '1 hour' then true
-			else false
-		end as too_many_logins,
-		case
-			when         lag(ip_address, 2, null) over AccountWindow = ip_address
-				and  lag(ip_address, 1, null) over AccountWindow = ip_address
-				and lead(ip_address, 1, null) over AccountWindow = ip_address
-				and lead(ip_address, 2, null) over AccountWindow = ip_address then false
-			else true
-		end as ip_address_distinct,
-		case
-			when         lag(user_agent, 2, null) over AccountWindow = user_agent
-				and  lag(user_agent, 1, null) over AccountWindow = user_agent
-				and lead(user_agent, 1, null) over AccountWindow = user_agent
-				and lead(user_agent, 2, null) over AccountWindow = user_agent then false
-			else true
-		end as user_agent_distinct
-	from AccountLoginHistory
-	where login_date > now() - interval '7 days'
-	window AccountWindow as (
-		partition by account
-		order by login_date desc
-		rows between unbounded preceding and unbounded following
-	)
-	order by account, login_date desc;
+
+SELECT accountloginhistory.account,
+	min(accountloginhistory.login_date) AS first_suspicious_login,
+	max(accountloginhistory.login_date) AS last_suspicious_login,
+	count(accountloginhistory.id) AS login_count,
+	count(DISTINCT accountloginhistory.user_agent) AS user_agent_count,
+	count(DISTINCT accountloginhistory.ip_address) AS ip_address_count
+FROM accountloginhistory
+
+/* In the past week there have been more than 5 logins from more than 5 IPs and more than 5 user-agents */
+WHERE accountloginhistory.login_date > (now() - '7 days'::interval)
+GROUP BY accountloginhistory.account
+HAVING count(accountloginhistory.id) > 4
+	and count(DISTINCT accountloginhistory.user_agent) > 4
+	and count(DISTINCT accountloginhistory.ip_address) > 4
+;
+

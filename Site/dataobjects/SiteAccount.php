@@ -309,14 +309,8 @@ class SiteAccount extends SwatDBDataObject
 
 			$sql = sprintf(
 				'select * from SuspiciousAccountView
-				where
-					account = %s
-					and too_many_logins = %s
-					and (ip_address_distinct = %s or user_agent_distinct = %s)',
-				$this->db->quote($this->id, 'integer'),
-				$this->db->quote(true, 'boolean'),
-				$this->db->quote(true, 'boolean'),
-				$this->db->quote(true, 'boolean'));
+				where account = %s',
+				$this->db->quote($this->id, 'integer'));
 
 			$this->suspicious_activity =
 				SwatDB::query($this->db, $sql)->getFirst();
@@ -332,22 +326,12 @@ class SiteAccount extends SwatDBDataObject
 	{
 		$locale = SwatI18NLocale::get();
 
-		$summary = Site::_(
-			'In the last week, 5 or more logins within a '.
-			'1 hour period from '
+		$summary = sprintf(Site::_('In the last week: %s logins from %s IPs'.
+			' and %s different browsers.'),
+			$locale->formatNumber($activity->login_count),
+			$locale->formatNumber($activity->ip_address_count),
+			$locale->formatNumber($activity->user_agent_count)
 		);
-
-		if ($activity->user_agent_distinct) {
-			$summary.= Site::_('2 or more user agents and ');
-		} else {
-			$summary.= Site::_('1 user agent and ');
-		}
-
-		if ($activity->ip_address_distinct) {
-			$summary.= Site::_('2 or more IP addresses.');
-		} else {
-			$summary.= Site::_('1 IP address.');
-		}
 
 		return $summary;
 	}
