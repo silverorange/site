@@ -192,6 +192,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 		ob_start();
 
+		$this->displaySessionsNote();
+
 		echo '<div class="account-sessions-current">';
 
 		$header = new SwatHtmlTag('h4');
@@ -370,6 +372,25 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		}
 
 		return $found_os;
+	}
+
+	// }}}
+	// {{{ protected function displaySessionsNote()
+
+	protected function displaySessionsNote()
+	{
+		$div = new SwatHtmlTag('div');
+		$div->class = 'account-sessions-note';
+
+		$div->setContent(
+			Site::_(
+				'If you log in from multiple devices (for example, your '.
+				'phone and your desktop) you can view and manage your '.
+				'login sessions on this page.'
+			)
+		);
+
+		$div->display();
 	}
 
 	// }}}
