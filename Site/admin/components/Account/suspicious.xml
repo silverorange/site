@@ -4,7 +4,7 @@
 	<widget class="SwatFrame" id="index_frame">
 		<property name="title" translatable="yes">Suspicious Accounts</property>
 		<widget class="AdminNote">
-			<property name="content" translatable="yes">A suspicious account is one with 5 or more logins in the last week, from 5 or more locations, and 5 or more different web browsers.</property>
+			<property name="content" translatable="yes">A suspicious account has 5 or more logins in the last week, from 5 or more locations, and 5 or more different web browsers.</property>
 		</widget>
 		<widget class="SwatForm" id="index_form">
 			<widget class="SwatTableView" id="index_view">
