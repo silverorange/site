@@ -281,7 +281,9 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	{
 		if (count($this->source_files) == 0) {
 			$iterator = new RecursiveDirectoryIterator(
-				$this->getSourceDirectory());
+				$this->getSourceDirectory(),
+				FilesystemIterator::SKIP_DOTS
+			);
 
 			// only grab media types we upload.
 			$valid_extensions = array(
