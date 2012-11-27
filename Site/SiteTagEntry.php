@@ -124,6 +124,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 
 		$input_tag = new SwatHtmlTag('input');
 		$input_tag->name = $this->id.'_value';
+		$input_tag->class = 'swat-entry';
 		$input_tag->id = $this->id.'_value';
 
 		if (!$this->isSensitive())
