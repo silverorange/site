@@ -2,7 +2,7 @@
  * Control for selecting multiple tags from a array of tags
  *
  * @package   Site
- * @copyright 2007-2011 silverorange
+ * @copyright 2007-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 
@@ -94,6 +94,11 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 
 	this.auto_complete.itemSelectEvent.subscribe(
 		this.addTagFromAutoComplete, this, true);
+
+	// update z-index when dropdown opens
+	this.auto_complete.containerExpandEvent.subscribe(function() {
+		SwatZIndexManager.raiseElement(this.input_element.parentNode);
+	}, this, true);
 
 	if (this.allow_adding_tags) {
 		this.a_tag = this.getAddTagElement();
