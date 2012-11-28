@@ -434,7 +434,7 @@ SiteTagEntry.prototype.removeAvailableTag = function(tag_name)
 }
 
 // }}}
-// {{{ createNewTagNode()
+// {{{ getTagElement()
 
 SiteTagEntry.prototype.getTagElement = function(tag_name, title, new_tag)
 {
