@@ -783,6 +783,38 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
+	// {{{ public function getAdminBaseHref()
+
+	/**
+	 * Gets the base value for any application admin hrefs
+	 *
+	 * Admin base value is assumed to always be secure. If the config value is
+	 * set use that, otherwise fall back on the site defaults.
+	 *
+	 * @return string the base value for all application admin hrefs.
+	 */
+	public function getAdminBaseHref()
+	{
+		$admin_base_href = null;
+		$secure = true;
+
+		if ($this->config->uri->admin_base != '') {
+			$admin_base_href = $this->config->uri->admin_base;
+
+			if (substr($admin_base_href, 0, 1) == '/') {
+				$admin_base_href = $this->getProtocol($secure).
+					$this->getServerName($secure).$admin_base_href;
+			}
+		}
+
+		if ($admin_base_href === null) {
+			$admin_base_href = $this->getBaseHref($secure).'admin/';
+		}
+
+		return $admin_base_href;
+	}
+
+	// }}}
 	// {{{ public function getBaseCdnHref()
 
 	/**

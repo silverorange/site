@@ -234,6 +234,7 @@ class Site
 			'uri.absolute_base'        => null,
 			'uri.cdn_base'             => null,
 			'uri.secure_cdn_base'      => null,
+			'uri.admin_base'           => null,
 
 			// Exceptions & errors
 			'exceptions.log_location'  => null,
