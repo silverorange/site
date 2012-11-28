@@ -38,7 +38,6 @@ function SiteTagEntry(id, data_store, initial_selected_tag_array,
 	this.query_delay = 0;
 	this.minimum_query_length = 0;
 	this.query_match_contains = true;
-	this.linked_tag_entries = {};
 
 	YAHOO.util.Event.onContentReady(
 		this.id, this.handleOnAvailable, this, true);
@@ -166,14 +165,6 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 
 	this.updateVisibility();
 	this.updateAddTagElement();
-}
-
-// }}}
-// {{{ addLinkedTagEntry()
-
-SiteTagEntry.prototype.addLinkedTagEntry = function(tag_entry)
-{
-	this.linked_tag_entries[tag_entry.id] = tag_entry;
 }
 
 // }}}
@@ -379,11 +370,6 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	if (new_tag) {
 		var title = tag_name;
 		this.new_tag_array.push(tag_name);
-
-		// add to available tags in linked tag entries
-		for (var id in this.linked_tag_entries) {
-			this.linked_tag_entries[id].addAvailableTag(tag_name, title);
-		}
 	}
 
 	// add array node
@@ -403,34 +389,6 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	// clear input value once a value is chosen
 	this.input_element.value = '';
 	this.updateVisibility();
-}
-
-// }}}
-// {{{ addAvailableTag()
-
-SiteTagEntry.prototype.addAvailableTag = function(tag_name, title)
-{
-	// only available for JS_Array types
-	if (this.auto_complete.dataSource.responseType == YAHOO.util.DataSourceBase.TYPE_JSARRAY) {
-		this.auto_complete.dataSource.liveData.push([title, tag_name]);
-	}
-};
-
-// }}}
-// {{{ removeAvailableTag()
-
-SiteTagEntry.prototype.removeAvailableTag = function(tag_name)
-{
-	// only available for JS_Array types
-	if (this.auto_complete.dataSource.responseType == YAHOO.util.DataSourceBase.TYPE_JSARRAY) {
-		var data = this.auto_complete.dataSource.liveData;
-		for (var i = 0; i < data.length; i++) {
-			if (data[i][1] == tag_name) {
-				this.auto_complete.dataSource.liveData.splice(i, 1);
-				break;
-			}
-		}
-	}
 }
 
 // }}}
@@ -564,12 +522,6 @@ SiteTagEntry.prototype.removeTag = function(tag_name)
 		if (this.new_tag_array[i] == tag_name) {
 			// remove row from selected array
 			var element = this.new_tag_array.splice(i, 1);
-
-			// remove new tag from linked tag entries
-			for (var id in this.linked_tag_entries) {
-				this.linked_tag_entries[id].removeAvailableTag(tag_name);
-			}
-
 			break;
 		}
 	}
