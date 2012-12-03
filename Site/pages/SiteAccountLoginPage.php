@@ -137,8 +137,6 @@ class SiteAccountLoginPage extends SitePage
 
 	protected function postLoginProcess()
 	{
-		// TODO: why is there a 'cart' reference in Site?
-		$this->app->cart->save();
 	}
 
 	// }}}
