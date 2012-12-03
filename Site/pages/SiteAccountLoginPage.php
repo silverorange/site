@@ -16,8 +16,10 @@ class SiteAccountLoginPage extends SiteUiPage
 
 	/**
 	 * @var string
+	 *
+	 * @see SiteAccountLoginPage::initRelocateURI();
 	 */
-	protected $relocate_uri = 'account';
+	protected $relocate_uri = null;
 
 	// }}}
 	// {{{ protected function getUiXml()
@@ -36,29 +38,37 @@ class SiteAccountLoginPage extends SiteUiPage
 	{
 		parent::initInternal();
 
-		$this->initRelocateUri($this->ui->getWidget('login_form'));
+		$this->initRelocateURI($this->ui->getWidget('login_form'));
 		$this->loggedInRelocate();
 	}
 
 	// }}}
-	// {{{ protected function initRelocateUri()
+	// {{{ protected function initRelocateURI()
 
-	protected function initRelocateUri(SwatForm $form)
+	protected function initRelocateURI(SwatForm $form)
 	{
 		$relocate_uri = null;
 
-		$get_uri = SiteApplication::initVar('relocate', null,
-			SiteApplication::VAR_GET);
+		$get_uri = SiteApplication::initVar(
+			'relocate',
+			null,
+			SiteApplication::VAR_GET
+		);
 
 		// only use relative URIs
-		if (!preg_match('#^(?:[a-zA-Z]+:)?//#', $get_uri))
+		if ($get_uri != '' && !preg_match('#^(?:[a-zA-Z]+:)?//#', $get_uri)) {
 			$relocate_uri = $get_uri;
+		}
 
-		if ($relocate_uri === null)
+		if ($relocate_uri === null) {
 			$relocate_uri = $form->getHiddenField('relocate_uri');
+		}
 
-		if ($relocate_uri !== null)
+		if ($relocate_uri === null) {
+			$this->relocate_uri = $this->getDefaultRelocateURI();
+		} else {
 			$this->relocate_uri = $relocate_uri;
+		}
 
 		$form->addHiddenField('relocate_uri', $this->relocate_uri);
 	}
@@ -68,16 +78,15 @@ class SiteAccountLoginPage extends SiteUiPage
 
 	protected function loggedInRelocate()
 	{
-		// go to details page if already logged in
 		if ($this->app->session->isLoggedIn()) {
 			$this->app->relocate($this->relocate_uri);
 		}
 	}
 
 	// }}}
-	// {{{ protected function getDefaultLoggedInRelocateUri()
+	// {{{ protected function getDefaultRelocateURI()
 
-	protected function getDefaultLoggedInRelocateUri()
+	protected function getDefaultRelocateURI()
 	{
 		return 'account';
 	}
