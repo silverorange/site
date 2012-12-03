@@ -4,25 +4,35 @@
 	<widget class="SwatMessageDisplay" id="message_display" />
 	<widget class="SwatFrame" id="login_frame">
 		<widget class="SwatForm" id="login_form">
-			<widget class="SwatFormField">
+			<widget class="SwatFormField" id="email_field">
 				<property name="title" translatable="yes">Email Address</property>
 				<widget class="SwatEmailEntry" id="email_address">
 					<property name="maxlength" type="integer">255</property>
 					<property name="size" type="integer">40</property>
+					<property name="tab_index" type="integer">1</property>
 				</widget>
 			</widget>
-			<widget class="SwatFormField">
+			<widget class="SwatFormField" id="password_field">
 				<property name="title" translatable="yes">Password</property>
 				<widget class="SwatPasswordEntry" id="password">
 					<property name="maxlength" type="integer">255</property>
-				</widget>
-			</widget>
-			<widget class="SwatFooterFormField">
-				<widget class="SwatButton" id="login_button">
-					<property name="title" translatable="yes">Login</property>
+					<property name="tab_index" type="integer">2</property>
 				</widget>
 				<widget class="SwatContentBlock" id="forgot_password">
 					<property name="content_type">text/xml</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField" id="footer">
+				<widget class="SwatButton" id="login_button">
+					<property name="title" translatable="yes">Login</property>
+					<property name="tab_index" type="integer">5</property>
+				</widget>
+				<widget class="SwatFormField" id="stay_logged_in_field">
+					<property name="title" translatable="yes">Stay logged in</property>
+					<property name="visible" type="boolean">false</property>
+					<widget class="SwatCheckbox" id="stay_logged_in">
+						<property name="tab_index" type="integer">4</property>
+					</widget>
 				</widget>
 			</widget>
 		</widget>
