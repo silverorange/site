@@ -79,7 +79,7 @@ class SiteAccountLoginPage extends SiteUiPage
 
 	protected function getDefaultLoggedInRelocateUri()
 	{
-		return '.';
+		return 'account';
 	}
 
 	// }}}
