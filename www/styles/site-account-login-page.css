@@ -1,29 +1,32 @@
 /* Account Login page */
 
-#login_frame {
-	width: 55%;
-	float: left;
-	display: inline; /* For IE6 */
-	margin-right: 4%;
+.ie6 .account-login-page #login_frame {
+	display: inline;
 }
 
-#new_customers_frame {
-	width: 38%;
-	float: left;
+.account-login-page #password {
+	vertical-align: middle;
 }
 
-#new_customers_frame p {
+.account-login-page #password_field a {
+	margin-left: 10px;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.account-login-page #stay_logged_in_field {
+	display: inline;
+	margin-left: 5px;
+}
+
+.account-login-page #stay_logged_in_field label {
+	vertical-align: middle;
+}
+
+.account-login-page #new_customers_frame p {
 	margin: 0 0 1em 0;
 }
 
-#login_frame #email_address {
-	width: 98%;
-}
-
-.swat-footer-form-field {
-	clear: left;
-}
-
-#login_frame .swat-footer-form-field .swat-button {
+.account-login-page .swat-footer-form-field .swat-button {
 	vertical-align: middle;
 }
