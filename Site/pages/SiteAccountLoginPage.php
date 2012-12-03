@@ -1,7 +1,6 @@
 <?php
 
-require_once 'Swat/SwatUI.php';
-require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SiteUiPage.php';
 
 /**
  * Page for logging into an account
@@ -11,16 +10,9 @@ require_once 'Site/pages/SitePage.php';
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */
-class SiteAccountLoginPage extends SitePage
+class SiteAccountLoginPage extends SiteUiPage
 {
 	// {{{ protected properties
-
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/pages/account-login.xml';
-
-	protected $ui;
 
 	/**
 	 * @var string
@@ -28,27 +20,24 @@ class SiteAccountLoginPage extends SitePage
 	protected $relocate_uri = 'account';
 
 	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'Site/pages/account-login.xml';
+	}
+
+	// }}}
 
 	// init phase
-	// {{{ public function init()
+	// {{{ protected function initInternal()
 
-	public function init()
+	protected function initInternal()
 	{
-		parent::init();
+		parent::initInternal();
 
-		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->ui_xml);
-
-		$login_form = $this->ui->getWidget('login_form');
-		$login_form->action = $this->source;
-
-		$create_form = $this->ui->getWidget('create_account_form');
-		$create_form->action = 'account/edit';
-
-		$this->initRelocateUri($login_form);
+		$this->initRelocateUri($this->ui->getWidget('login_form'));
 		$this->loggedInRelocate();
-
-		$this->ui->init();
 	}
 
 	// }}}
@@ -80,22 +69,29 @@ class SiteAccountLoginPage extends SitePage
 	protected function loggedInRelocate()
 	{
 		// go to details page if already logged in
-		if ($this->app->session->isLoggedIn())
+		if ($this->app->session->isLoggedIn()) {
 			$this->app->relocate($this->relocate_uri);
+		}
+	}
+
+	// }}}
+	// {{{ protected function getDefaultLoggedInRelocateUri()
+
+	protected function getDefaultLoggedInRelocateUri()
+	{
+		return '.';
 	}
 
 	// }}}
 
 	// process phase
-	// {{{ public function process()
+	// {{{ protected function processInternal()
 
-	public function process()
+	protected function processInternal()
 	{
-		parent::process();
+		parent::processInternal();
 
 		$form = $this->ui->getWidget('login_form');
-
-		$form->process();
 
 		if ($form->isProcessed() && !$form->hasMessage()) {
 			$email = $this->ui->getWidget('email_address')->value;
@@ -137,22 +133,40 @@ class SiteAccountLoginPage extends SitePage
 
 	protected function postLoginProcess()
 	{
+		// save persistent login if stay-logged-in is checked
+		if ($this->app->config->account->persistent_login_enabled &&
+			$this->ui->getWidget('stay_logged_in')->value) {
+			$this->app->session->setLoginCookie();
+		}
 	}
 
 	// }}}
 
 	// build phase
-	// {{{ public function build()
+	// {{{ protected function buildInternal()
 
-	public function build()
+	protected function buildInternal()
 	{
-		parent::build();
+		parent::buildInternal();
+
+		$login_form = $this->ui->getWidget('login_form');
+		$login_form->action = $this->source;
+
+		if ($this->app->config->account->persistent_login_enabled) {
+			$this->ui->getWidget('stay_logged_in_field')->visible = true;
+		}
 
 		$this->buildForgotPasswordLink();
+		$this->buildNewCustomersFrame();
+	}
 
-		$this->layout->startCapture('content', true);
-		$this->ui->display();
-		$this->layout->endCapture();
+	// }}}
+	// {{{ protected function buildNewCustomersFrame()
+
+	protected function buildNewCustomersFrame()
+	{
+		$create_form = $this->ui->getWidget('create_account_form');
+		$create_form->action = 'account/edit';
 	}
 
 	// }}}
@@ -179,6 +193,7 @@ class SiteAccountLoginPage extends SitePage
 		$link = new SwatHtmlTag('a');
 		$link->setContent(Site::_('Forgot your password?'));
 		$link->href = $href;
+		$link->tabindex = 4;
 
 		return $link;
 	}
@@ -191,12 +206,13 @@ class SiteAccountLoginPage extends SitePage
 	public function finalize()
 	{
 		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->ui->getRoot()->getHtmlHeadEntrySet());
 
-		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
+		$this->layout->addBodyClass('account-login-page');
+
+		$this->layout->addHtmlHeadEntry(
 			'packages/site/styles/site-account-login-page.css',
-			Site::PACKAGE_ID));
+			Site::PACKAGE_ID
+		);
 	}
 
 	// }}}
