@@ -75,11 +75,26 @@ class SiteMultipartMailMessage extends SiteObject
 	public $reply_to_address = null;
 
 	/**
-	 * Return path for bounces.
+	 * Return path for bounces
+	 *
+	 * The return path should be set to an address owned by the site or
+	 * service sending mail to appear authentic in SPF checks.
 	 *
 	 * @var string
 	 */
 	public $return_path = null;
+
+	/**
+	 * Sender of this email
+	 *
+	 * Can be use for user-initiated emails sent by a site or service. The
+	 * 'sender' can be the site or service and the 'from' can be the user.
+	 * This allows for sending emails on behalf of a user and passing SPF
+	 * checks.
+	 *
+	 * @var string
+	 */
+	public $sender = null;
 
 	/**
 	 * Text body
@@ -200,14 +215,16 @@ class SiteMultipartMailMessage extends SiteObject
 		$email_params['host'] = $this->smtp_server;
 		$mailer = Mail::factory('smtp', $email_params);
 
-		if (PEAR::isError($mailer))
+		if (PEAR::isError($mailer)) {
 			throw new SiteMailException($mailer);
+		}
 
 		// create additional mail headers
 		$headers = array();
 
-		if ($this->return_path !== null)
+		if ($this->return_path != '') {
 			$headers['Return-Path'] = $this->return_path;
+		}
 
 		$headers['Date'] = $this->date->getRFC2822();
 
@@ -216,8 +233,13 @@ class SiteMultipartMailMessage extends SiteObject
 			$this->to_name
 		);
 
-		if ($this->reply_to_address !== null)
+		if ($this->reply_to_address != '') {
 			$headers['Reply-To'] = $this->reply_to_address;
+		}
+
+		if ($this->sender != '') {
+			$headers['Sender'] = $this->sender;
+		}
 
 		// create email body and headers
 		$mime_params = array();
