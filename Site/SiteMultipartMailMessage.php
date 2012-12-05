@@ -97,6 +97,16 @@ class SiteMultipartMailMessage extends SiteObject
 	public $sender = null;
 
 	/**
+	 * Sender's name.
+	 *
+	 * Name for the sender when using the sender header for user-initiated
+	 * emails sent by a site or service.
+	 *
+	 * @var string
+	 */
+	public $sender_name = null;
+
+	/**
 	 * Text body
 	 *
 	 * @var string
@@ -238,7 +248,10 @@ class SiteMultipartMailMessage extends SiteObject
 		}
 
 		if ($this->sender != '') {
-			$headers['Sender'] = $this->sender;
+			$headers['Sender'] =  $this->getAddressHeader(
+				$this->sender,
+				$this->sender_name
+			);
 		}
 
 		// create email body and headers
