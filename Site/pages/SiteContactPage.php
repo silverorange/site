@@ -285,9 +285,11 @@ class SiteContactPage extends SiteDBEditPage
 	{
 		parent::finalize();
 
-		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
+		$this->layout->addBodyClass('contact-page');
+		$this->layout->addHtmlHeadEntry(
 			'packages/site/styles/site-contact-page.css',
-			Site::PACKAGE_ID));
+			Site::PACKAGE_ID
+		);
 	}
 
 	// }}}
