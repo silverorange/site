@@ -549,6 +549,17 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	}
 
 	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+		$this->layout->addBodyClass('account-sessions-page');
+	}
+
+	// }}}
 }
 
 ?>
