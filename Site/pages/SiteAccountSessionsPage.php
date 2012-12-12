@@ -224,8 +224,10 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 				// For now, just check to make sure the session exists before
 				// displaying the details. This should be moved into a cleanup
 				// cron.
-				if ($this->app->session->sessionFileExists(
-					$session->session_id)) {
+				if ($session->tag !== null ||
+					$this->app->session->sessionFileExists(
+						$session->session_id)
+					) {
 					$this->displayLoginSession($session);
 				}
 			}
@@ -245,10 +247,10 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	{
 		$sessions = array();
 
-		$current_login_tag = $this->app->session->getCurrentLoginTag();
+		$current_session_id = $this->app->session->getSessionId();
 
 		foreach ($this->app->session->account->login_sessions as $session) {
-			if ($session->tag !== $current_login_tag) {
+			if ($session->session_id !== $current_session_id) {
 				$sessions[] = $session;
 			}
 		}
@@ -431,22 +433,20 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 	protected function displayCurrentSession()
 	{
-		$current_login     = null;
-		$current_login_tag = $this->app->session->getCurrentLoginTag();
+		$current_session    = null;
+		$current_session_id = $this->app->session->getSessionId();
 
-		if ($current_login_tag !== null) {
-			foreach ($this->app->session->account->login_sessions as $session) {
-				if ($session->tag === $current_login_tag) {
-					$current_login = $session;
-					break;
-				}
+		foreach ($this->app->session->account->login_sessions as $session) {
+			if ($session->session_id === $current_session_id) {
+				$current_session = $session;
+				break;
 			}
 		}
 
-		if ($current_login instanceof SiteAccountLoginSession) {
+		if ($current_session instanceof SiteAccountLoginSession) {
 
-			$user_agent = $current_login->user_agent;
-			$login_date = $current_login->login_date;
+			$user_agent = $current_session->user_agent;
+			$login_date = $current_session->login_date;
 
 		} else {
 
