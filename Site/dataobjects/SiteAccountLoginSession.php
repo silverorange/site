@@ -5,12 +5,13 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/dataobjects/SiteAccount.php';
 
 /**
- * Persistent login using cookies
+ * Active sessions for this account. Used for both persistent login via cookie,
+ * and to track and display active sessions to the user.
  *
  * @package   Site
  * @copyright 2012 silverorange
  */
-class SiteAccountLoginTag extends SwatDBDataObject
+class SiteAccountLoginSession extends SwatDBDataObject
 {
 	// {{{ public properties
 
@@ -56,7 +57,7 @@ class SiteAccountLoginTag extends SwatDBDataObject
 
 	protected function init()
 	{
-		$this->table = 'AccountLoginTag';
+		$this->table = 'AccountLoginSession';
 		$this->id_field = 'integer:id';
 
 		$this->registerDateProperty('createdate');

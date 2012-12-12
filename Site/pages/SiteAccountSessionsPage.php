@@ -9,7 +9,7 @@ require_once 'Site/pages/SiteDBEditPage.php';
  * @copyright 2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
- * @see       SiteAccountLoginTag
+ * @see       SiteAccountLoginSession
  */
 class SiteAccountSessionsPage extends SiteDBEditPage
 {
@@ -60,9 +60,9 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	{
 		$form = $this->ui->getWidget('sessions_form');
 
-		foreach ($this->app->session->account->login_tags as $login_tag) {
-			$button = $this->createLogoutButton($login_tag);
-			$this->logout_buttons[$login_tag->id] = $button;
+		foreach ($this->getOtherLoginSessions() as $session) {
+			$button = $this->createLogoutButton($session);
+			$this->logout_buttons[$session->id] = $button;
 			$form->add($button);
 		}
 	}
@@ -70,10 +70,10 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	// }}}
 	// {{{ protected function createLogoutButton()
 
-	protected function createLogoutButton(SiteAccountLoginTag $tag)
+	protected function createLogoutButton(SiteAccountLoginSession $session)
 	{
 		$button = new SwatButton();
-		$button->id = 'logout_button_'.$tag->id;
+		$button->id = 'logout_button_'.$session->id;
 		$button->title = Site::_('End Session');
 		$button->visible = false;
 		return $button;
@@ -88,7 +88,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	{
 		foreach ($this->logout_buttons as $id => $button) {
 			if ($button->hasBeenClicked()) {
-				$this->deleteLoginTag($id);
+				$this->deleteLoginSession($id);
 				break;
 			}
 		}
@@ -103,18 +103,18 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function deleteLoginTag()
+	// {{{ protected function deleteLoginSession()
 
-	protected function deleteLoginTag($id)
+	protected function deleteLoginSession($id)
 	{
-		$login_tag = (isset($this->app->session->account->login_tags[$id]))
-			? $this->app->session->account->login_tags[$id]
+		$session = (isset($this->app->session->account->login_sessions[$id]))
+			? $this->app->session->account->login_sessions[$id]
 			: null;
 
-		if ($login_tag instanceof SiteAccountLoginTag) {
-			$this->endSession($login_tag);
-			$login_tag->delete();
-			$message = $this->getLogoutMessage($login_tag);
+		if ($session instanceof SiteAccountLoginSession) {
+			$this->endSession($session);
+			$session->delete();
+			$message = $this->getLogoutMessage($session);
 		} else {
 			$message = new SwatMessage(Site::_('Session has been ended.'));
 		}
@@ -125,22 +125,22 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	// }}}
 	// {{{ protected function endSession()
 
-	protected function endSession(SiteAccountLoginTag $tag)
+	protected function endSession(SiteAccountLoginSession $session)
 	{
 		// extra sanity check so you are only ending your own sessions
-		if ($tag->getInternalValue('account') !==
+		if ($session->getInternalValue('account') !==
 			$this->app->session->account->id) {
 			return;
 		}
 
 		$current_session_id = $this->app->session->getSessionId();
-		$tag_session_id     = $tag->session_id;
+		$login_session_id   = $session->session_id;
 
 		// end current session
 		session_write_close();
 
-		// start login tag session
-		session_id($tag_session_id);
+		// start login session
+		session_id($login_session_id);
 		session_start();
 
 		// clear all session data
@@ -157,16 +157,16 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	// }}}
 	// {{{ protected function getLogoutMessage()
 
-	protected function getLogoutMessage(SiteAccountLoginTag $login_tag)
+	protected function getLogoutMessage(SiteAccountLoginSession $login_session)
 	{
 		$message = new SwatMessage(
 			sprintf(
 				Site::_('%s on %s session has been ended.'),
 				SwatString::minimizeEntities(
-					$this->getBrowser($login_tag->user_agent)
+					$this->getBrowser($login_session->user_agent)
 				),
 				SwatString::minimizeEntities(
-					$this->getOS($login_tag->user_agent)
+					$this->getOS($login_session->user_agent)
 				)
 			)
 		);
@@ -190,6 +190,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	{
 		parent::buildInternal();
 
+		$other_login_sessions = $this->getOtherLoginSessions();
+
 		ob_start();
 
 		$this->displaySessionsNote();
@@ -205,42 +207,47 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$this->displayCurrentSession();
 
 		echo '</ul>';
-
 		echo '</div>';
 
-		$cookie_tag = (isset($this->app->cookie->login))
-			? $this->app->cookie->login
-			: null;
-
-		$count = 0;
-		foreach ($this->app->session->account->login_tags as $login_tag) {
-			if ($login_tag->tag !== $cookie_tag) {
-				$count++;
-			}
-		}
-
-		if ($count > 0) {
+		if (count($other_login_sessions) > 0) {
 			echo '<div class="account-sessions-other">';
 
 			$header = new SwatHtmlTag('h4');
 			$header->setContent(Site::_('On Other Devices'));
 			$header->display();
 
+			$this->displayOtherSessionsNote();
+
 			echo '<ul class="account-sessions-other-list">';
 
-			foreach ($this->app->session->account->login_tags as $login_tag) {
-				if ($login_tag->tag !== $cookie_tag) {
-					$this->displayLoginTag($login_tag);
-				}
+			foreach ($other_login_sessions as $login_session) {
+				$this->displayLoginSession($login_session);
 			}
 
 			echo '</ul>';
-
 			echo '</div>';
 		}
 
 		$this->ui->getWidget('sessions_content')->content = ob_get_clean();
 		$this->ui->getWidget('sessions_content')->content_type = 'text/xml';
+	}
+
+	// }}}
+	// {{{ protected function getOtherLoginSessions()
+
+	protected function getOtherLoginSessions()
+	{
+		$sessions = array();
+
+		$current_login_tag = $this->app->session->getCurrentLoginTag();
+
+		foreach ($this->app->session->account->login_sessions as $session) {
+			if ($session->tag !== $current_login_tag) {
+				$sessions[] = $session;
+			}
+		}
+
+		return $sessions;
 	}
 
 	// }}}
@@ -394,26 +401,43 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ protected function displayOtherSessionsNote()
+
+	protected function displayOtherSessionsNote()
+	{
+		$div = new SwatHtmlTag('div');
+		$div->class = 'account-sessions-note';
+
+		$div->setContent(
+			Site::_(
+				'If you notice any unfamiliar '.
+				'devices or you forgot to log out from any device you can end '.
+				'those sessions below, removing access to your account from '.
+				'those devices until the next time you use them.'
+			)
+		);
+
+		$div->display();
+	}
+
+	// }}}
 	// {{{ protected function displayCurrentSession()
 
 	protected function displayCurrentSession()
 	{
+		$current_login     = null;
+		$current_login_tag = $this->app->session->getCurrentLoginTag();
 
-		$current_login = null;
-		$cookie_tag = (isset($this->app->cookie->login))
-			? $this->app->cookie->login
-			: null;
-
-		if ($cookie_tag !== null) {
-			foreach ($this->app->session->account->login_tags as $login_tag) {
-				if ($login_tag->tag === $cookie_tag) {
-					$current_login = $login_tag;
+		if ($current_login_tag !== null) {
+			foreach ($this->app->session->account->login_sessions as $session) {
+				if ($session->tag === $current_login_tag) {
+					$current_login = $session;
 					break;
 				}
 			}
 		}
 
-		if ($current_login instanceof SiteAccountLoginTag) {
+		if ($current_login instanceof SiteAccountLoginSession) {
 
 			$user_agent = $current_login->user_agent;
 			$login_date = $current_login->login_date;
@@ -443,17 +467,17 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function displayLoginTag()
+	// {{{ protected function displayLoginSession()
 
-	protected function displayLoginTag(SiteAccountLoginTag $login_tag)
+	protected function displayLoginSession(SiteAccountLoginSession $session)
 	{
-		$button = (isset($this->logout_buttons[$login_tag->id]))
-			? $this->logout_buttons[$login_tag->id]
+		$button = (isset($this->logout_buttons[$session->id]))
+			? $this->logout_buttons[$session->id]
 			: null;
 
 		$this->displayLoginInformation(
-			$login_tag->user_agent,
-			$login_tag->login_date,
+			$session->user_agent,
+			$session->login_date,
 			$button
 		);
 	}

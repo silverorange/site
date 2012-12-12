@@ -2,7 +2,7 @@
 
 require_once 'Site/SiteSessionModule.php';
 require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Site/dataobjects/SiteAccountLoginTag.php';
+require_once 'Site/dataobjects/SiteAccountLoginSession.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatDate.php';
 require_once 'Swat/SwatForm.php';
@@ -262,7 +262,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 			$login_date->toUTC();
 
 			$sql = sprintf(
-				'update AccountLoginTag set session_id = %s, login_date = %s
+				'update AccountLoginSession
+				set session_id = %s, login_date = %s
 				where tag = %s',
 				$this->app->db->quote($this->getSessionId(), 'text'),
 				$this->app->db->quote($login_date->getISO8601(), 'date'),
@@ -464,15 +465,15 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$now = new SwatDate();
 		$now->toUTC();
 
-		$class = SwatDBClassMap::get('SiteAccountLoginTag');
-		$login_tag = new $class();
+		$class = SwatDBClassMap::get('SiteAccountLoginSession');
+		$login_session = new $class();
 
-		$login_tag->account    = $this->account;
-		$login_tag->tag        = $tag;
-		$login_tag->session_id = $this->getSessionId();
-		$login_tag->createdate = $now;
-		$login_tag->login_date = $now;
-		$login_tag->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
+		$login_session->account    = $this->account;
+		$login_session->tag        = $tag;
+		$login_session->session_id = $this->getSessionId();
+		$login_session->createdate = $now;
+		$login_session->login_date = $now;
+		$login_session->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
 
 		if (isset($_SERVER['HTTP_USER_AGENT'])) {
 
@@ -489,13 +490,13 @@ class SiteAccountSessionModule extends SiteSessionModule
 			if ($user_agent !== false) {
 				// set max length based on database field length
 				$user_agent = substr($user_agent, 0, 255);
-				$login_tag->user_agent = $user_agent;
+				$login_session->user_agent = $user_agent;
 			}
 
 		}
 
-		$login_tag->setDatabase($this->app->db);
-		$login_tag->save();
+		$login_session->setDatabase($this->app->db);
+		$login_session->save();
 
 		$this->setCurrentLoginTag($tag);
 
@@ -508,7 +509,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 	public function unsetLoginSession()
 	{
 		$sql = sprintf(
-			'delete from AccountLoginTag
+			'delete from AccountLoginSession
 			where tag = %s and account = %s',
 			$this->app->db->quote($this->getCurrentLoginTag(), 'text'),
 			$this->app->db->quote($this->account->id, 'integer')
@@ -539,7 +540,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 	public function getCurrentLoginTag()
 	{
-		$tag = ($this->isLoggedIn() && isset($this->current_login_tag )) ?
+		$tag = ($this->isLoggedIn() && isset($this->current_login_tag)) ?
 			$this->current_login_tag :
 			null;
 
