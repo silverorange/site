@@ -432,7 +432,7 @@ class SiteSessionModule extends SiteApplicationModule
 			$exists = file_exists(
 				sprintf(
 					'%s/sess_%s',
-					$this->app->session->getSavePath(),
+					$this->getSavePath(),
 					$session_id
 				)
 			);
