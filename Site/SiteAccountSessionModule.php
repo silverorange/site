@@ -216,7 +216,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$now->toUTC();
 		$this->account->updateLastLoginDate($now);
 
-		if ($this->new_login_session) {
+		if ($new_login_session) {
 			$this->setLoginSession();
 		}
 
@@ -451,6 +451,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 			$this->app->db->quote($this->getSessionId(), 'text'),
 			$this->app->db->quote($this->account->id, 'integer')
 		);
+
+		SwatDB::exec($this->app->db, $sql);
 
 		return $tag;
 	}
