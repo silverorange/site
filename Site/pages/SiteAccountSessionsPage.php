@@ -220,8 +220,14 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 			echo '<ul class="account-sessions-other-list">';
 
-			foreach ($other_login_sessions as $login_session) {
-				$this->displayLoginSession($login_session);
+			foreach ($other_login_sessions as $session) {
+				// For now, just check to make sure the session exists before
+				// displaying the details. This should be moved into a cleanup
+				// cron.
+				if ($this->app->session->sessionFileExists(
+					$session->session_id)) {
+					$this->displayLoginSession($session);
+				}
 			}
 
 			echo '</ul>';
