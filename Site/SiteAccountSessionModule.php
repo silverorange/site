@@ -278,6 +278,9 @@ class SiteAccountSessionModule extends SiteSessionModule
 			}
 
 			SwatDB::exec($this->app->db, $sql);
+		} else {
+			// clear the cookie if the restore fails.
+			$this->unsetLoginCookie();
 		}
 
 		return $logged_in;
