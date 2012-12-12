@@ -415,6 +415,33 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function sessionFileExists()
+
+	/**
+	 * Checks to see if a session file exists for a specific session_id
+	 *
+	 * @param string $session_id the id of the session to check
+	 *
+	 * @return boolean True if the session exists or false if it doesn't
+	 */
+	public function sessionFileExists($session_id)
+	{
+		$exists = false;
+
+		if ($this->isValidSessionId($session_id)) {
+			$exists = file_exists(
+				sprintf(
+					'%s/sess_%s',
+					$this->app->session->getSavePath(),
+					$session_id
+				)
+			);
+		}
+
+		return $exists;
+	}
+
+	// }}}
 	// {{{ public function registerRegenerateIdCallback()
 
 	/**
