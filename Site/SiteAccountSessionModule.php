@@ -47,7 +47,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		// If persistent logins are enabled and a login cookie is present,
 		// try to log in.
 		if ($config->account->persistent_login_enabled &&
-			!$this->isLoggedIn() && isset($cookie->login)) {
+			!$this->isLoggedIn() &&
+			isset($cookie->login)) {
 			$this->loginByTag($cookie->login);
 		}
 	}
@@ -123,6 +124,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 			$now = new SwatDate();
 			$now->toUTC();
 			$this->account->updateLastLoginDate($now);
+
+			$this->setLoginSession();
 		}
 
 		return $this->isLoggedIn();
@@ -166,6 +169,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 			$now = new SwatDate();
 			$now->toUTC();
 			$this->account->updateLastLoginDate($now);
+
+			$this->setLoginSession();
 		}
 
 		return $this->isLoggedIn();
@@ -182,11 +187,16 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 *                                the session identifier on successful
 	 *                                login. Defaults to
 	 *                                {@link SiteSessionModule::REGENERATE_ID}.
+	 * @param boolean $new_login_session optional. Whether or not this is a new
+	 *                                    login session. If true it saves the
+	 *                                    login session upon successful login.
+     *                                    Defaults to true.
 	 *
 	 * @return boolean true.
 	 */
 	public function loginByAccount(SiteAccount $account,
-		$regenerate_id = SiteSessionModule::REGENERATE_ID)
+		$regenerate_id = SiteSessionModule::REGENERATE_ID,
+		$new_login_session = true)
 	{
 		if ($this->isLoggedIn())
 			$this->logout();
@@ -205,6 +215,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$now = new SwatDate();
 		$now->toUTC();
 		$this->account->updateLastLoginDate($now);
+
+		if ($this->save_login_session) {
+			$this->setLoginSession();
+		}
 
 		return true;
 	}
@@ -237,7 +251,11 @@ class SiteAccountSessionModule extends SiteSessionModule
 		if ($account->loadByLoginTag($tag, $instance)) {
 
 			// log in account
-			$logged_in = $this->loginByAccount($account, $regenerate_id);
+			$logged_in = $this->loginByAccount(
+				$account,
+				$regenerate_id,
+				false // don't save a new login session.
+			);
 
 			// update login tag session id and date
 			$login_date= new SwatDate();
@@ -272,6 +290,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	public function logout()
 	{
+		$this->unsetLoginSession();
 		$this->unsetLoginCookie();
 
 		// Check isActive() instead of isLoggedIn() because we sometimes
@@ -398,47 +417,12 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 		$now = new SwatDate();
 		$now->toUTC();
-
-		$date = clone $now;
-		$date->addSeconds($config->account->persistent_login_time);
-
-		$tag    = base64_encode(SwatString::getSalt(16));
-		$expiry = $date->getTimestamp();
+		$now->addSeconds($config->account->persistent_login_time);
 
 		$transaction = new SwatDBTransaction($this->app->db);
 		try {
-			$class = SwatDBClassMap::get('SiteAccountLoginTag');
-			$login_tag = new $class();
-
-			$login_tag->account    = $this->account;
-			$login_tag->tag        = $tag;
-			$login_tag->session_id = $this->getSessionId();
-			$login_tag->createdate = $now;
-			$login_tag->login_date = $now;
-			$login_tag->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
-
-			if (isset($_SERVER['HTTP_USER_AGENT'])) {
-
-				$user_agent = $_SERVER['HTTP_USER_AGENT'];
-
-				// Filter bad character encoding. If invalid, assume ISO-8859-1
-				// encoding and convert to UTF-8.
-				if (!SwatString::validateUtf8($user_agent)) {
-					$user_agent = iconv('ISO-8859-1', 'UTF-8', $user_agent);
-				}
-
-				// Only save if the user-agent was successfully converted to
-				// UTF-8.
-				if ($user_agent !== false) {
-					// set max length based on database field length
-					$user_agent = substr($user_agent, 0, 255);
-					$login_tag->user_agent = $user_agent;
-				}
-
-			}
-
-			$login_tag->setDatabase($this->app->db);
-			$login_tag->save();
+			$tag    = $this->getCurrentLoginTag();
+			$expiry = $now->getTimestamp();
 
 			$cookie->setCookie('login', $tag, $expiry);
 			$transaction->commit();
@@ -457,18 +441,109 @@ class SiteAccountSessionModule extends SiteSessionModule
 	public function unsetLoginCookie()
 	{
 		$cookie = $this->app->getModule('SiteCookieModule');
+		$cookie->removeCookie('login');
+	}
 
-		if (isset($cookie->login) && $this->isLoggedIn()) {
-			$sql = sprintf(
-				'delete from AccountLoginTag
-				where tag = %s and account = %s',
-				$this->app->db->quote($cookie->login, 'text'),
-				$this->app->db->quote($this->account->id, 'integer')
-			);
-			SwatDB::exec($this->app->db, $sql);
+	// }}}
+	// {{{ public function setLoginSession()
+
+	/**
+	 * Sets the cookie used for persistent logins
+	 *
+	 * Persistent login cookie may only be set if this session is logged in.
+	 *
+	 * @return true if the cookie was set, false if it was not.
+	 */
+	public function setLoginSession()
+	{
+		if (!$this->isLoggedIn()) {
+			return false;
 		}
 
-		$cookie->removeCookie('login');
+		$tag = base64_encode(SwatString::getSalt(16));
+		$now = new SwatDate();
+		$now->toUTC();
+
+		$class = SwatDBClassMap::get('SiteAccountLoginTag');
+		$login_tag = new $class();
+
+		$login_tag->account    = $this->account;
+		$login_tag->tag        = $tag;
+		$login_tag->session_id = $this->getSessionId();
+		$login_tag->createdate = $now;
+		$login_tag->login_date = $now;
+		$login_tag->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
+
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
+
+			$user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+			// Filter bad character encoding. If invalid, assume ISO-8859-1
+			// encoding and convert to UTF-8.
+			if (!SwatString::validateUtf8($user_agent)) {
+				$user_agent = iconv('ISO-8859-1', 'UTF-8', $user_agent);
+			}
+
+			// Only save if the user-agent was successfully converted to
+			// UTF-8.
+			if ($user_agent !== false) {
+				// set max length based on database field length
+				$user_agent = substr($user_agent, 0, 255);
+				$login_tag->user_agent = $user_agent;
+			}
+
+		}
+
+		$login_tag->setDatabase($this->app->db);
+		$login_tag->save();
+
+		$this->setCurrentLoginTag($tag);
+
+		return true;
+	}
+
+	// }}}
+	// {{{ public function unsetLoginSession()
+
+	public function unsetLoginSession()
+	{
+		$sql = sprintf(
+			'delete from AccountLoginTag
+			where tag = %s and account = %s',
+			$this->app->db->quote($this->getCurrentLoginTag(), 'text'),
+			$this->app->db->quote($this->account->id, 'integer')
+		);
+
+		SwatDB::exec($this->app->db, $sql);
+
+		unset($this->current_login_tag);
+	}
+
+	// }}}
+	// {{{ public function setCurrentLoginTag()
+
+	public function setCurrentLoginTag($login_tag)
+	{
+		$set = false;
+
+		if ($this->isLoggedIn()) {
+			$this->current_login_tag = $login_tag;
+			$set = true;
+		}
+
+		return $set;
+	}
+
+	// }}}
+	// {{{ public function getCurrentLoginTag()
+
+	public function getCurrentLoginTag()
+	{
+		$tag = ($this->isLoggedIn() && isset($this->current_login_tag )) ?
+			$this->current_login_tag :
+			null;
+
+		return $tag;
 	}
 
 	// }}}
