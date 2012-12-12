@@ -2,7 +2,7 @@ create table AccountLoginSession (
 	id int not null identity,
 
 	account    int not null references Account(id) on delete cascade,
-	tag        varchar(255) not null,
+	tag        varchar(255),
 	session_id varchar(255) not null,
 	createdate datetime2 not null,
 	login_date datetime2 not null,
