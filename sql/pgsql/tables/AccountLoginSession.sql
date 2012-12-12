@@ -1,4 +1,4 @@
-create table AccountLoginTag (
+create table AccountLoginSession (
 	id serial,
 
 	account    integer not null references Account(id) on delete cascade,
@@ -12,4 +12,4 @@ create table AccountLoginTag (
 	primary key(id)
 );
 
-create index AccountLoginTag_tag on AccountLoginTag(tag);
+create index AccountLoginSession_tag on AccountLoginSession(tag);

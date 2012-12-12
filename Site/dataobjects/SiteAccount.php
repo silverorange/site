@@ -7,7 +7,7 @@ require_once 'Site/SiteResetPasswordMailMessage.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteAccountWrapper.php';
 require_once 'Site/dataobjects/SiteAccountLoginHistoryWrapper.php';
-require_once 'Site/dataobjects/SiteAccountLoginTagWrapper.php';
+require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
 
 /**
  * A account for a web application
@@ -227,8 +227,8 @@ class SiteAccount extends SwatDBDataObject
 		$this->checkDB();
 
 		$sql = sprintf(
-			'select account from AccountLoginTag
-				inner join Account on Account.id = AccountLoginTag.account
+			'select account from AccountLoginSession
+				inner join Account on Account.id = AccountLoginSession.account
 			where tag = %s',
 			$this->db->quote($login_tag, 'text')
 		);
@@ -689,17 +689,18 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function loadLoginTags()
+	// {{{ protected function loadLoginSessions()
 
-	protected function loadLoginTags()
+	protected function loadLoginSessions()
 	{
 		$sql = sprintf(
-			'select * from AccountLoginTag where account = %s
+			'select * from AccountLoginSession where account = %s
 			order by login_date desc',
-			$this->db->quote($this->id, 'integer'));
+			$this->db->quote($this->id, 'integer')
+		);
 
 		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteAccountLoginTagWrapper'));
+			SwatDBClassMap::get('SiteAccountLoginSessionWrapper'));
 	}
 
 	// }}}
