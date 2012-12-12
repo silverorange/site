@@ -422,7 +422,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 		$transaction = new SwatDBTransaction($this->app->db);
 		try {
-			$tag    = $this->getCurrentLoginTag();
+			$tag    = $this->generateLoginTag();
 			$expiry = $now->getTimestamp();
 
 			$cookie->setCookie('login', $tag, $expiry);
@@ -434,6 +434,25 @@ class SiteAccountSessionModule extends SiteSessionModule
 		}
 
 		return true;
+	}
+
+	// }}}
+	// {{{ public function generateLoginTag()
+
+	public function generateLoginTag()
+	{
+		$tag = base64_encode(SwatString::getSalt(16));
+
+		$sql = sprintf(
+			'update AccountLoginSession
+			set tag = %s
+			where session_id = %s and account = %s',
+			$this->app->db->quote($tag, 'text'),
+			$this->app->db->quote($this->getSessionId(), 'text'),
+			$this->app->db->quote($this->account->id, 'integer')
+		);
+
+		return $tag;
 	}
 
 	// }}}
@@ -461,7 +480,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 			return false;
 		}
 
-		$tag = base64_encode(SwatString::getSalt(16));
 		$now = new SwatDate();
 		$now->toUTC();
 
@@ -469,7 +487,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$login_session = new $class();
 
 		$login_session->account    = $this->account;
-		$login_session->tag        = $tag;
 		$login_session->session_id = $this->getSessionId();
 		$login_session->createdate = $now;
 		$login_session->login_date = $now;
@@ -498,8 +515,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$login_session->setDatabase($this->app->db);
 		$login_session->save();
 
-		$this->setCurrentLoginTag($tag);
-
 		return true;
 	}
 
@@ -510,41 +525,12 @@ class SiteAccountSessionModule extends SiteSessionModule
 	{
 		$sql = sprintf(
 			'delete from AccountLoginSession
-			where tag = %s and account = %s',
-			$this->app->db->quote($this->getCurrentLoginTag(), 'text'),
+			where session_id = %s and account = %s',
+			$this->app->db->quote($this->getSessionId(), 'text'),
 			$this->app->db->quote($this->account->id, 'integer')
 		);
 
 		SwatDB::exec($this->app->db, $sql);
-
-		unset($this->current_login_tag);
-	}
-
-	// }}}
-	// {{{ public function setCurrentLoginTag()
-
-	public function setCurrentLoginTag($login_tag)
-	{
-		$set = false;
-
-		if ($this->isLoggedIn()) {
-			$this->current_login_tag = $login_tag;
-			$set = true;
-		}
-
-		return $set;
-	}
-
-	// }}}
-	// {{{ public function getCurrentLoginTag()
-
-	public function getCurrentLoginTag()
-	{
-		$tag = ($this->isLoggedIn() && isset($this->current_login_tag)) ?
-			$this->current_login_tag :
-			null;
-
-		return $tag;
 	}
 
 	// }}}
