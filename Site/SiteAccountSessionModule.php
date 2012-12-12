@@ -216,7 +216,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$now->toUTC();
 		$this->account->updateLastLoginDate($now);
 
-		if ($this->save_login_session) {
+		if ($this->new_login_session) {
 			$this->setLoginSession();
 		}
 
