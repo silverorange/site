@@ -140,6 +140,17 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 	}
 
 	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+		$this->layout->addBodyClass('account-change-password');
+	}
+
+	// }}}
 }
 
 ?>
