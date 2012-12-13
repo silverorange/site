@@ -6,7 +6,7 @@ require_once 'Site/pages/SiteExceptionPage.php';
  * A page to display exceptions
  *
  * @package   Site
- * @copyright 2006-2011 silverorange
+ * @copyright 2006-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteXhtmlExceptionPage extends SiteExceptionPage
@@ -44,7 +44,8 @@ class SiteXhtmlExceptionPage extends SiteExceptionPage
 
 	protected function display()
 	{
-		printf('<p>%s</p>', $this->getSummary());
+		printf('<p class="exception-summary">%s</p>', $this->getSummary());
+
 		$this->displaySuggestions();
 
 		if ($this->exception instanceof SwatException &&
@@ -63,7 +64,7 @@ class SiteXhtmlExceptionPage extends SiteExceptionPage
 		if (count($suggestions) == 0)
 			return;
 
-		echo '<ul class="spaced">';
+		echo '<ul class="spaced exception-suggestions">';
 		$li_tag = new SwatHtmlTag('li');
 
 		foreach ($suggestions as $suggestion) {
@@ -72,6 +73,17 @@ class SiteXhtmlExceptionPage extends SiteExceptionPage
 		}
 
 		echo '</ul>';
+	}
+
+	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+		$this->layout->addBodyClass('exception-page');
 	}
 
 	// }}}
