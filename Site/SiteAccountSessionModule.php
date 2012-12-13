@@ -321,17 +321,21 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	public function isLoggedIn()
 	{
-		if (!$this->isActive())
+		if (!$this->isActive()) {
 			return false;
+		}
 
-		if (!isset($this->account))
+		if (!isset($this->account)) {
 			return false;
+		}
 
-		if ($this->account === null)
+		if (!$this->account instanceof SiteAccount) {
 			return false;
+		}
 
-		if ($this->account->id === null)
+		if ($this->account->id === null) {
 			return false;
+		}
 
 		return true;
 	}
