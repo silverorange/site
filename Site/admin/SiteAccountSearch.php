@@ -45,8 +45,15 @@ class SiteAccountSearch
 	{
 		// The only way an account fullname can be null is if we've cleared
 		// the data from it with the privacy scripts - we don't ever want to
-		// display these accounts in the search results.
-		$where = 'Account.fullname is not null';
+		// display these accounts in the search results. Also exclude deleted
+		// accounts.
+		$where = sprintf(
+			'Account.delete_date %s %s and Account.fullname %s %s',
+			SwatDB::equalityOperator(null),
+			$this->app->db->quote(null, 'date'),
+			SwatDB::equalityOperator(null, true),
+			$this->app->db->quote(null, 'text')
+		);
 
 		foreach ($this->getWhereClauses() as $clause) {
 			$where.= $clause->getClause($this->app->db);
