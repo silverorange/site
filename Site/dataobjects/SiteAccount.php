@@ -266,6 +266,47 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function loadByPasswordTag()
+
+	/**
+	 * Loads this account from the database by it's reset password tag.
+	 *
+	 * @param string $password_tag the password tag to use.
+	 * @param SiteInstance $instance Optional site instance for this account.
+	 *                               Used when the site implements
+	 *                               {@link SiteMultipleInstanceModule}.
+	 *
+	 * @return boolean true if the loading was successful and false if it was
+	 *                  not.
+	 */
+	public function loadByPasswordTag($password_tag,
+		SiteInstance $instance = null)
+	{
+		$this->checkDB();
+
+		$sql = sprintf(
+			'select id from Account
+			where password_tag = %s',
+			$this->db->quote($password_tag, 'text')
+		);
+
+		if ($instance !== null) {
+			$sql.= sprintf(
+				' and Account.instance = %s',
+				$this->db->quote($instance->id, 'integer')
+			);
+		}
+
+		$id = SwatDB::queryOne($this->db, $sql);
+
+		if ($id === null) {
+			return false;
+		}
+
+		return $this->load($id);
+	}
+
+	// }}}
 	// {{{ public function getFullName()
 
 	/**
