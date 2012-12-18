@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/pages/SiteEditPage.php';
+require_once 'Site/dataobjects/SiteAccount.php';
 require_once 'Swat/SwatUI.php';
 
 /**
@@ -73,12 +74,12 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	// {{{ protected function getAccount()
 
 	/**
-	 * Gets the account id of the account associated with the password tag
+	 * Gets the account associated with the password tag
 	 *
 	 * @param string $password_tag the password tag.
 	 *
 	 * @return SiteAccount the account associated with the password tag or
-	 *                      null if no such account id exists.
+	 *                      null if no such account exists.
 	 */
 	protected function getAccount($password_tag)
 	{
