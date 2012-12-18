@@ -182,12 +182,7 @@ class SiteAccountIndex extends AdminSearch
 	{
 		$search = $this->getAccountSearch();
 
-		return sprintf(
-			'Account.delete_date %s %s and %s',
-			SwatDB::equalityOperator(null),
-			$this->app->db->quote(null),
-			$search->getWhereClause()
-		);
+		return $search->getWhereClause();
 	}
 
 	// }}}
