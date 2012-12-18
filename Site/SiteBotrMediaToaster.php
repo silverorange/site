@@ -722,14 +722,11 @@ class SiteBotrMediaToaster
 		$script = new SwatHtmlTag('script');
 		$script->src = $src;
 
-		// explicitly open and close the script tag. The self-closing script tag
-		// causes problems with the Botr javascript, and caused content on the
-		// page to disappear in Firefox.
-		ob_start();
-		$script->open();
-		$script->close();
+		// Set empty content so the script tag is explicitly opened and closed.
+		// Self-closing script tags are not supported in many browsers.
+		$script->setContent('');
 
-		return ob_get_clean();
+		return $script;
 	}
 
 	// }}}
