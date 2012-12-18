@@ -60,6 +60,21 @@ class SiteAccountIndex extends AdminSearch
 	// }}}
 
 	// process phase
+	// {{{ protected function processActions()
+
+	protected function processActions(SwatTableView $view, SwatActions $actions)
+	{
+		$num = count($view->getSelection());
+
+		switch ($actions->selected->id) {
+		case 'delete':
+			$this->app->replacePage('Account/Delete');
+			$this->app->getPage()->setItems($view->getSelection());
+			break;
+		}
+	}
+
+	// }}}
 	// {{{ protected function processInternal()
 
 	protected function processInternal()
@@ -102,14 +117,14 @@ class SiteAccountIndex extends AdminSearch
 			$this->app->db,
 			sprintf(
 				'select count(id) from Account where %s',
-				$search->getWhereClause()
+				$this->getWhereClause()
 			)
 		);
 
 		$sql = sprintf(
 			$this->getSQL(),
 			$search->getJoinClause(),
-			$search->getWhereClause(),
+			$this->getWhereClause(),
 			$this->getOrderByClause($view, $search->getOrderByClause())
 		);
 
@@ -161,11 +176,32 @@ class SiteAccountIndex extends AdminSearch
 	}
 
 	// }}}
+	// {{{ protected function getWhereClause()
+
+	protected function getWhereClause()
+	{
+		$search = $this->getAccountSearch();
+
+		return sprintf(
+			'Account.delete_date %s %s and %s',
+			SwatDB::equalityOperator(null),
+			$this->app->db->quote(null),
+			$search->getWhereClause()
+		);
+	}
+
+	// }}}
 	// {{{ protected function getAccountSearch()
 
 	protected function getAccountSearch()
 	{
-		return new SiteAccountSearch($this->app, $this->ui);
+		static $search = null;
+
+		if ($search == null) {
+			$search = new SiteAccountSearch($this->app, $this->ui);
+		}
+
+		return $search;
 	}
 
 	// }}}

@@ -71,22 +71,33 @@ class SiteAccountSuspicious extends AdminIndex
 
 	protected function getTableModel(SwatView $view)
 	{
+		$where_clause = sprintf(
+			'Account.delete_date %s %s',
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null, 'date')
+		);
+
 		if ($this->app->getInstance() !== null) {
-			$where_clause = sprintf('Account.instance = %s',
-				$this->app->db->quote($this->app->getInstanceId(),
-					'integer'));
-		} else {
-			$where_clause = '1 = 1';
+			$where_clause = sprintf(
+				' and Account.instance = %s',
+				$this->app->db->quote(
+					$this->app->getInstanceId(),
+					'integer'
+				)
+			);
 		}
 
 		$pager = $this->ui->getWidget('pager');
 		$pager->total_records = SwatDB::queryOne(
 			$this->app->db,
-			sprintf('select count(id) from Account
+			sprintf(
+				'select count(id) from Account
 				inner join SuspiciousAccountView on
 					SuspiciousAccountView.account = Account.id
 				where %s',
-				$where_clause));
+				$where_clause
+			)
+		);
 
 		$sql = sprintf(
 			'select * from Account
@@ -95,7 +106,8 @@ class SiteAccountSuspicious extends AdminIndex
 			where %s
 			order by %s',
 			$where_clause,
-			$this->getOrderByClause($view, 'Account.id'));
+			$this->getOrderByClause($view, 'Account.id')
+		);
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 
@@ -110,8 +122,7 @@ class SiteAccountSuspicious extends AdminIndex
 
 			$ds = new SwatDetailsStore($account);
 			$ds->fullname = $account->getFullName();
-			$ds->details  = SiteAccount::getSuspiciousActivitySummary(
-				$row);
+			$ds->details  = SiteAccount::getSuspiciousActivitySummary($row);
 
 			$store->add($ds);
 		}

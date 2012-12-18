@@ -7,6 +7,11 @@
 		<widget class="SwatContentBlock" id="results_message" />
 		<widget class="SwatForm" id="index_form">
 			<widget class="SwatTableView" id="index_view">
+				<object class="SwatTableViewCheckboxColumn" id="checkbox">
+					<object class="SwatCheckboxCellRenderer" id="items">
+						<property name="value" type="data">id</property>
+					</object>
+				</object>
 				<object class="AdminTableViewOrderableColumn" id="fullname">
 					<property name="title" translatable="yes">Name</property>
 					<object class="AdminTitleLinkCellRenderer">
@@ -29,6 +34,11 @@
 						<property name="text" type="data">instance.title</property>
 					</object>
 				</object>
+			</widget>
+			<widget class="SwatActions" id="index_actions">
+				<widget class="SwatActionItem" id="delete">
+					<property name="title" translatable="yes">delete…</property>
+				</widget>
 			</widget>
 			<widget class="AdminPagination" id="pager">
 				<property name="link">Account</property>
