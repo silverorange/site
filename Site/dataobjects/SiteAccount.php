@@ -2,6 +2,7 @@
 
 require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatString.php';
+require_once 'Swat/SwatDate.php';
 require_once 'Site/SiteNewPasswordMailMessage.php';
 require_once 'Site/SiteResetPasswordMailMessage.php';
 require_once 'SwatDB/SwatDBDataObject.php';
@@ -154,6 +155,16 @@ class SiteAccount extends SwatDBDataObject
 	 */
 	public $last_login;
 
+	/**
+	 * Date the account was deleted from the site.
+	 *
+	 * If delete date is set on an account, we consider it the same as having
+	 * the rows removed from the database.
+	 *
+	 * @var SwatDate
+	 */
+	public $delete_date;
+
 	// }}}
 	// {{{ protected properties
 
@@ -191,14 +202,21 @@ class SiteAccount extends SwatDBDataObject
 	{
 		$this->checkDB();
 
-		$sql = sprintf('select id from %s
-			where lower(email) = lower(%s)',
+		$sql = sprintf(
+			'select id from %s
+			where lower(email) = lower(%s) and delete_date %s %s',
 			$this->table,
-			$this->db->quote($email, 'text'));
+			$this->db->quote($email, 'text'),
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null, 'date')
+		);
 
-		if ($instance !== null)
-			$sql.= sprintf(' and instance = %s',
-				$this->db->quote($instance->id, 'integer'));
+		if ($instance !== null) {
+			$sql.= sprintf(
+				' and instance = %s',
+				$this->db->quote($instance->id, 'integer')
+			);
+		}
 
 		$id = SwatDB::queryOne($this->db, $sql);
 
@@ -229,8 +247,10 @@ class SiteAccount extends SwatDBDataObject
 		$sql = sprintf(
 			'select account from AccountLoginSession
 				inner join Account on Account.id = AccountLoginSession.account
-			where tag = %s',
-			$this->db->quote($login_tag, 'text')
+			where tag = %s and delete_date %s %s',
+			$this->db->quote($login_tag, 'text'),
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null, 'date')
 		);
 
 		if ($instance !== null) {
@@ -337,6 +357,62 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function loadInternal()
+
+	protected function loadInternal()
+	{
+		if ($this->table !== null && $this->id_field !== null) {
+			$id_field = new SwatDBField($this->id_field, 'integer');
+			$sql = 'select * from %s where %s = %s and delete_date %s %s';
+
+			$sql = sprintf($sql,
+				$this->table,
+				$id_field->name,
+				$this->db->quote($id, $id_field->type),
+				SwatDB::equalityOperator(null),
+				$this->db->quote(null, 'date')
+			);
+
+			$rs = SwatDB::query($this->db, $sql, null);
+			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+
+			return $row;
+		}
+		return null;
+	}
+
+	// }}}
+	// {{{ protected function deleteInternal()
+
+	protected function deleteInternal()
+	{
+		if ($this->table === null || $this->id_field === null)
+			return;
+
+		$id_field = new SwatDBField($this->id_field, 'integer');
+
+		if (!property_exists($this, $id_field->name))
+			return;
+
+		$id_ref = $id_field->name;
+		$id = $this->$id_ref;
+
+		$now = new SwatDate();
+		$now->toUTC();
+
+		$sql = 'update %s set delete_date = %s where %s = %s';
+		$sql = sprintf(
+			$this->table,
+			$this->db->quote($now, 'date'),
+			$id_ref,
+			$id
+		);
+
+		SwatDB::exec($this->db, $sql);
+	}
+
+	// }}}
+
 	// {{{ protected function init()
 
 	protected function init()
@@ -346,9 +422,12 @@ class SiteAccount extends SwatDBDataObject
 
 		$this->registerDateProperty('createdate');
 		$this->registerDateProperty('last_login');
+		$this->registerDateProperty('delete_date');
 
-		$this->registerInternalProperty('instance',
-			SwatDBClassMap::get('SiteInstance'));
+		$this->registerInternalProperty(
+			'instance',
+			SwatDBClassMap::get('SiteInstance')
+		);
 	}
 
 	// }}}

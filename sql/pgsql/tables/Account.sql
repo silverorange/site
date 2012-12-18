@@ -8,6 +8,7 @@ create table Account (
 	password_tag varchar(255),
 	createdate timestamp,
 	last_login timestamp,
+	delete_date timestamp,
 	primary key (id)
 );
 
