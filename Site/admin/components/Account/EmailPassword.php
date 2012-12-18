@@ -56,9 +56,10 @@ class SiteAccountEmailPassword extends AdminConfirmation
 
 			$instance_id = $this->app->getInstanceId();
 			if ($instance_id !== null) {
-				if ($this->account->instance->id !== $instance_id)
+				if ($this->account->instance->id !== $instance_id) {
 					throw new AdminNotFoundException(sprintf(Store::_(
 						'Incorrect instance for account ‘%d’.'), $this->id));
+				}
 			}
 		}
 
