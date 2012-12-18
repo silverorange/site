@@ -204,9 +204,11 @@ class SiteAccount extends SwatDBDataObject
 
 		$sql = sprintf(
 			'select id from %s
-			where lower(email) = lower(%s)',
+			where lower(email) = lower(%s) and delete_date %s %s',
 			$this->table,
-			$this->db->quote($email, 'text')
+			$this->db->quote($email, 'text'),
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null, 'date')
 		);
 
 		if ($instance !== null) {
@@ -246,7 +248,9 @@ class SiteAccount extends SwatDBDataObject
 			'select account from AccountLoginSession
 				inner join Account on Account.id = AccountLoginSession.account
 			where tag = %s and delete_date %s %s',
-			$this->db->quote($login_tag, 'text')
+			$this->db->quote($login_tag, 'text'),
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null, 'date')
 		);
 
 		if ($instance !== null) {
@@ -286,8 +290,10 @@ class SiteAccount extends SwatDBDataObject
 
 		$sql = sprintf(
 			'select id from Account
-			where password_tag = %s',
-			$this->db->quote($password_tag, 'text')
+			where password_tag = %s and delete_date %s %s',
+			$this->db->quote($password_tag, 'text'),
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null, 'date')
 		);
 
 		if ($instance !== null) {
