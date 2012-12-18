@@ -402,7 +402,7 @@ class SiteAccount extends SwatDBDataObject
 	// }}}
 	// {{{ protected function loadInternal()
 
-	protected function loadInternal()
+	protected function loadInternal($id)
 	{
 		if ($this->table !== null && $this->id_field !== null) {
 			$id_field = new SwatDBField($this->id_field, 'integer');
