@@ -9,6 +9,7 @@ create table Account (
 	password_tag  varchar(255) null,
 	createdate    datetime2 null,
 	last_login    datetime2 null,
+	delete_date   datetime2 null,
 
 	primary key (id)
 );
