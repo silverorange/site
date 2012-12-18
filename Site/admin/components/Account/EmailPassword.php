@@ -54,12 +54,12 @@ class SiteAccountEmailPassword extends AdminConfirmation
 					$this->id));
 			}
 
-            $instance_id = $this->app->getInstanceId();
-            if ($instance_id !== null) {
-                if ($this->account->instance->id !== $instance_id)
-                    throw new AdminNotFoundException(sprintf(Store::_(
-                        'Incorrect instance for account ‘%d’.'), $this->id));
-            }
+			$instance_id = $this->app->getInstanceId();
+			if ($instance_id !== null) {
+				if ($this->account->instance->id !== $instance_id)
+					throw new AdminNotFoundException(sprintf(Store::_(
+						'Incorrect instance for account ‘%d’.'), $this->id));
+			}
 		}
 
 		return $this->account;
