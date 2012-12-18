@@ -16,9 +16,9 @@ require_once 'Swat/SwatUI.php';
  */
 class SiteAccountResetPasswordPage extends SiteEditPage
 {
-	// {{{ private properties
+	// {{{ protected properties
 
-	private $account_id;
+	protected $account;
 
 	// }}}
 	// {{{ protected function getUiXml()
@@ -63,36 +63,30 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 			}
 		}
 
-		$this->account_id = $this->getAccountId($tag);
+		$this->account = $this->getAccount($tag);
 
 		$confirm = $this->ui->getWidget('confirm_password');
 		$confirm->password_widget = $this->ui->getWidget('password');
 	}
 
 	// }}}
-	// {{{ protected function getAccountId()
+	// {{{ protected function getAccount()
 
 	/**
 	 * Gets the account id of the account associated with the password tag
 	 *
 	 * @param string $password_tag the password tag.
 	 *
-	 * @return integer the account id of the account associated with the
-	 *                  password tag or null if no such account id exists.
+	 * @return SiteAccount the account associated with the password tag or
+	 *                      null if no such account id exists.
 	 */
-	protected function getAccountId($password_tag)
+	protected function getAccount($password_tag)
 	{
-		$sql = sprintf('select id from Account where password_tag = %s',
-			$this->app->db->quote($password_tag, 'text'));
+		$class = SwatDBClassMap::get('SiteAccount');
+		$account = new $class();
+		$account->setDatabase($this->app->db);
 
-		if ($this->app->hasModule('SiteMultipleInstanceModule')) {
-			$instance_id = $this->app->getInstanceId();
-			$sql.= sprintf(' and instance %s %s',
-				SwatDB::equalityOperator($instance_id),
-				$this->app->db->quote($instance_id, 'integer'));
-		}
-
-		return SwatDB::queryOne($this->app->db, $sql);
+		return $account->loadByPasswordTag($password_tag);
 	}
 
 	// }}}
@@ -118,7 +112,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 
 	public function process()
 	{
-		if ($this->account_id === null)
+		if (!$this->account instanceof SiteAccount)
 			return;
 
 		parent::process();
@@ -129,7 +123,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 
 	protected function save(SwatForm $form)
 	{
-		$this->app->session->loginById($this->account_id);
+		$this->app->session->loginByAccount($this->account);
 
 		$this->updatePassword();
 
@@ -171,8 +165,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	{
 		parent::buildForm($form);
 
-		if ($this->account_id === null) {
-
+		if (!$this->account instanceof SiteAccount) {
 			$text = sprintf(
 				'<p>%s</p><ul><li>%s</li><li>%s</li></ul>',
 				Site::_(
@@ -188,7 +181,10 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 						'If you have lost the link sent in the '.
 						'email, you may %shave the email sent again%s.'
 					),
-					sprintf('<a href="%s">', $this->getForgotPasswordSource()),
+					sprintf(
+						'<a href="%s">',
+						$this->getForgotPasswordSource()
+					),
 					'</a>'
 				)
 			);
