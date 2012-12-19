@@ -223,12 +223,13 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	public function finalize()
 	{
 		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->ui->getRoot()->getHtmlHeadEntrySet());
 
-		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
+		$this->layout->addBodyClass('account-reset-password-page');
+
+		$this->layout->addHtmlHeadEntry(
 			'packages/site/styles/site-account-reset-password-page.css',
-			Site::PACKAGE_ID));
+			Site::PACKAGE_ID
+		);
 	}
 
 	// }}}

@@ -321,17 +321,21 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	public function isLoggedIn()
 	{
-		if (!$this->isActive())
+		if (!$this->isActive()) {
 			return false;
+		}
 
-		if (!isset($this->account))
+		if (!isset($this->account)) {
 			return false;
+		}
 
-		if ($this->account === null)
+		if (!$this->account instanceof SiteAccount) {
 			return false;
+		}
 
-		if ($this->account->id === null)
+		if ($this->account->id === null) {
 			return false;
+		}
 
 		return true;
 	}
@@ -528,14 +532,16 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 	public function unsetLoginSession()
 	{
-		$sql = sprintf(
-			'delete from AccountLoginSession
-			where session_id = %s and account = %s',
-			$this->app->db->quote($this->getSessionId(), 'text'),
-			$this->app->db->quote($this->account->id, 'integer')
-		);
+		if ($this->isLoggedIn()) {
+			$sql = sprintf(
+				'delete from AccountLoginSession
+				where session_id = %s and account = %s',
+				$this->app->db->quote($this->getSessionId(), 'text'),
+				$this->app->db->quote($this->account->id, 'integer')
+			);
 
-		SwatDB::exec($this->app->db, $sql);
+			SwatDB::exec($this->app->db, $sql);
+		}
 	}
 
 	// }}}
