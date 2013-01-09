@@ -12,7 +12,7 @@ require_once 'Site/admin/SiteAccountSearch.php';
  * Index page for Accounts
  *
  * @package   Site
- * @copyright 2006-2012 silverorange
+ * @copyright 2006-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountIndex extends AdminSearch
@@ -159,6 +159,7 @@ class SiteAccountIndex extends AdminSearch
 	{
 		$ds = new SwatDetailsStore($account);
 		$ds->fullname = $account->getFullname();
+
 		return $ds;
 	}
 
@@ -182,7 +183,12 @@ class SiteAccountIndex extends AdminSearch
 	{
 		$search = $this->getAccountSearch();
 
-		return $search->getWhereClause();
+		return sprintf(
+			'delete_date %s %s and %s',
+			SwatDB::equalityOperator(null),
+			$this->app->db->quote(null, 'date'),
+			$search->getWhereClause()
+		);
 	}
 
 	// }}}

@@ -3,15 +3,16 @@
 require_once 'Admin/pages/AdminDBDelete.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Admin/AdminListDependency.php';
+require_once 'Admin/AdminDependencyEntry.php';
 
 /**
  * Delete confirmation page for Accounts
  *
  * @package   Site
- * @copyright 2012 silverorange
+ * @copyright 2012-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteAccountDelete extends SiteAccountDelete
+class SiteAccountDelete extends AdminDBDelete
 {
 	// process phase
 	// {{{ protected function processDBData()
@@ -89,11 +90,30 @@ class SiteAccountDelete extends SiteAccountDelete
 			Site::_('accounts')
 		);
 
-		$dep->entries = AdminListDependency::queryEntries(
-			$this->app->db,
-			'Account', 'integer:id', null, 'text:title', 'id',
-			'id in ('.$item_list.')', AdminDependency::DELETE
+		$sql = sprintf(
+			'select * from Account where id in (%s)',
+			$item_list
 		);
+
+		$accounts = SwatDB::query(
+			$this->app->db,
+			$sql,
+			SwatDBClassMap::get('SiteAccountWrapper')
+		);
+
+		$class = SwatDBClassMap::get('AdminDependencyEntry');
+
+		$deps = array();
+		foreach ($accounts as $account) {
+			$entry = new $class();
+			$entry->id           = $account->id;
+			$entry->title        = $account->getFullname();
+			$entry->status_level = AdminDependency::DELETE;
+
+			$deps[] = $entry;
+		}
+
+		$dep->entries = $deps;
 
 		return $dep;
 	}
