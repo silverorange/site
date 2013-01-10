@@ -202,11 +202,15 @@ class SiteAccount extends SwatDBDataObject
 	{
 		$this->checkDB();
 
+		// delete_date is checked in this query so we select the correct
+		// account id before passing it to Account::load();
 		$sql = sprintf(
 			'select id from %s
-			where lower(email) = lower(%s)',
+			where lower(email) = lower(%s) and delete_date %s %s',
 			$this->table,
-			$this->db->quote($email, 'text')
+			$this->db->quote($email, 'text'),
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null, 'date')
 		);
 
 		if ($instance !== null) {
@@ -242,11 +246,15 @@ class SiteAccount extends SwatDBDataObject
 	{
 		$this->checkDB();
 
+		// delete_date is checked in this query so we select the correct
+		// account id before passing it to Account::load();
 		$sql = sprintf(
 			'select account from AccountLoginSession
 				inner join Account on Account.id = AccountLoginSession.account
-			where tag = %s',
-			$this->db->quote($login_tag, 'text')
+			where tag = %s and delete_date %s %s',
+			$this->db->quote($login_tag, 'text'),
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null, 'date')
 		);
 
 		if ($instance !== null) {
@@ -284,10 +292,14 @@ class SiteAccount extends SwatDBDataObject
 	{
 		$this->checkDB();
 
+		// delete_date is checked in this query so we select the correct
+		// account id before passing it to Account::load();
 		$sql = sprintf(
 			'select id from Account
-			where password_tag = %s',
-			$this->db->quote($password_tag, 'text')
+			where password_tag = %s and delete_date %s %s',
+			$this->db->quote($password_tag, 'text'),
+			SwatDB::equalityOperator(null),
+			$this->db->quote(null, 'date')
 		);
 
 		if ($instance !== null) {
