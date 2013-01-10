@@ -245,7 +245,7 @@ class SiteAccount extends SwatDBDataObject
 		$sql = sprintf(
 			'select account from AccountLoginSession
 				inner join Account on Account.id = AccountLoginSession.account
-			where tag = %s and delete_date %s %s',
+			where tag = %s',
 			$this->db->quote($login_tag, 'text')
 		);
 
