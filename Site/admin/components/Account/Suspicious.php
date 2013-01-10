@@ -10,7 +10,7 @@ require_once 'Site/dataobjects/SiteAccountWrapper.php';
  * Index page for Suspicious Accounts
  *
  * @package   Site
- * @copyright 2012 silverorange
+ * @copyright 2012-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountSuspicious extends AdminIndex
@@ -74,7 +74,7 @@ class SiteAccountSuspicious extends AdminIndex
 		$where_clause = sprintf(
 			'Account.delete_date %s %s',
 			SwatDB::equalityOperator(null),
-			$this->db->quote(null, 'date')
+			$this->app->db->quote(null, 'date')
 		);
 
 		if ($this->app->getInstance() !== null) {
