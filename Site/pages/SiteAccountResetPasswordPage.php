@@ -87,7 +87,9 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		$account = new $class();
 		$account->setDatabase($this->app->db);
 
-		return $account->loadByPasswordTag($password_tag);
+		return ($account->loadByPasswordTag($password_tag)) ?
+			$account :
+			null;
 	}
 
 	// }}}
