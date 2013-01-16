@@ -476,6 +476,17 @@ class SiteMobileModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function isAndroid()
+
+	public function isAndroid()
+	{
+		$exp = '/Android/';
+
+		return (isset($_SERVER['HTTP_USER_AGENT']) &&
+			preg_match($exp, $_SERVER['HTTP_USER_AGENT']) === 1);
+	}
+
+	// }}}
 	// {{{ public function getViewport()
 
 	/**
