@@ -13,7 +13,7 @@ require_once 'Site/exceptions/SiteInvalidImageException.php';
  * An image data object
  *
  * @package   Site
- * @copyright 2008-2012 silverorange
+ * @copyright 2008-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImage extends SwatDBDataObject
@@ -948,8 +948,12 @@ class SiteImage extends SwatDBDataObject
 			$imagick->setImagePage($new_width, $new_height, 0, 0);
 		}
 
-		if ($this->getCropBox($dimension) === null)
-			$this->imagick_instances[$dimension->shortname] = $imagick->clone();
+		if ($this->getCropBox($dimension) === null) {
+			$this->imagick_instances[$dimension->shortname] =
+				(floatval(phpversion('imagick')) >= 3.1) ?
+				clone $imagick :
+				$imagick->clone();
+		}
 	}
 
 	// }}}
@@ -1125,7 +1129,9 @@ class SiteImage extends SwatDBDataObject
 			$imagick = $this->getNewImagick($image_file, $dimension);
 		}
 
-		return $imagick->clone();
+		return (floatval(phpversion('imagick')) >= 3.1) ?
+			clone $imagick :
+			$imagick->clone();
 	}
 
 	// }}}
