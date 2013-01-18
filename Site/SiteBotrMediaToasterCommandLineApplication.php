@@ -11,7 +11,7 @@ require_once 'Site/SiteBotrMediaToaster.php';
  * Abstract application for applications that access media on bits on the run.
  *
  * @package   Site
- * @copyright 2011-2012 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      do something better with the isMarkedX() methods. Maybe move the
  *            tags to constants.
@@ -281,9 +281,14 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	{
 		if (count($this->source_files) == 0) {
 			$iterator = new RecursiveDirectoryIterator(
-				$this->getSourceDirectory(),
-				FilesystemIterator::SKIP_DOTS
+				$this->getSourceDirectory()
 			);
+
+			// Only call the flag if it exists.  FilesystemIterator does not
+			// exist prior to PHP 5.3
+			if ($iterator instanceof FilesystemIterator) {
+				$iterator->setFlags(FilesystemIterator::SKIP_DOTS);
+			}
 
 			// only grab media types we upload.
 			$valid_extensions = array(
@@ -343,6 +348,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		if (isset($this->source_files[$key])) {
 			throw new SiteCommandLineException(sprintf(
 				"Source file ‘%s’ duplicate.\nVersion 1: %s\n Version 2: %s",
+				$key,
 				$path,
 				$this->source_files[$key]['path']));
 		}
