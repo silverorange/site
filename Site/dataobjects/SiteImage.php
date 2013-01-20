@@ -154,6 +154,26 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function hasImageSet()
+
+	/**
+	 * Whether or not the image classes image set exists.
+	 *
+	 * @return boolean true if does exist, false if it doesn't.
+	 */
+	public function hasImageSet()
+	{
+		$has_image_set = true;
+		try {
+			$this->getImageSet();
+		} catch (Exception $e) {
+			$has_image_set = false;
+		}
+
+		return $has_image_set;
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
