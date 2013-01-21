@@ -42,7 +42,7 @@ class SiteAccountIndex extends AdminSearch
 		$this->ui->loadFromXML($this->search_xml);
 		$this->ui->loadFromXML($this->ui_xml);
 
-		if ($this->app->getInstance() === null &&
+		if ($this->app->isMultipleInstanceAdmin() &&
 			$this->ui->hasWidget('search_instance')) {
 
 			$search_instance = $this->ui->getWidget('search_instance');
