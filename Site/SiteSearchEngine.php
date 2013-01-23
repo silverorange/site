@@ -8,7 +8,7 @@ require_once 'Site/SiteMemcacheModule.php';
  * An abstract search engine
  *
  * @package   Site
- * @copyright 2007-2008 silverorange
+ * @copyright 2007-2013 silverorange
  */
 abstract class SiteSearchEngine extends SwatObject
 {
@@ -56,6 +56,8 @@ abstract class SiteSearchEngine extends SwatObject
 
 	protected $memcache;
 
+	protected $use_memcache = true;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -71,6 +73,30 @@ abstract class SiteSearchEngine extends SwatObject
 		if ($app->hasModule('SiteMemcacheModule')) {
 			$this->memcache = $app->getModule('SiteMemcacheModule');
 		}
+	}
+
+	// }}}
+	// {{{ public function turnOffMemcache()
+
+	/**
+	 * Turns on memcaching of search results when the call app has a memcache
+	 * module.
+	 */
+	public function useMemcache()
+	{
+		$this->use_memcache = true;
+	}
+
+	// }}}
+	// {{{ public function turnOffMemcache()
+
+	/**
+	 * Turns off memcaching of search results when the call app has a memcache
+	 * module.
+	 */
+	public function turnOffMemcache()
+	{
+		$this->use_memcache = false;
 	}
 
 	// }}}
@@ -212,7 +238,7 @@ abstract class SiteSearchEngine extends SwatObject
 
 		$results = false;
 
-		if ($this->hasMemcache()) {
+		if ($this->hasMemcache() && $this->use_memcache) {
 			$key = $this->getResultsCacheKey($sql);
 			$ns  = $this->getMemcacheNs();
 			$ids = $this->app->getCacheValue($key, $ns);
@@ -242,7 +268,7 @@ abstract class SiteSearchEngine extends SwatObject
 			$results = $this->performResultsQuery($sql);
 			$this->loadSubObjects($results);
 
-			if ($this->hasMemcache()) {
+			if ($this->hasMemcache() && $this->use_memcache) {
 				$ids = array();
 				foreach ($results as $id => $result) {
 					$result_key = $key.'.'.$id;
