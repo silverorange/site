@@ -56,7 +56,7 @@ abstract class SiteSearchEngine extends SwatObject
 
 	protected $memcache;
 
-	protected $use_memcache = true;
+	protected $memcache_enabled = true;
 
 	// }}}
 	// {{{ public function __construct()
@@ -76,27 +76,27 @@ abstract class SiteSearchEngine extends SwatObject
 	}
 
 	// }}}
-	// {{{ public function turnOffMemcache()
+	// {{{ public function enableMemcache()
 
 	/**
 	 * Turns on memcaching of search results when the call app has a memcache
 	 * module.
 	 */
-	public function useMemcache()
+	public function enableMemcache()
 	{
-		$this->use_memcache = true;
+		$this->memcache_enabled = true;
 	}
 
 	// }}}
-	// {{{ public function turnOffMemcache()
+	// {{{ public function disableMemcache()
 
 	/**
 	 * Turns off memcaching of search results when the call app has a memcache
 	 * module.
 	 */
-	public function turnOffMemcache()
+	public function disableMemcache()
 	{
-		$this->use_memcache = false;
+		$this->memcache_enabled = false;
 	}
 
 	// }}}
@@ -238,7 +238,7 @@ abstract class SiteSearchEngine extends SwatObject
 
 		$results = false;
 
-		if ($this->hasMemcache() && $this->use_memcache) {
+		if ($this->hasMemcache() && $this->memcache_enabled) {
 			$key = $this->getResultsCacheKey($sql);
 			$ns  = $this->getMemcacheNs();
 			$ids = $this->app->getCacheValue($key, $ns);
@@ -268,7 +268,7 @@ abstract class SiteSearchEngine extends SwatObject
 			$results = $this->performResultsQuery($sql);
 			$this->loadSubObjects($results);
 
-			if ($this->hasMemcache() && $this->use_memcache) {
+			if ($this->hasMemcache() && $this->memcache_enabled) {
 				$ids = array();
 				foreach ($results as $id => $result) {
 					$result_key = $key.'.'.$id;
