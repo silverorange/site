@@ -12,7 +12,7 @@ require_once 'Swat/SwatMessage.php';
  * such, it depends on the {@link SiteSessionModule}.
  *
  * @package   Site
- * @copyright 2004-2007
+ * @copyright 2004-2013
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMessagesModule extends SiteApplicationModule implements Countable
@@ -149,7 +149,10 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 	 */
 	public function count()
 	{
-		return count($this->app->session->messages);
+		return ($this->app->session->isActive() &&
+			$this->session_is_initialized) ?
+			count($this->app->session->messages) :
+			0;
 	}
 
 	// }}}
