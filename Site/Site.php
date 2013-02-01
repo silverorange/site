@@ -193,6 +193,11 @@ class Site
 			// Whether or not persistent logins are enabled.
 			'account.persistent_login_enabled' => false,
 
+			// Whether or not to set a cookie containing the account id
+			// for displaying a restore session message (i.e Welcome back
+			// Joe. _Login_ to restore your 15 cart items.)
+			'account.restore_cookie_enabled' => false,
+
 			// Meta description for HTML head
 			'site.meta_description'    => null,
 

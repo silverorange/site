@@ -14,7 +14,7 @@ require_once 'Swat/SwatForm.php';
  * session.
  *
  * @package   Site
- * @copyright 2006-2012 silverorange
+ * @copyright 2006-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountSessionModule extends SiteSessionModule
@@ -599,10 +599,16 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 	protected function setAccountCookie()
 	{
-		if (!isset($this->app->cookie))
+		if (!$this->app->hasModule('SiteCookieModule')) {
 			return;
+		}
 
-		$this->app->cookie->setCookie('account_id', $this->getAccountId());
+		$cookie = $this->app->getModule('SiteCookieModule');
+		$config = $this->app->getModule('SiteConfigModule');
+
+		if ($config->account->restore_cookie_enabled) {
+			$cookie->setCookie('account_id', $this->getAccountId());
+		}
 	}
 
 	// }}}
@@ -610,10 +616,12 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 	protected function removeAccountCookie()
 	{
-		if (!isset($this->app->cookie))
+		if (!$this->app->hasModule('SiteCookieModule')) {
 			return;
+		}
 
-		$this->app->cookie->removeCookie('account_id');
+		$cookie = $this->app->getModule('SiteCookieModule');
+		$cookie->removeCookie('account_id');
 	}
 
 	// }}}
