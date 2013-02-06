@@ -14,7 +14,7 @@ require_once 'Site/exceptions/SiteException.php';
  * also be used to detect if the site is the mobile version.
  *
  * @package   Site
- * @copyright 2011-2012 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMobileModule extends SiteApplicationModule
@@ -152,7 +152,7 @@ class SiteMobileModule extends SiteApplicationModule
 		// mobile get var
 		if ($has_mobile_access) {
 			if (isset($_GET[$this->switch_get_var])) {
-				$try_mobile = (boolean) $_GET[$this->switch_get_var];
+				$try_mobile = (boolean)$_GET[$this->switch_get_var];
 				$this->app->cookie->setCookie('mobile_enabled', $try_mobile);
 			} elseif (!isset($this->app->cookie->mobile_enabled) ||
 				$this->app->cookie->mobile_enabled) {
@@ -533,7 +533,7 @@ class SiteMobileModule extends SiteApplicationModule
 	 */
 	protected function attemptMobileRelocate()
 	{
-		return (boolean) $this->app->config->mobile->auto_relocate;
+		return (boolean)$this->app->config->mobile->auto_relocate;
 	}
 
 	// }}}
