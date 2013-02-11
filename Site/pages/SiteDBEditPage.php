@@ -29,7 +29,7 @@ abstract class SiteDBEditPage extends SiteEditPage
 			$transaction->rollback();
 			$this->handleDBException($e);
 		} catch (Exception $e) {
-			$this->handleException($e);
+			$this->handleException($transaction, $e);
 		}
 	}
 
@@ -60,8 +60,10 @@ abstract class SiteDBEditPage extends SiteEditPage
 	// }}}
 	// {{{ protected function handleException()
 
-	protected function handleException(Exception $e)
+	protected function handleException(SwatDBTransaction $transaction,
+		Exception $e)
 	{
+		throw $e;
 	}
 
 	// }}}
