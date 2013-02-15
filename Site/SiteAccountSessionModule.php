@@ -341,6 +341,38 @@ class SiteAccountSessionModule extends SiteSessionModule
 	}
 
 	// }}}
+	// {{{ public function isAccountDirty()
+
+	/**
+	 * Gets whether or not the logged account in this session needs to be
+	 * reloaded from the database
+	 *
+	 * If no account is logged in, false is returned.
+	 *
+	 * @return boolean whether or not the logged account in this session needs
+	 *                  to be reloaded from the database.
+	 */
+	public function isAccountDirty()
+	{
+		$is_dirty = false;
+
+		if ($this->isLoggedIn()) {
+			$sql = sprintf(
+				'select dirty from Account where id = %s',
+				$this->app->db->quote($this->account->id, 'integer')
+			);
+
+			$is_dirty = SwatDB::queryOne(
+				$this->app->db,
+				$sql,
+				array('boolean')
+			);
+		}
+
+		return $is_dirty;
+	}
+
+	// }}}
 	// {{{ public function getAccountId()
 
 	/**
@@ -545,6 +577,29 @@ class SiteAccountSessionModule extends SiteSessionModule
 	}
 
 	// }}}
+	// {{{ public function reloadAccount()
+
+	/**
+	 * Reloads the logged in account in this session from the database
+	 *
+	 * If no account is logged in, no action is performed.
+	 */
+	public function reloadAccount()
+	{
+		if ($this->isLoggedIn()) {
+			$sql = sprintf(
+				'update Account set dirty = %s where id = %s',
+				$this->app->db->quote(false, 'boolean'),
+				$this->app->db->quote($this->account->id, 'integer')
+			);
+
+			SwatDB::exec($this->app->db, $sql);
+
+			$this->account->load($this->account->id);
+		}
+	}
+
+	// }}}
 	// {{{ protected function startSession()
 
 	/**
@@ -553,8 +608,13 @@ class SiteAccountSessionModule extends SiteSessionModule
 	protected function startSession()
 	{
 		parent::startSession();
+
 		if (isset($this->_authentication_token)) {
 			SwatForm::setAuthenticationToken($this->_authentication_token);
+		}
+
+		if ($this->isAccountDirty()) {
+			$this->reloadAccount();
 		}
 	}
 
