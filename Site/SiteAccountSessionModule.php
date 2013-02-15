@@ -110,7 +110,15 @@ class SiteAccountSessionModule extends SiteSessionModule
 				$account->save();
 			}
 
+			// if account was dirty, we can set it as clean because we just
+			// loaded it
+			if ($account->dirty) {
+				$account->dirty = false;
+				$account->setClean();
+			}
+
 			$this->activate();
+
 			$this->account = $account;
 
 			if ($regenerate_id) {
@@ -155,6 +163,14 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$account = $this->getNewAccountObject();
 
 		if ($account->load($id)) {
+
+			// if account was dirty, we can set it as clean because we just
+			// loaded it
+			if ($account->dirty) {
+				$account->dirty = false;
+				$account->setClean();
+			}
+
 			$this->activate();
 			$this->account = $account;
 
@@ -250,6 +266,13 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$account = $this->getNewAccountObject();
 		if ($account->loadByLoginTag($tag, $instance)) {
 
+			// if account was dirty, we can set it as clean because we just
+			// loaded it
+			if ($account->dirty) {
+				$account->dirty = false;
+				$account->setClean();
+			}
+
 			// log in account
 			$logged_in = $this->loginByAccount(
 				$account,
@@ -258,7 +281,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 			);
 
 			// update login tag session id and date
-			$login_date= new SwatDate();
+			$login_date = new SwatDate();
 			$login_date->toUTC();
 
 			$sql = sprintf(
@@ -587,14 +610,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 	public function reloadAccount()
 	{
 		if ($this->isLoggedIn()) {
-			$sql = sprintf(
-				'update Account set dirty = %s where id = %s',
-				$this->app->db->quote(false, 'boolean'),
-				$this->app->db->quote($this->account->id, 'integer')
-			);
-
-			SwatDB::exec($this->app->db, $sql);
-
+			$this->account->setClean();
 			$this->account->load($this->account->id);
 		}
 	}
