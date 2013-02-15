@@ -523,6 +523,46 @@ class SiteAccount extends SwatDBDataObject
 
 	// }}}
 
+	// dirty methods
+	// {{{ public function setDirty()
+
+	/**
+	 * Flags this account as needing to be reloaded in the session
+	 */
+	public function setDirty()
+	{
+		$this->checkDB();
+
+		$sql = sprintf(
+			'update Account set dirty = %s where id = %s',
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($this->account->id, 'integer')
+		);
+
+		SwatDB::exec($this->db, $sql);
+	}
+
+	// }}}
+	// {{{ public function setClean()
+
+	/**
+	 * Flags this account as NOT needing to be reloaded in the session
+	 */
+	public function setClean()
+	{
+		$this->checkDB();
+
+		$sql = sprintf(
+			'update Account set dirty = %s where id = %s',
+			$this->app->db->quote(false, 'boolean'),
+			$this->app->db->quote($this->account->id, 'integer')
+		);
+
+		SwatDB::exec($this->db, $sql);
+	}
+
+	// }}}
+
 	// password methods
 	// {{{ public function setPassword()
 
