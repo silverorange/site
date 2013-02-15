@@ -165,6 +165,13 @@ class SiteAccount extends SwatDBDataObject
 	 */
 	public $delete_date;
 
+	/**
+	 * Whether or not this account needs to be reloaded in the current session
+	 *
+	 * @var boolean
+	 */
+	public $dirty = false;
+
 	// }}}
 	// {{{ protected properties
 
@@ -461,7 +468,6 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
-
 	// {{{ protected function init()
 
 	protected function init()
