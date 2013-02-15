@@ -536,7 +536,7 @@ class SiteAccount extends SwatDBDataObject
 		$sql = sprintf(
 			'update Account set dirty = %s where id = %s',
 			$this->db->quote(true, 'boolean'),
-			$this->db->quote($this->account->id, 'integer')
+			$this->db->quote($this->id, 'integer')
 		);
 
 		SwatDB::exec($this->db, $sql);
@@ -555,7 +555,7 @@ class SiteAccount extends SwatDBDataObject
 		$sql = sprintf(
 			'update Account set dirty = %s where id = %s',
 			$this->db->quote(false, 'boolean'),
-			$this->db->quote($this->account->id, 'integer')
+			$this->db->quote($this->id, 'integer')
 		);
 
 		SwatDB::exec($this->db, $sql);
