@@ -10,7 +10,7 @@ require_once 'Swat/SwatDate.php';
  * Edit page for Accounts
  *
  * @package   Site
- * @copyright 2006-2012 silverorange
+ * @copyright 2006-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountEdit extends AdminDBEdit
@@ -108,6 +108,10 @@ class SiteAccountEdit extends AdminDBEdit
 			$now = new SwatDate();
 			$now->toUTC();
 			$this->account->createdate = $now;
+		}
+
+		if ($this->account->isModified()) {
+			$this->account->dirty = true;
 		}
 
 		$this->account->save();
