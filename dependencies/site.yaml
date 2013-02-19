@@ -26,6 +26,7 @@ Site:
   Provides:
 
     # JavaScript resources
+    packages/site/javascript/site-gravatar-entry.js:
     packages/site/javascript/site-tag-entry.js:
     packages/site/javascript/site-upload-progress-bar.js:
     packages/site/admin/javascript/site-comment-display.js:
