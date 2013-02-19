@@ -4,6 +4,7 @@ function SiteGravatarEntry(id, size, default_image)
 	this.timeout = null;
 	this.size = size;
 	this.default_image = default_image;
+	this.cleared = false;
 
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
@@ -51,6 +52,7 @@ SiteGravatarEntry.prototype.handleKeypress = function(e)
 
 	var value = this.getNormalizedValue();
 	if (value !== this.current_value) {
+		this.cleared = true;
 		this.preview.style.backgroundImage = this.loading_image;
 	}
 
@@ -58,7 +60,7 @@ SiteGravatarEntry.prototype.handleKeypress = function(e)
 
 	this.timeout = setTimeout(function() {
 		var value = that.getNormalizedValue();
-		if (value !== that.current_value) {
+		if (value !== that.current_value || that.cleared) {
 			that.updatePreview(value);
 			that.current_value = value;
 		}
@@ -79,6 +81,7 @@ SiteGravatarEntry.prototype.updatePreview = function(email)
 
 	this.link.href = 'http://www.gravatar.com/' + md5_email;
 	this.preview.style.backgroundImage = 'url(' + src + ')';
+	this.cleared = false;
 };
 
 SiteGravatarEntry.prototype.getParams = function()
