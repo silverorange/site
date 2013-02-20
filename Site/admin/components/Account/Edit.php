@@ -110,8 +110,8 @@ class SiteAccountEdit extends AdminDBEdit
 			$this->account->createdate = $now;
 		}
 
-		if ($this->account->isModified()) {
-			$this->account->dirty = true;
+		if ($this->account->isModified() && $this->id !== null) {
+			$this->account->setDirty();
 		}
 
 		$this->account->save();

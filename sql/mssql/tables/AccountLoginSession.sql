@@ -8,6 +8,7 @@ create table AccountLoginSession (
 	login_date datetime2 not null,
 	ip_address varchar(15) not null,
 	user_agent nvarchar(255),
+	dirty      bit not null default 0,
 
 	primary key(id)
 );

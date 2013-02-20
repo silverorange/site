@@ -70,7 +70,7 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  * </code>
  *
  * @package   Site
- * @copyright 2005-2012 silverorange
+ * @copyright 2005-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccountWrapper
  */
@@ -164,13 +164,6 @@ class SiteAccount extends SwatDBDataObject
 	 * @var SwatDate
 	 */
 	public $delete_date;
-
-	/**
-	 * Whether or not this account needs to be reloaded in the current session
-	 *
-	 * @var boolean
-	 */
-	public $dirty = false;
 
 	// }}}
 	// {{{ protected properties
@@ -396,6 +389,25 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function setDirty()
+
+	/**
+	 * Flags this account as needing to be reloaded in all sessions
+	 */
+	public function setDirty()
+	{
+		$this->checkDB();
+
+		$sql = sprintf(
+			'update AccountLoginSession set dirty = %s where account = %s',
+			$this->db->quote(true, 'boolean'),
+			$this->db->quote($this->id, 'integer')
+		);
+
+		SwatDB::exec($this->db, $sql);
+	}
+
+	// }}}
 	// {{{ public static function getSuspiciousActivitySummary()
 
 	public static function getSuspiciousActivitySummary($activity)
@@ -519,46 +531,6 @@ class SiteAccount extends SwatDBDataObject
 		}
 
 		return $history;
-	}
-
-	// }}}
-
-	// dirty methods
-	// {{{ public function setDirty()
-
-	/**
-	 * Flags this account as needing to be reloaded in the session
-	 */
-	public function setDirty()
-	{
-		$this->checkDB();
-
-		$sql = sprintf(
-			'update Account set dirty = %s where id = %s',
-			$this->db->quote(true, 'boolean'),
-			$this->db->quote($this->id, 'integer')
-		);
-
-		SwatDB::exec($this->db, $sql);
-	}
-
-	// }}}
-	// {{{ public function setClean()
-
-	/**
-	 * Flags this account as NOT needing to be reloaded in the session
-	 */
-	public function setClean()
-	{
-		$this->checkDB();
-
-		$sql = sprintf(
-			'update Account set dirty = %s where id = %s',
-			$this->db->quote(false, 'boolean'),
-			$this->db->quote($this->id, 'integer')
-		);
-
-		SwatDB::exec($this->db, $sql);
 	}
 
 	// }}}
