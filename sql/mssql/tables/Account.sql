@@ -10,7 +10,6 @@ create table Account (
 	createdate    datetime2 null,
 	last_login    datetime2 null,
 	delete_date   datetime2 null,
-	dirty         bit not null default 0,
 
 	primary key (id)
 );

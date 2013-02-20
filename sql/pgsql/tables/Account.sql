@@ -9,7 +9,6 @@ create table Account (
 	createdate timestamp,
 	last_login timestamp,
 	delete_date timestamp,
-	dirty boolean not null default false,
 	primary key (id)
 );
 

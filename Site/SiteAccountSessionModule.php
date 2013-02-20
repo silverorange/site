@@ -110,13 +110,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 				$account->save();
 			}
 
-			// if account was dirty, we can set it as clean because we just
-			// loaded it
-			if ($account->dirty) {
-				$account->dirty = false;
-				$account->setClean();
-			}
-
 			$this->activate();
 
 			$this->account = $account;
@@ -163,14 +156,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$account = $this->getNewAccountObject();
 
 		if ($account->load($id)) {
-
-			// if account was dirty, we can set it as clean because we just
-			// loaded it
-			if ($account->dirty) {
-				$account->dirty = false;
-				$account->setClean();
-			}
-
 			$this->activate();
 			$this->account = $account;
 
@@ -266,13 +251,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$account = $this->getNewAccountObject();
 		if ($account->loadByLoginTag($tag, $instance)) {
 
-			// if account was dirty, we can set it as clean because we just
-			// loaded it
-			if ($account->dirty) {
-				$account->dirty = false;
-				$account->setClean();
-			}
-
 			// log in account
 			$logged_in = $this->loginByAccount(
 				$account,
@@ -280,7 +258,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 				false // don't save a new login session.
 			);
 
-			// update login tag session id and date
+			// Update login tag session id and date. Set login session as clean
+			// since account was just loaded.
 			$login_date = new SwatDate();
 			$login_date->toUTC();
 
@@ -381,8 +360,9 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 		if ($this->isLoggedIn()) {
 			$sql = sprintf(
-				'select dirty from Account where id = %s',
-				$this->app->db->quote($this->account->id, 'integer')
+				'select dirty from AccountLoginSession
+				where session_id = %s',
+				$this->app->db->quote($this->getSessionId(), 'text')
 			);
 
 			$is_dirty = SwatDB::queryOne(
@@ -610,7 +590,15 @@ class SiteAccountSessionModule extends SiteSessionModule
 	public function reloadAccount()
 	{
 		if ($this->isLoggedIn()) {
-			$this->account->setClean();
+			$sql = sprintf(
+				'update AccountLoginSession set dirty = %s
+				where session_id = %s',
+				$this->app->db->quote(false, 'boolean'),
+				$this->app->db->quote($this->getSessionId(), 'text')
+			);
+
+			SwatDB::exec($this->app->db, $sql);
+
 			$this->account->load($this->account->id);
 		}
 	}
