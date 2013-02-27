@@ -343,8 +343,9 @@ class SiteAccount extends SwatDBDataObject
 	 * AccountLoginHistory table.
 	 *
 	 * @param SwatDate $date the last login date of this account.
+	 * @param string $remote_ip the remote IP of the user logging in.
 	 */
-	public function updateLastLoginDate(SwatDate $date)
+	public function updateLastLoginDate(SwatDate $date, $remote_ip = null)
 	{
 		$this->checkDB();
 
@@ -364,7 +365,7 @@ class SiteAccount extends SwatDBDataObject
 		$this->generatePropertyHash('last_login');
 
 		// new way: save to history table
-		$history = $this->getNewLoginHistory($date);
+		$history = $this->getNewLoginHistory($date, $remote_ip);
 		$history->save();
 	}
 
@@ -500,16 +501,16 @@ class SiteAccount extends SwatDBDataObject
 	// }}}
 	// {{{ protected function getNewLoginHistory()
 
-	protected function getNewLoginHistory(SwatDate $date)
+	protected function getNewLoginHistory(SwatDate $date, $remote_ip = null)
 	{
 		$class = SwatDBClassMap::get('SiteAccountLoginHistory');
 
 		$history = new $class();
 		$history->setDatabase($this->db);
 
-		$history->account = $this->id;
+		$history->account    = $this->id;
 		$history->login_date = $date;
-		$history->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
+		$history->ip_address = $remote_ip;
 
 		if (isset($_SERVER['HTTP_USER_AGENT'])) {
 

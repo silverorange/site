@@ -124,7 +124,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 			// save last login date
 			$now = new SwatDate();
 			$now->toUTC();
-			$this->account->updateLastLoginDate($now);
+			$this->account->updateLastLoginDate(
+				$now,
+				$this->app->getRemoteIP(15)
+			);
 
 			$this->setLoginSession();
 		}
@@ -169,7 +172,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 			// save last login date
 			$now = new SwatDate();
 			$now->toUTC();
-			$this->account->updateLastLoginDate($now);
+			$this->account->updateLastLoginDate(
+				$now,
+				$this->app->getRemoteIP(15)
+			);
 
 			$this->setLoginSession();
 		}
@@ -215,7 +221,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 		// save last login date
 		$now = new SwatDate();
 		$now->toUTC();
-		$this->account->updateLastLoginDate($now);
+		$this->account->updateLastLoginDate(
+			$now,
+			$this->app->getRemoteIP(15)
+		);
 
 		if ($new_login_session) {
 			$this->setLoginSession();
@@ -534,7 +543,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$login_session->session_id = $this->getSessionId();
 		$login_session->createdate = $now;
 		$login_session->login_date = $now;
-		$login_session->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
+		$login_session->ip_address = $this->app->getRemoteIP(15);
 
 		if (isset($_SERVER['HTTP_USER_AGENT'])) {
 

@@ -12,7 +12,7 @@ require_once 'Services/Akismet2.php';
  * Handle the init, processing, and display of a comment UI
  *
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentUi
@@ -158,12 +158,7 @@ abstract class SiteCommentUi
 		$link     = $this->ui->getWidget('link');
 		$email    = $this->ui->getWidget('email');
 		$bodytext = $this->ui->getWidget('bodytext');
-
-		if (isset($_SERVER['REMOTE_ADDR'])) {
-			$ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
-		} else {
-			$ip_address = null;
-		}
+		$ip_address = $this->app->getRemoteIP(15);
 
 		if (isset($_SERVER['HTTP_USER_AGENT'])) {
 			$user_agent = substr($_SERVER['HTTP_USER_AGENT'], 0, 255);

@@ -7,7 +7,7 @@ require_once 'Swat/SwatErrorLogger.php';
  * link in the system error log to the details file
  *
  * @package   Site
- * @copyright 2006-2009 silverorange
+ * @copyright 2006-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteErrorLogger extends SwatErrorLogger
@@ -214,8 +214,16 @@ class SiteErrorLogger extends SwatErrorLogger
 				$_SERVER['HTTP_USER_AGENT'], '</td></tr>', "\n";
 		}
 
-		if (isset($_SERVER['REMOTE_ADDR'])) {
-			echo '<tr><th>Remote Address:</th><td>', $_SERVER['REMOTE_ADDR'],
+		$remote_ip = null;
+
+		if (isset($_SERVER['HTTP_X_FORWARDED_IP'])) {
+			$remote_ip = $_SERVER['HTTP_X_FORWARDED_IP'];
+		} elseif (isset($_SERVER['REMOTE_ADDR'])) {
+			$remote_ip = $_SERVER['REMOTE_ADDR'];
+		}
+
+		if ($remote_ip !== null) {
+			echo '<tr><th>Remote Address:</th><td>', $remote_ip,
 				'</td></tr>', "\n";
 		}
 

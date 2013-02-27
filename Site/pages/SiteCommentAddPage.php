@@ -14,7 +14,7 @@ require_once 'Services/Akismet2/Comment.php';
  * Page for adding a comment asynchronously via a JSON request
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentAddPage extends SitePageDecorator
@@ -211,13 +211,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 
 	protected function getIPAddress()
 	{
-		$ip_address = null;
-
-		if (isset($_SERVER['REMOTE_ADDR'])) {
-			$ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 255);
-		}
-
-		return $ip_address;
+		$ip_address = $this->app->getRemoteIP(255);
 	}
 
 	// }}}
