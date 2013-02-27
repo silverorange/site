@@ -756,7 +756,7 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
-	// {{{ protected function getRemoteIP()
+	// {{{ public function getRemoteIP()
 
 	/**
 	 * Returns the remote IP of the current page request.
@@ -769,7 +769,7 @@ class SiteWebApplication extends SiteApplication
 	 * @return string the IP of the current page request if available. Returns
 	 *                 null if not available.
 	 */
-	protected function getRemoteIP($max_length = null)
+	public function getRemoteIP($max_length = null)
 	{
 		$remote_ip = null;
 
