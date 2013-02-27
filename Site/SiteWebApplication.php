@@ -10,7 +10,7 @@ require_once 'Site/pages/SiteXhtmlExceptionPage.php';
  * Web-applicaitions are set up to resolve pages and handle page requests.
  *
  * @package   Site
- * @copyright 2006-2012 silverorange
+ * @copyright 2006-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteWebApplication extends SiteApplication
@@ -441,7 +441,7 @@ class SiteWebApplication extends SiteApplication
 
 	protected function getPageCacheUserIdentifier()
 	{
-		$hash = md5($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+		$hash = md5($this->getRemoteIP().$_SERVER['HTTP_USER_AGENT']);
 		return 'user-'.$hash;
 	}
 
@@ -753,6 +753,37 @@ class SiteWebApplication extends SiteApplication
 	public function isSecure()
 	{
 		return $this->secure;
+	}
+
+	// }}}
+	// {{{ protected function getRemoteIP()
+
+	/**
+	 * Returns the remote IP of the current page request.
+	 *
+	 * For proxy setups, an X-Forwarded-IP header should be setup.
+	 *
+	 * @param integer $max_length Optional maximum length of the returned
+	 *                             remote IP.
+	 *
+	 * @return string the IP of the current page request if available. Returns
+	 *                 null if not available.
+	 */
+	protected function getRemoteIP($max_length = null)
+	{
+		$remote_ip = null;
+
+		if (isset($_SERVER['HTTP_HTTP_X_FORWARDED_IP'])) {
+			$remote_ip = $_SERVER['HTTP_HTTP_X_FORWARDED_IP'];
+		} elseif (isset($_SERVER['REMOTE_ADDR'])) {
+			$remote_ip = $_SERVER['REMOTE_ADDR'];
+		}
+
+		if ($max_length !== null && $remote_ip !== null) {
+			$remote_ip = substr($remote_ip, 0, (int)$max_length);
+		}
+
+		return $remote_ip;
 	}
 
 	// }}}

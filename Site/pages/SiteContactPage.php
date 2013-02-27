@@ -10,7 +10,7 @@ require_once 'Site/pages/SiteDBEditPage.php';
 /**
  *
  * @package   Site
- * @copyright 2006-2012 silverorange
+ * @copyright 2006-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactPage extends SiteDBEditPage
@@ -117,14 +117,11 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function processMessage(SiteContactMessage $message)
 	{
-		$message->email    = $this->ui->getWidget('email')->value;
-		$message->subject  = $this->ui->getWidget('subject')->value;
-		$message->message  = $this->ui->getWidget('message')->value;
-		$message->instance = $this->app->getInstance();
-
-		if (isset($_SERVER['REMOTE_ADDR'])) {
-			$message->ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
-		}
+		$message->email      = $this->ui->getWidget('email')->value;
+		$message->subject    = $this->ui->getWidget('subject')->value;
+		$message->message    = $this->ui->getWidget('message')->value;
+		$message->instance   = $this->app->getInstance();
+		$message->ip_address = $this->app->getRemoteIP(15);
 
 		if (isset($_SERVER['HTTP_USER_AGENT'])) {
 
