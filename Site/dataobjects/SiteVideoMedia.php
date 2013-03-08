@@ -17,7 +17,7 @@ class SiteVideoMedia extends SiteMedia
 	// {{{ public properties
 
 	/**
-	 * BOTR key
+	 * Unique string key
 	 *
 	 * @var string
 	 */

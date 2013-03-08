@@ -2,6 +2,7 @@ create table Media (
 	id serial,
 
 	media_set integer not null references MediaSet(id),
+	image     integer references Image(id),
 
 	title             varchar(255),
 	filename          varchar(255),
@@ -13,7 +14,7 @@ create table Media (
 
 	createdate timestamp,
 
-	-- SiteBotrMedia specific fields
+	-- SiteVideoMedia specific fields
 	key varchar(50),
 
 	primary key (id)
