@@ -1,17 +1,16 @@
 <?php
 
-require_once 'Site/dataobjects/SiteVideoMediaEncodingWrapper.php';
-require_once 'Site/dataobjects/SiteBotrMediaEncoding.php';
+require_once 'Site/dataobjects/SiteVideoMediaEncoding.php';
 
 /**
  * A recordset wrapper class for MediaEncoding objects
  *
  * @package   Site
  * @copyright 2011-2013 silverorange
- * @see       SiteBotrMediaEncoding
+ * @see       SiteVideoMediaEncoding
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteBotrMediaEncodingWrapper extends SiteVideoMediaEncodingWrapper
+class SiteVideoMediaEncodingWrapper extends SiteMediaEncodingWrapper
 {
 	// {{{ protected function init()
 
@@ -20,7 +19,7 @@ class SiteBotrMediaEncodingWrapper extends SiteVideoMediaEncodingWrapper
 		parent::init();
 
 		$this->row_wrapper_class =
-			SwatDBClassMap::get('SiteBotrMediaEncoding');
+			SwatDBClassMap::get('SiteVideoMediaEncoding');
 	}
 
 	// }}}

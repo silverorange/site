@@ -1,25 +1,25 @@
 <?php
 
-require_once 'Site/dataobjects/SiteVideoMediaEncoding.php';
-require_once 'Site/dataobjects/SiteBotrMediaSet.php';
+require_once 'Site/dataobjects/SiteMediaEncoding.php';
+require_once 'Site/dataobjects/SiteVideoMediaSet.php';
 
 /**
- * A BOTR-specific media encoding object
+ * A video-specific media encoding object
  *
  * @package   Site
  * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteBotrMediaEncoding extends SiteVideoMediaEncoding
+class SiteVideoMediaEncoding extends SiteMediaEncoding
 {
 	// {{{ public properties
 
 	/**
-	 * BOTR key
+	 * Width in pixels
 	 *
-	 * @var string
+	 * @var integer
 	 */
-	public $key;
+	public $width;
 
 	// }}}
 	// {{{ protected function init()
@@ -29,7 +29,7 @@ class SiteBotrMediaEncoding extends SiteVideoMediaEncoding
 		parent::init();
 
 		$this->registerInternalProperty('media_set',
-			SwatDBClassMap::get('SiteBotrMediaSet'));
+			SwatDBClassMap::get('SiteVideoMediaSet'));
 	}
 
 	// }}}

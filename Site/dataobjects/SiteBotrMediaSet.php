@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/dataobjects/SiteMediaSet.php';
+require_once 'Site/dataobjects/SiteVideoMediaSet.php';
 require_once 'Site/dataobjects/SiteBotrMediaPlayerWrapper.php';
 require_once 'Site/dataobjects/SiteBotrMediaEncodingWrapper.php';
 
@@ -8,10 +8,10 @@ require_once 'Site/dataobjects/SiteBotrMediaEncodingWrapper.php';
  * A BOTR-specific media set object
  *
  * @package   Site
- * @copyright 2011-2012 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteBotrMediaSet extends SiteMediaSet
+class SiteBotrMediaSet extends SiteVideoMediaSet
 {
 	// {{{ public function hasEncodingByKey()
 
@@ -111,14 +111,6 @@ class SiteBotrMediaSet extends SiteMediaSet
 	protected function getMediaEncodingWrapperClass()
 	{
 		return SwatDBClassMap::get('SiteBotrMediaEncodingWrapper');
-	}
-
-	// }}}
-	// {{{ protected function getMediaEncodingOrderBy()
-
-	protected function getMediaEncodingOrderBy()
-	{
-		return 'width desc';
 	}
 
 	// }}}

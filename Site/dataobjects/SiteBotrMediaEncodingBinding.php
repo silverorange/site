@@ -1,31 +1,17 @@
 <?php
 
-require_once 'Site/dataobjects/SiteMediaEncodingBinding.php';
+require_once 'Site/dataobjects/SiteVideoMediaEncodingBinding.php';
 
 /**
  * A BOTR-specific media encoding binding object
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteBotrMediaEncodingBinding extends SiteMediaEncodingBinding
+class SiteBotrMediaEncodingBinding extends SiteVideoMediaEncodingBinding
 {
 	// {{{ public properties
-
-	/**
-	 * Width
-	 *
-	 * @var integer
-	 */
-	public $width;
-
-	/**
-	 * Height
-	 *
-	 * @var integer
-	 */
-	public $height;
 
 	/**
 	 * BOTR key
