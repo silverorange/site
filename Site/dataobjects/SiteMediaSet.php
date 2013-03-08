@@ -45,6 +45,13 @@ class SiteMediaSet extends SwatDBDataObject
 	 */
 	public $use_cdn;
 
+	/**
+	 * Whether or not this media is private
+	 *
+	 * @var boolean
+	 */
+	public $private;
+
 	// }}}
 	// {{{ public function loadByShortname()
 
