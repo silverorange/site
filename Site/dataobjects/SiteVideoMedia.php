@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Site/SiteJwPlayerMediaDisplay.php';
 require_once 'Site/dataobjects/SiteMedia.php';
 require_once 'Site/dataobjects/SiteVideoImage.php';
 require_once 'Site/dataobjects/SiteVideoMediaSet.php';
@@ -155,10 +156,6 @@ class SiteVideoMedia extends SiteMedia
 			$jwplayer->image = $this->image->getUri($config['image_dimension']);
 		}
 
-		$jwplayer->start_position = $config['start_position'];
-		$jwplayer->record_end_point = $config['record_end_point'];
-		$jwplayer->on_complete_message = $config['on_complete_message'];
-
 		return $jwplayer;
 	}
 
@@ -257,9 +254,6 @@ class SiteVideoMedia extends SiteMedia
 	{
 		return array(
 			'image_dimension' => '720',
-			'start_position' => 0,
-			'record_end_point' => false,
-			'on_complete_message' => null,
 		);
 	}
 
