@@ -5,6 +5,9 @@ create table MediaSet (
 	shortname          varchar(255),
 	use_cdn            boolean not null default false,
 	obfuscate_filename boolean not null default false,
+	private            boolean not null default false,
+
+	skin               varchar(50),
 
 	primary key (id)
 );
