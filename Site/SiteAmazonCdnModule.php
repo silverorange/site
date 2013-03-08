@@ -36,6 +36,27 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public $access_key_secret;
 
+	/**
+	 * Cloudfront streaming distribution
+	 *
+	 * @var string
+	 */
+	public $streaming_distribution;
+
+	/**
+	 * CloudFront distribution key-pair id 
+	 *
+	 * @var string
+	 */
+	public $distribution_key_pair_id;
+
+	/**
+	 * CloudFront distribution private key 
+	 *
+	 * @var string
+	 */
+	public $distribution_private_key;
+
 	// }}}
 	// {{{ protected properties
 
@@ -54,12 +75,34 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public function init()
 	{
+		if ($this->access_key_id === null ||
+			$this->access_key_secret === null) {
+
+			throw new SwatException('Access keys are required for the Amazon '.
+				'CDN module');
+		}
+
 		$this->s3 = new AmazonS3(
 			array(
 				'key' => $this->access_key_id,
 				'secret' => $this->access_key_secret,
 			)
 		);
+
+		
+		if ($this->distribution_key_pair_id &&
+			$this->distribution_private_key !== null) {
+
+			$this->cf = new AmazonCloudFront(
+				array(
+					'key' => $this->app->config->amazon->access_key_id,
+					'secret' => $this->app->config->amazon->access_key_secret,
+				)
+			);
+
+			$this->cf->set_keypair_id($this->distribution_key_pair_id);
+			$this->cf->set_private_key($this->distribution_private_key);
+		}
 	}
 
 	// }}}
@@ -147,6 +190,65 @@ class SiteAmazonCdnModule extends SiteCdnModule
 				$filename
 			)
 		);
+	}
+
+	// }}}
+	// {{{ public function getUri()
+
+	/**
+	 * Gets a URI for a file on the CDN 
+	 *
+	 * @param string $filename the name of the file.
+	 * @param string $expires expiration time expressed either as a number
+	 *                        of seconds since UNIX Epoch, or any string
+	 *                        that strtotime() can understand 
+	 */
+	public function getUri($filename, $expires = null)
+	{
+		$uri = '';
+
+		if ($expires === null) {
+			$uri = sprintf('http%s://%s.s3.amazonaws.com/%s',
+				$this->app->isSecure() ? 's' : '',
+				$this->bucket,
+				rawurlencode($filename));
+		} else {
+			$options = array(
+				'https' => $this->app->isSecure(),
+			);
+
+			$uri = $this->s3->get_object_url(
+				$this->bucket, $filename, $expires, $options);
+		}
+
+		return $uri;
+	}
+
+	// }}}
+	// {{{ public function getStreamingUri()
+
+	/**
+	 * Gets a streaming URI for a file on the CDN 
+	 *
+	 * @param string $filename the name of the file.
+	 * @param string $expires expiration time expressed either as a number
+	 *                        of seconds since UNIX Epoch, or any string
+	 *                        that strtotime() can understand 
+	 */
+	public function getStreamingUri($filename, $expires = null)
+	{
+		if ($this->streaming_distribution === null ||
+			$this->distribution_private_key === null ||
+			$this->distribution_key_pair_id === null) {
+
+			throw new SwatException('Distribution keys are required for '.
+				'streaming URIs in the Amazon CDN module');
+		}
+
+		return $this->cf->get_private_object_url(
+			$this->streaming_distribution,
+			$filename,
+			$expires);
 	}
 
 	// }}}
