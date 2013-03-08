@@ -183,6 +183,42 @@ class SiteVideoMedia extends SiteMedia
 	}
 
 	// }}}
+	// {{{ public function loadByKey()
+
+	/**
+	 * Loads an video from its key
+	 *
+	 * @param string $key the key of the video to load.
+	 *
+	 * @return boolean true if the loading of this video was successful and
+	 *                  false if the video with the given key doesn't
+	 *                  exist.
+	 */
+	public function loadByKey($key)
+	{
+		$this->checkDB();
+
+		$row = null;
+
+		if ($this->table !== null) {
+			$sql = sprintf('select * from %s where key = %s',
+				$this->table,
+				$this->db->quote($key));
+
+			$rs = SwatDB::query($this->db, $sql, null);
+			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+		}
+
+		if ($row === null)
+			return false;
+
+		$this->initFromRow($row);
+		$this->generatePropertyHashes();
+
+		return true;
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
