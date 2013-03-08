@@ -303,6 +303,11 @@ class Site
 			'amazon.access_key_id'     => null,
 			'amazon.access_key_secret' => null,
 
+			// amazon Cloudfront
+			'amazon.distribution_key_pair_id' => null,
+			'amazon.distribution_private_key' => null,
+			'amazon.streaming_distribution'   => null,
+
 			// mobile
 			'mobile.auto_relocate'        => false,
 
@@ -319,6 +324,9 @@ class Site
 			'botr.private_content_expiry' => '+1 Minute',
 			'botr.dashboard_username'     => null,
 			'botr.dashboard_password'     => null,
+
+			// JWPlayer
+			'jwplayer.key'                => null,
 
 			// Expiry dates for the privateer data deleter
 			'expiry.contact_messages' => '1 year',
