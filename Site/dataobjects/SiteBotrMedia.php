@@ -12,16 +12,6 @@ require_once 'Site/dataobjects/SiteBotrMediaEncodingBindingWrapper.php';
  */
 class SiteBotrMedia extends SiteVideoMedia
 {
-	// {{{ public properties
-
-	/**
-	 * BOTR key
-	 *
-	 * @var string
-	 */
-	public $key;
-
-	// }}}
 	// {{{ public function encodingExistsByKey()
 
 	public function encodingExistsByKey($key)
