@@ -8,7 +8,7 @@ require_once 'Site/exceptions/SiteCdnException.php';
  * Application module that provides access to an Amazon S3 bucket.
  *
  * @package   Site
- * @copyright 2010-2012 silverorange
+ * @copyright 2010-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAmazonCdnModule extends SiteCdnModule
@@ -44,14 +44,14 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	public $streaming_distribution;
 
 	/**
-	 * CloudFront distribution key-pair id 
+	 * CloudFront distribution key-pair id
 	 *
 	 * @var string
 	 */
 	public $distribution_key_pair_id;
 
 	/**
-	 * CloudFront distribution private key 
+	 * CloudFront distribution private key
 	 *
 	 * @var string
 	 */
@@ -66,6 +66,16 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 * @var AmazonS3
 	 */
 	protected $s3;
+
+	/**
+	 * Storage class to use for storing the object.
+	 *
+	 * Must be one of STANDARD (99.999999999%, two facilities) or
+	 * REDUCED_REDUNDANCY (99.99%, one facility).
+	 *
+	 * @var string
+	 */
+	protected $storage_class = 'STANDARD';
 
 	// }}}
 	// {{{ public function init()
@@ -89,7 +99,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			)
 		);
 
-		
+
 		if ($this->distribution_key_pair_id &&
 			$this->distribution_private_key !== null) {
 
@@ -103,6 +113,22 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			$this->cf->set_keypair_id($this->distribution_key_pair_id);
 			$this->cf->set_private_key($this->distribution_private_key);
 		}
+	}
+
+	// }}}
+	// {{{ public function setStandardRedundancy()
+
+	public function setStandardRedundancy()
+	{
+		$this->storage_class = 'STANDARD';
+	}
+
+	// }}}
+	// {{{ public function setReducedRedundancy()
+
+	public function setReducedRedundancy()
+	{
+		$this->storage_class = 'REDUCED_REDUNDANCY';
 	}
 
 	// }}}
@@ -133,6 +159,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		}
 
 		$headers['x-amz-meta-md5'] = md5_file($source);
+		$headers['x-amz-storage-class'] = $this->storage_class;
 
 		$acl = AmazonS3::ACL_PRIVATE;
 
@@ -196,12 +223,12 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	// {{{ public function getUri()
 
 	/**
-	 * Gets a URI for a file on the CDN 
+	 * Gets a URI for a file on the CDN
 	 *
 	 * @param string $filename the name of the file.
 	 * @param string $expires expiration time expressed either as a number
 	 *                        of seconds since UNIX Epoch, or any string
-	 *                        that strtotime() can understand 
+	 *                        that strtotime() can understand
 	 */
 	public function getUri($filename, $expires = null)
 	{
@@ -228,12 +255,12 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	// {{{ public function getStreamingUri()
 
 	/**
-	 * Gets a streaming URI for a file on the CDN 
+	 * Gets a streaming URI for a file on the CDN
 	 *
 	 * @param string $filename the name of the file.
 	 * @param string $expires expiration time expressed either as a number
 	 *                        of seconds since UNIX Epoch, or any string
-	 *                        that strtotime() can understand 
+	 *                        that strtotime() can understand
 	 */
 	public function getStreamingUri($filename, $expires = null)
 	{
@@ -249,6 +276,14 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			$this->streaming_distribution,
 			$filename,
 			$expires);
+	}
+
+	// }}}
+	// {{{ public function getMetadata()
+
+	public function getMetadata($filename)
+	{
+		return $this->s3->get_object_metadata($this->bucket, $filename);
 	}
 
 	// }}}
