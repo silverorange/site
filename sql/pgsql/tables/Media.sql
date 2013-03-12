@@ -2,7 +2,7 @@ create table Media (
 	id serial,
 
 	media_set integer not null references MediaSet(id),
-	image     integer references Image(id),
+	image     integer references Image(id) on delete set null,
 
 	title             varchar(255),
 	filename          varchar(255),
