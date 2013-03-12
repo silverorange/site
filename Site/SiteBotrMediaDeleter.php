@@ -10,7 +10,7 @@ require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
  * and passthrough encodings deleted.
  *
  * @package   Site
- * @copyright 2011-2012 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 
@@ -154,9 +154,8 @@ class SiteBotrMediaDeleter extends SiteBotrMediaToasterCommandLineApplication
 		// can only be deleted if not already deleted, and it is validated,
 		// imported and the original isn't missing.
 		if ($this->mediaFileIsMarkedValid($media_file) &&
-			(strpos($media_file['tags'], $this->imported_tag) !== false) &&
-			(strpos($media_file['tags'], $this->original_missing_tag) ===
-				false)) {
+			$this->hasTag($media_file, $this->imported_tag) &&
+			!$this->hasTag($media_file, $this->original_missing_tag)) {
 			$deletable = true;
 		}
 
@@ -172,8 +171,7 @@ class SiteBotrMediaDeleter extends SiteBotrMediaToasterCommandLineApplication
 
 		// can only be deleted if not already deleted, and it is validated,
 		// imported and the original isn't missing.
-		if ((strpos($media_file['tags'], $this->original_deleted_tag) !==
-			false)) {
+		if ($this->hasTag($media_file, $this->original_deleted_tag)) {
 			$deleted = true;
 		}
 

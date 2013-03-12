@@ -742,7 +742,17 @@ class SiteBotrMediaToaster
 
 	public function getMediaThumbnailByKey($media_key, $width = 120)
 	{
-		// valid widths are 40 / 120 / 320 / 480 / 640 / 720
+		// If not a valid width, find the nearest version. This assumes we want
+		// to scale the image to the width we're seeking.
+		if (!in_array($width, self::getValidThumbnailWidths())) {
+			$diffs = array();
+			foreach (self::getValidThumbnailWidths() as $set_width) {
+				$diffs[$set_width] = abs($width - $set_width);
+			}
+
+			$width = array_search(min($diffs), $diffs);
+		}
+
 		if ($width == null) {
 			// default is the original size of the media.
 			$path = 'thumbs/%s.jpg';
@@ -750,9 +760,11 @@ class SiteBotrMediaToaster
 			$path = 'thumbs/%s-%s.jpg';
 		}
 
-		$path = sprintf($path,
+		$path = sprintf(
+			$path,
 			$media_key,
-			$width);
+			$width
+		);
 
 		// content signing isn't necessary for media thumbnails.
 		return $this->getContentPath($path);
@@ -772,7 +784,8 @@ class SiteBotrMediaToaster
 	public function getMediaThumbnailTagByKey($media_key, $width = 120)
 	{
 		$img_tag = new SwatHtmlTag('img');
-		$img_tag->src = $this->getMediaThumbnailByKey($media_key, $width);
+		$img_tag->width = $width;
+		$img_tag->src   = $this->getMediaThumbnailByKey($media_key, $width);
 
 		return $img_tag;
 	}
@@ -866,6 +879,21 @@ class SiteBotrMediaToaster
 			$path,
 			$expires,
 			$secret));
+	}
+
+	// }}}
+	// {{{ public static function getValidThumbnailWidths()
+
+	public static function getValidThumbnailWidths()
+	{
+		return array(
+			40,
+			120,
+			320,
+			480,
+			640,
+			720,
+		);
 	}
 
 	// }}}
