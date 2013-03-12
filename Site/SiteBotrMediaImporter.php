@@ -4,6 +4,7 @@ require_once 'Swat/SwatViewSelection.php';
 require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
 require_once 'Site/dataobjects/SiteBotrMedia.php';
 require_once 'Site/dataobjects/SiteBotrMediaSet.php';
+require_once 'Site/dataobjects/SiteVideoImage.php';
 
 /**
  * Application to import new media from BOTR into the Media DB tables
@@ -12,7 +13,7 @@ require_once 'Site/dataobjects/SiteBotrMediaSet.php';
  *  - Mark Media as imported.
  *
  * @package   Site
- * @copyright 2011-2012 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Support for importing into multiple MediaSets (perhaps based on
  *            the encoding profiles present on the Media we're importing).
@@ -86,11 +87,18 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	protected $already_imported_count = 0;
 
 	/**
+	 * The directory containing the image hierarchy
+	 *
+	 * @var string
+	 */
+	protected $image_file_base;
+
+	/**
 	 * Whether or not to force import of all files on bits on the run.
 	 *
-	 * If true, this resets all the media on bits on the run as not imported, which
-	 * causes all media to be reimported. Media already in our database will be marked as
-	 * imported, new media will be imported.
+	 * If true, this resets all the media on bits on the run as not imported,
+	 * which causes all media to be reimported. Media already in our database
+	 * will be marked as imported, new media will be imported.
 	 *
 	 * @var boolean
 	 */
@@ -118,6 +126,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	public function setForceImport()
 	{
 		$this->force_import = true;
+		$this->setResetTags();
 	}
 
 	// }}}
@@ -127,6 +136,14 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$this->media_set_shortname = $media_set_shortname;
 		$this->initMediaSet();
+	}
+
+	// }}}
+	// {{{ public function setImageFileBase()
+
+	public function setImageFileBase($image_file_base)
+	{
+		$this->image_file_base = $image_file_base;
 	}
 
 	// }}}
@@ -170,6 +187,11 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$binding_class = SwatDBClassMap::get('SiteBotrMediaEncodingBinding');
 		$this->media_encoding_binding_template = new $binding_class();
 		$this->media_encoding_binding_template->setDatabase($this->db);
+
+		$image_class = SwatDBClassMap::get('SiteVideoImage');
+		$this->image_class_template = new $image_class();
+		$this->image_class_template->setDatabase($this->db);
+		$this->image_class_template->setFileBase($this->image_file_base);
 	}
 
 	// }}}
@@ -178,10 +200,6 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	protected function runInternal()
 	{
 		$this->debug("Importing Media...\n");
-
-		if ($this->force_import) {
-			$this->resetMedia();
-		}
 
 		$this->initMediaToImport();
 
@@ -197,23 +215,13 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
-	// {{{ protected function resetMedia()
+	// {{{ protected function getResetTags()
 
-	protected function resetMedia()
+	protected function getResetTags()
 	{
-		$media = $this->getMedia();
-
-		$this->debug(sprintf("Resetting %s media files on BOTR ... ",
-			$this->locale->formatNumber(count($media))));
-
-		foreach ($media as $media_file) {
-			$this->toaster->updateMediaRemoveTagsByKey($media_file['key'],
-				array($this->imported_tag));
-		}
-
-		$this->resetMediaCache();
-
-		$this->debug("done.\n");
+		return array(
+			$this->imported_tag,
+		);
 	}
 
 	// }}}
@@ -308,6 +316,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 
 			$transaction = new SwatDBTransaction($this->db);
 			try {
+				$this->updateImage($media_file);
 				$this->updateBindings($media_file);
 				$this->updateMediaOnBotr($media_file);
 				$transaction->commit();
@@ -358,6 +367,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$encodings = $this->toaster->getEncodingsByKey($media_file['key']);
 		$existing_media_objects = $this->getMediaObjects();
+		$media_object = $existing_media_objects[$media_file['key']];
 
 		$existing_count = count($encodings);
 		$added_count    = 0;
@@ -370,7 +380,6 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 			// EncodingBindings, so ignore
 			if ($encoding['template']['format']['key'] != 'original' &&
 				$encoding['template']['format']['key'] != 'passthrough') {
-				$media_object = $existing_media_objects[$media_file['key']];
 
 				try {
 					if (!$media_object->encodingExistsByKey(
@@ -400,7 +409,32 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+	// {{{ protected function updateImage()
 
+	protected function updateImage($media_file)
+	{
+		$existing_media_objects = $this->getMediaObjects();
+		$media_object = $existing_media_objects[$media_file['key']];
+
+		// Delete any existing image for CDN, db, and filesystem cleanliness
+		if ($media_object->image instanceof SiteVideoImage) {
+			$media_object->image->setFileBase($this->image_file_base);
+			$media_object->image->delete();
+		}
+
+		$media_object->image = $this->getImage($media_file);
+
+		try {
+			$media_object->save();
+		} catch(SiteException $e) {
+			$e = new SiteCommandLineException($e);
+			$e->processAndContinue($e);
+		}
+
+		$this->debug("updated image... ");
+	}
+
+	// }}}
 	// {{{ protected function getMediaObject()
 
 	protected function getMediaObject(array $media_file)
@@ -408,6 +442,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$media_object = clone $this->media_object_template;
 		$media_object->title = $this->getTitle($media_file);
 		$media_object->key   = $media_file['key'];
+		$media_object->image = $this->getImage($media_file);
 
 		// duration is stored with micro-seconds on BOTR, round to the closest
 		// full second.
@@ -463,6 +498,22 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$info = pathinfo($media_file['title']);
 		return $info['filename'];
+	}
+
+	// }}}
+	// {{{ protected function getImage()
+
+	protected function getImage(array $media_file)
+	{
+		$filename = $this->toaster->getMediaThumbnailByKey(
+			$media_file['key'],
+			max(SiteBotrMediaToaster::getValidThumbnailWidths())
+		);
+
+		$image = clone $this->image_class_template;
+		$image->process($filename);
+
+		return $image;
 	}
 
 	// }}}

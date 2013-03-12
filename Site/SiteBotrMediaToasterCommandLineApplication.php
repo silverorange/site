@@ -592,9 +592,9 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	{
 		$valid = false;
 
-		if ((strpos($media_file['tags'], $this->valid_tag_filesize)
-			!== false) ||
-			(strpos($media_file['tags'], $this->valid_tag_md5) !== false)) {
+		// Only needs one valid tag to be considered valid.
+		if (!$this->hasTag($media_file, $this->invalid_tag_filesize) ||
+			!$this->hasTag($media_file, $this->invalid_tag_md5)) {
 			$valid = true;
 		}
 
@@ -608,9 +608,8 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	{
 		$invalid = false;
 
-		if ((strpos($media_file['tags'], $this->invalid_tag_filesize)
-			!== false) ||
-			(strpos($media_file['tags'], $this->invalid_tag_md5) !== false)) {
+		if ($this->hasTag($media_file, $this->invalid_tag_filesize) ||
+			$this->hasTag($media_file, $this->invalid_tag_md5)) {
 			$invalid = true;
 		}
 
@@ -624,7 +623,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	{
 		$encoded = false;
 
-		if ((strpos($media_file['tags'], $this->encoded_tag) !== false)) {
+		if ($this->hasTag($media_file, $this->encoded_tag)) {
 			$encoded = true;
 		}
 
@@ -638,8 +637,8 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	{
 		$ignorable = false;
 
-		if ((strpos($media_file['tags'], $this->delete_tag) !== false) ||
-			(strpos($media_file['tags'], $this->ignored_tag) !== false)) {
+		if ($this->hasTag($media_file, $this->delete_tag) ||
+			$this->hasTag($media_file, $this->ignored_tag)) {
 			$ignorable = true;
 		}
 
@@ -653,7 +652,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	{
 		$deleted = false;
 
-		if ((strpos($media_file['tags'], $this->delete_tag) !== false)) {
+		if ($this->hasTag($media_file, $this->delete_tag)) {
 			$deleted = true;
 		}
 
@@ -670,14 +669,23 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		// Only download the originals for those marked with the original
 		// missing. Ignore videos that aren't imported or are marked to be
 		// deleted.
-		if ((strpos($media_file['tags'], $this->delete_tag) === false) &&
-			((strpos($media_file['tags'], $this->imported_tag) != false)) &&
-			(strpos($media_file['tags'], $this->original_missing_tag)
-				!= false)) {
+		if (!$this->hasTag($media_file, $this->delete_tag) &&
+			$this->hasTag($media_file, $this->imported_tag) &&
+			!$this->hasTag($media_file, $this->original_missing_tag)) {
 			$downloadable = true;
 		}
 
 		return $downloadable;
+	}
+
+	// }}}
+	// {{{ protected function hasTag()
+
+	protected function hasTag(array $media_file, $tag)
+	{
+		$tags = explode(',', str_replace(' ', '', $media_file['tags']));
+
+		return in_array($tag, $tags);
 	}
 
 	// }}}
