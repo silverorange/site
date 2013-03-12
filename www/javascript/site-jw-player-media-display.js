@@ -65,7 +65,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 	this.player = jwplayer(this.container.childNodes[0]).setup( {
 		playlist: [{
 			image: this.image,
-			sources: this.sources 
+			sources: this.getSources() 
 		}],
 		skin:    this.skin,
 		primary: 'flash', // to allow for RTMP streaming
@@ -115,9 +115,40 @@ SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
 // }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.addSource = function()
 
-SiteJwPlayerMediaDisplay.prototype.addSource = function(source_uri, label)
+SiteJwPlayerMediaDisplay.prototype.addSource = function(
+	source_uri, width, label)
 {
-	this.sources.push({file: source_uri, label: label});
+	this.sources.push({file: source_uri, label: label, width: width});
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.getSources = function()
+
+SiteJwPlayerMediaDisplay.prototype.getSources = function()
+{
+	this.sources.sort(function(a, b) {
+		if (a.width == b.width) {
+			return 0;
+		} else if (!a.width && !a.label) {
+			// smil file. Put it first.
+			return -1;
+		} else {
+			return (a.width > b.width) ? -1 : 1;
+		}
+	});
+
+	var region = YAHOO.util.Dom.getRegion(this.container);
+	var player_width = region.width;
+
+	for (var i = this.sources.length - 1; i >= 0; i--) {
+		if (this.sources[i].width >= player_width) {
+			this.sources[i]['default'] = true;
+			console.log(this.sources[i]);
+			break;
+		}
+	}
+
+	return this.sources;
 };
 
 // }}}
