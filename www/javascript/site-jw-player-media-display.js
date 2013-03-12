@@ -78,6 +78,10 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		that.on_ready_event.fire(this);
 	});
 
+	this.player.onFullscreen(function () {
+		that.handleFullscreen();
+	});
+
 	YAHOO.util.Event.on(window, 'resize', function() {
 		this.player.resize('100%', this.getPlayerHeight());
 	}, this, true);
@@ -143,7 +147,6 @@ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 	for (var i = this.sources.length - 1; i >= 0; i--) {
 		if (this.sources[i].width >= player_width) {
 			this.sources[i]['default'] = true;
-			console.log(this.sources[i]);
 			break;
 		}
 	}
@@ -263,6 +266,23 @@ SiteJwPlayerMediaDisplay.prototype.getPlayerHeight = function()
 {
 	var region = YAHOO.util.Dom.getRegion(this.container);
 	return parseInt(region.width / this.aspect_ratio);
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function()
+
+SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function()
+{
+	var quality = this.player.getCurrentQuality();
+	var width = Math.max(screen.width, screen.height);
+	var levels = this.player.getQualityLevels();
+
+	for (var i = levels.length - 1; i >= 0; i--) {
+		if (levels[i].width < width && quality != i) {
+			this.player.setCurrentQuality(i);
+			break;
+		}
+	}
 };
 
 // }}}
