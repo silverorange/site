@@ -7,7 +7,7 @@ require_once 'Site/SiteAmazonCdnModule.php';
  * Application to process queued SiteCdnTasks using SiteAmazonCdnModule
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAmazonCdnUpdater extends SiteCdnUpdater
@@ -22,6 +22,10 @@ class SiteAmazonCdnUpdater extends SiteCdnUpdater
 		$this->cdn->bucket            = $config->amazon->bucket;
 		$this->cdn->access_key_id     = $config->amazon->access_key_id;
 		$this->cdn->access_key_secret = $config->amazon->access_key_secret;
+
+		if ($config->amazon->reduced_redundancy) {
+			$this->cdn->setReducedRedundancy();
+		}
 	}
 
 	// }}}

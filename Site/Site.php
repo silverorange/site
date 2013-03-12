@@ -9,7 +9,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Container for package wide static methods
  *
  * @package   Site
- * @copyright 2005-2012 silverorange
+ * @copyright 2005-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class Site
@@ -299,9 +299,10 @@ class Site
 			'comment.akismet_key'      => null,
 
 			// amazon S3
-			'amazon.bucket'            => null,
-			'amazon.access_key_id'     => null,
-			'amazon.access_key_secret' => null,
+			'amazon.bucket'             => null,
+			'amazon.access_key_id'      => null,
+			'amazon.access_key_secret'  => null,
+			'amazon.reduced_redundancy' => false,
 
 			// amazon Cloudfront
 			'amazon.distribution_key_pair_id' => null,
