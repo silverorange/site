@@ -145,6 +145,7 @@ class SiteVideoMedia extends SiteMedia
 			if ($binding->on_cdn && $binding->width > 0) {
 				$jwplayer->addSource(
 					$app->cdn->getUri($this->getFilePath($binding->width), $expires),
+					$binding->width,
 					$binding->width.'p');
 			}
 		}

@@ -118,9 +118,14 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	// }}}
 	// {{{ public function addSource()
 
-	public function addSource($uri, $label)
+	public function addSource($uri, $width, $label)
 	{
-		$this->sources[$uri] = $label;
+		$source          = array();
+		$source['uri']   = $uri;
+		$source['width'] = $width;
+		$source['label'] = $label;
+
+		$this->sources[] = $source;
 	}
 
 	// }}}
@@ -219,11 +224,12 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			SwatString::quoteJavaScriptString(
 				$this->getManifestUri()));
 
-		foreach ($this->sources as $uri => $label) {
-			$javascript.= sprintf("\t%s.addSource(%s, %s);\n",
+		foreach ($this->sources as $source) {
+			$javascript.= sprintf("\t%s.addSource(%s, %d, %s);\n",
 				$this->getJavascriptVariableName(),
-				SwatString::quoteJavaScriptString($uri),
-				SwatString::quoteJavaScriptString($label));
+				SwatString::quoteJavaScriptString($source['uri']),
+				$source['width'],
+				SwatString::quoteJavaScriptString($source['label']));
 		}
 
 		if ($this->skin !== null) {
