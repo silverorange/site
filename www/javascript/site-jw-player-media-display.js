@@ -71,6 +71,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		primary: 'flash', // to allow for RTMP streaming
 		width:   '100%',
 		height:  this.getPlayerHeight(),
+		ga:      {} // this can be blank. JW Player will use the _gaq var.
 	});
 
 	var that = this;
