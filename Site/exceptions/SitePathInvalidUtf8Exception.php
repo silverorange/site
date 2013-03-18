@@ -6,25 +6,41 @@ require_once 'Site/exceptions/SiteException.php';
  * Thrown when the path we're looking up has invalid UFF-8 in it.
  *
  * @package   Site
- * @copyright 2010 silverorange
+ * @copyright 2010-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SitePathInvalidUtf8Exception extends SiteException
 {
-	// {{{ protected function getMessageAsHtml()
+	// {{{ protected properties
 
 	/**
-	 * Formats the exception's message as Html
-	 *
-	 * Subclassed to silence htmlspecialchars()'s warning, since we already know
-	 * about the invalid UTF-8.
-	 *
-	 * @return string the cleaned exception message.
+	 * @var string
 	 */
-	protected function getMessageAsHtml()
+	protected $path = '';
+
+	// }}}
+	// {{{ public function __construct()
+
+	public function __construct($message, $code = 0, $raw_path = '')
 	{
-		$message = &htmlspecialchars($this->getMessage());
-		return nl2br($message);
+		parent::__construct($message, $code);
+		$this->path = $raw_path;
+	}
+
+	// }}}
+	// {{{ public function getRawPath()
+
+	public function getRawPath()
+	{
+		return $this->path;
+	}
+
+	// }}}
+	// {{{ public function getEscapedPath()
+
+	public function getEscapedPath()
+	{
+		return SwatString::escapeBinary($this->getRawPath());
 	}
 
 	// }}}
