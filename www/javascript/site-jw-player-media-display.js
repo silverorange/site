@@ -74,7 +74,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		ga:      {} // this can be blank. JW Player will use the _gaq var.
 	});
 
-	//this.debug();
+	this.debug();
 
 	var that = this;
 	this.player.onReady(function() {
@@ -305,6 +305,12 @@ SiteJwPlayerMediaDisplay.prototype.debug = function()
 
 	this.player.onMeta(function (v) {
 		var meta = v.metadata;
+		if (!meta.hasOwnProperty('bufferfill') ||
+			!meta.hasOwnProperty('bandwidth')) {
+
+			return;
+		}
+
 		var quality_levels = that.player.getQualityLevels();
 		var current_level = quality_levels[meta.qualitylevel];
 		debug_container.innerHTML = 'player-width: ' + meta.screenwidth + 'px' +
