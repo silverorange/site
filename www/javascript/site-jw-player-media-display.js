@@ -74,7 +74,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		ga:      {} // this can be blank. JW Player will use the _gaq var.
 	});
 
-	this.debug();
+	//this.debug();
 
 	var that = this;
 	this.player.onReady(function() {
