@@ -74,6 +74,8 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		ga:      {} // this can be blank. JW Player will use the _gaq var.
 	});
 
+	//this.debug();
+
 	var that = this;
 	this.player.onReady(function() {
 		that.on_ready_event.fire(this);
@@ -284,6 +286,35 @@ SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function()
 			break;
 		}
 	}
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.debug = function()
+
+SiteJwPlayerMediaDisplay.prototype.debug = function()
+{
+	var debug_container = document.createElement('div');
+	debug_container.style.padding = '4px';
+	debug_container.style.position = 'absolute';
+	debug_container.style.top = 0;
+	debug_container.style.left = 0;
+	debug_container.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+	this.container.appendChild(debug_container);
+
+	var that = this;
+
+	this.player.onMeta(function (v) {
+		var meta = v.metadata;
+		var quality_levels = that.player.getQualityLevels();
+		var current_level = quality_levels[meta.qualitylevel];
+		debug_container.innerHTML = 'player-width: ' + meta.screenwidth + 'px' +
+			'<br />transitioning: ' + ((meta.transitioning) ? 'yes' : 'no') +
+			'<br />buffer-fill: ' + meta.bufferfill + 's' +
+			'<br />quality-level: <strong>' + current_level.label +
+				'</strong> (' + meta.qualitylevel + ')' +
+			'<br />bandwidth: ' + Math.round(meta.bandwidth / 1024, 2) +
+				' Mb/s (' + meta.bandwidth + ')';
+	});
 };
 
 // }}}
