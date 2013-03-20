@@ -142,6 +142,9 @@ class SiteVideoMedia extends SiteMedia
 		$expires = ($this->media_set->private) ? '1 day' : '1 year';
 
 		foreach ($this->encoding_bindings as $binding) {
+			// TODO: this depends on binding width matching the encoding
+			// shortname, which isn't a safe assumption in the long term.
+			// Cleanup to lookup by encoding shortname.
 			if ($binding->on_cdn && $binding->width > 0) {
 				$jwplayer->addSource(
 					$app->cdn->getUri(
