@@ -15,7 +15,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 {
 	// {{{ public properties
 
-	public $image;
 	public $key;
 	public $valid_mime_types;
 	public $start_position = 0;
@@ -37,6 +36,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	protected $media;
 	protected $sources = array();
+	protected $images = array();
 	protected $session;
 	protected $aspect_ratio;
 	protected $skin;
@@ -126,6 +126,17 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		$source['label'] = $label;
 
 		$this->sources[] = $source;
+	}
+
+	// }}}
+	// {{{ public function addImage()
+
+	public function addImage($uri, $width)
+	{
+		$image          = array();
+		$image['uri']   = $uri;
+		$image['width'] = $width;
+		$this->images[] = $image;
 	}
 
 	// }}}
@@ -238,10 +249,11 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 				SwatString::quoteJavaScriptString($this->skin));
 		}
 
-		if ($this->image !== null) {
-			$javascript.= sprintf("\t%s.image = %s;\n",
+		foreach ($this->images as $image) {
+			$javascript.= sprintf("\t%s.addImage(%s, %d);\n",
 				$this->getJavascriptVariableName(),
-				SwatString::quoteJavaScriptString($this->image));
+				SwatString::quoteJavaScriptString($image['uri']),
+				$image['width']);
 		}
 
 		$javascript.= sprintf("\t%s.start_position = %d;\n",
