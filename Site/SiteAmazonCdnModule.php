@@ -51,11 +51,11 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	public $distribution_key_pair_id;
 
 	/**
-	 * CloudFront distribution private key
+	 * Filename of the file containing the CloudFront distribution private key
 	 *
 	 * @var string
 	 */
-	public $distribution_private_key;
+	public $distribution_private_key_file;
 
 	// }}}
 	// {{{ protected properties
@@ -84,6 +84,13 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	protected $storage_class = 'STANDARD';
 
+	/**
+	 * CloudFront distribution private key
+	 *
+	 * @var string
+	 */
+	protected $distribution_private_key;
+
 	// }}}
 	// {{{ public function init()
 
@@ -95,8 +102,9 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		if ($this->access_key_id === null ||
 			$this->access_key_secret === null) {
 
-			throw new SwatException('Access keys are required for the Amazon '.
-				'CDN module');
+			throw new SiteCdnException(
+				'Access keys are required for the Amazon CDN module'
+			);
 		}
 
 		$this->s3 = new AmazonS3(
@@ -106,10 +114,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			)
 		);
 
-
 		if ($this->distribution_key_pair_id !== null &&
-			$this->distribution_private_key !== null) {
-
+			$this->distribution_private_key_file !== null) {
 			$this->cf = new AmazonCloudFront(
 				array(
 					'key'    => $this->app->config->amazon->access_key_id,
@@ -118,6 +124,24 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			);
 
 			$this->cf->set_keypair_id($this->distribution_key_pair_id);
+
+			// TODO: This assumes a file location. We should do this better.
+			$file = sprintf(
+				'../system/amazon/%s',
+				$this->distribution_private_key_file
+			);
+
+			if (file_exists($file)) {
+				$this->distribution_private_key = file_get_contents($file);
+			} else {
+				throw new SiteCdnException(
+					sprintf(
+						'Distribution Private Key ‘%s’ missing.',
+						$file
+					)
+				);
+			}
+
 			$this->cf->set_private_key($this->distribution_private_key);
 		}
 	}
@@ -242,17 +266,49 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		$uri = '';
 
 		if ($expires === null) {
-			$uri = sprintf('http%s://%s.s3.amazonaws.com/%s',
-				$this->app->isSecure() ? 's' : '',
-				$this->bucket,
-				rawurlencode($filename));
+			$uri = sprintf(
+				'%s%s',
+				$this->app->isSecure() ?
+					$this->app->config->uri->secure_cdn_base :
+					$this->app->config->uri->cdn_base,
+				rawurlencode($filename)
+			);
 		} else {
 			$options = array(
 				'https' => $this->app->isSecure(),
 			);
 
+			// TODO: replace this with commented out block below so we can use
+			// cloudfront where appropriate.
 			$uri = $this->s3->get_object_url(
-				$this->bucket, $filename, $expires, $options);
+				$this->bucket,
+				$filename,
+				$expires,
+				$options
+			);
+
+			// TODO: add enabled flag for cloudfront. get private_object_url
+			// expects the base to not include trailing slash and protocal, but
+			// cdn base does.
+			/*
+			if ($this->cf instanceof AmazonCloudFront) {
+				$uri = $this->cf->get_private_object_url(
+					$this->app->isSecure() ?
+						$this->app->config->uri->secure_cdn_base :
+						$this->app->config->uri->cdn_base,
+					$filename,
+					$expires,
+					$options
+				);
+			} else {
+				$uri = $this->s3->get_object_url(
+					$this->bucket,
+					$filename,
+					$expires,
+					$options
+				);
+			}
+			*/
 		}
 
 		return $uri;
