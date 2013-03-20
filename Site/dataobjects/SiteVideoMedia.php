@@ -134,17 +134,20 @@ class SiteVideoMedia extends SiteMedia
 		$jwplayer = new SiteJwPlayerMediaDisplay('video'.$this->id);
 		$jwplayer->setMedia($this);
 		$jwplayer->key = $app->config->jwplayer->key;
-		
+
 		if ($app->session->isActive()) {
 			$jwplayer->setSession($app->session);
-		}	
+		}
 
 		$expires = ($this->media_set->private) ? '1 day' : '1 year';
 
 		foreach ($this->encoding_bindings as $binding) {
 			if ($binding->on_cdn && $binding->width > 0) {
 				$jwplayer->addSource(
-					$app->cdn->getUri($this->getFilePath($binding->width), $expires),
+					$app->cdn->getUri(
+						$this->getFilePath($binding->width),
+						$expires
+					),
 					$binding->width,
 					$binding->width.'p');
 			}
@@ -158,26 +161,6 @@ class SiteVideoMedia extends SiteMedia
 		}
 
 		return $jwplayer;
-	}
-
-	// }}}
-	// {{{ public function getFilePath()
-
-	/**
-	 * Gets the full file path of an encoding
-	 *
-	 * This includes the directory and the filename.
-	 *
-	 * @return string the full file path of an encoding
-	 */
-	public function getFilePath($width)
-	{
-		$path = sprintf('media/%s/%s/%s.mp4',
-			$this->media_set->shortname,
-			$width,
-			$this->id);
-
-		return $path;
 	}
 
 	// }}}
