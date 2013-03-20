@@ -64,6 +64,8 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 			throw new SiteNotFoundException('Media not found for id:'.
 				$media_id);
 		}
+
+		$this->media->setFileBase('media');
 	}
 
 	// }}}
@@ -119,7 +121,7 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 			// file-size (bytes) / duration * 8 (to convert to bits)
 			$system_bitrate = $this->media->getFileSize($encoding->shortname)
 				/ $this->media->duration * 8;
-			
+
 			$video_tag->{'system-bitrate'} = (int)$system_bitrate;
 
 			$tags[] = $video_tag->__toString();
