@@ -8,6 +8,7 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.media_id = media_id;
 
 	this.sources = [];
+	this.images  = [];
 	this.valid_mime_types = [];
 
 	this.skin = null;
@@ -64,7 +65,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 {
 	this.player = jwplayer(this.container.childNodes[0]).setup( {
 		playlist: [{
-			image: this.image,
+			image: this.getImage(),
 			sources: this.getSources() 
 		}],
 		skin:    this.skin,
@@ -129,6 +130,15 @@ SiteJwPlayerMediaDisplay.prototype.addSource = function(
 };
 
 // }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.addImage = function()
+
+SiteJwPlayerMediaDisplay.prototype.addImage = function(
+	image_uri, width)
+{
+	this.images.push({uri: image_uri, width: width});
+};
+
+// }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 
 SiteJwPlayerMediaDisplay.prototype.getSources = function()
@@ -155,6 +165,27 @@ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 	}
 
 	return this.sources;
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.getImage = function()
+
+SiteJwPlayerMediaDisplay.prototype.getImage = function()
+{
+	var region = YAHOO.util.Dom.getRegion(this.container);
+	var player_width = region.width;
+
+	var default_image = null;
+	var min_diff = null;
+	for (var i = 0; i < this.images.length; i++) {
+		var diff = Math.abs(this.images[i].width - player_width);
+		if (min_diff === null || diff < min_diff) {
+			min_diff = diff;
+			default_image = i;
+		}
+	}
+
+	return this.images[default_image].uri;
 };
 
 // }}}

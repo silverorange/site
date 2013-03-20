@@ -153,11 +153,15 @@ class SiteVideoMedia extends SiteMedia
 			}
 		}
 
-		$config = array_merge($this->getDefaultMediaPlayerConfig(),
-			$player_config);
-
 		if ($this->image !== null) {
-			$jwplayer->image = $this->image->getUri($config['image_dimension']);
+			$dimensions = $this->image->image_set->dimensions;
+			foreach ($dimensions as $dimension) {
+				if ($this->image->hasDimension($dimension->shortname)) {
+					$jwplayer->addImage(
+						$this->image->getUri($dimension->shortname),
+						$this->image->getWidth($dimension->shortname));
+				}
+			}
 		}
 
 		return $jwplayer;
@@ -229,16 +233,6 @@ class SiteVideoMedia extends SiteMedia
 		// Load encodings by size, but put nulls first since those would be
 		// audio only encodings.
 		return 'order by width asc nulls first';
-	}
-
-	// }}}
-	// {{{ protected function getDefaultMediaPlayerConfig()
-
-	protected function getDefaultMediaPlayerConfig()
-	{
-		return array(
-			'image_dimension' => '720',
-		);
 	}
 
 	// }}}
