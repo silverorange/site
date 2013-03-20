@@ -133,25 +133,25 @@ SiteJwPlayerMediaDisplay.prototype.addSource = function(
 
 SiteJwPlayerMediaDisplay.prototype.getSources = function()
 {
-	this.sources.sort(function(a, b) {
-		if (a.width == b.width) {
-			return 0;
-		} else if (!a.width && !a.label) {
-			// smil file. Put it first.
-			return -1;
-		} else {
-			return (a.width > b.width) ? -1 : 1;
-		}
-	});
-
 	var region = YAHOO.util.Dom.getRegion(this.container);
 	var player_width = region.width;
 
-	for (var i = this.sources.length - 1; i >= 0; i--) {
-		if (this.sources[i].width >= player_width) {
-			this.sources[i].default = true;
-			break;
+	var default_source = null;
+	var min_diff = null;
+	for (var i = 0; i < this.sources.length; i++) {
+		if (!this.sources[i].width) {
+			continue;
 		}
+
+		var diff = Math.abs(this.sources[i].width - player_width);
+		if (min_diff === null || diff < min_diff) {
+			min_diff = diff;
+			default_source = i;
+		}
+	}
+
+	if (default_source !== null) {
+		this.sources[default_source].default = true;
 	}
 
 	return this.sources;
