@@ -665,8 +665,10 @@ class SiteMedia extends SwatDBDataObject
 
 	public function getFilePath($encoding_shortname)
 	{
-		$items = array($this->getFileDirectory($encoding_shortname),
-			$this->getFilename($encoding_shortname));
+		$items = array(
+			$this->getFileDirectory($encoding_shortname),
+			$this->getFilename($encoding_shortname),
+		);
 
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
@@ -711,25 +713,18 @@ class SiteMedia extends SwatDBDataObject
 	{
 		$headers = array();
 
-		if ($this->media_set->private) {
-			// If the media set is private, ensure all caching headers are set
-			// to prevent caching. Cache-Control for HTTP 1.1, Pragma for
-			// HTTP 1.0, and a date in the past (Y2K!) to put the icing on the
-			// cake as it were.
-			$header['Cache-Control'] = 'no-cache, must-revalidate';
-			$header['Pragma']        = 'no-cache';
-			$header['Expires']       = 'Sun, 31 Jan 1999 23:59:59 GMT';
-		} else {
-			// Set a "never-expire" policy with a far future max age (10 years)
-			// as suggested in
-			// http://developer.yahoo.com/performance/rules.html#expires.
-			// As well, set Cache-Control to public, as this allows some
-			// browsers to cache the media to disk while on https, which is a
-			// good win. This depends on setting new object ids when updating
-			// the object, if this isn't true of a subclass this will have to
-			// be overwritten.
-			$headers['Cache-Control'] = 'public, max-age=315360000';
-		}
+		// Set a "never-expire" policy with a far future max age (10 years)
+		// as suggested in
+		// http://developer.yahoo.com/performance/rules.html#expires.
+		// As well, set Cache-Control to public, as this allows some
+		// browsers to cache the media to disk while on https, which is a
+		// good win. This depends on setting new object ids when updating
+		// the object, if this isn't true of a subclass this will have to
+		// be overwritten. Also note that Amazon CloudFront depends on this
+		// value to decide how long the media sits on an edge location before
+		// its invalidated. Long caching on the edge location is desirable, even
+		// for private media.
+		$headers['Cache-Control'] = 'public, max-age=315360000';
 
 		$binding = $this->getEncodingBinding($encoding_shortname);
 
