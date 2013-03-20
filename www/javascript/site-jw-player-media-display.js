@@ -149,7 +149,7 @@ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 
 	for (var i = this.sources.length - 1; i >= 0; i--) {
 		if (this.sources[i].width >= player_width) {
-			this.sources[i]['default'] = true;
+			this.sources[i].default = true;
 			break;
 		}
 	}
