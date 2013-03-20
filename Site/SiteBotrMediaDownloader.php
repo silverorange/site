@@ -171,13 +171,14 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 						break;
 
 					case 'audio':
-						$binding =
-							$media_object->getDefaultAudioEncoding();
+						$binding = $media_object->getDefaultAudioEncoding();
 						break;
 
 					default:
-						$binding =
-							$media_object->getEncodingBinding($shortname);
+						$binding = $media_object->getEncodingBinding(
+							$shortname
+						);
+
 						break;
 					}
 
@@ -273,7 +274,8 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		SiteBotrMediaEncodingBinding $binding)
 	{
 		// make sure the media set is supposed to be on the cdn.
-		return ($media_object->media_set->use_cdn);
+		return ($media_object->media_set->use_cdn ||
+			!$this->config->amazon->streaming_distribution !== null);
 	}
 
 	// }}}
@@ -286,8 +288,10 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		$destination = $media_object->getFilePath($encoding->shortname);
 		$prefix      = $media_object->id;
 		$filesize    = $binding->filesize;
-		$source      = $this->toaster->getMediaDownload($media_object,
-			$encoding);
+		$source      = $this->toaster->getMediaDownload(
+			$media_object,
+			$encoding
+		);
 
 		$this->debug(sprintf("\n\t => %s ... ",
 			$destination));
@@ -309,6 +313,8 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		$task->media     = $media;
 		$task->encoding  = $encoding;
 		$task->operation = 'copy';
+
+		// TODO: only set this for "downloadable" dimensions.
 		$task->override_http_headers = serialize(array(
 			'Content-Disposition' => sprintf('attachment; filename="%s"',
 				$media->getContentDispositionFilename($encoding->shortname)),
@@ -324,8 +330,15 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$where = parent::getMediaObjectWhere();
 
-		$where.= sprintf(' and Media.downloadable = %s',
-			$this->db->quote(true, 'boolean'));
+		// Assume that if a streaming distribution exists in the config that we
+		// want to use it. If we're on a streaming distribution don't use the
+		// downloadable flag to decide what goes on s3/cloudfront.
+		if ($this->config->amazon->streaming_distribution == null) {
+			$where.= sprintf(
+				' and Media.downloadable = %s',
+				$this->db->quote(true, 'boolean')
+			);
+		}
 
 		if ($this->media_set_shortname !== null) {
 			$where.= sprintf(
