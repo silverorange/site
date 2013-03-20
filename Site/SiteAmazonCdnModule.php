@@ -68,6 +68,13 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	protected $s3;
 
 	/**
+	 * The Amazon CloudFront accessor
+	 *
+	 * @var AmazonCloudFront
+	 */
+	protected $cf;
+
+	/**
 	 * Storage class to use for storing the object.
 	 *
 	 * Must be one of STANDARD (99.999999999%, two facilities) or
@@ -100,12 +107,12 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		);
 
 
-		if ($this->distribution_key_pair_id &&
+		if ($this->distribution_key_pair_id !== null &&
 			$this->distribution_private_key !== null) {
 
 			$this->cf = new AmazonCloudFront(
 				array(
-					'key' => $this->app->config->amazon->access_key_id,
+					'key'    => $this->app->config->amazon->access_key_id,
 					'secret' => $this->app->config->amazon->access_key_secret,
 				)
 			);
@@ -264,10 +271,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public function getStreamingUri($filename, $expires = null)
 	{
-		if ($this->streaming_distribution === null ||
-			$this->distribution_private_key === null ||
-			$this->distribution_key_pair_id === null) {
-
+		if (!$this->hasStreamingDistribution()) {
 			throw new SwatException('Distribution keys are required for '.
 				'streaming URIs in the Amazon CDN module');
 		}
@@ -275,7 +279,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		return $this->cf->get_private_object_url(
 			$this->streaming_distribution,
 			$filename,
-			$expires);
+			$expires
+		);
 	}
 
 	// }}}
@@ -284,6 +289,17 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	public function getMetadata($filename)
 	{
 		return $this->s3->get_object_metadata($this->bucket, $filename);
+	}
+
+	// }}}
+	// {{{ public function hasStreamingDistribution()
+
+	public function hasStreamingDistribution()
+	{
+		return (
+			$this->cf instanceof AmazonCloudFront &&
+			$this->streaming_distribution !== null
+		);
 	}
 
 	// }}}
