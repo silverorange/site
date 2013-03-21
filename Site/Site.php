@@ -307,7 +307,7 @@ class Site
 			// amazon Cloudfront
 			'amazon.cloudfront_enabled'            => false,
 			'amazon.distribution_key_pair_id'      => null,
-			'amazon.distribution_private_key_file' => 'cloud_front_private_key',
+			'amazon.distribution_private_key_file' => 'cloud_front_private_key.pem',
 			'amazon.streaming_distribution'        => null,
 
 			// mobile
