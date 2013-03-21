@@ -82,8 +82,10 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		that.on_ready_event.fire(this);
 	});
 
-	this.player.onFullscreen(function () {
-		that.handleFullscreen();
+	this.player.onFullscreen(function (e) {
+		if (e.fullscreen) {
+			that.handleFullscreen();
+		}
 	});
 
 	YAHOO.util.Event.on(window, 'resize', function() {
