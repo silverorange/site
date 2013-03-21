@@ -13,7 +13,7 @@ require_once 'Site/dataobjects/SiteBotrMediaPlayer.php';
  * Amiga computers were amazing.
  *
  * @package   Site
- * @copyright 2011-2012 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMediaToaster
@@ -784,8 +784,7 @@ class SiteBotrMediaToaster
 	public function getMediaThumbnailTagByKey($media_key, $width = 120)
 	{
 		$img_tag = new SwatHtmlTag('img');
-		$img_tag->width = $width;
-		$img_tag->src   = $this->getMediaThumbnailByKey($media_key, $width);
+		$img_tag->src = $this->getMediaThumbnailByKey($media_key, $width);
 
 		return $img_tag;
 	}
