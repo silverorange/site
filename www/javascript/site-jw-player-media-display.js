@@ -187,7 +187,7 @@ SiteJwPlayerMediaDisplay.prototype.getImage = function()
 		}
 	}
 
-	return this.images[default_image].uri;
+	return (default_image === null) ? null : this.images[default_image].uri;
 };
 
 // }}}
