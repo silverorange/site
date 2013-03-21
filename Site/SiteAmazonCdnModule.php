@@ -37,6 +37,13 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	public $access_key_secret;
 
 	/**
+	 * Whether or not cloudfront should be used for CDN resources.
+	 *
+	 * @var boolean
+	 */
+	public $cloudfront_enabled;
+
+	/**
 	 * Cloudfront streaming distribution
 	 *
 	 * @var string
@@ -109,39 +116,54 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 		$this->s3 = new AmazonS3(
 			array(
-				'key' => $this->access_key_id,
+				'key'    => $this->access_key_id,
 				'secret' => $this->access_key_secret,
 			)
 		);
 
-		if ($this->distribution_key_pair_id !== null &&
-			$this->distribution_private_key_file !== null) {
+		if ($this->cloudfront_enabled) {
 			$this->cf = new AmazonCloudFront(
 				array(
-					'key'    => $this->app->config->amazon->access_key_id,
-					'secret' => $this->app->config->amazon->access_key_secret,
+					'key'    => $this->access_key_id,
+					'secret' => $this->access_key_secret,
 				)
 			);
 
-			$this->cf->set_keypair_id($this->distribution_key_pair_id);
-
-			// TODO: This assumes a file location. We should do this better.
-			$file = sprintf(
-				'../system/amazon/%s',
-				$this->distribution_private_key_file
-			);
-
-			if (file_exists($file)) {
-				$this->distribution_private_key = file_get_contents($file);
-			} else {
-				throw new SiteCdnException(
-					sprintf(
-						'Distribution Private Key ‘%s’ missing.',
-						$file
-					)
-				);
+			if ($this->distribution_key_pair_id !== null &&
+				$this->distribution_private_key !== null) {
+				$this->cf->set_keypair_id($this->distribution_key_pair_id);
+				$this->cf->set_private_key($this->distribution_private_key);
 			}
+		}
+	}
 
+	// }}}
+	// {{{ public function setDistributionPrivateKey()
+
+	public function setDistributionPrivateKey($distribution_private_key_file,
+		$distribution_key_pair_id = null)
+	{
+		if (file_exists($distribution_private_key_file)) {
+			$this->distribution_private_key = file_get_contents(
+				$distribution_private_key_file
+			);
+		} else {
+			throw new SiteCdnException(
+				sprintf(
+					'Distribution Private Key ‘%s’ missing.',
+					$file
+				)
+			);
+		}
+
+		if ($distribution_key_pair_id !== null) {
+			$this->distribution_key_pair_id = $distribution_key_pair_id;
+		}
+
+		// If this is called after init() and the cloudfront object already
+		// exits, set the private key.
+		if ($this->cf instanceof AmazonCloudFront) {
+			$this->cf->set_keypair_id($this->distribution_key_pair_id);
 			$this->cf->set_private_key($this->distribution_private_key);
 		}
 	}
