@@ -220,10 +220,15 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 					false &&
 					$this->toaster->getOriginalByKey($media_file['key']) !==
 					false) {
-					$this->toaster->encodeMediaByKeys($media_file['key'],
-						$this->passthrough_profile_key);
 
-					$this->new_passthrough_encoding_jobs++;
+					try {
+						$this->toaster->encodeMediaByKeys($media_file['key'],
+							$this->passthrough_profile_key);
+
+						$this->new_passthrough_encoding_jobs++;
+					} catch (SiteBotrMediaToasterException $e) {
+						$e->processAndContinue();
+					}
 				}
 			}
 
