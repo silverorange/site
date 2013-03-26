@@ -101,7 +101,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 	});
 
 	YAHOO.util.Event.on(window, 'resize', function() {
-		this.player.resize('100%', this.getPlayerHeight());
+		this.setPlayerDimensions();
 	}, this, true);
 
 	if (this.record_end_point == true) {
@@ -314,6 +314,14 @@ SiteJwPlayerMediaDisplay.prototype.getPlayerHeight = function()
 {
 	var region = YAHOO.util.Dom.getRegion(this.container);
 	return parseInt(region.width / this.aspect_ratio);
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.setPlayerDimensions = function()
+
+SiteJwPlayerMediaDisplay.prototype.setPlayerDimensions = function()
+{
+	this.player.resize('100%', this.getPlayerHeight());
 };
 
 // }}}
