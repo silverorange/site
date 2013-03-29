@@ -75,7 +75,9 @@ SiteJwPlayerMediaDisplay.prototype.init = function()
 
 SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 {
-	this.player = jwplayer(this.container.childNodes[0]).setup( {
+	this.player_id = this.container.childNodes[0].id; 
+
+	this.player = jwplayer(this.player_id).setup( {
 		playlist: [{
 			image: this.getImage(),
 			sources: this.getSources() 
