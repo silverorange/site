@@ -534,7 +534,8 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 			$sql = $this->getMediaObjectSql();
 
 			$objects = SwatDB::query($this->db, $sql,
-				SwatDBClassMap::get('SiteBotrMediaWrapper'));
+				SwatDBClassMap::get('SiteBotrMediaWrapper')
+			);
 
 			$this->media_objects = array();
 			foreach ($objects as $object) {
@@ -671,7 +672,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		// deleted.
 		if (!$this->hasTag($media_file, $this->delete_tag) &&
 			$this->hasTag($media_file, $this->imported_tag) &&
-			!$this->hasTag($media_file, $this->original_missing_tag)) {
+			$this->hasTag($media_file, $this->original_missing_tag)) {
 			$downloadable = true;
 		}
 
