@@ -104,6 +104,16 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	 */
 	private $force_import = false;
 
+	/**
+	 * Whether or not to force import of images for media.
+	 *
+	 * If true, this imports new images for all media. If false, it only imports
+	 * images for media missing its image.
+	 *
+	 * @var boolean
+	 */
+	private $force_import_images = false;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -117,6 +127,14 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 
 		$this->addCommandLineArgument($force_import);
 
+		$force_import_images = new SiteCommandLineArgument(
+			array('--force-import-images'),
+			'setForceImportImages',
+			'Optional. Forces all images to be re-imported, even if they have '.
+			'been previously imported.');
+
+		$this->addCommandLineArgument($force_import_images);
+
 		parent::__construct($id, $filename, $title, $documentation);
 	}
 
@@ -127,6 +145,14 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$this->force_import = true;
 		$this->setResetTags();
+	}
+
+	// }}}
+	// {{{ public function setForceImportImages()
+
+	public function setForceImportImages()
+	{
+		$this->force_import_images = true;
 	}
 
 	// }}}
@@ -211,6 +237,8 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 			$this->importMissingMediaEncodings();
 		}
 
+		$this->importImages();
+
 		$this->displayResults();
 	}
 
@@ -256,14 +284,19 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 			}
 		}
 
-		$this->debug(sprintf("%s files on BOTR, %s completely encoded.\n".
-			"%s files already imported, %s new files to import, %s to recheck.".
-			"\n\n",
-			$this->locale->formatNumber(count($media)),
-			$this->locale->formatNumber($encoded_count),
-			$this->locale->formatNumber($this->already_imported_count),
-			$this->locale->formatNumber(count($this->media_to_import)),
-			$this->locale->formatNumber(count($this->media_to_recheck))));
+		$this->debug(
+			sprintf(
+				"%s files on BOTR, %s completely encoded.\n".
+					"%s files already imported, %s new files to import, ".
+					"%s to recheck.".
+					"\n\n",
+				$this->locale->formatNumber(count($media)),
+				$this->locale->formatNumber($encoded_count),
+				$this->locale->formatNumber($this->already_imported_count),
+				$this->locale->formatNumber(count($this->media_to_import)),
+				$this->locale->formatNumber(count($this->media_to_recheck))
+			)
+		);
 	}
 
 	// }}}
@@ -271,12 +304,24 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 
 	protected function mediaRowExists($key)
 	{
+		return (array_search($key, $this->getExistingKeys()) !== false);
+	}
+
+	// }}}
+	// {{{ protected function getExistingKeys()
+
+	protected function getExistingKeys()
+	{
 		if ($this->existing_keys === null) {
-			$this->existing_keys = SwatDB::getOptionArray($this->db, 'Media',
-				'key', 'id');
+			$this->existing_keys = SwatDB::getOptionArray(
+				$this->db,
+				'Media',
+				'key',
+				'id'
+			);
 		}
 
-		return (array_search($key, $this->existing_keys) !== false);
+		return $this->existing_keys;
 	}
 
 	// }}}
@@ -316,7 +361,6 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 
 			$transaction = new SwatDBTransaction($this->db);
 			try {
-				$this->updateImage($media_file);
 				$this->updateBindings($media_file);
 				$this->updateMediaOnBotr($media_file);
 				$transaction->commit();
@@ -326,6 +370,35 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 			}
 
 			$this->debug("done.\n");
+		}
+
+		$this->debug("\n");
+	}
+
+	// }}}
+	// {{{ protected function importImages()
+
+	protected function importImages()
+	{
+		$this->debug("Checking Media Images... \n", true);
+
+		$media = $this->getMedia();
+		foreach($media as $media_file) {
+			if (!$this->mediaFileIsIgnorable($media_file)) {
+				$this->debug(sprintf('Media: %s ... ',
+					$media_file['key']));
+
+				$transaction = new SwatDBTransaction($this->db);
+				try {
+					$this->updateImage($media_file);
+					$transaction->commit();
+				} catch (Exception $e) {
+					$transaction->rollback();
+					throw $e;
+				}
+
+				$this->debug("done.\n");
+			}
 		}
 
 		$this->debug("\n");
@@ -414,24 +487,43 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	protected function updateImage($media_file)
 	{
 		$existing_media_objects = $this->getMediaObjects();
-		$media_object = $existing_media_objects[$media_file['key']];
 
-		// Delete any existing image for CDN, db, and filesystem cleanliness
-		if ($media_object->image instanceof SiteVideoImage) {
-			$media_object->image->setFileBase($this->image_file_base);
-			$media_object->image->delete();
+		if (array_key_exists($media_file['key'], $existing_media_objects)) {
+			$media_object = $existing_media_objects[$media_file['key']];
+
+			if ($this->force_import_images) {
+				// Delete any existing image for CDN, db, and filesystem
+				// cleanliness
+				if ($media_object->image instanceof SiteVideoImage) {
+					$media_object->image->setFileBase($this->image_file_base);
+					$media_object->image->delete();
+
+					$this->debug("removing current image... ");
+				}
+			}
+
+			if (!$media_object->image instanceof SiteVideoImage) {
+				$media_object->image = $this->getImage($media_file);
+
+				try {
+					$media_object->save();
+				} catch(SiteException $e) {
+					$e = new SiteCommandLineException($e);
+					$e->processAndContinue($e);
+				}
+
+				$this->debug("updated image... ");
+			} else {
+				$this->debug("image exists... ");
+			}
+		} else {
+			$this->debug(
+				sprintf(
+					"missing media object ‘%s’ ... ",
+					$media_file['key']
+				)
+			);
 		}
-
-		$media_object->image = $this->getImage($media_file);
-
-		try {
-			$media_object->save();
-		} catch(SiteException $e) {
-			$e = new SiteCommandLineException($e);
-			$e->processAndContinue($e);
-		}
-
-		$this->debug("updated image... ");
 	}
 
 	// }}}
@@ -536,7 +628,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$where.= sprintf(
 			' and key in (%s)',
 			$this->db->datatype->implodeArray(
-				$this->existing_keys,
+				$this->getExistingKeys(),
 				'text'
 			)
 		);
