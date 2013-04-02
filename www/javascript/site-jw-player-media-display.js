@@ -177,7 +177,7 @@ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 	}
 
 	if (default_source !== null) {
-		this.sources[default_source].default = true;
+		this.sources[default_source]['default'] = true;
 	}
 
 	return this.sources;
