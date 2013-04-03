@@ -8,7 +8,7 @@ require_once 'Site/dataobjects/SiteMediaEncodingWrapper.php';
  * A media set object
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMediaSet extends SwatDBDataObject
@@ -76,9 +76,10 @@ class SiteMediaSet extends SwatDBDataObject
 			$this->table,
 			$this->db->quote($shortname, 'text'));
 
-		if ($instance instanceof SiteInstance)
+		if ($instance instanceof SiteInstance) {
 			$sql.= sprintf(' and (instance is null or instance = %s)',
 				$instance->id);
+		}
 
 		$row = SwatDB::queryRow($this->db, $sql);
 
