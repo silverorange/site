@@ -128,8 +128,7 @@ class SiteVideoMedia extends SiteMedia
 	// }}}
 	// {{{ public function getMediaPlayer()
 
-	public function getMediaPlayer(SiteApplication $app,
-		$player_config = array())
+	public function getMediaPlayer(SiteApplication $app)
 	{
 		$jwplayer = new SiteJwPlayerMediaDisplay('video'.$this->id);
 		$jwplayer->setMedia($this);
@@ -170,6 +169,37 @@ class SiteVideoMedia extends SiteMedia
 		}
 
 		return $jwplayer;
+	}
+
+	// }}}
+	// {{{ public function getMediaPlayerByKey()
+
+	public function getMediaPlayerByKey(SiteApplication $app,
+		$key, $file_base = 'media')
+	{
+		if ($this->db === null) {
+			$this->setDatabase($app->db);
+		}
+
+		$this->loadByKey($key);
+		$this->setFileBase($file_base);
+		return $this->getMediaPlayer($app);
+	}
+
+	// }}}
+	// {{{ public function getMimeTypes()
+
+	public function getMimeTypes()
+	{
+		$types = array();
+		foreach ($this->encoding_bindings as $binding) {
+			if ($binding->width !== null && $binding->width > 0) {
+				$mime_type = $binding->media_type->mime_type;
+				$types[$mime_type] = $mime_type;
+			}
+		}
+
+		return $types;
 	}
 
 	// }}}
