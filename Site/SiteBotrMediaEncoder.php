@@ -8,7 +8,7 @@ require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
  * records in the database.
  *
  * @package   Site
- * @copyright 2011-2012 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Allow encoding to arbitrary encoding profiles. Also add flag to
  *            call getDistinctDimensions() and getEncodingProfiles() with nicely
@@ -233,10 +233,10 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 			}
 
 			if ($this->mediaFileIsMarkedInvalid($media_file) ||
-				$this->mediaFileIsIgnorable($media_file)) {
+				$this->mediaFileIsMarkedDeleted($media_file)) {
 				// don't bother checking for valid files, as files with
 				// originals still to download aren't marked valid and files
-				// marked ignorable aren't to be encoded.
+				// marked deleted aren't to be encoded.
 				$this->invalid_files++;
 			} elseif ($this->mediaFileIsMarkedEncoded($media_file)) {
 				$this->complete_files++;

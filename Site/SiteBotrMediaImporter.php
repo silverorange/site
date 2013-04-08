@@ -114,6 +114,15 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	 */
 	private $force_import_images = false;
 
+	/**
+	 * Whether or not to skip importing of images for media.
+	 *
+	 * If true, we don't do any image importing. Overrides --force-import-images
+	 *
+	 * @var boolean
+	 */
+	private $skip_image_import = false;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -135,6 +144,14 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 
 		$this->addCommandLineArgument($force_import_images);
 
+		$skip_image_import = new SiteCommandLineArgument(
+			array('--skip-image-import'),
+			'setSkipImageImport',
+			'Optional. Forces all images to be re-imported, even if they have '.
+			'been previously imported.');
+
+		$this->addCommandLineArgument($skip_image_import);
+
 		parent::__construct($id, $filename, $title, $documentation);
 	}
 
@@ -153,6 +170,14 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	public function setForceImportImages()
 	{
 		$this->force_import_images = true;
+	}
+
+	// }}}
+	// {{{ public function setSkipImageImport()
+
+	public function setSkipImageImport()
+	{
+		$this->skip_image_import = true;
 	}
 
 	// }}}
@@ -237,7 +262,9 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 			$this->importMissingMediaEncodings();
 		}
 
-		$this->importImages();
+		if (!$this->skip_image_import) {
+			$this->importImages();
+		}
 
 		$this->displayResults();
 	}
@@ -261,10 +288,19 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$media         = $this->getMedia();
 
 		foreach ($media as $media_file) {
-			if ($this->mediaFileIsIgnorable($media_file)) {
-				// don't import files that are marked as ignorable (aka deleted
-				// or ignored). we should make this part of the debugged display
-			} elseif ($this->mediaFileIsMarkedEncoded($media_file)) {
+			if ($this->mediaFileIsMarkedEncoded($media_file) &&
+				(
+					!$this->mediaFileIsIgnorable($media_file) ||
+					(
+						$this->media_set_shortname == 'public' &&
+						$this->mediaFileIsPublic($media_file) &&
+						!$this->mediaFileIsMarkedDeleted($media_file)
+					)
+				)) {
+				// Only import files that are encoded and not to be ignored.
+				// Note that the public media grabs files tagged as but not
+				// deleted files for now. This is messy, but works for now.
+
 				$encoded_count++;
 				// media tagged "imported" have already been processed by this
 				// script. As well, Media that already exist in the media table
@@ -341,7 +377,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 				$transaction->commit();
 			} catch (Exception $e) {
 				$transaction->rollback();
-				throw $e;
+				$e->processAndContinue();
 			}
 
 			$this->debug("done.\n");
@@ -381,6 +417,10 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	protected function importImages()
 	{
 		$this->debug("Checking Media Images... \n", true);
+
+		// need a new version of the media so it doesn't get confused with new
+		// imports.
+		$this->resetMediaCache();
 
 		$media = $this->getMedia();
 		foreach($media as $media_file) {
@@ -470,8 +510,16 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 						}
 					}
 				} catch(SiteException $e) {
-					$e = new SiteCommandLineException($e);
-					$e->processAndContinue($e);
+					// Ignore missing encodings in our db for public media sets
+					// for now. This is all going to change.
+					if ($this->media_set_shortname == 'public' &&
+						!preg_match(
+							'/Media encoding “(\w*)” does not exist/',
+							$e->getMessage()
+						)) {
+						$e = new SiteCommandLineException($e);
+						$e->processAndContinue();
+					}
 				}
 			}
 		}
@@ -534,7 +582,10 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$media_object = clone $this->media_object_template;
 		$media_object->title = $this->getTitle($media_file);
 		$media_object->key   = $media_file['key'];
-		$media_object->image = $this->getImage($media_file);
+
+		if (!$this->skip_image_import) {
+			$media_object->image = $this->getImage($media_file);
+		}
 
 		// duration is stored with micro-seconds on BOTR, round to the closest
 		// full second.
@@ -576,8 +627,16 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 			$binding_object->width          = $encoding['width'];
 			$binding_object->height         = $encoding['height'];
 		} catch(Exception $e) {
-			$e = new SiteCommandLineException($e);
-			$e->processAndContinue();
+			// Ignore missing encodings in our db for public media sets for now.
+			// This is all going to change.
+			if ($this->media_set_shortname == 'public' &&
+				!preg_match(
+					'/Media encoding “(\w*)” does not exist/',
+					$e->getMessage()
+				)) {
+				$e = new SiteCommandLineException($e);
+				$e->processAndContinue();
+			}
 		}
 
 		return $binding_object;
