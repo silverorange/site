@@ -632,6 +632,20 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
+	// {{{ protected function mediaFileIsPublic()
+
+	protected function mediaFileIsPublic(array $media_file)
+	{
+		$public = false;
+
+		if ($this->hasTag($media_file, $this->ignored_tag)) {
+			$public = true;
+		}
+
+		return $public;
+	}
+
+	// }}}
 	// {{{ protected function mediaFileIsIgnorable()
 
 	protected function mediaFileIsIgnorable(array $media_file)
