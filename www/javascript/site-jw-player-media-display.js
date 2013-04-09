@@ -44,15 +44,6 @@ SiteJwPlayerMediaDisplay.current_player_id = null;
 SiteJwPlayerMediaDisplay.record_interval = 30; // in seconds
 SiteJwPlayerMediaDisplay.players = [];
 
-// {{{ SiteJwPlayerMediaDisplay.getPlayers()
-
-// static method to get current players
-SiteJwPlayerMediaDisplay.getPlayers = function()
-{
-	return SiteJwPlayerMediaDisplay.players;
-}
-
-// }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.init = function()
 
 SiteJwPlayerMediaDisplay.prototype.init = function()
