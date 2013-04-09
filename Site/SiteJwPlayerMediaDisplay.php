@@ -100,11 +100,15 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			'roundster',
 		);
 
-		if ($skin !== null && !in_array($skin, $valid_skins)) {
+		if ($skin !== null && $skin !== '' && !in_array($skin, $valid_skins)) {
 			throw new SwatException('Skin not valid');
 		}
 
-		$this->skin = $skin;
+		// six is the default skin, but jwplayer breaks if you actually pass it
+		// as a skin.
+		if ($skin != 'six') {
+			$this->skin = $skin;
+		}
 	}
 
 	// }}}
