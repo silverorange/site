@@ -424,7 +424,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 
 		$media = $this->getMedia();
 		foreach($media as $media_file) {
-			if (!$this->mediaFileIsIgnorable($media_file)) {
+			if (!$this->mediaFileIsMarkedDeleted($media_file)) {
 				$this->debug(sprintf('Media: %s ... ',
 					$media_file['key']));
 
