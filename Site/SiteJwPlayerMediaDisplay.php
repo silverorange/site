@@ -5,7 +5,7 @@ require_once 'Site/dataobjects/SiteMedia.php';
 require_once 'Site/dataobjects/SiteMediaEncoding.php';
 
 /**
- * Display class for SiteMedia using JWPlayer 
+ * Display class for SiteMedia using JWPlayer
  *
  * @package   Site
  * @copyright 2013 silverorange
@@ -323,7 +323,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			'<a href="http://en.wikipedia.org/wiki/HTML5_video" '.
 			'target="_blank">HTML5 video support</a> (%s %s) or '.
 			'<a href="http://get.adobe.com/flashplayer/" target="_blank">'.
-			'Adobe Flash Player</a> (version 9 or higher). '.
+			'Adobe Flash Player</a> (version 10 or higher). '.
 			'Please upgrade your browser and try again.',
 			SwatString::toList($codecs, 'or'),
 			ngettext('codec', 'codecs', count($codecs)));
