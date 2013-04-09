@@ -275,6 +275,59 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function getConfigSetting()
+
+	/**
+	 * Helper method to get an instance-specifig config setting
+	 *
+	 * Useful for a case where an instance-specific config setting is accessed
+	 * from an no-instance context (like an email that can be used on a
+	 * front-end site as well as a multi-instance admin)
+	 *
+	 * @param string $setting config setting formatted: "section.variable"
+	 * @param SiteInstance $instance optional instance
+	 * @return mixed The instance config setting 
+	 * @see SiteMultipleInstanceModule
+	 */
+	public function getConfigSetting($setting, SiteInstance $instance = null)
+	{
+		static $config_cache = array();
+		$value = null;
+
+		if ($this->getInstanceId() !== null &&
+			$instance !== null &&
+			$this->getInstanceId() != $instance->id) {
+
+			throw new SiteException('Trying to access an instance setting '.
+				'in one instance from another. This method should only '.
+				'be used when the app instance is null, or when the app '.
+				'instance is the same as the instance parameter.');
+
+		} elseif ($instance !== null &&
+			$this->getInstanceId() != $instance->id) {
+
+			if (!isset($config_cache[$instance->id])) {
+				$config_cache[$instance->id] =
+					SwatDB::getOptionArray($this->db,
+						'InstanceConfigSetting', 'value', 'name', null,
+						sprintf('instance = %s',
+							$this->db->quote($instance->id, 'integer')));
+			}
+
+			if (isset($config_cache[$instance->id][$setting])) {
+				$value = $config_cache[$instance->id][$setting];
+			}
+		}
+
+		if ($value === null) {
+			list($section, $variable) = explode('.', $setting);
+			$value = $this->config->$section->$variable;
+		}
+
+		return $value;
+	}
+
+	// }}}
 	// {{{ public function addToSearchQueue()
 
 	public function addToSearchQueue($document_type, $document_id)
