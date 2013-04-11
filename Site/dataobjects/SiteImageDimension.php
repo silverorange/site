@@ -98,6 +98,16 @@ class SiteImageDimension extends SwatDBDataObject
 	 */
 	public $resize_filter;
 
+	/**
+	 * Upscale?
+	 *
+	 * Whether or not to allow the dimension to upscale if the image width
+	 * or height is less than the dimension width or height.
+	 *
+	 * @var boolean
+	 */
+	public $upscale;
+
 	// }}}
 	// {{{ private properties
 

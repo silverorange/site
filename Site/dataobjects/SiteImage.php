@@ -968,6 +968,38 @@ class SiteImage extends SwatDBDataObject
 			$imagick->setImagePage($new_width, $new_height, 0, 0);
 		}
 
+		if ($dimension->upscale &&
+			($dimension->max_height === null ||
+				$imagick->getImageHeight() < $dimension->max_height) &&
+			($dimension->max_width === null ||
+				$imagick->getImageWidth() < $dimension->max_width)) {
+
+			if ($dimension->max_width !== null) {
+				$new_width = $dimension->max_width;
+				$new_height = ceil($imagick->getImageHeight() *
+					($new_width / $imagick->getImageWidth()));
+			}
+
+			if ($dimension->max_height !== null &&
+				($dimension->max_width === null ||
+					$new_height > $dimension->max_height)) {
+
+				$new_height = $dimension->max_height;
+				$new_width = ceil($imagick->getImageWidth() *
+					($new_height / $imagick->getImageHeight()));
+			}
+
+			$this->setDimensionDpi($imagick, $dimension, $new_width);
+
+			$imagick->resizeImage($new_width, $new_height,
+				$this->getResizeFilter($dimension), 1);
+
+			// Set page geometry to the new size so subsequent crops will use
+			// will use the geometry of the new image instead of the original
+			// image.
+			$imagick->setImagePage($new_width, $new_height, 0, 0);
+		}
+
 		if ($this->getCropBox($dimension) === null) {
 			$this->imagick_instances[$dimension->shortname] =
 				(floatval(phpversion('imagick')) >= 3.1) ?
