@@ -181,7 +181,10 @@ class SiteVideoMedia extends SiteMedia
 			$this->setDatabase($app->db);
 		}
 
-		$this->loadByKey($key);
+		if (!$this->loadByKey($key)) {
+			throw new SwatException('Video not found for key: '.$key);
+		}
+
 		$this->setFileBase($file_base);
 		return $this->getMediaPlayer($app);
 	}
