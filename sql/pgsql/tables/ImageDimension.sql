@@ -10,6 +10,7 @@ create table ImageDimension (
 	dpi integer not null default 72,
 	quality integer not null default 85,
 	strip boolean not null default true,
+	upscale boolean not null default false,
 	interlace boolean not null default false,
 	resize_filter varchar(50),
 	primary key(id)
