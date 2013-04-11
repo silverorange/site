@@ -12,6 +12,7 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.valid_mime_types = [];
 
 	this.skin = null;
+	this.stretching = null;
 	this.image = null;
 	this.duration = null;
 	this.aspect_ratio = null;
@@ -73,11 +74,12 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 			image: this.getImage(),
 			sources: this.getSources() 
 		}],
-		skin:    this.skin,
-		primary: 'flash', // to allow for RTMP streaming
-		width:   '100%',
-		height:  this.getPlayerHeight(),
-		ga:      {} // this can be blank. JW Player will use the _gaq var.
+		skin:       this.skin,
+		stretching: this.stretching,
+		primary:    'flash', // to allow for RTMP streaming
+		width:      '100%',
+		height:     this.getPlayerHeight(),
+		ga:         {} // this can be blank. JW Player will use the _gaq var.
 	});
 
 	//this.debug();

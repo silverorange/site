@@ -40,6 +40,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $session;
 	protected $aspect_ratio;
 	protected $skin;
+	protected $stretching;
 
 	// }}}
 	// {{{ public function __construct()
@@ -117,6 +118,25 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public function setAspectRatio($ratio)
 	{
 		$this->aspect_ratio = $ratio;
+	}
+
+	// }}}
+	// {{{ public function setStretching()
+
+	public function setStretching($fit)
+	{
+		$valid_fits = array(
+			'none',
+			'exactfit',
+			'uniform',
+			'fill',
+		);
+
+		if ($fit !== null && $fit !== '' && !in_array($fit, $valid_fits)) {
+			throw new SwatException('Stretching not valid');
+		}
+
+		$this->stretching = $fit;
 	}
 
 	// }}}
@@ -251,6 +271,12 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.skin = %s;\n",
 				$this->getJavascriptVariableName(),
 				SwatString::quoteJavaScriptString($this->skin));
+		}
+
+		if ($this->stretching !== null) {
+			$javascript.= sprintf("\t%s.stretching = %s;\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavaScriptString($this->stretching));
 		}
 
 		foreach ($this->images as $image) {
