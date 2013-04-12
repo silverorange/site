@@ -87,6 +87,9 @@ class SiteBotrMediaToaster
 	 */
 	protected $public_content_expiry = '+1 Year';
 
+	protected $key;
+	protected $secret;
+
 	// }}}
 
 	// {{{ public function __construct()
@@ -94,6 +97,8 @@ class SiteBotrMediaToaster
 	public function __construct(SiteApplication $app) {
 		$this->app = $app;
 
+		$this->setKey($app->config->botr->key);
+		$this->setSecret($app->config->botr->secret);
 		$this->setContentSigning($app->config->botr->content_signing);
 		$this->setPrivateContentExpiry(
 			$app->config->botr->private_content_expiry);
@@ -102,6 +107,22 @@ class SiteBotrMediaToaster
 			$app->config->botr->public_content_expiry);
 
 		$this->html_head_entry_set = new SwatHtmlHeadEntrySet();
+	}
+
+	// }}}
+	// {{{ public function setKey()
+
+	public function setKey($key)
+	{
+		$this->key = $key;
+	}
+
+	// }}}
+	// {{{ public function setSecret()
+
+	public function setSecret($secret)
+	{
+		$this->secret = $secret;
 	}
 
 	// }}}
@@ -952,8 +973,7 @@ class SiteBotrMediaToaster
 
 	private function setupBackend()
 	{
-		$this->backend = new BotrAPI($this->app->config->botr->key,
-			$this->app->config->botr->secret);
+		$this->backend = new BotrAPI($this->key, $this->secret);
 	}
 
 	// }}}
