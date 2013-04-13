@@ -969,6 +969,8 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		if ($dimension->upscale &&
+			($dimension->max_height !== null ||
+				$dimension->max_width !== null) &&
 			($dimension->max_height === null ||
 				$imagick->getImageHeight() < $dimension->max_height) &&
 			($dimension->max_width === null ||
