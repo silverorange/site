@@ -197,7 +197,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 *
 	 * @throws SiteCdnException if the CDN encounters any problems
 	 */
-	public function copyFile($filename, $source, $headers, $access_type)
+	public function copyFile($filename, $source, $headers,
+		$access_type = 'private')
 	{
 		if (!is_file($source)) {
 			throw new SiteCdnException(
@@ -250,6 +251,53 @@ class SiteAmazonCdnModule extends SiteCdnModule
 				)
 			);
 		}
+	}
+
+	// }}}
+	// {{{ public function copyFile()
+
+	/**
+	 * Moves a file around in the S3 bucket.
+	 *
+	 * @param string $filename the current name of the file to move.
+	 * @param string $new_filename the new name of the file to move.
+	 * @param string $access_type the access type, public/private, of the file.
+	 *
+	 * @throws SiteCdnException if the CDN encounters any problems
+	 */
+	public function moveFile($old_filename, $new_filename,
+		$access_type = 'private')
+	{
+		// Since we can't use the old ACL, at least support passing in a new ACL
+		$acl = AmazonS3::ACL_PRIVATE;
+		if (strcasecmp($access_type, 'public') === 0) {
+			$acl = AmazonS3::ACL_PUBLIC;
+		}
+
+		// TODO: Need a simplier way to look up the current ACL as the constant
+		// as this returns a bigger set of information.
+		//$acl = $this->s3->getObjectAcl($this->bucket, $old_filename);
+
+		$this->handleResponse(
+			$this->s3->copy_object(
+				array(
+					'bucket'   => $this->bucket,
+					'filename' => $old_filename,
+				),
+				array(
+					'bucket'   => $this->bucket,
+					'filename' => $new_filename,
+				),
+				array(
+					'acl' => $acl,
+					'storage' => $this->storage_class,
+				)
+			)
+		);
+
+		// S3 has no concept of move, so remove the old version once it has
+		// been copied.
+		$this->removeFile($old_filename);
 	}
 
 	// }}}
