@@ -58,7 +58,23 @@ SiteJwPlayerMediaDisplay.prototype.init = function()
 		var upgrade = document.createElement('div');
 		upgrade.className = 'video-player-upgrade';
 		upgrade.innerHTML = this.upgrade_message;
-		document.getElementById(this.container).appendChild(upgrade);
+		this.container.appendChild(upgrade);
+
+		var that = this;
+		function resizeUpgradeContainer() {
+			var region = YAHOO.util.Dom.getRegion(that.container);
+			var container_height = region.width / that.aspect_ratio;
+			that.container.style.position = 'relative';
+			that.container.style.height = container_height + 'px';
+
+			var upgrade_height = YAHOO.util.Dom.getRegion(upgrade).height;
+			upgrade.style.position = 'absolute';
+			YAHOO.util.Dom.setStyle(upgrade, 'top',
+				((container_height - upgrade_height) / 2) + 'px');
+		}
+
+		YAHOO.util.Event.on(window, 'resize', resizeUpgradeContainer);
+		resizeUpgradeContainer();
 	}
 };
 

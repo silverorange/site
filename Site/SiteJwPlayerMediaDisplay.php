@@ -64,6 +64,10 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		$this->addJavascript(
 			'packages/site/javascript/site-jw-player-media-display.js',
 			Site::PACKAGE_ID);
+
+		$this->addStylesheet(
+			'packages/site/styles/site-jw-player-media-display.css',
+			Site::PACKAGE_ID);
 	}
 
 	// }}}
