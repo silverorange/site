@@ -161,19 +161,25 @@ class SiteMedia extends SwatDBDataObject
 			// Drop the seconds from the format since it seems overkill when we
 			// have over an hour of content.
 			// 1h, 30m
-			$format = Site::_('%1$sh, %2$02sm');
+			if ($minutes !== null) {
+				$format = Site::_('%1$sh, %2$02sm');
+			} else {
+				$format = Site::_('%1$sh');
+			}
 		} elseif ($minutes !== null) {
 			// 30:30
-			$format.= Site::_('%2$s:%3$02s');
+			$format = Site::_('%2$s:%3$02s');
 		} else {
 			// 30s
 			$format = Site::_('%3$ss');
 		}
 
-		return sprintf($format,
+		return sprintf(
+			$format,
 			$hours,
 			$minutes,
-			$seconds);
+			$seconds
+		);
 	}
 
 	// }}}
