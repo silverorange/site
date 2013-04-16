@@ -545,8 +545,8 @@ SiteJwPlayerMediaDisplay.prototype.seek = function(position)
 	var that = this;
 
 	if (YAHOO.env.ua.ios) {
-		this.player.onTime(function() {
-			if (!that.seek_done) {
+		this.player.onTime(function(e) {
+			if (!that.seek_done && e.position > 1) {
 				that.player.seek(position);
 				that.seek_done = true;
 			}
