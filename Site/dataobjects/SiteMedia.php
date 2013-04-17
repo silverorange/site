@@ -164,7 +164,11 @@ class SiteMedia extends SwatDBDataObject
 			if ($minutes !== null) {
 				$format = Site::_('%1$sh, %2$02sm');
 			} else {
-				$format = Site::_('%1$s hour');
+				$format = Site::ngettext(
+					'%1$s hour',
+					'%1$s hours',
+					$hours
+				);
 			}
 		} elseif ($minutes !== null) {
 			// 30:30
