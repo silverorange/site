@@ -103,7 +103,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 
 	var that = this;
 	this.player.onReady(function() {
-		that.on_ready_event.fire(this);
+		that.on_ready_event.fire(that);
 	});
 
 	this.player.onFullscreen(function (e) {
