@@ -20,6 +20,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $start_position = 0;
 	public $record_end_point = false;
 	public $on_complete_message = null;
+	public $swf_uri = null;
 
 	/*
 	 * Whether or not to show the on-complete-message when the video loads
@@ -262,6 +263,12 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$this->getJavascriptVariableName(),
 			SwatString::quoteJavaScriptString(
 				$this->getManifestUri()));
+
+		if ($this->swf_uri !== null) {
+			$javascript.= sprintf("\t%s.swf_uri = %s;\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavaScriptString($this->swf_uri));
+		}
 
 		foreach ($this->sources as $source) {
 			$javascript.= sprintf("\t%s.addSource(%s, %d, %s);\n",
