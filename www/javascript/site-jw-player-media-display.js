@@ -458,11 +458,6 @@ SiteJwPlayerMediaDisplay.prototype.appendCompleteMessage = function()
 	var that = this;
 	YAHOO.util.Event.on(restart_link, 'click', function (e) {
 		YAHOO.util.Event.preventDefault(e);
-
-		if (that.player.getRenderingMode() == 'html5') {
-			that.showVideo();
-		}
-
 		that.overlay.style.display = 'none';
 		that.complete_overlay.style.display = 'none';
 		that.play();
