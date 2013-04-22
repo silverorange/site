@@ -121,6 +121,31 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 	if (this.record_end_point == true) {
 		this.recordEndPoint();
 	}
+
+	this.player.onBeforePlay(function() {
+		SiteJwPlayerMediaDisplay.current_player_id = that.player_id;
+	});
+
+	// there's a strange jwplayer side-effect that can cause a buffering
+	// video to not pause, thus switching videos can make two players
+	// play at the same time.
+	function checkIfCurrent() {
+		var all_players = SiteJwPlayerMediaDisplay.players;
+		for (var i = 0; i < all_players.length; i++) {
+			if (all_players[i].player_id !=
+				SiteJwPlayerMediaDisplay.current_player_id) {
+
+				all_players[i].pause();
+			}
+		}
+	}
+
+	this.player.onPlay(checkIfCurrent);
+	this.player.onPlay(function() {
+		if (that.overlay !== null) {
+			that.overlay.style.display = 'none';
+		}
+	});
 };
 
 // }}}
@@ -272,24 +297,6 @@ SiteJwPlayerMediaDisplay.prototype.play = function()
 		return;
 	}
 
-	var that = this;
-	SiteJwPlayerMediaDisplay.current_player_id = this.player_id;
-
-	// there's a strange jwplayer side-effect that can cause a buffering
-	// video to not pause, thus switching videos can make two players
-	// play at the same time.
-	function checkIfCurrent() {
-		if (that.player_id != SiteJwPlayerMediaDisplay.current_player_id) {
-			that.player.stop();
-		}
-	}
-
-	this.player.onPlay(checkIfCurrent);
-	this.player.onPlay(function() {
-		if (that.overlay !== null) {
-			that.overlay.style.display = 'none';
-		}
-	});
 	this.player.play(true);
 };
 
