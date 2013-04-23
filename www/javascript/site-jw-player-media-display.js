@@ -18,6 +18,7 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.aspect_ratio = null;
 	this.start_position = 0;
 	this.record_end_point = false;
+	this.space_to_pause = false;
 	this.swf_uri = null;
 
 	this.upgrade_message = null;
@@ -120,6 +121,10 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 
 	if (this.record_end_point == true) {
 		this.recordEndPoint();
+	}
+
+	if (this.space_to_pause) {
+		this.handleSpaceBar();
 	}
 
 	this.player.onBeforePlay(function() {
@@ -365,6 +370,29 @@ SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function()
 			break;
 		}
 	}
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.handleSpaceBar = function()
+
+SiteJwPlayerMediaDisplay.prototype.handleSpaceBar = function()
+{
+	YAHOO.util.Event.on(document, 'keydown', function (e) {
+		var target = YAHOO.util.Event.getTarget(e);
+
+		// don't capture keyboard events for inputs outside of the quiz
+		var tag = target.tagName.toLowerCase();
+		if (tag == 'textarea' || tag == 'input' ||
+			this.player_id != SiteJwPlayerMediaDisplay.current_player_id) {
+			return;
+		}
+
+		if (YAHOO.util.Event.getCharCode(e) == 32) {
+			// toggle between play/pause
+			this.player.play();
+			YAHOO.util.Event.preventDefault(e);
+		}
+	}, this, true);
 };
 
 // }}}

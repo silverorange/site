@@ -21,6 +21,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $record_end_point = false;
 	public $on_complete_message = null;
 	public $swf_uri = null;
+	public $space_to_pause = false;
 
 	/*
 	 * Whether or not to show the on-complete-message when the video loads
@@ -305,6 +306,12 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.record_end_point = %s;\n",
 				$this->getJavascriptVariableName(),
 				($this->record_end_point) ? 'true' : 'false');
+		}
+
+		if ($this->space_to_pause) {
+			$javascript.= sprintf("\t%s.space_to_pause = %s;\n",
+				$this->getJavascriptVariableName(),
+				($this->space_to_pause) ? 'true' : 'false');
 		}
 
 		if ($this->on_complete_message !== null) {
