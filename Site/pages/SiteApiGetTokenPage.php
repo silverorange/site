@@ -27,6 +27,9 @@ class SiteApiGetTokenPage extends SitePage
 
 	public function build()
 	{
+		// Instruct shared proxies, like varnish, to not cache this response
+		header('Cache-Control: s-maxage=0, must-revalidate');
+
 		$response = $this->getJsonResponse(
 			$this->getIdent(),
 			$this->getVar('key'));
