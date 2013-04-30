@@ -278,9 +278,20 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 							),
 						);
 
-//						$this->toaster->updateMedia($media_object, $values);
+						$this->toaster->updateMedia($media_object, $values);
 					} else {
-						$this->debug("\tOriginal not validated.\n");
+						$this->debug(
+							"\tOriginal not validated... ".
+							"deleting encodings... \n"
+						);
+
+						// This deletes the 320 conversion as well, rendering
+						// the file completely unusuable on BOTR.
+						foreach ($media_object->encoding_bindings as $binding) {
+							$this->toaster->deleteEncodingByKey(
+								$binding->key
+							);
+						}
 					}
 				} catch(SiteBotrMediaToasterException $e) {
 					// If it's not found, we've already deleted it.
@@ -295,7 +306,6 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 					array($this->delete_tag)
 				);
 			}
-
 			$this->debug("\n");
 		}
 	}
