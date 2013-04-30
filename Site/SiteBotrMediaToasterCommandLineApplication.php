@@ -557,7 +557,8 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$sql = sprintf(
 			'select Media.* from Media %s where 1=1 %s order by Media.id',
 			$join,
-			$where);
+			$where
+		);
 
 		return $sql;
 	}
@@ -594,8 +595,14 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$valid = false;
 
 		// Only needs one valid tag to be considered valid.
-		if (!$this->hasTag($media_file, $this->invalid_tag_filesize) ||
-			!$this->hasTag($media_file, $this->invalid_tag_md5)) {
+		if ((
+				$this->hasTag($media_file, $this->valid_tag_filesize) ||
+				$this->hasTag($media_file, $this->valid_tag_md5)
+			) &&
+			!(
+				$this->hasTag($media_file, $this->invalid_tag_filesize) ||
+				$this->hasTag($media_file, $this->invalid_tag_md5)
+			)) {
 			$valid = true;
 		}
 
@@ -607,14 +614,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 	protected function mediaFileIsMarkedInvalid(array $media_file)
 	{
-		$invalid = false;
-
-		if ($this->hasTag($media_file, $this->invalid_tag_filesize) ||
-			$this->hasTag($media_file, $this->invalid_tag_md5)) {
-			$invalid = true;
-		}
-
-		return $invalid;
+		return (!$this->mediaFileIsMarkedValid($media_file));
 	}
 
 	// }}}
@@ -771,6 +771,8 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 				)
 			);
 		}
+
+		return true;
 	}
 
 	// }}}

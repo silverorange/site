@@ -59,6 +59,17 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	 */
 	protected $force_cdn_upload = false;
 
+	/**
+	 * Whether or not to delete all media from BOTR once successfully
+	 * downloaded.
+	 *
+	 * If true, this will mark all media to be deleted on BOTR after 7 days.
+	 * If false, it will leave them where them alone.
+	 *
+	 * @var boolean
+	 */
+	protected $flag_for_deletion = false;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -67,9 +78,18 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		$force_cdn_upload = new SiteCommandLineArgument(
 			array('--force-cdn-upload'),
 			'setForceCdnUpload',
-			'Optional. Re-queues all downloadable media.');
+			'Optional. Re-queues all downloadable media.'
+		);
 
 		$this->addCommandLineArgument($force_cdn_upload);
+
+		$flag_for_deletion = new SiteCommandLineArgument(
+			array('--flag-for-deletion'),
+			'setFlagForDeletion',
+			'Optional. Flags media to be deleted once downloaded.'
+		);
+
+		$this->addCommandLineArgument($flag_for_deletion);
 
 		parent::__construct($id, $filename, $title, $documentation);
 	}
@@ -83,7 +103,6 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
-
 	// {{{ public function setMediaSet()
 
 	public function setMediaSet($media_set_shortname)
@@ -108,6 +127,14 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	public function setForceCdnUpload()
 	{
 		$this->force_cdn_upload = true;
+	}
+
+	// }}}
+	// {{{ public function setFlagForDeletion()
+
+	public function setFlagForDeletion($flag = true)
+	{
+		$this->flag_for_deletion = (bool)$flag;
 	}
 
 	// }}}
@@ -198,9 +225,19 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 				}
 			}
 
+			// Never flag for deletion unless the script flag is set.
+			$flag_for_deletion = $this->flag_for_deletion;
+
 			foreach ($bindings as $encoding => $binding) {
 				if ($this->isDownloadable($media_object, $binding)) {
-					$this->downloadAndQueueBinding($media_object, $binding);
+					// If download was a success for all encodings, the we
+					// can delete.
+					$flag_for_deletion =
+						$this->downloadAndQueueBinding(
+							$media_object,
+							$binding
+						) &&
+						$flag_for_deletion;
 				} else {
 					$encoding = $media_object->media_set->encodings->getByIndex(
 						$binding->media_encoding);
@@ -209,6 +246,54 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 						"\t“%s” encoding not downloadable.\n",
 						$encoding->shortname));
 				}
+			}
+
+			// Only delete files that are "valid", which means we have a copy of
+			// the original and have verified that original against BOTR.
+			if ($flag_for_deletion) {
+				try {
+					$media_file = $this->toaster->getMediaByKey(
+						$media_object->key
+					);
+
+					// If the original is deleted, consider it valid as well.
+					if ($this->mediaFileIsMarkedValid($media_file) ||
+						$this->hasTag(
+							$media_file,
+							$this->original_deleted_tag
+						)) {
+						$this->debug("\tFlagged for deletion.\n");
+
+						$this->toaster->updateMediaAddTags(
+							$media_object,
+							array($this->delete_tag)
+						);
+
+						$now = new SwatDate();
+						$now->toUTC();
+
+						$values = array(
+							'custom' => array(
+								'delete_timestamp' => $now->getTimestamp(),
+							),
+						);
+
+//						$this->toaster->updateMedia($media_object, $values);
+					} else {
+						$this->debug("\tOriginal not validated.\n");
+					}
+				} catch(SiteBotrMediaToasterException $e) {
+					// If it's not found, we've already deleted it.
+					if (strpos($e->getMessage(), 'Code: NotFound') === false) {
+						$e->processAndContinue();
+					}
+				}
+			} else {
+				$this->debug("\tDelete flag removed.\n");
+				$this->toaster->updateMediaRemoveTags(
+					$media_object,
+					array($this->delete_tag)
+				);
 			}
 
 			$this->debug("\n");
@@ -230,6 +315,8 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	protected function downloadAndQueueBinding(SiteBotrMedia $media_object,
 		SiteBotrMediaEncodingBinding $binding)
 	{
+		$downloaded = false;
+
 		$encoding = $media_object->media_set->encodings->getByIndex(
 			$binding->media_encoding);
 
@@ -241,6 +328,7 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		$file_path = $media_object->getFilePath($encoding->shortname);
 
 		if (file_exists($file_path)) {
+			$downloaded = true;
 			$this->debug("already downloaded.");
 
 			if ($this->force_cdn_upload) {
@@ -253,7 +341,11 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 			$this->debug("\n");
 		} else {
 			try {
-				$this->downloadFile($media_object, $binding, $encoding);
+				$downloaded = $this->downloadFile(
+					$media_object,
+					$binding,
+					$encoding
+				);
 
 				if ($this->isQueueable($media_object, $binding)) {
 					$this->queueCdnTask($media_object, $encoding);
@@ -265,6 +357,8 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 				$this->debug("error.\n");
 			}
 		}
+
+		return $downloaded;
 	}
 
 	// }}}
@@ -296,7 +390,7 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		$this->debug(sprintf("\n\t => %s ... ",
 			$destination));
 
-		$this->download($source, $destination, $prefix, $filesize);
+		return $this->download($source, $destination, $prefix, $filesize);
 	}
 
 	// }}}
@@ -333,7 +427,8 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 		// Assume that if a streaming distribution exists in the config that we
 		// want to use it. If we're on a streaming distribution don't use the
 		// downloadable flag to decide what goes on s3/cloudfront.
-		if ($this->config->amazon->streaming_distribution == null) {
+		if (!$this->config->amazon->cloudfront_enabled &&
+			$this->config->amazon->streaming_distribution == null) {
 			$where.= sprintf(
 				' and Media.downloadable = %s',
 				$this->db->quote(true, 'boolean')

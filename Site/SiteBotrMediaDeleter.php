@@ -36,15 +36,16 @@ class SiteBotrMediaDeleter extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$this->debug("Deleting BOTR Media and Encodings...\n\n");
 
-		$this->deleteMedia();
-		$this->deleteEncodings();
+		$this->deleteMarkedMedia();
+		$this->deleteOriginalEncodings();
+
 		$this->displayResults();
 	}
 
 	// }}}
-	// {{{ public function deleteMedia()
+	// {{{ public function deleteMarkedMedia()
 
-	protected function deleteMedia()
+	protected function deleteMarkedMedia()
 	{
 		$options = array(
 			'tags' => $this->delete_tag,
@@ -97,9 +98,9 @@ class SiteBotrMediaDeleter extends SiteBotrMediaToasterCommandLineApplication
 	}
 
 	// }}}
-	// {{{ public function deleteEncodings()
+	// {{{ public function deleteOriginalEncodings()
 
-	protected function deleteEncodings()
+	protected function deleteOriginalEncodings()
 	{
 		$this->debug("Deleting Originals...\n");
 
