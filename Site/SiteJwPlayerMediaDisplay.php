@@ -43,6 +43,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $aspect_ratio;
 	protected $skin;
 	protected $stretching;
+	protected $manifest_uri;
 
 	// }}}
 	// {{{ public function __construct()
@@ -81,12 +82,20 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 		$binding = $media->getLargestVideoEncodingBinding();
 
+		if ($binding === null) {
+			throw new SiteException('No media encodings found');
+		}
+
 		if ($this->aspect_ratio === null) {
 			$this->setAspectRatio($binding->width / $binding->height);
 		}
 
 		if ($this->skin === null) {
 			$this->setSkin($media->media_set->skin);
+		}
+
+		if ($this->manifest_uri === null) {
+			$this->setManifestUri('smil/'.$media->id.'.smil');
 		}
 	}
 
@@ -175,6 +184,14 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public function setSession(SiteSessionModule $session)
 	{
 		$this->session = $session;
+	}
+
+	// }}}
+	// {{{ public function setManifestUri()
+
+	public function setManifestUri($uri)
+	{
+		$this->manifest_uri = $uri;
 	}
 
 	// }}}
@@ -271,6 +288,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 				SwatString::quoteJavaScriptString($this->swf_uri));
 		}
 
+		/*
 		foreach ($this->sources as $source) {
 			$javascript.= sprintf("\t%s.addSource(%s, %d, %s);\n",
 				$this->getJavascriptVariableName(),
@@ -278,6 +296,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 				$source['width'],
 				SwatString::quoteJavaScriptString($source['label']));
 		}
+		*/
 
 		if ($this->skin !== null) {
 			$javascript.= sprintf("\t%s.skin = %s;\n",
@@ -354,7 +373,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	protected function getManifestUri()
 	{
-		return 'smil/'.$this->media->id.'.smil';
+		return $this->manifest_uri;
 	}
 
 	// }}}
