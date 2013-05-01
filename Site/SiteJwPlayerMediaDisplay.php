@@ -288,7 +288,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 				SwatString::quoteJavaScriptString($this->swf_uri));
 		}
 
-		/*
 		foreach ($this->sources as $source) {
 			$javascript.= sprintf("\t%s.addSource(%s, %d, %s);\n",
 				$this->getJavascriptVariableName(),
@@ -296,7 +295,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 				$source['width'],
 				SwatString::quoteJavaScriptString($source['label']));
 		}
-		*/
 
 		if ($this->skin !== null) {
 			$javascript.= sprintf("\t%s.skin = %s;\n",
