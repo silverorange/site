@@ -623,7 +623,10 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	{
 		$invalid = false;
 
-		// Only needs one valid tag to be considered valid.
+		// Only needs one invalid tag to be considered invalid. Note that this
+		// is not just the inverse of mediaFileIsMarkedValid() because
+		// mediaFileIsMarkedValid() checks for "valid" tags and when we're
+		// checking for invalid files we don't care about those.
 		if ($this->hasTag($media_file, $this->invalid_tag_filesize) ||
 			$this->hasTag($media_file, $this->invalid_tag_md5)) {
 			$invalid = true;
