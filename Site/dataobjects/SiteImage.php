@@ -1339,7 +1339,12 @@ class SiteImage extends SwatDBDataObject
 
 		if ($this->original_filename == '') {
 			// extra space is to overcome a UTF-8 problem with basename
-			$this->original_filename = ltrim(basename(' '.$image_file));
+			// strtok is to drop any query string parameters when original
+			// file is loaded via a url.
+			$this->original_filename = strtok(
+				ltrim(basename(' '.$image_file)),
+				'?'
+			);
 		}
 
 		if ($this->filename == '' && $this->getImageSet()->obfuscate_filename) {
