@@ -380,7 +380,7 @@ SiteJwPlayerMediaDisplay.prototype.handleSpaceBar = function()
 	YAHOO.util.Event.on(document, 'keydown', function (e) {
 		var target = YAHOO.util.Event.getTarget(e);
 
-		// don't capture keyboard events for inputs outside of the quiz
+		// don't capture keyboard events for inputs
 		var tag = target.tagName.toLowerCase();
 		if (tag == 'textarea' || tag == 'input' ||
 			this.player_id != SiteJwPlayerMediaDisplay.current_player_id) {
