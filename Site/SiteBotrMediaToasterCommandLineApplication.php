@@ -4,8 +4,9 @@ require_once 'Site/SiteDatabaseModule.php';
 require_once 'Site/SiteCommandLineConfigModule.php';
 require_once 'Site/SiteMultipleInstanceModule.php';
 require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/exceptions/SiteCommandLineException.php';
 require_once 'Site/SiteBotrMediaToaster.php';
+require_once 'Site/dataobjects/SiteBotrMediaWrapper.php';
+require_once 'Site/exceptions/SiteCommandLineException.php';
 
 /**
  * Abstract application for applications that access media on bits on the run.
@@ -554,9 +555,15 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$where = $this->getMediaObjectWhere();
 		$join  = $this->getMediaObjectJoin();
 
+		// Treat key as a sign it's BOTR media in the DB.
 		$sql = sprintf(
-			'select Media.* from Media %s where 1=1 %s order by Media.id',
+			'select Media.*
+			from Media %s
+			where 1=1 and key %s %s %s
+			order by Media.id',
 			$join,
+			SwatDB::equalityOperator(null, true),
+			$this->db->quote(null, 'integer'),
 			$where
 		);
 
@@ -614,7 +621,15 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 	protected function mediaFileIsMarkedInvalid(array $media_file)
 	{
-		return (!$this->mediaFileIsMarkedValid($media_file));
+		$invalid = false;
+
+		// Only needs one valid tag to be considered valid.
+		if ($this->hasTag($media_file, $this->invalid_tag_filesize) ||
+			$this->hasTag($media_file, $this->invalid_tag_md5)) {
+			$invalid = true;
+		}
+
+		return $invalid;
 	}
 
 	// }}}
