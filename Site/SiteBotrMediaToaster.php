@@ -913,6 +913,7 @@ class SiteBotrMediaToaster
 			480,
 			640,
 			720,
+			1280,
 		);
 	}
 
