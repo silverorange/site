@@ -86,12 +86,12 @@ SiteJwPlayerMediaDisplay.prototype.init = function()
 
 SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 {
-	this.player_id = this.container.childNodes[0].id; 
+	this.player_id = this.container.childNodes[0].id;
 
 	this.player = jwplayer(this.player_id).setup( {
 		playlist: [{
 			image: this.getImage(),
-			sources: this.getSources() 
+			sources: this.getSources()
 		}],
 		skin:        this.skin,
 		stretching:  this.stretching,
@@ -382,7 +382,7 @@ SiteJwPlayerMediaDisplay.prototype.handleSpaceBar = function()
 
 		// don't capture keyboard events for inputs
 		var tag = target.tagName.toLowerCase();
-		if (tag == 'textarea' || tag == 'input' ||
+		if (tag === 'textarea' || tag === 'input' ||
 			this.player_id != SiteJwPlayerMediaDisplay.current_player_id) {
 			return;
 		}
