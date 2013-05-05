@@ -44,6 +44,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $skin;
 	protected $stretching;
 	protected $manifest_uri;
+	protected $vtt_uri;
 
 	// }}}
 	// {{{ public function __construct()
@@ -96,6 +97,10 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 		if ($this->manifest_uri === null) {
 			$this->setManifestUri('smil/'.$media->id.'.smil');
+		}
+
+		if ($this->vtt_uri === null) {
+			$this->setVttUri('vtt/'.$media->id.'.vtt');
 		}
 	}
 
@@ -195,6 +200,14 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	}
 
 	// }}}
+	// {{{ public function setVttUri()
+
+	public function setVttUri($uri)
+	{
+		$this->vtt_uri = $uri;
+	}
+
+	// }}}
 	// {{{ public function display()
 
 	public function display()
@@ -281,6 +294,13 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$this->getJavascriptVariableName(),
 			SwatString::quoteJavaScriptString(
 				$this->getManifestUri()));
+
+		if ($this->media->getInternalValue('scrubber_image') !== null) {
+			$javascript.= sprintf("\t%s.vtt_uri = %s;\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavaScriptString(
+					$this->getVttUri()));
+		}
 
 		if ($this->swf_uri !== null) {
 			$javascript.= sprintf("\t%s.swf_uri = %s;\n",
@@ -372,6 +392,14 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected function getManifestUri()
 	{
 		return $this->manifest_uri;
+	}
+
+	// }}}
+	// {{{ protected function getVttUri()
+
+	protected function getVttUri()
+	{
+		return $this->vtt_uri;
 	}
 
 	// }}}

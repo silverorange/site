@@ -16,6 +16,7 @@ create table Media (
 
 	-- SiteVideoMedia specific fields
 	key varchar(50),
+	scrubber_image integer references Image(id) on delete set null,
 
 	primary key (id)
 );
