@@ -66,8 +66,6 @@ class SiteVideoTextTracksPage extends SitePage
 			throw new SiteNotFoundException('Media not found for id:'.
 				$media_id);
 		}
-
-		$this->media->setFileBase('media');
 	}
 
 	// }}}
@@ -87,26 +85,26 @@ class SiteVideoTextTracksPage extends SitePage
 
 	protected function display()
 	{
-		echo "WEBVTT\n\n";
 		$interval = $this->media->getScrubberImageInterval();
-
-		$this->media->setFileBase('/so/sites/course-host/work-nick/www/images/');
 		$uri = $this->media->scrubber_image->getUri('original');
 
-		$position = 0;
-		$offset = 0;
-		while ($position < $this->media->duration) {
-			echo $this->getFormattedTime($position);
+		echo "WEBVTT\n\n";
+
+		$seconds = 0;
+		$image_offset = 0;
+		while ($seconds < $this->media->duration) {
+			echo $this->getFormattedTime($seconds);
 			echo ' --> ';
-			$position += $interval;
-			echo $this->getFormattedTime($position);
+			$seconds += $interval;
+			echo $this->getFormattedTime($seconds);
 			echo "\n";
-			printf('%s#xywh=%d,0,130,%d',
+			printf('%s#xywh=%d,0,%d,%d',
 				$this->app->getBaseHref().$uri,
-				$offset,
+				$image_offset,
+				$this->media->getScrubberImageWidth(),
 				$this->media->scrubber_image->getHeight('original'));
 
-			$offset += 130;
+			$image_offset += $this->media->getScrubberImageWidth();
 			echo "\n\n";
 
 		}
