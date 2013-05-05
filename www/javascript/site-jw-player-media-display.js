@@ -20,6 +20,7 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.record_end_point = false;
 	this.space_to_pause = false;
 	this.swf_uri = null;
+	this.vtt_uri = null;
 
 	this.upgrade_message = null;
 	this.on_complete_message = null;
@@ -91,7 +92,8 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 	this.player = jwplayer(this.player_id).setup( {
 		playlist: [{
 			image: this.getImage(),
-			sources: this.getSources()
+			sources: this.getSources(),
+			tracks: this.getTracks()
 		}],
 		skin:        this.skin,
 		stretching:  this.stretching,
@@ -223,6 +225,22 @@ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 	}
 
 	return this.sources;
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.getTracks = function()
+
+SiteJwPlayerMediaDisplay.prototype.getTracks = function()
+{
+	var tracks = [];
+	if (this.vtt_uri !== null) {
+		var vtt_track = {};
+		vtt_track.file = this.vtt_uri;
+		vtt_track.kind = 'thumbnails';
+		tracks.push(vtt_track);
+	}
+
+	return tracks;
 };
 
 // }}}

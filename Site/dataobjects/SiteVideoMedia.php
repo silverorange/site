@@ -3,6 +3,7 @@
 require_once 'Site/SiteJwPlayerMediaDisplay.php';
 require_once 'Site/dataobjects/SiteMedia.php';
 require_once 'Site/dataobjects/SiteVideoImage.php';
+require_once 'Site/dataobjects/SiteVideoScrubberImage.php';
 require_once 'Site/dataobjects/SiteVideoMediaSet.php';
 require_once 'Site/dataobjects/SiteVideoMediaEncodingBindingWrapper.php';
 
@@ -207,6 +208,30 @@ class SiteVideoMedia extends SiteMedia
 	}
 
 	// }}}
+	// {{{ public function getScrubberImageInterval()
+
+	public function getScrubberImageInterval()
+	{
+		return ($this->duration / $this->getScrubberImageCount());
+	}
+
+	// }}}
+	// {{{ public function getScrubberImageCount()
+
+	public function getScrubberImageCount()
+	{
+		return 30;
+	}
+
+	// }}}
+	// {{{ public function getScrubberImageWidth()
+
+	public function getScrubberImageWidth()
+	{
+		return 130;
+	}
+
+	// }}}
 	// {{{ public function loadByKey()
 
 	/**
@@ -251,6 +276,9 @@ class SiteVideoMedia extends SiteMedia
 
 		$this->registerInternalProperty('image',
 			SwatDBClassMap::get('SiteVideoImage'));
+
+		$this->registerInternalProperty('scrubber_image',
+			SwatDBClassMap::get('SiteVideoScrubberImage'));
 
 		$this->registerInternalProperty('media_set',
 			SwatDBClassMap::get('SiteVideoMediaSet'));
