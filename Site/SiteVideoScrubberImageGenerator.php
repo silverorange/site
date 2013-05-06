@@ -192,8 +192,8 @@ class SiteVideoScrubberImageGenerator extends
 			$this->debug("\033[100D"); // reset the line
 			$this->debug(sprintf('%d of %d (%d%%)',
 				$count,
-				$media->getScrubberImageCount(),
-				$count / $media->getScrubberImageCount() * 100));
+				$media->getDefaultScrubberImageCount(),
+				$count / $media->getDefaultScrubberImageCount() * 100));
 		}
 
 		$grid->resetIterator();
@@ -213,6 +213,7 @@ class SiteVideoScrubberImageGenerator extends
 		$image->setFileBase($this->image_file_base);
 		$image->process($tmp_file);
 		$image->save();
+		$media->scrubber_image_count = $media->getDefaultScrubberImageCount();
 		$media->scrubber_image = $image;
 		$media->save();
 
