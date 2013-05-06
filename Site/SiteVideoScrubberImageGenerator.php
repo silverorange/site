@@ -93,6 +93,7 @@ class SiteVideoScrubberImageGenerator extends
 			from Media
 			inner join MediaSet on Media.media_set = MediaSet.id
 			where Media.scrubber_image is null
+				and Media.id in (select media from MediaEncodingBinding)
 				and MediaSet.id in (select media_set from MediaEncoding
 					where width is not null)
 			order by Media.id';
@@ -110,13 +111,13 @@ class SiteVideoScrubberImageGenerator extends
 	{
 		$encoding_shortname = null;
 
+		// TODO: switch to caching the encoding-shortname per media-set
 		$m = $media->getFirst();
 		if ($m !== null) {
 			foreach ($m->media_set->encodings as $encoding) {
-				if ($encoding->width > $m->getScrubberImageWidth()) {
+				if ($encoding->width !== null &&
+					$encoding->width > $m->getScrubberImageWidth()) {
 					$encoding_shortname = $encoding->shortname;
-				} else {
-					break;
 				}
 			}
 		}
