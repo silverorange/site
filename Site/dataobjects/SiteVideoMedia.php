@@ -25,6 +25,13 @@ class SiteVideoMedia extends SiteMedia
 	 */
 	public $key;
 
+	/**
+	 * Scrubber image count
+	 *
+	 * @var integer
+	 */
+	public $scrubber_image_count;
+
 	// }}}
 	// {{{ public function getHumanFileType()
 
@@ -212,15 +219,20 @@ class SiteVideoMedia extends SiteMedia
 
 	public function getScrubberImageInterval()
 	{
-		return ($this->duration / $this->getScrubberImageCount());
+		$count = ($this->scrubber_image_count > 0) ?
+			$this->scrubber_image_count : $this->getDefaultScrubberImageCount();
+
+		return ($this->duration / $count);
 	}
 
 	// }}}
-	// {{{ public function getScrubberImageCount()
+	// {{{ public function getDefaultScrubberImageCount()
 
-	public function getScrubberImageCount()
+	public function getDefaultScrubberImageCount()
 	{
-		return 30;
+		// only used for generating scrubber images. For displaying them,
+		// use SiteVideoMedia::$scrubber_image_count
+		return 100;
 	}
 
 	// }}}
