@@ -67,17 +67,22 @@ class SiteVideoScrubberImageGenerator extends
 		$this->lock();
 
 		$pending_media = $this->getPendingMedia();
-		$encoding_shortname = $this->getMediaEncodingShortname($pending_media);
+		$this->debug(count($pending_media)." pending videos\n\n");
 
-		foreach ($pending_media as $media) {
-			$this->debug("Media: ".$media->id."\n");
-			$media->setFileBase($this->media_file_base);
-			$path = $this->getMediaPath($media, $encoding_shortname);
-			if ($path === null) {
-				continue;
+		if (count($pending_media) > 0) {
+			$encoding_shortname = $this->getMediaEncodingShortname(
+				$pending_media);
+
+			foreach ($pending_media as $media) {
+				$this->debug("Media: ".$media->id."\n");
+				$media->setFileBase($this->media_file_base);
+				$path = $this->getMediaPath($media, $encoding_shortname);
+				if ($path === null) {
+					continue;
+				}
+
+				$this->processMedia($media, $path);
 			}
-
-			$this->processMedia($media, $path);
 		}
 
 		$this->unlock();
