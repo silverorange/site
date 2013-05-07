@@ -9,6 +9,7 @@ require_once 'Swat/SwatHtmlTag.php';
 /**
  * @package   Site
  * @copyright 2013 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteVideoTextTracksPage extends SitePage
 {
@@ -86,27 +87,37 @@ class SiteVideoTextTracksPage extends SitePage
 	protected function display()
 	{
 		$interval = $this->media->getScrubberImageInterval();
-		$uri = $this->media->scrubber_image->getUri('original');
+		$uri = $this->media->scrubber_image->getUri('original',
+			$this->app->getBaseHref());
 
 		echo "WEBVTT\n\n";
 
 		$seconds = 0;
 		$image_offset = 0;
 		while ($seconds < $this->media->duration) {
+			$image_offset += $this->media->getScrubberImageWidth();
+
 			echo $this->getFormattedTime($seconds);
 			echo ' --> ';
-			$seconds += $interval;
+
+			// make the last frame twice as long. This is because we offset
+			// frames forward so that you always see the frame in the image
+			// when you seek. The last frame therefore has to be longer.
+			if ($seconds + ($interval * 2) >= $this->media->duration) {
+				$seconds = $this->media->duration;
+			} else {
+				$seconds += $interval;
+			}
+
 			echo $this->getFormattedTime($seconds);
 			echo "\n";
 			printf('%s#xywh=%d,0,%d,%d',
-				$this->app->getBaseHref().$uri,
+				$uri,
 				$image_offset,
 				$this->media->getScrubberImageWidth(),
 				$this->media->scrubber_image->getHeight('original'));
 
-			$image_offset += $this->media->getScrubberImageWidth();
 			echo "\n\n";
-
 		}
 	}
 
