@@ -127,7 +127,7 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 			$tags[] = $video_tag->__toString();
 		}
 
-		echo implode("\n", array_reverse($tags));
+		echo implode("\n", $tags);
 
 		echo '</switch>';
 		echo '</body>';
