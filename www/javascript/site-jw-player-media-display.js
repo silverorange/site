@@ -95,7 +95,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 			sources: this.getSources(),
 			tracks: this.getTracks()
 		}],
-		skin:        this.skin,
+		skin:        this.getSkin(),
 		stretching:  this.stretching,
 		primary:     'flash', // to allow for RTMP streaming
 		width:       '100%',
@@ -262,6 +262,15 @@ SiteJwPlayerMediaDisplay.prototype.getImage = function()
 	}
 
 	return (default_image === null) ? null : this.images[default_image].uri;
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.getSkin = function()
+
+SiteJwPlayerMediaDisplay.prototype.getSkin = function()
+{
+	var skin = (this.skin === null) ? 'six' : this.skin;
+	return 'packages/site/javascript/jwplayer-skins/' + skin + '.xml';
 };
 
 // }}}
