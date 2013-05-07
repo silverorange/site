@@ -186,6 +186,7 @@ SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
 SiteJwPlayerMediaDisplay.prototype.addSource = function(
 	source_uri, width, label)
 {
+	// TODO: add new "type" property for 'rtmp' or 'mp4'
 	this.sources.push({file: source_uri, label: label, width: width});
 };
 
@@ -270,7 +271,10 @@ SiteJwPlayerMediaDisplay.prototype.getImage = function()
 SiteJwPlayerMediaDisplay.prototype.getSkin = function()
 {
 	var skin = (this.skin === null) ? 'six' : this.skin;
-	return 'packages/site/javascript/jwplayer-skins/' + skin + '.xml';
+	var base_tag = document.getElementsByTagName('base');
+	var base_href = (base_tag.length > 0) ? base_tag[0].href : '';
+
+	return base_href + 'packages/site/javascript/jwplayer-skins/' + skin + '.xml';
 };
 
 // }}}
