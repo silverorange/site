@@ -90,6 +90,8 @@ class SiteVideoTextTracksPage extends SitePage
 		$uri = $this->media->scrubber_image->getUri('original',
 			$this->app->getBaseHref());
 
+		$image_width = $this->media->scrubber_image->getWidth('original');
+
 		echo "WEBVTT\n\n";
 
 		$seconds = 0;
@@ -100,10 +102,15 @@ class SiteVideoTextTracksPage extends SitePage
 			echo $this->getFormattedTime($seconds);
 			echo ' --> ';
 
-			// make the last frame twice as long. This is because we offset
-			// frames forward so that you always see the frame in the image
-			// when you seek. The last frame therefore has to be longer.
-			if ($seconds + ($interval * 2) >= $this->media->duration) {
+			/*
+			make the last frame stretch to the end - this is because
+			we offset frames forward so that you always see the frame in
+			the image when you seek. The last frame therefore has to be
+			longer. 
+			*/
+			if ($image_offset + $this->media->getScrubberImageWidth()
+				>= $image_width) {
+
 				$seconds = $this->media->duration;
 			} else {
 				$seconds += $interval;
