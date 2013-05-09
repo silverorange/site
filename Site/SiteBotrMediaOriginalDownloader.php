@@ -86,6 +86,7 @@ class SiteBotrMediaOriginalDownloader
 						$this->getDestinationDirectory($key),
 						$media_file['custom']['original_filename']);
 
+					$clear_pending_tag = false;
 					try {
 						$this->debug(sprintf("\n\t => %s ... ",
 							$destination));
@@ -93,6 +94,17 @@ class SiteBotrMediaOriginalDownloader
 						$this->download($source, $destination, $key,
 							$passthrough['filesize']);
 
+						$clear_pending_tag = true;
+					} catch (SiteBotrMediaCommandLineFileExistsException $s) {
+						// if it already exists, consider it downloaded.
+						$clear_pending_tag = true;
+					} catch (Exception $e) {
+						$e = new SiteCommandLineException($e);
+						$e->processAndContinue();
+						$this->debug("error.\n");
+					}
+
+					if ($clear_pending_tag) {
 						// remove the download_pending tag. Original and
 						// passthrough deletion happens in the
 						// SiteBotrMediaDeleter script
@@ -100,10 +112,6 @@ class SiteBotrMediaOriginalDownloader
 							array($this->original_missing_tag));
 
 						$this->debug("done.\n");
-					} catch (Exception $e) {
-						$e = new SiteCommandLineException($e);
-						$e->processAndContinue();
-						$this->debug("error.\n");
 					}
 				} else {
 					$this->debug("passthrough missing - skipping.\n");

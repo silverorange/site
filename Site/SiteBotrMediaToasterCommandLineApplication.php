@@ -728,15 +728,23 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$filesize_to_check = null)
 	{
 		// 32 bit php FTL
-		if ($filesize_to_check > 2147483647) {
+		if (PHP_INT_SIZE == 4 &&
+			$filesize_to_check > 2147483647) {
 			throw new SiteCommandLineException(sprintf(
 				'File too large to download %s.',
 				SwatString::byteFormat($filesize_to_check)));
 		}
 
 		if (file_exists($destination)) {
-			throw new SiteCommandLineException(sprintf(
-				'File already exists “%s”', $destination));
+			require_once 'Site/exceptions/'.
+				'SiteBotrMediaCommandLineFileExistsException.php';
+
+			throw new SiteBotrMediaCommandLineFileExistsException(
+				sprintf(
+					'File already exists “%s”',
+					$destination
+				)
+			);
 		}
 
 		// separate the prefix with a dash for prettier temp filenames
