@@ -94,19 +94,30 @@ class SiteVideoScrubberImageGenerator extends
 
 	protected function getPendingMedia()
 	{
-		$sql = 'select Media.*
+		$sql = sprintf('select Media.*
 			from Media
 			inner join MediaSet on Media.media_set = MediaSet.id
-			where Media.scrubber_image is null
-				and Media.id in (select media from MediaEncodingBinding)
-				and MediaSet.id in (select media_set from MediaEncoding
-					where width is not null)
-			order by Media.id';
+			where %s 
+			order by Media.id',
+			$this->getPendingMediaWhereClause());
+
+		echo $sql; exit;
 
 		$media = SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('SiteVideoMediaWrapper'));
 
 		return $media;
+	}
+
+	// }}}
+	// {{{ protected function getPendingMediaWhereClause()
+
+	protected function getPendingMediaWhereClause()
+	{
+		return 'Media.scrubber_image is null
+				and Media.id in (select media from MediaEncodingBinding)
+				and MediaSet.id in (select media_set from MediaEncoding
+					where width is not null)';
 	}
 
 	// }}}
