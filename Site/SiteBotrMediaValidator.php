@@ -432,13 +432,6 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 
 				$this->debug("ok.\n");
 			} else {
-				$e = new SiteCommandLineException(sprintf(
-					'Media id ‘%s’ with key ‘%s’ in database, missing on BOTR.',
-					$media_object->id,
-					$media_object->key));
-
-				$e->processAndContinue();
-
 				$this->missing_objects[] = $media_object;
 
 				$this->debug("missing on BOTR.\n");
