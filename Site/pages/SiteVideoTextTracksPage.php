@@ -102,12 +102,10 @@ class SiteVideoTextTracksPage extends SitePage
 			echo $this->getFormattedTime($seconds);
 			echo ' --> ';
 
-			/*
-			make the last frame stretch to the end - this is because
-			we offset frames forward so that you always see the frame in
-			the image when you seek. The last frame therefore has to be
-			longer. 
-			*/
+			// Make the last frame stretch to the end - this is because
+			// we offset frames forward so that you always see the frame in
+			// the image when you seek. The last frame therefore has to be
+			// longer.
 			if ($image_offset + $this->media->getScrubberImageWidth()
 				>= $image_width) {
 
