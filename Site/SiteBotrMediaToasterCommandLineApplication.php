@@ -727,9 +727,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected function download($source, $destination, $prefix = null,
 		$filesize_to_check = null)
 	{
-		// 32 bit php FTL
-		if (PHP_INT_SIZE == 4 &&
-			$filesize_to_check > 2147483647) {
+		if ($filesize_to_check > PHP_INT_MAX) {
 			throw new SiteCommandLineException(sprintf(
 				'File too large to download %s.',
 				SwatString::byteFormat($filesize_to_check)));
@@ -769,8 +767,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 				'Unable to download “%s” to “%s.”', $source, $temp_file));
 		}
 
-		/* TODO - > 2gb filesize support */
-		if ($filesize_to_check < 2147483647) {
+		if ($filesize_to_check < PHP_INT_MAX) {
 			$local_filesize = filesize($temp_file);
 			if ($local_filesize != $filesize_to_check) {
 				unlink($temp_file);
