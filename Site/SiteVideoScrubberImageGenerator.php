@@ -101,8 +101,6 @@ class SiteVideoScrubberImageGenerator extends
 			order by Media.id',
 			$this->getPendingMediaWhereClause());
 
-		echo $sql; exit;
-
 		$media = SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('SiteVideoMediaWrapper'));
 
