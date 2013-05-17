@@ -40,7 +40,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $sources = array();
 	protected $images = array();
 	protected $session;
-	protected $aspect_ratio;
+	protected $aspect_ratio = array();
 	protected $skin;
 	protected $stretching;
 	protected $manifest_uri;
@@ -87,8 +87,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			throw new SiteException('No media encodings found');
 		}
 
-		if ($this->aspect_ratio === null) {
-			$this->setAspectRatio($binding->width / $binding->height);
+		if (count($this->aspect_ratio) == 0) {
+			$this->setAspectRatio($binding->width, $binding->height);
 		}
 
 		if ($this->skin === null) {
@@ -135,9 +135,9 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	// }}}
 	// {{{ public function setAspectRatio()
 
-	public function setAspectRatio($ratio)
+	public function setAspectRatio($width, $height)
 	{
-		$this->aspect_ratio = $ratio;
+		$this->aspect_ratio = array('width' => $width, 'height' => $height);
 	}
 
 	// }}}
@@ -286,9 +286,10 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$this->getJavascriptVariableName(),
 			$this->media->duration);
 
-		$javascript.= sprintf("\t%s.aspect_ratio = %F;\n",
+		$javascript.= sprintf("\t%s.aspect_ratio = [%d, %d];\n",
 			$this->getJavascriptVariableName(),
-			$this->aspect_ratio);
+			$this->aspect_ratio['width'],
+			$this->aspect_ratio['height']);
 
 		$javascript.= sprintf("\t%s.addSource(%s);\n",
 			$this->getJavascriptVariableName(),
