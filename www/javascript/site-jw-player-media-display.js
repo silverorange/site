@@ -15,7 +15,7 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.stretching = null;
 	this.image = null;
 	this.duration = null;
-	this.aspect_ratio = null;
+	this.aspect_ratio = [];
 	this.start_position = 0;
 	this.record_end_point = false;
 	this.space_to_pause = false;
@@ -66,8 +66,7 @@ SiteJwPlayerMediaDisplay.prototype.init = function()
 
 		var that = this;
 		function resizeUpgradeContainer() {
-			var region = YAHOO.util.Dom.getRegion(that.container);
-			var container_height = region.width / that.aspect_ratio;
+			var container_height = that.getPlayerHeight();
 			that.container.style.position = 'relative';
 			that.container.style.height = container_height + 'px';
 
@@ -99,7 +98,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		stretching:  this.stretching,
 		primary:     'flash', // to allow for RTMP streaming
 		width:       '100%',
-		height:      this.getPlayerHeight(),
+		aspectratio: this.aspect_ratio[0] + ':' + this.aspect_ratio[1],
 		flashplayer: this.swf_uri,
 		ga:          {} // this can be blank. JW Player will use the _gaq var.
 	});
@@ -116,10 +115,6 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 			that.handleFullscreen();
 		}
 	});
-
-	YAHOO.util.Event.on(window, 'resize', function() {
-		this.setPlayerDimensions();
-	}, this, true);
 
 	if (this.record_end_point == true) {
 		this.recordEndPoint();
@@ -375,15 +370,8 @@ SiteJwPlayerMediaDisplay.prototype.onPlay = function(callback)
 SiteJwPlayerMediaDisplay.prototype.getPlayerHeight = function()
 {
 	var region = YAHOO.util.Dom.getRegion(this.container);
-	return parseInt(region.width / this.aspect_ratio);
-};
-
-// }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.setPlayerDimensions = function()
-
-SiteJwPlayerMediaDisplay.prototype.setPlayerDimensions = function()
-{
-	this.player.resize('100%', this.getPlayerHeight());
+	return parseInt(region.width /
+		this.aspect_ratio[0] / this.aspect_ratio[1]);
 };
 
 // }}}
