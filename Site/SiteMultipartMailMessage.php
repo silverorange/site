@@ -197,7 +197,7 @@ class SiteMultipartMailMessage extends SiteObject
 		);
 
 		$mime->setTXTBody($this->text_body);
-		$mime->setHTMLBody($this->html_body);
+		$mime->setHTMLBody($this->convertCssToInlineStyles($this->html_body));
 
 		foreach ($this->cc_list as $address)
 			$mime->addCc($address);
@@ -397,6 +397,63 @@ class SiteMultipartMailMessage extends SiteObject
 		$sql = sprintf($sql, implode(',', $values));
 
 		SwatDB::exec($this->app->db, $sql);
+	}
+
+	// }}}
+	// {{{ protected function convertCssToInlineStyles()
+
+	/**
+	 * Attempt to convert css to inline styles
+	 */
+	protected function convertCssToInlineStyles($html)
+	{
+		// Emogrifier is optional. If not included, just return the regular
+		// HTML with inline CSS
+		@include_once 'Emogrifier/Emogrifier.php';
+
+		if ($html != '' && class_exists('Emogrifier')) {
+			$reset_errors = libxml_use_internal_errors(true);
+			$emogrifier = new Emogrifier($html);
+			$inlined = $emogrifier->emogrify();
+
+			// log errors so we can find XML defects
+			$errors = libxml_get_errors();
+			libxml_clear_errors();
+			libxml_use_internal_errors($reset_errors);
+			if (count($errors) > 0) {
+				$this->logLibXmlErrors($html, $errors);
+			}
+		} else {
+			$inlined = $html;
+		}
+
+		return $inlined;
+	}
+
+	// }}}
+	// {{{ protected function logLibXmlErrors()
+
+	/**
+	 * Attempt to convert css to inline styles
+	 */
+	protected function logLibXmlErrors($html, array $errors)
+	{
+		$error_message = '';
+		foreach ($errors as $error) {
+			$error_message.= sprintf(
+				"Message: %s\n".
+				"Code: %s\n".
+				"Line: %s, Column: %s",
+				$error->message,
+				$error->code,
+				$error->line,
+				$error->column);
+		}
+
+		$error_message.= "\n\nInput XML\n\n:".$html;
+
+		$exception = new SwatException($error_message);
+		$exception->processAndContinue();
 	}
 
 	// }}}
