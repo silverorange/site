@@ -103,7 +103,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		ga:          {} // this can be blank. JW Player will use the _gaq var.
 	});
 
-	//this.debug();
+	// this.debug();
 
 	var that = this;
 	this.player.onReady(function() {
@@ -111,9 +111,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 	});
 
 	this.player.onFullscreen(function (e) {
-		if (e.fullscreen) {
-			that.handleFullscreen();
-		}
+		that.handleFullscreen(e.fullscreen);
 	});
 
 	if (this.record_end_point == true) {
@@ -182,7 +180,13 @@ SiteJwPlayerMediaDisplay.prototype.addSource = function(
 	source_uri, width, label)
 {
 	// TODO: add new "type" property for 'rtmp' or 'mp4'
-	this.sources.push({file: source_uri, label: label, width: width});
+	var source = {
+		file: source_uri,
+		label: label,
+		width: width
+	}	
+
+	this.sources.push(source);
 };
 
 // }}}
@@ -200,27 +204,24 @@ SiteJwPlayerMediaDisplay.prototype.addImage = function(
 SiteJwPlayerMediaDisplay.prototype.getSources = function()
 {
 	var region = YAHOO.util.Dom.getRegion(this.container);
-	var player_width = region.width;
-
-	var default_source = null;
-	var min_diff = null;
-	for (var i = 0; i < this.sources.length; i++) {
-		if (!this.sources[i].width) {
-			continue;
-		}
-
-		var diff = Math.abs(this.sources[i].width - player_width);
-		if (min_diff === null || diff < min_diff) {
-			min_diff = diff;
-			default_source = i;
-		}
-	}
-
+	var default_source = this.getBestQualitySource(region.width, region.height);
 	if (default_source !== null) {
-		this.sources[default_source]['default'] = true;
+		default_source['default'] = true;
 	}
 
-	return this.sources;
+	// clone sources so that jwplayer doesn't wipe out the width property
+	var sources = [];
+	for (var i = 0; i < this.sources.length; i++) {
+		var s = {};
+		s.prototype = this.sources[i].prototype;
+		for (var k in this.sources[i]) {
+			s[k] = this.sources[i][k];
+		}
+
+		sources[i] = s;
+	}
+
+	return sources;
 };
 
 // }}}
@@ -270,6 +271,30 @@ SiteJwPlayerMediaDisplay.prototype.getSkin = function()
 	var base_href = (base_tag.length > 0) ? base_tag[0].href : '';
 
 	return base_href + 'packages/site/javascript/jwplayer-skins/' + skin + '.xml';
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.getBestQualitySource = function()
+
+SiteJwPlayerMediaDisplay.prototype.getBestQualitySource = function(
+	player_width, player_height)
+{
+	var default_source = null;
+	var min_diff = null;
+	var count = 0;
+	for (var i = 0; i < this.sources.length; i++) {
+		if (!this.sources[i].width) {
+			continue;
+		}
+
+		var diff = Math.abs(this.sources[i].width - player_width);
+		if (min_diff === null || diff < min_diff) {
+			min_diff = diff;
+			default_source = i;
+		}
+	}
+
+	return (default_source === null) ? null : this.sources[default_source];
 };
 
 // }}}
@@ -377,16 +402,31 @@ SiteJwPlayerMediaDisplay.prototype.getPlayerHeight = function()
 // }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function()
 
-SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function()
+SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function(fullscreen)
 {
-	var quality = this.player.getCurrentQuality();
-	var width = Math.max(screen.width, screen.height);
-	var levels = this.player.getQualityLevels();
+	// only automatically change the quality for HTML5
+	if (this.player.getRenderingMode() == 'flash') {
+		return;
+	}
 
-	for (var i = levels.length - 1; i >= 0; i--) {
-		if (levels[i].width < width && quality != i) {
-			this.player.setCurrentQuality(i);
-			break;
+	if (fullscreen) {
+		var default_source = this.getBestQualitySource(
+			screen.width, screen.height);
+	} else {
+		var region = YAHOO.util.Dom.getRegion(this.container);
+		var default_source = this.getBestQualitySource(
+			region.width, region.height);
+	}
+
+	if (default_source !== null) {
+		// look up the level from the source
+		var levels = this.player.getQualityLevels();
+
+		for (var i = 0; i < levels.length; i++) {
+			if (levels[i].label == default_source.label) {
+				this.player.setCurrentQuality(i);
+				break;
+			}
 		}
 	}
 };
@@ -431,21 +471,36 @@ SiteJwPlayerMediaDisplay.prototype.debug = function()
 
 	this.player.onMeta(function (v) {
 		var meta = v.metadata;
-		if (!meta.hasOwnProperty('bufferfill') ||
-			!meta.hasOwnProperty('bandwidth')) {
-
-			return;
-		}
 
 		var quality_levels = that.player.getQualityLevels();
-		var current_level = quality_levels[meta.qualitylevel];
-		debug_container.innerHTML = 'player-width: ' + meta.screenwidth + 'px' +
-			'<br />transitioning: ' + ((meta.transitioning) ? 'yes' : 'no') +
-			'<br />buffer-fill: ' + meta.bufferfill + 's' +
-			'<br />quality-level: <strong>' + current_level.label +
-				'</strong> (' + meta.qualitylevel + ')' +
-			'<br />bandwidth: ' + Math.round(meta.bandwidth / 1024, 2) +
-				' Mb/s (' + meta.bandwidth + ')';
+		var current_level = quality_levels[that.player.getCurrentQuality()];
+
+		if (meta && meta.hasOwnProperty('screenwidth')) {
+			var content = 'player-width: ' + meta.screenwidth + 'px';
+		} else {
+			var region = YAHOO.util.Dom.getRegion(that.container);
+			var content = 'player-width: ' + region.width + 'px';
+		}
+
+		if (meta && meta.hasOwnProperty('transitioning')) {
+			content += '<br />transitioning: ' +
+				((meta.transitioning) ? 'yes' : 'no');
+		}
+
+		if (meta && meta.hasOwnProperty('bufferfill')) {
+			content += '<br />buffer-fill: ' + meta.bufferfill + 's';
+		}
+
+		content += '<br />quality-level: <strong>' + current_level.label +
+			'</strong> (' + that.player.getCurrentQuality() + ')';
+
+		if (meta && meta.hasOwnProperty('bandwidth')) {
+			content += '<br />bandwidth: ' +
+				Math.round(meta.bandwidth / 1024, 2) + ' Mb/s ' +
+				'(' + meta.bandwidth + ')';
+		}
+
+		debug_container.innerHTML = content;
 	});
 };
 
