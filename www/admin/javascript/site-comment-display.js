@@ -1,11 +1,13 @@
 // {{{ function SiteCommentDisplay()
 
-function SiteCommentDisplay(id, comment_id, comment_status, spam, edit_uri)
+function SiteCommentDisplay(id, comment_id, comment_status, spam,
+	show_actions_button, edit_uri)
 {
 	this.id = id;
 	this.comment_id = comment_id;
 	this.comment_status = comment_status;
 	this.comment_spam = spam;
+	this.show_actions_button = show_actions_button;
 	this.edit_uri = edit_uri;
 
 	if (!SiteCommentDisplay.xml_rpc_client) {
@@ -20,11 +22,17 @@ function SiteCommentDisplay(id, comment_id, comment_status, spam, edit_uri)
 
 	this.initControls();
 	this.initConfirmation();
-	this.hideActions();
+
+	if (show_actions_button) {
+		this.hideActions();
+		this.actions_shown = false;
+	} else {
+		this.showActions();
+		this.actions_shown = true;
+	}
 
 	this.controls_animation = null;
 	this.actions_animation = null;
-	this.actions_shown = false;
 }
 
 // }}}
@@ -128,15 +136,22 @@ SiteCommentDisplay.prototype.initControls = function()
 	this.actions_content = document.createElement('div');
 	this.actions_content.className = 'site-comment-display-actions-content';
 
-	this.actions_arrow = document.createElement('div');
-	this.actions_arrow.className = 'site-comment-display-actions-arrow';
+	if (this.show_actions_button) {
+		this.actions_arrow = document.createElement('div');
+		this.actions_arrow.className = 'site-comment-display-actions-arrow';
 
-	this.actions_button = document.createElement('input');
-	this.actions_button.type = 'button';
-	this.actions_button.value = SiteCommentDisplay.actions_text;
-	this.actions_button.className = 'site-comment-display-actions-button';
-	YAHOO.util.Event.on(this.actions_button, 'click',
-		this.toggleActions, this, true);
+		this.actions_button = document.createElement('input');
+		this.actions_button.type = 'button';
+		this.actions_button.value = SiteCommentDisplay.actions_text;
+		this.actions_button.className = 'site-comment-display-actions-button';
+		YAHOO.util.Event.on(this.actions_button, 'click',
+			this.toggleActions, this, true);
+	} else {
+		this.actions_container.className += '-no-actions-button';
+
+		this.actions_arrow = document.createTextNode('');
+		this.actions_button = document.createTextNode('');
+	}
 
 	this.edit_button = document.createElement('input');
 	this.edit_button.type = 'button';
@@ -565,6 +580,10 @@ SiteCommentDisplay.prototype.showActions = function()
 
 SiteCommentDisplay.prototype.handleDocumentClick = function(e)
 {
+	if (!this.show_actions_button) {
+		return;
+	}
+
 	var in_menu = false;
 	var target = YAHOO.util.Event.getTarget(e);
 
