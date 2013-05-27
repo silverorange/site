@@ -90,14 +90,18 @@
 	color: #000;
 }
 
-.site-comment-display-actions {
-	display: none;
+.site-comment-display-actions,
+.site-comment-display-actions-no-actions-button {
 	top: -5px;
 	position: relative;
+}
+
+.site-comment-display-actions {
+	display: none;
 	margin-right: 6em;
 }
 
-.site-comment-display-actions-content {
+.site-comment-display-actions .site-comment-display-actions-content {
 	background: #f8f6f0;
 	border: 1px solid #dcceb2;
 	padding: 4px 8px;
@@ -111,7 +115,7 @@
 	box-shadow: 0 2px 3px -1px rgba(0,0,0,0.15);
 }
 
-.site-comment-display-actions-arrow {
+.site-comment-display-actions .site-comment-display-actions-arrow {
 	display: inline-block;
 	width: 15px;
 	height: 15px;

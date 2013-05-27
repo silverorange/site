@@ -12,7 +12,7 @@ require_once 'XML/RPCAjax.php';
  * delete and mark as spam
  *
  * @package   Site
- * @copyright 2008-2012 silverorange
+ * @copyright 2008-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentDisplay extends SwatControl
@@ -23,6 +23,11 @@ abstract class SiteCommentDisplay extends SwatControl
 	 * @var boolean
 	 */
 	public $show_controls = true;
+
+	/**
+	 * @var boolean
+	 */
+	public $show_actions_button = false;
 
 	/**
 	 * @var string
@@ -279,16 +284,18 @@ abstract class SiteCommentDisplay extends SwatControl
 
 		$spam = ($this->comment->spam) ? 'true' : 'false';
 		$status = $this->comment->status;
+		$show_actions_button = ($this->show_actions_button) ? 'true' : 'false';
 		$edit_uri = SwatString::quoteJavaScriptString($this->getEditUri());
 
 		$javascript.= sprintf(
-			"var %s_obj = new %s(%s, %s, %s, %s, %s);",
+			"var %s_obj = new %s(%s, %s, %s, %s, %s, %s);",
 			$this->id,
 			$this->getJavaScriptClassName(),
 			SwatString::quoteJavaScriptString($this->id),
 			SwatString::quoteJavaScriptString($this->comment->id),
 			$status,
 			$spam,
+			$show_actions_button,
 			$edit_uri
 		);
 
