@@ -11,3 +11,9 @@
 .video-player .video-player-upgrade a {
 	color: #333!important;
 }
+
+/* Fix for apsect-ratio sized flash player. Was broken in Chrome. */
+.video-player object {
+	top: 0;
+	left: 0;
+}
