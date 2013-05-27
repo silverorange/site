@@ -27,7 +27,7 @@ abstract class SiteCommentDisplay extends SwatControl
 	/**
 	 * @var boolean
 	 */
-	public $show_actions_button = false;
+	public $show_actions_button = true;
 
 	/**
 	 * @var string
