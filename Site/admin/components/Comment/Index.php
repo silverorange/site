@@ -11,7 +11,7 @@ require_once 'Site/admin/SiteCommentDisplay.php';
  * Page to manage pending comments on posts
  *
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentIndex extends AdminPage
@@ -27,19 +27,9 @@ abstract class SiteCommentIndex extends AdminPage
 	// {{{ protected properties
 
 	/**
-	 * @var string
-	 */
-	protected $table = 'Comment';
-
-	/**
 	 * @var SiteCommentDisplay
 	 */
 	protected $comment_display;
-
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/admin/components/Comment/index.xml';
 
 	/**
 	 * @var string
@@ -60,7 +50,7 @@ abstract class SiteCommentIndex extends AdminPage
 	{
 		parent::initInternal();
 
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->comment_display = $this->getCommentDisplayWidget();
 
@@ -75,6 +65,22 @@ abstract class SiteCommentIndex extends AdminPage
 
 		$this->initComments();
 		$this->initCommentReplicator();
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'Site/admin/components/Comment/index.xml';
+	}
+
+	// }}}
+	// {{{ protected function getTable()
+
+	protected function getTable()
+	{
+		return 'Comment';
 	}
 
 	// }}}
@@ -189,7 +195,7 @@ abstract class SiteCommentIndex extends AdminPage
 			$keywords = $this->ui->getWidget('search_keywords')->value;
 			if (trim($keywords) != '') {
 				$clause = new AdminSearchClause('bodytext', $keywords);
-				$clause->table = $this->table;
+				$clause->table = $this->getTable();
 				$clause->operator = AdminSearchClause::OP_CONTAINS;
 				$where.= $clause->getClause($this->app->db, 'and');
 			}
@@ -241,7 +247,7 @@ abstract class SiteCommentIndex extends AdminPage
 		$author = $this->ui->getWidget('search_author')->value;
 		if (trim($author) != '') {
 			$fullname_clause = new AdminSearchClause('fullname', $author);
-			$fullname_clause->table = $this->table;
+			$fullname_clause->table = $this->getTable();
 			$fullname_clause->operator = AdminSearchClause::OP_CONTAINS;
 
 			$where = $fullname_clause->getClause($this->app->db, 'and');
