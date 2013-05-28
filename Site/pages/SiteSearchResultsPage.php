@@ -15,7 +15,7 @@ require_once 'Swat/SwatString.php';
  * be sub-classed to display results for other types of content as well.
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2013 silverorange
  */
 class SiteSearchResultsPage extends SiteArticlePage
 {
@@ -322,8 +322,11 @@ class SiteSearchResultsPage extends SiteArticlePage
 			$corrected_string = trim($corrected_string);
 
 			$misspellings_link = new SwatHtmlTag('a');
-			$misspellings_link->href = sprintf('search?keywords=%s',
-				urlencode($corrected_phrase));
+			$misspellings_link->href = sprintf(
+				'%s?keywords=%s',
+				$this->getSearchUri(),
+				urlencode($corrected_phrase)
+			);
 
 			$query_string = $this->getQueryString('keywords');
 			if ($query_string != '')
@@ -340,6 +343,14 @@ class SiteSearchResultsPage extends SiteArticlePage
 			$messages = $this->ui->getWidget('results_message');
 			$messages->add($misspellings_message);
 		}
+	}
+
+	// }}}
+	// {{{ protected function getSearchUri()
+
+	protected function getSearchUri()
+	{
+		return $this->source;
 	}
 
 	// }}}
