@@ -59,7 +59,7 @@ abstract class SiteAbstractPage extends SiteObject
 	 * Additional arguments as passed to the constructor
 	 *
 	 * These are saved in a protected variable so page decorators can access
-	 * the arugments.
+	 * the arguments.
 	 *
 	 * @var array
 	 *
