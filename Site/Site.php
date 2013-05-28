@@ -341,6 +341,10 @@ class Site
 			'notifier.address' => null,
 			'notifier.site'    => null, // site identifier
 			'notifier.timeout' => 200, // in milliseconds
+
+			// List of gearmand servers. Servers as specified as host[:port] and are
+			// comma delimited.
+			'gearman.servers' => null,
 		);
 	}
 
