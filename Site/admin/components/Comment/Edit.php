@@ -18,11 +18,6 @@ class SiteCommentEdit extends AdminDBEdit
 	// {{{ protected properties
 
 	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/admin/components/Comment/edit.xml';
-
-	/**
 	 * @var SiteComment
 	 */
 	protected $comment;
@@ -36,8 +31,16 @@ class SiteCommentEdit extends AdminDBEdit
 	{
 		parent::initInternal();
 
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 		$this->initComment();
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'Site/admin/components/Comment/edit.xml';
 	}
 
 	// }}}
