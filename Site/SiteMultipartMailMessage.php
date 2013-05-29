@@ -409,7 +409,6 @@ class SiteMultipartMailMessage extends SiteObject
 	{
 		// Emogrifier is optional. If not included, just return the regular
 		// HTML with inline CSS
-		@include_once 'Emogrifier/Emogrifier.php';
 
 		if ($html != '' && class_exists('Emogrifier')) {
 			$reset_errors = libxml_use_internal_errors(true);
