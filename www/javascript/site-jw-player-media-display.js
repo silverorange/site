@@ -396,7 +396,7 @@ SiteJwPlayerMediaDisplay.prototype.getPlayerHeight = function()
 {
 	var region = YAHOO.util.Dom.getRegion(this.container);
 	return parseInt(region.width /
-		this.aspect_ratio[0] / this.aspect_ratio[1]);
+		this.aspect_ratio[0] / this.aspect_ratio[1], 10);
 };
 
 // }}}
