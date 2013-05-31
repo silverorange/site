@@ -6,7 +6,6 @@ require_once 'Psr/Log/LoggerInterface.php';
 require_once 'Console/CommandLine.php';
 require_once 'Site/Site.php';
 require_once 'Site/SiteApplication.php';
-require_once 'Site/SiteGearmanJobExecutor.php';
 
 /**
  * Application that does a gearman task
@@ -144,6 +143,21 @@ abstract class SiteGearmanApplication extends SiteApplication
 	 * @param GearmanJob $job
 	 */
 	abstract protected function doWork(GearmanJob $job);
+
+	// }}}
+	// {{{ protected function init()
+
+	/**
+	 * Performs any initilization of this application
+	 *
+	 * Subclasses should extend this method to add any required start-up
+	 * initialization.
+	 *
+	 * @return void
+	 */
+	protected function init()
+	{
+	}
 
 	// }}}
 	// {{{ protected function connect()
