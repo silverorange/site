@@ -17,13 +17,11 @@ require_once 'Site/SiteGearmanJobExecutor.php';
  *
  * $parser   = Console_CommandLine::fromXmlFile('my-cli.xml');
  * $logger   = new SiteCommandLineLogger($parser);
- * $executor = new MyTask($parser, $logger);
  * $worker   = new GearmanWorker();
- * $app      = new SiteGearmanApplication(
+ * $app      = new MyGearmanApplication(
  *     'my-task',
  *     $parser,
  *     $logger,
- *     $executor,
  *     $worker
  * );
  *
@@ -36,7 +34,7 @@ require_once 'Site/SiteGearmanJobExecutor.php';
  * @copyright 2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteGearmanApplication extends SiteApplication
+abstract class SiteGearmanApplication extends SiteApplication
 {
 	// {{{ protected properties
 
@@ -62,13 +60,6 @@ class SiteGearmanApplication extends SiteApplication
 	protected $logger = null;
 
 	/**
-	 * The job executor of this application
-	 *
-	 * @var SiteGearmanJobExecutor
-	 */
-	protected $executor = null;
-
-	/**
 	 * The Gearman worker of this application
 	 *
 	 * @param GearmanWorker
@@ -84,7 +75,6 @@ class SiteGearmanApplication extends SiteApplication
 	 * @param string                  $function the Gearman function name.
 	 * @param Console_CommandLine     $parser   the commane-line context.
 	 * @param Psr\Log\LoggerInterface $logger   the logging interface.
-	 * @param SiteGearmanJobExecutor  $executor the job executor.
 	 * @param GearmanWorker           $worker   the Gearman worker.
 	 * @param string                  $config   optional. The filename of the
 ‐    *                                          configuration file. If not
@@ -95,7 +85,6 @@ class SiteGearmanApplication extends SiteApplication
 		$function,
 		Console_CommandLine $parser,
 		Psr\Log\LoggerInterface $logger,
-		SiteGearmanJobExecutor $executor,
 		GearmanWorker $worker,
 		$config = null
 	) {
@@ -104,7 +93,6 @@ class SiteGearmanApplication extends SiteApplication
 		$this->function = $function;
 		$this->logger   = $logger;
 		$this->parser   = $parser;
-		$this->executor = $executor;
 		$this->worker   = $worker;
 	}
 
@@ -144,6 +132,18 @@ class SiteGearmanApplication extends SiteApplication
 	{
 		$this();
 	}
+
+	// }}}
+	// {{{ abstract protected function doWork()
+
+	/**
+	 * Completes a job
+	 *
+	 * Subclasses must implement this method to perform work.
+	 *
+	 * @param GearmanJob $job
+	 */
+	abstract protected function doWork(GearmanJob $job);
 
 	// }}}
 	// {{{ protected function connect()
@@ -191,7 +191,7 @@ class SiteGearmanApplication extends SiteApplication
 
 		$this->worker->addFunction(
 			$this->function,
-			array($this->executor, 'run')
+			array($this, 'doWork')
 		);
 
 		$this->logger->debug(Site::_('done') . PHP_EOL);
