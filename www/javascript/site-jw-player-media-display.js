@@ -88,6 +88,13 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 {
 	this.player_id = this.container.childNodes[0].id;
 
+	if (YAHOO.env.ua.ie == 0 || YAHOO.env.ua.ie > 7) {
+		var aspect_ratio = this.aspect_ratio[0] + ':' + this.aspect_ratio[1];
+	} else {
+		// aspect ratio is broken in IE7 and shows up far too tall for the width
+		var aspect_ratio = null;
+	}
+
 	this.player = jwplayer(this.player_id).setup( {
 		playlist: [{
 			image: this.getImage(),
@@ -98,7 +105,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		stretching:  this.stretching,
 		primary:     'flash', // to allow for RTMP streaming
 		width:       '100%',
-		aspectratio: this.aspect_ratio[0] + ':' + this.aspect_ratio[1],
+		aspectratio: aspect_ratio,
 		flashplayer: this.swf_uri,
 		ga:          {} // this can be blank. JW Player will use the _gaq var.
 	});
