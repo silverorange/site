@@ -88,7 +88,9 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 		echo '<smil>';
 		echo '<head>';
 
-		$distribution = $this->app->config->amazon->streaming_distribution;
+		$distribution = ($this->media->media_set->private) ?
+			$this->app->config->amazon->private_streaming_distribution :
+			$this->app->config->amazon->streaming_distribution;
 
 		$meta_tag = new SwatHtmlTag('meta');
 		$meta_tag->base = sprintf('rtmp://%s/cfx/st/', $distribution);
@@ -110,10 +112,14 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 
 			$file_path = $this->media->getFilePath($encoding->width);
 			$path = $this->app->cdn->getStreamingUri($file_path,
-				($this->media->media_set->private) ? '1 day' : '1 year');
+				($this->media->media_set->private) ? '1 day' : null);
 
 			$parts = parse_url($path);
-			$video_tag->src = substr($parts['path'], 1).'?'.$parts['query'];
+			$video_tag->src = substr($parts['path'], 1);
+			if (isset($parts['query'])) {
+				$video_tag->src.= '?'.$parts['query'];
+			}
+
 			$video_tag->width = $binding->width;
 			$video_tag->height = $binding->height;
 
