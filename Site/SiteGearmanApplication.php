@@ -6,6 +6,7 @@ require_once 'Psr/Log/LoggerInterface.php';
 require_once 'Console/CommandLine.php';
 require_once 'Site/Site.php';
 require_once 'Site/SiteApplication.php';
+require_once 'Site/SiteGearmanCommandLine.php';
 
 /**
  * Application that does a gearman task
@@ -14,7 +15,7 @@ require_once 'Site/SiteApplication.php';
  * <code>
  * <?php
  *
- * $parser   = Console_CommandLine::fromXmlFile('my-cli.xml');
+ * $parser   = SiteGearmanCommandLine::fromXMLFile('my-cli.xml');
  * $logger   = new SiteCommandLineLogger($parser);
  * $worker   = new GearmanWorker();
  * $app      = new MyGearmanApplication(
@@ -105,9 +106,12 @@ abstract class SiteGearmanApplication extends SiteApplication
 	 */
 	public function __invoke()
 	{
+		$this->initModules();
+
 		try {
 			$this->cli = $this->parser->parse();
 			$this->logger->setLevel($this->cli->options['verbose']);
+			$this->init();
 			$this->connect();
 			$this->register();
 			$this->work();
