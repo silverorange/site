@@ -305,10 +305,13 @@ class Site
 			'amazon.reduced_redundancy' => false,
 
 			// amazon Cloudfront
-			'amazon.cloudfront_enabled'            => false,
-			'amazon.distribution_key_pair_id'      => null,
-			'amazon.distribution_private_key_file' => 'cloud_front_private_key.pem',
-			'amazon.streaming_distribution'        => null,
+			'amazon.cloudfront_enabled'             => false,
+			'amazon.distribution'                   => null,
+			'amazon.streaming_distribution'         => null,
+			'amazon.private_distribution'           => null,
+			'amazon.private_streaming_distribution' => null,
+			'amazon.distribution_key_pair_id'       => null,
+			'amazon.distribution_private_key_file'  => 'cloud_front_private_key.pem',
 
 			// mobile
 			'mobile.auto_relocate'        => false,

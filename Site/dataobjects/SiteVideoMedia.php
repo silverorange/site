@@ -147,7 +147,7 @@ class SiteVideoMedia extends SiteMedia
 			$jwplayer->setSession($app->session);
 		}
 
-		$expires = ($this->media_set->private) ? '1 day' : '1 year';
+		$expires = ($this->media_set->private) ? '1 day' : null;
 
 		foreach ($this->media_set->encodings as $encoding) {
 			if (!$this->encodingExists($encoding->shortname)) {

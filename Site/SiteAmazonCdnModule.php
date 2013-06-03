@@ -333,52 +333,37 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public function getUri($filename, $expires = null)
 	{
-		$uri = '';
+		if ($this->app->config->amazon->cloudfront_enabled &&
+			$this->cf instanceof AmazonCloudFront) {
 
-		if ($expires === null) {
-			$uri = sprintf(
-				'%s%s',
-				$this->app->isSecure() ?
-					$this->app->config->uri->secure_cdn_base :
-					$this->app->config->uri->cdn_base,
-				rawurlencode($filename)
-			);
+			if ($expires === null) {
+				$uri = sprintf('%s://%s/%s',
+					$this->app->isSecure() ? 'https' : 'http',
+					$this->app->config->amazon->distribution,
+					$filename);
+			} else {
+				$options = array(
+					'Secure' => $this->app->isSecure(),
+				);
+
+				$uri = $this->cf->get_private_object_url(
+					$this->app->config->amazon->private_distribution,
+					$filename,
+					$expires,
+					$options
+				);
+			}
 		} else {
 			$options = array(
 				'https' => $this->app->isSecure(),
 			);
 
-			// TODO: replace this with commented out block below so we can use
-			// cloudfront where appropriate.
 			$uri = $this->s3->get_object_url(
 				$this->bucket,
 				$filename,
 				$expires,
 				$options
 			);
-
-			// TODO: add enabled flag for cloudfront. get private_object_url
-			// expects the base to not include trailing slash and protocal, but
-			// cdn base does.
-			/*
-			if ($this->cf instanceof AmazonCloudFront) {
-				$uri = $this->cf->get_private_object_url(
-					$this->app->isSecure() ?
-						$this->app->config->uri->secure_cdn_base :
-						$this->app->config->uri->cdn_base,
-					$filename,
-					$expires,
-					$options
-				);
-			} else {
-				$uri = $this->s3->get_object_url(
-					$this->bucket,
-					$filename,
-					$expires,
-					$options
-				);
-			}
-			*/
 		}
 
 		return $uri;
@@ -397,16 +382,35 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public function getStreamingUri($filename, $expires = null)
 	{
-		if (!$this->hasStreamingDistribution()) {
+		if (!$this->app->config->amazon->cloudfront_enabled ||
+			!$this->cf instanceof AmazonCloudFront) {
+			throw new SwatException('Cloudfront must be enabled '.
+				'streaming URIs in the Amazon CDN module');
+
+		} elseif (!$this->hasStreamingDistribution()) {
 			throw new SwatException('Distribution keys are required for '.
 				'streaming URIs in the Amazon CDN module');
 		}
 
-		return $this->cf->get_private_object_url(
-			$this->streaming_distribution,
-			$filename,
-			$expires
-		);
+		if ($expires === null) {
+			$uri = sprintf('%s://%s/%s',
+				$this->app->isSecure() ? 'https' : 'http',
+				$this->app->config->amazon->streaming_distribution,
+				$filename);
+		} else {
+			$options = array(
+				'Secure' => $this->app->isSecure(),
+			);
+
+			$uri = $this->cf->get_private_object_url(
+				$this->app->config->amazon->private_streaming_distribution,
+				$filename,
+				$expires,
+				$options
+			);
+		}
+
+		return $uri;
 	}
 
 	// }}}
