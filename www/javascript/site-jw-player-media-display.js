@@ -191,7 +191,7 @@ SiteJwPlayerMediaDisplay.prototype.addSource = function(
 		file: source_uri,
 		label: label,
 		width: width
-	}	
+	}
 
 	this.sources.push(source);
 };
@@ -289,12 +289,14 @@ SiteJwPlayerMediaDisplay.prototype.getBestQualitySource = function(
 	var default_source = null;
 	var min_diff = null;
 	var count = 0;
+
 	for (var i = 0; i < this.sources.length; i++) {
 		if (!this.sources[i].width) {
 			continue;
 		}
 
 		var diff = Math.abs(this.sources[i].width - player_width);
+
 		if (min_diff === null || diff < min_diff) {
 			min_diff = diff;
 			default_source = i;
@@ -418,7 +420,8 @@ SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function(fullscreen)
 
 	if (fullscreen) {
 		var default_source = this.getBestQualitySource(
-			screen.width, screen.height);
+			YAHOO.util.Dom.getViewportWidth(),
+			YAHOO.util.Dom.getViewportHeight());
 	} else {
 		var region = YAHOO.util.Dom.getRegion(this.container);
 		var default_source = this.getBestQualitySource(
