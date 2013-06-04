@@ -106,6 +106,10 @@ abstract class SiteGearmanApplication extends SiteApplication
 	 */
 	public function __invoke()
 	{
+		if (extension_loaded('pcntl')) {
+			pcntl_signal(SIGTERM, array($this, 'handleSignal'));
+		}
+
 		$this->initModules();
 
 		try {
@@ -149,6 +153,25 @@ abstract class SiteGearmanApplication extends SiteApplication
 	abstract protected function doWork(GearmanJob $job);
 
 	// }}}
+	// {{{ public function handleSignal()
+
+	/**
+	 * Handles signals sent to this process
+	 *
+	 * @var integer $signal the sinal that was received (e.g. SIGTERM).
+	 *
+	 * @return void
+	 */
+	public function handleSignal($signal)
+	{
+		switch ($signal) {
+		case SIGTERM:
+			$this->handleSigTerm();
+			break;
+		}
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	/**
@@ -181,7 +204,6 @@ abstract class SiteGearmanApplication extends SiteApplication
 			)
 		);
 
-		$this->worker->setTimeout($this->cli->options['timeout']);
 		$this->worker->addServer(
 			$this->cli->args['address'],
 			$this->cli->options['port']
@@ -230,11 +252,65 @@ abstract class SiteGearmanApplication extends SiteApplication
 			PHP_EOL . PHP_EOL
 		);
 
-		while ($this->worker->work()) {
-			if ($this->worker->returnCode() !== GEARMAN_SUCCESS) {
-				$this->logger->error($worker->error() . PHP_EOL);
+		$this->worker->setTimeout(100);
+
+		while (1) {
+			$this->worker->work();
+
+			if (extension_loaded('pcntl')) {
+				pcntl_signal_dispatch();
+			}
+
+			if ($this->worker->returnCode() === GEARMAN_SUCCESS) {
+				continue;
+			}
+
+			if (!$this->worker->wait()) {
+				switch ($this->worker->returnCode()) {
+				case GEARMAN_TIMEOUT:
+					$this->logger->debug(
+							'=: ' . Site::_('work loop timeout') . PHP_EOL
+					);
+					break;
+				case GEARMAN_NO_ACTIVE_FDS:
+					// not connected to server, wait a bit
+					$this->logger->info(
+						Site::_('Not connected to any server. Waiting ... ')
+					);
+					sleep(10);
+					$this->logger->info(Site::_('done') . PHP_EOL);
+					break;
+				default:
+					$this->logger->error($worker->error() . PHP_EOL);
+					break 2;
+				}
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function handleSigTerm()
+
+	/**
+	 * Provides a safe shutdown function
+	 *
+	 * When this worker is stopped via a monitoring script sending SIGTERM
+	 * this method can safely finish the current job before ending the current
+	 * process.
+	 *
+	 * If the job can't be finished, the job can be cancelled or requeued.
+	 * Subclasses must call exit() or parent::handleSigTerm() to ensure
+	 * the process ends.
+	 *
+	 * @param GearmanJob $job the currently runing job or null if no job is
+	 *                        currently running.
+	 *
+	 * @return void
+	 */
+	protected function handleSigTerm(GearmanJob $job = null)
+	{
+		$this->logger->info(Site::_('Got SIGTERM, shutting down.' . PHP_EOL));
+		exit();
 	}
 
 	// }}}

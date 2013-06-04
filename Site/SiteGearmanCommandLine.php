@@ -116,23 +116,6 @@ abstract class SiteGearmanCommandLine
 				)
 			);
 		}
-
-		if (!isset($parser->options['timeout'])) {
-			$parser->addOption(
-				'timeout',
-				array(
-					'short_name'  => '-t',
-					'long_name'   => '--timeout',
-					'action'      => 'StoreInt',
-					'default'     => -1,
-					'description' => Site::_(
-						'Connection timeout to gearmand server in '.
-						'milliseconds. By default, the connection does not '.
-						'timeout.'
-					)
-				)
-			);
-		}
 	}
 
 	// }}}
