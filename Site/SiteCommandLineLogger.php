@@ -29,9 +29,14 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	const LEVEL_ERRORS = 1;
 
 	/**
-	 * Show all log levels.
+	 * Show information messages.
 	 */
-	const LEVEL_ALL = 2;
+	const LEVEL_INFO = 2;
+
+	/**
+	 * Show detailed debugging information.
+	 */
+	const LEVEL_DEBUG = 3;
 
 	// }}}
 	// {{{ protected properties
@@ -218,6 +223,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	// }}}
 	// {{{ public function notice()
 
+
 	/**
 	 * Logs normal, but significant events
 	 *
@@ -230,7 +236,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 */
 	public function notice($message, array $context = array())
 	{
-		if ($this->level >= self::LEVEL_ALL) {
+		if ($this->level >= self::LEVEL_INFO) {
 			$this->out->stdout($this->interplorate($message, $context));
 		}
 	}
@@ -268,7 +274,9 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 */
 	public function debug($message, array $context = array())
 	{
-		$this->notice($message, $context);
+		if ($this->level >= self::LEVEL_DEBUG) {
+			$this->out->stdout($this->interplorate($message, $context));
+		}
 	}
 
 	// }}}
