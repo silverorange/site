@@ -273,11 +273,9 @@ SiteJwPlayerMediaDisplay.prototype.getImage = function()
 
 SiteJwPlayerMediaDisplay.prototype.getSkin = function()
 {
-	var skin = (this.skin === null) ? 'six' : this.skin;
 	var base_tag = document.getElementsByTagName('base');
 	var base_href = (base_tag.length > 0) ? base_tag[0].href : '';
-
-	return base_href + 'packages/site/javascript/jwplayer-skins/' + skin + '.xml';
+	return base_href + this.skin;
 };
 
 // }}}

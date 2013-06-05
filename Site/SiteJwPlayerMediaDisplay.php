@@ -109,25 +109,29 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function setSkin($skin)
 	{
-		$valid_skins = array(
-			'six',
-			'bekle',
-			'modieus',
-			'glow',
-			'five',
-			'beelden',
-			'stormtrooper',
-			'vapor',
-			'roundster',
-		);
+		if (strpos($skin, '.xml') === false) {
+			if ($skin === null) {
+				$skin = 'six';
+			}
 
-		if ($skin !== null && $skin !== '' && !in_array($skin, $valid_skins)) {
-			throw new SwatException('Skin not valid');
-		}
+			$valid_skins = array(
+				'six',
+				'bekle',
+				'modieus',
+				'glow',
+				'five',
+				'beelden',
+				'stormtrooper',
+				'vapor',
+				'roundster',
+			);
 
-		// six is the default skin, but jwplayer breaks if you actually pass it
-		// as a skin.
-		if ($skin != 'six') {
+			if (!in_array($skin, $valid_skins)) {
+				throw new SwatException('Skin not valid');
+			} else {
+				$this->skin = 'packages/site/javascript/jwplayer-skins/'.$skin.'.xml';
+			}
+		} else {
 			$this->skin = $skin;
 		}
 	}
