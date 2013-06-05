@@ -423,9 +423,14 @@ SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function(fullscreen)
 			YAHOO.util.Dom.getViewportWidth(),
 			YAHOO.util.Dom.getViewportHeight());
 	} else {
-		var region = YAHOO.util.Dom.getRegion(this.container);
-		var default_source = this.getBestQualitySource(
-			region.width, region.height);
+		// Disable this for now. JwPlayer has a bug when paused videos return
+		// from fullscreen they start playing again. On desktop browsers/tablets
+		// this is annoying. On phones that require fullscreen playback it leads
+		// to not being able to close the video.
+		//var region = YAHOO.util.Dom.getRegion(this.container);
+		//var default_source = this.getBestQualitySource(
+		//	region.width, region.height);
+		var default_source = null;
 	}
 
 	if (default_source !== null) {
