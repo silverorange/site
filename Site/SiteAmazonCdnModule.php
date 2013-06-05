@@ -44,7 +44,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	public $cloudfront_enabled;
 
 	/**
-	 * Cloudfront streaming distribution
+	 * CloudFront streaming distribution
 	 *
 	 * @var string
 	 */
@@ -336,23 +336,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		if ($this->app->config->amazon->cloudfront_enabled &&
 			$this->cf instanceof AmazonCloudFront) {
 
-			if ($expires === null) {
-				$uri = sprintf('%s://%s/%s',
-					$this->app->isSecure() ? 'https' : 'http',
-					$this->app->config->amazon->distribution,
-					$filename);
-			} else {
-				$options = array(
-					'Secure' => $this->app->isSecure(),
-				);
-
-				$uri = $this->cf->get_private_object_url(
-					$this->app->config->amazon->private_distribution,
-					$filename,
-					$expires,
-					$options
-				);
-			}
+			return $this->getCloudFrontUri($filename, $expires);
 		} else {
 			$options = array(
 				'https' => $this->app->isSecure(),
@@ -382,35 +366,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public function getStreamingUri($filename, $expires = null)
 	{
-		if (!$this->app->config->amazon->cloudfront_enabled ||
-			!$this->cf instanceof AmazonCloudFront) {
-			throw new SwatException('Cloudfront must be enabled '.
-				'streaming URIs in the Amazon CDN module');
-
-		} elseif (!$this->hasStreamingDistribution()) {
-			throw new SwatException('Distribution keys are required for '.
-				'streaming URIs in the Amazon CDN module');
-		}
-
-		if ($expires === null) {
-			$uri = sprintf('%s://%s/%s',
-				$this->app->isSecure() ? 'https' : 'http',
-				$this->app->config->amazon->streaming_distribution,
-				$filename);
-		} else {
-			$options = array(
-				'Secure' => $this->app->isSecure(),
-			);
-
-			$uri = $this->cf->get_private_object_url(
-				$this->app->config->amazon->private_streaming_distribution,
-				$filename,
-				$expires,
-				$options
-			);
-		}
-
-		return $uri;
+		return $this->getCloudFrontUri($filename, $expires, true);
 	}
 
 	// }}}
@@ -430,6 +386,62 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			$this->cf instanceof AmazonCloudFront &&
 			$this->streaming_distribution !== null
 		);
+	}
+
+	// }}}
+	// {{{ protected function getCloudFrontUri()
+
+	protected function getCloudFrontUri($filename, $expires = null,
+		$streaming = false)
+	{
+		$config = $this->app->config->amazon;
+
+		if (!$config->cloudfront_enabled ||
+			!$this->cf instanceof AmazonCloudFront) {
+			throw new SwatException('CloudFront must be enabled '.
+				'streaming URIs in the Amazon CDN module');
+		}
+
+		if ($streaming) {
+			if (!$this->hasStreamingDistribution()) {
+				throw new SwatException('Distribution keys are required for '.
+					'streaming URIs in the Amazon CDN module');
+			}
+
+			$distribution = ($expires === null) ?
+				'streaming_distribution' :
+				'private_streaming_distribution';
+
+		} else {
+			$distribution = ($expires === null) ?
+				'distribution' :
+				'private_distribution';
+		}
+
+		if ($config->$distribution === null) {
+			throw new SwatException('amazon.'.$distribution.'
+				config setting must be set.');
+		}
+
+		if ($expires === null) {
+			$uri = sprintf('%s://%s/%s',
+				$this->app->isSecure() ? 'https' : 'http',
+				$config->$distribution,
+				$filename);
+		} else {
+			$options = array(
+				'Secure' => $this->app->isSecure(),
+			);
+
+			$uri = $this->cf->get_private_object_url(
+				$config->$distribution,
+				$filename,
+				$expires,
+				$options
+			);
+		}
+
+		return $uri;
 	}
 
 	// }}}
