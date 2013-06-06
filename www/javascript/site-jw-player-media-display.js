@@ -22,6 +22,9 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.swf_uri = null;
 	this.vtt_uri = null;
 
+	this.menu_title = null;
+	this.menu_link = null;
+
 	this.upgrade_message = null;
 	this.on_complete_message = null;
 	this.resume_message =
@@ -109,6 +112,11 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		width:       '100%',
 		aspectratio: aspect_ratio,
 		flashplayer: this.swf_uri,
+		abouttext:   this.menu_title,
+		aboutlink:   this.menu_link,
+		analytics:   {
+			enabled: false // turn off JW Player's built-in analytics
+		},
 		ga:          {} // this can be blank. JW Player will use the _gaq var.
 	});
 

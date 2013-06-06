@@ -22,6 +22,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $on_complete_message = null;
 	public $swf_uri = null;
 	public $space_to_pause = false;
+	public $menu_title = null;
+	public $menu_link = null;
 
 	/*
 	 * Whether or not to show the on-complete-message when the video loads
@@ -372,6 +374,18 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.".
 				"display_on_complete_message_on_load = true;\n",
 				$this->getJavascriptVariableName());
+		}
+
+		if ($this->menu_link !== null) {
+			$javascript.= sprintf("\t%s.menu_link = %s;\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavascriptString($this->menu_link));
+		}
+
+		if ($this->menu_title !== null) {
+			$javascript.= sprintf("\t%s.menu_title = %s;\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavascriptString($this->menu_title));
 		}
 
 		foreach ($this->valid_mime_types as $mime_type) {
