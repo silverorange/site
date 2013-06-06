@@ -95,12 +95,14 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		var aspect_ratio = null;
 	}
 
+	var playlist = [{
+		image: this.getImage(),
+		sources: this.getSources(),
+		tracks: this.getTracks()
+	}];
+
 	this.player = jwplayer(this.player_id).setup( {
-		playlist: [{
-			image: this.getImage(),
-			sources: this.getSources(),
-			tracks: this.getTracks()
-		}],
+		playlist:    playlist,
 		skin:        this.getSkin(),
 		stretching:  this.stretching,
 		primary:     'flash', // to allow for RTMP streaming
@@ -151,6 +153,15 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 	this.player.onPlay(function() {
 		if (that.overlay !== null) {
 			that.overlay.style.display = 'none';
+		}
+	});
+
+	// if a video inits in a hidden state, there will be no image set
+	// when the video becomes visible, set the image
+	this.player.onResize(function() {
+		if (!playlist[0].image) {
+			playlist[0].image = that.getImage();
+			that.player.load(playlist);
 		}
 	});
 };
@@ -254,6 +265,10 @@ SiteJwPlayerMediaDisplay.prototype.getImage = function()
 {
 	var region = YAHOO.util.Dom.getRegion(this.container);
 	var player_width = region.width;
+
+	if (player_width == 0) {
+		return null;
+	}
 
 	var default_image = null;
 	var min_diff = null;
