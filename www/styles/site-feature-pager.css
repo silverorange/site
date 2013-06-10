@@ -20,10 +20,12 @@
 
 .site-feature-pager .pager-next-prev a:hover {
 	opacity: 0.7;
+	filter: alpha(opacity=70);
 }
 
 .site-feature-pager .pager-next-prev span {
 	opacity: 0.3;
+	filter: alpha(opacity=30);
 }
 
 .site-feature-pager .pager-nav a {
@@ -39,12 +41,14 @@
 	margin: 6px;
 	background: #fff;
 	border-radius: 50%;
-	opacity: 0.5;
 	border: 1px solid #999;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
 }
 
 .site-feature-pager .pager-nav a.selected span {
 	opacity: 1;
+	filter: alpha(opacity=100);
 	border: 1px solid #666;
 }
 
