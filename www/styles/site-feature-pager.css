@@ -1,0 +1,53 @@
+.site-feature-pager {
+	position: relative;
+	overflow: hidden;
+}
+
+.site-feature-pager .pager-next-prev,
+.site-feature-pager .pager-nav {
+	position: absolute;
+	bottom: 10px;
+	width: 100%;
+	text-align: center;
+}
+
+.site-feature-pager .pager-next-prev span,
+.site-feature-pager .pager-next-prev a {
+	text-decoration: none;
+	color: #fff;
+	margin: 0 5px;
+}
+
+.site-feature-pager .pager-next-prev a:hover {
+	opacity: 0.7;
+}
+
+.site-feature-pager .pager-next-prev span {
+	opacity: 0.3;
+}
+
+.site-feature-pager .pager-nav a {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+}
+
+.site-feature-pager .pager-nav a span {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	margin: 6px;
+	background: #fff;
+	border-radius: 50%;
+	opacity: 0.5;
+	border: 1px solid #999;
+}
+
+.site-feature-pager .pager-nav a.selected span {
+	opacity: 1;
+	border: 1px solid #666;
+}
+
+.site-feature-pager .pager-page {
+}
+
