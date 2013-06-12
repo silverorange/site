@@ -7,10 +7,12 @@
  * 	<div class="slider-page">Page 2</div>
  * </div>
  *
- * Optional classes on the .site-content-slider div:
- *  - slider-with-nav: display "dot" type navigation between pages
- *  - slider-with-next-prev: display next/prev links
- *  - slider-random: choose the first page at random
+ * Optional properties on the .site-content-slider div:
+ *  - data-nav: display "dot" type navigation between pages
+ *  - data-next-prev: display next/prev links
+ *  - data-random-start: choose the first page at random
+ *  - data-text-next: next button text
+ *  - data-text-prev: previous button text
  *
  *  The .site-content-slider div can optionally have height set in CSS, or
  *  if left without height, the pages' height will be set to the height
@@ -31,7 +33,7 @@ YAHOO.util.Event.onDOMReady(function ()
 	var Anim   = YAHOO.util.Anim;
 	var Easing = YAHOO.util.Easing;
 
-	/* {{{ SiteContentSlider = function() */
+	// {{{ SiteContentSlider = function()
 
 	/**
 	 * Pager widget
@@ -64,21 +66,21 @@ YAHOO.util.Event.onDOMReady(function ()
 		this.touch_start_y = null;
 		this.touch_end_x = null;
 
+		this.initSettings();
+
 		var pages = Dom.getElementsByClassName('slider-page', 'div', container);
 
 		for (var i = 0; i < pages.length; i++) {
 			this.pages.push(new SiteContentSliderPage(pages[i], i));
 		}
 
-		if (this.pages.length > 1
-			&& Dom.hasClass(this.container, 'slider-with-nav')) {
+		if (this.pages.length > 1 && this.getSetting('nav', false)) {
 			this.drawNav();
 		} else {
 			this.nav = null;
 		}
 
-		if (this.pages.length > 1
-			&& Dom.hasClass(this.container, 'slider-with-next-prev')) {
+		if (this.pages.length > 1 && this.getSetting('next-prev', false)) {
 			this.drawNextPrev();
 		} else {
 			this.next_prev = null;
@@ -88,8 +90,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		if (this.pages.length > 0) {
 			var page;
 
-			var random_start_page = Dom.hasClass(this.container,
-				'slider-random');
+			var random_start_page = this.getSetting('random-start', false);
 
 			if (random_start_page) {
 				page = this.getPseudoRandomPage();
@@ -112,17 +113,33 @@ YAHOO.util.Event.onDOMReady(function ()
 
 	// }}}
 
-	SiteContentSlider.PAGE_CLICK_DURATION = 0.25; // seconds
-	SiteContentSlider.PAGE_AUTO_DURATION = 1.00; // seconds
-	SiteContentSlider.PAGE_INTERVAL = 10.0; // seconds
-
-	SiteContentSlider.TEXT_PREV = 'Previous';
-	SiteContentSlider.TEXT_NEXT = 'Next';
-
 	var _interval = null;
 
 	var proto = SiteContentSlider.prototype;
 
+	// {{{ proto.initSettings
+
+	proto.initSettings = function()
+	{
+		// settings set with "data-x" properties on the container tag
+		this.page_click_duration = this.getSetting('page-click-duration', 0.25);
+		this.page_auto_duration = this.getSetting('page-auto-duration', 1);
+		this.page_interval = this.getSetting('page-interval', 10);
+		this.text_next = this.getSetting('text-next', 'Next');
+		this.text_prev = this.getSetting('text-prev', 'Previous');
+	}
+
+	// }}}
+	// {{{ proto.getSetting
+
+	proto.getSetting = function(name, default_value)
+	{
+		var value = this.container.getAttribute('data-' + name);
+		return (typeof value === 'undefined' || value === null)
+			? default_value : value;
+	}
+
+	// }}}
 	// {{{ proto.initPages
 
 	proto.initPages = function()
@@ -222,11 +239,9 @@ YAHOO.util.Event.onDOMReady(function ()
 		_interval = setInterval(
 			function ()
 			{
-				that.nextPageWithAnimation(
-					SiteContentSlider.PAGE_AUTO_DURATION
-				);
+				that.nextPageWithAnimation(that.page_auto_duration);
 			},
-			SiteContentSlider.PAGE_INTERVAL * 1000
+			that.page_interval * 1000
 		);
 	};
 
@@ -316,7 +331,7 @@ YAHOO.util.Event.onDOMReady(function ()
 			new_index = Math.min(that.pages.length - 1, new_index);
 
 			that.setPageWithAnimation(that.pages[new_index],
-				SiteContentSlider.PAGE_CLICK_DURATION,
+				that.page_click_duration,
 				that.touch_x);
 
 			that.touch_start_x = null;
@@ -382,7 +397,7 @@ YAHOO.util.Event.onDOMReady(function ()
 				that.clearInterval();
 
 				that.setPageWithAnimation(this,
-					SiteContentSlider.PAGE_CLICK_DURATION);
+					that.page_click_duration);
 
 			}, this.pages[i], true);
 
@@ -400,49 +415,46 @@ YAHOO.util.Event.onDOMReady(function ()
 		this.prev.href = '#previous-page';
 		Dom.addClass(this.prev, 'slider-prev');
 		this.prev.appendChild(
-			document.createTextNode(SiteContentSlider.TEXT_PREV)
+			document.createTextNode(this.text_prev)
 		);
 
 		this.prev_insensitive = document.createElement('span');
 		Dom.addClass(this.prev_insensitive, 'swat-hidden');
 		Dom.addClass(this.prev_insensitive, 'slider-prev-insensitive');
 		this.prev_insensitive.appendChild(
-			document.createTextNode(SiteContentSlider.TEXT_PREV)
+			document.createTextNode(this.text_prev)
 		);
 
 		Event.on(this.prev, 'click', function (e) {
 			Event.preventDefault(e);
 			this.clearInterval();
-			this.prevPageWithAnimation(
-				SiteContentSlider.PAGE_CLICK_DURATION
-			);
+			this.prevPageWithAnimation(this.page_click_duration);
 		}, this, true);
 
 		Event.on(this.prev, 'dblclick', function (e) {
 			Event.preventDefault(e);
 		}, this, true);
 
+
 		// create next link
 		this.next = document.createElement('a');
 		this.next.href = '#next-page';
 		Dom.addClass(this.next, 'slider-next');
 		this.next.appendChild(
-			document.createTextNode(SiteContentSlider.TEXT_NEXT)
+			document.createTextNode(this.text_next)
 		);
 
 		this.next_insensitive = document.createElement('span');
 		Dom.addClass(this.next_insensitive, 'swat-hidden');
 		Dom.addClass(this.next_insensitive, 'slider-next-insensitive');
 		this.next_insensitive.appendChild(
-			document.createTextNode(SiteContentSlider.TEXT_NEXT)
+			document.createTextNode(this.text_next)
 		);
 
 		Event.on(this.next, 'click', function (e) {
 			Event.preventDefault(e);
 			this.clearInterval();
-			this.nextPageWithAnimation(
-				SiteContentSlider.PAGE_CLICK_DURATION
-			);
+			this.nextPageWithAnimation(this.page_click_duration);
 		}, this, true);
 
 		Event.on(this.next, 'dblclick', function (e) {
