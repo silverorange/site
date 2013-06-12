@@ -22,6 +22,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $on_complete_message = null;
 	public $swf_uri = null;
 	public $space_to_pause = false;
+	public $menu_title = null;
+	public $menu_link = null;
 
 	/*
 	 * Whether or not to show the on-complete-message when the video loads
@@ -109,25 +111,29 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function setSkin($skin)
 	{
-		$valid_skins = array(
-			'six',
-			'bekle',
-			'modieus',
-			'glow',
-			'five',
-			'beelden',
-			'stormtrooper',
-			'vapor',
-			'roundster',
-		);
+		if (strpos($skin, '.xml') === false) {
+			if ($skin === null) {
+				$skin = 'six';
+			}
 
-		if ($skin !== null && $skin !== '' && !in_array($skin, $valid_skins)) {
-			throw new SwatException('Skin not valid');
-		}
+			$valid_skins = array(
+				'six',
+				'bekle',
+				'modieus',
+				'glow',
+				'five',
+				'beelden',
+				'stormtrooper',
+				'vapor',
+				'roundster',
+			);
 
-		// six is the default skin, but jwplayer breaks if you actually pass it
-		// as a skin.
-		if ($skin != 'six') {
+			if (!in_array($skin, $valid_skins)) {
+				throw new SwatException('Skin not valid');
+			} else {
+				$this->skin = 'packages/site/javascript/jwplayer-skins/'.$skin.'.xml';
+			}
+		} else {
 			$this->skin = $skin;
 		}
 	}
@@ -368,6 +374,18 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.".
 				"display_on_complete_message_on_load = true;\n",
 				$this->getJavascriptVariableName());
+		}
+
+		if ($this->menu_link !== null) {
+			$javascript.= sprintf("\t%s.menu_link = %s;\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavascriptString($this->menu_link));
+		}
+
+		if ($this->menu_title !== null) {
+			$javascript.= sprintf("\t%s.menu_title = %s;\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavascriptString($this->menu_title));
 		}
 
 		foreach ($this->valid_mime_types as $mime_type) {

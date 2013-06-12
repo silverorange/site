@@ -2,7 +2,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '1.6.21';
+$version = '1.6.22';
 $notes = <<<EOT
 No release notes for you!
 EOT;
@@ -62,18 +62,16 @@ $package->addPackageDepWithChannel('required', 'MDB2', 'pear.php.net', '2.2.2');
 $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10');
 $package->addPackageDepWithChannel('required', 'Mail_Mime', 'pear.silverorange.com', '1.5.2so3');
 $package->addPackageDepWithChannel('required', 'Net_SMTP', 'pear.php.net', '1.2.8');
-$package->addPackageDepWithChannel('required', 'Text_Password', 'pear.php.net', '1.1.1');
 $package->addPackageDepWithChannel('optional', 'XML_RPC2', 'pear.php.net', '1.1.1');
 $package->addPackageDepWithChannel('optional', 'BotrAPI', 'pear.silverorange.com', '1.3.0');
+$package->addPackageDepWithChannel('required', 'Text_Password', 'pear.php.net', '1.1.1');
 $package->addPackageDepWithChannel('optional', 'Services_Akismet2', 'pear.php.net', '0.2.0');
 $package->addPackageDepWithChannel('optional', 'sdk', 'pear.amazonwebservices.com', '1.5.6');
 $package->addPackageDepWithChannel('optional', 'Net_Notifier', 'pear.silverorange.com', '0.1.0');
 $package->addPackageDepWithChannel('optional', 'FFmpegPHP2', 'pear.codescale.net', '1.9.2');
-$package->addPackageDepWithChannel('optional', 'PSR_Log', 'pear.silverorange.com', '1.0.0');
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
 $package->addExtensionDep('optional', 'uploadprogress', '0.3.0');
 $package->addExtensionDep('optional', 'memcached', '0.1.5');
-$package->addExtensionDep('optional', 'gearman', '0.8.3');
 
 $package->generateContents();
 
