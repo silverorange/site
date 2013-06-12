@@ -1,0 +1,985 @@
+# German (Germany) translation of the Site package.
+# Copyright (C) 2009 silverorange
+# This file is distributed under the same license as the Site package.
+# silverorange <slice@silverorange.com, 209.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-09-03 11:05-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ../Site/exceptions/SiteNotFoundException.php.gettext:25
+msgid "Not Found"
+msgstr ""
+
+#: ../Site/gadgets/SiteGadget.php.gettext:153
+msgid "Untitled Gadget"
+msgstr ""
+
+#: ../Site/gadgets/SiteGadget.php.gettext:473
+#: ../Site/gadgets/SiteGadget.php.gettext:495
+msgid "Current gadget does not have a cache."
+msgstr ""
+
+#: ../Site/gadgets/SiteContentGadget.php.gettext:52
+msgid "Arbitrary Content"
+msgstr ""
+
+#: ../Site/gadgets/SiteContentGadget.php.gettext:53
+msgid "Content"
+msgstr ""
+
+#: ../Site/gadgets/SiteContentGadget.php.gettext:54
+msgid "Allow Markup"
+msgstr ""
+
+#: ../Site/gadgets/SiteContentGadget.php.gettext:57
+msgid ""
+"Provides a place to place arbitrary content in the sidebar. Content may "
+"include custom XHTML by specifying the “allow_markup” setting."
+msgstr ""
+
+#: ../Site/SiteCommentUi.php.gettext:400
+msgid "Post"
+msgstr ""
+
+#: ../Site/SiteCommentUi.php.gettext:444
+msgid "Your comment has not yet been published."
+msgstr ""
+
+#: ../Site/SiteCommentUi.php.gettext:447
+#, php-format
+msgid ""
+"Review your comment and press the <em>Post</em> button when it’s ready to "
+"publish. %s"
+msgstr ""
+
+#: ../Site/SiteCommentUi.php.gettext:451
+msgid "Comments are locked"
+msgstr ""
+
+#: ../Site/SiteCommentUi.php.gettext:454
+msgid "No new comments may be posted for this article."
+msgstr ""
+
+#: ../Site/SiteCommentUi.php.gettext:457
+msgid "Your comment has been published."
+msgstr ""
+
+#: ../Site/SiteCommentUi.php.gettext:460
+msgid "Your comment has been submitted."
+msgstr ""
+
+#: ../Site/SiteCommentUi.php.gettext:463
+msgid ""
+"Your comment will be published after being approved by the site moderator."
+msgstr ""
+
+#: ../Site/SiteTimerModule.php.gettext:127
+#, php-format
+msgid "%s ms - %s"
+msgstr ""
+
+#: ../Site/SiteTimerModule.php.gettext:135
+#: ../Site/admin/components/Ad/Details.php.gettext:66
+msgid "Total"
+msgstr ""
+
+#: ../Site/SiteTimerModule.php.gettext:138
+#, php-format
+msgid "%s ms - %s (peak)"
+msgstr ""
+
+#: ../Site/dataobjects/SiteComment.php.gettext:107
+msgid "Pending Approval"
+msgstr ""
+
+#: ../Site/dataobjects/SiteComment.php.gettext:111
+msgid "Shown on Site"
+msgstr ""
+
+#: ../Site/dataobjects/SiteComment.php.gettext:115
+msgid "Not Approved"
+msgstr ""
+
+#: ../Site/dataobjects/SiteComment.php.gettext:119
+msgid "Unknown Status"
+msgstr ""
+
+#: ../Site/dataobjects/SiteImage.php.gettext:421
+#, php-format
+msgid "Image of %s"
+msgstr ""
+
+#: ../Site/admin/SiteThemeDisplay.php.gettext:80
+msgid "View Screenshot"
+msgstr ""
+
+#: ../Site/admin/SiteThemeDisplay.php.gettext:87
+#, php-format
+msgid "Thumbnail image for %s"
+msgstr ""
+
+#: ../Site/admin/SiteThemeDisplay.php.gettext:212
+msgid "Select Theme"
+msgstr ""
+
+#: ../Site/admin/components/Sidebar/Settings.php.gettext:62
+#: ../Site/admin/components/Sidebar/Settings.php.gettext:69
+#: ../Site/admin/components/Sidebar/Settings.php.gettext:76
+#, php-format
+msgid "Sidebar gadget with id ‘%s’ not found."
+msgstr ""
+
+#: ../Site/admin/components/Sidebar/Settings.php.gettext:152
+#, php-format
+msgid "Default: %s"
+msgstr ""
+
+#: ../Site/admin/components/Sidebar/Settings.php.gettext:237
+#: ../Site/admin/components/Article/Edit.php.gettext:130
+#: ../Site/admin/components/Ad/Edit.php.gettext:114
+#, php-format
+msgid "“%s” has been saved."
+msgstr ""
+
+#: ../Site/admin/components/Sidebar/Settings.php.gettext:292
+msgid "Edit Sidebar Gadget"
+msgstr ""
+
+#: ../Site/admin/components/Sidebar/Order.php.gettext:38
+#: ../Site/admin/components/Sidebar/Order.php.gettext:50
+msgid "Order Sidebar Gadgets"
+msgstr ""
+
+#: ../Site/admin/components/Sidebar/Add.php.gettext:100
+#, php-format
+msgid "“%s” has been added to the sidebar."
+msgstr ""
+
+#: ../Site/admin/components/Sidebar/Add.php.gettext:133
+msgid "Add Sidebar Gadget"
+msgstr ""
+
+#: ../Site/admin/components/Sidebar/Delete.php.gettext:39
+#, php-format
+msgid "One gadget has been removed from the sidebar."
+msgid_plural "%s gadgets have been removed from the sidebar."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Sidebar/Delete.php.gettext:57
+#: ../Site/admin/components/Sidebar/Delete.php.gettext:60
+msgid "Remove"
+msgstr ""
+
+#: ../Site/admin/components/Sidebar/Delete.php.gettext:81
+msgid "Remove the following gadget from the sidebar?"
+msgid_plural "Remove the following gadgets from the sidebar?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Article/Index.php.gettext:118
+msgid "Sub-Articles"
+msgstr ""
+
+#: ../Site/admin/components/Article/Index.php.gettext:120
+msgid "New Sub-Article"
+msgstr ""
+
+#: ../Site/admin/components/Article/Index.php.gettext:165
+#, php-format
+msgid "Article with id ‘%s’ not found."
+msgstr ""
+
+#: ../Site/admin/components/Article/Index.php.gettext:176
+msgid "Article"
+msgstr ""
+
+#: ../Site/admin/components/Article/Index.php.gettext:185
+#: ../Site/admin/components/Article/Order.php.gettext:95
+msgid "Articles"
+msgstr ""
+
+#: ../Site/admin/components/Article/Order.php.gettext:68
+msgid "Order Articles"
+msgstr ""
+
+#: ../Site/admin/components/Article/Search.php.gettext:48
+msgid "Search"
+msgstr ""
+
+#: ../Site/admin/components/Article/Search.php.gettext:129
+msgid "result"
+msgstr ""
+
+#: ../Site/admin/components/Article/Search.php.gettext:130
+msgid "results"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:67
+#, php-format
+msgid "One article has been shown in the menu."
+msgid_plural "%d articles have been shown in the menu."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:78
+#, php-format
+msgid "One article has been hidden from the menu."
+msgid_plural "%d articles have been hidden from the menu."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:89
+#, php-format
+msgid "One article has been made searchable."
+msgid_plural "%d articles have been made searchable."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:100
+#, php-format
+msgid "One article has been hidden from the search results."
+msgid_plural "%d articles have been hidden from the search results."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:111
+#, php-format
+msgid "One article has been enabled."
+msgid_plural "%d articles have been enabled."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:122
+#, php-format
+msgid "One article has been disabled."
+msgid_plural "%d articles have been disabled."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:147
+msgid "enable"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:148
+msgid "disable"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:149
+msgid "show in menu"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:150
+msgid "hide from menu"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:151
+msgid "show in search"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleActionsProcessor.php.gettext:152
+msgid "hide from search"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleVisibilityCellRenderer.php.gettext:31
+msgid "not enabled"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleVisibilityCellRenderer.php.gettext:33
+msgid "enabled"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleVisibilityCellRenderer.php.gettext:36
+msgid "not searchable"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleVisibilityCellRenderer.php.gettext:38
+msgid "searchable"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleVisibilityCellRenderer.php.gettext:41
+msgid "not shown in menu"
+msgstr ""
+
+#: ../Site/admin/components/Article/include/SiteArticleVisibilityCellRenderer.php.gettext:43
+msgid "shown in menu"
+msgstr ""
+
+#: ../Site/admin/components/Article/Delete.php.gettext:45
+#, php-format
+msgid "One article has been deleted."
+msgid_plural "%s articles have been deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Article/Delete.php.gettext:88
+msgid "article"
+msgstr ""
+
+#: ../Site/admin/components/Article/Delete.php.gettext:88
+msgid "articles"
+msgstr ""
+
+#: ../Site/admin/components/Article/Delete.php.gettext:110
+msgid "sub-article"
+msgstr ""
+
+#: ../Site/admin/components/Article/Delete.php.gettext:110
+msgid "sub-articles"
+msgstr ""
+
+#: ../Site/admin/components/Article/Delete.php.gettext:148
+#: ../Site/admin/SiteCommentDisplay.php.gettext:302
+msgid "Delete"
+msgstr ""
+
+#: ../Site/admin/components/Article/Edit.php.gettext:64
+#, php-format
+msgid "Article with id \"%s\" not found."
+msgstr ""
+
+#: ../Site/admin/components/Article/Edit.php.gettext:84
+msgid "Shortname already exists and must be unique."
+msgstr ""
+
+#: ../Site/admin/components/Theme/Index.php.gettext:135
+#, php-format
+msgid "The theme “%s” has been selected."
+msgstr ""
+
+#: ../Site/admin/components/Ad/Delete.php.gettext:25
+#, php-format
+msgid "One ad has been deleted."
+msgid_plural "%d ads have been deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../Site/admin/components/Ad/Delete.php.gettext:69
+msgid "ad"
+msgstr ""
+
+#: ../Site/admin/components/Ad/Delete.php.gettext:69
+msgid "ads"
+msgstr ""
+
+#: ../Site/admin/components/Ad/Details.php.gettext:62
+msgid "Day"
+msgstr ""
+
+#: ../Site/admin/components/Ad/Details.php.gettext:63
+msgid "Week"
+msgstr ""
+
+#: ../Site/admin/components/Ad/Details.php.gettext:64
+msgid "2 Weeks"
+msgstr ""
+
+#: ../Site/admin/components/Ad/Details.php.gettext:65
+msgid "Month"
+msgstr ""
+
+#: ../Site/admin/components/Ad/Details.php.gettext:109
+#, php-format
+msgid "To track this ad, append the variable “%s=%s” to incoming links."
+msgstr ""
+
+#: ../Site/admin/components/Ad/Details.php.gettext:115
+msgid "Examples:"
+msgstr ""
+
+#: ../Site/admin/components/Ad/Edit.php.gettext:54
+#: ../Site/admin/components/Ad/Edit.php.gettext:106
+msgid "Editing ads is not allowed."
+msgstr ""
+
+#: ../Site/admin/components/Ad/Edit.php.gettext:74
+#, php-format
+msgid "Ad %s already exists and must be unique."
+msgstr ""
+
+#: ../Site/admin/components/Account/EmailPassword.php.gettext:53
+#: ../Site/admin/components/Account/Edit.php.gettext:55
+#, php-format
+msgid "A account with an id of ‘%d’ does not exist."
+msgstr ""
+
+#: ../Site/admin/components/Account/EmailPassword.php.gettext:58
+#: ../Site/admin/components/Account/Details.php.gettext:69
+#: ../Site/admin/components/Account/Edit.php.gettext:61
+#, php-format
+msgid "Incorrect instance for account ‘%d’."
+msgstr ""
+
+#: ../Site/admin/components/Account/EmailPassword.php.gettext:79
+#, php-format
+msgid ""
+"%1$s’s password has been reset and has been emailed to <a href=\"email:%2$s"
+"\">%2$s</a>."
+msgstr ""
+
+#: ../Site/admin/components/Account/EmailPassword.php.gettext:106
+msgid "Email New Password Confirmation"
+msgstr ""
+
+#: ../Site/admin/components/Account/EmailPassword.php.gettext:113
+msgid "Reset & Email Password"
+msgstr ""
+
+#: ../Site/admin/components/Account/EmailPassword.php.gettext:126
+#, php-format
+msgid "Are you sure you want to reset the password for %s?"
+msgstr ""
+
+#: ../Site/admin/components/Account/EmailPassword.php.gettext:139
+#, php-format
+msgid "A new password will be generated and sent to %s."
+msgstr ""
+
+#: ../Site/admin/components/Account/Details.php.gettext:64
+#, php-format
+msgid "An account with an id of ‘%d’ does not exist."
+msgstr ""
+
+#: ../Site/admin/components/Account/Details.php.gettext:108
+msgid "Account"
+msgstr ""
+
+#: ../Site/admin/components/Account/Edit.php.gettext:89
+#: ../Site/pages/SiteAccountEditPage.php.gettext:126
+msgid "An account already exists with this email address."
+msgstr ""
+
+#: ../Site/admin/components/Account/Edit.php.gettext:113
+#, php-format
+msgid "Account “%s” has been saved."
+msgstr ""
+
+#: ../Site/admin/components/Account/Edit.php.gettext:152
+#: ../Site/admin/components/Account/Edit.php.gettext:153
+msgid "New Account"
+msgstr ""
+
+#: ../Site/admin/components/Account/Edit.php.gettext:158
+msgid "Edit"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:71
+msgid "Pending Comments"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:72
+msgid "All Comments"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:73
+msgid "All Comments, Including Spam"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:74
+msgid "Spam Only"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:110
+msgid "pending comment"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:111
+msgid "pending comments"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:117
+msgid "comment"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:118
+msgid "comments"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:125
+msgid "comment (including spam)"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:126
+msgid "comments (including spam)"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:133
+msgid "spam comment"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Index.php.gettext:134
+msgid "spam comments"
+msgstr ""
+
+#: ../Site/admin/components/Comment/Edit.php.gettext:106
+msgid "Comment has been saved."
+msgstr ""
+
+#: ../Site/admin/components/InstanceSetting/Index.php.gettext:45
+msgid "Only sites with multiple instances can use this component."
+msgstr ""
+
+#: ../Site/admin/components/InstanceSetting/Index.php.gettext:92
+msgid "Instance configuration settings have been updated."
+msgstr ""
+
+#: ../Site/admin/components/InstanceSetting/Index.php.gettext:107
+msgid "Instance configuration settings have been restored to defaults."
+msgstr ""
+
+#: ../Site/admin/components/InstanceSetting/Index.php.gettext:111
+msgid "Reload this page to see your changes."
+msgstr ""
+
+#: ../Site/admin/SiteCommentVisibilityCellRenderer.php.gettext:26
+#: ../Site/admin/SiteCommentDisplay.php.gettext:167
+#: ../Site/admin/SiteCommentDisplay.php.gettext:301
+#: ../Site/admin/SiteCommentDisplay.php.gettext:312
+msgid "Spam"
+msgstr ""
+
+#: ../Site/admin/SiteCommentDisplay.php.gettext:171
+#: ../Site/admin/SiteCommentDisplay.php.gettext:318
+msgid "Unpublished"
+msgstr ""
+
+#: ../Site/admin/SiteCommentDisplay.php.gettext:175
+#: ../Site/admin/SiteCommentDisplay.php.gettext:315
+msgid "Pending"
+msgstr ""
+
+#: ../Site/admin/SiteCommentDisplay.php.gettext:298
+msgid "Approve"
+msgstr ""
+
+#: ../Site/admin/SiteCommentDisplay.php.gettext:299
+msgid "Deny"
+msgstr ""
+
+#: ../Site/admin/SiteCommentDisplay.php.gettext:300
+msgid "Publish"
+msgstr ""
+
+#: ../Site/admin/SiteCommentDisplay.php.gettext:303
+msgid "Cancel"
+msgstr ""
+
+#: ../Site/admin/SiteCommentDisplay.php.gettext:306
+msgid "Not Spam"
+msgstr ""
+
+#: ../Site/admin/SiteCommentDisplay.php.gettext:309
+msgid "Unpublish"
+msgstr ""
+
+#: ../Site/admin/SiteCommentDisplay.php.gettext:321
+msgid "Delete comment?"
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:131
+msgid "Displays this usage information and exits."
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:138
+msgid ""
+"Sets the level of verbosity of the indexer. Pass 0 to turn off all output."
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:142
+msgid "--verbose expects a level between 0 and 2."
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:213
+msgid "OPTIONS"
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:279
+#: ../Site/SiteCommandLineApplication.php.gettext:289
+#, php-format
+msgid "%s: %s"
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:316
+#, php-format
+msgid "%s: unknown command line argument '%s'"
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:443
+#, php-format
+msgid "Error opening lock file: '%s'\\n"
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:451
+#, php-format
+msgid "%s is already running.\\n"
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:473
+msgid "Lock file is missing when unlocking\\n"
+msgstr ""
+
+#: ../Site/SiteNateGoSearchIndexer.php.gettext:86
+msgid "No entries in the search queue."
+msgstr ""
+
+#: ../Site/SiteNateGoSearchIndexer.php.gettext:88
+msgid ""
+"Search queue has entries. Cached search results will be cleared after "
+"indexing is complete."
+msgstr ""
+
+#: ../Site/SiteNateGoSearchIndexer.php.gettext:118
+msgid "Clearing cached search results ... "
+msgstr ""
+
+#: ../Site/SiteNateGoSearchIndexer.php.gettext:123
+#: ../Site/SiteNateGoSearchIndexer.php.gettext:153
+#: ../Site/SiteNateGoSearchIndexer.php.gettext:207
+msgid "done"
+msgstr ""
+
+#: ../Site/SiteNateGoSearchIndexer.php.gettext:135
+msgid "Repopulating article search queue ... "
+msgstr ""
+
+#: ../Site/SiteNateGoSearchIndexer.php.gettext:188
+msgid "Indexing articles ... "
+msgstr ""
+
+#: ../Site/SiteConfigChecker.php.gettext:192
+#, php-format
+msgid "Error: [%s] is not defined.\\n"
+msgstr ""
+
+#: ../Site/SiteConfigChecker.php.gettext:204
+#, php-format
+msgid "Error: in [%s], '%s' is not defined.\\n"
+msgstr ""
+
+#: ../Site/SiteUploadProgressForm.php.gettext:125
+msgid "uploading…"
+msgstr ""
+
+#: ../Site/SiteUploadProgressForm.php.gettext:126
+msgid "hours"
+msgstr ""
+
+#: ../Site/SiteUploadProgressForm.php.gettext:127
+msgid "minutes"
+msgstr ""
+
+#: ../Site/SiteUploadProgressForm.php.gettext:128
+msgid "seconds left"
+msgstr ""
+
+#: ../Site/SiteNewPasswordMailMessage.php.gettext:141
+#, php-format
+msgid ""
+"This email is in response to your recent request for a new password for your "
+"%s account. Your new password is:"
+msgstr ""
+
+#: ../Site/SiteNewPasswordMailMessage.php.gettext:147
+msgid ""
+"After logging into your account, you can set a new password by clicking the "
+"\"Change Login Password\" on your account page."
+msgstr ""
+
+#: ../Site/SiteResetPasswordMailMessage.php.gettext:139
+#, php-format
+msgid ""
+"This email is in response to your recent request for a new password for your "
+"%s account. Your password has not yet been changed. Please click on the "
+"following link and follow the steps to change your account password."
+msgstr ""
+
+#: ../Site/SiteResetPasswordMailMessage.php.gettext:147
+msgid ""
+"Clicking on this link will take you to a page that requires you to enter in "
+"and confirm a new password. Once you have chosen and confirmed your new "
+"password you will be taken to your account page."
+msgstr ""
+
+#: ../Site/SiteResetPasswordMailMessage.php.gettext:152
+msgid "Why did I get this email?"
+msgstr ""
+
+#: ../Site/SiteResetPasswordMailMessage.php.gettext:154
+msgid ""
+"When someone forgets their password the best way for us to verify their "
+"identity is to send an email to the address listed in their account. By "
+"clicking on the link above you are verifying that you requested a new "
+"password for your account."
+msgstr ""
+
+#: ../Site/SiteResetPasswordMailMessage.php.gettext:160
+msgid "I did not request a new password:"
+msgstr ""
+
+#: ../Site/SiteResetPasswordMailMessage.php.gettext:162
+#, php-format
+msgid ""
+"If you did not request a new password from %s then someone may have "
+"accidentally entered your email when requesting a new password. Have no "
+"fear! Your account information is safe. Simply ignore this email and "
+"continue using your existing password."
+msgstr ""
+
+#: ../Site/Site.php.gettext:116
+#, php-format
+msgid "Methods for class %s:"
+msgstr ""
+
+#: ../Site/Site.php.gettext:139
+#, php-format
+msgid "Properties for class %s:"
+msgstr ""
+
+#: ../Site/SiteTagEntry.php.gettext:168
+#, php-format
+msgid "The %s field is required."
+msgstr ""
+
+#: ../Site/SiteTagEntry.php.gettext:343
+msgid "remove"
+msgstr ""
+
+#: ../Site/SiteTagEntry.php.gettext:344
+msgid "(new)"
+msgstr ""
+
+#: ../Site/SiteTagEntry.php.gettext:345
+msgid "Add Tag"
+msgstr ""
+
+#: ../Site/pages/SiteEditPage.php.gettext:77
+#: ../Site/pages/SiteEditPage.php.gettext:245
+msgid "There is a problem with the information submitted."
+msgstr ""
+
+#: ../Site/pages/SiteEditPage.php.gettext:80
+msgid ""
+"In order to ensure your security, we were unable to process your request. "
+"Please try again."
+msgstr ""
+
+#: ../Site/pages/SiteEditPage.php.gettext:248
+msgid "Please address the fields highlighted below and re-submit the form."
+msgstr ""
+
+#: ../Site/pages/SiteAccountEditPage.php.gettext:130
+#, php-format
+msgid "You can %srequest a new password%s to log into the existing account."
+msgstr ""
+
+#: ../Site/pages/SiteAccountEditPage.php.gettext:189
+msgid "Your account has been created."
+msgstr ""
+
+#: ../Site/pages/SiteAccountEditPage.php.gettext:194
+msgid "Account details have been updated."
+msgstr ""
+
+#: ../Site/pages/SiteAccountEditPage.php.gettext:212
+msgid "Update Account Details"
+msgstr ""
+
+#: ../Site/pages/SiteAccountEditPage.php.gettext:227
+#: ../Site/pages/SiteAccountEditPage.php.gettext:242
+msgid "Create a New Account"
+msgstr ""
+
+#: ../Site/pages/SiteAccountEditPage.php.gettext:229
+#: ../Site/pages/SiteAccountEditPage.php.gettext:244
+msgid "Edit Account Details"
+msgstr ""
+
+#: ../Site/pages/SiteDBEditPage.php.gettext:42
+msgid "An error has occurred. The item was not saved."
+msgstr ""
+
+#: ../Site/pages/SiteAccountChangePasswordPage.php.gettext:65
+#: ../Site/pages/SiteAccountResetPasswordPage.php.gettext:121
+msgid "Account password has been updated."
+msgstr ""
+
+#: ../Site/pages/SiteAccountChangePasswordPage.php.gettext:89
+msgid "Your password is incorrect."
+msgstr ""
+
+#: ../Site/pages/SiteAccountChangePasswordPage.php.gettext:113
+msgid "Choose a New Password"
+msgstr ""
+
+#: ../Site/pages/SiteAccountChangePasswordPage.php.gettext:122
+msgid "New Password"
+msgstr ""
+
+#: ../Site/pages/SiteContactPage.php.gettext:29
+msgid "General Question"
+msgstr ""
+
+#: ../Site/pages/SiteContactPage.php.gettext:30
+msgid "Website"
+msgstr ""
+
+#: ../Site/pages/SiteContactPage.php.gettext:31
+msgid "Privacy"
+msgstr ""
+
+#: ../Site/pages/SiteContactPage.php.gettext:104
+#, php-format
+msgid "Email From: %s"
+msgstr ""
+
+#: ../Site/pages/SiteAccountLoginPage.php.gettext:71
+msgid "Login Incorrect"
+msgstr ""
+
+#: ../Site/pages/SiteAccountLoginPage.php.gettext:76
+msgid "Please check the spelling on your email address or password."
+msgstr ""
+
+#: ../Site/pages/SiteAccountLoginPage.php.gettext:78
+#, php-format
+msgid "Password is case-sensitive. Make sure your %sCaps Lock%s key is off."
+msgstr ""
+
+#: ../Site/pages/SiteAccountLoginPage.php.gettext:119
+#, php-format
+msgid " %sForgot your password?%s"
+msgstr ""
+
+#: ../Site/pages/SiteSearchResultsPage.php.gettext:337
+#, php-format
+msgid "Did you mean “%s”?"
+msgstr ""
+
+#: ../Site/pages/SiteSearchResultsPage.php.gettext:371
+#, php-format
+msgid "No results found for “%s”."
+msgstr ""
+
+#: ../Site/pages/SiteSearchResultsPage.php.gettext:374
+msgid "No results found."
+msgstr ""
+
+#: ../Site/pages/SiteSearchResultsPage.php.gettext:385
+msgid "Your search:"
+msgstr ""
+
+#: ../Site/pages/SiteSearchResultsPage.php.gettext:410
+msgid "Try using less specific keywords"
+msgstr ""
+
+#: ../Site/pages/SiteSearchResultsPage.php.gettext:412
+msgid "Try broadening your search"
+msgstr ""
+
+#: ../Site/pages/SiteSearchResultsPage.php.gettext:562
+msgid "more"
+msgstr ""
+
+#: ../Site/pages/SiteExceptionPage.php.gettext:116
+msgid "Unknown Error"
+msgstr ""
+
+#: ../Site/pages/SiteExceptionPage.php.gettext:121
+msgid "Error"
+msgstr ""
+
+#: ../Site/pages/SiteExceptionPage.php.gettext:133
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:175
+msgid "Sorry, we couldn’t find the page you were looking for."
+msgstr ""
+
+#: ../Site/pages/SiteExceptionPage.php.gettext:135
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:177
+msgid "Sorry, the page you requested is not accessible."
+msgstr ""
+
+#: ../Site/pages/SiteExceptionPage.php.gettext:138
+msgid "Sorry, there was a problem loading the  page you requested."
+msgstr ""
+
+#: ../Site/pages/SiteAccountResetPasswordPage.php.gettext:156
+msgid ""
+"Please verify that the link is exactly the same as the one emailed to you."
+msgstr ""
+
+#: ../Site/pages/SiteAccountResetPasswordPage.php.gettext:158
+msgid ""
+"If you requested an email more than once, only the most recent link will "
+"work."
+msgstr ""
+
+#: ../Site/pages/SiteAccountResetPasswordPage.php.gettext:160
+#, php-format
+msgid ""
+"If you have lost the link sent in the email, you may %shave the email sent "
+"again%s."
+msgstr ""
+
+#: ../Site/pages/SiteAccountResetPasswordPage.php.gettext:164
+msgid "Link Incorrect"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:85
+#, php-format
+msgid "HTTP status code: %s"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:86
+#, php-format
+msgid "URI: %s"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:117
+msgid ""
+"If you followed a link from our site or elsewhere, please contact us and let "
+"us know where you came from so we can do our best to fix it."
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:122
+msgid "If you typed in the address, please double check the spelling."
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:157
+msgid "Bad Request"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:159
+msgid "Page Not Found"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:161
+msgid "Forbidden"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:164
+msgid "Internal Server Error"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:180
+msgid "Sorry, there was a problem loading the page you requested."
+msgstr ""
+
+#: ../Site/pages/SiteAccountForgotPasswordPage.php.gettext:118
+msgid "There is no account with this email address."
+msgstr ""
+
+#: ../Site/pages/SiteAccountForgotPasswordPage.php.gettext:122
+#, php-format
+msgid "Make sure you entered it correctly, or %screate a New Account%s."
+msgstr ""

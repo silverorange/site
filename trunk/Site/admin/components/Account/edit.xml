@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<property name="title" translatable="yes">Account</property>
+		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Full Name</property>
+				<widget class="SwatEntry" id="fullname">
+					<property name="required" type="boolean">true</property>
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Email</property>
+				<widget class="SwatEmailEntry" id="email">
+					<property name="required" type="boolean">true</property>
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button" />
+			</widget>
+		</widget>
+	</widget>
+</swatml>

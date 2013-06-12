@@ -1,0 +1,19 @@
+.video-player .video-player-upgrade {
+	background: rgba(255, 255, 255, 0.5);
+	border-radius: 10px;
+	width: 80%;
+	margin: 0 10%;	
+	text-shadow: none;
+	font-size: 14px;
+	color: #333;
+}
+
+.video-player .video-player-upgrade a {
+	color: #333!important;
+}
+
+/* Fix for apsect-ratio sized flash player. Was broken in Chrome. */
+.video-player object {
+	top: 0;
+	left: 0;
+}

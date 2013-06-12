@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<property name="title" translatable="yes">Sidebar Gadget</property>
+		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatContainer" id="settings_container" />
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button" />
+			</widget>
+		</widget>
+	</widget>
+</swatml>

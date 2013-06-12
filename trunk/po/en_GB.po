@@ -1,0 +1,109 @@
+# English (Great Britain) translation of the Site package.
+# Copyright (C) 2006 silverorange
+# This file is distributed under the same license as the Site package.
+# silverorange <slice@silverorange.com, 2006.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Site 1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-11-14 16:22-0400\n"
+"PO-Revision-Date: 2006-10-19 17:53-0300\n"
+"Last-Translator: Nathan Fredrickson <nathan@silverorange.com>\n"
+"Language-Team: silverorange\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../Site/exceptions/SiteNotFoundException.php.gettext:25
+msgid "Not Found"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:71
+#, php-format
+msgid "HTTP status code: %s"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:72
+#, php-format
+msgid "URI: %s"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:103
+msgid ""
+"If you followed a link from our site or elsewhere, please contact us and let "
+"us know where you came from so we can do our best to fix it."
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:108
+msgid "If you typed in the address, please double check the spelling."
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:140
+msgid "Page Not Found"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:142
+msgid "Forbidden"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:145
+msgid "Internal Server Error"
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:156
+#: ../Site/pages/SiteExceptionPage.php.gettext:133
+msgid "Sorry, we couldn’t find the page you were looking for."
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:158
+#: ../Site/pages/SiteExceptionPage.php.gettext:135
+msgid "Sorry, the page you requested is not accessible."
+msgstr ""
+
+#: ../Site/pages/SiteHttpErrorPage.php.gettext:161
+msgid "Sorry, there was a problem loading the page you requested."
+msgstr ""
+
+#: ../Site/pages/SiteExceptionPage.php.gettext:116
+msgid "Unknown Error"
+msgstr ""
+
+#: ../Site/pages/SiteExceptionPage.php.gettext:121
+msgid "Error"
+msgstr ""
+
+#: ../Site/pages/SiteExceptionPage.php.gettext:138
+msgid "Sorry, there was a problem loading the  page you requested."
+msgstr ""
+
+#: ../Site/Site.php.gettext:115
+#, php-format
+msgid "Methods for class %s:"
+msgstr ""
+
+#: ../Site/Site.php.gettext:138
+#, php-format
+msgid "Properties for class %s:"
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:90
+msgid "Displays this usage information and exits."
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:160
+msgid "OPTIONS"
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:211
+#: ../Site/SiteCommandLineApplication.php.gettext:221
+#, php-format
+msgid "%s: %s"
+msgstr ""
+
+#: ../Site/SiteCommandLineApplication.php.gettext:248
+#, php-format
+msgid "%s: unknown command line argument '%s'"
+msgstr ""

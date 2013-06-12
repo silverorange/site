@@ -1,0 +1,44 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="details_frame">
+		<widget class="SwatToolbar" id="details_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Edit Account</property>
+				<property name="link">Account/Edit?id=%s</property>
+				<property name="stock_id">edit</property>
+			</widget>
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Email New Password</property>
+				<property name="link">Account/EmailPassword?id=%s</property>
+				<property name="stock_id">email</property>
+			</widget>
+		</widget>
+
+		<!-- {{{ Details -->
+
+		<widget class="SwatDetailsView" id="details_view">
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Name</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">fullname</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Email</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">email</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="createdate">
+				<property name="title" translatable="yes">Created On</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">createdate</property>
+				</object>
+			</object>
+		</widget>
+
+		<!-- }}} -->
+	</widget>
+</swatml>

@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatNoteBook" id="edit_notebook" />
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button">
+					<property name="title" translatable="yes">Save Changes</property>
+				</widget>
+				<widget class="SwatButton" id="default_button">
+					<property name="title" translatable="yes">Restore Defaults</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>

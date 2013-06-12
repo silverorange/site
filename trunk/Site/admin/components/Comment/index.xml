@@ -1,0 +1,38 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="search_frame">
+		<property name="title" translatable="yes">Filter Comments</property>
+		<widget class="SwatForm" id="search_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Keywords</property>
+				<widget class="SwatEntry" id="search_keywords" />
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Author</property>
+				<widget class="SwatEntry" id="search_author" />
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Show</property>
+				<widget class="SwatRadioList" id="search_visibility" />
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button">
+					<property name="title" translatable="yes">Search</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+	<widget class="SwatFrame" id="frame">
+		<property name="title" translatable="yes">Manage Comments</property>
+		<widget class="SwatContentBlock" id="results_message" />
+		<widget class="SwatForm" id="form">
+			<widget class="SwatReplicableContainer" id="comment_replicator" />
+			<widget class="AdminPagination" id="pager">
+				<property name="link">Comment</property>
+				<property name="page_size" type="integer">50</property>
+			</widget>
+		</widget>
+	</widget>
+</swatml>

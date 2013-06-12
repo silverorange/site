@@ -1,0 +1,10 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatFrame" id="sessions_frame">
+		<widget class="SwatForm" id="sessions_form">
+			<widget class="SwatMessageDisplay" id="message_display" />
+			<widget class="SwatContentBlock" id="sessions_content" />
+		</widget>
+	</widget>
+</swatml>

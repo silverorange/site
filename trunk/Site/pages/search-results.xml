@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="results_message" />
+	<widget class="SwatFrame" id="article_results_frame">
+		<property name="title" translatable="yes">Search Results</property>
+		<property name="visible" type="boolean">false</property>
+		<widget class="SwatContentBlock" id="article_results">
+			<property name="content_type">text/xml</property>
+		</widget>
+		<widget class="SiteSearchPagination" id="article_pager">
+			<property name="page_size" type="integer">10</property>
+		</widget>
+	</widget>
+</swatml>
