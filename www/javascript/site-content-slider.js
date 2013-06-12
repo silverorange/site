@@ -1,26 +1,26 @@
 /**
- * Initializes pagers on this page after the document has been loaded
+ * Initializes sliders on this page after the document has been loaded
  *
- * To set up a pager, use:
- * <div class="site-feature-pager">
- * 	<div class="pager-page">Page 1</div>
- * 	<div class="pager-page">Page 2</div>
+ * To set up a slider, use:
+ * <div class="site-content-slider">
+ * 	<div class="slider-page">Page 1</div>
+ * 	<div class="slider-page">Page 2</div>
  * </div>
  *
- * Optional classes on the .site-feature-pager div:
- *  - pager-with-nav: display "dot" type navigation between pages
- *  - pager-with-next-prev: display next/prev links
- *  - pager-random: choose the first page at random
+ * Optional classes on the .site-content-slider div:
+ *  - slider-with-nav: display "dot" type navigation between pages
+ *  - slider-with-next-prev: display next/prev links
+ *  - slider-random: choose the first page at random
  *
- *  The .site-feature-pager div can optionally have height set in CSS, or
+ *  The .site-content-slider div can optionally have height set in CSS, or
  *  if left without height, the pages' height will be set to the height
  *  of the tallest page.
  */
 YAHOO.util.Event.onDOMReady(function ()
 {
-	var pagers = YAHOO.util.Dom.getElementsByClassName('site-feature-pager');
-	for (var i = 0; i < pagers.length; i++) {
-		new SiteFeaturePager(pagers[i]);
+	var sliders = YAHOO.util.Dom.getElementsByClassName('site-content-slider');
+	for (var i = 0; i < sliders.length; i++) {
+		new SiteContentSlider(sliders[i]);
 	}
 });
 
@@ -31,14 +31,14 @@ YAHOO.util.Event.onDOMReady(function ()
 	var Anim   = YAHOO.util.Anim;
 	var Easing = YAHOO.util.Easing;
 
-	/* {{{ SiteFeaturePager = function() */
+	/* {{{ SiteContentSlider = function() */
 
 	/**
 	 * Pager widget
 	 *
 	 * @param DOMElement container
 	 */
-	SiteFeaturePager = function(container)
+	SiteContentSlider = function(container)
 	{
 		this.container = container;
 
@@ -64,21 +64,21 @@ YAHOO.util.Event.onDOMReady(function ()
 		this.touch_start_y = null;
 		this.touch_end_x = null;
 
-		var pages = Dom.getElementsByClassName('pager-page', 'div', container);
+		var pages = Dom.getElementsByClassName('slider-page', 'div', container);
 
 		for (var i = 0; i < pages.length; i++) {
-			this.pages.push(new SiteFeaturePagerPage(pages[i], i));
+			this.pages.push(new SiteContentSliderPage(pages[i], i));
 		}
 
 		if (this.pages.length > 1
-			&& Dom.hasClass(this.container, 'pager-with-nav')) {
+			&& Dom.hasClass(this.container, 'slider-with-nav')) {
 			this.drawNav();
 		} else {
 			this.nav = null;
 		}
 
 		if (this.pages.length > 1
-			&& Dom.hasClass(this.container, 'pager-with-next-prev')) {
+			&& Dom.hasClass(this.container, 'slider-with-next-prev')) {
 			this.drawNextPrev();
 		} else {
 			this.next_prev = null;
@@ -89,7 +89,7 @@ YAHOO.util.Event.onDOMReady(function ()
 			var page;
 
 			var random_start_page = Dom.hasClass(this.container,
-				'pager-random');
+				'slider-random');
 
 			if (random_start_page) {
 				page = this.getPseudoRandomPage();
@@ -112,16 +112,16 @@ YAHOO.util.Event.onDOMReady(function ()
 
 	// }}}
 
-	SiteFeaturePager.PAGE_CLICK_DURATION = 0.25; // seconds
-	SiteFeaturePager.PAGE_AUTO_DURATION = 1.00; // seconds
-	SiteFeaturePager.PAGE_INTERVAL = 10.0; // seconds
+	SiteContentSlider.PAGE_CLICK_DURATION = 0.25; // seconds
+	SiteContentSlider.PAGE_AUTO_DURATION = 1.00; // seconds
+	SiteContentSlider.PAGE_INTERVAL = 10.0; // seconds
 
-	SiteFeaturePager.TEXT_PREV = 'Previous';
-	SiteFeaturePager.TEXT_NEXT = 'Next';
+	SiteContentSlider.TEXT_PREV = 'Previous';
+	SiteContentSlider.TEXT_NEXT = 'Next';
 
 	var _interval = null;
 
-	var proto = SiteFeaturePager.prototype;
+	var proto = SiteContentSlider.prototype;
 
 	// {{{ proto.initPages
 
@@ -163,11 +163,11 @@ YAHOO.util.Event.onDOMReady(function ()
 	proto.setPage = function(page)
 	{
 		if (this.current_page !== page) {
-			Dom.addClass(page.element, 'pager-current');
+			Dom.addClass(page.element, 'slider-current');
 			Dom.addClass(page.nav, 'selected');
 
 			if (this.current_page !== null) {
-				Dom.removeClass(this.current_page.element, 'pager-current');
+				Dom.removeClass(this.current_page.element, 'slider-current');
 				Dom.removeClass(this.current_page.nav, 'selected');
 			}
 
@@ -223,10 +223,10 @@ YAHOO.util.Event.onDOMReady(function ()
 			function ()
 			{
 				that.nextPageWithAnimation(
-					SiteFeaturePager.PAGE_AUTO_DURATION
+					SiteContentSlider.PAGE_AUTO_DURATION
 				);
 			},
-			SiteFeaturePager.PAGE_INTERVAL * 1000
+			SiteContentSlider.PAGE_INTERVAL * 1000
 		);
 	};
 
@@ -316,7 +316,7 @@ YAHOO.util.Event.onDOMReady(function ()
 			new_index = Math.min(that.pages.length - 1, new_index);
 
 			that.setPageWithAnimation(that.pages[new_index],
-				SiteFeaturePager.PAGE_CLICK_DURATION,
+				SiteContentSlider.PAGE_CLICK_DURATION,
 				that.touch_x);
 
 			that.touch_start_x = null;
@@ -371,7 +371,7 @@ YAHOO.util.Event.onDOMReady(function ()
 	proto.drawNav = function()
 	{
 		this.nav = document.createElement('div');
-		Dom.addClass(this.nav, 'pager-nav');
+		Dom.addClass(this.nav, 'slider-nav');
 		this.container.appendChild(this.nav);
 
 		var that = this;
@@ -382,7 +382,7 @@ YAHOO.util.Event.onDOMReady(function ()
 				that.clearInterval();
 
 				that.setPageWithAnimation(this,
-					SiteFeaturePager.PAGE_CLICK_DURATION);
+					SiteContentSlider.PAGE_CLICK_DURATION);
 
 			}, this.pages[i], true);
 
@@ -398,23 +398,23 @@ YAHOO.util.Event.onDOMReady(function ()
 		// create previous link
 		this.prev = document.createElement('a');
 		this.prev.href = '#previous-page';
-		Dom.addClass(this.prev, 'pager-prev');
+		Dom.addClass(this.prev, 'slider-prev');
 		this.prev.appendChild(
-			document.createTextNode(SiteFeaturePager.TEXT_PREV)
+			document.createTextNode(SiteContentSlider.TEXT_PREV)
 		);
 
 		this.prev_insensitive = document.createElement('span');
 		Dom.addClass(this.prev_insensitive, 'swat-hidden');
-		Dom.addClass(this.prev_insensitive, 'pager-prev-insensitive');
+		Dom.addClass(this.prev_insensitive, 'slider-prev-insensitive');
 		this.prev_insensitive.appendChild(
-			document.createTextNode(SiteFeaturePager.TEXT_PREV)
+			document.createTextNode(SiteContentSlider.TEXT_PREV)
 		);
 
 		Event.on(this.prev, 'click', function (e) {
 			Event.preventDefault(e);
 			this.clearInterval();
 			this.prevPageWithAnimation(
-				SiteFeaturePager.PAGE_CLICK_DURATION
+				SiteContentSlider.PAGE_CLICK_DURATION
 			);
 		}, this, true);
 
@@ -425,23 +425,23 @@ YAHOO.util.Event.onDOMReady(function ()
 		// create next link
 		this.next = document.createElement('a');
 		this.next.href = '#next-page';
-		Dom.addClass(this.next, 'pager-next');
+		Dom.addClass(this.next, 'slider-next');
 		this.next.appendChild(
-			document.createTextNode(SiteFeaturePager.TEXT_NEXT)
+			document.createTextNode(SiteContentSlider.TEXT_NEXT)
 		);
 
 		this.next_insensitive = document.createElement('span');
 		Dom.addClass(this.next_insensitive, 'swat-hidden');
-		Dom.addClass(this.next_insensitive, 'pager-next-insensitive');
+		Dom.addClass(this.next_insensitive, 'slider-next-insensitive');
 		this.next_insensitive.appendChild(
-			document.createTextNode(SiteFeaturePager.TEXT_NEXT)
+			document.createTextNode(SiteContentSlider.TEXT_NEXT)
 		);
 
 		Event.on(this.next, 'click', function (e) {
 			Event.preventDefault(e);
 			this.clearInterval();
 			this.nextPageWithAnimation(
-				SiteFeaturePager.PAGE_CLICK_DURATION
+				SiteContentSlider.PAGE_CLICK_DURATION
 			);
 		}, this, true);
 
@@ -451,7 +451,7 @@ YAHOO.util.Event.onDOMReady(function ()
 
 		// create navigation element
 		this.next_prev = document.createElement('div');
-		Dom.addClass(this.next_prev, 'pager-next-prev');
+		Dom.addClass(this.next_prev, 'slider-next-prev');
 		this.next_prev.appendChild(this.prev_insensitive);
 		this.next_prev.appendChild(this.prev);
 		this.next_prev.appendChild(this.next);
@@ -507,11 +507,11 @@ YAHOO.util.Event.onDOMReady(function ()
 	// }}}
 
 	/**
-	 * Page in a pager
+	 * Page in a slider
 	 *
 	 * @param DOMElement element
 	 */
-	SiteFeaturePagerPage = function(element, index)
+	SiteContentSliderPage = function(element, index)
 	{
 		this.element = element;
 		this.index = index;
