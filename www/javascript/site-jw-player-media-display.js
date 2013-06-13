@@ -368,6 +368,7 @@ SiteJwPlayerMediaDisplay.prototype.recordEndPoint = function()
 
 	this.player.onTime(autoRecordEndPoint);
 	this.player.onPause(recordEndPoint);
+	this.player.onSeek(recordEndPoint);
 };
 
 // }}}
