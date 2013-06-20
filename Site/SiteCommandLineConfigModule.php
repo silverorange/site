@@ -1,6 +1,5 @@
 <?php
 
-require_once 'HotDate/HotDateTimeZone.php';
 require_once 'Swat/exceptions/SwatException.php';
 require_once 'Swat/SwatError.php';
 require_once 'Site/SiteErrorLogger.php';
@@ -50,7 +49,7 @@ class SiteCommandLineConfigModule extends SiteConfigModule
 
 		if ($this->date->time_zone !== null) {
 			$this->app->default_time_zone =
-				new HotDateTimeZone($this->date->time_zone);
+				new DateTimeZone($this->date->time_zone);
 		}
 
 		$this->app->default_locale = $this->i18n->locale;
