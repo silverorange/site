@@ -502,7 +502,8 @@ class SiteMobileModule extends SiteApplicationModule
 
 		if ($exp !== null) {
 			$matches = array();
-			if (preg_match($exp, $_SERVER['HTTP_USER_AGENT'], $matches) === 1) {
+			if (isset($_SERVER['HTTP_USER_AGENT']) &&
+				preg_match($exp, $_SERVER['HTTP_USER_AGENT'], $matches) === 1) {
 				$version = intval($matches[1]);
 			};
 		}
