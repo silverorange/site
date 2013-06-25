@@ -202,13 +202,19 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	{
 		if (!is_file($source)) {
 			throw new SiteCdnException(
-				sprintf(Site::_('“%s” is not a regular file.'), $source)
+				sprintf(
+					'“%s” is not a regular file.',
+					$source
+				)
 			);
 		}
 
 		if (!is_readable($source)) {
 			throw new SiteCdnException(
-				sprintf(Site::_('Unable to read “%s.”'), $source)
+				sprintf(
+					'Unable to read “%s.”',
+					$source
+				)
 			);
 		}
 
@@ -225,7 +231,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 		$new_md5 = $headers['x-amz-meta-md5'];
 		$old_md5 = isset($metadata['Headers']['x-amz-meta-md5']) ?
-			$metadata['Headers']['x-amz-meta-md5'] : '';
+			$metadata['Headers']['x-amz-meta-md5']:
+			'';
 
 		if (($old_md5 != '') && ($new_md5 === $old_md5)) {
 			$this->handleResponse(
@@ -330,16 +337,24 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 * @param string $expires expiration time expressed either as a number
 	 *                        of seconds since UNIX Epoch, or any string
 	 *                        that strtotime() can understand
+	 * @param boolean $secure whether or not to use HTTPS. If not set, the
+	 *                        value will fall back to
+	 *                        SiteWebApplication::isSecure().
 	 */
-	public function getUri($filename, $expires = null)
+	public function getUri($filename, $expires = null, $secure = null)
 	{
+		$uri = null;
+
+		if ($secure === null) {
+			$secure = $this->app->isSecure();
+		}
+
 		if ($this->app->config->amazon->cloudfront_enabled &&
 			$this->cf instanceof AmazonCloudFront) {
-
-			return $this->getCloudFrontUri($filename, $expires);
+			$uri = $this->getCloudFrontUri($filename, $expires, false, $secure);
 		} else {
 			$options = array(
-				'https' => $this->app->isSecure(),
+				'https' => $secure,
 			);
 
 			$uri = $this->s3->get_object_url(
@@ -363,10 +378,13 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 * @param string $expires expiration time expressed either as a number
 	 *                        of seconds since UNIX Epoch, or any string
 	 *                        that strtotime() can understand
+	 * @param boolean $secure whether or not to use HTTPS. If not set, the
+	 *                        value will fall back to
+	 *                        SiteWebApplication::isSecure().
 	 */
-	public function getStreamingUri($filename, $expires = null)
+	public function getStreamingUri($filename, $expires = null, $secure = null)
 	{
-		return $this->getCloudFrontUri($filename, $expires, true);
+		return $this->getCloudFrontUri($filename, $expires, true, $secure);
 	}
 
 	// }}}
@@ -392,7 +410,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	// {{{ protected function getCloudFrontUri()
 
 	protected function getCloudFrontUri($filename, $expires = null,
-		$streaming = false)
+		$streaming = null, $secure = null)
 	{
 		$config = $this->app->config->amazon;
 
@@ -409,28 +427,40 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			}
 
 			$distribution = ($expires === null) ?
-				'streaming_distribution' :
+				'streaming_distribution':
 				'private_streaming_distribution';
 
 		} else {
 			$distribution = ($expires === null) ?
-				'distribution' :
+				'distribution':
 				'private_distribution';
 		}
 
 		if ($config->$distribution === null) {
-			throw new SwatException('amazon.'.$distribution.'
-				config setting must be set.');
+			throw new SwatException(
+				sprintf(
+					'amazon.%s config setting must be set.',
+					$distribution
+				)
+			);
+		}
+
+		if ($secure === null) {
+			 $secure = $this->app->isSecure();
 		}
 
 		if ($expires === null) {
-			$uri = sprintf('%s://%s/%s',
-				$this->app->isSecure() ? 'https' : 'http',
+			$uri = sprintf(
+				'%s://%s/%s',
+				$secure ?
+					'https':
+					'http',
 				$config->$distribution,
-				$filename);
+				$filename
+			);
 		} else {
 			$options = array(
-				'Secure' => $this->app->isSecure(),
+				'Secure' => $secure,
 			);
 
 			$uri = $this->cf->get_private_object_url(
