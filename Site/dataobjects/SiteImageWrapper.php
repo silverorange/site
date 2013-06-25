@@ -47,7 +47,7 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 	}
 
 	// }}}
-	// {{{ public function loadDimensions()
+	// {{{ public function loadDimensionBindings()
 
 	/**
 	 * Efficiently loads image dimension bindings for the images in this
@@ -62,7 +62,7 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 	 *                          If null or unspecified, all dimensions are
 	 *                          loaded.
 	 */
-	public function loadDimensions(array $dimensions = null)
+	public function loadDimensionBindings(array $dimensions = null)
 	{
 		$this->attachDimensionBindings($dimensions);
 	}
@@ -163,6 +163,19 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 			$dimension_sql);
 
 		return $sql;
+	}
+
+	// }}}
+
+	// deprecated
+	// {{{ public function loadDimensions()
+
+	/**
+	 * @deprecated Use {@link SiteImageWrapper::loadDimensionBindings()}.
+	 */
+	public function loadDimensions(array $dimensions = null)
+	{
+		$this->loadDimensionBindings($dimensions);
 	}
 
 	// }}}
