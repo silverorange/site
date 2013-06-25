@@ -487,6 +487,30 @@ class SiteMobileModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function getPlatformMajorVersion()
+
+	public function getPlatformMajorVersion()
+	{
+		$version = null;
+		$exp = null;
+
+		if ($this->isAndroid()) {
+			$exp = '/Android\s+([\d\.]{1})/';
+		} elseif ($this->isIOS()) {
+			$exp = '/OS\s+([\d\_]{1})/';
+		}
+
+		if ($exp !== null) {
+			$matches = array();
+			if (preg_match($exp, $_SERVER['HTTP_USER_AGENT'], $matches) === 1) {
+				$version = intval($matches[1]);
+			};
+		}
+
+		return $version;
+	}
+
+	// }}}
 	// {{{ public function getViewport()
 
 	/**
