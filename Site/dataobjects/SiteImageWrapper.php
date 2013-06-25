@@ -7,10 +7,12 @@ require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
 /**
  * A recordset wrapper class for SiteImage objects
  *
- * To load images more efficiently, see {@link SiteImageLazyWrapper}.
+ * Note: This recordset automatically loads image dimension bindings for
+ *       images when constructed from a database result. If this behaviour is
+ *       undesirable, use {@link SiteImageLazyWrapper}.
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteImage
  * @see       SiteImageLazyWrapper
@@ -19,11 +21,17 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 {
 	// {{{ protected properties
 
+	/**
+	 * @var string
+	 */
 	protected $binding_table = 'ImageDimensionBinding';
+
+	/**
+	 * @var string
+	 */
 	protected $binding_table_image_field = 'image';
 
 	// }}}
-
 	// {{{ public function __construct()
 
 	/**
@@ -36,6 +44,27 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 		parent::__construct($recordset);
 
 		$this->attachDimensionBindings();
+	}
+
+	// }}}
+	// {{{ public function loadDimensions()
+
+	/**
+	 * Efficiently loads image dimension bindings for the images in this
+	 * recordset
+	 *
+	 * Note: SiteImageWrapper automatically loads dimension bindings when
+	 *       constructed from a database result. This method is most useful
+	 *       when manually adding images to a recordset or when using
+	 *       {@link SiteImageLazyWrapper}.
+	 *
+	 * @param array $dimensions optional. The dimension shortnames to load. Use
+	 *                          If null or unspecified, all dimensions are
+	 *                          loaded.
+	 */
+	public function loadDimensions(array $dimensions = null)
+	{
+		$this->attachDimensionBindings($dimensions);
 	}
 
 	// }}}

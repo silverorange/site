@@ -3,13 +3,16 @@
 require_once 'Site/dataobjects/SiteImageWrapper.php';
 
 /**
- * An efficient recordset wrapper class for SiteImage objects
+ * An recordset wrapper class for SiteImage objects that doesn't automatically
+ * load dimension bindings
  *
- * Allows loading images with no dimension information, and loading
- * specific dimensions rather than all dimensions.
+ * {@link SiteImageWraper} when constructed from a database result automatically
+ * efficiently loads the dimension bindings for all images. This wrapper
+ * leaves the dimension bindings unloaded, allowing them to be loaded later
+ * if and when they are needed.
  *
  * @package   Site
- * @copyright 2010 silverorange
+ * @copyright 2010-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteImage
  * @see       SiteImageWrapper
@@ -27,20 +30,6 @@ class SiteImageLazyWrapper extends SiteImageWrapper
 	{
 		// skip SiteImageWrapper's constructor that pre-loads dimensnions
 		SwatDBRecordsetWrapper::__construct($recordset);
-	}
-
-	// }}}
-	// {{{ public function loadDimensions()
-
-	/**
-	 * Load image dimensions
-	 *
-	 * @param array Dimension shortnames to load. Use null to load all
-	 *              dimensions.
-	 */
-	public function loadDimensions(array $dimensions = null)
-	{
-		$this->attachDimensionBindings($dimensions);
 	}
 
 	// }}}
