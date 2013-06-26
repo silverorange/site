@@ -596,6 +596,28 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getLargestDimension()
+
+	public function getLargestDimension()
+	{
+		$largest = null;
+
+		// Base largest only on width instead of area as most dimensions are
+		// constrained by width. Subclass where not true.
+		foreach ($this->dimension_bindings as $binding) {
+			if ($largest === null) {
+				$largest = $binding;
+			}
+
+			if ($binding->width > $largest->width) {
+				$largest = $binding;
+			}
+		}
+
+		return $largest;
+	}
+
+	// }}}
 
 	// loader methods
 	// {{{ protected function loadDimensionBindings()
@@ -688,7 +710,9 @@ class SiteImage extends SwatDBDataObject
 		try {
 			if ($this->automatically_save) {
 				$transaction = new SwatDBTransaction($this->db);
-				$this->save(); // save once to set id on this object to use for filenames
+
+				// save once to set id on this object to use for filenames
+				$this->save();
 			}
 
 			$dimension = $this->image_set->getDimensionByShortname($shortname);
@@ -698,7 +722,8 @@ class SiteImage extends SwatDBDataObject
 			$this->imagick_instances = array();
 
 			if ($this->automatically_save) {
-				$this->save(); // save again to record dimensions
+				// save again to record dimensions
+				$this->save();
 				$transaction->commit();
 			}
 		} catch (Exception $e) {
@@ -707,6 +732,53 @@ class SiteImage extends SwatDBDataObject
 			}
 
 			throw $e;
+		}
+	}
+
+	// }}}
+	// {{{ public function processMissingDimensions()
+
+	public function processMissingDimensions($image_file)
+	{
+		foreach ($this->image_set->dimensions as $dimension) {
+			if (!$this->hasDimension($dimension)) {
+				$this->processManual($image_file, $dimension);
+			}
+		}
+	}
+
+	// }}}
+	// {{{ public function processMissingDimensionsFromDimension()
+
+	public function processMissingDimensionsFromDimension($shortname)
+	{
+		$dimension = $this->getDimension($shortname);
+		if ($dimension instanceof SiteImageDimension) {
+			$this->processMissingDimensions(
+				$this->getFilePath($dimension->shortname)
+			);
+		} else {
+			throw new SiteException(
+				sprintf(
+					'Dimension ‘%s’ does not exist.',
+					$shortname
+				)
+			);
+		}
+	}
+
+	// }}}
+	// {{{ public function processMissingDimensionsFromLargestDimension()
+
+	public function processMissingDimensionsFromLargestDimension()
+	{
+		$largest = $this->getLargestDimension();
+		if ($largest instanceof SiteImageDimension) {
+			$this->processMissingDimensions(
+				$this->getFilePath($largest->shortname)
+			);
+		} else {
+			throw new SiteException('Largest dimension does not exist.');
 		}
 	}
 
