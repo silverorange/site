@@ -231,7 +231,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 		$new_md5 = $headers['x-amz-meta-md5'];
 		$old_md5 = isset($metadata['Headers']['x-amz-meta-md5']) ?
-			$metadata['Headers']['x-amz-meta-md5']:
+			$metadata['Headers']['x-amz-meta-md5'] :
 			'';
 
 		if (($old_md5 != '') && ($new_md5 === $old_md5)) {
@@ -427,12 +427,12 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			}
 
 			$distribution = ($expires === null) ?
-				'streaming_distribution':
+				'streaming_distribution' :
 				'private_streaming_distribution';
 
 		} else {
 			$distribution = ($expires === null) ?
-				'distribution':
+				'distribution' :
 				'private_distribution';
 		}
 
@@ -453,7 +453,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			$uri = sprintf(
 				'%s://%s/%s',
 				$secure ?
-					'https':
+					'https' :
 					'http',
 				$config->$distribution,
 				$filename
