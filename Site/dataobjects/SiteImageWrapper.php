@@ -9,13 +9,12 @@ require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
  *
  * Note: This recordset automatically loads image dimension bindings for
  *       images when constructed from a database result. If this behaviour is
- *       undesirable, use {@link SiteImageLazyWrapper}.
+ *       undesirable, set the lazy_load option to true.
  *
  * @package   Site
  * @copyright 2008-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteImage
- * @see       SiteImageLazyWrapper
  */
 class SiteImageWrapper extends SwatDBRecordsetWrapper
 {
@@ -32,18 +31,16 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 	protected $binding_table_image_field = 'image';
 
 	// }}}
-	// {{{ public function __construct()
+	// {{{ public function initializeFromResultSet()
 
-	/**
-	 * Creates a new recordset wrapper
-	 *
-	 * @param MDB2_Result $recordset optional. The MDB2 recordset to wrap.
-	 */
-	public function __construct($recordset = null)
+	public function initializeFromResultSet(MDB2_Result_Common $rs)
 	{
-		parent::__construct($recordset);
+		parent::initializeFromResultSet($rs);
 
-		$this->attachDimensionBindings();
+		// automatically load bindings unless lazy_load is set to true
+		if (!$this->getOption('lazy_load')) {
+			$this->loadDimensionBindings();
+		}
 	}
 
 	// }}}
@@ -55,40 +52,20 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 	 *
 	 * Note: SiteImageWrapper automatically loads dimension bindings when
 	 *       constructed from a database result. This method is most useful
-	 *       when manually adding images to a recordset or when using
-	 *       {@link SiteImageLazyWrapper}.
+	 *       when manually adding images to a recordset, or when using the
+	 *       <kbd>lazy_load</kbd> option.
 	 *
-	 * @param array $dimensions optional. The dimension shortnames to load. Use
-	 *                          If null or unspecified, all dimensions are
-	 *                          loaded.
+	 * @param string|array $dimensions optional. A string or array of dimension
+	 *                                 shortnames to include. To include all
+	 *                                 dimensions use null. If not specified,
+	 *                                 all dimensions are included.
 	 */
-	public function loadDimensionBindings(array $dimensions = null)
+	public function loadDimensionBindings($dimensions = null)
 	{
-		$this->attachDimensionBindings($dimensions);
-	}
+		if (is_string($dimensions)) {
+			$dimensions = array($dimensions);
+		}
 
-	// }}}
-	// {{{ protected function init()
-
-	protected function init()
-	{
-		parent::init();
-
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteImage');
-		$this->index_field = 'id';
-	}
-
-	// }}}
-	// {{{ protected function attachDimensionBindings()
-
-	/**
-	 * Attaches dimension bindings to the recordset
-	 *
-	 * @param array $dimensions Array of dimension shortnames to attach. To
-	 *                          attach all dimensions use null.
-	 */
-	protected function attachDimensionBindings(array $dimensions = null)
-	{
 		if ($this->getCount() > 0 &&
 			($dimensions === null || count($dimensions) > 0)) {
 
@@ -125,6 +102,16 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 			$wrapper->reindex();
 			$last_image->dimension_bindings = $wrapper;
 		}
+	}
+
+	// }}}
+	// {{{ protected function init()
+
+	protected function init()
+	{
+		parent::init();
+		$this->row_wrapper_class = SwatDBClassMap::get('SiteImage');
+		$this->index_field = 'id';
 	}
 
 	// }}}

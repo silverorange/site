@@ -8,47 +8,41 @@ require_once 'Site/dataobjects/SiteMediaEncodingBindingWrapper.php';
 /**
  * A recordset wrapper class for SiteMedia objects
  *
+ * Note: This recordset automatically loads media encoding bindings for
+ *       media when constructed from a database result. If this behaviour is
+ *       undesirable, set the lazy_load option to true.
+ *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteMedia
  */
 class SiteMediaWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ public function __construct()
+	// {{{ public function initializeFromResultSet()
 
-	public function __construct($recordset = null)
+	public function initializeFromResultSet(MDB2_Result_Common $rs)
 	{
-		parent::__construct($recordset);
+		parent::initializeFromResultSet($rs);
 
-		if ($recordset !== null) {
+		// automatically load media_set and encodings unless lazy_load is set
+		// to true
+		if (!$this->getOption('lazy_load')) {
 			$this->loadAllSubDataObjects(
 				'media_set',
 				$this->db,
 				'select * from MediaSet where id in (%s)',
-				$this->getMediaSetWrapperClass());
+				$this->getMediaSetWrapperClass()
+			);
+
+			$this->loadEncodingBindings();
 		}
-
-		$this->attachEncodingBindings();
 	}
 
 	// }}}
-	// {{{ protected function init()
+	// {{{ public function loadEncodingBindings()
 
-	protected function init()
-	{
-		parent::init();
-
-		$this->row_wrapper_class =
-			SwatDBClassMap::get('SiteMedia');
-
-		$this->index_field = 'id';
-	}
-
-	// }}}
-	// {{{ protected function attachEncodingBindings()
-
-	protected function attachEncodingBindings()
+	public function loadEncodingBindings()
 	{
 		if ($this->getCount() > 0) {
 			$ids = array();
@@ -91,6 +85,19 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 			$wrapper->reindex();
 			$last_media->encoding_bindings = $wrapper;
 		}
+	}
+
+	// }}}
+	// {{{ protected function init()
+
+	protected function init()
+	{
+		parent::init();
+
+		$this->row_wrapper_class =
+			SwatDBClassMap::get('SiteMedia');
+
+		$this->index_field = 'id';
 	}
 
 	// }}}

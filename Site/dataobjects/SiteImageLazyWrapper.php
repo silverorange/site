@@ -6,30 +6,29 @@ require_once 'Site/dataobjects/SiteImageWrapper.php';
  * An recordset wrapper class for SiteImage objects that doesn't automatically
  * load dimension bindings
  *
- * {@link SiteImageWraper} when constructed from a database result automatically
- * efficiently loads the dimension bindings for all images. This wrapper
- * leaves the dimension bindings unloaded, allowing them to be loaded later
- * if and when they are needed.
+ * This is deprecated.
  *
- * @package   Site
- * @copyright 2010-2013 silverorange
- * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
- * @see       SiteImage
- * @see       SiteImageWrapper
+ * @package    Site
+ * @copyright  2010-2013 silverorange
+ * @license    http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @see        SiteImage
+ * @see        SiteImageWrapper
+ * @deprecated {@link SiteImageWrapper} can do lazy loading using the
+ *             <kbd>lazy_load</kbd> recordset wrapper option.
  */
 class SiteImageLazyWrapper extends SiteImageWrapper
 {
 	// {{{ public function __construct()
 
-	/**
-	 * Creates a new recordset wrapper
-	 *
-	 * @param MDB2_Result $recordset optional. The MDB2 recordset to wrap.
-	 */
-	public function __construct($recordset = null)
+	public function __construct(MDB2_Reslt_Common $rs = null,
+		array $options = array())
 	{
-		// skip SiteImageWrapper's constructor that pre-loads dimensnions
-		SwatDBRecordsetWrapper::__construct($recordset);
+		$options = array_merge(
+			$options,
+			array('lazy_load' => true)
+		);
+
+		parent::__construct($rs, $options);
 	}
 
 	// }}}
