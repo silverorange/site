@@ -7,25 +7,30 @@ require_once 'Site/dataobjects/SiteMediaTypeWrapper.php';
 /**
  * A recordset wrapper class for SiteMediaEncodingBinding objects
  *
+ * Note: This recordset automatically loads media and types for encoding
+ *       bindings when constructed from a database result. If this behaviour is
+ *       undesirable, set the lazy_load option to true.
+ *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2013 silverorange
  * @see       SiteMediaEncodingBinding
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMediaEncodingBindingWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ public function __construct()
+	// {{{ public function initializeFromResultSet()
 
-	public function __construct($recordset = null)
+	public function initializeFromResultSet(MDB2_Result_Common $rs)
 	{
-		parent::__construct($recordset);
+		parent::initializeFromResultSet($rs);
 
-		if ($recordset !== null) {
+		if (!$this->getOption('lazy_load')) {
 			$this->loadAllSubDataObjects(
 				'media_type',
 				$this->db,
 				'select * from MediaType where id in (%s)',
-				SwatDBClassMap::get('SiteMediaTypeWrapper'));
+				SwatDBClassMap::get('SiteMediaTypeWrapper')
+			);
 		}
 	}
 

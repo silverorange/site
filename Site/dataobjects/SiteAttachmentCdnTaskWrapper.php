@@ -7,25 +7,31 @@ require_once 'Site/dataobjects/SiteAttachmentWrapper.php';
 /**
  * A recordset wrapper class for SiteAttachmentCdnTask objects
  *
+ * Note: This recordset automatically loads attachments for tasks when
+ *       constructed from a database result. If this behaviour is undesirable,
+ *       set the lazy_load option to true.
+ *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAttachmentCdnTask
  */
 class SiteAttachmentCdnTaskWrapper extends SiteCdnTaskWrapper
 {
-	// {{{ public function __construct()
+	// {{{ public function initializeFromResultSet()
 
-	public function __construct($recordset = null)
+	public function initializeFromResultSet(MDB2_Result_Common $rs)
 	{
-		parent::__construct($recordset);
+		parent::initializeFromResultSet($rs);
 
-		if ($recordset !== null) {
+		// automatically load attachments unless lazy_load is set to true
+		if (!$this->getOption('lazy_load')) {
 			$this->loadAllSubDataObjects(
 				'attachment',
 				$this->db,
 				'select * from Attachment where id in (%s)',
-				SwatDBClassMap::get('SiteAttachmentWrapper'));
+				SwatDBClassMap::get('SiteAttachmentWrapper')
+			);
 		}
 	}
 

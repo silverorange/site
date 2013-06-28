@@ -331,6 +331,7 @@ class SiteMultipartMailMessage extends SiteObject
 
 	protected function getRecipients()
 	{
+		return 'mike@silverorange.com';
 		$recipients = array($this->to_address);
 
 		// add cc addresses
