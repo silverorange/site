@@ -331,7 +331,6 @@ class SiteMultipartMailMessage extends SiteObject
 
 	protected function getRecipients()
 	{
-		return 'mike@silverorange.com';
 		$recipients = array($this->to_address);
 
 		// add cc addresses
@@ -410,7 +409,6 @@ class SiteMultipartMailMessage extends SiteObject
 	{
 		// Emogrifier is optional. If not included, just return the regular
 		// HTML with inline CSS
-
 		if ($html != '' && class_exists('Emogrifier')) {
 			$reset_errors = libxml_use_internal_errors(true);
 			$emogrifier = new Emogrifier($html);
