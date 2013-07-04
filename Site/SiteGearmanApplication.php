@@ -66,6 +66,13 @@ abstract class SiteGearmanApplication extends SiteApplication
 	 */
 	protected $worker = null;
 
+	/**
+	 * Error handler that existed before the work loop started
+	 *
+	 * @var Callable
+	 */
+	protected $previous_error_handler = null;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -172,6 +179,49 @@ abstract class SiteGearmanApplication extends SiteApplication
 	}
 
 	// }}}
+	// {{{ public function handleError()
+
+	/**
+	 * Handles warnings and errors that can arise from the gearman module
+	 * during the wait loop
+	 *
+	 * @param integer $errno
+	 * @param string  $errstr
+	 * @param string  $errfile
+	 * @param integer $errline
+	 * @param array   $errcontext
+	 *
+	 * @return boolean
+	 *
+	 * @see http://php.net/manual/function.set-error-handler.php
+	 */
+	public function handleError($errno, $errstr, $errfile, $errline, $errcontext)
+	{
+		$ignored_warnings = array(
+			'GearmanWorker::wait(): gearman_wait:no active file descriptors',
+		);
+
+		// if not an ignorable error, use the previous error handler
+		if ($errno !== E_WARNING || !in_array($errstr, $ignored_messages)) {
+
+			if ($this->previous_error_handler === null) {
+				// use internal error handler
+				return false;
+			}
+
+			return call_user_func(
+				$this->previous_error_handler,
+				$errno,
+				$errstr,
+				$errfile,
+				$errline,
+				$errcontext
+			);
+
+		}
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	/**
@@ -254,6 +304,12 @@ abstract class SiteGearmanApplication extends SiteApplication
 
 		$this->worker->setTimeout(100);
 
+		// wait() can cause PHP warnings, even when we safely handle the
+		// warning case. Use custom handler to ignore selected warnings.
+		$this->previous_error_handler = set_error_handler(
+			array($this, 'handleError')
+		);
+
 		while (1) {
 			$this->worker->work();
 
@@ -286,6 +342,8 @@ abstract class SiteGearmanApplication extends SiteApplication
 				}
 			}
 		}
+
+		restore_error_handler();
 	}
 
 	// }}}
