@@ -111,7 +111,7 @@ class SiteAccountLoginPage extends SiteUiPage
 				$this->app->relocate($this->relocate_uri);
 			} else {
 				$message = new SwatMessage(
-					Site::_('Your email or password are not correct'),
+					Site::_('The email or password you entered is not correct'),
 					'warning'
 				);
 
