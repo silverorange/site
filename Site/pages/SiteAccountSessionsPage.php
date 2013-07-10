@@ -419,7 +419,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$div->setContent(
 			Site::_(
 				'If you notice any unfamiliar '.
-				'devices or you forgot to log out from any device you can end '.
+				'devices or you forgot to sign out from any device you can end '.
 				'those sessions below, removing access to your account from '.
 				'those devices until the next time you use them.'
 			)
