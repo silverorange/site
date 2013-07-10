@@ -141,7 +141,7 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 			$formatted_password,
 
 			Site::_('After logging into your account, you can set a new '.
-			'password by clicking the "Change Login Password" on your '.
+			'password by clicking the "Change Password" link on your '.
 			'account page.'));
 	}
 
