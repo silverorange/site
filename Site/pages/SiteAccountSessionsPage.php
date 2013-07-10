@@ -399,9 +399,9 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 		$div->setContent(
 			Site::_(
-				'If you log in from multiple devices (for example, your '.
+				'If you sign in from multiple devices (for example, your '.
 				'phone and your desktop) you can view and manage your '.
-				'login sessions on this page.'
+				'sessions on this page.'
 			)
 		);
 
