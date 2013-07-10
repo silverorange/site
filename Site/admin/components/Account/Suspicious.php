@@ -77,7 +77,7 @@ class SiteAccountSuspicious extends AdminIndex
 		);
 
 		if ($this->app->getInstance() !== null) {
-			$where_clause = sprintf(
+			$where_clause.= sprintf(
 				' and Account.instance = %s',
 				$this->app->db->quote(
 					$this->app->getInstanceId(),
