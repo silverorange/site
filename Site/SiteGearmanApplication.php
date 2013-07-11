@@ -197,7 +197,7 @@ abstract class SiteGearmanApplication extends SiteApplication
 	 */
 	public function handleError($errno, $errstr, $errfile, $errline, $errcontext)
 	{
-		$ignored_warnings = array(
+		$ignored_messages = array(
 			'GearmanWorker::wait(): gearman_wait:no active file descriptors',
 		);
 
