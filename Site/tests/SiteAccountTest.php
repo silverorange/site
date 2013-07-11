@@ -94,7 +94,7 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 
 		$new_password = 'test2';
 
-		$this->click('link=Change Login Password');
+		$this->click('link=Change Password');
 		$this->waitForPageToLoad(30000);
 		$this->assertNoErrors();
 
@@ -126,14 +126,15 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		// logout
 		$this->logout();
 		$this->assertTrue(
-			$this->isTextPresent('Account Login'),
+			$this->isTextPresent('Account Sign In'),
 			'Did not end up on login page after logging out of account page.'
 		);
 
 		// attempt old password
 		$this->login(self::$account_email, self::$account_password);
 		$this->assertTrue(
-			$this->isTextPresent('Login Incorrect'),
+			$this->isTextPresent(
+				'The email or password you entered is not correct'),
 			'Login incorrect message not present logging in with old password.'
 		);
 
