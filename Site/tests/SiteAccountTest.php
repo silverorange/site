@@ -48,7 +48,8 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 	{
 		$this->login('bogus@bogus.com', 'bogus');
 		$this->assertTrue(
-			$this->isTextPresent('Login Incorrect'),
+			$this->isTextPresent('The email or password you entered is not '.
+				'correct'),
 			'Login incorrect message not present on bad login.'
 		);
 	}
@@ -198,7 +199,7 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 
 	protected function logout()
 	{
-		$logout_button = "xpath=//input[@type='submit' and @value='Logout']";
+		$logout_button = "xpath=//input[@type='submit' and @value='Sign Out']";
 		if ($this->isElementPresent($logout_button)) {
 			$this->click($logout_button);
 			$this->waitForPageToLoad(30000);
