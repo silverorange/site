@@ -16,7 +16,7 @@ require_once 'Site/dataobjects/SiteContactMessageWrapper.php';
  * are addressed to support staff for the website.
  *
  * @package   Site
- * @copyright 2010-2012 silverorange
+ * @copyright 2010-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactMailer extends SiteCommandLineApplication
@@ -358,7 +358,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 	{
 		$text_body = sprintf(
 			Site::_('Email From: %s'),
-			$contact_message->email);
+			$this->getFromName($contact_message)
+		);
 
 		$text_body.= "\n\n";
 
