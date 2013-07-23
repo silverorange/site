@@ -6,7 +6,7 @@ require_once 'Admin/AdminSearchClause.php';
 
 /**
  * @package   Site
- * @copyright 2012 silverorange
+ * @copyright 2012-2013 silverorange
  */
 class SiteAccountSearch
 {
@@ -43,16 +43,12 @@ class SiteAccountSearch
 
 	public function getWhereClause()
 	{
-		// The only way an account fullname can be null is if we've cleared
-		// the data from it with the privacy scripts - we don't ever want to
-		// display these accounts in the search results. Also exclude deleted
-		// accounts.
+		// Excluded deleted and cleaned accounts.
 		$where = sprintf(
-			'Account.delete_date %s %s and Account.fullname %s %s',
+			'Account.delete_date %s %s and %s',
 			SwatDB::equalityOperator(null),
 			$this->app->db->quote(null, 'date'),
-			SwatDB::equalityOperator(null, true),
-			$this->app->db->quote(null, 'text')
+			$this->getCleanedAccountClause()
 		);
 
 		foreach ($this->getWhereClauses() as $clause) {
@@ -105,6 +101,23 @@ class SiteAccountSearch
 		$clauses['email'] = $clause;
 
 		return $clauses;
+	}
+
+	// }}}
+	// {{{ protected function getCleanedAccountClause()
+
+	protected function getCleanedAccountClause()
+	{
+		// The only way an account fullname can be null is if we've cleared
+		// the data from it with the privacy scripts - we don't ever want to
+		// display these accounts in the search results.
+		$clause = sprintf(
+			'Account.fullname %s %s',
+			SwatDB::equalityOperator(null, true),
+			$this->app->db->quote(null, 'text')
+		);
+
+		return $clause;
 	}
 
 	// }}}
