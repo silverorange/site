@@ -28,7 +28,7 @@
 					<property name="tab_index" type="integer">5</property>
 				</widget>
 				<widget class="SwatFormField" id="stay_logged_in_field">
-					<property name="title" translatable="yes">Stay logged in</property>
+					<property name="title" translatable="yes">Stay signed in</property>
 					<property name="visible" type="boolean">false</property>
 					<widget class="SwatCheckbox" id="stay_logged_in">
 						<property name="tab_index" type="integer">4</property>
