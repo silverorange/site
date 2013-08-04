@@ -116,7 +116,8 @@ class SiteAccountIndex extends AdminSearch
 		$pager->total_records = SwatDB::queryOne(
 			$this->app->db,
 			sprintf(
-				'select count(id) from Account where %s',
+				'select count(1) from Account %s where %s',
+				$search->getJoinClause(),
 				$this->getWhereClause()
 			)
 		);
