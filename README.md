@@ -1,6 +1,5 @@
 Site
 ====
-
 Site is a Website framework built on top of [Swat](https://github.com/silverorange/swat).
 
 Documentation
