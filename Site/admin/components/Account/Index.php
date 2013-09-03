@@ -199,7 +199,7 @@ class SiteAccountIndex extends AdminSearch
 	{
 		static $search = null;
 
-		if ($search == null) {
+		if ($search === null) {
 			$search = new SiteAccountSearch($this->app, $this->ui);
 		}
 
