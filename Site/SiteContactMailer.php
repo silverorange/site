@@ -187,7 +187,6 @@ class SiteContactMailer extends SiteCommandLineApplication
 			if ($this->debug_domain === null) {
 				$message->save();
 			}
-
 		}
 
 		$this->debug(Site::_("\nAll done.\n"), true);
