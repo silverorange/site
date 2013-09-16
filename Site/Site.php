@@ -350,6 +350,10 @@ class Site
 			// List of gearmand servers. Servers as specified as host[:port] and are
 			// comma delimited.
 			'gearman.servers' => null,
+
+			'redis.server'   => null,
+			'redis.database' => 0,
+			'redis.prefix'   => null,
 		);
 	}
 
