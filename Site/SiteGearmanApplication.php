@@ -148,7 +148,7 @@ abstract class SiteGearmanApplication extends SiteApplication
 	}
 
 	// }}}
-	// {{{ abstract protected function doWork()
+	// {{{ abstract public function doWork()
 
 	/**
 	 * Completes a job
@@ -157,7 +157,7 @@ abstract class SiteGearmanApplication extends SiteApplication
 	 *
 	 * @param GearmanJob $job
 	 */
-	abstract protected function doWork(GearmanJob $job);
+	abstract public function doWork(GearmanJob $job);
 
 	// }}}
 	// {{{ public function handleSignal()
