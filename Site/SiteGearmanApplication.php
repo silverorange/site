@@ -197,6 +197,11 @@ abstract class SiteGearmanApplication extends SiteApplication
 	 */
 	public function handleError($errno, $errstr, $errfile, $errline, $errcontext)
 	{
+		// respect PHP's configured error handling
+		if ((error_reporting() & $errno) === 0) {
+			return;
+		}
+
 		$ignored_messages = array(
 			'GearmanWorker::wait(): gearman_wait:no active file descriptors',
 		);
