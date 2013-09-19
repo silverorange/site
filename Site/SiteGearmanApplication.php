@@ -316,34 +316,42 @@ abstract class SiteGearmanApplication extends SiteApplication
 		);
 
 		while (1) {
-			$this->worker->work();
+			if ($this->canWork()) {
+				$this->worker->work();
 
-			if (extension_loaded('pcntl')) {
-				pcntl_signal_dispatch();
-			}
+				// signal events are dispatched after a single job
+				// is completed.
+				if (extension_loaded('pcntl')) {
+					pcntl_signal_dispatch();
+				}
 
-			if ($this->worker->returnCode() === GEARMAN_SUCCESS) {
-				continue;
-			}
+				if ($this->worker->returnCode() === GEARMAN_SUCCESS) {
+					continue;
+				}
 
-			if (!$this->worker->wait()) {
-				switch ($this->worker->returnCode()) {
-				case GEARMAN_TIMEOUT:
-					$this->logger->debug(
-							'=: ' . Site::_('work loop timeout') . PHP_EOL
-					);
-					break;
-				case GEARMAN_NO_ACTIVE_FDS:
-					// not connected to server, wait a bit
-					$this->logger->info(
-						Site::_('Not connected to any server. Waiting ... ')
-					);
-					sleep(10);
-					$this->logger->info(Site::_('done') . PHP_EOL);
-					break;
-				default:
-					$this->logger->error($worker->error() . PHP_EOL);
-					break 2;
+				if (!$this->worker->wait()) {
+					switch ($this->worker->returnCode()) {
+					case GEARMAN_TIMEOUT:
+						$this->logger->debug(
+								'=: ' . Site::_('work loop timeout') . PHP_EOL
+						);
+						break;
+					case GEARMAN_NO_ACTIVE_FDS:
+						// not connected to server, wait a bit
+						$this->logger->info(
+							Site::_('Not connected to any server. Waiting ... ')
+						);
+						sleep(10);
+						$this->logger->info(Site::_('done') . PHP_EOL);
+						break;
+					default:
+						$this->logger->error($worker->error() . PHP_EOL);
+						break 2;
+					}
+				}
+			} else {
+				if (extension_loaded('pcntl')) {
+					pcntl_signal_dispatch();
 				}
 			}
 		}
@@ -374,6 +382,23 @@ abstract class SiteGearmanApplication extends SiteApplication
 	{
 		$this->logger->info(Site::_('Got SIGTERM, shutting down.' . PHP_EOL));
 		exit();
+	}
+
+	// }}}
+	// {{{ protected function canWork()
+
+	/**
+	 * Provides a place for subclasses to add application-specific timeouts
+	 *
+	 * For example, if a database server or anotehr service goes away this
+	 * can be used to wait for it to return before continuing to do gearman
+	 * work.
+	 *
+	 * @return integer the number of milliseconds to wait until trying again.
+	 */
+	protected function canWork()
+	{
+		return true;
 	}
 
 	// }}}
