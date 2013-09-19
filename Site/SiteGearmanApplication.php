@@ -390,7 +390,7 @@ abstract class SiteGearmanApplication extends SiteApplication
 	/**
 	 * Provides a place for subclasses to add application-specific timeouts
 	 *
-	 * For example, if a database server or anotehr service goes away this
+	 * For example, if a database server or another service goes away this
 	 * can be used to wait for it to return before continuing to do gearman
 	 * work.
 	 *
