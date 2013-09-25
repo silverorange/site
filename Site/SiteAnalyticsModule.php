@@ -142,9 +142,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
-			$javascript = sprintf("%s\n%s",
+			$javascript = sprintf(
+				"%s\n%s",
 				$this->getGoogleAnalyticsCommandsInlineJavascript(),
-				$this->getGoogleAnalyticsTrackerInlineJavascript());
+				$this->getGoogleAnalyticsTrackerInlineJavascript()
+			);
 		}
 
 		return $javascript;
@@ -196,8 +198,10 @@ var _gaq = _gaq || [];
 %s
 JS;
 
-			$javascript = sprintf($javascript,
-				$commands);
+			$javascript = sprintf(
+				$javascript,
+				$commands
+			);
 		}
 
 		return $javascript;
@@ -211,9 +215,9 @@ JS;
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics()) {
-			$src = ($this->app->isSecure()) ?
-				'https://ssl.google-analytics.com/ga.js' :
-				'http://www.google-analytics.com/ga.js';
+			$src = ($this->app->isSecure())
+				? 'https://ssl.google-analytics.com/ga.js'
+				: 'http://www.google-analytics.com/ga.js';
 
 			$javascript = <<<JS
 (function() {
@@ -226,8 +230,10 @@ JS;
 })();
 JS;
 
-			$javascript = sprintf($javascript,
-				$src);
+			$javascript = sprintf(
+				$javascript,
+				$src
+			);
 		}
 
 		return $javascript;
@@ -238,6 +244,7 @@ JS;
 
 	protected function initGoogleAnalyticsCommands()
 	{
+		// Default all sites to do speed sampling 100% of the time.
 		$this->ga_commands = array(
 			array(
 				'_setSiteSpeedSampleRate',
@@ -285,8 +292,11 @@ JS;
 				$e->processAndContinue();
 			} else {
 				// 10 years should be equivalent to never expiring.
-				$cookie_module->setCookie('AnalyticsOptOut', '1',
-					strtotime('+10 Years'));
+				$cookie_module->setCookie(
+					'AnalyticsOptOut',
+					'1',
+					strtotime('+10 Years')
+				);
 			}
 		}
 	}
@@ -304,17 +314,21 @@ JS;
 
 			if (count($command)) {
 				foreach ($command as $part) {
-					$options.= sprintf(', %s',
-						SwatString::quoteJavaScriptString($part));
+					$options.= sprintf(
+						', %s',
+						SwatString::quoteJavaScriptString($part)
+					);
 				}
 			}
 		} else {
 			$method = $command;
 		}
 
-		return sprintf("_gaq.push([%s%s]);",
+		return sprintf(
+			"_gaq.push([%s%s]);",
 			SwatString::quoteJavaScriptString($method),
-			$options);
+			$options
+		);
 	}
 
 	// }}}
