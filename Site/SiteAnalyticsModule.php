@@ -9,7 +9,7 @@ require_once 'Site/SiteApplicationModule.php';
  * could be added.
  *
  * @package   Site
- * @copyright 2007-2012 silverorange
+ * @copyright 2007-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
  */
@@ -46,6 +46,15 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $analytics_opt_out = false;
 
+
+	/**
+	 * Flag to tell whether to load the enchanced link attribution plugin.
+	 *
+	 * @var boolean
+	 * @link https://support.google.com/analytics/answer/2558867?hl=en&ref_topic=2558810
+	 */
+	protected $enhanced_link_attribution = false;
+
 	/**
 	 * Stack of commands to send to google analytics
 	 *
@@ -74,6 +83,30 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	public function setGoogleAccount($account)
 	{
 		$this->google_account = $account;
+	}
+
+	// }}}
+	// {{{ public function setEnhancedLinkAttribution()
+
+	public function setEnhancedLinkAttribution($enhanced_link_attribution)
+	{
+		$this->enhanced_link_attribution = (bool)$enhanced_link_attribution;
+	}
+
+	// }}}
+	// {{{ public function enableEnhancedLinkAttribution()
+
+	public function enableEnhancedLinkAttribution()
+	{
+		$this->setEnhancedLinkAttribution(true);
+	}
+
+	// }}}
+	// {{{ public function disableEnhancedLinkAttribution()
+
+	public function disableEnhancedLinkAttribution()
+	{
+		$this->setEnhancedLinkAttribution(false);
 	}
 
 	// }}}
@@ -125,10 +158,34 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
-			// always set the account first.
-			$commands = $this->getGoogleAnalyticsCommand(array(
-				'_setAccount',
-				$this->google_account));
+			$commands = null;
+
+			if ($this->enhanced_link_attribution) {
+				// Enhanced link attribution plugin comes before _setAccount in
+				// Google documentation, so put it first.
+
+				$plugin_uri = ($this->app->isSecure())
+					? 'https://ssl.google-analytics.com/plugins/ga/'.
+						'inpage_linkid.js'
+					: 'http://www.google-analytics.com/plugins/ga/'.
+						'inpage_linkid.js';
+
+				$commands.= $this->getGoogleAnalyticsCommand(
+					array(
+						'_require',
+						'inpage_linkid',
+						$plugin_uri,
+					)
+				);
+			}
+
+			// Always set the account before any further commands.
+			$commands.= $this->getGoogleAnalyticsCommand(
+				array(
+					'_setAccount',
+					$this->google_account,
+				)
+			);
 
 			foreach ($this->ga_commands as $command) {
 				$commands.= $this->getGoogleAnalyticsCommand($command);
