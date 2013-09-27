@@ -518,7 +518,7 @@ class SiteMedia extends SwatDBDataObject
 			$binding = $this->getEncodingBinding($encoding->shortname);
 
 			if ($binding instanceof SiteMediaEncodingBinding) {
-				$filenames[] = $this->getUriSuffix($encoding->shortname);
+				$filenames[] = $this->getFilePath($encoding->shortname);
 			}
 		}
 
