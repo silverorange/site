@@ -36,7 +36,8 @@ class SiteAMQPModule extends SiteApplicationModule
 
 	public function init()
 	{
-		// no initialization required
+		$config = $this->app->getModule('SiteConfigModule');
+		$this->default_namespace = $config->amqp->default_namespace;
 	}
 
 	// }}}
@@ -59,27 +60,95 @@ class SiteAMQPModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function doForeground()
+	// {{{ public function doAsyncNs()
 
-	public function doForeground($function, $job)
-	{
-	}
-
-	// }}}
-	// {{{ public function doBackgroundLow()
-
-	public function doBackgroundLow($function, $job)
+	public function doAsyncNs($namespace, $exchange, $message,
+		array $attributes = array())
 	{
 		$this->connect();
-		$this->getExchange($function)->publish((string)$job);
+		$this->getExchange($namespace, $exchange)->publish(
+			(string)$message,
+			$attributes
+		);
 	}
 
 	// }}}
-	// {{{ public function doBackgroundHigh()
+	// {{{ public function doAsync()
 
-	public function doBackgroundHigh($function, $job)
+	public function doAsync($exchange, $message, array $attributes = array())
 	{
-		$this->doBackgroundLow($function, $job);
+		$this->doAsyncNs(
+			$this->default_namespace,
+			$exchange,
+			$message,
+			$attributes
+		);
+	}
+
+	// }}}
+	// {{{ public function doSyncNs()
+
+	public function doSyncNs($namespace, $exchange, $message,
+		array $attributes = array())
+	{
+		$this->connect();
+
+		$correlation_id = uniqid(true);
+
+		$reply_queue = new AMQPQueue($this->channel);
+		$reply_queue->setFlags(AMQP_EXCLUSIVE);
+		$reply_queue->declare();
+
+		$attributes = array_merge(
+			$attributes,
+			array(
+				'correlation_id' => $correlation_id,
+				'reply_to'       => $reply_queue->getName()
+			)
+		);
+
+		$this->getExchange($namespace, $exchange)->publish(
+			(string)$message,
+			$attributes,
+			AMQP_MANDATORY | AMQP_IMMEDIATE
+		);
+
+		$response = null;
+
+		$callback = function(AMQPEnvelope $envelope, AMQPQueue $queue)
+			use $response
+		{
+			if ($envelope->getCorrelationId() === $correlation_id) {
+				$response = $envelope->getBody();
+				if (json_decode($response, true) === null ||
+					!isset($response['status'])) {
+					throw new Exception();
+				}
+				if ($response['status'] === 'fail') {
+					throw new Exception($response['body']);
+				}
+				$response = $response['body'];
+			}
+		};
+
+		while ($response === null) {
+			$reply_queue->consume($callback);
+		}
+
+		return $response;
+	}
+
+	// }}}
+	// {{{ public function doSync()
+
+	public function doSync($exchange, $message, array $attributes = array())
+	{
+		return $this->doSyncNs(
+			$this->default_namespace,
+			$exchange,
+			$message,
+			$attributes
+		);
 	}
 
 	// }}}
@@ -108,28 +177,26 @@ class SiteAMQPModule extends SiteApplicationModule
 	// }}}
 	// {{{ protected function getExchange()
 
-	protected function getExchange($name)
+	protected function getExchange($namespace, $name)
 	{
-		if (!isset($this->exchanges[$name])) {
-			$config = $this->app->getModule('SiteConfigModule');
-			$prefix = $config->amqp->prefix;
-
+		$key = $namespace.'.'.$name;
+		if (!isset($this->exchanges[$key])) {
 			$exchange = new AMQPExchange($this->channel);
-			$exchange->setName($prefix.'.'.$name);
+			$exchange->setName($key);
 			$exchange->setType(AMQP_EX_TYPE_DIRECT);
 			$exchange->setFlags(AMQP_DURABLE);
 			$exchange->declare();
 
 			$queue = new AMQPQueue($this->channel);
-			$queue->setName($prefix.'.'.$name);
+			$queue->setName($key);
 			$queue->setFlags(AMQP_DURABLE);
 			$queue->declare();
-			$queue->bind($prefix.'.'.$name);
+			$queue->bind($key);
 
-			$this->exchanges[$name] = $exchange;
+			$this->exchanges[$key] = $exchange;
 		}
 
-		return $this->exchanges[$name];
+		return $this->exchanges[$key];
 	}
 
 	// }}}
