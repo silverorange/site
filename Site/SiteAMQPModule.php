@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/SiteApplicationModule.php';
+require_once 'Site/exceptions/SiteAMQPJobFailureException.php';
 
 /**
  * Web application module for sending messages to an AMQP broker
@@ -17,23 +18,41 @@ class SiteAMQPModule extends SiteApplicationModule
 	// {{{ protected properties
 
 	/**
+	 * List of exchanges to which messages are published
+	 *
+	 * This is indexed by keys of the form "namespace.exchange".
+	 *
 	 * @var array
+	 *
+	 * @see SiteAMQPModule::getExchange()
 	 */
 	protected $exchanges = array();
 
 	/**
+	 * Connection to the AMQP server
+	 *
 	 * @var AMQPConnection
+	 *
+	 * @see SiteAMQPModule::connect()
 	 */
 	protected $connection = null;
 
 	/**
+	 * Channel to the AMQP server
+	 *
 	 * @var AMQPChannel
+	 *
+	 * @see SiteAMQPModule::connect()
 	 */
 	protected $channel = null;
 
 	// }}}
 	// {{{ public function init()
 
+	/**
+	 * Initializes this module, pulling values from the application
+	 * configuration
+	 */
 	public function init()
 	{
 		$config = $this->app->getModule('SiteConfigModule');
@@ -62,6 +81,21 @@ class SiteAMQPModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function doAsyncNs()
 
+	/**
+	 * Does an asynchronous job
+	 *
+	 * This implements background processing using AMQP. It allows offloading
+	 * processor intensive tasks where the results are not needed in the
+	 * current thread.
+	 *
+	 * @param string $namespace  the job namespace.
+	 * @param string $exchange   the job exchange.
+	 * @param string $message    the job data.
+	 * @param array  $attributes optional. Additional message attributes. See
+	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
+	 *
+	 * @return void
+	 */
 	public function doAsyncNs($namespace, $exchange, $message,
 		array $attributes = array())
 	{
@@ -77,9 +111,23 @@ class SiteAMQPModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function doAsync()
 
+	/**
+	 * Does an asynchronous job in the default application namespace
+	 *
+	 * This implements background processing using AMQP. It allows offloading
+	 * processor intensive tasks where the results are not needed in the
+	 * current thread.
+	 *
+	 * @param string $exchange   the job exchange.
+	 * @param string $message    the job data.
+	 * @param array  $attributes optional. Additional message attributes. See
+	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
+	 *
+	 * @return void
+	 */
 	public function doAsync($exchange, $message, array $attributes = array())
 	{
-		$this->doAsyncNs(
+		return $this->doAsyncNs(
 			$this->default_namespace,
 			$exchange,
 			$message,
@@ -90,6 +138,23 @@ class SiteAMQPModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function doSyncNs()
 
+	/**
+	 * Does a synchronous job and returns the result data
+	 *
+	 * This implements RPC using AMQP. It allows offloading and distrubuting
+	 * processor intensive tasks that must be done synchronously.
+	 *
+	 * @param string $namespace  the job namespace.
+	 * @param string $exchange   the job exchange.
+	 * @param string $message    the job data.
+	 * @param array  $attributes optional. Additional message attributes. See
+	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
+	 *
+	 * @return string the job result data
+	 *
+	 * @throws SiteAMQPJobFailureException if the job processor can't process
+	 *         the job.
+	 */
 	public function doSyncNs($namespace, $exchange, $message,
 		array $attributes = array())
 	{
@@ -122,14 +187,27 @@ class SiteAMQPModule extends SiteApplicationModule
 			use (&$response, $correlation_id)
 		{
 			if ($envelope->getCorrelationId() === $correlation_id) {
-				$response = $envelope->getBody();
-				if (($response = json_decode($response, true)) === null ||
+				$raw_body = $envelope->getBody();
+
+				// parse the response
+				if (($response = json_decode($raw_body, true)) === null ||
 					!isset($response['status'])) {
-					throw new Exception();
+					throw new SiteAMQPJobFailureException(
+						'AMQP job response data is in an unknown format.',
+						0,
+						$raw_body
+					);
 				}
+
+				// check for failure and throw exception if failed
 				if ($response['status'] === 'fail') {
-					throw new Exception($response['body']);
+					throw new SiteAMQPJobFailureException(
+						$response['body'],
+						0,
+						$raw_body
+					);
 				}
+
 				$response = $response['body'];
 
 				$queue->ack($envelope->getDeliveryTag());
@@ -150,6 +228,23 @@ class SiteAMQPModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function doSync()
 
+	/**
+	 * Does a synchronous job in the default application namespace and returns
+	 * the result data
+	 *
+	 * This implements RPC using AMQP. It allows offloading and distrubuting
+	 * processor intensive tasks that must be done synchronously.
+	 *
+	 * @param string $exchange   the job exchange.
+	 * @param string $message    the job data.
+	 * @param array  $attributes optional. Additional message attributes. See
+	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
+	 *
+	 * @return string the job result data
+	 *
+	 * @throws SiteAMQPJobFailureException if the job processor can't process
+	 *         the job.
+	 */
 	public function doSync($exchange, $message, array $attributes = array())
 	{
 		return $this->doSyncNs(
@@ -164,7 +259,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	// {{{ protected function connect()
 
 	/**
-	 * Lazily creates an AMQP connection
+	 * Lazily creates an AMQP connection and opens a channel on the connection
 	 */
 	protected function connect()
 	{
@@ -186,6 +281,16 @@ class SiteAMQPModule extends SiteApplicationModule
 	// }}}
 	// {{{ protected function getExchange()
 
+	/**
+	 * Gets an exchange given a namespace and exchange name
+	 *
+	 * If the exchange doesn't exist on the AMQP server it is declared.
+	 *
+	 * @param string $namespace the exchange namespace.
+	 * @param string $name      the exchange name.
+	 *
+	 * @return AMQPExchange the exchange.
+	 */
 	protected function getExchange($namespace, $name)
 	{
 		$key = $namespace.'.'.$name;
