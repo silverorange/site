@@ -129,12 +129,12 @@ abstract class SiteAMQPApplication extends SiteApplication
 					$connection->connect();
 					$this->channel = new AMQPChannel($connection);
 					$this->exchange = new AMQPExchange($this->channel);
-					$this->exchange->setName('');
 					$this->logger->debug(Site::_('done') . PHP_EOL);
 
 					$this->work();
 				} catch (AMQPConnectionException $e) {
 					$this->logger->debug(Site::_('connection error') . PHP_EOL);
+					$this->logger->error($e->getMessage());
 					sleep(10);
 				}
 			}
@@ -161,18 +161,6 @@ abstract class SiteAMQPApplication extends SiteApplication
 	}
 
 	// }}}
-	// {{{ abstract protected function doWork()
-
-	/**
-	 * Completes a job
-	 *
-	 * Subclasses must implement this method to perform work.
-	 *
-	 * @param SiteAMQPJob $job 
-	 */
-	abstract protected function doWork(SiteAMQPJob $job);
-
-	// }}}
 	// {{{ public function handleSignal()
 
 	/**
@@ -190,6 +178,25 @@ abstract class SiteAMQPApplication extends SiteApplication
 			break;
 		}
 	}
+
+	// }}}
+
+	public function handleMessage(AMQPEnvelope $envelope, AMQPQueue $queue)
+	{
+		$job = new SiteAMQPJob($this->exchange, $envelope, $queue);
+		$this->doWork($job);
+	}
+
+	// {{{ abstract protected function doWork()
+
+	/**
+	 * Completes a job
+	 *
+	 * Subclasses must implement this method to perform work.
+	 *
+	 * @param SiteAMQPJob $job 
+	 */
+	abstract protected function doWork(SiteAMQPJob $job);
 
 	// }}}
 	// {{{ protected function init()
@@ -225,7 +232,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 		$queue->setName($this->queue);
 		$queue->setFlags(AMQP_DURABLE);
 		$queue->declare();
-		$queue->consume(array($this, 'handleMessage'), AMQP_NOACK);
+		$queue->consume(array($this, 'handleMessage'));
 
 
 //			if (extension_loaded('pcntl')) {
@@ -234,13 +241,6 @@ abstract class SiteAMQPApplication extends SiteApplication
 	}
 
 	// }}}
-
-	public function handleMessage(AMQPEnvelope $envelope, AMQPQueue $queue)
-	{
-		$job = new SiteAMQPJob($exchange, $envelope, $queue);
-		$this->doWork($job);
-	}
-
 	// {{{ protected function handleSigTerm()
 
 	/**

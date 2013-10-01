@@ -361,8 +361,8 @@ class Site
 			// Prefix to use for Redis keys in this application.
 			'redis.prefix'   => null,
 
-			'amqp.server' => null,
-			'amqp.prefix' => '',
+			'amqp.server'            => null,
+			'amqp.default_namespace' => '',
 		);
 	}
 

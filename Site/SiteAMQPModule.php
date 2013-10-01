@@ -68,6 +68,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		$this->connect();
 		$this->getExchange($namespace, $exchange)->publish(
 			(string)$message,
+			'',
+			AMQP_NOPARAM,
 			$attributes
 		);
 	}
@@ -109,14 +111,15 @@ class SiteAMQPModule extends SiteApplicationModule
 
 		$this->getExchange($namespace, $exchange)->publish(
 			(string)$message,
-			$attributes,
-			AMQP_MANDATORY | AMQP_IMMEDIATE
+			'',
+			AMQP_MANDATORY | AMQP_IMMEDIATE,
+			$attributes
 		);
 
 		$response = null;
 
 		$callback = function(AMQPEnvelope $envelope, AMQPQueue $queue)
-			use $response
+			use (&$response)
 		{
 			if ($envelope->getCorrelationId() === $correlation_id) {
 				$response = $envelope->getBody();
@@ -128,6 +131,8 @@ class SiteAMQPModule extends SiteApplicationModule
 					throw new Exception($response['body']);
 				}
 				$response = $response['body'];
+
+				$queue->ack($envelope->getDeliveryTag());
 			}
 		};
 
