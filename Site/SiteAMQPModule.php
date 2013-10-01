@@ -55,6 +55,12 @@ class SiteAMQPModule extends SiteApplicationModule
 	 */
 	public function init()
 	{
+		if (!extension_loaded('amqp')) {
+			throw new SiteException(
+				'The PHP AMQP extension is required for the SiteAMQPModule.'
+			);
+		}
+
 		$config = $this->app->getModule('SiteConfigModule');
 		$this->default_namespace = $config->amqp->default_namespace;
 	}
@@ -220,7 +226,21 @@ class SiteAMQPModule extends SiteApplicationModule
 			return true;
 		};
 
-		$reply_queue->consume($callback);
+		try {
+			$reply_queue->consume($callback);
+		} catch (AMQPConnectionException $e) {
+			if ($e->getMessage() !== 'Resource temporarily unavailable') {
+				throw $e;
+			}
+		}
+
+		// read timeout occurred
+		if ($response === null) {
+			throw new SiteAMQPJobFailureException(
+				'Did not receive response from AMQP job processor before '.
+				'timeout.'
+			);
+		}
 
 		return $response;
 	}
@@ -263,13 +283,14 @@ class SiteAMQPModule extends SiteApplicationModule
 	 */
 	protected function connect()
 	{
-		if ($this->connection === null && class_exists('AMQPConnection')) {
-			$config = $this->app->getModule('SiteConfigModule');
-			$server_parts = explode(':', trim($config->amqp->server), 2);
+		$config = $this->app->getModule('SiteConfigModule')->amqp;
+		if ($this->connection === null && $config->server != '') {
+			$server_parts = explode(':', trim($config->server), 2);
 			$host = $server_parts[0];
 			$port = (count($server_parts) === 2) ? $server_parts[1] : 5672;
 
 			$this->connection = new AMQPConnection();
+			$this->connection->setReadTimeout($config->sync_timeout / 1000);
 			$this->connection->setHost($host);
 			$this->connection->setPort($port);
 			$this->connection->connect();

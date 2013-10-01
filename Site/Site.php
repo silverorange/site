@@ -348,8 +348,8 @@ class Site
 			'notifier.site'    => null, // site identifier
 			'notifier.timeout' => 200, // in milliseconds
 
-			// List of gearmand servers. Servers as specified as host[:port] and are
-			// comma delimited.
+			// List of gearmand servers. Servers as specified as host[:port] and
+			// are comma delimited.
 			'gearman.servers' => null,
 
 			// Redis server. Specified as host[:port]
@@ -361,8 +361,16 @@ class Site
 			// Prefix to use for Redis keys in this application.
 			'redis.prefix'   => null,
 
+			// Location of AMQP server in the form host[:port].
 			'amqp.server'            => null,
+
+			// default namespace for AMQP exchanges and queues for this
+			// application.
 			'amqp.default_namespace' => '',
+
+			// how long in milliseconds to wait for a synchronous response from
+			// the AMQP job processor.
+			'amqp.sync_timeout'      => 2000,
 		);
 	}
 
