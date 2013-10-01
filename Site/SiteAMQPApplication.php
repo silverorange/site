@@ -16,9 +16,9 @@ require_once 'Site/SiteAMQPJob.php';
  * <code>
  * <?php
  *
- * $parser   = SiteAMQPCommandLine::fromXMLFile('my-cli.xml');
- * $logger   = new SiteCommandLineLogger($parser);
- * $app      = new MyAMQPApplication('my-task', $parser, $logger);
+ * $parser = SiteAMQPCommandLine::fromXMLFile('my-cli.xml');
+ * $logger = new SiteCommandLineLogger($parser);
+ * $app    = new MyAMQPApplication('my-task', $parser, $logger);
  *
  * $app();
  *
@@ -31,6 +31,16 @@ require_once 'Site/SiteAMQPJob.php';
  */
 abstract class SiteAMQPApplication extends SiteApplication
 {
+	// {{{ class constants
+
+	/**
+	 * How long to wait when the queue is empty before checking again
+	 *
+	 * In milliseconds.
+	 */
+	const WORK_LOOP_TIMEOUT = 100;
+
+	// }}}
 	// {{{ protected properties
 
 	/**
@@ -180,13 +190,6 @@ abstract class SiteAMQPApplication extends SiteApplication
 	}
 
 	// }}}
-
-	public function handleMessage(AMQPEnvelope $envelope, AMQPQueue $queue)
-	{
-		$job = new SiteAMQPJob($this->exchange, $envelope, $queue);
-		$this->doWork($job);
-	}
-
 	// {{{ abstract protected function doWork()
 
 	/**
@@ -223,21 +226,58 @@ abstract class SiteAMQPApplication extends SiteApplication
 	 */
 	protected function work()
 	{
+		$queue = new AMQPQueue($this->channel);
+		$queue->setName($this->queue);
+		$queue->setFlags(AMQP_DURABLE);
+		$queue->declare();
+
 		$this->logger->debug(
 			'=== ' . Site::_('Ready for work.') . ' ===' .
 			PHP_EOL . PHP_EOL
 		);
 
-		$queue = new AMQPQueue($this->channel);
-		$queue->setName($this->queue);
-		$queue->setFlags(AMQP_DURABLE);
-		$queue->declare();
-		$queue->consume(array($this, 'handleMessage'));
+		while (1) {
+			if (extension_loaded('pcntl')) {
+				pcntl_signal_dispatch();
+			}
 
+			if ($this->canWork()) {
+				if (($envelope = $queue->get()) === false) {
+					usleep(self::WORK_LOOP_TIMEOUT);
+					$this->logger->debug(
+						'=: ' . Site::_('work loop timeout') . PHP_EOL
+					);
+				} else {
+					$this->doWork(
+						new SiteAMQPJob(
+							$this->exchange,
+							$envelope,
+							$queue
+						)
+					);
+				}
+			}
+		}
+	}
 
-//			if (extension_loaded('pcntl')) {
-//				pcntl_signal_dispatch();
-//			}
+	// }}}
+	// {{{ protected function canWork()
+
+	/**
+	 * Provides a place for subclasses to add application-specific timeouts
+	 *
+	 * For example, if a database server or another service goes away this
+	 * can be used to wait for it to return before continuing to do work.
+	 *
+	 * If work can not be done, the subclass should take responsibility for
+	 * adding a sleep() or wait() call in the canWork() method so as not to
+	 * overwhelm the processor.
+	 *
+	 * @return boolean true if work can be done and false if not.
+	 */
+	protected function canWork()
+	{
+		return true;
 	}
 
 	// }}}
