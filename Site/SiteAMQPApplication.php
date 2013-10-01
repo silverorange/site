@@ -236,7 +236,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 			PHP_EOL . PHP_EOL
 		);
 
-		while (1) {
+		while (true) {
 			if (extension_loaded('pcntl')) {
 				pcntl_signal_dispatch();
 			}
