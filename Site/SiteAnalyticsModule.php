@@ -164,13 +164,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 			if ($this->enhanced_link_attribution) {
 				// Enhanced link attribution plugin comes before _setAccount in
-				// Google documentation, so put it first.
-
-				$plugin_uri = ($this->app->isSecure())
-					? 'https://ssl.google-analytics.com/plugins/ga/'.
-						'inpage_linkid.js'
-					: 'http://www.google-analytics.com/plugins/ga/'.
-						'inpage_linkid.js';
+				// Google documentation, so put it first. Note: the plugin URI
+				// doesn't load properly from https://ssl.google-analytics.com/.
+				$plugin_uri = '//www.google-analytics.com/plugins/ga/'.
+					'inpage_linkid.js';
 
 				$commands.= $this->getGoogleAnalyticsCommand(
 					array(
