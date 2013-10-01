@@ -311,13 +311,11 @@ JS;
 		if (is_array($command)) {
 			$method = array_shift($command);
 
-			if (count($command)) {
-				foreach ($command as $part) {
-					$options.= sprintf(
-						', %s',
-						SwatString::quoteJavaScriptString($part)
-					);
-				}
+			foreach ($command as $part) {
+				$options.= sprintf(
+					', %s',
+					SwatString::quoteJavaScriptString($part)
+				);
 			}
 		} else {
 			$method = $command;
