@@ -243,7 +243,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 
 			if ($this->canWork()) {
 				if (($envelope = $queue->get()) === false) {
-					usleep(self::WORK_LOOP_TIMEOUT);
+					usleep(self::WORK_LOOP_TIMEOUT * 1000);
 					$this->logger->debug(
 						'=: ' . Site::_('work loop timeout') . PHP_EOL
 					);
