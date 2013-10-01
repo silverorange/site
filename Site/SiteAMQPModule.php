@@ -112,18 +112,18 @@ class SiteAMQPModule extends SiteApplicationModule
 		$this->getExchange($namespace, $exchange)->publish(
 			(string)$message,
 			'',
-			AMQP_MANDATORY | AMQP_IMMEDIATE,
+			AMQP_MANDATORY,
 			$attributes
 		);
 
 		$response = null;
 
 		$callback = function(AMQPEnvelope $envelope, AMQPQueue $queue)
-			use (&$response)
+			use (&$response, $correlation_id)
 		{
 			if ($envelope->getCorrelationId() === $correlation_id) {
 				$response = $envelope->getBody();
-				if (json_decode($response, true) === null ||
+				if (($response = json_decode($response, true)) === null ||
 					!isset($response['status'])) {
 					throw new Exception();
 				}
@@ -133,12 +133,16 @@ class SiteAMQPModule extends SiteApplicationModule
 				$response = $response['body'];
 
 				$queue->ack($envelope->getDeliveryTag());
+
+				// resume execution
+				return false;
 			}
+
+			// get next message
+			return true;
 		};
 
-		while ($response === null) {
-			$reply_queue->consume($callback);
-		}
+		$reply_queue->consume($callback);
 
 		return $response;
 	}
