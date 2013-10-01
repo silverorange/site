@@ -322,7 +322,7 @@ JS;
 		}
 
 		return sprintf(
-			"_gaq.push([%s%s]);",
+			'_gaq.push([%s%s]);',
 			SwatString::quoteJavaScriptString($method),
 			$options
 		);
