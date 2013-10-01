@@ -116,7 +116,7 @@ class SiteAMQPJob
 			$this->exchange->publish(
 				json_encode(
 					array(
-						'status' => 'success',
+						'status' => 'fail',
 						'body'   => $response_message,
 					)
 				),
