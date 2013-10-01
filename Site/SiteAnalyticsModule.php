@@ -9,7 +9,7 @@ require_once 'Site/SiteApplicationModule.php';
  * could be added.
  *
  * @package   Site
- * @copyright 2007-2012 silverorange
+ * @copyright 2007-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
  */
@@ -46,6 +46,15 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $analytics_opt_out = false;
 
+
+	/**
+	 * Flag to tell whether to load the enchanced link attribution plugin.
+	 *
+	 * @var boolean
+	 * @link https://support.google.com/analytics/answer/2558867?hl=en&ref_topic=2558810
+	 */
+	protected $enhanced_link_attribution = false;
+
 	/**
 	 * Stack of commands to send to google analytics
 	 *
@@ -74,6 +83,30 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	public function setGoogleAccount($account)
 	{
 		$this->google_account = $account;
+	}
+
+	// }}}
+	// {{{ public function setEnhancedLinkAttribution()
+
+	public function setEnhancedLinkAttribution($enhanced_link_attribution)
+	{
+		$this->enhanced_link_attribution = (bool)$enhanced_link_attribution;
+	}
+
+	// }}}
+	// {{{ public function enableEnhancedLinkAttribution()
+
+	public function enableEnhancedLinkAttribution()
+	{
+		$this->setEnhancedLinkAttribution(true);
+	}
+
+	// }}}
+	// {{{ public function disableEnhancedLinkAttribution()
+
+	public function disableEnhancedLinkAttribution()
+	{
+		$this->setEnhancedLinkAttribution(false);
 	}
 
 	// }}}
@@ -109,9 +142,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
-			$javascript = sprintf("%s\n%s",
+			$javascript = sprintf(
+				"%s\n%s",
 				$this->getGoogleAnalyticsCommandsInlineJavascript(),
-				$this->getGoogleAnalyticsTrackerInlineJavascript());
+				$this->getGoogleAnalyticsTrackerInlineJavascript()
+			);
 		}
 
 		return $javascript;
@@ -125,10 +160,31 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
-			// always set the account first.
-			$commands = $this->getGoogleAnalyticsCommand(array(
-				'_setAccount',
-				$this->google_account));
+			$commands = null;
+
+			if ($this->enhanced_link_attribution) {
+				// Enhanced link attribution plugin comes before _setAccount in
+				// Google documentation, so put it first. Note: the plugin URI
+				// doesn't load properly from https://ssl.google-analytics.com/.
+				$plugin_uri = '//www.google-analytics.com/plugins/ga/'.
+					'inpage_linkid.js';
+
+				$commands.= $this->getGoogleAnalyticsCommand(
+					array(
+						'_require',
+						'inpage_linkid',
+						$plugin_uri,
+					)
+				);
+			}
+
+			// Always set the account before any further commands.
+			$commands.= $this->getGoogleAnalyticsCommand(
+				array(
+					'_setAccount',
+					$this->google_account,
+				)
+			);
 
 			foreach ($this->ga_commands as $command) {
 				$commands.= $this->getGoogleAnalyticsCommand($command);
@@ -139,8 +195,10 @@ var _gaq = _gaq || [];
 %s
 JS;
 
-			$javascript = sprintf($javascript,
-				$commands);
+			$javascript = sprintf(
+				$javascript,
+				$commands
+			);
 		}
 
 		return $javascript;
@@ -154,9 +212,9 @@ JS;
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics()) {
-			$src = ($this->app->isSecure()) ?
-				'https://ssl.google-analytics.com/ga.js' :
-				'http://www.google-analytics.com/ga.js';
+			$src = ($this->app->isSecure())
+				? 'https://ssl.google-analytics.com/ga.js'
+				: 'http://www.google-analytics.com/ga.js';
 
 			$javascript = <<<JS
 (function() {
@@ -169,8 +227,10 @@ JS;
 })();
 JS;
 
-			$javascript = sprintf($javascript,
-				$src);
+			$javascript = sprintf(
+				$javascript,
+				$src
+			);
 		}
 
 		return $javascript;
@@ -181,6 +241,9 @@ JS;
 
 	protected function initGoogleAnalyticsCommands()
 	{
+		// Default commands for all sites:
+		// * Speed sampling 100% of the time.
+		// * Track the page view.
 		$this->ga_commands = array(
 			array(
 				'_setSiteSpeedSampleRate',
@@ -228,8 +291,11 @@ JS;
 				$e->processAndContinue();
 			} else {
 				// 10 years should be equivalent to never expiring.
-				$cookie_module->setCookie('AnalyticsOptOut', '1',
-					strtotime('+10 Years'));
+				$cookie_module->setCookie(
+					'AnalyticsOptOut',
+					'1',
+					strtotime('+10 Years')
+				);
 			}
 		}
 	}
@@ -245,19 +311,21 @@ JS;
 		if (is_array($command)) {
 			$method = array_shift($command);
 
-			if (count($command)) {
-				foreach ($command as $part) {
-					$options.= sprintf(', %s',
-						SwatString::quoteJavaScriptString($part));
-				}
+			foreach ($command as $part) {
+				$options.= sprintf(
+					', %s',
+					SwatString::quoteJavaScriptString($part)
+				);
 			}
 		} else {
 			$method = $command;
 		}
 
-		return sprintf("_gaq.push([%s%s]);",
+		return sprintf(
+			'_gaq.push([%s%s]);',
 			SwatString::quoteJavaScriptString($method),
-			$options);
+			$options
+		);
 	}
 
 	// }}}

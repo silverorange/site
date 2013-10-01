@@ -255,6 +255,7 @@ class Site
 			'analytics.google_account'    => null,
 			// Google analytics account id (XXXXXXXX)
 			'analytics.google_account_id' => null,
+			'analytics.google_enhanced_link_attribution' => true,
 
 			// Ads
 			// Tracking id in URIs
