@@ -73,24 +73,7 @@ class SiteAMQPJob
 	 */
 	public function sendSuccess($response_message = '')
 	{
-		$this->queue->ack($this->envelope->getDeliveryTag());
-
-		if ($this->envelope->getReplyTo() != '' &&
-			$this->envelope->getCorrelationId() != '') {
-			$this->exchange->publish(
-				json_encode(
-					array(
-						'status' => 'success',
-						'body'   => $response_message,
-					)
-				),
-				$this->envelope->getReplyTo(),
-				AMQP_NOPARAM,
-				array(
-					'correlation_id' => $this->envelope->getCorrelationId(),
-				)
-			);
-		}
+		$this->sendResponse($response_message, 'success');
 	}
 
 	// }}}
@@ -110,23 +93,7 @@ class SiteAMQPJob
 	 */
 	public function sendFail($response_message = '')
 	{
-		$this->queue->ack($this->envelope->getDeliveryTag());
-
-		if ($this->envelope->getReplyTo() != '') {
-			$this->exchange->publish(
-				json_encode(
-					array(
-						'status' => 'fail',
-						'body'   => $response_message,
-					)
-				),
-				$this->envelope->getReplyTo(),
-				AMQP_NOPARAM,
-				array(
-					'correlation_id' => $this->envelope->getCorrelationId(),
-				)
-			);
-		}
+		$this->sendResponse($response_message, 'fail');
 	}
 
 	// }}}
@@ -140,6 +107,43 @@ class SiteAMQPJob
 	public function getBody()
 	{
 		return $this->envelope->getBody();
+	}
+
+	// }}}
+	// {{{ protected function sendResponse()
+
+	/**
+	 * Sends result data and status back to the AMQP exchange for this job
+	 *
+	 * This job is removed from the work queue.
+	 *
+	 * @param string $message if performing synchronous operations, this value
+	 *                        will be returned to the caller.
+	 * @param string $status  if performing synchronous operations, this
+	 *                        status will be returned to the caller.
+	 *
+	 * @return void
+	 */
+	protected function sendResponse($message, $status)
+	{
+		$this->queue->ack($this->envelope->getDeliveryTag());
+
+		if ($this->envelope->getReplyTo() != '' &&
+			$this->envelope->getCorrelationId() != '') {
+			$this->exchange->publish(
+				json_encode(
+					array(
+						'status' => $status,
+						'body'   => $message,
+					)
+				),
+				$this->envelope->getReplyTo(),
+				AMQP_NOPARAM,
+				array(
+					'correlation_id' => $this->envelope->getCorrelationId(),
+				)
+			);
+		}
 	}
 
 	// }}}
