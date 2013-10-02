@@ -350,6 +350,8 @@ abstract class SiteGearmanApplication extends SiteApplication
 					}
 				}
 			} else {
+				// if we can't do Gearman work, we still want to handle caught
+				// signals so the server can shut down cleanly.
 				if (extension_loaded('pcntl')) {
 					pcntl_signal_dispatch();
 				}
