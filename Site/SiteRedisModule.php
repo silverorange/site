@@ -1,10 +1,12 @@
 <?php
 
+/* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
+
 require_once 'Site/SiteApplicationModule.php';
 require_once 'Site/exceptions/SiteException.php';
 
 /**
- * Web application module for using Redis
+ * Application module for using Redis
  *
  * @package   Site
  * @copyright 2013 silverorange
@@ -15,11 +17,15 @@ class SiteRedisModule extends SiteApplicationModule
 	// {{{ protected properties
 
 	/**
+	 * The proxied Redis object of this module
+	 *
 	 * @var Redis
 	 */
 	protected $redis = null;
 
 	/**
+	 * Whether or not this module is connected to Redis
+	 *
 	 * @var boolean
 	 */
 	protected $connected = false;
@@ -27,6 +33,13 @@ class SiteRedisModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function init()
 
+	/**
+	 * Initializes this module
+	 *
+	 * Ensures the phpredis extension exists.
+	 *
+	 * @throws SiteException if the phpredis module is not available.
+	 */
 	public function init()
 	{
 		if (!extension_loaded('redis')) {
@@ -41,6 +54,16 @@ class SiteRedisModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function __call()
 
+	/**
+	 * Passes proxied calls to the redis object
+	 *
+	 * For full API, see {@link https://github.com/nicolasff/phpredis}.
+	 *
+	 * @param string $name      the proxied method name.
+	 * @param array  $arguments the proxied method arguments.
+	 *
+	 * @return mixed the proxied result value.
+	 */
 	public function __call($name, $arguments)
 	{
 		try {
@@ -67,6 +90,17 @@ class SiteRedisModule extends SiteApplicationModule
 	// }}}
 	// {{{ protected function _connect()
 
+	/**
+	 * Connects to the Redis server if not already connected
+	 *
+	 * This also takes care of setting the application database and prefix
+	 * as specified in the application configuration.
+	 *
+	 * This method's name starts with an underscore so as not to override
+	 * the proxied connect() method.
+	 *
+	 * @return void
+	 */
 	protected function _connect()
 	{
 		if (!$this->connected) {
