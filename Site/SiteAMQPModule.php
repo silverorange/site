@@ -52,6 +52,10 @@ class SiteAMQPModule extends SiteApplicationModule
 	/**
 	 * Initializes this module, pulling values from the application
 	 * configuration
+	 *
+	 * @return void
+	 *
+	 * @throws SiteException if the AMQP extension is not available.
 	 */
 	public function init()
 	{
@@ -91,11 +95,11 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * Does an asynchronous job
 	 *
 	 * This implements background processing using AMQP. It allows offloading
-	 * processor intensive tasks where the results are not needed in the
+	 * processor intensive jobs where the results are not needed in the
 	 * current thread.
 	 *
 	 * @param string $namespace  the job namespace.
-	 * @param string $exchange   the job exchange.
+	 * @param string $exchange   the job exchange name.
 	 * @param string $message    the job data.
 	 * @param array  $attributes optional. Additional message attributes. See
 	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
@@ -121,10 +125,10 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * Does an asynchronous job in the default application namespace
 	 *
 	 * This implements background processing using AMQP. It allows offloading
-	 * processor intensive tasks where the results are not needed in the
+	 * processor intensive jobs where the results are not needed in the
 	 * current thread.
 	 *
-	 * @param string $exchange   the job exchange.
+	 * @param string $exchange   the job exchange name.
 	 * @param string $message    the job data.
 	 * @param array  $attributes optional. Additional message attributes. See
 	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
@@ -148,10 +152,10 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * Does a synchronous job and returns the result data
 	 *
 	 * This implements RPC using AMQP. It allows offloading and distrubuting
-	 * processor intensive tasks that must be done synchronously.
+	 * processor intensive jobs that must be performed synchronously.
 	 *
 	 * @param string $namespace  the job namespace.
-	 * @param string $exchange   the job exchange.
+	 * @param string $exchange   the job exchange name.
 	 * @param string $message    the job data.
 	 * @param array  $attributes optional. Additional message attributes. See
 	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
@@ -229,6 +233,7 @@ class SiteAMQPModule extends SiteApplicationModule
 		try {
 			$reply_queue->consume($callback);
 		} catch (AMQPConnectionException $e) {
+			// ignore timeout exceptions, rethrow other exceptions
 			if ($e->getMessage() !== 'Resource temporarily unavailable') {
 				throw $e;
 			}
@@ -253,9 +258,9 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * the result data
 	 *
 	 * This implements RPC using AMQP. It allows offloading and distrubuting
-	 * processor intensive tasks that must be done synchronously.
+	 * processor intensive jobs that must be performed synchronously.
 	 *
-	 * @param string $exchange   the job exchange.
+	 * @param string $exchange   the job exchange name.
 	 * @param string $message    the job data.
 	 * @param array  $attributes optional. Additional message attributes. See
 	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
@@ -280,6 +285,8 @@ class SiteAMQPModule extends SiteApplicationModule
 
 	/**
 	 * Lazily creates an AMQP connection and opens a channel on the connection
+	 *
+	 * @return void
 	 */
 	protected function connect()
 	{
