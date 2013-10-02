@@ -76,7 +76,7 @@ class SiteRedisModule extends SiteApplicationModule
 			$address = $parts[0];
 			$port = (count($parts) === 2) ? $parts[1] : 6379;
 
-			$this->redis->connect($server, $port);
+			$this->redis->connect($address, $port);
 
 			try {
 				$this->redis->select($config->database);
