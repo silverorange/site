@@ -78,7 +78,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 	// {{{ public function __construct()
 
 	/**
-	 * Creates a new Gearman application
+	 * Creates a new AMQP application
 	 *
 	 * @param string                  $queue  the AQMP queue name.
 	 * @param Console_CommandLine     $parser the commane-line context.
