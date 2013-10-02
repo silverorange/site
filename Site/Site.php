@@ -351,8 +351,13 @@ class Site
 			// comma delimited.
 			'gearman.servers' => null,
 
+			// Redis server. Specified as host[:port]
 			'redis.server'   => null,
+
+			// Redis database. An integer.
 			'redis.database' => 0,
+
+			// Prefix to use for Redis keys in this application.
 			'redis.prefix'   => null,
 		);
 	}

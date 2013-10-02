@@ -70,8 +70,14 @@ class SiteRedisModule extends SiteApplicationModule
 	protected function _connect()
 	{
 		if (!$this->connected) {
-			$config = $this->app->config->redis;
-			$this->redis->connect($config->server);
+			$config = $this->app->getModule('SiteConfigModule')->redis;
+
+			$parts = explode(':', trim($config->server), 2);
+			$address = $parts[0];
+			$port = (count($parts) === 2) ? $parts[1] : 6379;
+
+			$this->redis->connect($server, $port);
+
 			try {
 				$this->redis->select($config->database);
 
