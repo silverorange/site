@@ -29,7 +29,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	protected $exchanges = array();
 
 	/**
-	 * Connection to the AMQP server
+	 * Connection to the AMQP broker
 	 *
 	 * @var AMQPConnection
 	 *
@@ -38,7 +38,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	protected $connection = null;
 
 	/**
-	 * Channel to the AMQP server
+	 * Channel to the AMQP broker
 	 *
 	 * @var AMQPChannel
 	 *
@@ -321,7 +321,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	/**
 	 * Gets an exchange given a namespace and exchange name
 	 *
-	 * If the exchange doesn't exist on the AMQP server it is declared.
+	 * If the exchange doesn't exist on the AMQP broker it is declared.
 	 *
 	 * @param string $namespace the exchange namespace.
 	 * @param string $name      the exchange name.
