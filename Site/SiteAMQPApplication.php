@@ -176,7 +176,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 	/**
 	 * Handles signals sent to this process
 	 *
-	 * @var integer $signal the sinal that was received (e.g. SIGTERM).
+	 * @param integer $signal the sinal that was received (e.g. SIGTERM).
 	 *
 	 * @return void
 	 */
