@@ -286,11 +286,9 @@ abstract class SiteAMQPApplication extends SiteApplication
 	/**
 	 * Provides a safe shutdown function
 	 *
-	 * When this worker is stopped via a monitoring script sending SIGTERM
-	 * this method can safely finish the current job before ending the current
-	 * process.
+	 * Jobs are atomic. When this worker is cleanly stopped via a monitoring
+	 * script sending SIGTERM it will not be in the middle of a job.
 	 *
-	 * If the job can't be finished, the job can be cancelled or requeued.
 	 * Subclasses must call exit() or parent::handleSigTerm() to ensure
 	 * the process ends.
 	 *
