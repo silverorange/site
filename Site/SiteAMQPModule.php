@@ -109,6 +109,14 @@ class SiteAMQPModule extends SiteApplicationModule
 	public function doAsyncNs($namespace, $exchange, $message,
 		array $attributes = array())
 	{
+		// always persist messages
+		$attributes = array_merge(
+			$attributes,
+			array(
+				'delivery_mode' => AMQP_DURABLE,
+			)
+		);
+
 		$this->connect();
 		$this->getExchange($namespace, $exchange)->publish(
 			(string)$message,
@@ -180,7 +188,8 @@ class SiteAMQPModule extends SiteApplicationModule
 			$attributes,
 			array(
 				'correlation_id' => $correlation_id,
-				'reply_to'       => $reply_queue->getName()
+				'reply_to'       => $reply_queue->getName(),
+				'delivery_mode'  => AMQP_DURABLE,
 			)
 		);
 
