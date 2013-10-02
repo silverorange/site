@@ -84,8 +84,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 	 * @param Console_CommandLine     $parser the commane-line context.
 	 * @param Psr\Log\LoggerInterface $logger the logging interface.
 	 * @param string                  $config optional. The filename of the
-‐    *                                        configuration file. If not
-‐    *                                        specified, no special
+	 *                                        configuration file. If not
+	 *                                        specified, no special
 	 *                                        configuration is performed.
 	 */
 	public function __construct(
