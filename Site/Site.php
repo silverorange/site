@@ -99,7 +99,7 @@ class Site
 	{
 		$path = '@DATA-DIR@/Site/locale';
 		if (substr($path, 0 ,1) === '@')
-			$path = dirname(__FILE__).'/../locale';
+			$path = __DIR__.'/../locale';
 
 		bindtextdomain(Site::GETTEXT_DOMAIN, $path);
 		bind_textdomain_codeset(Site::GETTEXT_DOMAIN, 'UTF-8');
