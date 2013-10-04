@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__).'/SiteAbstractConfigPage.php';
+require_once __DIR__.'/SiteAbstractConfigPage.php';
 
 /**
  * Config page used for displaying and saving config settings for the Site
@@ -43,7 +43,7 @@ class SiteConfigPage extends SiteAbstractConfigPage
 
 	protected function getUiXml()
 	{
-		return dirname(__FILE__).'/config-page.xml';
+		return __DIR__.'/config-page.xml';
 	}
 
 	// }}}
