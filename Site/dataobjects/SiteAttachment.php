@@ -8,9 +8,8 @@ require_once 'Site/dataobjects/SiteAttachmentCdnTask.php';
  * An attachment
  *
  * @package   Site
- * @copyright 2011-2012 silverorange
+ * @copyright 2011-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
- * @todo      Delete local files.
  */
 class SiteAttachment extends SwatDBDataObject
 {
