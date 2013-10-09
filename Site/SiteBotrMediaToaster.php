@@ -925,9 +925,12 @@ class SiteBotrMediaToaster
 		$query_string = null;
 
 		if ($this->content_signing === true) {
-			$expires      = $this->getExpiry();
-			$signature    = self::getContentSignature($path, $expires,
-				$this->app->config->botr->secret);
+			$expires   = $this->getExpiry();
+			$signature = self::getContentSignature(
+				$path,
+				$expires,
+				$this->secret
+			);
 
 			$query_string = sprintf('?exp=%s&sig=%s',
 				$expires,
