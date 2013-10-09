@@ -932,9 +932,11 @@ class SiteBotrMediaToaster
 				$this->secret
 			);
 
-			$query_string = sprintf('?exp=%s&sig=%s',
+			$query_string = sprintf(
+				'?exp=%s&sig=%s',
 				$expires,
-				$signature);
+				$signature
+			);
 		}
 
 		$base = ($this->app instanceof SiteWebApplication &&
