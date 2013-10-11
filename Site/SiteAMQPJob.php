@@ -2,6 +2,8 @@
 
 /* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
 
+require_once 'Site/exceptions/SiteAMQPJobException.php';
+
 /**
  * A single job received by a work queue job processor
  *
@@ -35,6 +37,20 @@ class SiteAMQPJob
 	 * @var AMQPEnvelope
 	 */
 	protected $envelope = null;
+
+	/**
+	 * Whether or not a response was sent for this job
+	 *
+	 * @var boolean
+	 */
+	protected $response_sent = false;
+
+	/**
+	 * Whether or not this job was requeued
+	 *
+	 * @var boolean
+	 */
+	protected $requeued = false;
 
 	// }}}
 	// {{{ public function __construct()
@@ -70,6 +86,9 @@ class SiteAMQPJob
 	 *                                 methods.
 	 *
 	 * @return void
+	 *
+	 * @throws SiteAMQPJobException if the job has already sent a success or
+	 *         fail response, or if this job has been requeued.
 	 */
 	public function sendSuccess($response_message = '')
 	{
@@ -90,6 +109,9 @@ class SiteAMQPJob
 	 *                                 content of a thrown exception.
 	 *
 	 * @return void
+	 *
+	 * @throws SiteAMQPJobException if the job has already sent a success or
+	 *         fail response, or if this job has been requeued.
 	 */
 	public function sendFail($response_message = '')
 	{
@@ -110,6 +132,33 @@ class SiteAMQPJob
 	}
 
 	// }}}
+	// {{{ public function requeue()
+
+	/**
+	 * Requeues this job
+	 *
+	 * If this job was already requeued, this method does nothing.
+	 *
+	 * @return void
+	 *
+	 * @throws SiteAMQPJobException if the job has already sent a success or
+	 *         fail response.
+	 */
+	public function requeue()
+	{
+		if ($this->response_sent) {
+			throw new SiteAMQPJobException(
+				'Can not requeue message because response was already sent.'
+			);
+		}
+
+		if (!$this->requeued) {
+			$this->queue->nack($this->envelope->getDeliveryTag(), AMQP_REQUEUE);
+			$this->requeued = true;
+		}
+	}
+
+	// }}}
 	// {{{ protected function sendResponse()
 
 	/**
@@ -123,9 +172,24 @@ class SiteAMQPJob
 	 *                        status will be returned to the caller.
 	 *
 	 * @return void
+	 *
+	 * @throws SiteAMQPJobException if the job has already sent a success or
+	 *         fail response, or if this job has been requeued.
 	 */
 	protected function sendResponse($message, $status)
 	{
+		if ($this->requeued) {
+			throw new SiteAMQPJobException(
+				'Can not send response because job was already requeued.'
+			);
+		}
+
+		if ($this->response_sent) {
+			throw new SiteAMQPJobException(
+				'Can not send response because response was already sent.'
+			);
+		}
+
 		$this->queue->ack($this->envelope->getDeliveryTag());
 
 		if ($this->envelope->getReplyTo() != '' &&
@@ -144,6 +208,8 @@ class SiteAMQPJob
 				)
 			);
 		}
+
+		$this->response_sent = true;
 	}
 
 	// }}}
