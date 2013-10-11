@@ -226,8 +226,16 @@ abstract class SiteAMQPApplication extends SiteApplication
 	 */
 	protected function work()
 	{
+		// get namespaced queue name
+		if ($this->config->amqp->default_namespace != '') {
+			$queue_name = $this->config->amqp->default_namespace.
+				'.'.$this->queue;
+		} else {
+			$queue_name = $this->queue;
+		}
+
 		$queue = new AMQPQueue($this->channel);
-		$queue->setName($this->queue);
+		$queue->setName($queue_name);
 		$queue->setFlags(AMQP_DURABLE);
 		$queue->declare();
 
