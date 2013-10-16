@@ -149,9 +149,9 @@ abstract class SiteAMQPApplication extends SiteApplication
 						'Socket error: could not connect to host.') {
 						$this->logger->error(
 							'Could not connect to AMQP server on host ' .
-							'{host}.' . PHP_EOL
+							'{host}.' . PHP_EOL,
 							array(
-								'host' => $this->cli->args['address']
+								'host' => $this->cli->args['address'],
 							)
 						);
 					} else {
