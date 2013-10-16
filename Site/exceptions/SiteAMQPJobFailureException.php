@@ -2,7 +2,7 @@
 
 /* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
 
-require_once 'Site/exceptions/SiteException.php';
+require_once 'Site/exceptions/SiteAMQPJobException.php';
 
 /**
  * Exception thrown when a job fails
@@ -11,7 +11,7 @@ require_once 'Site/exceptions/SiteException.php';
  * @copyright 2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteAMQPJobFailureException extends SiteException
+class SiteAMQPJobFailureException extends SiteAMQPJobException
 {
 	// {{{ protected properties
 
