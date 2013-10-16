@@ -239,8 +239,17 @@ abstract class SiteAMQPApplication extends SiteApplication
 	 */
 	protected function work()
 	{
+		// Get namespaced queue name if a default_namespace is set in the
+		// application config. This allows global workers to have no namespace.
+		if ($this->config->amqp->default_namespace != '') {
+			$queue_name = $this->config->amqp->default_namespace.
+				'.'.$this->queue;
+		} else {
+			$queue_name = $this->queue;
+		}
+
 		$queue = new AMQPQueue($this->channel);
-		$queue->setName($this->queue);
+		$queue->setName($queue_name);
 		$queue->setFlags(AMQP_DURABLE);
 		$queue->declare();
 
