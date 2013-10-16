@@ -79,7 +79,13 @@ class SiteAMQPJob
 	 * Sends result data and successful status back to the AMQP exchange
 	 * for this job
 	 *
-	 * This job is removed from the work queue.
+	 * If this job has already been requeued, a success response can not
+	 * be sent and an exception is thrown. If this job has already sent a
+	 * success or fail response it can not send another one, and an exception
+	 * is thrown.
+	 *
+	 * When the success response is sent, this job is removed from the work
+	 * queue.
 	 *
 	 * @param string $response_message optional. The result data. This is
 	 *                                 only useful if performing synchronous
@@ -88,7 +94,7 @@ class SiteAMQPJob
 	 * @return void
 	 *
 	 * @throws SiteAMQPJobException if the job has already sent a success or
-	 *         fail response, or if this job has been requeued.
+	 *         fail response, or if this job has already been requeued.
 	 */
 	public function sendSuccess($response_message = '')
 	{
@@ -102,7 +108,14 @@ class SiteAMQPJob
 	 * Sends result data and known failure status back to the AMQP exchange
 	 * for this job
 	 *
-	 * This job is removed from the work queue.
+	 * Use this method to handle invalid job data. For synchronous jobs, an
+	 * exception will be thrown on the caller's side.
+	 *
+	 * If this job has already been requeued, a fail response can not be sent
+	 * and an exception is thrown. If this job has already sent a success or
+	 * fail response it can not send another one, and an exception is thrown.
+	 *
+	 * When the fail response is sent, this job is removed from the work queue.
 	 *
 	 * @param string $response_message optional. If performing synchronous
 	 *                                 operations, this will be the message
@@ -111,7 +124,7 @@ class SiteAMQPJob
 	 * @return void
 	 *
 	 * @throws SiteAMQPJobException if the job has already sent a success or
-	 *         fail response, or if this job has been requeued.
+	 *         fail response, or if this job has already been requeued.
 	 */
 	public function sendFail($response_message = '')
 	{
@@ -137,7 +150,13 @@ class SiteAMQPJob
 	/**
 	 * Requeues this job
 	 *
-	 * If this job was already requeued, this method does nothing.
+	 * Use this method to explicitly refuse to do the work for this job even if
+	 * this job's data is valid. For example, if a required resource is not
+	 * available, this job should be requeued.
+	 *
+	 * If a success or fail response has already been sent, this job can not
+	 * be requeued and an exception is thrown. If this job was already
+	 * requeued, this method does nothing.
 	 *
 	 * @return void
 	 *
@@ -174,7 +193,7 @@ class SiteAMQPJob
 	 * @return void
 	 *
 	 * @throws SiteAMQPJobException if the job has already sent a success or
-	 *         fail response, or if this job has been requeued.
+	 *         fail response, or if this job has already been requeued.
 	 */
 	protected function sendResponse($message, $status)
 	{
