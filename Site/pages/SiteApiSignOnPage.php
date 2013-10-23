@@ -30,7 +30,7 @@ abstract class SiteApiSignOnPage extends SitePage
 		$token = $this->getToken($ident, $token_string, $credentials);
 
 		$account = $this->getAccount($token);
-		$this->logInAccount($account);
+		$this->loginByAccount($account);
 		$this->relocate($account);
 	}
 
@@ -93,9 +93,9 @@ abstract class SiteApiSignOnPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function logInAccount()
+	// {{{ protected function loginByAccount()
 
-	protected function logInAccount(SiteAccount $account)
+	protected function loginByAccount(SiteAccount $account)
 	{
 		$this->app->session->logout();
 		$this->app->session->loginByAccount($account);
