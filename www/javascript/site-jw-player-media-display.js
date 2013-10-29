@@ -615,6 +615,10 @@ SiteJwPlayerMediaDisplay.prototype.appendCompleteMessage = function()
 	this.complete_overlay.appendChild(div);
 
 	this.overlay.parentNode.appendChild(this.complete_overlay);
+
+	YAHOO.util.Event.on(window, 'resize', function () {
+		this.positionOverlay(this.complete_overlay);
+	}, this, true);
 };
 
 // }}}
@@ -666,6 +670,10 @@ SiteJwPlayerMediaDisplay.prototype.appendResumeMessage = function()
 	this.resume_overlay.appendChild(div);
 
 	this.overlay.parentNode.appendChild(this.resume_overlay);
+
+	YAHOO.util.Event.on(window, 'resize', function () {
+		this.positionOverlay(this.resume_overlay);
+	}, this, true);
 };
 
 // }}}
@@ -699,7 +707,7 @@ SiteJwPlayerMediaDisplay.prototype.positionOverlay = function(overlay)
 	var padding = Math.floor(Math.max(0,
 		(overlay_region.height - content_region.height) / 2));
 
-	YAHOO.util.Dom.setStyle(overlay, 'padding-top', padding + 'px');
+	YAHOO.util.Dom.setStyle(overlay.childNodes[0], 'padding-top', padding + 'px');
 };
 
 // }}}
