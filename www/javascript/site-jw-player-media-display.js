@@ -704,10 +704,10 @@ SiteJwPlayerMediaDisplay.prototype.positionOverlay = function(overlay)
 	var overlay_region = YAHOO.util.Dom.getRegion(overlay);
 	var content_region = YAHOO.util.Dom.getRegion(overlay.firstChild);
 
-	var padding = Math.floor(Math.max(0,
+	var margin = Math.floor(Math.max(0,
 		(overlay_region.height - content_region.height) / 2));
 
-	YAHOO.util.Dom.setStyle(overlay.firstChild, 'padding-top', padding + 'px');
+	YAHOO.util.Dom.setStyle(overlay.firstChild, 'margin-top', margin + 'px');
 };
 
 // }}}
