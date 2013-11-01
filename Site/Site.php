@@ -309,10 +309,10 @@ class Site
 			'amazon.cloudfront_enabled'                  => false,
 			'amazon.distribution'                        => null,
 			'amazon.streaming_distribution'              => null,
-			'amazon.streaming_distribution_port'         => 80,
+			'amazon.streaming_distribution_port'         => null,
 			'amazon.private_distribution'                => null,
 			'amazon.private_streaming_distribution'      => null,
-			'amazon.private_streaming_distribution_port' => 80,
+			'amazon.private_streaming_distribution_port' => null,
 			'amazon.distribution_key_pair_id'            => null,
 			'amazon.distribution_private_key_file'       => 'cloud_front_private_key.pem',
 
