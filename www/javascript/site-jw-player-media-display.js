@@ -274,15 +274,15 @@ SiteJwPlayerMediaDisplay.prototype.getImage = function()
 	var region = YAHOO.util.Dom.getRegion(this.container);
 	var player_width = region.width;
 
-	if (player_width == 0) {
+	if (player_width == 0 || this.images.length == 0) {
 		return null;
 	}
 
-	var default_image = null;
+	var default_image = 0;
 	var min_diff = null;
 	for (var i = 0; i < this.images.length; i++) {
-		var diff = Math.abs(this.images[i].width - player_width);
-		if (min_diff === null || diff < min_diff) {
+		var diff = this.images[i].width - player_width;
+		if (diff >= 0 && (min_diff === null || diff < min_diff)) {
 			min_diff = diff;
 			default_image = i;
 		}
