@@ -98,8 +98,16 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 			$distribution = $amazon->private_streaming_distribution;
 		}
 
+		if ($port !== null) {
+			$distribution.= ':'.$port;
+		}
+
 		$meta_tag = new SwatHtmlTag('meta');
-		$meta_tag->base = sprintf('rtmp://%s:%s/cfx/st/', $distribution, $port);
+		$meta_tag->base = sprintf(
+			'rtmp://%s/cfx/st/',
+			$distribution
+		);
+
 		$meta_tag->display();
 
 		echo '</head>';
