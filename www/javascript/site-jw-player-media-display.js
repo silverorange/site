@@ -25,6 +25,8 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.menu_title = null;
 	this.menu_link = null;
 
+	this.location_identifier = null;
+
 	this.upgrade_message = null;
 	this.on_complete_message = null;
 	this.resume_message =
@@ -48,6 +50,7 @@ function SiteJwPlayerMediaDisplay(media_id)
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
 
+SiteJwPlayerMediaDisplay.primaryPlayerType = 'flash'; // to allow for RTMP streaming
 SiteJwPlayerMediaDisplay.current_player_id = null;
 SiteJwPlayerMediaDisplay.record_interval = 30; // in seconds
 SiteJwPlayerMediaDisplay.players = [];
@@ -104,11 +107,11 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		tracks: this.getTracks()
 	}];
 
-	this.player = jwplayer(this.player_id).setup( {
+	var options = {
 		playlist:    playlist,
 		skin:        this.getSkin(),
 		stretching:  this.stretching,
-		primary:     'flash', // to allow for RTMP streaming
+		primary:     this.getPrimaryPlayerType(),
 		width:       '100%',
 		aspectratio: aspect_ratio,
 		flashplayer: this.swf_uri,
@@ -118,11 +121,17 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 			enabled: false // turn off JW Player's built-in analytics
 		},
 		ga:          {} // this can be blank. JW Player will use the _gaq var.
-	});
+	};
+
+	this.player = jwplayer(this.player_id).setup(options);
 
 	// this.debug();
 
 	var that = this;
+	this.player.onError(function (error) {
+		that.handleError(error);
+	});
+
 	this.player.onReady(function() {
 		that.on_ready_event.fire(that);
 	});
@@ -197,6 +206,21 @@ SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
 		|| YAHOO.util.SWFDetect.isFlashVersionAtLeast(10);
 
 	return (flash10 || html5_video);
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.getPrimaryPlayerType = function()
+
+SiteJwPlayerMediaDisplay.prototype.getPrimaryPlayerType = function()
+{
+	var player_type = SiteJwPlayerMediaDisplay.primaryPlayerType;
+
+	if (this.location_identifier !== null &&
+		YAHOO.util.Cookie.get(this.location_identifier + '_type') == 'html5') {
+		player_type = 'html5';
+	}
+
+	return player_type;
 };
 
 // }}}
@@ -489,6 +513,33 @@ SiteJwPlayerMediaDisplay.prototype.handleSpaceBar = function()
 			YAHOO.util.Event.preventDefault(e);
 		}
 	}, this, true);
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.handleError = function()
+
+SiteJwPlayerMediaDisplay.prototype.handleError = function(error)
+{
+	switch (error.message) {
+	case 'Error loading stream: Could not connect to server' :
+		// switch to HTML5 if RTMP port blocked
+		if (this.player.getRenderingMode() == 'flash') {
+			SiteJwPlayerMediaDisplay.primaryPlayerType = 'html5';
+
+			if (this.location_identifier !== null) {
+				YAHOO.util.Cookie.set(this.location_identifier + '_type',
+					'html5');
+			}
+
+			this.embedPlayer();
+			var that = this;
+			this.player.onReady(function() {
+				that.play();
+			});
+		}
+
+		break;
+	}
 };
 
 // }}}
