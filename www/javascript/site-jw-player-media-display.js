@@ -35,10 +35,10 @@ function SiteJwPlayerMediaDisplay(media_id)
 
 	this.rtmp_error_message =
 		'<h3>Unable to stream video</h3>' +
-		'<p>Due your current firewall restrictions, this video ' +
-		'requires a browser that supports HTML5 video. Please try ' +
-		'using the latest version of a browser such as Internet Explorer, ' +
-		'Firefox, Chrome, or Safari.</p>';
+		'<p>Due your current firewall restrictions, video streaming is ' +
+		'being blocked. To resolve the issue, try using a browser that ' +
+		'supports HTML5 video such as the latest version of Internet ' +
+		'Explorer, Firefox, Chrome, or Safari.</p>';
 
 	// whether or not to show the on-complete-message when the video loads.
 	// this is useful if you want to remind the user they've seen the video
@@ -756,7 +756,7 @@ SiteJwPlayerMediaDisplay.prototype.appendErrorMessage = function()
 {
 	this.error_overlay = document.createElement('div');
 	this.error_overlay.style.display = 'none';
-	this.error_overlay.className = 'overlay-content';
+	this.error_overlay.className = 'overlay-content error-overlay';
 
 	var div = document.createElement('div');
 	this.error_overlay.appendChild(div);
