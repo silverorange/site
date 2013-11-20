@@ -33,6 +33,13 @@ function SiteJwPlayerMediaDisplay(media_id)
 		'<p>You’ve previously watched part of this video.</p>' +
 		'<p>Would you like to:</p>';
 
+	this.rtmp_error_message =
+		'<h3>Unable to stream video</h3>' +
+		'<p>Due your current firewall restrictions, this video ' +
+		'requires a browser that supports HTML5 video. Please try ' +
+		'using the latest version of a browser such as Internet Explorer, ' +
+		'Firefox, Chrome, or Safari.</p>';
+
 	// whether or not to show the on-complete-message when the video loads.
 	// this is useful if you want to remind the user they've seen the video
 	// before
@@ -188,6 +195,18 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 
 SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
 {
+	var html5_video = this.isHTML5VideoSupported();
+	var flash10 = typeof(YAHOO.util.SWFDetect) === 'undefined'
+		|| YAHOO.util.SWFDetect.isFlashVersionAtLeast(10);
+
+	return (flash10 || html5_video);
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.isHTML5VideoSupported = function()
+
+SiteJwPlayerMediaDisplay.prototype.isHTML5VideoSupported = function()
+{
 	// check to see if HTML5 video tag is supported
 	var video_tag = document.createElement('video');
 
@@ -202,10 +221,7 @@ SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
 		}
 	}
 
-	var flash10 = typeof(YAHOO.util.SWFDetect) === 'undefined'
-		|| YAHOO.util.SWFDetect.isFlashVersionAtLeast(10);
-
-	return (flash10 || html5_video);
+	return html5_video;
 };
 
 // }}}
@@ -520,22 +536,28 @@ SiteJwPlayerMediaDisplay.prototype.handleSpaceBar = function()
 
 SiteJwPlayerMediaDisplay.prototype.handleError = function(error)
 {
+	this.appendErrorMessage();
+
 	switch (error.message) {
 	case 'Error loading stream: Could not connect to server' :
 		// switch to HTML5 if RTMP port blocked
 		if (this.player.getRenderingMode() == 'flash') {
-			SiteJwPlayerMediaDisplay.primaryPlayerType = 'html5';
+			if (this.isHTML5VideoSupported()) {
+				SiteJwPlayerMediaDisplay.primaryPlayerType = 'html5';
 
-			if (this.location_identifier !== null) {
-				YAHOO.util.Cookie.set(this.location_identifier + '_type',
-					'html5');
+				if (this.location_identifier !== null) {
+					YAHOO.util.Cookie.set(this.location_identifier + '_type',
+						'html5');
+				}
+
+				this.embedPlayer();
+				var that = this;
+				this.player.onReady(function() {
+					that.play();
+				});
+			} else {
+				this.displayErrorMessage(this.rtmp_error_message);
 			}
-
-			this.embedPlayer();
-			var that = this;
-			this.player.onReady(function() {
-				that.play();
-			});
 		}
 
 		break;
@@ -728,6 +750,24 @@ SiteJwPlayerMediaDisplay.prototype.appendResumeMessage = function()
 };
 
 // }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.appendErrorMessage = function()
+
+SiteJwPlayerMediaDisplay.prototype.appendErrorMessage = function()
+{
+	this.error_overlay = document.createElement('div');
+	this.error_overlay.style.display = 'none';
+	this.error_overlay.className = 'overlay-content';
+
+	var div = document.createElement('div');
+	this.error_overlay.appendChild(div);
+	this.overlay.parentNode.appendChild(this.error_overlay);
+
+	YAHOO.util.Event.on(window, 'resize', function () {
+		this.positionOverlay(this.error_overlay);
+	}, this, true);
+};
+
+// }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.displayCompleteMessage = function()
 
 SiteJwPlayerMediaDisplay.prototype.displayCompleteMessage = function()
@@ -745,6 +785,18 @@ SiteJwPlayerMediaDisplay.prototype.displayResumeMessage = function()
 	this.overlay.style.display = 'block';
 	this.resume_overlay.style.display = 'block';
 	this.positionOverlay(this.resume_overlay);
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.displayErrorMessage = function()
+
+SiteJwPlayerMediaDisplay.prototype.displayErrorMessage = function(message)
+{
+	this.error_overlay.firstChild.innerHTML = message;
+
+	this.overlay.style.display = 'block';
+	this.error_overlay.style.display = 'block';
+	this.positionOverlay(this.error_overlay);
 };
 
 // }}}
