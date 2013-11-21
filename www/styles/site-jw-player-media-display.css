@@ -21,3 +21,30 @@
 .video-player > div {
 	vertical-align: bottom;
 }
+
+.video-player .overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 2;
+	background: #fff;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+}
+
+.video-player .overlay-content {
+	position: absolute;
+	height: auto;
+	width: auto;
+	top: 40px;
+	left: 40px;
+	bottom: 40px;
+	right: 40px;
+	z-index: 3;
+	text-align: center;
+	color: #666;
+	text-shadow: none;
+}

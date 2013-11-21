@@ -305,6 +305,11 @@ class SiteWebApplication extends SiteApplication
 		if (class_exists('SiteImage')) {
 			SiteImage::$cdn_base = $this->getCdnBase();
 		}
+
+		if (class_exists('SiteJwPlayerMediaDisplay')) {
+			SiteJwPlayerMediaDisplay::$location_identifier =
+				$this->getRemoteIP();
+		}
 	}
 
 	// }}}

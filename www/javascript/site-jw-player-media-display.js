@@ -25,11 +25,20 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.menu_title = null;
 	this.menu_link = null;
 
+	this.location_identifier = null;
+
 	this.upgrade_message = null;
 	this.on_complete_message = null;
 	this.resume_message =
 		'<p>You’ve previously watched part of this video.</p>' +
 		'<p>Would you like to:</p>';
+
+	this.rtmp_error_message =
+		'<h3>We can’t stream video to you</h3>' +
+		'<p>Unfortunately, your firewall seems to be blocking us. To work ' +
+		'around this, try switching to a browser that supports HTML5 ' +
+		'video, like the latest version of Internet Explorer, Chrome, or ' +
+		'Safari.</p>';
 
 	// whether or not to show the on-complete-message when the video loads.
 	// this is useful if you want to remind the user they've seen the video
@@ -48,6 +57,7 @@ function SiteJwPlayerMediaDisplay(media_id)
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
 
+SiteJwPlayerMediaDisplay.primaryPlayerType = 'flash'; // to allow for RTMP streaming
 SiteJwPlayerMediaDisplay.current_player_id = null;
 SiteJwPlayerMediaDisplay.record_interval = 30; // in seconds
 SiteJwPlayerMediaDisplay.players = [];
@@ -104,11 +114,11 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		tracks: this.getTracks()
 	}];
 
-	this.player = jwplayer(this.player_id).setup( {
+	var options = {
 		playlist:    playlist,
 		skin:        this.getSkin(),
 		stretching:  this.stretching,
-		primary:     'flash', // to allow for RTMP streaming
+		primary:     this.getPrimaryPlayerType(),
 		width:       '100%',
 		aspectratio: aspect_ratio,
 		flashplayer: this.swf_uri,
@@ -118,11 +128,17 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 			enabled: false // turn off JW Player's built-in analytics
 		},
 		ga:          {} // this can be blank. JW Player will use the _gaq var.
-	});
+	};
+
+	this.player = jwplayer(this.player_id).setup(options);
 
 	// this.debug();
 
 	var that = this;
+	this.player.onError(function (error) {
+		that.handleError(error);
+	});
+
 	this.player.onReady(function() {
 		that.on_ready_event.fire(that);
 	});
@@ -179,6 +195,18 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 
 SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
 {
+	var html5_video = this.isHTML5VideoSupported();
+	var flash10 = typeof(YAHOO.util.SWFDetect) === 'undefined'
+		|| YAHOO.util.SWFDetect.isFlashVersionAtLeast(10);
+
+	return (flash10 || html5_video);
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.isHTML5VideoSupported = function()
+
+SiteJwPlayerMediaDisplay.prototype.isHTML5VideoSupported = function()
+{
 	// check to see if HTML5 video tag is supported
 	var video_tag = document.createElement('video');
 
@@ -193,10 +221,22 @@ SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
 		}
 	}
 
-	var flash10 = typeof(YAHOO.util.SWFDetect) === 'undefined'
-		|| YAHOO.util.SWFDetect.isFlashVersionAtLeast(10);
+	return html5_video;
+};
 
-	return (flash10 || html5_video);
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.getPrimaryPlayerType = function()
+
+SiteJwPlayerMediaDisplay.prototype.getPrimaryPlayerType = function()
+{
+	var player_type = SiteJwPlayerMediaDisplay.primaryPlayerType;
+
+	if (this.location_identifier !== null &&
+		YAHOO.util.Cookie.get(this.location_identifier + '_type') == 'html5') {
+		player_type = 'html5';
+	}
+
+	return player_type;
 };
 
 // }}}
@@ -492,6 +532,39 @@ SiteJwPlayerMediaDisplay.prototype.handleSpaceBar = function()
 };
 
 // }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.handleError = function()
+
+SiteJwPlayerMediaDisplay.prototype.handleError = function(error)
+{
+	this.appendErrorMessage();
+
+	switch (error.message) {
+	case 'Error loading stream: Could not connect to server' :
+		// switch to HTML5 if RTMP port blocked
+		if (this.player.getRenderingMode() == 'flash') {
+			if (this.isHTML5VideoSupported()) {
+				SiteJwPlayerMediaDisplay.primaryPlayerType = 'html5';
+
+				if (this.location_identifier !== null) {
+					YAHOO.util.Cookie.set(this.location_identifier + '_type',
+						'html5');
+				}
+
+				this.embedPlayer();
+				var that = this;
+				this.player.onReady(function() {
+					that.play();
+				});
+			} else {
+				this.displayErrorMessage(this.rtmp_error_message);
+			}
+		}
+
+		break;
+	}
+};
+
+// }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.debug = function()
 
 SiteJwPlayerMediaDisplay.prototype.debug = function()
@@ -677,6 +750,24 @@ SiteJwPlayerMediaDisplay.prototype.appendResumeMessage = function()
 };
 
 // }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.appendErrorMessage = function()
+
+SiteJwPlayerMediaDisplay.prototype.appendErrorMessage = function()
+{
+	this.error_overlay = document.createElement('div');
+	this.error_overlay.style.display = 'none';
+	this.error_overlay.className = 'overlay-content error-overlay';
+
+	var div = document.createElement('div');
+	this.error_overlay.appendChild(div);
+	this.overlay.parentNode.appendChild(this.error_overlay);
+
+	YAHOO.util.Event.on(window, 'resize', function () {
+		this.positionOverlay(this.error_overlay);
+	}, this, true);
+};
+
+// }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.displayCompleteMessage = function()
 
 SiteJwPlayerMediaDisplay.prototype.displayCompleteMessage = function()
@@ -694,6 +785,18 @@ SiteJwPlayerMediaDisplay.prototype.displayResumeMessage = function()
 	this.overlay.style.display = 'block';
 	this.resume_overlay.style.display = 'block';
 	this.positionOverlay(this.resume_overlay);
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.displayErrorMessage = function()
+
+SiteJwPlayerMediaDisplay.prototype.displayErrorMessage = function(message)
+{
+	this.error_overlay.firstChild.innerHTML = message;
+
+	this.overlay.style.display = 'block';
+	this.error_overlay.style.display = 'block';
+	this.positionOverlay(this.error_overlay);
 };
 
 // }}}

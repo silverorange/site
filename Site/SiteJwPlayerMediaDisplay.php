@@ -13,6 +13,11 @@ require_once 'Site/dataobjects/SiteMediaEncoding.php';
  */
 class SiteJwPlayerMediaDisplay extends SwatControl
 {
+	// {{{ public static properties
+
+	public static $location_identifier;
+
+	// }}}
 	// {{{ public properties
 
 	public $key;
@@ -60,7 +65,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	{
 		parent::__construct();
 
-		$yui = new SwatYUI(array('swf', 'event'));
+		$yui = new SwatYUI(array('swf', 'event', 'cookie'));
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavascript(
@@ -386,6 +391,15 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.menu_title = %s;\n",
 				$this->getJavascriptVariableName(),
 				SwatString::quoteJavascriptString($this->menu_title));
+		}
+
+		// A unqiue location for the user. Used for storing location-specific
+		// info such as if RTMP is blocked
+		if (self::$location_identifier !== null) {
+			$javascript.= sprintf("\t%s.location_identifier = %s;\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavascriptString(md5(
+					self::$location_identifier)));
 		}
 
 		foreach ($this->valid_mime_types as $mime_type) {
