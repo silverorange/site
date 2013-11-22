@@ -40,6 +40,10 @@ function SiteJwPlayerMediaDisplay(media_id)
 		'video, like the latest version of Internet Explorer, Chrome, or ' +
 		'Safari.</p>';
 
+	this.android_rtmp_error_message =
+		'<h3>We can’t stream video to you</h3>' +
+		'<p>Unfortunately, your firewall seems to be blocking us.</p>';
+
 	// whether or not to show the on-complete-message when the video loads.
 	// this is useful if you want to remind the user they've seen the video
 	// before
@@ -556,7 +560,11 @@ SiteJwPlayerMediaDisplay.prototype.handleError = function(error)
 					that.play();
 				});
 			} else {
-				this.displayErrorMessage(this.rtmp_error_message);
+				if (YAHOO.env.ua.android) {
+					this.displayErrorMessage(this.android_rtmp_error_message);
+				} else {
+					this.displayErrorMessage(this.rtmp_error_message);
+				}
 			}
 		}
 
