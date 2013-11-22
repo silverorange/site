@@ -211,8 +211,6 @@ SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
 
 SiteJwPlayerMediaDisplay.prototype.isHTML5VideoSupported = function()
 {
-	return false;
-
 	// check to see if HTML5 video tag is supported
 	var video_tag = document.createElement('video');
 
