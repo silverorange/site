@@ -40,7 +40,7 @@ function SiteJwPlayerMediaDisplay(media_id)
 		'video, like the latest version of Internet Explorer, Chrome, or ' +
 		'Safari.</p>';
 
-	this.mobile_rtmp_error_message =
+	this.android_rtmp_error_message =
 		'<h3>We can’t stream video to you</h3>' +
 		'<p>Unfortunately, your firewall seems to be blocking us.</p>';
 
@@ -563,7 +563,7 @@ SiteJwPlayerMediaDisplay.prototype.handleError = function(error)
 				});
 			} else {
 				if (YAHOO.env.ua.android) {
-					this.displayErrorMessage(this.mobile_rtmp_error_message);
+					this.displayErrorMessage(this.android_rtmp_error_message);
 				} else {
 					this.displayErrorMessage(this.rtmp_error_message);
 				}
