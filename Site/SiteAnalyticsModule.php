@@ -46,7 +46,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $analytics_opt_out = false;
 
-
 	/**
 	 * Flag to tell whether to load the enchanced link attribution plugin.
 	 *
