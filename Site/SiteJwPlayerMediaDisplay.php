@@ -265,11 +265,13 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			}
 		}
 
+		echo '<div class="video-player-container">';
 		echo '<div class="video-player" id="media_display_'.
 			$this->media->id.'">';
 
 		echo '<div id="media_display_container_'.$this->media->id.'"></div>';
 
+		echo '</div>';
 		echo '</div>';
 
 		Swat::displayInlineJavaScript($this->getJavascript());
