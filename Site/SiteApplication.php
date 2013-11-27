@@ -822,8 +822,8 @@ abstract class SiteApplication extends SiteObject
 	 * @param string $key
 	 * @param string $name_space
 	 *
-	 * @return mixed Returns false if no cached value is found, otherwise
-	 *               the cached value is returned.
+	 * @return mixed false if no cached value is found, otherwise the cached
+	 *               value is returned.
 	 */
 	public function getCacheValue($key, $name_space = null)
 	{
@@ -849,7 +849,7 @@ abstract class SiteApplication extends SiteObject
 	 * @param string $key
 	 * @param string $name_space
 	 *
-	 * @return boolean Returns true if successful, false if not.
+	 * @return boolean true if successful, false if not.
 	 */
 	public function deleteCacheValue($key, $name_space = null)
 	{
@@ -874,7 +874,7 @@ abstract class SiteApplication extends SiteObject
 	 *
 	 * @param string $name_space
 	 *
-	 * @return boolean Returns true if successful, false if not.
+	 * @return boolean true if successful, false if not.
 	 */
 	public function flushCacheNs($name_space)
 	{
