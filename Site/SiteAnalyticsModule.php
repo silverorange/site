@@ -69,9 +69,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function init()
 	{
-		$this->google_account = $this->app->config->analytics->google_account;
+		$config = $this->app->getModule('SiteConfigModule');
+
+		$this->google_account = $config->analytics->google_account;
 		$this->enhanced_link_attribution =
-			$this->app->config->analytics->google_enhanced_link_attribution;
+			$config->analytics->google_enhanced_link_attribution;
 
 		$this->initOptOut();
 
