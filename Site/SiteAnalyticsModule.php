@@ -46,7 +46,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $analytics_opt_out = false;
 
-
 	/**
 	 * Flag to tell whether to load the enchanced link attribution plugin.
 	 *
@@ -70,43 +69,18 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function init()
 	{
+		$config = $this->app->getModule('SiteConfigModule');
+
+		$this->google_account = $config->analytics->google_account;
+		$this->enhanced_link_attribution =
+			$config->analytics->google_enhanced_link_attribution;
+
 		$this->initOptOut();
 
 		// skip init of the commands if we're opted out.
-		if ($this->analytics_opt_out === false)
+		if ($this->analytics_opt_out === false) {
 			$this->initGoogleAnalyticsCommands();
-	}
-
-	// }}}
-	// {{{ public function setGoogleAccount()
-
-	public function setGoogleAccount($account)
-	{
-		$this->google_account = $account;
-	}
-
-	// }}}
-	// {{{ public function setEnhancedLinkAttribution()
-
-	public function setEnhancedLinkAttribution($enhanced_link_attribution)
-	{
-		$this->enhanced_link_attribution = (bool)$enhanced_link_attribution;
-	}
-
-	// }}}
-	// {{{ public function enableEnhancedLinkAttribution()
-
-	public function enableEnhancedLinkAttribution()
-	{
-		$this->setEnhancedLinkAttribution(true);
-	}
-
-	// }}}
-	// {{{ public function disableEnhancedLinkAttribution()
-
-	public function disableEnhancedLinkAttribution()
-	{
-		$this->setEnhancedLinkAttribution(false);
+		}
 	}
 
 	// }}}
