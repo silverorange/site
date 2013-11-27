@@ -14,7 +14,7 @@ require_once 'Swat/exceptions/SwatException.php';
  * Base class for an application
  *
  * @package   Site
- * @copyright 2004-2012 silverorange
+ * @copyright 2004-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteApplication extends SiteObject
@@ -285,7 +285,7 @@ abstract class SiteApplication extends SiteObject
 	 *
 	 * @param string $setting config setting formatted: "section.variable"
 	 * @param SiteInstance $instance optional instance
-	 * @return mixed The instance config setting 
+	 * @return mixed The instance config setting
 	 * @see SiteMultipleInstanceModule
 	 */
 	public function getConfigSetting($setting, SiteInstance $instance = null)
@@ -822,8 +822,8 @@ abstract class SiteApplication extends SiteObject
 	 * @param string $key
 	 * @param string $name_space
 	 *
-	 * @return mixed Returns false if no cached value is found, otherwise
-	 *               the cached value is returned.
+	 * @return mixed false if no cached value is found, otherwise the cached
+	 *               value is returned.
 	 */
 	public function getCacheValue($key, $name_space = null)
 	{
@@ -851,7 +851,7 @@ abstract class SiteApplication extends SiteObject
 	 * @param string $key
 	 * @param string $name_space
 	 *
-	 * @return boolean Returns true if successful, false if not.
+	 * @return boolean true if successful, false if not.
 	 */
 	public function deleteCacheValue($key, $name_space = null)
 	{
@@ -865,6 +865,29 @@ abstract class SiteApplication extends SiteObject
 			} else {
 				$success = $cache->deleteNs($name_space, $key);
 			}
+		}
+
+		return $success;
+	}
+
+	// }}}
+	// {{{ public function flushCacheNs()
+
+	/**
+	 * Flushes an entire namespace
+	 *
+	 * @param string $name_space
+	 *
+	 * @return boolean true if successful, false if not.
+	 */
+	public function flushCacheNs($name_space)
+	{
+		$success = false;
+
+		if ($this->hasModule('SiteMemcacheModule')) {
+			$cache = $this->getModule('SiteMemcacheModule');
+			$cache->flushNs($name_space);
+			$success = true;
 		}
 
 		return $success;
