@@ -829,11 +829,13 @@ abstract class SiteApplication extends SiteObject
 	{
 		$value = false;
 
-		if (isset($this->memcache)) {
+		if ($this->hasModule('SiteMemcacheModule')) {
+			$cache = $this->getModule('SiteMemcacheModule');
+
 			if ($name_space === null) {
-				$value = $this->memcache->get($key);
+				$value = $cache->get($key);
 			} else {
-				$value = $this->memcache->getNs($name_space, $key);
+				$value = $cache->getNs($name_space, $key);
 			}
 		}
 
@@ -855,11 +857,13 @@ abstract class SiteApplication extends SiteObject
 	{
 		$success = false;
 
-		if (isset($this->memcache)) {
+		if ($this->hasModule('SiteMemcacheModule')) {
+			$cache = $this->getModule('SiteMemcacheModule');
+
 			if ($name_space === null) {
-				$success = $this->memcache->delete($key);
+				$success = $cache->delete($key);
 			} else {
-				$success = $this->memcache->deleteNs($name_space, $key);
+				$success = $cache->deleteNs($name_space, $key);
 			}
 		}
 
@@ -924,11 +928,14 @@ abstract class SiteApplication extends SiteObject
 	public function cacheOnShutdown($value, $key = null, $name_space = null,
 		$expiration = 0)
 	{
-		if (isset($this->memcache)) {
-			if ($name_space === null)
-				$this->memcache->set($key, $value, $expiration);
-			else
-				$this->memcache->setNs($name_space, $key, $value, $expiration);
+		if ($this->hasModule('SiteMemcacheModule')) {
+			$cache = $this->getModule('SiteMemcacheModule');
+
+			if ($name_space === null) {
+				$cache->set($key, $value, $expiration);
+			} else {
+				$cache->setNs($name_space, $key, $value, $expiration);
+			}
 		}
 	}
 
