@@ -867,6 +867,28 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function flushCacheNs()
+
+	/**
+	 * Flushes an entire namespace
+	 *
+	 * @param string $name_space
+	 *
+	 * @return boolean Returns true if successful, false if not.
+	 */
+	public function flushCacheNs($name_space)
+	{
+		$success = false;
+
+		if (isset($this->memcache)) {
+			$this->memcache->flushNs($name_space);
+			$success = true;
+		}
+
+		return $success;
+	}
+
+	// }}}
 	// {{{ public function addCacheRecordset()
 
 	public function addCacheRecordset(SwatDBRecordsetWrapper $recordset,
