@@ -880,8 +880,9 @@ abstract class SiteApplication extends SiteObject
 	{
 		$success = false;
 
-		if (isset($this->memcache)) {
-			$this->memcache->flushNs($name_space);
+		if ($this->hasModule('SiteMemcacheModule') {
+			$cache = $this->getModule('SiteMemcacheModule');
+			$cache->flushNs($name_space);
 			$success = true;
 		}
 
