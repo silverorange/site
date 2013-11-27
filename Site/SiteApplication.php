@@ -14,7 +14,7 @@ require_once 'Swat/exceptions/SwatException.php';
  * Base class for an application
  *
  * @package   Site
- * @copyright 2004-2012 silverorange
+ * @copyright 2004-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteApplication extends SiteObject
@@ -285,7 +285,7 @@ abstract class SiteApplication extends SiteObject
 	 *
 	 * @param string $setting config setting formatted: "section.variable"
 	 * @param SiteInstance $instance optional instance
-	 * @return mixed The instance config setting 
+	 * @return mixed The instance config setting
 	 * @see SiteMultipleInstanceModule
 	 */
 	public function getConfigSetting($setting, SiteInstance $instance = null)
