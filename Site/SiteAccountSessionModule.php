@@ -319,7 +319,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 		// users are not logged in.
 		if ($this->isActive()) {
 			unset($this->account);
-			unset($this->_authentication_token);
 			parent::unsetRegisteredObjects();
 		}
 
