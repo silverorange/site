@@ -51,7 +51,7 @@ class SiteContactPage extends SiteDBEditPage
 		// messages as it is unnecessary here. This can happen when users keep
 		// the contact page open in a separate tab and regenerate their session
 		// id by switching from http to https.
-		$this->ui->getWidget('contact_form')->clearAuthenticationToken();
+		SwatForm::clearAuthenticationToken();
 
 		$this->initSubject();
 	}
