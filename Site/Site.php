@@ -252,10 +252,12 @@ class Site
 
 			// Analytics
 			// Google analytics website property id (UA-XXXXX-XXX)
-			'analytics.google_account'    => null,
+			'analytics.google_account'                   => null,
+
 			// Google analytics account id (XXXXXXXX)
-			'analytics.google_account_id' => null,
+			'analytics.google_account_id'                => null,
 			'analytics.google_enhanced_link_attribution' => true,
+			'analytics.google_display_advertising'       => false,
 
 			// Ads
 			// Tracking id in URIs

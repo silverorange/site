@@ -50,9 +50,20 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 * Flag to tell whether to load the enchanced link attribution plugin.
 	 *
 	 * @var boolean
-	 * @link https://support.google.com/analytics/answer/2558867?hl=en&ref_topic=2558810
+	 * @link https://support.google.com/analytics/answer/2558867
 	 */
 	protected $enhanced_link_attribution = false;
+
+	/**
+	 * Flag to tell whether to use the display advertisor features.
+	 *
+	 * These are used for demographic and interest reports on GA, as well as
+	 * remarketing and Google Display Network impression reporting.
+	 *
+	 * @var boolean
+	 * @link https://support.google.com/analytics/answer/2444872
+	 */
+	protected $display_advertising = false;
 
 	/**
 	 * Stack of commands to send to google analytics
@@ -74,6 +85,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->google_account = $config->analytics->google_account;
 		$this->enhanced_link_attribution =
 			$config->analytics->google_enhanced_link_attribution;
+
+		$this->display_advertising =
+			$config->analytics->google_display_advertising;
 
 		$this->initOptOut();
 
@@ -186,10 +200,6 @@ JS;
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics()) {
-			$src = ($this->app->isSecure())
-				? 'https://ssl.google-analytics.com/ga.js'
-				: 'http://www.google-analytics.com/ga.js';
-
 			$javascript = <<<JS
 (function() {
 	var ga = document.createElement('script');
@@ -203,11 +213,29 @@ JS;
 
 			$javascript = sprintf(
 				$javascript,
-				$src
+				$this->getTrackingCodeSource()
 			);
 		}
 
 		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getTrackingCodeSource()
+
+	protected function getTrackingCodeSource()
+	{
+		if ($this->display_advertising) {
+			$source = ($this->app->isSecure())
+				? 'https://stats.g.doubleclick.net/dc.js'
+				: 'http://stats.g.doubleclick.net/dc.js';
+		} else {
+			$source = ($this->app->isSecure())
+				? 'https://ssl.google-analytics.com/ga.js'
+				: 'http://www.google-analytics.com/ga.js';
+		}
+
+		return $source;
 	}
 
 	// }}}
