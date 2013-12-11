@@ -50,7 +50,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 * Flag to tell whether to load the enchanced link attribution plugin.
 	 *
 	 * @var boolean
-	 * @link https://support.google.com/analytics/answer/2558867?hl=en&ref_topic=2558810
+	 * @link https://support.google.com/analytics/answer/2558867
 	 */
 	protected $enhanced_link_attribution = false;
 
