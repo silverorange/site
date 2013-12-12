@@ -829,7 +829,7 @@ SiteJwPlayerMediaDisplay.prototype.seek = function(position)
 {
 	var that = this;
 
-	if (YAHOO.env.ua.ios) {
+	if (YAHOO.env.ua.ios || YAHOO.env.ua.android) {
 		this.player.onTime(function(e) {
 			if (!that.seek_done && e.position > 1) {
 				that.player.seek(position);
