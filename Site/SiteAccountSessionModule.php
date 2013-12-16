@@ -627,10 +627,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 	{
 		parent::startSession();
 
-		if (isset($this->_authentication_token)) {
-			SwatForm::setAuthenticationToken($this->_authentication_token);
-		}
-
 		if ($this->isAccountDirty()) {
 			$this->reloadAccount();
 		}

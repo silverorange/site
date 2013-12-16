@@ -619,6 +619,10 @@ class SiteSessionModule extends SiteApplicationModule
 		}
 
 		$this->restoreRegisteredObjectDBConnections();
+		
+		if (isset($this->_authentication_token)) {
+			SwatForm::setAuthenticationToken($this->_authentication_token);
+		}
 	}
 
 	// }}}
