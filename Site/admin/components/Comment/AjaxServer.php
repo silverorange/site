@@ -10,7 +10,7 @@ require_once 'Services/Akismet2.php';
  * Performs actions on comments via AJAX
  *
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
@@ -46,7 +46,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 
 				$comment->spam = true;
 				$comment->save();
-				$this->flushCache();
+				$comment->postSave($this->app);
 			}
 		}
 
@@ -85,7 +85,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 
 				$comment->spam = false;
 				$comment->save();
-				$this->flushCache();
+				$comment->postSave($this->app);
 			}
 		}
 

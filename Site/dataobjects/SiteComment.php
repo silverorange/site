@@ -9,7 +9,7 @@ require_once 'NateGoSearch/NateGoSearch.php';
  * A comment on a site
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteComment extends SwatDBDataObject
@@ -198,8 +198,9 @@ class SiteComment extends SwatDBDataObject
 	 */
 	public function postSave(SiteApplication $app)
 	{
+		$this->clearCache($app);
+
 		if ($this->status == self::STATUS_PUBLISHED && !$this->spam) {
-			$this->clearCache($app);
 			$this->addToSearchQueue($app);
 		}
 	}
