@@ -101,35 +101,40 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
 			$this->app->instance->getInstance() : null;
 
-		if ($account->loadWithEmail($email, $instance) &&
-			$account->isCorrectPassword($password)) {
+		if ($account->loadWithEmail($email, $instance)) {
+			$password_hash = $account->password;
+			$password_salt = $account->password_salt;
 
-			// No Crypt?! Crypt!
-			if (!$account->isCryptPassword()) {
-				$account->setPassword($password);
-				$account->save();
+			$crypt = $this->app->getModule('SiteCryptModule');
+
+			if ($crypt->verifyHash($password, $password_hash, $password_salt)) {
+				// No Crypt?! Crypt!
+				if ($crypt->updateHash($password_hash)) {
+					$account->setPasswordHash($crypt->generateHash($password));
+					$account->save();
+				}
+
+				$this->activate();
+
+				$this->account = $account;
+
+				if ($regenerate_id) {
+					$this->regenerateId();
+				}
+
+				$this->setAccountCookie();
+				$this->runLoginCallbacks();
+
+				// save last login date
+				$now = new SwatDate();
+				$now->toUTC();
+				$this->account->updateLastLoginDate(
+					$now,
+					$this->app->getRemoteIP(15)
+				);
+
+				$this->setLoginSession();
 			}
-
-			$this->activate();
-
-			$this->account = $account;
-
-			if ($regenerate_id) {
-				$this->regenerateId();
-			}
-
-			$this->setAccountCookie();
-			$this->runLoginCallbacks();
-
-			// save last login date
-			$now = new SwatDate();
-			$now->toUTC();
-			$this->account->updateLastLoginDate(
-				$now,
-				$this->app->getRemoteIP(15)
-			);
-
-			$this->setLoginSession();
 		}
 
 		return $this->isLoggedIn();
