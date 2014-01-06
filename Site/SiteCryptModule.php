@@ -7,7 +7,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Application module for crypt based password hashing
  *
  * @package   Site
- * @copyright 2013 silverorange
+ * @copyright 2013-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteCryptModule extends SiteApplicationModule
@@ -43,13 +43,11 @@ class SiteCryptModule extends SiteApplicationModule
 	 */
 	public function init()
 	{
-	}
+		$config = $this->app->getModule('SiteConfigModule');
 
-	// }}}
-	// {{{ public function setHashMethod()
+		$method = $config->crypt->method;
+		$rounds = $config->crypt->rounds;
 
-	public function setHashMethod($method, $rounds)
-	{
 		if (
 			$method !== 'sha256' &&
 			$method !== 'sha512' &&
@@ -77,8 +75,6 @@ class SiteCryptModule extends SiteApplicationModule
 	 */
 	public function verifyHash($password, $password_hash, $password_salt)
 	{
-		$this->checkHashMethod();
-
 		if (substr($password_hash, 0, 1) === '$') {
 			$hash = crypt($password, $password_hash);
 		} else {
@@ -105,8 +101,6 @@ class SiteCryptModule extends SiteApplicationModule
 	 */
 	public function updateHash($password_hash)
 	{
-		$this->checkHashMethod();
-
 		$parts = explode('$', $password_hash);
 
 		// Old MD5 password hashes should always be updated.
@@ -133,22 +127,7 @@ class SiteCryptModule extends SiteApplicationModule
 	 */
 	public function generateHash($password)
 	{
-		$this->checkHashMethod();
-
 		return crypt($password, $this->generateSalt());
-	}
-
-	// }}}
-	// {{{ protected function checkHashMethod()
-
-	protected function checkHashMethod()
-	{
-		if ($this->method == '') {
-			throw new SiteException(
-				'No password hashing method is set on this module. '.
-				'Call the setHashMethod method.'
-			);
-		}
 	}
 
 	// }}}
