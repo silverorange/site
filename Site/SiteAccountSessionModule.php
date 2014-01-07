@@ -14,7 +14,7 @@ require_once 'Swat/SwatForm.php';
  * session.
  *
  * @package   Site
- * @copyright 2006-2013 silverorange
+ * @copyright 2006-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountSessionModule extends SiteSessionModule
@@ -69,6 +69,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 	public function depends()
 	{
 		$depends = parent::depends();
+		$depends[] = new SiteApplicationModuleDependency('SiteCryptModule');
 		$depends[] = new SiteApplicationModuleDependency('SiteDatabaseModule');
 		return $depends;
 	}
