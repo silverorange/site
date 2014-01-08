@@ -273,6 +273,9 @@ class Site
 
 			// Email
 			'email.smtp_server'        => null,
+			'email.smtp_port'          => null,
+			'email.smtp_username'      => null,
+			'email.smtp_password'      => null,
 			'email.log'                => true,
 
 			// to address for contact-us emails
