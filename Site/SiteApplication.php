@@ -293,16 +293,7 @@ abstract class SiteApplication extends SiteObject
 		static $config_cache = array();
 		$value = null;
 
-		if ($this->getInstanceId() !== null &&
-			$instance !== null &&
-			$this->getInstanceId() != $instance->id) {
-
-			throw new SiteException('Trying to access an instance setting '.
-				'in one instance from another. This method should only '.
-				'be used when the app instance is null, or when the app '.
-				'instance is the same as the instance parameter.');
-
-		} elseif ($instance !== null &&
+		if ($instance !== null &&
 			$this->getInstanceId() != $instance->id) {
 
 			if (!isset($config_cache[$instance->id])) {
