@@ -293,7 +293,7 @@ abstract class SiteApplication extends SiteObject
 		static $config_cache = array();
 		$value = null;
 
-		if ($instance !== null &&
+		if ($instance instanceof SiteInstance &&
 			$this->getInstanceId() != $instance->id) {
 
 			if (!isset($config_cache[$instance->id])) {
