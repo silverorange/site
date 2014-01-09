@@ -110,29 +110,7 @@ class SiteAccountLoginPage extends SiteUiPage
 				$this->postLoginProcess();
 				$this->app->relocate($this->relocate_uri);
 			} else {
-				$message = new SwatMessage(
-					Site::_('The email or password you entered is not correct'),
-					'warning'
-				);
-
-				$message->secondary_content = sprintf(
-					'<ul><li>%s</li><li>%s</li></ul>',
-					Site::_(
-						'Please check the spelling on your email '.
-						'address or password.'
-					),
-					sprintf(
-						Site::_(
-							'Password is case-sensitive. Make sure '.
-							'your %sCaps Lock%s key is off.'
-						),
-						'<kbd>',
-						'</kbd>'
-					)
-				);
-
-				$message->content_type = 'text/xml';
-				$this->ui->getWidget('message_display')->add($message);
+				$this->handleLoginFailure();
 			}
 		}
 	}
@@ -147,6 +125,36 @@ class SiteAccountLoginPage extends SiteUiPage
 			$this->ui->getWidget('stay_logged_in')->value) {
 			$this->app->session->setLoginCookie();
 		}
+	}
+
+	// }}}
+	// {{{ protected function handleLoginFailure()
+
+	protected function handleLoginFailure()
+	{
+		$message = new SwatMessage(
+			Site::_('The email or password you entered is not correct'),
+			'warning'
+		);
+
+		$message->secondary_content = sprintf(
+			'<ul><li>%s</li><li>%s</li></ul>',
+			Site::_(
+				'Please check the spelling on your email '.
+				'address or password.'
+			),
+			sprintf(
+				Site::_(
+					'Password is case-sensitive. Make sure '.
+					'your %sCaps Lock%s key is off.'
+				),
+				'<kbd>',
+				'</kbd>'
+			)
+		);
+
+		$message->content_type = 'text/xml';
+		$this->ui->getWidget('message_display')->add($message);
 	}
 
 	// }}}
