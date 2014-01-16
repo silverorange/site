@@ -84,13 +84,12 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 			$password_salt = $account->password_salt;
 
 			if (!$crypt->verifyHash($password, $password_hash, $password_salt)) {
-				$message = new SwatMessage(
-					Site::_('Your password is incorrect.'),
-					'error'
+				$old_password->addMessage(
+					new SwatMessage(
+						Site::_('Your password is incorrect.'),
+						'error'
+					)
 				);
-
-				$message->content_type = 'text/xml';
-				$old_password->addMessage($message);
 			}
 		}
 	}
