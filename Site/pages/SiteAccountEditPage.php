@@ -184,7 +184,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 			if ($this->isNew($form)) {
 				$password = $this->ui->getWidget('password')->value;
-				if ($password != null) {
+				if ($password != '') {
 					$crypt = $this->app->getModule('SiteCryptModule');
 
 					$this->account->setPasswordHash(
