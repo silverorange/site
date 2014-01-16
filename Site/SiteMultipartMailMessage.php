@@ -245,15 +245,15 @@ class SiteMultipartMailMessage extends SiteObject
 		$email_params = array();
 		$email_params['host'] = $this->smtp_server;
 
-		if ($this->smtp_port !== null) {
+		if ($this->smtp_port != '') {
 			$email_params['port'] = $this->smtp_port;
 		}
 
-		if ($this->smtp_username !== null) {
+		if ($this->smtp_username != '') {
 			$email_params['username'] = $this->smtp_username;
 		}
 
-		if ($this->smtp_password !== null) {
+		if ($this->smtp_password != '') {
 			$email_params['auth'] = true;
 			$email_params['password'] = $this->smtp_password;
 		}
