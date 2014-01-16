@@ -110,7 +110,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 			if ($crypt->verifyHash($password, $password_hash, $password_salt)) {
 				// No Crypt?! Crypt!
-				if ($crypt->updateHash($password_hash)) {
+				if ($crypt->shouldUpdateHash($password_hash)) {
 					$account->setPasswordHash($crypt->generateHash($password));
 					$account->save();
 				}

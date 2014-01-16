@@ -14,13 +14,13 @@ class SiteCryptModule extends SiteApplicationModule
 {
 	// {{{ class constants
 
-	const CRYPT_SHA_MIN_ROUNDS = 1000;
-	const CRYPT_SHA_MAX_ROUNDS = 999999999;
-	const CRYPT_SHA_SALT_LENGTH = 16;
+	const SHA_MIN_ROUNDS = 1000;
+	const SHA_MAX_ROUNDS = 999999999;
+	const SHA_SALT_LENGTH = 16;
 
-	const CRYPT_BLOWFISH_MIN_ROUNDS = 4;
-	const CRYPT_BLOWFISH_MAX_ROUNDS = 31;
-	const CRYPT_BLOWFISH_SALT_LENGTH = 22;
+	const BLOWFISH_MIN_ROUNDS = 4;
+	const BLOWFISH_MAX_ROUNDS = 31;
+	const BLOWFISH_SALT_LENGTH = 22;
 
 	// }}}
 	// {{{ protected properties
@@ -75,6 +75,8 @@ class SiteCryptModule extends SiteApplicationModule
 	 */
 	public function verifyHash($password, $password_hash, $password_salt)
 	{
+		// If the password isn't a crypt style password than it's in the old
+		// style form of a salted MD5 hash.
 		if (substr($password_hash, 0, 1) === '$') {
 			$hash = crypt($password, $password_hash);
 		} else {
@@ -92,14 +94,14 @@ class SiteCryptModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function updateHash()
+	// {{{ public function shouldUpdateHash()
 
 	/**
 	 * Checks if the given password hash should be re-hashed
 	 *
 	 * @return boolean true if password hash should be updated.
 	 */
-	public function updateHash($password_hash)
+	public function shouldUpdateHash($password_hash)
 	{
 		$parts = explode('$', $password_hash);
 
@@ -162,15 +164,15 @@ class SiteCryptModule extends SiteApplicationModule
 		case 'sha256':
 		case 'sha512':
 			$rounds = $this->rounds;
-			$rounds = max($rounds, self::CRYPT_SHA_MIN_ROUNDS);
-			$rounds = min($rounds, self::CRYPT_SHA_MAX_ROUNDS);
+			$rounds = max($rounds, self::SHA_MIN_ROUNDS);
+			$rounds = min($rounds, self::SHA_MAX_ROUNDS);
 
 			return 'rounds='.$rounds;
 
 		case 'blowfish':
 			$rounds = $this->rounds;
-			$rounds = max($rounds, self::CRYPT_BLOWFISH_MIN_ROUNDS);
-			$rounds = min($rounds, self::CRYPT_BLOWFISH_MAX_ROUNDS);
+			$rounds = max($rounds, self::BLOWFISH_MIN_ROUNDS);
+			$rounds = min($rounds, self::BLOWFISH_MAX_ROUNDS);
 
 			return ($rounds < 10) ? '0'.$rounds : (string)$rounds;
 
@@ -190,10 +192,10 @@ class SiteCryptModule extends SiteApplicationModule
 		switch ($this->method) {
 		case 'sha256':
 		case 'sha512':
-			return self::CRYPT_SHA_SALT_LENGTH;
+			return self::SHA_SALT_LENGTH;
 
 		case 'blowfish':
-			return self::CRYPT_BLOWFISH_SALT_LENGTH;
+			return self::BLOWFISH_SALT_LENGTH;
 
 		default:
 			throw new SiteException(
