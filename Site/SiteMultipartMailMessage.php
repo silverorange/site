@@ -128,6 +128,27 @@ class SiteMultipartMailMessage extends SiteObject
 	public $smtp_server = null;
 
 	/**
+	 * SMTP port
+	 *
+	 * @var integer
+	 */
+	public $smtp_port = null;
+
+	/**
+	 * SMTP username
+	 *
+	 * @var string
+	 */
+	public $smtp_username = null;
+
+	/**
+	 * SMTP password
+	 *
+	 * @var string
+	 */
+	public $smtp_password = null;
+
+	/**
 	 * Files to attach to this mail message
 	 *
 	 * @var array
@@ -223,6 +244,20 @@ class SiteMultipartMailMessage extends SiteObject
 		// create mailer
 		$email_params = array();
 		$email_params['host'] = $this->smtp_server;
+
+		if ($this->smtp_port != '') {
+			$email_params['port'] = $this->smtp_port;
+		}
+
+		if ($this->smtp_username != '') {
+			$email_params['username'] = $this->smtp_username;
+		}
+
+		if ($this->smtp_password != '') {
+			$email_params['auth'] = true;
+			$email_params['password'] = $this->smtp_password;
+		}
+
 		$mailer = Mail::factory('smtp', $email_params);
 
 		if (PEAR::isError($mailer)) {
