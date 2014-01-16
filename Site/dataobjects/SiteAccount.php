@@ -23,9 +23,11 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  *   method. A new row is inserted into the database.
  *
  * <code>
+ * $crypt = $this->app->getModule('SiteCryptModule');
+ *
  * $new_account = new SiteAccount();
  * $new_account->email = 'account@example.com';
- * $new_account->setPassword('secretpassword');
+ * $new_account->setPasswordHash($crypt->generateHash('secretpassword'));
  * $new_account->save();
  * </code>
  *
@@ -43,13 +45,18 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  * $account->save();
  *
  * // using loadWithEmail()
- * $account = new SiteAccount();
- * if ($account->loadWithEmail('test@example.com') &&
- *     $account->isCorrectPassword('secretpassword')) {
+ * $crypt = $this->app->getModule('SiteCryptModule');
  *
- *     echo 'Hello ' . $account->fullname;
- *     $account->email = 'new_address@example.com';
- *     $account->save();
+ * $account = new SiteAccount();
+ * if ($account->loadWithEmail('test@example.com')) {
+ *     $password_hash = $account->password;
+ *     $password_salt = $account->password_salt;
+ *
+ *     if($crypt->verifyHash('secretpassword', $password_hash, $password_salt)) {
+ *         echo 'Hello ' . $account->fullname;
+ *         $account->email = 'new_address@example.com';
+ *         $account->save();
+ *     }
  * }
  * </code>
  *
@@ -76,19 +83,6 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  */
 class SiteAccount extends SwatDBDataObject
 {
-	// {{{ class constants
-
-	/**
-	 * The salt length determines how much extra entropy is added to the hash
-	 */
-	const PASSWORD_SALT_LENGTH = 16;
-
-	/**
-	 * The prefix used by crypt to determine which hash to use
-	 */
-	const PASSWORD_CRYPT_PREFIX = '$6$';
-
-	// }}}
 	// {{{ public properties
 
 	/**
@@ -123,7 +117,7 @@ class SiteAccount extends SwatDBDataObject
 	 *
 	 * @var string
 	 *
-	 * @see SiteAccount::setPassword()
+	 * @see SiteAccount::setPasswordHash()
 	 */
 	public $password;
 
@@ -537,77 +531,20 @@ class SiteAccount extends SwatDBDataObject
 	// }}}
 
 	// password methods
-	// {{{ public function setPassword()
+	// {{{ public function setPasswordHash()
 
 	/**
-	 * Sets this account's password
+	 * Sets this account's password hash
 	 *
-	 * @param string $password the plaintext password for this account.
+	 * @param string $password_hash the password hash for this account.
 	 */
-	public function setPassword($password)
+	public function setPasswordHash($password_hash)
 	{
-		$this->password = $this->calculatePasswordHash($password);
+		$this->password = $password_hash;
 
-		// Note: SiteAccount now uses crypt() for password hashing. The salt
-		// is stored in the same field as the hashed password.
+		// Note: Site now uses crypt() for password hashing. The salt is stored
+		// in the same field as the hashed password.
 		$this->password_salt = null;
-	}
-
-	// }}}
-	// {{{ public function isCorrectPassword()
-
-	/**
-	 * Checks if the given password is this account's password
-	 *
-	 * @return boolean true if passwords match, false if not.
-	 */
-	public function isCorrectPassword($password)
-	{
-		if ($this->isCryptPassword()) {
-			$hash = crypt($password, $this->password);
-		} else {
-			$salt = base64_decode($this->password_salt, true);
-
-			// salt may not be base64 encoded
-			if ($salt === false) {
-				$salt = $this->password_salt;
-			}
-
-			$hash = md5($password.$salt);
-		}
-
-		return ($this->password === $hash);
-	}
-
-	// }}}
-	// {{{ public function isCryptPassword()
-
-	/**
-	 * Checks if this account's password has been hashed by crypt(3)
-	 *
-	 * @return boolean true if the password was hashed with crypt(3)
-	 */
-	public function isCryptPassword()
-	{
-		return (substr($this->password, 0, 3) === self::PASSWORD_CRYPT_PREFIX);
-	}
-
-	// }}}
-	// {{{ protected function calculatePasswordHash()
-
-	/**
-	 * Calculates the password hash for a password
-	 *
-	 * @param string $password the plaintext password.
-	 *
-	 * @return string the hashed password.
-	 */
-	protected function calculatePasswordHash($password)
-	{
-		$salt = self::PASSWORD_CRYPT_PREFIX.
-			SwatString::getCryptSalt(self::PASSWORD_SALT_LENGTH);
-
-		return crypt($password, $salt);
 	}
 
 	// }}}
@@ -796,8 +733,10 @@ class SiteAccount extends SwatDBDataObject
 	{
 		require_once 'Text/Password.php';
 
+		$crypt = $app->getModule('SiteCryptModule');
+
 		$password      = Text_Password::Create();
-		$password_hash = $this->calculatePasswordHash($password);
+		$password_hash = $crypt->generateHash($password);
 
 		// Note: SiteAccount now uses crypt() for password hashing. The salt
 		// is stored in the same field as the hashed password.

@@ -9,7 +9,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Container for package wide static methods
  *
  * @package   Site
- * @copyright 2005-2013 silverorange
+ * @copyright 2005-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class Site
@@ -376,6 +376,12 @@ class Site
 			// how long in milliseconds to wait for a synchronous response from
 			// the AMQP job processor.
 			'amqp.sync_timeout'      => 2000,
+
+			// The crypt supported password hashing method and rounds to use.
+			// Use blowfish and 10 rounds (~0.088s with 2 x Intel Xeon E5345)
+			// as sane defaults.
+			'crypt.method' => 'blowfish',
+			'crypt.rounds' => '10',
 		);
 	}
 

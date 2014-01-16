@@ -151,11 +151,11 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 
 	protected function updatePassword()
 	{
-		$account  = $this->app->session->account;
-
+		$account = $this->app->session->account;
 		$password = $this->ui->getWidget('password')->value;
+		$crypt = $this->app->getModule('SiteCryptModule');
 
-		$account->setPassword($password);
+		$account->setPasswordHash($crypt->generateHash($password));
 		$account->password_tag = null;
 	}
 

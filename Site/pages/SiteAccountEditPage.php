@@ -184,8 +184,13 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 			if ($this->isNew($form)) {
 				$password = $this->ui->getWidget('password')->value;
-				if ($password != null)
-					$this->account->setPassword($password);
+				if ($password != '') {
+					$crypt = $this->app->getModule('SiteCryptModule');
+
+					$this->account->setPasswordHash(
+						$crypt->generateHash($password)
+					);
+				}
 
 				$this->account->createdate = new SwatDate();
 				$this->account->createdate->toUTC();

@@ -76,15 +76,21 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		$account = $this->app->session->account;
 		$old_password = $this->ui->getWidget('old_password');
 
-		if (!$old_password->hasMessage() &&
-			!$account->isCorrectPassword($old_password->value)) {
-			$message = new SwatMessage(
-				Site::_('Your password is incorrect.'),
-				'error'
-			);
+		if (!$old_password->hasMessage()) {
+			$crypt = $this->app->getModule('SiteCryptModule');
 
-			$message->content_type = 'text/xml';
-			$old_password->addMessage($message);
+			$password = $old_password->value;
+			$password_hash = $account->password;
+			$password_salt = $account->password_salt;
+
+			if (!$crypt->verifyHash($password, $password_hash, $password_salt)) {
+				$old_password->addMessage(
+					new SwatMessage(
+						Site::_('Your password is incorrect.'),
+						'error'
+					)
+				);
+			}
 		}
 	}
 
@@ -101,11 +107,11 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 
 	protected function updatePassword()
 	{
-		$account  = $this->app->session->account;
-
+		$account = $this->app->session->account;
 		$password = $this->ui->getWidget('password')->value;
+		$crypt = $this->app->getModule('SiteCryptModule');
 
-		$account->setPassword($password);
+		$account->setPasswordHash($crypt->generateHash($password));
 	}
 
 	// }}}
