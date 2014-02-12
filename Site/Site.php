@@ -152,24 +152,6 @@ class Site
 	}
 
 	// }}}
-	// {{{ public static function getDependencies()
-
-	/**
-	 * Gets the packages this package depends on
-	 *
-	 * @return array an array of package IDs that this package depends on.
-	 */
-	public static function getDependencies()
-	{
-		$dependencies = array(Swat::PACKAGE_ID);
-
-		if (class_exists('XML_RPCAjax'))
-			$dependencies[] = XML_RPCAjax::PACKAGE_ID;
-
-		return $dependencies;
-	}
-
-	// }}}
 	// {{{ public static function getConfigDefinitions()
 
 	/**
