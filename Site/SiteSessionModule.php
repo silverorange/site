@@ -620,8 +620,12 @@ class SiteSessionModule extends SiteApplicationModule
 
 		$this->restoreRegisteredObjectDBConnections();
 		
+		// The auth token should always be set. Some old sessions may not
+		// have it set so generate one. See silverorange/site#41
 		if (isset($this->_authentication_token)) {
 			SwatForm::setAuthenticationToken($this->_authentication_token);
+		} else {
+			$this->regenerateAuthenticationToken();
 		}
 	}
 
