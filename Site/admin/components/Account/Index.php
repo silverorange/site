@@ -12,25 +12,11 @@ require_once 'Site/admin/SiteAccountSearch.php';
  * Index page for Accounts
  *
  * @package   Site
- * @copyright 2006-2013 silverorange
+ * @copyright 2006-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountIndex extends AdminSearch
 {
-	// {{{ protected properties
-
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/admin/components/Account/index.xml';
-
-	/**
-	 * @var string
-	 */
-	protected $search_xml = 'Site/admin/components/Account/search.xml';
-
-	// }}}
-
 	// init phase
 	// {{{ protected function initInternal()
 
@@ -39,8 +25,8 @@ class SiteAccountIndex extends AdminSearch
 		parent::initInternal();
 
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->search_xml);
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getSearchXml());
+		$this->ui->loadFromXML($this->getUiXml());
 
 		if ($this->app->isMultipleInstanceAdmin() &&
 			$this->ui->hasWidget('search_instance')) {
@@ -55,6 +41,22 @@ class SiteAccountIndex extends AdminSearch
 				$search_instance->parent->visible = true;
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function getSearchXml()
+
+	protected function getSearchXml()
+	{
+		return 'Site/admin/components/Account/search.xml';
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'Site/admin/components/Account/index.xml';
 	}
 
 	// }}}
