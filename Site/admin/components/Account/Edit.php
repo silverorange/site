@@ -10,7 +10,7 @@ require_once 'Swat/SwatDate.php';
  * Edit page for Accounts
  *
  * @package   Site
- * @copyright 2006-2013 silverorange
+ * @copyright 2006-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountEdit extends AdminDBEdit
@@ -18,11 +18,6 @@ class SiteAccountEdit extends AdminDBEdit
 	// {{{ protected properties
 
 	protected $account;
-
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/admin/components/Account/edit.xml';
 
 	// }}}
 
@@ -36,7 +31,7 @@ class SiteAccountEdit extends AdminDBEdit
 		$this->initAccount();
 
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 	}
 
 	// }}}
@@ -66,6 +61,14 @@ class SiteAccountEdit extends AdminDBEdit
 		} elseif ($this->app->hasModule('SiteMultipleInstanceModule')) {
 			$this->account->instance = $this->app->instance->getInstance();
 		}
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'Site/admin/components/Account/edit.xml';
 	}
 
 	// }}}
