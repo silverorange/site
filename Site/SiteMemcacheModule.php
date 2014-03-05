@@ -2,6 +2,7 @@
 
 require_once 'Site/SiteApplicationModule.php';
 require_once 'Site/exceptions/SiteException.php';
+require_once 'SwatDB/SwatDBCacheNsFlushable.php';
 
 /**
  * Web application module for using memcached
@@ -23,7 +24,7 @@ require_once 'Site/exceptions/SiteException.php';
  * @copyright 2008-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteMemcacheModule extends SiteApplicationModule
+class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsFlushable
 {
 	// {{{ public properties
 
