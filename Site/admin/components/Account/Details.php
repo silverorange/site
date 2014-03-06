@@ -11,17 +11,12 @@ require_once 'SwatDB/SwatDBClassMap.php';
  * Details page for accounts
  *
  * @package   Site
- * @copyright 2006-2012 silverorange
+ * @copyright 2006-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountDetails extends AdminIndex
 {
 	// {{{ protected properties
-
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/admin/components/Account/details.xml';
 
 	/**
 	 * @var integer
@@ -43,7 +38,7 @@ class SiteAccountDetails extends AdminIndex
 		parent::initInternal();
 
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->id = SiteApplication::initVar('id');
 	}
@@ -75,6 +70,14 @@ class SiteAccountDetails extends AdminIndex
 		}
 
 		return $this->account;
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'Site/admin/components/Account/details.xml';
 	}
 
 	// }}}
