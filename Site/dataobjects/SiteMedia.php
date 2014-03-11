@@ -250,6 +250,21 @@ class SiteMedia extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getValidMimeTypes()
+
+	public function getValidMediaTypes()
+	{
+		$media_set = $this->getMediaSet();
+		$types = array();
+		foreach ($media_set->encodings as $encoding) {
+			// extension keeps the types unique
+			$types[$encoding->default_type->extension] = $encoding->default_type;
+		}
+
+		return $types;
+	}
+
+	// }}}
 	// {{{ public function getHumanFileType()
 
 	public function getHumanFileType($encoding_shortname = null)
