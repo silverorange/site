@@ -250,7 +250,7 @@ class SiteMedia extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function getValidMimeTypes()
+	// {{{ public function getValidMediaTypes()
 
 	public function getValidMediaTypes()
 	{
