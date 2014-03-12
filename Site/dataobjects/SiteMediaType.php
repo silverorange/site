@@ -34,6 +34,16 @@ class SiteMediaType extends SwatDBDataObject
 	 */
 	public $mime_type;
 
+	/**
+	 * Alternate mime types
+	 *
+	 * A comma-deliminated list of alternate valid mime types to the
+	 * default mime type.
+	 *
+	 * @var string
+	 */
+	public $alternate_mime_types;
+
 	// }}}
 	// {{{ public function loadByMimeType()
 
@@ -66,6 +76,19 @@ class SiteMediaType extends SwatDBDataObject
 		}
 
 		return $found;
+	}
+
+	// }}}
+	// {{{ public function getValidMimeTypes()
+
+	public function getValidMimeTypes()
+	{
+		$mime_types = array($this->mime_type);
+		foreach (explode(',', $this->alternate_mime_types) as $type) {
+			$mime_types[] = trim($type);
+		}
+
+		return array_unique($mime_types);
 	}
 
 	// }}}
