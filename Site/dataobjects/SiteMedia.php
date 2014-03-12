@@ -257,8 +257,7 @@ class SiteMedia extends SwatDBDataObject
 		$media_set = $this->getMediaSet();
 		$types = array();
 		foreach ($media_set->encodings as $encoding) {
-			// extension keeps the types unique
-			$types[$encoding->default_type->extension] = $encoding->default_type;
+			$types[$encoding->default_type->id] = $encoding->default_type;
 		}
 
 		return $types;
