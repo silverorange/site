@@ -8,7 +8,7 @@ require_once 'Site/dataobjects/SiteAttachmentCdnTask.php';
  * An attachment
  *
  * @package   Site
- * @copyright 2011-2013 silverorange
+ * @copyright 2011-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAttachment extends SwatDBDataObject
@@ -162,6 +162,7 @@ class SiteAttachment extends SwatDBDataObject
 			'application/zip'          => 'zip',
 			'application/pdf'          => 'pdf',
 			'image/jpeg'               => 'jpg',
+			'image/png'                => 'png',
 			'application/msword'       => 'doc',
 			'text/html'                => 'html',
 			'application/vnd.ms-excel' => 'xls',
@@ -189,6 +190,7 @@ class SiteAttachment extends SwatDBDataObject
 			'application/zip'          => Site::_('ZIP'),
 			'application/pdf'          => Site::_('PDF'),
 			'image/jpeg'               => Site::_('JPEG Image'),
+			'image/png'                => Site::_('PNG Image'),
 			'application/msword'       => Site::_('Word Document'),
 			'text/html'                => Site::_('Web Document'),
 			'application/vnd.ms-excel' => Site::_('Excel Document'),
