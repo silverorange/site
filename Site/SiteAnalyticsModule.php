@@ -9,7 +9,7 @@ require_once 'Site/SiteApplicationModule.php';
  * could be added.
  *
  * @package   Site
- * @copyright 2007-2013 silverorange
+ * @copyright 2007-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
  */
@@ -66,6 +66,17 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected $display_advertising = false;
 
 	/**
+	 * Flag to tell whether to track visiting device pixel ratios.
+	 *
+	 * If tracking is turned on we use the GetDevicePixelRatio script from
+	 * Tyson Matanich
+	 *
+	 * @var boolean
+	 * @link https://github.com/tysonmatanich/GetDevicePixelRatio
+	 */
+	protected $track_device_pixel_ratio = false;
+
+	/**
 	 * Stack of commands to send to google analytics
 	 *
 	 * Each entry is an array where the first value is the google analytics
@@ -88,6 +99,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		$this->display_advertising =
 			$config->analytics->google_display_advertising;
+
+		$this->track_device_pixel_ratio =
+			$config->analytics->track_device_pixel_ratio;
 
 		$this->initOptOut();
 
@@ -130,7 +144,29 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
-			$javascript = sprintf(
+			if ($this->track_device_pixel_ratio) {
+
+				$javascript = '
+/*! GetDevicePixelRatio | Author: Tyson Matanich, 2012 | License: MIT */
+(function (window) {
+	window.getDevicePixelRatio = function () {
+		var ratio = 1;
+		// To account for zoom, change to use deviceXDPI instead of systemXDPI
+		if (window.screen.systemXDPI !== undefined && window.screen.logicalXDPI !== undefined && window.screen.systemXDPI > window.screen.logicalXDPI) {
+			// Only allow for values > 1
+			ratio = window.screen.systemXDPI / window.screen.logicalXDPI;
+		}
+		else if (window.devicePixelRatio !== undefined) {
+			ratio = window.devicePixelRatio;
+		}
+		return ratio;
+	};
+})(this);
+var devicePixelRatio = window.getDevicePixelRatio();
+';
+			}
+
+			$javascript.= sprintf(
 				"%s\n%s",
 				$this->getGoogleAnalyticsCommandsInlineJavascript(),
 				$this->getGoogleAnalyticsTrackerInlineJavascript()
@@ -253,6 +289,22 @@ JS;
 			),
 			'_trackPageview',
 		);
+
+		if ($this->track_device_pixel_ratio) {
+			$this->pushGoogleAnalyticsCommand(
+				array(
+					array(
+						'_setCustomVar',
+						1,
+						'devicePixelRatio',
+						array(
+							'variable' => 'devicePixelRatio',
+						),
+						self::CUSTOM_VARIABLE_SCOPE_SESSION,
+					),
+				)
+			);
+		}
 	}
 
 	// }}}
@@ -314,9 +366,42 @@ JS;
 			$method = array_shift($command);
 
 			foreach ($command as $part) {
+				$type = 'string';
+				$value = $part;
+
+				if (is_array($part)) {
+					if (count($part) === 1) {
+						foreach ($part as $key=>$value) {
+							if (is_string($key)) {
+								$type = $key;
+							}
+						}
+					} else {
+						$e = new SiteException(
+							sprintf(
+								'Invalid GA Command: %s',
+								var_export($command, true)
+							)
+						);
+
+						$e->processAndContinue();
+					}
+				}
+
+				switch ($type) {
+				case 'variable':
+					$quoted_part = $value;
+					break;
+
+				case 'string':
+				default:
+					$quoted_part = SwatString::quoteJavaScriptString($value);
+					break;
+				}
+
 				$options.= sprintf(
 					', %s',
-					SwatString::quoteJavaScriptString($part)
+					$quoted_part
 				);
 			}
 		} else {

@@ -240,6 +240,7 @@ class Site
 			'analytics.google_account_id'                => null,
 			'analytics.google_enhanced_link_attribution' => true,
 			'analytics.google_display_advertising'       => false,
+			'analytics.track_device_pixel_ratio'         => true,
 
 			// Ads
 			// Tracking id in URIs
