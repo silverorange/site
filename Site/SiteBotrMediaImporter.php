@@ -13,7 +13,7 @@ require_once 'Site/dataobjects/SiteVideoImage.php';
  *  - Mark Media as imported.
  *
  * @package   Site
- * @copyright 2011-2013 silverorange
+ * @copyright 2011-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Support for importing into multiple MediaSets (perhaps based on
  *            the encoding profiles present on the Media we're importing).
@@ -218,9 +218,12 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 
 		if (!$this->media_set->loadByShortname($this->media_set_shortname,
 			$this->getInstance())) {
-			throw new SiteCommandLineException(sprintf(
-				'No media set exists with shortname ‘%s’.',
-				$this->media_set_shortname));
+			throw new SiteBotrMediaCommandLineException(
+				sprintf(
+					'No media set exists with shortname ‘%s’.',
+					$this->media_set_shortname
+				)
+			);
 		}
 	}
 

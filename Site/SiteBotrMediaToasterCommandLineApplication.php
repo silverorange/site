@@ -6,13 +6,14 @@ require_once 'Site/SiteMultipleInstanceModule.php';
 require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteBotrMediaToaster.php';
 require_once 'Site/dataobjects/SiteBotrMediaWrapper.php';
-require_once 'Site/exceptions/SiteCommandLineException.php';
+require_once 'Site/exceptions/SiteBotrMediaCommandLineException.php';
+require_once 'Site/exceptions/SiteBotrMediaCommandLineFileExistsException.php';
 
 /**
  * Abstract application for applications that access media on bits on the run.
  *
  * @package   Site
- * @copyright 2011-2013 silverorange
+ * @copyright 2011-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      do something better with the isMarkedX() methods. Maybe move the
  *            tags to constants.
@@ -347,11 +348,14 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected function addSourceFile($key, $path, SplFileInfo $file)
 	{
 		if (isset($this->source_files[$key])) {
-			throw new SiteCommandLineException(sprintf(
-				"Source file ‘%s’ duplicate.\nVersion 1: %s\n Version 2: %s",
-				$key,
-				$path,
-				$this->source_files[$key]['path']));
+			throw new SiteBotrMediaCommandLineException(
+				sprintf(
+					"Source file ‘%s’ duplicate.\nVersion 1: %s\n Version 2: %s",
+					$key,
+					$path,
+					$this->source_files[$key]['path']
+				)
+			);
 		}
 
 		$this->source_files[$key]['path'] = $path;
@@ -728,15 +732,15 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$filesize_to_check = null)
 	{
 		if ($filesize_to_check > PHP_INT_MAX) {
-			throw new SiteCommandLineException(sprintf(
-				'File too large to download %s.',
-				SwatString::byteFormat($filesize_to_check)));
+			throw new SiteBotrMediaCommandLineException(
+				sprintf(
+					'File too large to download %s.',
+					SwatString::byteFormat($filesize_to_check)
+				)
+			);
 		}
 
 		if (file_exists($destination)) {
-			require_once 'Site/exceptions/'.
-				'SiteBotrMediaCommandLineFileExistsException.php';
-
 			throw new SiteBotrMediaCommandLineFileExistsException(
 				sprintf(
 					'File already exists “%s”',
@@ -758,36 +762,53 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$temp_file = tempnam(sys_get_temp_dir(), $prefix);
 
 		if (!file_exists($directory) && !mkdir($directory, 0777, true)) {
-			throw new SiteCommandLineException(sprintf(
-				'Unable to create directory “%s.”', $directory));
+			throw new SiteBotrMediaCommandLineException(
+				sprintf(
+					'Unable to create directory “%s.”',
+					$directory
+				)
+			);
 		}
 
 		if (!copy($source, $temp_file)) {
-			throw new SiteCommandLineException(sprintf(
-				'Unable to download “%s” to “%s.”', $source, $temp_file));
+			throw new SiteBotrMediaCommandLineException(
+				sprintf(
+					'Unable to download “%s” to “%s.”',
+					$source,
+					$temp_file
+				)
+			);
 		}
 
 		if ($filesize_to_check < PHP_INT_MAX) {
 			$local_filesize = filesize($temp_file);
 			if ($local_filesize != $filesize_to_check) {
 				unlink($temp_file);
-				throw new SiteCommandLineException(sprintf(
-					"Downloaded file size mismatch\n".
-					"%s bytes on BOTR\n".
-					"%s bytes locally.",
-					$filesize_to_check,
-					$local_filesize));
+				throw new SiteBotrMediaCommandLineException(
+					sprintf(
+						"Downloaded file size mismatch\n".
+						"%s bytes on BOTR\n".
+						"%s bytes locally.",
+						$filesize_to_check,
+						$local_filesize
+					)
+				);
 			}
 		}
 
 		if (!rename($temp_file, $destination)) {
-			throw new SiteCommandLineException(sprintf(
-				'Unable to move “%s” to “%s.”', $temp_file, $destination));
+			throw new SiteBotrMediaCommandLineException(
+				sprintf(
+					'Unable to move “%s” to “%s.”',
+					$temp_file,
+					$destination
+				)
+			);
 		}
 
 		// update permissions (-rw-rw----)
 		if (!chmod($destination, 0660)) {
-			throw new SiteCommandLineException(
+			throw new SiteBotrMediaCommandLineException(
 				sprintf(
 					'Unable to change permissions on “%s.”',
 					$destination
@@ -873,7 +894,13 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 function SourceFileErrorHandler($errno, $errstr, $errfile, $errline)
 {
-	throw new SiteCommandLineException($errstr, $errno, 0, $errfile, $errline);
+	throw new SiteBotrMediaCommandLineException(
+		$errstr,
+		$errno,
+		0,
+		$errfile,
+		$errline
+	);
 }
 
 // }}}
