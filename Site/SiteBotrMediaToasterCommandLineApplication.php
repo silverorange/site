@@ -7,7 +7,9 @@ require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteBotrMediaToaster.php';
 require_once 'Site/dataobjects/SiteBotrMediaWrapper.php';
 require_once 'Site/exceptions/SiteBotrMediaCommandLineException.php';
+require_once 'Site/exceptions/SiteBotrMediaCommandLineDownloadException.php';
 require_once 'Site/exceptions/SiteBotrMediaCommandLineFileExistsException.php';
+require_once 'Site/exceptions/SiteBotrMediaCommandLineSourceFileException.php';
 
 /**
  * Abstract application for applications that access media on bits on the run.
@@ -348,7 +350,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	protected function addSourceFile($key, $path, SplFileInfo $file)
 	{
 		if (isset($this->source_files[$key])) {
-			throw new SiteBotrMediaCommandLineException(
+			throw new SiteBotrMediaCommandLineSourceFileException(
 				sprintf(
 					"Source file ‘%s’ duplicate.\nVersion 1: %s\n Version 2: %s",
 					$key,
@@ -732,7 +734,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$filesize_to_check = null)
 	{
 		if ($filesize_to_check > PHP_INT_MAX) {
-			throw new SiteBotrMediaCommandLineException(
+			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
 					'File too large to download %s.',
 					SwatString::byteFormat($filesize_to_check)
@@ -762,7 +764,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		$temp_file = tempnam(sys_get_temp_dir(), $prefix);
 
 		if (!file_exists($directory) && !mkdir($directory, 0777, true)) {
-			throw new SiteBotrMediaCommandLineException(
+			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
 					'Unable to create directory “%s.”',
 					$directory
@@ -771,7 +773,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		}
 
 		if (!copy($source, $temp_file)) {
-			throw new SiteBotrMediaCommandLineException(
+			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
 					'Unable to download “%s” to “%s.”',
 					$source,
@@ -784,7 +786,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 			$local_filesize = filesize($temp_file);
 			if ($local_filesize != $filesize_to_check) {
 				unlink($temp_file);
-				throw new SiteBotrMediaCommandLineException(
+				throw new SiteBotrMediaCommandLineDownloadException(
 					sprintf(
 						"Downloaded file size mismatch\n".
 						"%s bytes on BOTR\n".
@@ -797,7 +799,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		}
 
 		if (!rename($temp_file, $destination)) {
-			throw new SiteBotrMediaCommandLineException(
+			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
 					'Unable to move “%s” to “%s.”',
 					$temp_file,
@@ -808,7 +810,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 		// update permissions (-rw-rw----)
 		if (!chmod($destination, 0660)) {
-			throw new SiteBotrMediaCommandLineException(
+			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
 					'Unable to change permissions on “%s.”',
 					$destination
