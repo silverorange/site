@@ -745,7 +745,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		if (file_exists($destination)) {
 			throw new SiteBotrMediaCommandLineFileExistsException(
 				sprintf(
-					'File already exists “%s”',
+					'File already exists “%s”.',
 					$destination
 				)
 			);
@@ -766,7 +766,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		if (!file_exists($directory) && !mkdir($directory, 0777, true)) {
 			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
-					'Unable to create directory “%s.”',
+					'Unable to create directory “%s”.',
 					$directory
 				)
 			);
@@ -775,7 +775,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		if (!copy($source, $temp_file)) {
 			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
-					'Unable to download “%s” to “%s.”',
+					'Unable to download “%s” to “%s”.',
 					$source,
 					$temp_file
 				)
@@ -801,7 +801,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		if (!rename($temp_file, $destination)) {
 			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
-					'Unable to move “%s” to “%s.”',
+					'Unable to move “%s” to “%s”.',
 					$temp_file,
 					$destination
 				)
@@ -812,7 +812,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 		if (!chmod($destination, 0660)) {
 			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
-					'Unable to change permissions on “%s.”',
+					'Unable to change permissions on “%s”.',
 					$destination
 				)
 			);
