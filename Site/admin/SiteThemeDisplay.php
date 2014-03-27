@@ -37,8 +37,8 @@ class SiteThemeDisplay extends SwatControl
 		parent::__construct($id);
 
 		$this->addStyleSheet(
-			'packages/site/admin/styles/site-theme-display.css',
-			Site::PACKAGE_ID);
+			'packages/site/admin/styles/site-theme-display.css'
+		);
 	}
 
 	// }}}

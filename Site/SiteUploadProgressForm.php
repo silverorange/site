@@ -10,7 +10,7 @@ require_once 'XML/RPCAjax.php';
  * A form with a upload progress bar
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      test JavaScript progressive-enhancement support
  */
@@ -43,8 +43,8 @@ class SiteUploadProgressForm extends SwatForm
 		$this->html_head_entry_set->addEntrySet($ajax->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
-			'packages/site/javascript/site-upload-progress-bar.js',
-			Site::PACKAGE_ID);
+			'packages/site/javascript/site-upload-progress-bar.js'
+		);
 	}
 
 	// }}}

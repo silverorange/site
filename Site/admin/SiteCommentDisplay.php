@@ -12,7 +12,7 @@ require_once 'XML/RPCAjax.php';
  * delete and mark as spam
  *
  * @package   Site
- * @copyright 2008-2013 silverorange
+ * @copyright 2008-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentDisplay extends SwatControl
@@ -72,12 +72,12 @@ abstract class SiteCommentDisplay extends SwatControl
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addStyleSheet(
-			'packages/site/admin/styles/site-comment-display.css',
-			Site::PACKAGE_ID);
+			'packages/site/admin/styles/site-comment-display.css'
+		);
 
 		$this->addJavaScript(
-			'packages/site/admin/javascript/site-comment-display.js',
-			Site::PACKAGE_ID);
+			'packages/site/admin/javascript/site-comment-display.js'
+		);
 	}
 
 	// }}}

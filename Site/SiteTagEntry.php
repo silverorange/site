@@ -16,7 +16,7 @@ require_once 'Swat/SwatYUI.php';
  * tags
  *
  * @package   Site
- * @copyright 2008-2011 silverorange
+ * @copyright 2008-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteTagEntry extends SwatInputControl implements SwatState
@@ -90,14 +90,12 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		$yui = new SwatYUI(array('autocomplete'));
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
-		$this->addJavaScript('packages/swat/javascript/swat-z-index-manager.js',
-			Swat::PACKAGE_ID);
+		$this->addJavaScript(
+			'packages/swat/javascript/swat-z-index-manager.js'
+		);
 
-		$this->addJavaScript('packages/site/javascript/site-tag-entry.js',
-			Site::PACKAGE_ID);
-
-		$this->addStyleSheet('packages/site/styles/site-tag-entry.css',
-			Site::PACKAGE_ID);
+		$this->addJavaScript('packages/site/javascript/site-tag-entry.js');
+		$this->addStyleSheet('packages/site/styles/site-tag-entry.css');
 	}
 
 	// }}}

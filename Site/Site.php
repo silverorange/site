@@ -17,11 +17,6 @@ class Site
 	// {{{ constants
 
 	/**
-	 * The package identifier
-	 */
-	const PACKAGE_ID = 'Site';
-
-	/**
 	 * The gettext domain for Site
 	 *
 	 * This is used to support multiple locales.

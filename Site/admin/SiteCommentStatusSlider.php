@@ -60,12 +60,12 @@ class SiteCommentStatusSlider extends SwatOptionControl
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
-			'packages/site/admin/javascript/site-comment-status-slider.js',
-			Site::PACKAGE_ID);
+			'packages/site/admin/javascript/site-comment-status-slider.js'
+		);
 
 		$this->addStyleSheet(
-			'packages/site/admin/styles/site-comment-status-slider.css',
-			Site::PACKAGE_ID);
+			'packages/site/admin/styles/site-comment-status-slider.css'
+		);
 	}
 
 	// }}}
