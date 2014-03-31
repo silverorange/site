@@ -279,9 +279,16 @@ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 		default_source['default'] = true;
 	}
 
+	var rtmp_blocked = (YAHOO.util.Cookie.get(
+		this.location_identifier + '_rtmp_status') == 'blocked');
+
 	// clone sources so that jwplayer doesn't wipe out the width property
 	var sources = [];
 	for (var i = 0; i < this.sources.length; i++) {
+		if (rtmp_blocked && this.sources[i].file.slice(-5) == '.smil') {
+			continue;
+		}
+
 		var s = {};
 		s.prototype = this.sources[i].prototype;
 		for (var k in this.sources[i]) {
@@ -545,21 +552,17 @@ SiteJwPlayerMediaDisplay.prototype.handleError = function(error)
 
 	switch (error.message) {
 	case 'Error loading stream: Could not connect to server' :
-		// switch to HTML5 if RTMP port blocked
+		// set a cookie to remove the RTMP source and reload the playlist
 		if (this.player.getRenderingMode() == 'flash') {
-			if (this.isHTML5VideoSupported()) {
-				SiteJwPlayerMediaDisplay.primaryPlayerType = 'html5';
+			var rtmp_blocked = (YAHOO.util.Cookie.get(
+				this.location_identifier + '_rtmp_status') == 'blocked');
 
-				if (this.location_identifier !== null) {
-					YAHOO.util.Cookie.set(this.location_identifier + '_type',
-						'html5');
-				}
+			if (!rtmp_blocked) {
+				YAHOO.util.Cookie.set(this.location_identifier + '_rtmp_status',
+					'blocked');
 
-				this.embedPlayer();
-				var that = this;
-				this.player.onReady(function() {
-					that.play();
-				});
+				this.player.load(this.getSources());
+				this.player.play();
 			} else {
 				if (YAHOO.env.ua.android) {
 					this.displayErrorMessage(this.android_rtmp_error_message);
