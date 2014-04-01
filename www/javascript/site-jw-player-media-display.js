@@ -112,11 +112,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		var aspect_ratio = null;
 	}
 
-	var playlist = [{
-		image: this.getImage(),
-		sources: this.getSources(),
-		tracks: this.getTracks()
-	}];
+	var playlist = this.getPlaylist();
 
 	var options = {
 		playlist:    playlist,
@@ -295,10 +291,22 @@ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 			s[k] = this.sources[i][k];
 		}
 
-		sources[i] = s;
+		sources.push(s);
 	}
 
 	return sources;
+};
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.getPlaylist = function()
+
+SiteJwPlayerMediaDisplay.prototype.getPlaylist = function()
+{
+	return [{
+		image: this.getImage(),
+		sources: this.getSources(),
+		tracks: this.getTracks()
+	}];
 };
 
 // }}}
@@ -561,7 +569,7 @@ SiteJwPlayerMediaDisplay.prototype.handleError = function(error)
 				YAHOO.util.Cookie.set(this.location_identifier + '_rtmp_status',
 					'blocked');
 
-				this.player.load(this.getSources());
+				this.player.load(this.getPlaylist());
 				this.player.play();
 			} else {
 				if (YAHOO.env.ua.android) {
