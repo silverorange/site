@@ -10,7 +10,7 @@ require_once 'Site/pages/SiteDBEditPage.php';
 /**
  *
  * @package   Site
- * @copyright 2006-2013 silverorange
+ * @copyright 2006-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactPage extends SiteDBEditPage
@@ -284,8 +284,7 @@ class SiteContactPage extends SiteDBEditPage
 
 		$this->layout->addBodyClass('contact-page');
 		$this->layout->addHtmlHeadEntry(
-			'packages/site/styles/site-contact-page.css',
-			Site::PACKAGE_ID
+			'packages/site/styles/site-contact-page.css'
 		);
 	}
 

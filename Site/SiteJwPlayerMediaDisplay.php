@@ -8,7 +8,7 @@ require_once 'Site/dataobjects/SiteMediaEncoding.php';
  * Display class for SiteMedia using JWPlayer
  *
  * @package   Site
- * @copyright 2013 silverorange
+ * @copyright 2013-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteJwPlayerMediaDisplay extends SwatControl
@@ -68,17 +68,14 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		$yui = new SwatYUI(array('swf', 'event', 'cookie'));
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
+		$this->addJavascript('packages/site/javascript/jwplayer.js');
 		$this->addJavascript(
-			'packages/site/javascript/jwplayer.js',
-			Site::PACKAGE_ID);
-
-		$this->addJavascript(
-			'packages/site/javascript/site-jw-player-media-display.js',
-			Site::PACKAGE_ID);
+			'packages/site/javascript/site-jw-player-media-display.js'
+		);
 
 		$this->addStylesheet(
-			'packages/site/styles/site-jw-player-media-display.css',
-			Site::PACKAGE_ID);
+			'packages/site/styles/site-jw-player-media-display.css'
+		);
 	}
 
 	// }}}

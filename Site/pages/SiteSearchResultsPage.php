@@ -15,7 +15,7 @@ require_once 'Swat/SwatString.php';
  * be sub-classed to display results for other types of content as well.
  *
  * @package   Site
- * @copyright 2007-2013 silverorange
+ * @copyright 2007-2014 silverorange
  */
 class SiteSearchResultsPage extends SiteArticlePage
 {
@@ -604,10 +604,12 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		parent::finalize();
 		$this->layout->addHtmlHeadEntrySet(
-			$this->ui->getRoot()->getHtmlHeadEntrySet());
+			$this->ui->getRoot()->getHtmlHeadEntrySet()
+		);
 
-		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
-			'packages/site/styles/site-search-results-page.css', Site::PACKAGE_ID));
+		$this->layout->addHtmlHeadEntry(
+			'packages/site/styles/site-search-results-page.css'
+		);
 	}
 
 	// }}}

@@ -8,7 +8,7 @@ require_once 'Swat/SwatImageCellRenderer.php';
  * A cell renderer for SiteImages
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImageCellRenderer extends SwatCellRenderer
@@ -115,9 +115,9 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	{
 		$set = parent::getHtmlHeadEntrySet();
 
-		$set->addEntry(new SwatStyleSheetHtmlHeadEntry(
-			'packages/site/styles/site-image-cell-renderer.css',
-			Site::PACKAGE_ID));
+		$set->addEntry(
+			'packages/site/styles/site-image-cell-renderer.css'
+		);
 
 		$set->addEntrySet($this->image_cell_renderer->getHtmlHeadEntrySet());
 		return $set;
