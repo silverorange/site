@@ -4,7 +4,6 @@
 	<widget class="SwatMessageDisplay" id="message_display" />
 	<widget class="SwatFrame" id="edit_frame">
 		<widget class="SiteUploadProgressForm" id="edit_form">
-			<property name="upload_status_server">Attachment/UploadStatusServer</property>
 			<widget class="SwatFormField">
 				<property name="title" translatable="yes">File</property>
 				<widget class="SwatFileEntry" id="upload_widget">
