@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<widget class="SiteUploadProgressForm" id="edit_form">
+			<property name="upload_status_server">Attachment/UploadStatusServer</property>
+			<widget class="SwatFormField">
+				<property name="title">File</property>
+				<widget class="SwatFileEntry" id="upload_widget">
+					<property name="required" type="boolean">true</property>
+					<property name="display_maximum_upload_size" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button" />
+			</widget>
+		</widget>
+	</widget>
+</swatml>
