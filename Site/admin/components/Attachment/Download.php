@@ -19,6 +19,14 @@ abstract class SiteAttachmentDownload extends AdminPage
 	}
 
 	// }}}
+	// {{{ protected function getResolvedObjectClass()
+
+	protected function getResolvedObjectClass()
+	{
+		return SwatDBClassMap::get($this->getObjectClass());
+	}
+
+	// }}}
 	// {{{ abstract protected function getFileBase()
 
 	abstract protected function getFileBase();
@@ -39,6 +47,7 @@ abstract class SiteAttachmentDownload extends AdminPage
 	protected function initInternal()
 	{
 		parent::initInternal();
+
 		$this->initAttachment();
 	}
 
@@ -59,8 +68,7 @@ abstract class SiteAttachmentDownload extends AdminPage
 			);
 		}
 
-		$class_name = SwatDBClassMap::get('ExemptionsAttachment');
-
+		$class_name = $this->getResolvedObjectClass();
 		$attachment = new $class_name();
 		$attachment->setDatabase($this->app->db);
 
