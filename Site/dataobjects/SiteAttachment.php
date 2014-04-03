@@ -142,6 +142,29 @@ class SiteAttachment extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getValidMimeTypes()
+
+	public function getValidMimeTypes()
+	{
+		$ms_openxml_prefix = 'application/vnd.openxmlformats-officedocument';
+
+		return array(
+			'audio/mp4',
+			'video/mp4',
+			'audio/mpeg',
+			'application/zip',
+			'application/pdf',
+			'image/jpeg',
+			'image/png',
+			'text/html',
+			'application/msword',
+			'application/vnd.ms-excel',
+			$ms_openxml_prefix.'.wordprocessingml.document',
+			$ms_openxml_prefix.'.spreadsheetml.sheet',
+		);
+	}
+
+	// }}}
 	// {{{ public function getExtension()
 
 	/**
@@ -153,8 +176,14 @@ class SiteAttachment extends SwatDBDataObject
 	 *
 	 * @returns string The extension of the file.
 	 */
-	public function getExtension()
+	public function getExtension($mime_type = null)
 	{
+		if ($mime_type == '') {
+			$mime_type = $this->mime_type;
+		}
+
+		$ms_openxml_prefix = 'application/vnd.openxmlformats-officedocument';
+
 		$map = array(
 			'audio/mp4'                => 'm4a',
 			'video/mp4'                => 'mp4',
@@ -163,26 +192,36 @@ class SiteAttachment extends SwatDBDataObject
 			'application/pdf'          => 'pdf',
 			'image/jpeg'               => 'jpg',
 			'image/png'                => 'png',
-			'application/msword'       => 'doc',
 			'text/html'                => 'html',
+			'application/msword'       => 'doc',
 			'application/vnd.ms-excel' => 'xls',
-			'application/vnd.openxmlformats-officedocument'.
-				'.wordprocessingml.document' => 'xlsx',
+			$ms_openxml_prefix.'.wordprocessingml.document' => 'docx',
+			$ms_openxml_prefix.'.spreadsheetml.sheet'       => 'xlsx',
 		);
 
-		if (!array_key_exists($this->mime_type, $map)) {
-			throw new SiteException(sprintf(
-				'Unknown mime type %s', $this->mime_type));
+		if (!array_key_exists($mime_type, $map)) {
+			throw new SiteException(
+				sprintf(
+					'Unknown mime type %s',
+					$mime_type
+				)
+			);
 		}
 
-		return $map[$this->mime_type];
+		return $map[$mime_type];
 	}
 
 	// }}}
 	// {{{ public function getHumanFileType()
 
-	public function getHumanFileType()
+	public function getHumanFileType($mime_type = null)
 	{
+		if ($mime_type == '') {
+			$mime_type = $this->mime_type;
+		}
+
+		$ms_openxml_prefix = 'application/vnd.openxmlformats-officedocument';
+
 		$map = array(
 			'audio/mp4'                => Site::_('M4A'),
 			'video/mp4'                => Site::_('MP4'),
@@ -191,19 +230,50 @@ class SiteAttachment extends SwatDBDataObject
 			'application/pdf'          => Site::_('PDF'),
 			'image/jpeg'               => Site::_('JPEG Image'),
 			'image/png'                => Site::_('PNG Image'),
-			'application/msword'       => Site::_('Word Document'),
 			'text/html'                => Site::_('Web Document'),
+			'application/msword'       => Site::_('Word Document'),
 			'application/vnd.ms-excel' => Site::_('Excel Document'),
-			'application/vnd.openxmlformats-officedocument'.
-				'.wordprocessingml.document' => Site::_('Excel Document'),
+			$ms_openxml_prefix.'.wordprocessingml.document' =>
+				Site::_('Word Document'),
+
+			$ms_openxml_prefix.'.spreadsheetml.sheet' =>
+				Site::_('Excel Document'),
 		);
 
-		if (!array_key_exists($this->mime_type, $map)) {
-			throw new SiteException(sprintf(
-				'Unknown mime type %s', $this->mime_type));
+		if (!array_key_exists($mime_type, $map)) {
+			throw new SiteException(
+				sprintf(
+					'Unknown mime type %s',
+					$mime_type
+				)
+			);
 		}
 
-		return $map[$this->mime_type];
+		return $map[$mime_type];
+	}
+
+	// }}}
+	// {{{ public function getHumanFileTypes()
+
+	public function getHumanFileTypes(array $mime_types)
+	{
+		$human_file_types = array();
+
+		foreach ($mime_types as $mime_type) {
+			$human_file_types[$mime_type] = $this->getHumanFileType($mime_type);
+		}
+
+		return $human_file_types;
+	}
+
+	// }}}
+	// {{{ public function getValidHumanFileTypes()
+
+	public function getValidHumanFileTypes()
+	{
+		return $this->getHumanFileTypes(
+			$this->getValidMimeTypes()
+		);
 	}
 
 	// }}}
