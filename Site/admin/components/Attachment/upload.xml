@@ -6,7 +6,7 @@
 		<widget class="SiteUploadProgressForm" id="edit_form">
 			<property name="upload_status_server">Attachment/UploadStatusServer</property>
 			<widget class="SwatFormField">
-				<property name="title">File</property>
+				<property name="title" translatable="yes">File</property>
 				<widget class="SwatFileEntry" id="upload_widget">
 					<property name="required" type="boolean">true</property>
 					<property name="display_maximum_upload_size" type="boolean">true</property>
