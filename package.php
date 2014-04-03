@@ -57,7 +57,7 @@ $package->addReplacement('Site/Site.php', 'pear-config', '@DATA-DIR@', 'data_dir
 $package->setPhpDep('5.3.0');
 $package->setPearinstallerDep('1.4.0');
 $package->addPackageDepWithChannel('required', 'Concentrate', 'pear.silverorange.com', '0.0.1');
-$package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.4.107');
+$package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '2.1.0');
 $package->addPackageDepWithChannel('required', 'MDB2', 'pear.php.net', '2.2.2');
 $package->addPackageDepWithChannel('required', 'Mail', 'pear.php.net', '1.1.10');
 $package->addPackageDepWithChannel('required', 'Mail_Mime', 'pear.silverorange.com', '1.5.2so3');
