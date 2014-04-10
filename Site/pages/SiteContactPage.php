@@ -39,6 +39,22 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ protected function getContactAddressLink()
+
+	protected function getContactAddressLink()
+	{
+		$contact_address_link = new SwatHtmlTag('a');
+		$contact_address_link->href = sprintf(
+			'mailto:%s',
+			$this->getContactAddress()
+		);
+
+		$contact_address_link->setContent($this->getContactAddress());
+
+		return $contact_address_link;
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -193,10 +209,14 @@ class SiteContactPage extends SiteDBEditPage
 			Site::_('An error has occurred. Your message was not sent.'),
 			'system-error');
 
-		$message->secondary_content = sprintf(Site::_(
-			'If this issue persists, or your message is time sensitive, '.
-			'please send an email directly to <a href="mailto:%1$s">%1$s</a>.'),
-			$this->getContactAddress());
+
+		$message->secondary_content = sprintf(
+			Site::_(
+				'If this issue persists, or your message is time sensitive, '.
+				'please send an email directly to %s.'
+			),
+			$this->getContactAddressLink()
+		);
 
 		$message->content_type = 'text/xml';
 
@@ -257,8 +277,7 @@ class SiteContactPage extends SiteDBEditPage
 
 		$email_to = $this->ui->getWidget('email_to');
 		$email_to->content_type = 'text/xml';
-		$email_to->content = sprintf('<a href="mailto:%1$s">%1$s</a>',
-			$this->getContactAddress());
+		$email_to->content = $this->getContactAddressLink();
 
 		$class_name = $this->getContactMessageClassName();
 		$subject_flydown = $this->ui->getWidget('subject');
