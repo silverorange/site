@@ -54,6 +54,7 @@ class SiteContactPage extends SiteDBEditPage
 		SwatForm::clearAuthenticationToken();
 
 		$this->initSubject();
+		$this->initEmailAddress();
 	}
 
 	// }}}
@@ -77,6 +78,20 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ protected function initEmailAddress()
+
+	protected function initEmailAddress()
+	{
+		if ($this->app->hasModule('SiteAccountSessionModule')) {
+			$session = $this->app->getModule('SiteAccountSessionModule');
+			if ($session->isLoggedIn()) {
+				$this->ui->getWidget('email')->value = $session->account->email;
+			}
+		}
+	}
+
+	// }}}
+
 
 	// process phase
 	// {{{ protected function saveData()
