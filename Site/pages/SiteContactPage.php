@@ -243,8 +243,7 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function buildContent()
 	{
-		// Prepend UI content
-		$this->layout->startCapture('content', true);
+		$this->layout->startCapture('content', $this->shouldPrependUi());
 		$this->ui->display();
 		$this->layout->endCapture();
 	}
@@ -264,6 +263,15 @@ class SiteContactPage extends SiteDBEditPage
 		$class_name = $this->getContactMessageClassName();
 		$subject_flydown = $this->ui->getWidget('subject');
 		$subject_flydown->addOptionsByArray($class_name::getSubjects());
+	}
+
+	// }}}
+	// {{{ protected function shouldPrependUi()
+
+	protected function shouldPrependUi()
+	{
+		// Prepend UI content by default.
+		return true;
 	}
 
 	// }}}
