@@ -260,8 +260,6 @@ class SiteContactPage extends SiteDBEditPage
 	{
 		parent::buildInternal();
 
-		$this->defaultEmailAddress();
-
 		$email_to = $this->ui->getWidget('email_to');
 		$email_to->content_type = 'text/xml';
 		$email_to->content = sprintf('<a href="mailto:%1$s">%1$s</a>',
@@ -273,6 +271,14 @@ class SiteContactPage extends SiteDBEditPage
 		$subjects = call_user_func(array($class_name, 'getSubjects'));
 		$subject_flydown = $this->ui->getWidget('subject');
 		$subject_flydown->addOptionsByArray($subjects);
+	}
+
+	// }}}
+	// {{{ protected function load()
+
+	protected function load(SwatForm $form)
+	{
+		$this->defaultEmailAddress();
 	}
 
 	// }}}
