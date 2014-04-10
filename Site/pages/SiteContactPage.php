@@ -23,6 +23,16 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ protected function isNew()
+
+	protected function isNew(SwatForm $form)
+	{
+		// Treat all Contact forms as not new, so the default loading of
+		// email addresses works.
+		return false;
+	}
+
+	// }}}
 	// {{{ protected function getContactMessageClassName()
 
 	protected function getContactMessageClassName()
@@ -291,6 +301,28 @@ class SiteContactPage extends SiteDBEditPage
 	{
 		// Prepend UI content by default.
 		return true;
+	}
+
+	// }}}
+	// {{{ protected function load()
+
+	protected function load(SwatForm $form)
+	{
+		parent::load($form);
+		$this->loadDefaultEmailAddress();
+	}
+
+	// }}}
+	// {{{ protected function loadDefaultEmailAddress()
+
+	protected function loadDefaultEmailAddress()
+	{
+		if ($this->app->hasModule('SiteAccountSessionModule')) {
+			$session = $this->app->getModule('SiteAccountSessionModule');
+			if ($session->isLoggedIn()) {
+				$this->ui->getWidget('email')->value = $session->account->email;
+			}
+		}
 	}
 
 	// }}}
