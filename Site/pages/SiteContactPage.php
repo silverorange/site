@@ -288,13 +288,14 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function load(SwatForm $form)
 	{
-		$this->defaultEmailAddress();
+		parent::load($form);
+		$this->loadDefaultEmailAddress();
 	}
 
 	// }}}
-	// {{{ protected function defaultEmailAddress()
+	// {{{ protected function loadDefaultEmailAddress()
 
-	protected function defaultEmailAddress()
+	protected function loadDefaultEmailAddress()
 	{
 		if ($this->app->hasModule('SiteAccountSessionModule')) {
 			$session = $this->app->getModule('SiteAccountSessionModule');
