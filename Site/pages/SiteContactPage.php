@@ -87,10 +87,13 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function initSubject()
 	{
-		$subject = SiteApplication::initVar('subject', null,
-			SiteApplication::VAR_GET);
+		$subject = SiteApplication::initVar(
+			'subject',
+			null,
+			SiteApplication::VAR_GET
+		);
 
-		if ($subject !== null) {
+		if ($subject != '') {
 			$class_name = $this->getContactMessageClassName();
 			if (array_key_exists($subject, $class_name::getSubjects())) {
 				$this->ui->getWidget('subject')->value = $subject;
@@ -146,7 +149,6 @@ class SiteContactPage extends SiteDBEditPage
 		$message->ip_address = $this->app->getRemoteIP(15);
 
 		if (isset($_SERVER['HTTP_USER_AGENT'])) {
-
 			$user_agent = $_SERVER['HTTP_USER_AGENT'];
 
 			// Filter bad character encoding. If invalid, assume ISO-8859-1
@@ -159,9 +161,8 @@ class SiteContactPage extends SiteDBEditPage
 			if ($user_agent !== false) {
 				// set max length based on database field length
 				$user_agent = substr($user_agent, 0, 255);
-				$message ->user_agent = $user_agent;
+				$message->user_agent = $user_agent;
 			}
-
 		}
 
 		$message->createdate = new SwatDate();
@@ -175,15 +176,18 @@ class SiteContactPage extends SiteDBEditPage
 	{
 		$is_spam = false;
 
-		if ($this->app->config->comment->akismet_key !== null) {
+		if ($this->app->config->comment->akismet_key != '') {
 			$uri = $this->app->getBaseHref();
 			try {
-				$akismet = new Services_Akismet2($uri,
-					$this->app->config->comment->akismet_key);
+				$akismet = new Services_Akismet2(
+					$uri,
+					$this->app->config->comment->akismet_key
+				);
 
 				$is_spam = $akismet->isSpam(
-					$this->getAkismetComment($message), true);
-
+					$this->getAkismetComment($message),
+					true
+				);
 			} catch (Exception $e) {
 			}
 		}
@@ -217,7 +221,8 @@ class SiteContactPage extends SiteDBEditPage
 	{
 		$message = new SwatMessage(
 			Site::_('An error has occurred. Your message was not sent.'),
-			'system-error');
+			'system-error'
+		);
 
 
 		$message->secondary_content = sprintf(
@@ -248,7 +253,8 @@ class SiteContactPage extends SiteDBEditPage
 		$subject = $this->ui->getWidget('subject');
 		if ($subject->value === null) {
 			$message = new SwatMessage(
-				Site::_('The <strong>%s<strong> field is required.'));
+				Site::_('The <strong>%s<strong> field is required.')
+			);
 
 			$message->content_type = 'text/xml';
 			$subject->addMessage($message);
