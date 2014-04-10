@@ -56,7 +56,6 @@ class SiteContactPage extends SiteDBEditPage
 
 	// }}}
 
-
 	// init phase
 	// {{{ protected function initInternal()
 
