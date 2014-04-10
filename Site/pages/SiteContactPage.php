@@ -23,6 +23,16 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ protected function isNew()
+
+	protected function isNew(SwatForm $form)
+	{
+		// Treat all Contact forms as not new, so the default loading of
+		// email addresses works.
+		return false;
+	}
+
+	// }}}
 	// {{{ protected function getContactMessageClassName()
 
 	protected function getContactMessageClassName()
