@@ -247,7 +247,7 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function buildContent()
 	{
-		$this->layout->startCapture('content', $this->getPrependUiContent());
+		$this->layout->startCapture('content', $this->shouldPrependUi());
 		$this->ui->display();
 		$this->layout->endCapture();
 	}
@@ -273,9 +273,9 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function getPrependUiContent()
+	// {{{ protected function shouldPrependUi()
 
-	protected function getPrependUiContent()
+	protected function shouldPrependUi()
 	{
 		// Prepend UI content by default.
 		return true;
