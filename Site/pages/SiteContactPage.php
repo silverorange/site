@@ -65,12 +65,8 @@ class SiteContactPage extends SiteDBEditPage
 			SiteApplication::VAR_GET);
 
 		if ($subject !== null) {
-			// Dynamic static call to get subjects. This will be more straight-
-			// forward in PHP 5.3.
 			$class_name = $this->getContactMessageClassName();
-			$subjects = call_user_func(array($class_name, 'getSubjects'));
-
-			if (array_key_exists($subject, $subjects)) {
+			if (array_key_exists($subject, $class_name::getSubjects())) {
 				$this->ui->getWidget('subject')->value = $subject;
 			}
 		}
@@ -265,12 +261,9 @@ class SiteContactPage extends SiteDBEditPage
 		$email_to->content = sprintf('<a href="mailto:%1$s">%1$s</a>',
 			$this->getContactAddress());
 
-		// Dynamic static call to get subjects. This will be more straight-
-		// forward in PHP 5.3.
 		$class_name = $this->getContactMessageClassName();
-		$subjects = call_user_func(array($class_name, 'getSubjects'));
 		$subject_flydown = $this->ui->getWidget('subject');
-		$subject_flydown->addOptionsByArray($subjects);
+		$subject_flydown->addOptionsByArray($class_name::getSubjects());
 	}
 
 	// }}}
