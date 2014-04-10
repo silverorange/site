@@ -54,7 +54,6 @@ class SiteContactPage extends SiteDBEditPage
 		SwatForm::clearAuthenticationToken();
 
 		$this->initSubject();
-		$this->initEmailAddress();
 	}
 
 	// }}}
@@ -78,20 +77,6 @@ class SiteContactPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function initEmailAddress()
-
-	protected function initEmailAddress()
-	{
-		if ($this->app->hasModule('SiteAccountSessionModule')) {
-			$session = $this->app->getModule('SiteAccountSessionModule');
-			if ($session->isLoggedIn()) {
-				$this->ui->getWidget('email')->value = $session->account->email;
-			}
-		}
-	}
-
-	// }}}
-
 
 	// process phase
 	// {{{ protected function saveData()
@@ -275,6 +260,8 @@ class SiteContactPage extends SiteDBEditPage
 	{
 		parent::buildInternal();
 
+		$this->defaultEmailAddress();
+
 		$email_to = $this->ui->getWidget('email_to');
 		$email_to->content_type = 'text/xml';
 		$email_to->content = sprintf('<a href="mailto:%1$s">%1$s</a>',
@@ -286,6 +273,19 @@ class SiteContactPage extends SiteDBEditPage
 		$subjects = call_user_func(array($class_name, 'getSubjects'));
 		$subject_flydown = $this->ui->getWidget('subject');
 		$subject_flydown->addOptionsByArray($subjects);
+	}
+
+	// }}}
+	// {{{ protected function defaultEmailAddress()
+
+	protected function defaultEmailAddress()
+	{
+		if ($this->app->hasModule('SiteAccountSessionModule')) {
+			$session = $this->app->getModule('SiteAccountSessionModule');
+			if ($session->isLoggedIn()) {
+				$this->ui->getWidget('email')->value = $session->account->email;
+			}
+		}
 	}
 
 	// }}}
