@@ -13,7 +13,7 @@ require_once 'Site/exceptions/SiteInvalidImageException.php';
  * An image data object
  *
  * @package   Site
- * @copyright 2008-2013 silverorange
+ * @copyright 2008-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImage extends SwatDBDataObject
@@ -523,6 +523,39 @@ class SiteImage extends SwatDBDataObject
 		} else {
 			$img_tag->alt = '';
 		}
+
+		return $img_tag;
+	}
+
+	// }}}
+	// {{{ public function getHalfSizeImgTag()
+
+	/**
+	 * Returns an image with it's height and width set to half it's actual
+	 * dimensions.
+	 *
+	 * This is for easy use of the Retina technique of allowing the browser to
+	 * down-size a larger lower quality compressed image from its actual size
+	 * to half it's size. See
+	 * @link{http://filamentgroup.com/lab/rwd_img_compression/} and
+	 * @link{http://www.netvlies.nl/blog/design-interactie/retina-revolution}
+	 * for a full explanation of this technique. This assumes sane compression
+	 * and resize filter settings have been set on the image dimension being
+	 * displayed.
+	 *
+	 * @param string $shortname the shortname of the image dimension to use.
+	 * @param string $prefix optional url prefix for the image href
+	 *
+	 * @return SwatHtmlTag the image tag for use.
+	 */
+	public function getHalfSizeImgTag($shortname, $prefix = null)
+	{
+		$img_tag = $this->getImgTag($shortname, $prefix);
+
+		// Round down in case the width and height are not perfectly divisible
+		// by two.
+		$img_tag->width = floor($img_tag->width / 2);
+		$img_tag->height = floor($img_tag->height / 2);
 
 		return $img_tag;
 	}
