@@ -613,7 +613,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 			SwatDB::exec($this->app->db, $sql);
 
-			$this->account->load($this->account->id);
+			$this->account->load($this->getAccountId());
 		}
 	}
 
