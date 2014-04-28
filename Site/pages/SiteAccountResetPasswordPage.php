@@ -131,11 +131,15 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		$this->updatePassword();
 
 		$this->app->session->account->save();
+		$this->app->messages->add($this->getSavedMessage());
+	}
 
-		$message = new SwatMessage(Site::_(
-			'Account password has been updated.'));
+	// }}}
+	// {{{ protected function getSavedMessage()
 
-		$this->app->messages->add($message);
+	protected function getSavedMessage()
+	{
+		return new SwatMessage(Site::_('Account password has been updated.'));
 	}
 
 	// }}}
