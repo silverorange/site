@@ -174,6 +174,82 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getImageSetShortname()
+
+	/**
+	 * @return string the image set shortname
+	 */
+	public function getImageSetShortname()
+	{
+		return $this->image_set_shortname;
+	}
+
+	// }}}
+	// {{{ public function getValidMimeTypes()
+
+	public function getValidMimeTypes()
+	{
+		return array(
+			'image/jpeg',
+			'image/png',
+			'image/tiff',
+			'image/gif',
+		);
+	}
+
+	// }}}
+	// {{{ public function getHumanFileType()
+
+	public function getHumanFileType($mime_type = null)
+	{
+		if ($mime_type == '') {
+			$mime_type = $this->mime_type;
+		}
+
+		$map = array(
+			'image/jpeg' => Site::_('JPEG Image'),
+			'image/png'  => Site::_('PNG Image'),
+			'image/tiff' => Site::_('TIFF Image'),
+			'image/gif'  => Site::_('GIF Image'),
+		);
+
+		if (!array_key_exists($mime_type, $map)) {
+			throw new SiteException(
+				sprintf(
+					'Unknown mime type %s',
+					$mime_type
+				)
+			);
+		}
+
+		return $map[$mime_type];
+	}
+
+	// }}}
+	// {{{ public function getHumanFileTypes()
+
+	public function getHumanFileTypes(array $mime_types)
+	{
+		$human_file_types = array();
+
+		foreach ($mime_types as $mime_type) {
+			$human_file_types[$mime_type] = $this->getHumanFileType($mime_type);
+		}
+
+		return $human_file_types;
+	}
+
+	// }}}
+	// {{{ public function getValidHumanFileTypes()
+
+	public function getValidHumanFileTypes()
+	{
+		return $this->getHumanFileTypes(
+			$this->getValidMimeTypes()
+		);
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
