@@ -459,6 +459,20 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	}
 
 	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+
+		$this->layout->addHtmlHeadEntry(
+			'packages/site/admin/styles/site-image-upload.css'
+		);
+	}
+
+	// }}}
 }
 
 ?>
