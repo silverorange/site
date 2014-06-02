@@ -56,6 +56,23 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	}
 
 	// }}}
+	// {{{ protected function getDimensionUploadWidget()
+
+	protected function getDimensionUploadWidget(SiteImageDimension $dimension)
+	{
+		if (!isset($this->dimension_upload_widgets[$dimension->shortname])) {
+			throw SiteException(
+				sprintf(
+					'No upload widget for ‘%s’ dimension.',
+					$dimension->shortname
+				)
+			);
+		}
+
+		return $this->dimension_upload_widgets[$dimension->shortname];
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -262,11 +279,11 @@ abstract class SiteImageUpload extends AdminObjectEdit
 
 		if ($this->allowDimensionUploads()) {
 			foreach ($this->dimensions as $dimension) {
-				$shortname = $dimension->shortname;
-				$valid = (
-					$valid &&
-					$this->dimension_upload_widgets[$shortname]->isUploaded()
-				);
+				$dimension_widget = $this->getDimensionUploadWidget($dimension);
+				if (!$dimension_widget->isUploaded()) {
+					$valid = false;
+					break;
+				}
 			}
 		}
 
@@ -292,9 +309,7 @@ abstract class SiteImageUpload extends AdminObjectEdit
 
 		if ($this->allowDimensionUploads()) {
 			foreach ($this->dimensions as $dimension) {
-				$dimension_widget =
-					$this->dimension_upload_widgets[$dimension->shortname];
-
+				$dimension_widget = $this->getDimensionUploadWidget($dimension);
 				if ($dimension_widget->isUploaded()) {
 					$image->processManual(
 						$dimension_widget->getTempFileName(),
@@ -349,11 +364,9 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		$file_uploaded = $this->ui->getWidget('upload_widget')->isUploaded();
 		if (!$file_uploaded && $this->allowDimensionUploads()) {
 			foreach ($this->dimensions as $dimension) {
-				$widget =
-					$this->dimension_upload_widgets[$dimension->shortname];
-
-				$file_uploaded = $file_uploaded && $widget->isUploaded();
-				if ($file_uploaded) {
+				$dimension_widget = $this->getDimensionUploadWidget($dimension);
+				if ($dimension_widget->isUploaded()) {
+					$file_uploaded = true;
 					break;
 				}
 			}
