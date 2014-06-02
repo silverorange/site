@@ -198,25 +198,23 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	protected function getDimensionFieldNote(SiteImageDimension $dimension)
 	{
 		$dimension_note = '';
-		if ($dimension->max_width !== null) {
-			if ($dimension->max_height !== null) {
-				$dimension_note = sprintf(
-					Site::_('%s x %s px'),
-					$dimension->max_width,
-					$dimension->max_height
-				);
-			} else {
-				$dimension_note = sprintf(
-					Site::_('%s px'),
-					$dimension->max_width
-				);
-			}
-		}
 
-		if ($dimension_note != '') {
+		if ($dimension->max_width !== null &&
+			$dimension->max_height !== null) {
 			$dimension_note = sprintf(
-				Site::_('Maximum Dimensions: %s'),
-				$dimension_note
+				Site::_('Maximum Dimensions: %s × %s px'),
+				$dimension->max_width,
+				$dimension->max_height
+			);
+		} elseif ($dimension->max_width !== null) {
+			$dimension_note = sprintf(
+				Site::_('Maximum Dimension: %s px wide'),
+				$dimension->max_width
+			);
+		} elseif ($dimension->max_height !== null) {
+			$dimension_note = sprintf(
+				Site::_('Maximum Dimension: %s px high'),
+				$dimension->max_width
 			);
 		}
 
