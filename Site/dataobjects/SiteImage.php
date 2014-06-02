@@ -531,12 +531,12 @@ class SiteImage extends SwatDBDataObject
 	// {{{ public function getHalfSizeImgTag()
 
 	/**
-	 * Returns an image with it's height and width set to half it's actual
+	 * Returns an image with its height and width set to half its actual
 	 * dimensions.
 	 *
-	 * This is for easy use of the Retina technique of allowing the browser to
+	 * This is for easy use of the retina technique of allowing the browser to
 	 * down-size a larger lower quality compressed image from its actual size
-	 * to half it's size. See
+	 * to half its size. See
 	 * @link{http://filamentgroup.com/lab/rwd_img_compression/} and
 	 * @link{http://www.netvlies.nl/blog/design-interactie/retina-revolution}
 	 * for a full explanation of this technique. This assumes sane compression
