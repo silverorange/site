@@ -240,9 +240,9 @@ abstract class SiteImageUpload extends AdminObjectEdit
 
 			$message = new SwatMessage(
 				Site::_(
-					'You must a file for all listed image sizes when '.
-					'uploading a new image, or upload an image to be '.
-					'automatically resized.'
+					'You must either upload a file to be automatically '.
+					'resized or upload manually resized files for all '.
+					'dimensions.'
 				),
 				'error'
 			);
