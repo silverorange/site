@@ -149,6 +149,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 
 	protected function initDimensionUploadWidgets()
 	{
+		$image = $this->getObject();
+
 		$dimensions_widget_container = $this->ui->getWidget(
 			$this->getDimensionsWidgetContainerId()
 		);
@@ -172,6 +174,9 @@ abstract class SiteImageUpload extends AdminObjectEdit
 			}
 
 			$file_widget = new SwatFileEntry($shortname);
+			$file_widget->accept_mime_types = $image->getValidMimeTypes();
+			$file_widget->human_file_types  = $image->getValidHumanFileTypes();
+
 			$form_field->addChild($file_widget);
 			$dimensions_widget_container->addChild($form_field);
 
