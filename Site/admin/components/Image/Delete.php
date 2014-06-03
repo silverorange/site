@@ -73,7 +73,6 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		parent::buildInternal();
 
 		$this->buildDeleteView();
-		$this->buildConfirmationMessage();
 		$this->buildButtons();
 	}
 
@@ -84,19 +83,6 @@ abstract class SiteImageDelete extends AdminObjectDelete
 	{
 		$delete_view = $this->ui->getWidget('delete_view');
 		$delete_view->model = $this->getImageStore();
-	}
-
-	// }}}
-	// {{{ protected function buildConfirmationMessage()
-
-	protected function buildConfirmationMessage()
-	{
-		$message = $this->ui->getWidget('confirmation_message');
-		$message->content_type = 'text/xml';
-		$message->content = sprintf(
-			'<strong>%s</strong>',
-			$this->getConfirmationMessage()
-		);
 	}
 
 	// }}}
@@ -120,6 +106,18 @@ abstract class SiteImageDelete extends AdminObjectDelete
 	}
 
 	// }}}
+	// {{{ protected function getConfirmationMessageHeader()
+
+	protected function getConfirmationMessageHeader()
+	{
+		return Site::ngettext(
+			'Delete the following image?',
+			'Delete the following images?',
+			count($this->getObjects())
+		);
+	}
+
+	// }}}
 	// {{{ protected function getTitle()
 
 	protected function getTitle()
@@ -127,18 +125,6 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		return Site::ngettext(
 			'Delete Image',
 			'Delete Images',
-			count($this->getObjects())
-		);
-	}
-
-	// }}}
-	// {{{ protected function getConfirmationMessage()
-
-	protected function getConfirmationMessage()
-	{
-		return Site::ngettext(
-			'Are you sure you want to delete the following image?',
-			'Are you sure you want to delete the following images?',
 			count($this->getObjects())
 		);
 	}
