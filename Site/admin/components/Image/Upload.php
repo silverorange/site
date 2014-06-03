@@ -15,11 +15,6 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	// {{{ protected properties
 
 	/**
-	 * @var SiteImage
-	 */
-	protected $existing_image;
-
-	/**
 	 * The available dimensions of the SiteImage being uploaded.
 	 *
 	 * @var SiteImageDimensionWrapper
@@ -38,6 +33,14 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	// {{{ abstract protected function getFileBase()
 
 	abstract protected function getFileBase();
+
+	// }}}
+	// {{{ protected function shouldReplaceObject()
+
+	protected function shouldReplaceObject()
+	{
+		return true;
+	}
 
 	// }}}
 	// {{{ protected function allowDimensionUploads()
@@ -87,30 +90,6 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		if ($this->allowDimensionUploads()) {
 			$this->initDimensions();
 			$this->initDimensionUploadWidgets();
-		}
-	}
-
-	// }}}
-	// {{{ protected function initObject()
-
-	protected function initObject()
-	{
-		parent::initObject();
-
-		// Replace an existing image to generate a new object and id to prevent
-		// browser and CDN caching.
-		if (!$this->isNew()) {
-			$this->existing_image = $this->getObject();
-
-			$class_name = $this->getResolvedObjectClass();
-			$this->data_object = new $class_name();
-			$this->data_object->setDatabase($this->app->db);
-
-			if ($this->app->hasModule('SiteMemcacheModule')) {
-				$this->data_object->setFlushableCache(
-					$this->app->getModule('SiteMemcacheModule')
-				);
-			}
 		}
 	}
 
@@ -322,17 +301,15 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	}
 
 	// }}}
-	// {{{ protected function postSaveObject()
+	// {{{ protected function deleteOldObject()
 
-	protected function postSaveObject()
+	protected function deleteOldObject()
 	{
-		parent::postSaveObject();
-
-		if (!$this->isNew() &&
-			$this->existing_image instanceof SiteImage) {
-			$this->existing_image->setFileBase($this->getFileBase());
-			$this->existing_image->delete();
+		if ($this->getOldObject() instanceof SiteImage) {
+			$this->getOldObject()->setFileBase($this->getFileBase());
 		}
+
+		parent::deleteOldObject();
 	}
 
 	// }}}
@@ -427,9 +404,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	{
 		parent::loadObject();
 
-		if (!$this->isNew() &&
-			$this->existing_image instanceof SiteImage) {
-			$image     = $this->existing_image;
+		if (!$this->isNew()) {
+			$image     = $this->getObject();
 			$dimension = $this->getDisplayedImageDimension();
 			$path      = $this->getImagePath();
 
