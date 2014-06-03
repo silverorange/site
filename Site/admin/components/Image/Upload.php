@@ -191,8 +191,9 @@ abstract class SiteImageUpload extends AdminObjectEdit
 			}
 
 			$file_widget = new SwatFileEntry($shortname);
-			$file_widget->accept_mime_types = $image->getValidMimeTypes();
-			$file_widget->human_file_types  = $image->getValidHumanFileTypes();
+			$file_widget->display_mime_types = false;
+			$file_widget->accept_mime_types  = $image->getValidMimeTypes();
+			$file_widget->human_file_types   = $image->getValidHumanFileTypes();
 
 			$form_field->addChild($file_widget);
 			$dimensions_widget_container->addChild($form_field);
