@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<widget class="SiteUploadProgressForm" id="edit_form">
+			<widget class="SwatImageDisplay" id="image_display">
+				<property name="visible" type="boolean">false</property>
+			</widget>
+			<widget class="SwatFieldset" id="resizing_upload_field">
+				<property name="title" translatable="yes">Upload an image to be automatically resized</property>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Image</property>
+					<widget class="SwatFileEntry" id="upload_widget" />
+				</widget>
+			</widget>
+			<widget class="SwatFieldset" id="manual_fieldset">
+				<property name="visible" type="boolean">false</property>
+				<property name="title" translatable="yes">or Upload images that have been manually resized</property>
+				<widget class="SwatMessageDisplay" id="message">
+					<property name="visible" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button" />
+			</widget>
+		</widget>
+	</widget>
+</swatml>
