@@ -141,7 +141,7 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	}
 
 	// }}}
-	// {{{ protected function initDimensions()
+	// {{{ protected function initDimensionUploadWidgets()
 
 	protected function initDimensionUploadWidgets()
 	{
