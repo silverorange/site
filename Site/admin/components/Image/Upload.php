@@ -87,8 +87,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		$this->checkImageClass();
 		$this->initUploadWidget();
 
+		$this->initDimensions();
 		if ($this->allowDimensionUploads()) {
-			$this->initDimensions();
 			$this->initDimensionUploadWidgets();
 		}
 	}
@@ -141,7 +141,7 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	}
 
 	// }}}
-	// {{{ protected function initDimensions()
+	// {{{ protected function initDimensionUploadWidgets()
 
 	protected function initDimensionUploadWidgets()
 	{
@@ -164,11 +164,6 @@ abstract class SiteImageUpload extends AdminObjectEdit
 
 			$form_field->title = $dimension->title;
 
-			$dimension_note = $this->getDimensionFieldNote($dimension);
-			if ($dimension_note != '') {
-				$form_field->note = $dimension_note;
-			}
-
 			$file_widget = new SwatFileEntry($shortname);
 			$file_widget->display_mime_types = false;
 			$file_widget->accept_mime_types  = $image->getValidMimeTypes();
@@ -187,35 +182,6 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	protected function getDimensionsWidgetContainerId()
 	{
 		return 'manual_fieldset';
-	}
-
-	// }}}
-	// {{{ protected function getDimensionFieldNote()
-
-	protected function getDimensionFieldNote(SiteImageDimension $dimension)
-	{
-		$dimension_note = '';
-
-		if ($dimension->max_width !== null &&
-			$dimension->max_height !== null) {
-			$dimension_note = sprintf(
-				Site::_('Maximum Dimensions: %s × %s px'),
-				$dimension->max_width,
-				$dimension->max_height
-			);
-		} elseif ($dimension->max_width !== null) {
-			$dimension_note = sprintf(
-				Site::_('Maximum Dimension: %s px wide'),
-				$dimension->max_width
-			);
-		} elseif ($dimension->max_height !== null) {
-			$dimension_note = sprintf(
-				Site::_('Maximum Dimension: %s px high'),
-				$dimension->max_width
-			);
-		}
-
-		return $dimension_note;
 	}
 
 	// }}}
@@ -356,6 +322,68 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	// }}}
 
 	// build phase
+	// {{{ protected function buildInternal()
+
+	protected function buildInternal()
+	{
+		parent::buildInternal();
+
+		$this->buildDimensionNotes();
+	}
+
+	// }}}
+	// {{{ protected function buildDimensionNotes()
+
+	protected function buildDimensionNotes()
+	{
+		$largest_width  = null;
+		$largest_height = null;
+
+		foreach ($this->dimensions as $dimension) {
+			if ($dimension->max_width > $largest_width) {
+				$largest_width = $dimension->max_width;
+			}
+
+			if ($dimension->max_height > $largest_height) {
+				$largest_height = $dimension->max_height;
+			}
+
+			if ($this->allowDimensionUploads()) {
+				$widget = $this->getDimensionUploadWidget($dimension);
+				$dimension_note = $this->getDimensionFieldNote($dimension);
+				if ($dimension_note != '') {
+					$widget->parent->note = $dimension_note;
+				}
+			}
+		}
+
+		$minimum_dimension_note = '';
+		if ($largest_width !== null &&
+			$largest_height !== null) {
+			$minimum_dimension_note = sprintf(
+				Site::_('Minimum Suggested Dimensions: %s × %s px'),
+				$largest_width,
+				$largest_height
+			);
+		} elseif ($largest_width !== null) {
+			$minimum_dimension_note = sprintf(
+				Site::_('Minimum Suggested Dimension: %s px wide'),
+				$largest_width
+			);
+		} elseif ($largest_height !== null) {
+			$minimum_dimension_note = sprintf(
+				Site::_('Minimum Suggested Dimension: %s px high'),
+				$largest_height
+			);
+		}
+
+		if ($minimum_dimension_note != '') {
+			$this->ui->getWidget('upload_widget')->parent->note =
+				$minimum_dimension_note;
+		}
+	}
+
+	// }}}
 	// {{{ protected function buildForm()
 
 	protected function buildForm()
@@ -449,6 +477,35 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		return ($this->isNew())
 			? Site::_('Upload Image')
 			: Site::_('Replace Image');
+	}
+
+	// }}}
+	// {{{ protected function getDimensionFieldNote()
+
+	protected function getDimensionFieldNote(SiteImageDimension $dimension)
+	{
+		$dimension_note = '';
+
+		if ($dimension->max_width !== null &&
+			$dimension->max_height !== null) {
+			$dimension_note = sprintf(
+				Site::_('Maximum Dimensions: %s × %s px'),
+				$dimension->max_width,
+				$dimension->max_height
+			);
+		} elseif ($dimension->max_width !== null) {
+			$dimension_note = sprintf(
+				Site::_('Maximum Dimension: %s px wide'),
+				$dimension->max_width
+			);
+		} elseif ($dimension->max_height !== null) {
+			$dimension_note = sprintf(
+				Site::_('Maximum Dimension: %s px high'),
+				$dimension->max_height
+			);
+		}
+
+		return $dimension_note;
 	}
 
 	// }}}
