@@ -72,6 +72,7 @@ class SiteImage extends SwatDBDataObject
 	protected $image_set_shortname;
 	protected $automatically_save = true;
 	protected $imagick_instances = array();
+	protected $filesize_imagick;
 
 	// }}}
 	// {{{ private properties
@@ -1228,12 +1229,17 @@ class SiteImage extends SwatDBDataObject
 		$binding = new $class_name();
 		$binding->image      = $this->id;
 		$binding->dimension  = $dimension->id;
-		$binding->image_type =
-			$this->getDimensionImageType($imagick, $dimension);
-
 		$binding->width      = $imagick->getImageWidth();
 		$binding->height     = $imagick->getImageHeight();
-		$binding->filesize   = $imagick->getImageSize();
+		$binding->image_type = $this->getDimensionImageType(
+			$imagick,
+			$dimension
+		);
+
+		$binding->filesize = $this->getDimensionBindingFileSize(
+			$imagick,
+			$dimension
+		);
 
 		$resolution = $imagick->getImageResolution();
 		$binding->dpi  = intval($resolution['x']);
@@ -1281,6 +1287,45 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		return $type;
+	}
+
+	// }}}
+	// {{{ protected function getDimensionBindingFileSize()
+
+	/**
+	 * Gets the file size of a processed image dimension.
+	 *
+	 * This works around a upstream limitation of Imagick that does not allow
+	 * cloned objects to get the correct image size. See
+	 * @link{https://bugs.php.net/bug.php?id=64015}.
+	 *
+	 * @param Imagick $imagick the imagick instance to work with.
+	 * @param SiteImageDimension $dimension the image's dimension.
+	 *
+	 * @return int The filesize in byte of the dimension.
+	 */
+	protected function getDimensionBindingFileSize(Imagick $imagick,
+		SiteImageDimension $dimension)
+	{
+		$temp_name = sprintf(
+			'%s/%s.%s',
+			sys_get_temp_dir(),
+			$this->id,
+			$dimension->id
+		);
+
+		// write out the image temporarily.
+		$imagick->writeImage($temp_name);
+
+		// create a new imagick and load the image to get its filesize.
+		$filesize_imagick = $this->getFileSizeImagick();
+		$filesize_imagick->readImage($temp_name);
+		$filesize = $filesize_imagick->getImageLength();
+
+		// clean up the temp file.
+		unlink($temp_name);
+
+		return $filesize;
 	}
 
 	// }}}
@@ -1410,6 +1455,23 @@ class SiteImage extends SwatDBDataObject
 	protected function getOriginalImagick()
 	{
 		return reset($this->imagick_instances);
+	}
+
+	// }}}
+	// {{{ protected function getFileSizeImagick()
+
+	/**
+	 * Returns a shared Imagick instance used for loading filesizes.
+	 *
+	 * @return Imagick the imagick instance to work with.
+	 */
+	protected function getFileSizeImagick()
+	{
+		if (!$this->filesize_imagick instanceof Imagick) {
+			$this->filesize_imagick = new Imagick();
+		}
+
+		return $this->filesize_imagick;
 	}
 
 	// }}}
