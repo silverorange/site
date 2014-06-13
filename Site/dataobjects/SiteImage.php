@@ -961,6 +961,13 @@ class SiteImage extends SwatDBDataObject
 			$this->saveFile($imagick, $dimension);
 		}
 
+		// This needs to happen after the files have been saved to disk. The
+		// inital save of each dimension happens in saveDimensionBinding()
+		// before the files are saved so that if DB errors happen orphan files
+		// do not end up on disk. Saving the binding twice seems more effecient
+		// than using a temporay file on disk to get filesize.
+		$this->saveDimensionBindingFileSize($dimension);
+
 		if ($this->getImageSet()->use_cdn) {
 			$this->queueCdnTask('copy', $dimension);
 		}
@@ -1235,11 +1242,6 @@ class SiteImage extends SwatDBDataObject
 			$dimension
 		);
 
-		$binding->filesize = $this->getDimensionBindingFileSize(
-			$dimension,
-			$binding
-		);
-
 		$resolution = $imagick->getImageResolution();
 		$binding->dpi  = intval($resolution['x']);
 
@@ -1249,6 +1251,37 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		$this->dimension_bindings->add($binding);
+	}
+
+	// }}}
+	// {{{ protected function saveDimensionBindingFileSize()
+
+	/**
+	 * Saves a dimension binding's filesize.
+	 *
+	 * @param SiteImageDimension $dimension the image's dimension.
+	 */
+	protected function saveDimensionBindingFileSize(
+		SiteImageDimension $dimension)
+	{
+		foreach ($this->dimension_bindings as $binding) {
+			if ($binding->dimension == $dimension->id) {
+				// The binding must be duplicated so that saving works
+				// correctly.
+				$binding = $binding->duplicate();
+				$binding->filesize = $this->getDimensionBindingFileSize(
+					$dimension,
+					$binding
+				);
+
+				break;
+			}
+		}
+
+		if ($this->automatically_save) {
+			$binding->setDatabase($this->db);
+			$binding->save();
+		}
 	}
 
 	// }}}
