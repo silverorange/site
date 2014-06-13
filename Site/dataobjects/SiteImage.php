@@ -961,6 +961,13 @@ class SiteImage extends SwatDBDataObject
 			$this->saveFile($imagick, $dimension);
 		}
 
+		// This needs to happen after the files have been saved to disk. The
+		// inital save of each dimension happens in saveDimensionBinding()
+		// before the files are saved so that if DB errors happen orphan files
+		// do not end up on disk. Saving the binding twice seems more effecient
+		// than using a temporay file on disk to get filesize.
+		$this->saveDimensionBindingFileSize($dimension);
+
 		if ($this->getImageSet()->use_cdn) {
 			$this->queueCdnTask('copy', $dimension);
 		}
@@ -1228,15 +1235,15 @@ class SiteImage extends SwatDBDataObject
 		$binding = new $class_name();
 		$binding->image      = $this->id;
 		$binding->dimension  = $dimension->id;
-		$binding->image_type =
-			$this->getDimensionImageType($imagick, $dimension);
-
 		$binding->width      = $imagick->getImageWidth();
 		$binding->height     = $imagick->getImageHeight();
-		$binding->filesize   = $imagick->getImageSize();
+		$binding->image_type = $this->getDimensionImageType(
+			$imagick,
+			$dimension
+		);
 
 		$resolution = $imagick->getImageResolution();
-		$binding->dpi  = intval($resolution['x']);
+		$binding->dpi = intval($resolution['x']);
 
 		if ($this->automatically_save) {
 			$binding->setDatabase($this->db);
@@ -1244,6 +1251,35 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		$this->dimension_bindings->add($binding);
+	}
+
+	// }}}
+	// {{{ protected function saveDimensionBindingFileSize()
+
+	/**
+	 * Saves a dimension binding's filesize.
+	 *
+	 * @param SiteImageDimension $dimension the image's dimension.
+	 */
+	protected function saveDimensionBindingFileSize(
+		SiteImageDimension $dimension)
+	{
+		$binding = $this->getDimensionBinding($dimension->shortname);
+		if ($binding instanceof SiteImageDimensionBinding) {
+			// Binding has to duplicated or SwatDBDataObject will try to insert
+			// a row using SwatDBDataObject::saveNewBinding() and fail.
+			$binding = $binding->duplicate();
+			$binding->filesize = $this->getDimensionBindingFileSize(
+				$dimension,
+				$binding
+			);
+
+			if ($this->automatically_save) {
+				$binding->setDatabase($this->db);
+				$binding->save();
+			}
+		}
+
 	}
 
 	// }}}
@@ -1281,6 +1317,41 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		return $type;
+	}
+
+	// }}}
+	// {{{ protected function getDimensionBindingFileSize()
+
+	/**
+	 * Gets the file size of a processed image dimension.
+	 *
+	 * This works around a upstream limitation of Imagick that does not allow
+	 * cloned objects to get the correct image size. See
+	 * @link{https://bugs.php.net/bug.php?id=64015}.
+	 *
+	 * @param SiteImageDimension $dimension the image's dimension.
+	 * @param SiteImageDimensionBinding $dimension_binding the image's
+	 *                                                     dimension binding.
+	 *
+	 * @return int The filesize in byte of the dimension binding.
+	 */
+	protected function getDimensionBindingFileSize(
+		SiteImageDimension $dimension,
+		SiteImageDimensionBinding $dimension_binding)
+	{
+		$file = $this->getFilePath($dimension->shortname);
+
+		if (!file_exists($file)) {
+			throw new SiteException(
+				sprintf(
+					'Dimension ‘%s’ binding file not found at ‘%s’.',
+					$dimension->shortname,
+					$file
+				)
+			);
+		}
+
+		return filesize($file);
 	}
 
 	// }}}
