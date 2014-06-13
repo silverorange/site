@@ -1243,7 +1243,7 @@ class SiteImage extends SwatDBDataObject
 		);
 
 		$resolution = $imagick->getImageResolution();
-		$binding->dpi  = intval($resolution['x']);
+		$binding->dpi = intval($resolution['x']);
 
 		if ($this->automatically_save) {
 			$binding->setDatabase($this->db);
