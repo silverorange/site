@@ -1264,24 +1264,22 @@ class SiteImage extends SwatDBDataObject
 	protected function saveDimensionBindingFileSize(
 		SiteImageDimension $dimension)
 	{
-		foreach ($this->dimension_bindings as $binding) {
-			if ($binding->dimension == $dimension->id) {
-				// The binding must be duplicated so that saving works
-				// correctly.
-				$binding = $binding->duplicate();
-				$binding->filesize = $this->getDimensionBindingFileSize(
-					$dimension,
-					$binding
-				);
+		$binding = $this->getDimensionBinding($dimension->shortname);
+		if ($binding instanceof SiteImageDimensionBinding) {
+			// Binding has to duplicated or SwatDBDataObject will try to insert
+			// a row using SwatDBDataObject::saveNewBinding() and fail.
+			$binding = $binding->duplicate();
+			$binding->filesize = $this->getDimensionBindingFileSize(
+				$dimension,
+				$binding
+			);
 
-				break;
+			if ($this->automatically_save) {
+				$binding->setDatabase($this->db);
+				$binding->save();
 			}
 		}
 
-		if ($this->automatically_save) {
-			$binding->setDatabase($this->db);
-			$binding->save();
-		}
 	}
 
 	// }}}
