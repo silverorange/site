@@ -604,8 +604,7 @@ class SiteAccount extends SwatDBDataObject
 		}
 
 		$title = $app->config->site->title;
-		$link = $app->getBaseHref().'account/resetpassword/'.
-			$this->password_tag;
+		$link = $this->getResetPasswordUri($app);
 
 		$email = new SiteResetPasswordMailMessage(
 			$app, $this, $link, $title);
@@ -626,6 +625,15 @@ class SiteAccount extends SwatDBDataObject
 		return array(
 			'text:password_tag',
 		);
+	}
+
+	// }}}
+	// {{{ protected function getResetPasswordUri()
+
+	protected function getResetPasswordUri(SiteApplication $app)
+	{
+		return $app->getBaseHref().'account/resetpassword/'.
+			$this->password_tag;
 	}
 
 	// }}}
