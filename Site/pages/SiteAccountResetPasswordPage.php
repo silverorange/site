@@ -66,8 +66,10 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 
 		$this->account = $this->getAccount($tag);
 
-		$confirm = $this->ui->getWidget('confirm_password');
-		$confirm->password_widget = $this->ui->getWidget('password');
+		if ($this->ui->hasWidget('confirm_password')) {
+			$confirm = $this->ui->getWidget('confirm_password');
+			$confirm->password_widget = $this->ui->getWidget('password');
+		}
 	}
 
 	// }}}
