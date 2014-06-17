@@ -203,7 +203,7 @@ class SiteAccountLoginPage extends SiteUiPage
 		$href = 'account/forgotpassword';
 
 		$email = $this->ui->getWidget('email_address');
-		if (!$email->hasMessage() && trim($email->value) != '') {
+		if (!$email->hasMessage() && $email->value != '') {
 			$href.= '?email='.urlencode($email->value);
 		}
 
