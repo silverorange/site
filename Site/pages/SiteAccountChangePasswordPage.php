@@ -6,7 +6,7 @@ require_once 'Site/pages/SiteEditPage.php';
  * Page for changing the password of an account
  *
  * @package   Site
- * @copyright 2006-2012 silverorange
+ * @copyright 2006-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */
@@ -34,8 +34,9 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 
 	public function init()
 	{
-		if (!$this->app->session->isLoggedIn())
-			$this->app->relocate('account/login');
+		if (!$this->app->session->isLoggedIn()) {
+			$this->app->relocate($this->app->config->uri->account_login);
+		}
 
 		parent::init();
 	}
