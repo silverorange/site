@@ -63,8 +63,9 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 
 		$this->app->session->account->save();
 
-		$message = new SwatMessage(Site::_(
-			'Account password has been updated.'));
+		$message = new SwatMessage(
+			Site::_('Account password has been updated.')
+		);
 
 		$this->app->messages->add($message);
 	}
@@ -84,7 +85,13 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 			$password_hash = $account->password;
 			$password_salt = $account->password_salt;
 
-			if (!$crypt->verifyHash($password, $password_hash, $password_salt)) {
+			$old_password_verified = $crypt->verifyHash(
+				$password,
+				$password_hash,
+				$password_salt
+			);
+
+			if (!$old_password_verified) {
 				$old_password->addMessage(
 					new SwatMessage(
 						Site::_('Your password is incorrect.'),
@@ -133,8 +140,9 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 	{
 		parent::buildNavBar();
 
-		if (!property_exists($this->layout, 'navbar'))
+		if (!property_exists($this->layout, 'navbar')) {
 			return;
+		}
 
 		$this->layout->navbar->createEntry(Site::_('New Password'));
 	}
