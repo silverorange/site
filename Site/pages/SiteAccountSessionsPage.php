@@ -6,7 +6,7 @@ require_once 'Site/pages/SiteDBEditPage.php';
  * Page for listing current persistent login sessions
  *
  * @package   Site
- * @copyright 2012 silverorange
+ * @copyright 2012-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  * @see       SiteAccountLoginSession
@@ -37,7 +37,12 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	{
 		// redirect to login page if not logged in
 		if (!$this->app->session->isLoggedIn()) {
-			$uri = sprintf('account/login?relocate=%s', $this->source);
+			$uri = sprintf(
+				'%s?relocate=%s',
+				$this->app->config->uri->account_login
+				$this->source
+			);
+
 			$this->app->relocate($uri);
 		}
 
@@ -419,9 +424,9 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$div->setContent(
 			Site::_(
 				'If you notice any unfamiliar '.
-				'devices or you forgot to sign out from any device you can end '.
-				'those sessions below, removing access to your account from '.
-				'those devices until the next time you use them.'
+				'devices or you forgot to sign out from any device you can '.
+				'end those sessions below, removing access to your account '.
+				'from those devices until the next time you use them.'
 			)
 		);
 

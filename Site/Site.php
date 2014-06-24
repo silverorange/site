@@ -217,6 +217,7 @@ class Site
 			'uri.cdn_base'             => null,
 			'uri.secure_cdn_base'      => null,
 			'uri.admin_base'           => null,
+			'uri.account_login'        => 'account/login',
 
 			// Exceptions & errors
 			'exceptions.log_location'  => null,
