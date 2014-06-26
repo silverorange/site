@@ -243,6 +243,11 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	{
 		parent::updateObject();
 
+		// Need to update modified date here because SiteImage::process()
+		// saves internally to get an image id for filenames. Normally, the
+		// modified date is updated after the object is updated.
+		$this->updateModifiedDate();
+
 		$upload_widget = $this->ui->getWidget('upload_widget');
 
 		$image = $this->getObject();
