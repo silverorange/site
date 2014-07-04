@@ -39,7 +39,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		if (!$this->app->session->isLoggedIn()) {
 			$uri = sprintf(
 				'%s?relocate=%s',
-				$this->app->config->uri->account_login
+				$this->app->config->uri->account_login,
 				$this->source
 			);
 
