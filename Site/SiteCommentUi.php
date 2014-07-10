@@ -49,11 +49,6 @@ abstract class SiteCommentUi
 	 */
 	protected $ui;
 
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Site/pages/comment-edit.xml';
-
 	// }}}
 
 	// init phase
@@ -73,7 +68,7 @@ abstract class SiteCommentUi
 	public function init()
 	{
 		$this->ui = new SwatUI();
-		$this->ui->loadFromXml($this->ui_xml);
+		$this->ui->loadFromXml($this->getUiXml());
 	}
 
 	// }}}
@@ -83,6 +78,14 @@ abstract class SiteCommentUi
 	{
 		$class_name = SwatDBClassMap::get('SiteComment');
 		return new $class_name();
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'Site/pages/comment-edit.xml';
 	}
 
 	// }}}
