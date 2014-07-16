@@ -12,7 +12,7 @@ require_once 'FFmpegPHP2/FFmpegAutoloader.php';
  * Generates media thumbnails for the video scrubber
  *
  * @package   Site
- * @copyright 2013 silverorange
+ * @copyright 2013-2014 silverorange
  */
 class SiteVideoScrubberImageGenerator extends
 	SiteCommandLineApplication
@@ -97,7 +97,7 @@ class SiteVideoScrubberImageGenerator extends
 		$sql = sprintf('select Media.*
 			from Media
 			inner join MediaSet on Media.media_set = MediaSet.id
-			where %s 
+			where %s
 			order by Media.id',
 			$this->getPendingMediaWhereClause());
 
@@ -217,22 +217,34 @@ class SiteVideoScrubberImageGenerator extends
 		$tmp_file = tempnam(sys_get_temp_dir(), 'scrubber-image-');
 		$output->writeImage($tmp_file);
 
-		if ($media->scrubber_image !== null) {
+		if ($media->scrubber_image instanceof SiteVideoScrubberImage) {
 			$media->scrubber_image->setFileBase($this->image_file_base);
 			$media->scrubber_image->delete();
 		}
 
-		$class_name = SwatDBClassMap::get('SiteVideoScrubberImage');
-		$image = new $class_name();
-		$image->setDatabase($this->db);
-		$image->setFileBase($this->image_file_base);
+		$image = $this->getImageObject();
 		$image->process($tmp_file);
 		$image->save();
+
 		$media->scrubber_image_count = $media->getDefaultScrubberImageCount();
 		$media->scrubber_image = $image;
 		$media->save();
 
 		$this->debug("\nComposite Saved!\n\n");
+	}
+
+	// }}}
+	// {{{ protected function getImageObject()
+
+	protected function getImageObject()
+	{
+		$class_name = SwatDBClassMap::get('SiteVideoScrubberImage');
+
+		$image_object = new $class_name();
+		$image_object->setDatabase($this->db);
+		$image_object->setFileBase($this->image_file_base);
+
+		return $image_object;
 	}
 
 	// }}}
