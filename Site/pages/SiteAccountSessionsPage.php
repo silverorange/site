@@ -551,9 +551,11 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		echo '</span>';
 
 		if ($logout_button instanceof SwatWidget) {
+			echo '<span class="logout-button-container">';
 			$logout_button->visible = true;
 			$logout_button->display();
 			$logout_button->visible = false;
+			echo '</span>';
 		}
 
 		echo '</li>';
