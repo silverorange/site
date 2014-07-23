@@ -24,6 +24,14 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 	}
 
 	// }}}
+	// {{{ protected function getObjectUiValueNames()
+
+	protected function getObjectUiValueNames()
+	{
+		return array('title');
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -107,7 +115,7 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 	}
 
 	// }}}
-	// {{{ protected function getHumanFilename();
+	// {{{ protected function getHumanFilename()
 
 	protected function getHumanFilename()
 	{
