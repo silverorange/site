@@ -293,7 +293,7 @@ class SiteLayout extends SiteObject
 	protected function completeHtmlHeadEntries()
 	{
 		$resources = $this->app->config->resources;
-		$factory   = new SiteHtmlHeadEntrySetDisplayerFactory();
+		$factory   = $this->getHtmlHeadEntrySetDisplayerFactory();
 		$displayer = $factory->build($this->app);
 
 		// get resource tag
@@ -411,6 +411,14 @@ class SiteLayout extends SiteObject
 		}
 
 		return $tag;
+	}
+
+	// }}}
+	// {{{ protected function getHtmlHeadEntrySetDisplayerFactory()
+
+	protected function getHtmlHeadEntrySetDisplayerFactory()
+	{
+		return new SiteHtmlHeadEntrySetDisplayerFactory();
 	}
 
 	// }}}

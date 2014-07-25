@@ -28,6 +28,13 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 	 */
 	protected $displayers = array();
 
+	/**
+	 * @var string
+	 *
+	 * @see SiteHtmlHeadEntrySetDisplayerFactory::setDisplayerClass()
+	 */
+	protected $displayer_class = 'SwatHtmlHeadEntrySetDisplayer';
+
 	// }}}
 	// {{{ public function build()
 
@@ -67,11 +74,27 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 			$finder = new SiteConcentrateFileFinder();
 			$concentrator->loadDataFiles($finder->getDataFiles());
 
-			$this->displayers[$app->id] =
-				new SwatHtmlHeadEntrySetDisplayer($concentrator);
+			$class_name = $this->displayer_class;
+			$this->displayers[$app->id] = new $class_name($concentrator);
 		}
 
 		return $this->displayers[$app->id];
+	}
+
+	// }}}
+	// {{{ public function setDisplayerClass()
+
+	public function setDisplayerClass($class_name)
+	{
+		$this->displayer_class = $class_name;
+	}
+
+	// }}}
+	// {{{ public function getDisplayerClass()
+
+	public function getDisplayerClass()
+	{
+		return $this->displayer_class;
 	}
 
 	// }}}
