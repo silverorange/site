@@ -428,6 +428,10 @@ SiteCommentDisplay.prototype.setSensitivity = function(sensitive)
 
 SiteCommentDisplay.prototype.updateStatus = function()
 {
+	if (this.status_container === null) {
+		return;
+	}
+
 	if (this.comment_spam) {
 		SiteCommentDisplay.setTextContent(this.status_container,
 			' - ' + SiteCommentDisplay.status_spam_text);
