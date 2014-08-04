@@ -195,7 +195,7 @@ SiteDialog.handleLayoutChange = function()
 			validator: YAHOO.lang.isBoolean
 		},
 		/**
-		 * Use pustState API if available to control opening and closing the
+		 * Use pushState API if available to control opening and closing the
 		 * dialog.
 		 */
 		'USE_PUSH_STATE': {
