@@ -18,6 +18,10 @@ SiteDialog.is_desktop = false;
 SiteDialog.scroll_top = 0;
 SiteDialog.resize_debounce_delay = 30;
 
+SiteDialog.RESIZE_NONE = 0;
+SiteDialog.RESIZE_FILL = 1;
+SiteDialog.RESIZE_CENTER = 2;
+
 SiteDialog.updateLayout = function()
 {
 	if (SiteDialog.opened_dialog_stack.length === 0) {
@@ -207,10 +211,10 @@ SiteDialog.handleLayoutChange = function()
 			key: 'relative_container',
 			value: null
 		},
-		'FULL_SCREEN': {
-			key: 'full_screen',
-			value: true,
-			validator: YAHOO.lang.isBoolean
+		'RESIZE_MODE': {
+			key: 'resize_mode',
+			value: SiteDialog.RESIZE_FILL,
+			validator: YAHOO.lang.isNumber
 		}
 	};
 
@@ -244,9 +248,9 @@ SiteDialog.handleLayoutChange = function()
 			value: DEFAULT_CONFIG.TOGGLE_ELEMENT.value
 		});
 
-		this.config.addProperty(DEFAULT_CONFIG.FULL_SCREEN.key, {
-			value: DEFAULT_CONFIG.FULL_SCREEN.value,
-			validator: DEFAULT_CONFIG.FULL_SCREEN.validator
+		this.config.addProperty(DEFAULT_CONFIG.RESIZE_MODE.key, {
+			value: DEFAULT_CONFIG.RESIZE_MODE.value,
+			validator: DEFAULT_CONFIG.RESIZE_MODE.validator
 		});
 
 		this.config.addProperty(DEFAULT_CONFIG.RELATIVE_CONTAINER.key, {
@@ -530,7 +534,8 @@ SiteDialog.handleLayoutChange = function()
 
 	proto.handleResize = function()
 	{
-		if (this.config.full_screen || !SiteDialog.is_desktop) {
+		if (this.config.resize_mode === SiteDialog.RESIZE_FILL ||
+			!SiteDialog.is_desktop) {
 			var header_region = Dom.getRegion(this.header);
 			var footer_region = Dom.getRegion(this.footer);
 
@@ -547,6 +552,20 @@ SiteDialog.handleLayoutChange = function()
 			) + 'px';
 
 			this.dialog.style.height = Dom.getViewportHeight() + 'px';
+			this.dialog.style.top = null;
+		} else if (this.config.resize_mode === SiteDialog.RESIZE_CENTER) {
+			this.dialog.style.height = 'auto';
+			this.body.style.height = 'auto';
+
+			var margin = parseInt(Dom.getStyle(this.container, 'marginTop')) +
+				parseInt(Dom.getStyle(this.container, 'marginBottom'));
+
+			margin = (isNaN(margin)) ? 0 : margin;
+
+			var region = Dom.getRegion(this.container);
+			var viewport = Dom.getViewportHeight();
+
+			this.dialog.style.top = (viewport - region.height - margin) / 2 + 'px';
 		} else {
 			this.dialog.style.height = 'auto';
 			this.body.style.height = 'auto';
