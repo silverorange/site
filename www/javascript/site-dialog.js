@@ -18,7 +18,7 @@ SiteDialog.is_desktop = false;
 SiteDialog.scroll_top = 0;
 SiteDialog.resize_debounce_delay = 30;
 
-SiteDialog.hideBodyChildren = function()
+SiteDialog.updateLayout = function()
 {
 	if (SiteDialog.opened_dialog_stack.length === 0) {
 		for (i = 0; i < document.body.childNodes.length; i++) {
@@ -49,14 +49,6 @@ SiteDialog.hideBodyChildren = function()
 	}
 };
 
-SiteDialog.showBodyChildren = function()
-{
-	for (i = 0; i < document.body.childNodes.length; i++) {
-		var node = document.body.childNodes[i];
-		YAHOO.util.Dom.removeClass(node, 'site-dialog-hidden');
-	}
-};
-
 SiteDialog.raiseDialog = function(dialog)
 {
 	var index = null;
@@ -72,7 +64,7 @@ SiteDialog.raiseDialog = function(dialog)
 	}
 
 	SiteDialog.opened_dialog_stack.push(dialog);
-	SiteDialog.hideBodyChildren();
+	SiteDialog.updateLayout();
 };
 
 SiteDialog.lowerDialog = function(dialog)
@@ -89,7 +81,7 @@ SiteDialog.lowerDialog = function(dialog)
 		SiteDialog.opened_dialog_stack.splice(index, 1);
 	}
 
-	SiteDialog.hideBodyChildren();
+	SiteDialog.updateLayout();
 };
 
 SiteDialog.addSentinel = function()
