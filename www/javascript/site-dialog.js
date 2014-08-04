@@ -278,8 +278,9 @@ SiteDialog.handleLayoutChange = function()
 	{
 		this.header = this.drawHeader();
 		this.body = this.drawBody();
+		this.scroll = this.drawScroll(this.header, this.body);
 		this.footer = this.drawFooter();
-		this.container = this.drawContainer(this.header, this.body, this.footer);
+		this.container = this.drawContainer(this.scroll, this.footer);
 
 		this.dialog = this.drawDialog(this.container, el);
 
@@ -360,13 +361,23 @@ SiteDialog.handleLayoutChange = function()
 		return dialog;
 	};
 
-	proto.drawContainer = function(header, body, footer)
+	proto.drawScroll = function(header, body)
+	{
+		var scroll = document.createElement('div');
+		scroll.className = 'site-dialog-scroll';
+
+		scroll.appendChild(header);
+		scroll.appendChild(body);
+
+		return scroll;
+	};
+
+	proto.drawContainer = function(scroll, footer)
 	{
 		var container = document.createElement('div');
 		container.className = 'site-dialog-container';
 
-		container.appendChild(header);
-		container.appendChild(body);
+		container.appendChild(scroll);
 		container.appendChild(footer);
 
 		return container;
@@ -498,6 +509,27 @@ SiteDialog.handleLayoutChange = function()
 		this.footer.appendChild(node);
 	};
 
+	proto.clearHeader = function()
+	{
+		while (this.header.firstChild) {
+			this.header.removeChild(this.header.firstChild);
+		}
+	};
+
+	proto.clearBody = function()
+	{
+		while (this.body.firstChild) {
+			this.body.removeChild(this.body.firstChild);
+		}
+	};
+
+	proto.clearFooter = function()
+	{
+		while (this.footer.firstChild) {
+			this.footer.removeChild(this.footer.firstChild);
+		}
+	};
+
 	// }}}
 
 	proto.handleLayoutChange = function()
@@ -542,7 +574,6 @@ SiteDialog.handleLayoutChange = function()
 
 		if (this.config.resize_mode === SiteDialog.RESIZE_FILL ||
 			!SiteDialog.is_desktop) {
-			var header_region = Dom.getRegion(this.header);
 			var footer_region = Dom.getRegion(this.footer);
 
 			var margin = parseInt(Dom.getStyle(this.container, 'marginTop')) +
@@ -550,9 +581,8 @@ SiteDialog.handleLayoutChange = function()
 
 			margin = (isNaN(margin)) ? 0 : margin;
 
-			this.body.style.height = (
+			this.scroll.style.height = (
 				Dom.getViewportHeight() -
-				header_region.height -
 				footer_region.height -
 				margin
 			) + 'px';
@@ -561,7 +591,7 @@ SiteDialog.handleLayoutChange = function()
 			this.dialog.style.top = null;
 		} else if (this.config.resize_mode === SiteDialog.RESIZE_CENTER) {
 			this.dialog.style.height = 'auto';
-			this.body.style.height = 'auto';
+			this.scroll.style.height = 'auto';
 
 			var margin = parseInt(Dom.getStyle(this.container, 'marginTop')) +
 				parseInt(Dom.getStyle(this.container, 'marginBottom'));
@@ -571,10 +601,12 @@ SiteDialog.handleLayoutChange = function()
 			var region = Dom.getRegion(this.container);
 			var viewport = Dom.getViewportHeight();
 
-			this.dialog.style.top = (viewport - region.height - margin) / 2 + 'px';
+			// center vertically in viewport
+			this.dialog.style.top =
+				(viewport - region.height - margin) / 2 + 'px';
 		} else {
 			this.dialog.style.height = 'auto';
-			this.body.style.height = 'auto';
+			this.scroll.style.height = 'auto';
 		}
 	};
 
