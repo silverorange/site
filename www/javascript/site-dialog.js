@@ -407,14 +407,16 @@ SiteDialog.handleLayoutChange = function()
 		Dom.removeClass(this.overlay, 'site-dialog-closed');
 		Dom.removeClass(this.dialog, 'site-dialog-closed');
 
+
+		// need to set state before doing initial positioning
+		this.state = SiteDialog.STATE_OPENED;
+
 		this.handleResize();
 
 		// bubble up opened stack if not desktop
 		if (!SiteDialog.is_desktop) {
 			SiteDialog.raiseDialog(this);
 		}
-
-		this.state = SiteDialog.STATE_OPENED;
 	};
 
 	proto.openWithAnimation = function()
@@ -534,6 +536,10 @@ SiteDialog.handleLayoutChange = function()
 
 	proto.handleResize = function()
 	{
+		if (this.isClosed()) {
+			return;
+		}
+
 		if (this.config.resize_mode === SiteDialog.RESIZE_FILL ||
 			!SiteDialog.is_desktop) {
 			var header_region = Dom.getRegion(this.header);
