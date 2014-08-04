@@ -15,7 +15,7 @@ SiteDialog.has_push_state = (window.pushState);
 SiteDialog.opened_dialog_stack = [];
 SiteDialog.desktop_sentinel = null;
 SiteDialog.is_desktop = false;
-SiteDialog.scroll_top = 0;
+SiteDialog.scroll_top = null;
 SiteDialog.resize_debounce_delay = 30;
 
 SiteDialog.RESIZE_NONE = 0;
@@ -29,7 +29,11 @@ SiteDialog.updateLayout = function()
 			var node = document.body.childNodes[i];
 			YAHOO.util.Dom.removeClass(node, 'site-dialog-hidden');
 		}
-		window.scrollTo(0, SiteDialog.scroll_top);
+
+		if (SiteDialog.scroll_top !== null) {
+			window.scrollTo(0, SiteDialog.scroll_top);
+			SiteDialog.scroll_top = null;
+		}
 	} else {
 		// save scroll position
 		SiteDialog.scroll_top = YAHOO.util.Dom.getDocumentScrollTop();
