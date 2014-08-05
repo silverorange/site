@@ -26,8 +26,26 @@ SiteDialog.updateLayout = function()
 {
 	if (SiteDialog.opened_dialog_stack.length === 0) {
 		for (i = 0; i < document.body.childNodes.length; i++) {
-			var node = document.body.childNodes[i];
-			YAHOO.util.Dom.removeClass(node, 'site-dialog-hidden');
+			YAHOO.util.Dom.removeClass(
+				document.body.childNodes[i],
+				'site-dialog-hidden'
+			);
+		}
+
+		// Also re-show all dialogs. Needed because relatively positioned
+		// dialogs may not be children of the body element when updateLayout()
+		// is called.
+		for (j = 0; j < SiteDialog.dialogs.length; j++) {
+			YAHOO.util.Dom.removeClass(
+				SiteDialog.dialogs[j].dialog,
+				'site-dialog-hidden'
+			);
+			if (SiteDialog.dialogs[j].overlay) {
+				YAHOO.util.Dom.removeClass(
+					SiteDialog.dialogs[j].overlay,
+					'site-dialog-hidden'
+				);
+			}
 		}
 
 		if (SiteDialog.scroll_top !== null) {
