@@ -141,7 +141,7 @@ SiteDialog.addSentinel = function()
 			'resize',
 			function (e) {
 				// Debounce resize updates so they only fire every at most
-				// every 10 ms.
+				// every SiteDialog.resize_debounce_delay ms.
 				if (timeout) {
 					clearTimeout(timeout);
 				}
