@@ -436,6 +436,7 @@ SiteDialog.handleLayoutChange = function()
 
 	proto.openWithAnimation = function()
 	{
+		// TODO: implement animations
 		this.open();
 	};
 
@@ -456,6 +457,7 @@ SiteDialog.handleLayoutChange = function()
 
 	proto.closeWithAnimation = function()
 	{
+		// TODO: implement animations
 		this.close();
 	};
 
