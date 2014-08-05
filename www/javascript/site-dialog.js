@@ -130,7 +130,25 @@ SiteDialog.addSentinel = function()
 		if (YAHOO.util.Dom.hasClass(document.documentElement, 'ie8')) {
 			// Give IE8 time to load responsive styles before initializing
 			// mode. It needs to re-download and parse all the CSS. Respond.js
-			// does not provide an event for this. This is a big fat hack.
+			// does not provide an event for this. To do so, we add an element
+			// to the DOM that has a media query style that sets its display
+			// to 'none'. We check if the media query has been loaded on a
+			// short interval.
+			var mq_detect_el = document.createElement('div');
+			mq_detect_el.className = 'site-dialog-mq-detect';
+			document.body.appendChild(mq_detect_el);
+			var mq_detect_interval = setInterval(function() {
+				var display = YAHOO.util.Dom.getComputedStyle(
+					mq_detect_el,
+					'display'
+				);
+				if (display === 'none') {
+					mq_detect_el.parentNode.removeChild(mq_detect_el);
+					checkSentinel();
+					clearInterval(mq_detect_interval);
+					mq_detect_interval = null;
+				}
+			}, 10);
 			setTimeout(checkSentinel, 1000);
 		} else {
 			checkSentinel();
