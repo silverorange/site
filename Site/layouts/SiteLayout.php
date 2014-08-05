@@ -13,7 +13,7 @@ require_once 'Concentrate/CLI.php';
  * Base class for a layout
  *
  * @package   Site
- * @copyright 2005-2012 silverorange
+ * @copyright 2005-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteLayout extends SiteObject
@@ -293,7 +293,7 @@ class SiteLayout extends SiteObject
 	protected function completeHtmlHeadEntries()
 	{
 		$resources = $this->app->config->resources;
-		$factory   = new SiteHtmlHeadEntrySetDisplayerFactory();
+		$factory   = $this->getHtmlHeadEntrySetDisplayerFactory();
 		$displayer = $factory->build($this->app);
 
 		// get resource tag
@@ -411,6 +411,14 @@ class SiteLayout extends SiteObject
 		}
 
 		return $tag;
+	}
+
+	// }}}
+	// {{{ protected function getHtmlHeadEntrySetDisplayerFactory()
+
+	protected function getHtmlHeadEntrySetDisplayerFactory()
+	{
+		return new SiteHtmlHeadEntrySetDisplayerFactory();
 	}
 
 	// }}}

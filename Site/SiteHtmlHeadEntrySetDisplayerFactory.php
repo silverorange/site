@@ -14,7 +14,7 @@ require_once 'Site/SiteApplication.php';
  * the Concentrate library
  *
  * @package   Site
- * @copyright 2010 silverorange
+ * @copyright 2010-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteHtmlHeadEntrySetDisplayerFactory
@@ -27,6 +27,13 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 	 * @var array
 	 */
 	protected $displayers = array();
+
+	/**
+	 * @var string
+	 *
+	 * @see SiteHtmlHeadEntrySetDisplayerFactory::setDisplayerClass()
+	 */
+	protected $displayer_class = 'SwatHtmlHeadEntrySetDisplayer';
 
 	// }}}
 	// {{{ public function build()
@@ -67,11 +74,27 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 			$finder = new SiteConcentrateFileFinder();
 			$concentrator->loadDataFiles($finder->getDataFiles());
 
-			$this->displayers[$app->id] =
-				new SwatHtmlHeadEntrySetDisplayer($concentrator);
+			$class_name = $this->displayer_class;
+			$this->displayers[$app->id] = new $class_name($concentrator);
 		}
 
 		return $this->displayers[$app->id];
+	}
+
+	// }}}
+	// {{{ public function setDisplayerClass()
+
+	public function setDisplayerClass($class_name)
+	{
+		$this->displayer_class = $class_name;
+	}
+
+	// }}}
+	// {{{ public function getDisplayerClass()
+
+	public function getDisplayerClass()
+	{
+		return $this->displayer_class;
 	}
 
 	// }}}
