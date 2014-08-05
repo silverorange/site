@@ -13,7 +13,7 @@ require_once 'Concentrate/CLI.php';
  * Base class for a layout
  *
  * @package   Site
- * @copyright 2005-2012 silverorange
+ * @copyright 2005-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteLayout extends SiteObject
