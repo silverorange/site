@@ -7,7 +7,7 @@ require_once 'Site/pages/SiteEditPage.php';
  * Base class for database edit pages
  *
  * @package   Site
- * @copyright 2008-2013 silverorange
+ * @copyright 2008-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteDBEditPage extends SiteEditPage
@@ -55,6 +55,7 @@ abstract class SiteDBEditPage extends SiteEditPage
 
 	protected function handleDBException(SwatDBException $e)
 	{
+		$e->processAndContinue();
 	}
 
 	// }}}
