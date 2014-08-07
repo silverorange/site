@@ -23,10 +23,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2014-07-25</date>
- <time>11:42:57</time>
+ <date>2014-08-07</date>
+ <time>12:06:37</time>
  <version>
-  <release>2.1.18</release>
+  <release>2.1.19</release>
   <api>2.0.0</api>
  </version>
  <stability>
@@ -586,6 +586,7 @@ No release notes for you!
      <file name="jwplayer.html5.js" role="data" />
      <file name="jwplayer.js" role="data" />
      <file name="site-content-slider.js" role="data" />
+     <file name="site-dialog.js" role="data" />
      <file name="site-gravatar-entry.js" role="data" />
      <file name="site-jw-player-media-display.js" role="data" />
      <file name="site-tag-entry.js" role="data" />
@@ -708,14 +709,14 @@ No release notes for you!
  <changelog>
   <release>
    <version>
-    <release>2.1.18</release>
+    <release>2.1.19</release>
     <api>2.0.0</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2014-07-25</date>
+   <date>2014-08-07</date>
    <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
 No release notes for you!
