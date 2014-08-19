@@ -39,7 +39,17 @@ abstract class SiteImageUpload extends AdminObjectEdit
 
 	protected function shouldReplaceObject()
 	{
-		return true;
+		// When editing/replacing an existing image, the uploaded file is not
+		// required. This is to allow possible editing of secondary values, such
+		// as individual dimensions if allowDimensionUploads() returns true, or
+		// titles if the title widget is enabled. Only replace the existing
+		// image with a new new object if a new file is uploaded. Otherwise
+		// keep the old version. This does two things - it prevents image churn
+		// on the site/CDN for images that art not actually modified, and it
+		// fixes a bug when cloning a SiteImage where the main dataobject is
+		// copied, but dimension bindings and files on disk are not, leaving
+		// broken images.
+		return ($this->ui->getWidget('upload_widget')->isUploaded());
 	}
 
 	// }}}
