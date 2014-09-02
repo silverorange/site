@@ -9,9 +9,10 @@ require_once 'Site/SiteApplicationModule.php';
  * could be added.
  *
  * @package   Site
- * @copyright 2007-2013 silverorange
+ * @copyright 2007-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
+ * @todo      Switch to Univeral Analytics, and re-add 100% speed tracking.
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
