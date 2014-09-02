@@ -244,13 +244,8 @@ JS;
 	protected function initGoogleAnalyticsCommands()
 	{
 		// Default commands for all sites:
-		// * Speed sampling 100% of the time.
 		// * Track the page view.
 		$this->ga_commands = array(
-			array(
-				'_setSiteSpeedSampleRate',
-				100
-			),
 			'_trackPageview',
 		);
 	}
