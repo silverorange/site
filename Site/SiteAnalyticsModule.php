@@ -314,9 +314,13 @@ JS;
 			$method = array_shift($command);
 
 			foreach ($command as $part) {
+				$quoted_part = (is_float($part) || is_int($part))
+					? $part
+					: SwatString::quoteJavaScriptString($part);
+
 				$options.= sprintf(
 					', %s',
-					SwatString::quoteJavaScriptString($part)
+					$quoted_part
 				);
 			}
 		} else {
