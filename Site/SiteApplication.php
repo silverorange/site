@@ -777,7 +777,7 @@ abstract class SiteApplication extends SiteObject
 	 * in the static package class.
 	 *
 	 * @param SiteConfigModule $config the config module of this application to
-	 *                                  witch to add the config definitions.
+	 *                                  which to add the config definitions.
 	 */
 	protected function addConfigDefinitions(SiteConfigModule $config)
 	{
