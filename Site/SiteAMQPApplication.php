@@ -251,7 +251,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 		$queue = new AMQPQueue($this->channel);
 		$queue->setName($queue_name);
 		$queue->setFlags(AMQP_DURABLE);
-		$queue->declare();
+		$queue->declareQueue();
 
 		$this->logger->debug(
 			'=== ' . Site::_('Ready for work.') . ' ===' .
