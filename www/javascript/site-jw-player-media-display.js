@@ -250,7 +250,7 @@ SiteJwPlayerMediaDisplay.prototype.addSource = function(
 		file: source_uri,
 		label: label,
 		width: width
-	}
+	};
 
 	this.sources.push(source);
 };
