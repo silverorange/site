@@ -3,8 +3,8 @@
  *
  * To set up a slider, use:
  * <div class="site-content-slider">
- * 	<div class="slider-page">Page 1</div>
- * 	<div class="slider-page">Page 2</div>
+ *   <div class="slider-page">Page 1</div>
+ *   <div class="slider-page">Page 2</div>
  * </div>
  *
  * Optional properties on the .site-content-slider div:
