@@ -56,7 +56,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		Dom.setStyle(this.page_container, 'left', 0);
 		this.container.appendChild(this.page_container);
 
-		this.auto_height = (this.container.style.height == '');
+		this.auto_height = (this.container.style.height === '');
 
 		this.pages         = [];
 		this.current_page  = null;

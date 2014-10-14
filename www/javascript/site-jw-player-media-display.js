@@ -105,7 +105,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 {
 	this.player_id = this.container.firstChild.id;
 
-	if (YAHOO.env.ua.ie == 0 || YAHOO.env.ua.ie > 7) {
+	if (YAHOO.env.ua.ie === 0 || YAHOO.env.ua.ie > 7) {
 		var aspect_ratio = this.aspect_ratio[0] + ':' + this.aspect_ratio[1];
 	} else {
 		// aspect ratio is broken in IE7 and shows up far too tall for the width
@@ -147,7 +147,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		that.handleFullscreen(e.fullscreen);
 	});
 
-	if (this.record_end_point == true) {
+	if (this.record_end_point === true) {
 		this.recordEndPoint();
 	}
 
@@ -333,7 +333,7 @@ SiteJwPlayerMediaDisplay.prototype.getImage = function()
 	var region = YAHOO.util.Dom.getRegion(this.container);
 	var player_width = region.width;
 
-	if (player_width == 0 || this.images.length == 0) {
+	if (player_width === 0 || this.images.length === 0) {
 		return null;
 	}
 

@@ -248,7 +248,7 @@ SiteTagEntry.prototype.canAddTag = function(tag_name)
 	tag_name = tag_name.replace(/^\s+|\s+$/g, '');
 
 	// no empty string tags
-	if (tag_name.length == 0) {
+	if (tag_name.length === 0) {
 		return false;
 	}
 
@@ -303,7 +303,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	// trim tag string
 	tag_name = tag_name.replace(/^\s+|\s+$/g, '');
 
-	if (tag_name.length == 0) {
+	if (tag_name.length === 0) {
 		this.input_element.value = '';
 		return;
 	}

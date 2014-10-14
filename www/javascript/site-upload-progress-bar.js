@@ -135,7 +135,7 @@ SiteUploadProgressManager.addClient = function(client)
 {
 	var manager = SiteUploadProgressManager.getManager();
 
-	var first_client = (manager.clients.length == 0);
+	var first_client = (manager.clients.length === 0);
 
 	manager.clients.push(client);
 
