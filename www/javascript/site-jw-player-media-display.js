@@ -825,12 +825,25 @@ SiteJwPlayerMediaDisplay.prototype.displayErrorMessage = function(message)
 SiteJwPlayerMediaDisplay.prototype.positionOverlay = function(overlay)
 {
 	var overlay_region = YAHOO.util.Dom.getRegion(overlay);
-	var content_region = YAHOO.util.Dom.getRegion(overlay.firstChild);
 
-	var margin = Math.floor(Math.max(0,
-		(overlay_region.height - content_region.height) / 2));
+	// If the overlay is not currently part of the DOM it won't have a region,
+	// so don't try to reposition it.
+	if (overlay_region) {
+		var content_region = YAHOO.util.Dom.getRegion(overlay.firstChild);
 
-	YAHOO.util.Dom.setStyle(overlay.firstChild, 'margin-top', margin + 'px');
+		var margin = Math.floor(
+			Math.max(
+				0,
+				(overlay_region.height - content_region.height) / 2
+			)
+		);
+
+		YAHOO.util.Dom.setStyle(
+			overlay.firstChild,
+			'margin-top',
+			margin + 'px'
+		);
+	}
 };
 
 // }}}
