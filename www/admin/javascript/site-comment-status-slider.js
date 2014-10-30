@@ -45,7 +45,7 @@ SiteCommentStatusSlider.prototype.init = function()
 	this.slider.setValue(value, true, false, false);
 
 	this.createLabels();
-}
+};
 
 SiteCommentStatusSlider.prototype.createLabels = function()
 {
@@ -70,7 +70,7 @@ SiteCommentStatusSlider.prototype.createLabels = function()
 
 		this.legend_labels[i] = span;
 	}
-}
+};
 
 SiteCommentStatusSlider.prototype.createContextNote = function()
 {
@@ -86,7 +86,7 @@ SiteCommentStatusSlider.prototype.createContextNote = function()
 	} else {
 		container.parentNode.appendChild(this.context_note);
 	}
-}
+};
 
 SiteCommentStatusSlider.prototype.handleChange = function()
 {
@@ -96,12 +96,12 @@ SiteCommentStatusSlider.prototype.handleChange = function()
 	}
 	this.updateContextNote();
 	this.updateLegendLabels();
-}
+};
 
 SiteCommentStatusSlider.prototype.getIndex = function()
 {
 	return Math.floor(this.slider.getValue() / this.increment);
-}
+};
 
 SiteCommentStatusSlider.prototype.updateContextNote = function()
 {
@@ -113,7 +113,7 @@ SiteCommentStatusSlider.prototype.updateContextNote = function()
 		this.context_note.appendChild(
 			document.createTextNode(this.options[index][2]));
 	}
-}
+};
 
 SiteCommentStatusSlider.prototype.updateLegendLabels = function()
 {
@@ -127,4 +127,4 @@ SiteCommentStatusSlider.prototype.updateLegendLabels = function()
 				'site-comment-status-slider-legend-selected');
 		}
 	}
-}
+};

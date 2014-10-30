@@ -165,7 +165,7 @@ SiteTagEntry.prototype.handleOnAvailable = function()
 
 	this.updateVisibility();
 	this.updateAddTagElement();
-}
+};
 
 // }}}
 // {{{ updateAddTagElement()
@@ -178,7 +178,7 @@ SiteTagEntry.prototype.updateAddTagElement = function()
 	} else {
 		YAHOO.util.Dom.addClass(this.a_tag, 'site-tag-entry-add-insensitive');
 	}
-}
+};
 
 // }}}
 // {{{ getAddTagElement()
@@ -190,7 +190,7 @@ SiteTagEntry.prototype.getAddTagElement = function()
 	tag.href = '#add';
 	tag.title = SiteTagEntry.add_text;
 	return tag;
-}
+};
 
 // }}}
 // {{{ addDelimiterListener()
@@ -215,7 +215,7 @@ SiteTagEntry.prototype.addDelimiterListener = function()
 				entry.addTag(tag_name);
 			}
 		}, this);
-}
+};
 
 // }}}
 // {{{ addTagFromAutoComplete()
@@ -227,7 +227,7 @@ SiteTagEntry.prototype.addTagFromAutoComplete = function(
 	var tag_title = elItem[2][0];
 
 	this.addTag(tag_name, tag_title);
-}
+};
 
 // }}}
 // {{{ canAddTag()
@@ -248,7 +248,7 @@ SiteTagEntry.prototype.canAddTag = function(tag_name)
 	tag_name = tag_name.replace(/^\s+|\s+$/g, '');
 
 	// no empty string tags
-	if (tag_name.length == 0) {
+	if (tag_name.length === 0) {
 		return false;
 	}
 
@@ -284,7 +284,7 @@ SiteTagEntry.prototype.canAddTag = function(tag_name)
 	}
 
 	return true;
-}
+};
 
 // }}}
 // {{{ addTag()
@@ -303,7 +303,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	// trim tag string
 	tag_name = tag_name.replace(/^\s+|\s+$/g, '');
 
-	if (tag_name.length == 0) {
+	if (tag_name.length === 0) {
 		this.input_element.value = '';
 		return;
 	}
@@ -389,7 +389,7 @@ SiteTagEntry.prototype.addTag = function(tag_name, tag_title)
 	// clear input value once a value is chosen
 	this.input_element.value = '';
 	this.updateVisibility();
-}
+};
 
 // }}}
 // {{{ getTagElement()
@@ -458,7 +458,7 @@ SiteTagEntry.prototype.createTag = function()
 {
 	var tag_title = this.input_element.value;
 	this.addTag(tag_title);
-}
+};
 
 // }}}
 // {{{ itemSelected()
@@ -466,7 +466,7 @@ SiteTagEntry.prototype.createTag = function()
 SiteTagEntry.prototype.itemSelected = function(oSelf, elItem)
 {
 	this.item_selected = true;
-}
+};
 
 // }}}
 // {{{ itemUnSelected()
@@ -474,7 +474,7 @@ SiteTagEntry.prototype.itemSelected = function(oSelf, elItem)
 SiteTagEntry.prototype.itemUnSelected = function(oSelf, elItem)
 {
 	this.item_selected = false;
-}
+};
 
 // }}}
 // {{{ removeTag()
@@ -528,7 +528,7 @@ SiteTagEntry.prototype.removeTag = function(tag_name)
 
 	this.updateVisibility();
 	this.updateAddTagElement();
-}
+};
 
 // }}}
 // {{{ filterTitle()
@@ -540,7 +540,7 @@ SiteTagEntry.prototype.filterTitle = function(title)
 	title = title.replace(/&gt;/g,   '>');
 	title = title.replace(/&quot;/g, '"');
 	return title;
-}
+};
 
 // }}}
 // {{{ updateVisibility()
@@ -554,7 +554,7 @@ SiteTagEntry.prototype.updateVisibility= function()
 		YAHOO.util.Dom.addClass(this.input_element.parentNode, 'swat-hidden');
 	else
 		YAHOO.util.Dom.removeClass(this.input_element.parentNode, 'swat-hidden');
-}
+};
 
 // }}}
 // {{{ static properties

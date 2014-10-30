@@ -68,7 +68,7 @@ SiteUploadProgressManager.init = function()
 					var that = this;
 					s.onload = function() {
 						that.chained_loader.load(f);
-					}
+					};
 				} else if (f) {
 					s.onload = f;
 				}
@@ -85,7 +85,7 @@ SiteUploadProgressManager.init = function()
 		{
 			this.chained_loader = new Loader(this.d, el, script);
 			return this.chained_loader;
-		}
+		};
 
 		var loader = new Loader(d, null, null);
 		loader.chain(b, 'packages/yui/yahoo-dom-event/yahoo-dom-event.js')
@@ -101,7 +101,7 @@ SiteUploadProgressManager.init = function()
 	} else {
 		SiteUploadProgressManager.onLoad.fire();
 	}
-}
+};
 
 SiteUploadProgressManager.onLoad = new YAHOO.util.CustomEvent('onLoad');
 
@@ -123,26 +123,26 @@ SiteUploadProgressManager.getManager = function()
 	}
 
 	return progress_manager;
-}
+};
 
 SiteUploadProgressManager.setStatusClient = function(uri)
 {
 	var manager = SiteUploadProgressManager.getManager();
 	manager.status_client = new XML_RPC_Client(uri);
-}
+};
 
 SiteUploadProgressManager.addClient = function(client)
 {
 	var manager = SiteUploadProgressManager.getManager();
 
-	var first_client = (manager.clients.length == 0);
+	var first_client = (manager.clients.length === 0);
 
 	manager.clients.push(client);
 
 	if (first_client) {
 		manager.setTimeout();
 	}
-}
+};
 
 SiteUploadProgressManager.removeClient = function(client)
 {
@@ -154,7 +154,7 @@ SiteUploadProgressManager.removeClient = function(client)
 			break;
 		}
 	}
-}
+};
 
 SiteUploadProgressManager.getClient = function(id)
 {
@@ -168,7 +168,7 @@ SiteUploadProgressManager.getClient = function(id)
 		}
 	}
 	return client;
-}
+};
 
 SiteUploadProgressManager.setTimeout = function()
 {
@@ -181,7 +181,7 @@ SiteUploadProgressManager.setTimeout = function()
 	manager.timeout = setTimeout(
 		manager.updateStatus,
 		manager.period);
-}
+};
 
 SiteUploadProgressManager.updateStatus = function()
 {
@@ -203,7 +203,7 @@ SiteUploadProgressManager.updateStatus = function()
 			[manager.sequence, client_map],
 			['int', 'struct']);
 	}
-}
+};
 
 SiteUploadProgressManager.statusCallback = function(response)
 {
@@ -228,7 +228,7 @@ SiteUploadProgressManager.statusCallback = function(response)
 	}
 
 	manager.setTimeout();
-}
+};
 
 // }}}
 // {{{ SiteUploadProgressClient
@@ -253,7 +253,7 @@ SiteUploadProgressClient = function(id, status_server, progress_bar)
 
 	YAHOO.util.Event.addListener(this.form, 'submit', this.upload,
 		this, true);
-}
+};
 
 SiteUploadProgressClient.progress_unknown_text = 'uploading ...';
 SiteUploadProgressClient.hours_text = 'hours';
@@ -269,7 +269,7 @@ SiteUploadProgressClient.prototype.progress = function()
 		this.progress_bar.setText(
 			SiteUploadProgressClient.progress_unknown_text);
 	}
-}
+};
 
 SiteUploadProgressClient.prototype.setStatus = function(percent, time)
 {
@@ -290,7 +290,7 @@ SiteUploadProgressClient.prototype.setStatus = function(percent, time)
 	text += seconds + ' ' + seconds_left_text;
 
 	this.progress_bar.setText(text);
-}
+};
 
 SiteUploadProgressClient.prototype.upload = function(event)
 {
@@ -298,7 +298,7 @@ SiteUploadProgressClient.prototype.upload = function(event)
 	this.progress_bar.setText(SiteUploadProgressClient.progress_unknown_text);
 	this.showProgressBar();
 	SiteUploadProgressManager.getManager().addClient(this);
-}
+};
 
 /**
  * Shows the progress bar for this uploader using a smooth animation
@@ -330,9 +330,9 @@ SiteUploadProgressClient.prototype.showProgressBar = function()
 		fade_animation, true);
 
 	slide_animation.animate();
-}
+};
 
 SiteUploadProgressClient.prototype.getUploadIdentifier = function()
 {
 	return document.getElementById(this.id + '_identifier').value;
-}
+};

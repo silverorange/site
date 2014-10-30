@@ -229,7 +229,7 @@ SiteCommentDisplay.prototype.initControls = function()
 
 	this.controls.appendChild(this.actions_button);
 	this.controls.appendChild(this.actions_container);
-}
+};
 
 // }}}
 // {{{ initConfirmation()
@@ -263,7 +263,7 @@ SiteCommentDisplay.prototype.initConfirmation = function()
 		this, true);
 
 	this.delete_button.parentNode.appendChild(this.confirmation);
-}
+};
 
 // }}}
 // {{{ publish()
@@ -292,7 +292,7 @@ SiteCommentDisplay.prototype.publish = function()
 
 	SiteCommentDisplay.xml_rpc_client.callProcedure('publish', callBack,
 		[this.comment_id], ['int']);
-}
+};
 
 // }}}
 // {{{ unpublish()
@@ -321,7 +321,7 @@ SiteCommentDisplay.prototype.unpublish = function()
 
 	SiteCommentDisplay.xml_rpc_client.callProcedure('unpublish', callBack,
 		[this.comment_id], ['int']);
-}
+};
 
 // }}}
 // {{{ togglePublished()
@@ -333,7 +333,7 @@ SiteCommentDisplay.prototype.togglePublished = function()
 	} else {
 		this.publish();
 	}
-}
+};
 
 // }}}
 // {{{ spam()
@@ -362,7 +362,7 @@ SiteCommentDisplay.prototype.spam = function()
 
 	SiteCommentDisplay.xml_rpc_client.callProcedure('spam', callBack,
 		[this.comment_id], ['int']);
-}
+};
 
 // }}}
 // {{{ notSpam()
@@ -397,7 +397,7 @@ SiteCommentDisplay.prototype.notSpam = function()
 
 	SiteCommentDisplay.xml_rpc_client.callProcedure('notSpam', callBack,
 		[this.comment_id], ['int']);
-}
+};
 
 // }}}
 // {{{ toggleSpam()
@@ -409,7 +409,7 @@ SiteCommentDisplay.prototype.toggleSpam = function()
 	} else {
 		this.spam();
 	}
-}
+};
 
 // }}}
 // {{{ setSensitivity()
@@ -421,7 +421,7 @@ SiteCommentDisplay.prototype.setSensitivity = function(sensitive)
 	this.publish_toggle_button.disabled = !sensitive;
 	this.spam_toggle_button.disabled    = !sensitive;
 	this.delete_button.disabled         = !sensitive;
-}
+};
 
 // }}}
 // {{{ updateStatus()
@@ -450,7 +450,7 @@ SiteCommentDisplay.prototype.updateStatus = function()
 			break;
 		}
 	}
-}
+};
 
 // }}}
 // {{{ deleteComment()
@@ -472,7 +472,7 @@ SiteCommentDisplay.prototype.deleteComment = function()
 
 	SiteCommentDisplay.xml_rpc_client.callProcedure('delete', callBack,
 		[this.comment_id], ['int']);
-}
+};
 
 // }}}
 // {{{ shrink()
@@ -484,7 +484,7 @@ SiteCommentDisplay.prototype.shrink = function()
 
 	anim.onComplete.subscribe(this.removeContainer, this, true);
 	anim.animate();
-}
+};
 
 // }}}
 // {{{ removeContainer()
@@ -494,7 +494,7 @@ SiteCommentDisplay.prototype.removeContainer = function()
 	YAHOO.util.Event.purgeElement(this.container, true);
 	this.container.parentNode.removeChild(this.container);
 	delete this.container;
-}
+};
 
 // }}}
 // {{{ confirmDelete()
@@ -513,7 +513,7 @@ SiteCommentDisplay.prototype.confirmDelete = function()
 		parent_region.top]);
 
 	this.confirmation_cancel.focus();
-}
+};
 
 // }}}
 // {{{ cancelDelete()
@@ -522,7 +522,7 @@ SiteCommentDisplay.prototype.cancelDelete = function()
 {
 	this.confirmation.style.display = 'none';
 	this.setSensitivity(true);
-}
+};
 
 // }}}
 // {{{ toggleActions()
@@ -610,6 +610,6 @@ SiteCommentDisplay.setTextContent = function(element, text)
 	} else {
 		element.textContent = text;
 	}
-}
+};
 
 // }}}

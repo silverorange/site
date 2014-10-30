@@ -3,8 +3,8 @@
  *
  * To set up a slider, use:
  * <div class="site-content-slider">
- * 	<div class="slider-page">Page 1</div>
- * 	<div class="slider-page">Page 2</div>
+ *   <div class="slider-page">Page 1</div>
+ *   <div class="slider-page">Page 2</div>
  * </div>
  *
  * Optional properties on the .site-content-slider div:
@@ -56,7 +56,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		Dom.setStyle(this.page_container, 'left', 0);
 		this.container.appendChild(this.page_container);
 
-		this.auto_height = (this.container.style.height == '');
+		this.auto_height = (this.container.style.height === '');
 
 		this.pages         = [];
 		this.current_page  = null;
@@ -108,7 +108,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		Event.on(window, 'resize', function() {
 			this.initPages();
 			this.setPage(this.current_page);
-		}, this, true)
+		}, this, true);
 	};
 
 	// }}}
@@ -127,7 +127,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		this.page_interval = this.getSetting('page-interval', 10);
 		this.text_next = this.getSetting('text-next', 'Next');
 		this.text_prev = this.getSetting('text-prev', 'Previous');
-	}
+	};
 
 	// }}}
 	// {{{ proto.getSetting
@@ -137,7 +137,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		var value = this.container.getAttribute('data-' + name);
 		return (typeof value === 'undefined' || value === null)
 			? default_value : value;
-	}
+	};
 
 	// }}}
 	// {{{ proto.initPages
@@ -172,7 +172,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		for (var i = 0; i < this.pages.length; i++) {
 			Dom.setStyle(this.pages[i].element, 'height', max_height + 'px');
 		}
-	}
+	};
 
 	// }}}
 	// {{{ proto.setPage
@@ -218,7 +218,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		Dom.setStyle(this.page_container, '-webkit-transition', s);
 		Dom.setStyle(this.page_container, '-o-transition', s);
 		Dom.setStyle(this.page_container, 'transition', s);
-	}
+	};
 
 	// }}}
 	// {{{ proto.positionPages
@@ -228,7 +228,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		var region = Dom.getRegion(this.container);
 		var width = region.width;
 		Dom.setStyle(this.page_container, 'left', (pos + width) + 'px');
-	}
+	};
 
 	// }}}
 	// {{{ proto.setInterval
@@ -253,7 +253,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		if (_interval) {
 			clearInterval(_interval);
 		}
-	}
+	};
 
 	// }}}
 	// {{{ proto.getPseudoRandomPage
@@ -378,7 +378,7 @@ YAHOO.util.Event.onDOMReady(function ()
 
 			that.positionPages(that.touch_x);
 		});
-	}
+	};
 
 	// }}}
 	// {{{ proto.drawNav
