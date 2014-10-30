@@ -147,7 +147,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		that.handleFullscreen(e.fullscreen);
 	});
 
-	if (this.record_end_point === true) {
+	if (this.record_end_point) {
 		this.recordEndPoint();
 	}
 
