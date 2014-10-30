@@ -831,11 +831,18 @@ SiteJwPlayerMediaDisplay.prototype.positionOverlay = function(overlay)
 	if (!overlay_region) {
 		var content_region = YAHOO.util.Dom.getRegion(overlay.firstChild);
 
-		var margin = Math.floor(Math.max(0,
-			(overlay_region.height - content_region.height) / 2));
+		var margin = Math.floor(
+			Math.max(
+				0,
+				(overlay_region.height - content_region.height) / 2
+			)
+		);
 
-		YAHOO.util.Dom.setStyle(overlay.firstChild, 'margin-top',
-			margin + 'px');
+		YAHOO.util.Dom.setStyle(
+			overlay.firstChild,
+			'margin-top',
+			margin + 'px'
+		);
 	}
 };
 
