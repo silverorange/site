@@ -828,7 +828,7 @@ SiteJwPlayerMediaDisplay.prototype.positionOverlay = function(overlay)
 
 	// If the overlay is not currently part of the DOM it won't have a region,
 	// so don't try to reposition it.
-	if (overlay_region !== false) {
+	if (!overlay_region) {
 		var content_region = YAHOO.util.Dom.getRegion(overlay.firstChild);
 
 		var margin = Math.floor(Math.max(0,
