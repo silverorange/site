@@ -57,7 +57,8 @@ class SiteNateGoFulltextSearchResult extends SwatObject
 			$this->nate_go_result->getResultTable(),
 			$id_field_name,
 			$this->db->quote($this->nate_go_result->getUniqueId(), 'text'),
-			$this->db->quote($type, 'integer'));
+			$this->db->quote($type, 'integer')
+		);
 
 		return $clause;
 	}
@@ -121,6 +122,22 @@ class SiteNateGoFulltextSearchResult extends SwatObject
 	public function saveHistory()
 	{
 		$this->nate_go_result->saveHistory();
+	}
+
+	// }}}
+	// {{{ public function getResultTable()
+
+	public function getResultTable()
+	{
+		return $this->nate_go_result->getResultTable();
+	}
+
+	// }}}
+	// {{{ public function getUniqueId()
+
+	public function getUniqueId()
+	{
+		return $this->nate_go_result->getUniqueId();
 	}
 
 	// }}}
