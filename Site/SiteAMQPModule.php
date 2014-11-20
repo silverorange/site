@@ -181,8 +181,15 @@ class SiteAMQPModule extends SiteApplicationModule
 		$correlation_id = uniqid(true);
 
 		$reply_queue = new AMQPQueue($this->channel);
-		$reply_queue->setFlags(AMQP_EXCLUSIVE);
-		$reply_queue->declare();
+		$reply_queue->setFlags(AMQP_EXCLUSIVE | AMQP_AUTODELETE);
+
+		// Delete the queue 1 second after no more messages exist and no more
+		// consumers exist. Combined with the delete() call after the response
+		// is received this ensures we don't get stale temporary queues on the
+		// broker.
+		$reply_queue->setArgument('x-expires', 1000);
+
+		$reply_queue->declareQueue();
 
 		$attributes = array_merge(
 			$attributes,
@@ -208,6 +215,13 @@ class SiteAMQPModule extends SiteApplicationModule
 			if ($envelope->getCorrelationId() === $correlation_id) {
 				$raw_body = $envelope->getBody();
 
+				// Make sure we ack the reply before throwing any exception or
+				// returning from the callback. Otherwise we end up creating
+				// many stale exclusive queues containing one item. Eventually
+				// the AMQP broker refuses to create more exclusive queues and
+				// waiting for a response times out.
+				$queue->ack($envelope->getDeliveryTag());
+
 				// parse the response
 				if (($response = json_decode($raw_body, true)) === null ||
 					!isset($response['status'])) {
@@ -229,8 +243,6 @@ class SiteAMQPModule extends SiteApplicationModule
 
 				$response = $response['body'];
 
-				$queue->ack($envelope->getDeliveryTag());
-
 				// resume execution
 				return false;
 			}
@@ -241,7 +253,18 @@ class SiteAMQPModule extends SiteApplicationModule
 
 		try {
 			$reply_queue->consume($callback);
+
+			// Delete the reply queue once the reply is successfully received.
+			// For long-running services we don't want used reply queues
+			// to remain on the queue broker.
+			$reply_queue->delete();
 		} catch (AMQPConnectionException $e) {
+
+			// Always delete the queue before throwing an exception. For long-
+			// running services we don't want stale reply queues to remain on
+			// the queue broker.
+			$reply_queue->delete();
+
 			// ignore timeout exceptions, rethrow other exceptions
 			if ($e->getMessage() !== 'Resource temporarily unavailable') {
 				throw $e;
