@@ -159,7 +159,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	/**
 	 * Does a synchronous job and returns the result data
 	 *
-	 * This implements RPC using AMQP. It allows offloading and distrubuting
+	 * This implements RPC using AMQP. It allows offloading and distributing
 	 * processor intensive jobs that must be performed synchronously.
 	 *
 	 * @param string $namespace  the job namespace.
@@ -180,15 +180,8 @@ class SiteAMQPModule extends SiteApplicationModule
 
 		$correlation_id = uniqid(true);
 
-		$reply_queue = new AMQPQueue($this->channel);
-		$reply_queue->setFlags(AMQP_EXCLUSIVE | AMQP_AUTODELETE);
-
-		// Delete the queue 1 second after no more messages exist and no more
-		// consumers exist. Combined with the delete() call after the response
-		// is received this ensures we don't get stale temporary queues on the
-		// broker.
-		$reply_queue->setArgument('x-expires', 1000);
-
+		$reply_queue = new AMQPQueue($this->getChannel());
+		$reply_queue->setFlags(AMQP_EXCLUSIVE);
 		$reply_queue->declareQueue();
 
 		$attributes = array_merge(
@@ -209,39 +202,34 @@ class SiteAMQPModule extends SiteApplicationModule
 
 		$response = null;
 
+		// Callback to handle receiving the response on the reply queue. This
+		// callback function must return true or false in order to be handled
+		// correctly by the AMQP extension. If an exception is thrown in this
+		// callback, behavior is undefined.
 		$callback = function(AMQPEnvelope $envelope, AMQPQueue $queue)
 			use (&$response, $correlation_id)
 		{
+			// Make sure we get the reply message we are looking for. This handles
+			// possible race conditinos on the queue broker.
 			if ($envelope->getCorrelationId() === $correlation_id) {
 				$raw_body = $envelope->getBody();
 
-				// Make sure we ack the reply before throwing any exception or
-				// returning from the callback. Otherwise we end up creating
-				// many stale exclusive queues containing one item. Eventually
-				// the AMQP broker refuses to create more exclusive queues and
-				// waiting for a response times out.
-				$queue->ack($envelope->getDeliveryTag());
-
-				// parse the response
+				// Parse the response. If the response can not be parsed, create a
+				// failure response value.
 				if (($response = json_decode($raw_body, true)) === null ||
 					!isset($response['status'])) {
-					throw new SiteAMQPJobFailureException(
-						'AMQP job response data is in an unknown format.',
-						0,
-						$raw_body
+					$response = array(
+						'status'   => 'fail',
+						'raw_body' => $raw_body,
+						'body'     =>
+							'AMQP job response data is in an unknown format.',
 					);
+				} else {
+					$response['raw_body'] = $raw_body;
 				}
 
-				// check for failure and throw exception if failed
-				if ($response['status'] === 'fail') {
-					throw new SiteAMQPJobFailureException(
-						$response['body'],
-						0,
-						$raw_body
-					);
-				}
-
-				$response = $response['body'];
+				// Ack the message so it is removed from the reply queue.
+				$queue->ack($envelope->getDeliveryTag());
 
 				// resume execution
 				return false;
@@ -252,20 +240,29 @@ class SiteAMQPModule extends SiteApplicationModule
 		};
 
 		try {
+			// This will block until a response is received.
 			$reply_queue->consume($callback);
 
 			// Delete the reply queue once the reply is successfully received.
 			// For long-running services we don't want used reply queues
 			// to remain on the queue broker.
 			$reply_queue->delete();
-		} catch (AMQPConnectionException $e) {
 
+			// Check for failure response and throw an exception
+			if ($response['status'] === 'fail') {
+				throw new SiteAMQPJobFailureException(
+					$response['body'],
+					0,
+					$response['raw_body']
+				);
+			}
+		} catch (AMQPConnectionException $e) {
 			// Always delete the queue before throwing an exception. For long-
 			// running services we don't want stale reply queues to remain on
 			// the queue broker.
 			$reply_queue->delete();
 
-			// ignore timeout exceptions, rethrow other exceptions
+			// Ignore timeout exceptions, rethrow other exceptions.
 			if ($e->getMessage() !== 'Resource temporarily unavailable') {
 				throw $e;
 			}
@@ -333,9 +330,37 @@ class SiteAMQPModule extends SiteApplicationModule
 			$this->connection->setHost($host);
 			$this->connection->setPort($port);
 			$this->connection->connect();
+		}
+	}
 
+	// }}}
+	// {{{ protected function getChannel()
+
+	/**
+	 * Gets the current connected channel
+	 *
+	 * If the channel disconnects because of an error, a new channel is connected
+	 * automatically.
+	 *
+	 * @return AMQPChannel the current connected channel or null if the module
+	 *                     is not connected to a broker.
+	 */
+	protected function getChannel()
+	{
+		if ($this->channel instanceof AMQPChannel) {
+			if (!$this->channel->isConnected()) {
+				$this->channel = new AMQPChannel($this->connection);
+
+				// Clear exchange cache. The exchanges will be reconnected
+				// on-demand using the new channel.
+				$this->exchanges = array();
+			}
+		} elseif ($this->connection instanceof AMQPConnection) {
+			// Create initial channel.
 			$this->channel = new AMQPChannel($this->connection);
 		}
+
+		return $this->channel;
 	}
 
 	// }}}
@@ -355,13 +380,13 @@ class SiteAMQPModule extends SiteApplicationModule
 	{
 		$key = $namespace.'.'.$name;
 		if (!isset($this->exchanges[$key])) {
-			$exchange = new AMQPExchange($this->channel);
+			$exchange = new AMQPExchange($this->getChannel());
 			$exchange->setName($key);
 			$exchange->setType(AMQP_EX_TYPE_DIRECT);
 			$exchange->setFlags(AMQP_DURABLE);
 			$exchange->declare();
 
-			$queue = new AMQPQueue($this->channel);
+			$queue = new AMQPQueue($this->getChannel());
 			$queue->setName($key);
 			$queue->setFlags(AMQP_DURABLE);
 			$queue->declare();
