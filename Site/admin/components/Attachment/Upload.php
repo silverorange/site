@@ -123,6 +123,14 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 	}
 
 	// }}}
+	// {{{ protected function addToSearchQueue()
+
+	protected function addToSearchQueue()
+	{
+		$this->app->addToSearchQueue('attachment', $this->getObject()->id);
+	}
+
+	// }}}
 
 	// build phase
 	// {{{ protected function buildForm()
