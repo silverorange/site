@@ -327,7 +327,7 @@ abstract class SiteApplication extends SiteObject
 		if ($nate_go_search_check === null) {
 			$manager = $this->db->manager;
 			$nate_go_search_check =
-				(!in_array('nategosearchqueue', $manager->listTables()));
+				in_array('nategosearchqueue', $manager->listTables());
 		}
 
 		if ($nate_go_search_check === false) {
