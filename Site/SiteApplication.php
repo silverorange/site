@@ -322,37 +322,41 @@ abstract class SiteApplication extends SiteObject
 
 	public function addToSearchQueue($document_type, $document_id)
 	{
-		static $nate_go_search_check = null;
+		static $has_nate_go_search_queue = null;
 
-		if ($nate_go_search_check === null) {
-			$manager = $this->db->manager;
-			$nate_go_search_check =
-				in_array('nategosearchqueue', $manager->listTables());
+		if ($has_nate_go_search_queue === null) {
+			$has_nate_go_search_queue = in_array(
+				'nategosearchqueue',
+				$this->db->manager->listTables()
+			);
 		}
 
-		if ($nate_go_search_check === false) {
+		if (!$has_nate_go_search_queue) {
 			return;
 		}
 
 		require_once 'NateGoSearch/NateGoSearch.php';
-		$type = NateGoSearch::getDocumentType($this->db,
-			$document_type);
 
+		$type = NateGoSearch::getDocumentType($this->db, $document_type);
 		if ($type === null) {
 			return;
 		}
 
-		$sql = sprintf('delete from NateGoSearchQueue
+		$sql = sprintf(
+			'delete from NateGoSearchQueue
 			where document_id = %s and document_type = %s',
 			$this->db->quote($document_id, 'integer'),
-			$this->db->quote($type, 'integer'));
+			$this->db->quote($type, 'integer')
+		);
 
 		SwatDB::exec($this->db, $sql);
 
-		$sql = sprintf('insert into NateGoSearchQueue
+		$sql = sprintf(
+			'insert into NateGoSearchQueue
 			(document_id, document_type) values (%s, %s)',
 			$this->db->quote($document_id, 'integer'),
-			$this->db->quote($type, 'integer'));
+			$this->db->quote($type, 'integer')
+		);
 
 		SwatDB::exec($this->db, $sql);
 	}
