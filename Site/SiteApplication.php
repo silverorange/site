@@ -325,9 +325,10 @@ abstract class SiteApplication extends SiteObject
 		static $has_nate_go_search_queue = null;
 
 		if ($has_nate_go_search_queue === null) {
-			$manager = $this->db->manager;
-			$has_nate_go_search_queue =
-				in_array('nategosearchqueue', $manager->listTables());
+			$has_nate_go_search_queue = in_array(
+				'nategosearchqueue',
+				$this->db->manager->listTables()
+			);
 		}
 
 		if (!$has_nate_go_search_queue) {
@@ -335,24 +336,27 @@ abstract class SiteApplication extends SiteObject
 		}
 
 		require_once 'NateGoSearch/NateGoSearch.php';
-		$type = NateGoSearch::getDocumentType($this->db,
-			$document_type);
 
+		$type = NateGoSearch::getDocumentType($this->db, $document_type);
 		if ($type === null) {
 			return;
 		}
 
-		$sql = sprintf('delete from NateGoSearchQueue
+		$sql = sprintf(
+			'delete from NateGoSearchQueue
 			where document_id = %s and document_type = %s',
 			$this->db->quote($document_id, 'integer'),
-			$this->db->quote($type, 'integer'));
+			$this->db->quote($type, 'integer')
+		);
 
 		SwatDB::exec($this->db, $sql);
 
-		$sql = sprintf('insert into NateGoSearchQueue
+		$sql = sprintf(
+			'insert into NateGoSearchQueue
 			(document_id, document_type) values (%s, %s)',
 			$this->db->quote($document_id, 'integer'),
-			$this->db->quote($type, 'integer'));
+			$this->db->quote($type, 'integer')
+		);
 
 		SwatDB::exec($this->db, $sql);
 	}
