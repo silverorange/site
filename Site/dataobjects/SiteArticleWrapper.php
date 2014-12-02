@@ -45,6 +45,7 @@ class SiteArticleWrapper extends SwatDBRecordsetWrapper
 	{
 		parent::init();
 		$this->row_wrapper_class = SwatDBClassMap::get('SiteArticle');
+		$this->index_field = 'id';
 	}
 
 	// }}}
