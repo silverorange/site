@@ -7,11 +7,11 @@ require_once 'Site/dataobjects/SiteAudioMedia.php';
  * A recordset wrapper class for SiteAudioMedia objects
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2014 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAudioMedia
  */
-class SiteAudioMediaWrapper extends SwatDBRecordsetWrapper
+class SiteAudioMediaWrapper extends SiteMediaWrapper
 {
 	// {{{ protected function init()
 
