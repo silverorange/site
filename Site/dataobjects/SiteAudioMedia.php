@@ -127,18 +127,29 @@ class SiteAudioMedia extends SiteMedia
 
 	public static function parseDuration($file_path)
 	{
-		$command = sprintf('ffprobe \'%s\' 2>&1 | grep Duration',
-			escapeshellcmd($file_path));
+		$command = sprintf(
+			'ffprobe '.
+				'-select_streams a '.
+				'-show_packets '.
+				'-show_entries packet=pts_time '.
+				'-v quiet '.
+				'%s '.
+			'| '.
+			'grep pts_time '.
+			'| '.
+			'tail -1'.
+			'| '.
+			'cut -d "=" -f 2',
+			escapeshellcmd($file_path)
+		);
 
-		$line = shell_exec($command);
-
-		$line_parts = explode(' ', trim($line));
-		$time_parts = explode(':', substr($line_parts[1], 0, -1));
-
-		return
-			(intval($time_parts[0]) * 3600) +
-			(intval($time_parts[1]) * 60)   +
-			(intval(round($time_parts[2])));
+		return intval(
+			round(
+				trim(
+					shell_exec($command)
+				)
+			)
+		);
 	}
 
 	// }}}
