@@ -169,6 +169,16 @@ class SiteVideoMedia extends SiteMedia
 
 		$expires = ($this->media_set->private) ? '1 day' : null;
 
+		if ($this->has_hls) {
+			$jwplayer->addSource(
+				$app->cdn->getUri(
+					$this->getHlsFilePath(),
+					$expires,
+					$secure
+				)
+			);
+		}
+
 		foreach ($this->media_set->encodings as $encoding) {
 			if (!$this->encodingExists($encoding->shortname)) {
 				continue;
@@ -262,6 +272,19 @@ class SiteVideoMedia extends SiteMedia
 	public function getScrubberImageWidth()
 	{
 		return 130;
+	}
+
+	// }}}
+	// {{{ public function getHlsFilePath()
+
+	public function getHlsFilePath()
+	{
+		$items = array(
+			$this->getFileBase(),
+			'hls/index.m3u8',
+		);
+
+		return implode(DIRECTORY_SEPARATOR, $items);
 	}
 
 	// }}}
