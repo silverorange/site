@@ -32,6 +32,13 @@ class SiteVideoMedia extends SiteMedia
 	 */
 	public $scrubber_image_count;
 
+	/**
+	 * Has HLS encodings
+	 *
+	 * @var boolean
+	 */
+	public $has_hls;
+
 	// }}}
 	// {{{ public function getHumanFileType()
 
