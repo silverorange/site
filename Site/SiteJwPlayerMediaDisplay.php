@@ -170,7 +170,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	// }}}
 	// {{{ public function addSource()
 
-	public function addSource($uri, $width, $label)
+	public function addSource($uri, $width = '', $label = '')
 	{
 		$source          = array();
 		$source['uri']   = $uri;
@@ -323,7 +323,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.addSource(%s, %d, %s);\n",
 				$this->getJavascriptVariableName(),
 				SwatString::quoteJavaScriptString($source['uri']),
-				$source['width'],
+				($source['width'] === null) ? "''" : $source['width'],
 				SwatString::quoteJavaScriptString($source['label']));
 		}
 
