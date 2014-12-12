@@ -138,7 +138,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	public function emergency($message, array $context = array())
 	{
 		if ($this->level >= self::LEVEL_NONE) {
-			$this->out->stderr($this->interplorate($message, $context));
+			$this->out->stderr($this->interpolate($message, $context));
 		}
 	}
 
@@ -195,7 +195,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	public function error($message, array $context = array())
 	{
 		if ($this->level >= self::LEVEL_ERRORS) {
-			$this->out->stderr($this->interplorate($message, $context));
+			$this->out->stderr($this->interpolate($message, $context));
 		}
 	}
 
@@ -237,7 +237,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	public function notice($message, array $context = array())
 	{
 		if ($this->level >= self::LEVEL_INFO) {
-			$this->out->stdout($this->interplorate($message, $context));
+			$this->out->stdout($this->interpolate($message, $context));
 		}
 	}
 
@@ -275,7 +275,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	public function debug($message, array $context = array())
 	{
 		if ($this->level >= self::LEVEL_DEBUG) {
-			$this->out->stdout($this->interplorate($message, $context));
+			$this->out->stdout($this->interpolate($message, $context));
 		}
 	}
 
@@ -294,17 +294,17 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	}
 
 	// }}}
-	// {{{ protected function interplorate()
+	// {{{ protected function interpolate()
 
 	/**
-	 * Interplorates context values into message placeholders
+	 * Interpolates context values into message placeholders
 	 *
 	 * @param string $message the message.
 	 * @param array  $context the placeholder values as a key => value array.
 	 *
-	 * @return string the interplorated message.
+	 * @return string the interpolated message.
 	 */
-	protected function interplorate($message, array $context = array())
+	protected function interpolate($message, array $context = array())
 	{
 		$replace = array();
 
