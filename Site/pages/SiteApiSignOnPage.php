@@ -81,12 +81,21 @@ abstract class SiteApiSignOnPage extends SitePage
 		if (!$sign_on_token->loadByIdentAndToken($ident,
 			$token_string, $credentials)) {
 
-			throw new SiteSingleSignOnException(sprintf(
-				'A sign on token with the ident “%s” '.
-				'and token “%s” does not exist.',
-				$ident, $token_string));
+			throw new SiteSingleSignOnException(
+				sprintf(
+					'A sign on token with the ident “%s” '.
+					'and token “%s” does not exist.',
+					$ident,
+					$token_string
+				)
+			);
 		} else {
-			$sign_on_token->delete();
+			// Some browsers send a HEAD request followed by a GET request.
+			// We don't want to delete the token until the GET request or else
+			// the token will be prematurely deleted.
+			if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+				$sign_on_token->delete();
+			}
 		}
 
 		return $sign_on_token;
