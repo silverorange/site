@@ -6,7 +6,7 @@ require_once 'Admin/pages/AdminObjectEdit.php';
  * Upload page for attachments
  *
  * @package   Site
- * @copyright 2014 silverorange
+ * @copyright 2014-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteAttachmentUpload extends AdminObjectEdit

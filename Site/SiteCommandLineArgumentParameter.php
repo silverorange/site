@@ -6,7 +6,7 @@ require_once 'Site/SiteObject.php';
  * A parameter for a command line argument
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteCommandLineArgument::addParameter()
  */

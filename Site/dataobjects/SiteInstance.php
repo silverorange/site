@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteInstanceConfigSettingWrapper.php';
  * A dataobject class for site instances
  *
  * @package   Site
- * @copyright 2005-2007 silverorange
+ * @copyright 2005-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteMultipleInstanceModule
  */

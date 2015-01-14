@@ -10,7 +10,7 @@ require_once 'Site/SiteDatabaseModule.php';
  * Web application module for sessions
  *
  * @package   Site
- * @copyright 2006-2011 silverorange
+ * @copyright 2006-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteSessionModule extends SiteApplicationModule

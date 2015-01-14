@@ -6,7 +6,7 @@ require_once 'Site/SitePageFactory.php';
 
 /**
  * @package   Site
- * @copyright 2006-2008 silverorange
+ * @copyright 2006-2015 silverorange
  */
 class SiteXMLRPCServerFactory extends SitePageFactory
 {

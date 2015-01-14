@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteContactMessage.php';
  * A recordset wrapper class for SiteContactMessage objects
  *
  * @package   Site
- * @copyright 2010 silverorange
+ * @copyright 2010-2015 silverorange
  * @see       SiteContactMessage
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

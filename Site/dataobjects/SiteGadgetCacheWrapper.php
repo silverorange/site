@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteGadgetCache.php';
  * A recordset wrapper for gadget caches
  *
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteGadgetCache
  */

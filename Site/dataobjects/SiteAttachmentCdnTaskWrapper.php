@@ -12,7 +12,7 @@ require_once 'Site/dataobjects/SiteAttachmentWrapper.php';
  *       set the lazy_load option to true.
  *
  * @package   Site
- * @copyright 2011-2013 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAttachmentCdnTask
  */

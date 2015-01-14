@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteGadgetInstanceSettingValueWrapper.php';
  * Responsible for binding settings in the database to a gadget.
  *
  * @package   Site
- * @copyright 2008-2009 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteGadget
  */

@@ -15,7 +15,7 @@ require_once 'Swat/SwatString.php';
  * be sub-classed to display results for other types of content as well.
  *
  * @package   Site
- * @copyright 2007-2014 silverorange
+ * @copyright 2007-2015 silverorange
  */
 class SiteSearchResultsPage extends SiteArticlePage
 {

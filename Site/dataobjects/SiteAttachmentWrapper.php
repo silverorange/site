@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteAttachment.php';
  * A recordset wrapper class for SiteAttachment objects
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAttachment
  */

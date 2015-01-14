@@ -6,7 +6,7 @@ require_once 'SiteApplicationModule.php';
  * Base class for application modules that provide access to a CDN
  *
  * @package   Site
- * @copyright 2011-2012 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCdnModule extends SiteApplicationModule

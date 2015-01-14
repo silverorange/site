@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteBotrMediaPlayer.php';
  * A recordset wrapper class for SiteBotrMediaPlayer objects
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteBotrMediaPlayer
  */

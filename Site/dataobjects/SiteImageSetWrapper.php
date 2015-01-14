@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteImageSet.php';
  * A recordset wrapper class for SiteImageSet objects
  *
  * @package   Site
- * @copyright 2008-2014 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteImageSet
  */

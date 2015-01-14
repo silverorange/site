@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteAdReferrer.php';
  * Web application module for handling ad tracking
  *
  * @package   Site
- * @copyright 2007-2011 silverorange
+ * @copyright 2007-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Make sure kwid works for Microsoft adCenter
  */

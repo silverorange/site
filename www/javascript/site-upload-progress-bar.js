@@ -8,7 +8,7 @@
  * callback code needs to run from an invisible iframe.
  *
  * @package   Site
- * @copyright 2007-2009 silverorange
+ * @copyright 2007-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 

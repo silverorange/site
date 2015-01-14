@@ -10,7 +10,7 @@ require_once 'Site/exceptions/SiteAMQPJobException.php';
  * SiteAMQPJob is received by the {@link SiteAMQPApplication::doWork()} method.
  *
  * @package   Site
- * @copyright 2013 silverorange
+ * @copyright 2013-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAMQPJob

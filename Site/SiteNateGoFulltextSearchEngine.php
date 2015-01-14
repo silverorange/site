@@ -9,7 +9,7 @@ require_once 'NateGoSearch/NateGoSearchPSpellSpellChecker.php';
  * A fulltext search engine that uses NateGoSearch
  *
  * @package   Site
- * @copyright 2007-2012 silverorange
+ * @copyright 2007-2015 silverorange
  */
 class SiteNateGoFulltextSearchEngine extends SwatObject
 	implements SiteFulltextSearchEngine

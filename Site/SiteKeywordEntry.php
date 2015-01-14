@@ -9,7 +9,7 @@ require_once 'Swat/SwatEntry.php';
  * request URI.
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2015 silverorange
  */
 class SiteKeywordEntry extends SwatEntry
 {

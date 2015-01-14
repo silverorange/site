@@ -8,7 +8,7 @@ require_once 'Swat/SwatImageCellRenderer.php';
  * A cell renderer for SiteImages
  *
  * @package   Site
- * @copyright 2008-2014 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImageCellRenderer extends SwatCellRenderer

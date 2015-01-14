@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteMediaEncoding.php';
  * A recordset wrapper class for MediaEncoding objects
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2015 silverorange
  * @see       SiteMediaEncoding
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

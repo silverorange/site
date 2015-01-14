@@ -9,7 +9,7 @@ require_once 'SwatDB/SwatDB.php';
  * Abstract base class for a search indexer applications
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteSearchIndexer extends SiteCommandLineApplication

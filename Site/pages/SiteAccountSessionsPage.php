@@ -6,7 +6,7 @@ require_once 'Site/pages/SiteDBEditPage.php';
  * Page for listing current persistent login sessions
  *
  * @package   Site
- * @copyright 2012-2014 silverorange
+ * @copyright 2012-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  * @see       SiteAccountLoginSession

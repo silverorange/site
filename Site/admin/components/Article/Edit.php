@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteArticle.php';
  * Edit page for Articles
  *
  * @package   Site
- * @copyright 2005-2008 silverorange
+ * @copyright 2005-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticleEdit extends AdminDBEdit

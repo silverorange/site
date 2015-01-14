@@ -6,7 +6,7 @@ require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
  * Tool used to download all missing originals from bits on the run
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMediaOriginalDownloader

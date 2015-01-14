@@ -12,7 +12,7 @@ require_once 'XML/RPCAjax.php';
  * delete and mark as spam
  *
  * @package   Site
- * @copyright 2008-2014 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentDisplay extends SwatControl

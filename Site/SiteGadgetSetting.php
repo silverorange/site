@@ -14,7 +14,7 @@ require_once 'Swat/SwatObject.php';
  * - 'text'    PHP type string
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteGadgetSetting extends SwatObject

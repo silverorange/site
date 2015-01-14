@@ -9,7 +9,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Application module for using Redis
  *
  * @package   Site
- * @copyright 2013 silverorange
+ * @copyright 2013-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteRedisModule extends SiteApplicationModule

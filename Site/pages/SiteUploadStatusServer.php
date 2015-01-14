@@ -6,7 +6,7 @@ require_once 'Site/pages/SiteXMLRPCServer.php';
  * An XML-RPC server for upload status
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteUploadStatusServer extends SiteXMLRPCServer

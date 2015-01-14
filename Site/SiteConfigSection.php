@@ -8,7 +8,7 @@ require_once 'Site/SiteConfigModule.php';
  * Configuration section for the configuration module
  *
  * @package   Site
- * @copyright 2007-2009 silverorange
+ * @copyright 2007-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteConfigSection extends SwatObject implements Iterator

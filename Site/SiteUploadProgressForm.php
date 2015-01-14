@@ -10,7 +10,7 @@ require_once 'XML/RPCAjax.php';
  * A form with a upload progress bar
  *
  * @package   Site
- * @copyright 2008-2014 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      test JavaScript progressive-enhancement support
  */

@@ -8,7 +8,7 @@ require_once 'Swat/SwatHtmlTag.php';
  * An image set data object
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  */
 class SiteImageSet extends SwatDBDataObject
 {

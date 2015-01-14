@@ -9,7 +9,7 @@ require_once 'Net/Notifier/Sender.php';
  * Web application module for sending notifications
  *
  * @package   Site
- * @copyright 2012 silverorange
+ * @copyright 2012-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteNotifierModule extends SiteApplicationModule

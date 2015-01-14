@@ -7,7 +7,7 @@ require_once 'NateGoSearch/NateGoSearchResult.php';
  * A fulltext search result that uses NateGoSearch
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2015 silverorange
  */
 class SiteNateGoFulltextSearchResult extends SwatObject
 	implements SiteFulltextSearchResult

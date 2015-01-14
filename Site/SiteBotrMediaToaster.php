@@ -13,7 +13,7 @@ require_once 'Site/dataobjects/SiteBotrMediaPlayer.php';
  * Amiga computers were amazing.
  *
  * @package   Site
- * @copyright 2011-2013 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMediaToaster

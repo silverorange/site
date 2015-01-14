@@ -15,7 +15,7 @@ require_once 'Site/SiteApplicationModuleDependency.php';
  * application if any modules provide the 'SiteSessionModule' feature.
  *
  * @package   Site
- * @copyright 2005-2007 silverorange
+ * @copyright 2005-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteApplicationModule extends SiteObject

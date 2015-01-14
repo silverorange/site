@@ -8,7 +8,7 @@ require_once 'Site/SiteApplication.php';
  * Base class for pages
  *
  * @package   Site
- * @copyright 2004-2008 silverorange
+ * @copyright 2004-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteAbstractPage extends SiteObject

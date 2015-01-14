@@ -6,7 +6,7 @@ require_once 'Swat/SwatObject.php';
  * A timer checkpoint set by {@link SiteTimerModule}
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteTimerCheckpoint extends SwatObject

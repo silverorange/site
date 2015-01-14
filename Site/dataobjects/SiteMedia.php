@@ -10,7 +10,7 @@ require_once 'Site/dataobjects/SiteMediaCdnTask.php';
  * A media object
  *
  * @package   Site
- * @copyright 2011-2013 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Support MediaSet.obfuscate_filename on process/save.
  */

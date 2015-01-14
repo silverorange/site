@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteImageDimensionBinding.php';
  * A recordset wrapper class for SiteImageDimensionBinding objects
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteImageDimensionBinding
  */

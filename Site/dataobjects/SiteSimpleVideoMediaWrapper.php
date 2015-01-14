@@ -10,7 +10,7 @@ require_once 'Site/dataobjects/SiteVideoMedia.php';
  * This is useful for cases where you just want the basic media data
  *
  * @package   Site
- * @copyright 2013 silverorange
+ * @copyright 2013-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteVideoMedia
  */

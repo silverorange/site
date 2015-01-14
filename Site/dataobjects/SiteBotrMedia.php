@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteBotrMediaEncodingBindingWrapper.php';
  * A BOTR-specific media object
  *
  * @package   Site
- * @copyright 2011-2013 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMedia extends SiteVideoMedia

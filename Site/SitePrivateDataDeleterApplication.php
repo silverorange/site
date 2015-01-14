@@ -11,7 +11,7 @@ require_once 'Site/SitePrivateDataDeleter.php';
  * Framework for a command line application to remove personal data.
  *
  * @package   Site
- * @copyright 2006-2012 silverorange
+ * @copyright 2006-2015 silverorange
  * @todo      Cleanup instance code to make it more optional.
  */
 class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
