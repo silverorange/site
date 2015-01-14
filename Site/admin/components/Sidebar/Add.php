@@ -9,7 +9,7 @@ require_once 'Site/dataobjects/SiteGadgetInstance.php';
  * Page for adding a sidebar gadget
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteSidebarAdd extends AdminDBEdit

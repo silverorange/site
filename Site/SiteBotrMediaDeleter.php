@@ -10,7 +10,7 @@ require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
  * and passthrough encodings deleted.
  *
  * @package   Site
- * @copyright 2011-2013 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 

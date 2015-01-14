@@ -9,7 +9,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Container for package wide static methods
  *
  * @package   Site
- * @copyright 2005-2014 silverorange
+ * @copyright 2005-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class Site

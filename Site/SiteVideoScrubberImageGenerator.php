@@ -12,7 +12,7 @@ require_once 'FFmpegPHP2/FFmpegAutoloader.php';
  * Generates media thumbnails for the video scrubber
  *
  * @package   Site
- * @copyright 2013-2014 silverorange
+ * @copyright 2013-2015 silverorange
  */
 class SiteVideoScrubberImageGenerator extends
 	SiteCommandLineApplication

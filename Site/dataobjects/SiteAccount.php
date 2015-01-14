@@ -77,7 +77,7 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  * </code>
  *
  * @package   Site
- * @copyright 2005-2013 silverorange
+ * @copyright 2005-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccountWrapper
  */

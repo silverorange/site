@@ -4,7 +4,7 @@ require_once 'Site/SitePath.php';
 
 /**
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2015 silverorange
  */
 class SiteArticlePath extends SitePath
 {

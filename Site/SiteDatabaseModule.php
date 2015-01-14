@@ -14,7 +14,7 @@ require_once 'MDB2.php';
  * <code>$app->database->getConnection()</code>.
  *
  * @package   Site
- * @copyright 2005-2006 silverorange
+ * @copyright 2005-2015 silverorange
  */
 class SiteDatabaseModule extends SiteApplicationModule
 {

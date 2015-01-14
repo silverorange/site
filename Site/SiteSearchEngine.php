@@ -8,7 +8,7 @@ require_once 'Site/SiteMemcacheModule.php';
  * An abstract search engine
  *
  * @package   Site
- * @copyright 2007-2013 silverorange
+ * @copyright 2007-2015 silverorange
  */
 abstract class SiteSearchEngine extends SwatObject
 {

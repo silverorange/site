@@ -5,7 +5,7 @@ require_once 'Site/pages/SiteArticlePage.php';
 
 /**
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2015 silverorange
  */
 class SiteSiteMapPage extends SitePage
 {

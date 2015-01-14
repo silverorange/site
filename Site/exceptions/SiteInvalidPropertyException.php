@@ -6,7 +6,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Thrown when an invalid property of an object is accessed
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteInvalidPropertyException extends SiteException

@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteImageType.php';
  * An image dimension binding data object
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  */
 class SiteImageDimensionBinding extends SwatDBDataObject
 {

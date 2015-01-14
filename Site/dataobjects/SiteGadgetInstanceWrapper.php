@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteGadgetInstance.php';
  * A recordset wrapper for gadget instances
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteGadgetInstance
  */

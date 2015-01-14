@@ -13,7 +13,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * the {@link SiteInstance} instance object.
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteInstance
  */

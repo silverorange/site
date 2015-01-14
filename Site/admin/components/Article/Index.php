@@ -13,7 +13,7 @@ require_once 'include/SiteArticleVisibilityCellRenderer.php';
  * Index page for Articles
  *
  * @package   Site
- * @copyright 2005-2011 silverorange
+ * @copyright 2005-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticleIndex extends AdminIndex

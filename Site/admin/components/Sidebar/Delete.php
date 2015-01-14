@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteGadgetInstanceWrapper.php';
  * Delete confirmation page for sidebar gadgets
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteSidebarDelete extends AdminDBDelete

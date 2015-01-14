@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteAd.php';
  * A recordset wrapper class for SiteAd objects
  *
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAd
  */

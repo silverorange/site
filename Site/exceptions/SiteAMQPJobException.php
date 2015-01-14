@@ -8,7 +8,7 @@ require_once 'Site/exceptions/SiteException.php';
  * Exception thrown by AMQP jobs
  *
  * @package   Site
- * @copyright 2013 silverorange
+ * @copyright 2013-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAMQPJobException extends SiteException

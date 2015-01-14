@@ -7,7 +7,7 @@ require_once 'Site/SiteCommandLineArgumentParameter.php';
  * A command line argument for a command line application
  *
  * @package   Site
- * @copyright 2006 silverorange
+ * @copyright 2006-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteCommandLineApplication
  */

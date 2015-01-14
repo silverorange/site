@@ -9,7 +9,7 @@ require_once 'Site/SiteTheme.php';
  * Displays a theme with a button to select the theme
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteThemeDisplay extends SwatControl

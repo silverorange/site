@@ -99,7 +99,7 @@ require_once 'Site/SiteConfigSection.php';
  * different than the loaded value.
  *
  * @package   Site
- * @copyright 2006-2008 silverorange
+ * @copyright 2006-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteConfigModule extends SiteApplicationModule

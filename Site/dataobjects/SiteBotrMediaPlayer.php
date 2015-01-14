@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteBotrMediaSet.php';
  * A BOTR-specific media player object
  *
  * @package   Site
- * @copyright 2011 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMediaPlayer extends SwatDBDataObject

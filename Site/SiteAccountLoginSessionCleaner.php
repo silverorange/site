@@ -13,7 +13,7 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  * logins) or a corresponding session file on disk are removed.
  *
  * @package   Site
- * @copyright 2012 silverorange
+ * @copyright 2012-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 

@@ -6,7 +6,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  * Contact message
  *
  * @package   Site
- * @copyright 2010-2012 silverorange
+ * @copyright 2010-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactMessage extends SwatDBDataObject

@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteComment.php';
  * A recordset wrapper class for SiteComment objects
  *
  * @package   Site
- * @copyright 2008 silverorange
+ * @copyright 2008-2015 silverorange
  * @see       SiteComment
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

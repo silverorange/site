@@ -5,7 +5,7 @@ require_once 'Swat/SwatHtmlTag.php';
 
 /**
  * @package   Site
- * @copyright 2006-2007 silverorange
+ * @copyright 2006-2015 silverorange
  */
 class SiteHttpErrorPage extends SitePage
 {

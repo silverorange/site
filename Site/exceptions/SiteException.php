@@ -7,7 +7,7 @@ require_once 'PEAR.php';
  * An exception in Site package
  *
  * @package   Site
- * @copyright 2004-2006 silverorange
+ * @copyright 2004-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteException extends SwatException

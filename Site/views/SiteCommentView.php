@@ -21,7 +21,7 @@ require_once 'Site/SiteCommentFilter.php';
  *               version of the bodytext. Does not link anywhere.
  *
  * @package   Site
- * @copyright 2009 silverorange
+ * @copyright 2009-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentView extends SiteView

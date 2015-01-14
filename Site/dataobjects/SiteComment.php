@@ -9,7 +9,7 @@ require_once 'NateGoSearch/NateGoSearch.php';
  * A comment on a site
  *
  * @package   Site
- * @copyright 2008-2013 silverorange
+ * @copyright 2008-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteComment extends SwatDBDataObject

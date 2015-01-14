@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteAd.php';
  * Tracked inbound ad referrer
  *
  * @package   Site
- * @copyright 2007 silverorange
+ * @copyright 2007-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAd
  */

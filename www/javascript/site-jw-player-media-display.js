@@ -1,7 +1,7 @@
 /**
  * Class for managing media players
  *
- * @copyright 2011-2013 silverorange
+ * @copyright 2011-2015 silverorange
  */
 function SiteJwPlayerMediaDisplay(media_id)
 {
