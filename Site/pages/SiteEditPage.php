@@ -142,18 +142,7 @@ abstract class SiteEditPage extends SiteUiPage
 
 	protected function relocateToRefererUri(SwatForm $form, $default_relocate)
 	{
-		$uri = $form->getHiddenField(self::RELOCATE_URI_FIELD);
-
-		if ($uri === null) {
-			// backwards compatibility with old URL field
-			$uri = $form->getHiddenField('_relocate_url');
-		}
-
-		if ($uri === null) {
-			$uri = $default_relocate;
-		}
-
-		$this->app->relocate($uri);
+		$this->app->relocate($this->getRelocateUri($form, $default_relocate));
 	}
 
 	// }}}
@@ -247,6 +236,25 @@ abstract class SiteEditPage extends SiteUiPage
 	protected function validateShortname($shortname)
 	{
 		return true;
+	}
+
+	// }}}
+	// {{{ protected function getRelocateUri()
+
+	protected function getRelocateUri(SwatForm $form, $default_relocate)
+	{
+		$uri = $form->getHiddenField(self::RELOCATE_URI_FIELD);
+
+		if ($uri == '') {
+			// backwards compatibility with old URL field
+			$uri = $form->getHiddenField('_relocate_url');
+		}
+
+		if ($uri == '') {
+			$uri = $default_relocate;
+		}
+
+		return $uri;
 	}
 
 	// }}}
