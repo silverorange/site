@@ -137,7 +137,7 @@ class SiteUploadProgressForm extends SwatForm
 	protected function createCompositeWidgets()
 	{
 		$progress_bar = new SwatProgressBar($this->id.'_progress_bar');
-		$progress_bar->length = '99%';
+		$progress_bar->length = '100%';
 
 		$progress_container = new SwatDisplayableContainer();
 		$progress_container->classes = array(
@@ -148,6 +148,7 @@ class SiteUploadProgressForm extends SwatForm
 
 		$container = new SwatDisplayableContainer();
 		$container->id = $this->id.'_container';
+		$container->classes = array('site-upload-progress-bar-container');
 		$container->add($progress_container);
 
 		$this->addCompositeWidget($container, 'container');
