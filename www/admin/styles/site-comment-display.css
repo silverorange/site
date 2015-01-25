@@ -5,47 +5,31 @@
 }
 
 .site-comment-display .site-comment-display-content {
-	border: 1px solid #000;
 	padding: 0.5em;
 	margin: 0.5em 0;
 	position: relative;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
 	border-radius: 2px;
 }
 
 .site-comment-red .site-comment-display-content {
-	border-color: #d69692;
-	background: #ffe3e0;
-	border-color: #f0b5b1;
+	background: #FFEBEE;
 }
 
 .site-comment-yellow .site-comment-display-content {
-	border-color: #f0dca1;
-	background: #fffbc9;
-}
-
-.site-comment-green .site-comment-display-content {
-	border-color: #fff;
-	border-bottom: 1px solid #e7ddc8;
-	zoom: 1; /* IE hack */
+	background: #FFFDE7;
 }
 
 .site-comment-display-confirmation {
 	position: absolute;
-	border: 1px solid #dcceb2;
-	background: #fff;
-	padding: 4px 8px;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	border-radius: 2px;
-	-webkit-box-shadow: 0 2px 2px -1px rgba(0,0,0,0.15);
-	-moz-box-shadow: 0 2px 2px -1px rgba(0,0,0,0.15);
-	box-shadow: 0 2px 2px -1px rgba(0,0,0,0.15);
+	background: #F7F5F3;
+	padding: 8px;
+	border-radius: 4px;
+	box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.24);
 }
 
 .site-comment-display-confirmation div {
-	margin-bottom: 0.25em;
+	margin-bottom: 8px;
+	color: rgba(0,0,0,0.54);
 	text-align: left;
 }
 
@@ -58,9 +42,23 @@
 
 .site-comment-display .site-comment-display-controls input {
 	width: 7em;
-	font-size: 85%;
-	padding: 0.1em;
+	font-size: 11px;
+	padding: 2px;
 	vertical-align: middle;
+	margin-left: 6px;
+}
+
+.site-comment-display .site-comment-display-controls input:first-child {
+	margin-left: 0;
+}
+
+.site-comment-display .site-comment-display-confirmation input {
+	margin-left: 0;
+	margin-right: 6px;
+}
+
+.site-comment-display .site-comment-display-confirmation input:last-child {
+	margin-right: 0;
 }
 
 .site-comment-display h4 {
@@ -73,7 +71,7 @@
 
 .site-comment-display .comment-link {
 	font-weight: bold;
-	color: #666;
+	color: rgba(0,0,0,0.54);
 }
 
 .site-comment-display abbr.comment-published {
@@ -82,17 +80,17 @@
 
 .site-comment-display .comment-title {
 	font-weight: normal;
-	color: #666;
+	color: rgba(0,0,0,0.54);
 }
 
 .site-comment-display .comment-title .comment-author {
 	font-weight: bold;
-	color: #000;
+	color: rgba(0,0,0,0.87);
 }
 
 .site-comment-display-actions,
 .site-comment-display-actions-no-actions-button {
-	top: -5px;
+	top: -8px;
 	position: relative;
 }
 
@@ -102,25 +100,20 @@
 }
 
 .site-comment-display-actions .site-comment-display-actions-content {
-	background: #f8f6f0;
-	border: 1px solid #dcceb2;
-	padding: 4px 8px;
+	background: #F7F5F3;
+	padding: 8px 8px;
 	display: inline-block;
 	vertical-align: middle;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	border-radius: 2px;
-	-webkit-box-shadow: 0 2px 2px -1px rgba(0,0,0,0.15);
-	-moz-box-shadow: 0 2px 2px -1px rgba(0,0,0,0.15);
-	box-shadow: 0 2px 3px -1px rgba(0,0,0,0.15);
+	border-radius: 4px;
+	box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.24);
 }
 
 .site-comment-display-actions .site-comment-display-actions-arrow {
 	display: inline-block;
 	width: 15px;
-	height: 15px;
+	height: 19px;
 	position: relative;
-	left: -1px;
+	left: 0;
 	vertical-align: middle;
 	background: url(../images/site-comment-display-actions-arrow.png);
 }
