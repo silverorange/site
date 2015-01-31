@@ -137,9 +137,9 @@ class SiteAudioMedia extends SiteMedia
 			'| '.
 			'grep pts_time '.
 			'| '.
-			'tail -1'.
+			'tail -1 '.
 			'| '.
-			'cut -d "=" -f 2',
+			'cut -d "=" -f 2 ',
 			escapeshellcmd($file_path)
 		);
 
