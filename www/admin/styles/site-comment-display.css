@@ -12,16 +12,16 @@
 }
 
 .site-comment-red .site-comment-display-content {
-	background: #FFEBEE;
+	background: #ffebee;
 }
 
 .site-comment-yellow .site-comment-display-content {
-	background: #FFFDE7;
+	background: #fffde7;
 }
 
 .site-comment-display-confirmation {
 	position: absolute;
-	background: #F7F5F3;
+	background: #f7f5f3;
 	padding: 8px;
 	border-radius: 4px;
 	box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.24);
@@ -100,7 +100,7 @@
 }
 
 .site-comment-display-actions .site-comment-display-actions-content {
-	background: #F7F5F3;
+	background: #f7f5f3;
 	padding: 8px 8px;
 	display: inline-block;
 	vertical-align: middle;
