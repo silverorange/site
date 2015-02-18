@@ -463,8 +463,8 @@ class SiteAccount extends SwatDBDataObject
 		$now = new SwatDate();
 		$now->toUTC();
 
-		$sql = 'update %s set delete_date = %s where %s = %s';
 		$sql = sprintf(
+			'update %s set delete_date = %s where %s = %s',
 			$this->table,
 			$this->db->quote($now, 'date'),
 			$id_ref,
