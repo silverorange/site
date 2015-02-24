@@ -301,10 +301,16 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$this->aspect_ratio['width'],
 			$this->aspect_ratio['height']);
 
-		$javascript.= sprintf("\t%s.addSource(%s);\n",
-			$this->getJavascriptVariableName(),
-			SwatString::quoteJavaScriptString(
-				$this->getManifestUri()));
+		// don't do RTMP when the file has HLS
+		if (!$this->media->has_hls) {
+			$javascript.= sprintf(
+				"\t%s.addSource(%s);\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavaScriptString(
+					$this->getManifestUri()
+				)
+			);
+		}
 
 		if ($this->media->getInternalValue('scrubber_image') !== null) {
 			$javascript.= sprintf("\t%s.vtt_uri = %s;\n",
