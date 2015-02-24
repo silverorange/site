@@ -281,7 +281,7 @@ class SiteVideoMedia extends SiteMedia
 	{
 		$items = array(
 			$this->getFileBase(),
-			'hls/index.m3u8',
+			$this->id.'/hls/index.m3u8',
 		);
 
 		return implode(DIRECTORY_SEPARATOR, $items);
