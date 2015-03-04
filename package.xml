@@ -23,10 +23,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2015-02-18</date>
- <time>17:23:02</time>
+ <date>2015-03-04</date>
+ <time>17:35:32</time>
  <version>
-  <release>2.1.29</release>
+  <release>2.1.30</release>
   <api>2.0.0</api>
  </version>
  <stability>
@@ -556,6 +556,7 @@ No release notes for you!
     <dir name="admin">
      <dir name="images">
       <file name="site-comment-display-actions-arrow.png" role="data" />
+      <file name="site-comment-display-actions-arrow@2x.png" role="data" />
       <file name="site-comment-status-slider-bg.gif" role="data" />
       <file name="site-comment-status-slider-thumb.gif" role="data" />
      </dir> <!-- /www/admin/images -->
@@ -709,14 +710,14 @@ No release notes for you!
  <changelog>
   <release>
    <version>
-    <release>2.1.29</release>
+    <release>2.1.30</release>
     <api>2.0.0</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2015-02-18</date>
+   <date>2015-03-04</date>
    <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
 No release notes for you!
