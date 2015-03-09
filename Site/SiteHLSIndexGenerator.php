@@ -68,7 +68,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		return SwatDB::query(
 			$this->db,
 			sprintf(
-				'select * from Media where has_hls = %s',
+				'select * from Media where has_hls = %s order by id',
 				$this->db->quote(false, 'boolean')
 			),
 			SwatDBClassMap::get('SiteVideoMediaWrapper')
