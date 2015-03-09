@@ -80,7 +80,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 
 	protected function indexMedia(SiteMedia $media)
 	{
-		$this->debug("\nChecking {$media->id}:");
+		$this->debug("Checking {$media->id}:");
 
 		$index_exists = $this->s3->if_object_exists(
 			$this->config->amazon->bucket,
@@ -104,6 +104,8 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 			} else {
 				$this->debug(' no HLS encodings');
 			}
+
+			$this->debug("\n");
 		}
 	}
 
