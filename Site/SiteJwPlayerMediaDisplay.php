@@ -329,7 +329,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.addSource(%s, %d, %s);\n",
 				$this->getJavascriptVariableName(),
 				SwatString::quoteJavaScriptString($source['uri']),
-				($source['width'] === null) ? "''" : $source['width'],
+				($source['width'] == '') ? "''" : $source['width'],
 				SwatString::quoteJavaScriptString($source['label']));
 		}
 
