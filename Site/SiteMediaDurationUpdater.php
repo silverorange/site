@@ -194,14 +194,15 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 			$old_duration = $media->duration;
 			$new_duration = SiteAudioMedia::parseDuration($filename);
 
-			if ($old_duration !== $new_duration) {
-				$this->debug(
-					sprintf(
-						"Updating Media %s:\n",
-						$media->id
-					)
-				);
+			$this->debug(
+				sprintf(
+					"Updating Media %s...",
+					$media->id
+				)
+			);
 
+			if ($old_duration !== $new_duration) {
+				$this->debug("\n");
 				$this->debug(
 					sprintf(
 						"\tnew duration: %s\n",
@@ -221,12 +222,7 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 					$media->save();
 				}
 			} else {
-				$this->debug(
-					sprintf(
-						"Media “%s” is up to date.\n",
-						$media->id
-					)
-				);
+				$this->debug(" existing duration correct.\n");
 			}
 		} else {
 			$this->debug(
