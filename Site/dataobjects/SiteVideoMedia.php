@@ -275,13 +275,49 @@ class SiteVideoMedia extends SiteMedia
 	}
 
 	// }}}
+	// {{{ public function getFileDirectory()
+
+	public function getFileDirectory($encoding_shortname)
+	{
+		$items = array(
+			$this->getFileBase(),
+			$this->id,
+			'full'
+		);
+
+		return implode(DIRECTORY_SEPARATOR, $items);
+	}
+
+	// }}}
+	// {{{ public function getFilename()
+
+	public function getFilename($encoding_shortname)
+	{
+		$binding = $this->getEncodingBinding($encoding_shortname);
+
+		if ($this->getMediaSet()->obfuscate_filename) {
+			$filename = $this->filename;
+		} else {
+			$filename = $this->id;
+		}
+
+		return sprintf(
+			'%s.%s',
+			$encoding_shortname,
+			$binding->media_type->extension
+		);
+	}
+
+	// }}}
 	// {{{ public function getHlsFilePath()
 
 	public function getHlsFilePath()
 	{
 		$items = array(
 			$this->getFileBase(),
-			$this->id.'/hls/index.m3u8',
+			$this->id,
+			'hls',
+			'index.m3u8',
 		);
 
 		return implode(DIRECTORY_SEPARATOR, $items);
