@@ -326,7 +326,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		}
 
 		foreach ($this->sources as $source) {
-			$javascript.= sprintf("\t%s.addSource(%s, %d, %s);\n",
+			$javascript.= sprintf("\t%s.addSource(%s, %s, %s);\n",
 				$this->getJavascriptVariableName(),
 				SwatString::quoteJavaScriptString($source['uri']),
 				($source['width'] == '') ? "''" : $source['width'],
