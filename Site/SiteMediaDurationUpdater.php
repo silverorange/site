@@ -218,8 +218,7 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 				);
 
 				if (!$this->dry_run) {
-					$media->duration = $new_duration;
-					$media->save();
+					$this->saveMedia($media, $new_duration);
 				}
 			} else {
 				$this->debug(" existing duration correct.\n");
@@ -232,6 +231,15 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 				)
 			);
 		}
+	}
+
+	// }}}
+	// {{{ protected function saveMedia()
+
+	protected function saveMedia(SiteMedia $media, $duration)
+	{
+		$media->duration = $duration;
+		$media->save();
 	}
 
 	// }}}
