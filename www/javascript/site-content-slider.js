@@ -18,11 +18,13 @@
  *  if left without height, the pages' height will be set to the height
  *  of the tallest page.
  */
+
 YAHOO.util.Event.onDOMReady(function ()
 {
 	var sliders = YAHOO.util.Dom.getElementsByClassName('site-content-slider');
 	for (var i = 0; i < sliders.length; i++) {
-		new SiteContentSlider(sliders[i]);
+		var slider = new SiteContentSlider(sliders[i]);
+		SiteContentSlider.sliders.push(slider);
 	}
 });
 
@@ -65,6 +67,8 @@ YAHOO.util.Event.onDOMReady(function ()
 		this.touch_start_x = null;
 		this.touch_start_y = null;
 		this.touch_end_x = null;
+
+		this.pageChangeEvent = new YAHOO.util.CustomEvent('pageChange', this);
 
 		this.initSettings();
 
@@ -112,6 +116,11 @@ YAHOO.util.Event.onDOMReady(function ()
 	};
 
 	// }}}
+
+	SiteContentSlider.sliders = [];
+	SiteContentSlider.getSlider = function(index) {
+		return SiteContentSlider.sliders[index];
+	};
 
 	var _interval = null;
 
@@ -189,6 +198,7 @@ YAHOO.util.Event.onDOMReady(function ()
 			}
 
 			this.current_page = page;
+			this.pageChangeEvent.fire(page.index);
 		}
 
 		var width = Dom.getRegion(this.container).width;
