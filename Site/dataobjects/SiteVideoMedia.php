@@ -32,6 +32,13 @@ class SiteVideoMedia extends SiteMedia
 	 */
 	public $scrubber_image_count;
 
+	/**
+	 * Has HLS encodings
+	 *
+	 * @var boolean
+	 */
+	public $has_hls;
+
 	// }}}
 	// {{{ public function getHumanFileType()
 
@@ -162,6 +169,16 @@ class SiteVideoMedia extends SiteMedia
 
 		$expires = ($this->media_set->private) ? '1 day' : null;
 
+		if ($this->has_hls) {
+			$jwplayer->addSource(
+				$app->cdn->getUri(
+					$this->getHlsFilePath(),
+					$expires,
+					$secure
+				)
+			);
+		}
+
 		foreach ($this->media_set->encodings as $encoding) {
 			if (!$this->encodingExists($encoding->shortname)) {
 				continue;
@@ -255,6 +272,54 @@ class SiteVideoMedia extends SiteMedia
 	public function getScrubberImageWidth()
 	{
 		return 130;
+	}
+
+	// }}}
+	// {{{ public function getFileDirectory()
+
+	public function getFileDirectory($encoding_shortname)
+	{
+		$items = array(
+			$this->getFileBase(),
+			$this->id,
+			'full'
+		);
+
+		return implode(DIRECTORY_SEPARATOR, $items);
+	}
+
+	// }}}
+	// {{{ public function getFilename()
+
+	public function getFilename($encoding_shortname)
+	{
+		$binding = $this->getEncodingBinding($encoding_shortname);
+
+		if ($this->getMediaSet()->obfuscate_filename) {
+			$filename = $this->filename;
+		} else {
+			$filename = $encoding_shortname;
+		}
+
+		return sprintf('%s.%s',
+			$filename,
+			$binding->media_type->extension
+		);
+	}
+
+	// }}}
+	// {{{ public function getHlsFilePath()
+
+	public function getHlsFilePath()
+	{
+		$items = array(
+			$this->getFileBase(),
+			$this->id,
+			'hls',
+			'index.m3u8',
+		);
+
+		return implode(DIRECTORY_SEPARATOR, $items);
 	}
 
 	// }}}

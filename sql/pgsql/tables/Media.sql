@@ -8,6 +8,7 @@ create table Media (
 	filename          varchar(255),
 	original_filename varchar(255),
 
+	has_hls boolean not null default false,
 	downloadable boolean not null default false,
 	duration integer,
 	description text,

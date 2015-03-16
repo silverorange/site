@@ -170,7 +170,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	// }}}
 	// {{{ public function addSource()
 
-	public function addSource($uri, $width, $label)
+	public function addSource($uri, $width = '', $label = '')
 	{
 		$source          = array();
 		$source['uri']   = $uri;
@@ -301,10 +301,16 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$this->aspect_ratio['width'],
 			$this->aspect_ratio['height']);
 
-		$javascript.= sprintf("\t%s.addSource(%s);\n",
-			$this->getJavascriptVariableName(),
-			SwatString::quoteJavaScriptString(
-				$this->getManifestUri()));
+		// don't do RTMP when the file has HLS
+		if (!$this->media->has_hls) {
+			$javascript.= sprintf(
+				"\t%s.addSource(%s);\n",
+				$this->getJavascriptVariableName(),
+				SwatString::quoteJavaScriptString(
+					$this->getManifestUri()
+				)
+			);
+		}
 
 		if ($this->media->getInternalValue('scrubber_image') !== null) {
 			$javascript.= sprintf("\t%s.vtt_uri = %s;\n",
@@ -320,10 +326,10 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		}
 
 		foreach ($this->sources as $source) {
-			$javascript.= sprintf("\t%s.addSource(%s, %d, %s);\n",
+			$javascript.= sprintf("\t%s.addSource(%s, %s, %s);\n",
 				$this->getJavascriptVariableName(),
 				SwatString::quoteJavaScriptString($source['uri']),
-				$source['width'],
+				($source['width'] == '') ? "''" : $source['width'],
 				SwatString::quoteJavaScriptString($source['label']));
 		}
 
