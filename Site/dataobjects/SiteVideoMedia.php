@@ -298,12 +298,11 @@ class SiteVideoMedia extends SiteMedia
 		if ($this->getMediaSet()->obfuscate_filename) {
 			$filename = $this->filename;
 		} else {
-			$filename = $this->id;
+			$filename = $encoding_shortname;
 		}
 
-		return sprintf(
-			'%s.%s',
-			$encoding_shortname,
+		return sprintf('%s.%s',
+			$filename,
 			$binding->media_type->extension
 		);
 	}
