@@ -9,6 +9,8 @@ require_once 'Site/exceptions/SiteCommandLineException.php';
 /**
  * Application to copy video to the new directory structure
  *
+ * Temporary script until we can fix our encoding process to include HLS.
+ *
  * @package   Site
  * @copyright 2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
