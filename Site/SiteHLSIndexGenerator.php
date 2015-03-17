@@ -89,6 +89,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 
 		if ($index_exists) {
 			$this->debug(' index exists');
+			$this->debug("\n");
 			$media->has_hls = true;
 			$media->save();
 		} else {
