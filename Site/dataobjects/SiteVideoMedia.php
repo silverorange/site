@@ -279,13 +279,21 @@ class SiteVideoMedia extends SiteMedia
 
 	public function getFileDirectory($encoding_shortname)
 	{
-		$items = array(
-			$this->getFileBase(),
-			$this->id,
-			'full'
-		);
+		$directory = parent::getFileDirectory($encoding_shortname);
 
-		return implode(DIRECTORY_SEPARATOR, $items);
+		if ($this->has_hls) {
+			$directory = implode(
+				DIRECTORY_SEPARATOR,
+				array(
+					$this->getFileBase(),
+					$this->id,
+					'full'
+				)
+			);
+		}
+
+		return $directory;
+
 	}
 
 	// }}}
@@ -297,8 +305,10 @@ class SiteVideoMedia extends SiteMedia
 
 		if ($this->getMediaSet()->obfuscate_filename) {
 			$filename = $this->filename;
-		} else {
+		} elseif ($this->has_hls) {
 			$filename = $encoding_shortname;
+		} else {
+			$filename = $this->id;
 		}
 
 		return sprintf('%s.%s',
