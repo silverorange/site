@@ -279,8 +279,10 @@ class SiteVideoMedia extends SiteMedia
 
 	public function getFileDirectory($encoding_shortname)
 	{
+		$directory = parent::getFileDirectory($encoding_shortname);
+
 		if ($this->has_hls) {
-			return implode(
+			$directory = implode(
 				DIRECTORY_SEPARATOR,
 				array(
 					$this->getFileBase(),
@@ -290,7 +292,7 @@ class SiteVideoMedia extends SiteMedia
 			);
 		}
 
-		return parent::getFileDirectory($encoding_shortname);
+		return $directory;
 
 	}
 
