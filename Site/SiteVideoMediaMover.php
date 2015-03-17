@@ -13,16 +13,9 @@ require_once 'Site/exceptions/SiteCommandLineException.php';
  * @copyright 2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteVideoMediaMover extends SiteCommandLineApplication
+abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 {
 	// {{{ public properties
-
-	/**
-	 * S3 SDK
-	 *
-	 * @var AmazonS3
-	 */
-	public $s3;
 
 	/**
 	 * A convenience reference to the database object
@@ -58,6 +51,27 @@ class SiteVideoMediaMover extends SiteCommandLineApplication
 
 		$this->unlock();
 	}
+
+	// }}}
+	// {{{ abstract protected function hasOldPath()
+
+	abstract protected function getOldPath(SiteMedia $media, $shortname);
+
+	// }}}
+	// {{{ abstract protected function hasNewPath()
+
+	abstract protected function getNewPath(SiteMedia $media, $shortname);
+
+	// }}}
+	// {{{ abstract protected function hasFile()
+
+	abstract protected function hasFile($path);
+
+	// }}}
+	// {{{ abstract protected function moveFile()
+
+	abstract protected function moveFile(SiteMedia $media, $old_path,
+		$new_path);
 
 	// }}}
 	// {{{ protected function getMedia()
@@ -122,7 +136,7 @@ class SiteVideoMediaMover extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getOldFilename()
 
-	protected function getOldFilename($media, $shortname)
+	protected function getOldFilename(SiteMedia $media, $shortname)
 	{
 		$binding = $media->getEncodingBinding($shortname);
 
@@ -138,7 +152,7 @@ class SiteVideoMediaMover extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getNewFilename()
 
-	protected function getNewFilename($media, $shortname)
+	protected function getNewFilename(SiteMedia $media, $shortname)
 	{
 		$binding = $media->getEncodingBinding($shortname);
 
