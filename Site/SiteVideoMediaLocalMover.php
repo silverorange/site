@@ -76,7 +76,7 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 	// }}}
 	// {{{ protected function moveFile()
 
-	protected function moveFile($old_path, $new_path)
+	protected function moveFile(SiteVideoMedia $media, $old_path, $new_path)
 	{
 		rename($old_path, $new_path);
 	}
