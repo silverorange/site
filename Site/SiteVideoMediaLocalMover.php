@@ -5,9 +5,12 @@ require_once 'Site/SiteVideoMediaMover.php';
 /**
  * Application to copy video to the new local directory structure
  *
+ * Temporary script until we can fix our encoding process to include HLS.
+ *
  * @package   Site
  * @copyright 2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @see       SiteVideoMediaMover
  */
 class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 {
@@ -38,7 +41,7 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 	// }}}
 	// {{{ protected function hasOldPath()
 
-	protected function getOldPath(SiteMedia $media, $shortname)
+	protected function getOldPath(SiteVideoMedia $media, $shortname)
 	{
 		return sprintf(
 			'%s/%s/%s/%s',
@@ -52,7 +55,7 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 	// }}}
 	// {{{ protected function hasNewPath()
 
-	protected function getNewPath(SiteMedia $media, $shortname)
+	protected function getNewPath(SiteVideoMedia $media, $shortname)
 	{
 		return sprintf(
 			'%s/%s/full/%s',

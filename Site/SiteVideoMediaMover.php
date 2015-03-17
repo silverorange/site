@@ -57,12 +57,12 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	// }}}
 	// {{{ abstract protected function hasOldPath()
 
-	abstract protected function getOldPath(SiteMedia $media, $shortname);
+	abstract protected function getOldPath(SiteVideoMedia $media, $shortname);
 
 	// }}}
 	// {{{ abstract protected function hasNewPath()
 
-	abstract protected function getNewPath(SiteMedia $media, $shortname);
+	abstract protected function getNewPath(SiteVideoMedia $media, $shortname);
 
 	// }}}
 	// {{{ abstract protected function hasFile()
@@ -72,7 +72,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	// }}}
 	// {{{ abstract protected function moveFile()
 
-	abstract protected function moveFile(SiteMedia $media, $old_path,
+	abstract protected function moveFile(SiteVideoMedia $media, $old_path,
 		$new_path);
 
 	// }}}
@@ -93,7 +93,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function moveMedia()
 
-	protected function moveMedia(SiteMedia $media)
+	protected function moveMedia(SiteVideoMedia $media)
 	{
 		foreach ($media->media_set->encodings as $encoding) {
 			if ($media->encodingExists($encoding->shortname)) {
@@ -138,7 +138,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getOldFilename()
 
-	protected function getOldFilename(SiteMedia $media, $shortname)
+	protected function getOldFilename(SiteVideoMedia $media, $shortname)
 	{
 		$binding = $media->getEncodingBinding($shortname);
 
@@ -154,7 +154,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getNewFilename()
 
-	protected function getNewFilename(SiteMedia $media, $shortname)
+	protected function getNewFilename(SiteVideoMedia $media, $shortname)
 	{
 		$binding = $media->getEncodingBinding($shortname);
 

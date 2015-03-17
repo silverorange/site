@@ -6,9 +6,12 @@ require_once 'Site/SiteVideoMediaMover.php';
 /**
  * Application to copy video to the new S3 directory structure
  *
+ * Temporary script until we can fix our encoding process to include HLS.
+ *
  * @package   Site
  * @copyright 2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @see       SiteVideoMediaMover
  */
 class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 {
@@ -32,7 +35,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	// }}}
 	// {{{ protected function hasOldPath()
 
-	protected function getOldPath(SiteMedia $media, $shortname)
+	protected function getOldPath(SiteVideoMedia $media, $shortname)
 	{
 		return sprintf(
 			'media/%s/%s/%s',
@@ -45,7 +48,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	// }}}
 	// {{{ protected function hasNewPath()
 
-	protected function getNewPath(SiteMedia $media, $shortname)
+	protected function getNewPath(SiteVideoMedia $media, $shortname)
 	{
 		return sprintf(
 			'media/%s/full/%s',
@@ -65,7 +68,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	// }}}
 	// {{{ protected function moveFile()
 
-	protected function moveFile(SiteMedia $media, $old_path, $new_path)
+	protected function moveFile(SiteVideoMedia $media, $old_path, $new_path)
 	{
 		$acl = ($media->media_set->private)
 			? AmazonS3::ACL_AUTH_READ
