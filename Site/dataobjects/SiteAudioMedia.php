@@ -67,8 +67,9 @@ class SiteAudioMedia extends SiteMedia
 
 			// Parse the duration from the first encoding. We do this because
 			// we are unable to parse the duration from the $file_path
-			// file since it isn't readable by the AMQP server.
+			// file since it isn't readable or reachable by the AMQP server.
 			foreach ($this->getMediaSet()->encodings as $encoding) {
+				// Pass an absolute path to the AMQP server.
 				$path = realpath($this->getFilePath($encoding->shortname));
 
 				$this->duration = $this->parseDuration($app, $path);
