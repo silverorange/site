@@ -52,7 +52,6 @@ class SiteAudioMedia extends SiteMedia
 		try {
 			$transaction = new SwatDBTransaction($this->db);
 
-			$this->duration = $this->parseDuration($app, $file_path);
 			$this->filename = ($this->getMediaSet()->obfuscate_filename)
 				? sha1(uniqid(rand(), true))
 				: null;
@@ -64,6 +63,18 @@ class SiteAudioMedia extends SiteMedia
 
 			foreach ($this->getMediaSet()->encodings as $encoding) {
 				$this->processEncoding($file_path, $encoding);
+			}
+
+			// Parse the duration from the first encoding. We do this because
+			// we are unable to parse the duration from the $file_path
+			// file since it isn't readable by the AMQP server.
+			foreach ($this->getMediaSet()->encodings as $encoding) {
+				$path = realpath($this->getFilePath($encoding->shortname));
+
+				$this->duration = $this->parseDuration($app, $path);
+				$this->save();
+
+				break;
 			}
 
 			$transaction->commit();
