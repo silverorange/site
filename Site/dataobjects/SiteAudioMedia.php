@@ -92,7 +92,7 @@ class SiteAudioMedia extends SiteMedia
 				);
 
 				if ($result['status'] === 'success') {
-					$message = json_decode($result['body']);
+					$message = json_decode($result['body'], true);
 					if ($message !== null) {
 						$duration = intval($message['duration']);
 					}
