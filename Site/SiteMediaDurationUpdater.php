@@ -192,7 +192,7 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 
 		if (file_exists($filename)) {
 			$old_duration = $media->duration;
-			$new_duration = SiteAudioMedia::parseDuration($filename);
+			$new_duration = $media->parseDuration($this, $filename);
 
 			$this->debug(
 				sprintf(

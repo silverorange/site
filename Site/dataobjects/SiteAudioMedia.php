@@ -45,16 +45,16 @@ class SiteAudioMedia extends SiteMedia
 	// Processing methods
 	// {{{ public function process()
 
-	public function process($file_path)
+	public function process(SiteApplication $app, $file_path)
 	{
 		$this->checkDB();
 
 		try {
 			$transaction = new SwatDBTransaction($this->db);
 
-			$this->duration = SiteAudioMedia::parseDuration($file_path);
-			$this->filename = ($this->getMediaSet()->obfuscate_filename) ?
-				sha1(uniqid(rand(), true)) : null;
+			$this->filename = ($this->getMediaSet()->obfuscate_filename)
+				? sha1(uniqid(rand(), true))
+				: null;
 
 			$this->createdate = new SwatDate();
 			$this->createdate->toUTC();
@@ -65,12 +65,88 @@ class SiteAudioMedia extends SiteMedia
 				$this->processEncoding($file_path, $encoding);
 			}
 
+			// Parse the duration from the first encoding. We do this because
+			// we are unable to parse the duration from the $file_path
+			// file since it isn't readable or reachable by the AMQP server.
+			foreach ($this->getMediaSet()->encodings as $encoding) {
+				// Pass an absolute path to the AMQP server.
+				$path = realpath($this->getFilePath($encoding->shortname));
+
+				$this->duration = $this->parseDuration($app, $path);
+				$this->save();
+
+				break;
+			}
+
 			$transaction->commit();
 		// TODO: Specialize this.
 		} catch (Exception $e) {
 			throw $e;
 			$transaction->rollback();
 		}
+	}
+
+	// }}}
+	// {{{ public function parseDuration()
+
+	public function parseDuration(SiteApplication $app, $file_path)
+	{
+		$duration = null;
+
+		if ($app->hasModule('SiteAMQPModule')) {
+			$amqp = $app->getModule('SiteAMQPModule');
+			$message = array('filename' => $file_path);
+			try {
+				$result = $amqp->doSyncNs(
+					'global',
+					'media-duration',
+					json_encode($message)
+				);
+
+				if ($result['status'] === 'success') {
+					$message = json_decode($result['body'], true);
+					if ($message !== null) {
+						$duration = intval($message['duration']);
+					}
+				}
+			} catch (AMQPConnectionException $e) {
+				// Ignore connection error; will just use the old non-amqp code
+				// path.
+			} catch (SiteAMQPJobFailureException $e) {
+				// Ignore job failure; will just use the old non-amqp code
+				// path.
+			}
+		}
+
+		if ($duration === null) {
+			// No AMQP or AMQP failed, just run the duration script on this
+			// server.
+			$command = sprintf(
+				'ffprobe '.
+					'-select_streams a '.
+					'-show_packets '.
+					'-show_entries packet=pts_time '.
+					'-v quiet '.
+					'%s '.
+				'| '.
+				'grep pts_time '.
+				'| '.
+				'tail -1 '.
+				'| '.
+				'cut -d "=" -f 2 ',
+				escapeshellcmd($file_path)
+			);
+
+			$duration = intval(
+				round(
+					trim(
+						shell_exec($command)
+					)
+				)
+			);
+		}
+
+		return $duration;
 	}
 
 	// }}}
@@ -118,38 +194,6 @@ class SiteAudioMedia extends SiteMedia
 			array("\\\\", "\\\r", "\\\""), $filename);
 
 		return $filename;
-	}
-
-	// }}}
-
-	// static convenience methods
-	// {{{ public static function parseDuration()
-
-	public static function parseDuration($file_path)
-	{
-		$command = sprintf(
-			'ffprobe '.
-				'-select_streams a '.
-				'-show_packets '.
-				'-show_entries packet=pts_time '.
-				'-v quiet '.
-				'%s '.
-			'| '.
-			'grep pts_time '.
-			'| '.
-			'tail -1 '.
-			'| '.
-			'cut -d "=" -f 2 ',
-			escapeshellcmd($file_path)
-		);
-
-		return intval(
-			round(
-				trim(
-					shell_exec($command)
-				)
-			)
-		);
 	}
 
 	// }}}
