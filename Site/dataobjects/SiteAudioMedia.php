@@ -92,7 +92,12 @@ class SiteAudioMedia extends SiteMedia
 				);
 
 				$result = json_decode($result, true);
-				$duration = intval($result['duration']);
+				if ($result !== null) {
+					$duration = intval($result['duration']);
+				}
+			} catch (AMQPConnectionException $e) {
+				// Ignore connection error; will just use the old non-amqp code
+				// path.
 			} catch (SiteAMQPJobFailureException $e) {
 				// Ignore job failure; will just use the old non-amqp code
 				// path.
