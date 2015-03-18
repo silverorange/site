@@ -91,9 +91,11 @@ class SiteAudioMedia extends SiteMedia
 					json_encode($message)
 				);
 
-				$result = json_decode($result, true);
-				if ($result !== null) {
-					$duration = intval($result['duration']);
+				if ($result['status'] === 'success') {
+					$message = json_decode($result['body']);
+					if ($message !== null) {
+						$duration = intval($message['duration']);
+					}
 				}
 			} catch (AMQPConnectionException $e) {
 				// Ignore connection error; will just use the old non-amqp code
