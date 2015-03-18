@@ -79,29 +79,54 @@ class SiteAudioMedia extends SiteMedia
 
 	public function parseDuration(SiteApplication $app, $file_path)
 	{
-		$command = sprintf(
-			'ffprobe '.
-				'-select_streams a '.
-				'-show_packets '.
-				'-show_entries packet=pts_time '.
-				'-v quiet '.
-				'%s '.
-			'| '.
-			'grep pts_time '.
-			'| '.
-			'tail -1 '.
-			'| '.
-			'cut -d "=" -f 2 ',
-			escapeshellcmd($file_path)
-		);
+		$duration = null;
 
-		return intval(
-			round(
-				trim(
-					shell_exec($command)
+		if ($app->hasModule('SiteAMQPModule')) {
+			$amqp = $app->getModule('SiteAMQPModule');
+			$message = array('filename' => $file_path);
+			try {
+				$result = $amqp->doSync(
+					'media-duration',
+					json_encode($message)
+				);
+
+				$result = json_decode($result, true);
+				$duration = intval($result['duration']);
+			} catch (SiteAMQPJobFailureException $e) {
+				// Ignore job failure; will just use the old non-amqp code
+				// path.
+			}
+		}
+
+		if ($duration === null) {
+			// No AMQP or AMQP failed, just run the duration script on this
+			// server.
+			$command = sprintf(
+				'ffprobe '.
+					'-select_streams a '.
+					'-show_packets '.
+					'-show_entries packet=pts_time '.
+					'-v quiet '.
+					'%s '.
+				'| '.
+				'grep pts_time '.
+				'| '.
+				'tail -1 '.
+				'| '.
+				'cut -d "=" -f 2 ',
+				escapeshellcmd($file_path)
+			);
+
+			$duration = intval(
+				round(
+					trim(
+						shell_exec($command)
+					)
 				)
-			)
-		);
+			);
+		}
+
+		return $duration;
 	}
 
 	// }}}
