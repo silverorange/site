@@ -132,8 +132,7 @@ class SiteAudioMedia extends SiteMedia
 	// }}}
 	// {{{ protected function processEncoding()
 
-	protected function processEncoding(SiteApplication $app, $file_path,
-		SiteMediaEncoding $encoding)
+	protected function processEncoding($file_path, SiteMediaEncoding $encoding)
 	{
 		$binding = new SiteMediaEncodingBinding();
 		$binding->setDatabase($this->db);
