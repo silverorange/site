@@ -170,10 +170,18 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 		$audio = SwatDB::query(
 			$this->db,
 			$sql,
-			SwatDBClassMap::get('SiteAudioMediaWrapper')
+			$this->getAudioMediaWrapperClass()
 		);
 
 		return $audio;
+	}
+
+	// }}}
+	// {{{ protected function getAudioMediaWrapperClass()
+
+	protected function getAudioMediaWrapperClass()
+	{
+		return SwatDBClassMap::get('SiteAudioMediaWrapper');
 	}
 
 	// }}}
