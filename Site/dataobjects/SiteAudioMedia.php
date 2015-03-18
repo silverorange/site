@@ -45,16 +45,17 @@ class SiteAudioMedia extends SiteMedia
 	// Processing methods
 	// {{{ public function process()
 
-	public function process($file_path)
+	public function process(SiteApplication $app, $file_path)
 	{
 		$this->checkDB();
 
 		try {
 			$transaction = new SwatDBTransaction($this->db);
 
-			$this->duration = SiteAudioMedia::parseDuration($file_path);
-			$this->filename = ($this->getMediaSet()->obfuscate_filename) ?
-				sha1(uniqid(rand(), true)) : null;
+			$this->duration = $this->parseDuration($app, $file_path);
+			$this->filename = ($this->getMediaSet()->obfuscate_filename)
+				? sha1(uniqid(rand(), true))
+				: null;
 
 			$this->createdate = new SwatDate();
 			$this->createdate->toUTC();
@@ -74,9 +75,40 @@ class SiteAudioMedia extends SiteMedia
 	}
 
 	// }}}
+	// {{{ public function parseDuration()
+
+	public function parseDuration(SiteApplication $app, $file_path)
+	{
+		$command = sprintf(
+			'ffprobe '.
+				'-select_streams a '.
+				'-show_packets '.
+				'-show_entries packet=pts_time '.
+				'-v quiet '.
+				'%s '.
+			'| '.
+			'grep pts_time '.
+			'| '.
+			'tail -1 '.
+			'| '.
+			'cut -d "=" -f 2 ',
+			escapeshellcmd($file_path)
+		);
+
+		return intval(
+			round(
+				trim(
+					shell_exec($command)
+				)
+			)
+		);
+	}
+
+	// }}}
 	// {{{ protected function processEncoding()
 
-	protected function processEncoding($file_path, SiteMediaEncoding $encoding)
+	protected function processEncoding(SiteApplication $app, $file_path,
+		SiteMediaEncoding $encoding)
 	{
 		$binding = new SiteMediaEncodingBinding();
 		$binding->setDatabase($this->db);
@@ -118,38 +150,6 @@ class SiteAudioMedia extends SiteMedia
 			array("\\\\", "\\\r", "\\\""), $filename);
 
 		return $filename;
-	}
-
-	// }}}
-
-	// static convenience methods
-	// {{{ public static function parseDuration()
-
-	public static function parseDuration($file_path)
-	{
-		$command = sprintf(
-			'ffprobe '.
-				'-select_streams a '.
-				'-show_packets '.
-				'-show_entries packet=pts_time '.
-				'-v quiet '.
-				'%s '.
-			'| '.
-			'grep pts_time '.
-			'| '.
-			'tail -1 '.
-			'| '.
-			'cut -d "=" -f 2 ',
-			escapeshellcmd($file_path)
-		);
-
-		return intval(
-			round(
-				trim(
-					shell_exec($command)
-				)
-			)
-		);
 	}
 
 	// }}}
