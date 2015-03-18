@@ -4,8 +4,7 @@ require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteCommandLineArgument.php';
 require_once 'Site/SiteConfigModule.php';
 require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/dataobjects/SiteMediaWrapper.php';
-require_once 'Site/dataobjects/SiteAudioMedia.php';
+require_once 'Site/dataobjects/SiteAudioMediaWrapper.php';
 
 /**
  * Recalculates the duration of all media in a media set
@@ -105,7 +104,7 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 		}
 
 		$this->unlock();
-		$this->debug("done\n");
+		$this->debug(Site::_('done')."\n");
 	}
 
 	// }}}
@@ -171,7 +170,7 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 		$audio = SwatDB::query(
 			$this->db,
 			$sql,
-			SwatDBClassMap::get('SiteMediaWrapper')
+			SwatDBClassMap::get('SiteAudioMediaWrapper')
 		);
 
 		return $audio;
@@ -180,7 +179,7 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function updateDuration()
 
-	protected function updateDuration(SiteMedia $media)
+	protected function updateDuration(SiteAudioMedia $media)
 	{
 		if ($this->media_file_base == '') {
 			throw new SiteException('A media file base must be specified.');
@@ -196,7 +195,7 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 
 			$this->debug(
 				sprintf(
-					"Updating Media %s...",
+					Site::_('Updating Media %s...'),
 					$media->id
 				)
 			);
@@ -205,14 +204,14 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 				$this->debug("\n");
 				$this->debug(
 					sprintf(
-						"\tnew duration: %s\n",
+						"\t".Site::_('new duration: %s')."\n",
 						$new_duration
 					)
 				);
 
 				$this->debug(
 					sprintf(
-						"\told duration: %s\n",
+						"\t".Site::_('old duration: %s')."\n",
 						$old_duration
 					)
 				);
@@ -221,14 +220,14 @@ class SiteMediaDurationUpdater extends SiteCommandLineApplication
 					$this->saveMedia($media, $new_duration);
 				}
 			} else {
-				$this->debug(" existing duration correct.\n");
+				$this->debug(Site::_(' existing duration correct.')."\n");
 			}
 		} else {
 			$this->debug(
 				sprintf(
-					"Unable to locate “%s” for duration checking.\n",
+					Site::_('Unable to locate “%s” for duration checking.'),
 					$filename
-				)
+				)."\n"
 			);
 		}
 	}
