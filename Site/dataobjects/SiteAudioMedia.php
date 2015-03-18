@@ -85,7 +85,8 @@ class SiteAudioMedia extends SiteMedia
 			$amqp = $app->getModule('SiteAMQPModule');
 			$message = array('filename' => $file_path);
 			try {
-				$result = $amqp->doSync(
+				$result = $amqp->doSyncNs(
+					'global',
 					'media-duration',
 					json_encode($message)
 				);
