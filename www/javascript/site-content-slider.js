@@ -118,9 +118,6 @@ YAHOO.util.Event.onDOMReady(function ()
 	// }}}
 
 	SiteContentSlider.sliders = [];
-	SiteContentSlider.getSlider = function(index) {
-		return SiteContentSlider.sliders[index];
-	};
 
 	var _interval = null;
 
