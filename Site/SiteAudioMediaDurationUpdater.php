@@ -4,6 +4,7 @@ require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteCommandLineArgument.php';
 require_once 'Site/SiteConfigModule.php';
 require_once 'Site/SiteDatabaseModule.php';
+require_once 'Site/SiteAMQPModule.php';
 require_once 'Site/dataobjects/SiteAudioMediaWrapper.php';
 
 /**
@@ -266,6 +267,7 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		return array(
 			'config'   => 'SiteConfigModule',
 			'database' => 'SiteDatabaseModule',
+			'amqp'     => 'SiteAMQPModule',
 		);
 	}
 
