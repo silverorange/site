@@ -285,7 +285,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	/**
 	 * Sets the current logging level for this logger
 	 *
-	 * @return GearmanWorkerLogger the current object, for fluent interface.
+	 * @return SiteCommandLineLogger the current object, for fluent interface.
 	 */
 	public function setLevel($level)
 	{

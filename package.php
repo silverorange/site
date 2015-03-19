@@ -73,7 +73,6 @@ $package->addPackageDepWithChannel('optional', 'PSR_Log', 'pear.silverorange.com
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
 $package->addExtensionDep('optional', 'uploadprogress', '0.3.0');
 $package->addExtensionDep('optional', 'memcached', '0.1.5');
-$package->addExtensionDep('optional', 'gearman', '0.8.3');
 $package->addExtensionDep('optional', 'amqp', '1.2.0');
 
 $package->generateContents();
