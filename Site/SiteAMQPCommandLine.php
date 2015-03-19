@@ -31,7 +31,7 @@ abstract class SiteAMQPCommandLine
 	 * Creates a command-line instance from the provided XML definition
 	 *
 	 * If the interface definition omits any of the required options and
-	 * arguments for a Gearman worker, they are automatically added.
+	 * arguments for an AMQP worker, they are automatically added.
 	 *
 	 * @param string $filename the file containing the XML command-line
 	 *                         interface definition.
@@ -55,7 +55,7 @@ abstract class SiteAMQPCommandLine
 	 * Creates a command-line instance from the provided XML definition
 	 *
 	 * If the interface definition omits any of the required options and
-	 * arguments for a Gearman worker, they are automatically added.
+	 * arguments for an AMQP worker, they are automatically added.
 	 *
 	 * @param string $string a string containing the XML command-line
 	 *                       interface definition.
