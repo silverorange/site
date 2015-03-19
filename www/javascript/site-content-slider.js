@@ -13,6 +13,7 @@
  *  - data-random-start: choose the first page at random
  *  - data-text-next: next button text
  *  - data-text-prev: previous button text
+ *  - data-auto-advance: enable/disable auto-advancing. Default "true".
  *
  *  The .site-content-slider div can optionally have height set in CSS, or
  *  if left without height, the pages' height will be set to the height
@@ -103,7 +104,10 @@ YAHOO.util.Event.onDOMReady(function ()
 		}
 
 		this.addTouchEvents();
-		this.setInterval();
+
+		if (this.auto_advance) {
+			this.setInterval();
+		}
 
 		Event.on(window, 'resize', function() {
 			this.initPages();
@@ -127,6 +131,10 @@ YAHOO.util.Event.onDOMReady(function ()
 		this.page_interval = this.getSetting('page-interval', 10);
 		this.text_next = this.getSetting('text-next', 'Next');
 		this.text_prev = this.getSetting('text-prev', 'Previous');
+
+		// cast to boolean from string "false"
+		var auto_advance = this.getSetting('auto-advance', true);
+		this.auto_advance = (auto_advance !== 'false');
 	};
 
 	// }}}
