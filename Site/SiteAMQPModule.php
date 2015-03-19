@@ -168,7 +168,20 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * @param array  $attributes optional. Additional message attributes. See
 	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
 	 *
-	 * @return string the job result data
+	 * @return array an array containing the following fields:
+	 *               - <kbd>status</kbd>   - a string containing "success" for
+	 *                                       a successful message receipt.
+	 *                                       Failure responses will throw an
+	 *                                       exception rather than return a
+	 *                                       status here.
+	 *               - <kbd>body</kbd>     - a string containing the response
+	 *                                       value returned by the worker.
+	 *                                       Depending on the application, this
+	 *                                       may or may not be JSON encoded.
+	 *               - <kbd>raw_body</kbd> - a string containing the raw
+	 *                                       message response from the AMQP
+	 *                                       envelope. This will typically be
+	 *                                       JSON encoded.
 	 *
 	 * @throws SiteAMQPJobFailureException if the job processor can't process
 	 *         the job.
@@ -294,7 +307,20 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * @param array  $attributes optional. Additional message attributes. See
 	 *                           {@link http://www.php.net/manual/en/amqpexchange.publish.php}.
 	 *
-	 * @return string the job result data
+	 * @return array an array containing the following fields:
+	 *               - <kbd>status</kbd>   - a string containing "success" for
+	 *                                       a successful message receipt.
+	 *                                       Failure responses will throw an
+	 *                                       exception rather than return a
+	 *                                       status here.
+	 *               - <kbd>body</kbd>     - a string containing the response
+	 *                                       value returned by the worker.
+	 *                                       Depending on the application, this
+	 *                                       may or may not be JSON encoded.
+	 *               - <kbd>raw_body</kbd> - a string containing the raw
+	 *                                       message response from the AMQP
+	 *                                       envelope. This will typically be
+	 *                                       JSON encoded.
 	 *
 	 * @throws SiteAMQPJobFailureException if the job processor can't process
 	 *         the job.
