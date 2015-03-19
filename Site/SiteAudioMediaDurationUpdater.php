@@ -12,7 +12,7 @@ require_once 'Site/dataobjects/SiteAudioMediaWrapper.php';
  * @package   Site
  * @copyright 2015 silverorange
  */
-class SiteMediaDurationUpdater extends SiteCommandLineApplication
+class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 {
 	// {{{ public properties
 
