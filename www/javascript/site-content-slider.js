@@ -18,7 +18,6 @@
  *  if left without height, the pages' height will be set to the height
  *  of the tallest page.
  */
-
 YAHOO.util.Event.onDOMReady(function ()
 {
 	var sliders = YAHOO.util.Dom.getElementsByClassName('site-content-slider');
