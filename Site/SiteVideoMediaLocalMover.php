@@ -78,7 +78,7 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 
 	protected function moveFile(SiteVideoMedia $media, $old_path, $new_path)
 	{
-		rename($old_path, $new_path);
+		copy($old_path, $new_path);
 	}
 
 	// }}}
