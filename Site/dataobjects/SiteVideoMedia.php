@@ -333,6 +333,29 @@ class SiteVideoMedia extends SiteMedia
 	}
 
 	// }}}
+	// {{{ public function getUriSuffix()
+
+	public function getUriSuffix($encoding_shortname)
+	{
+		$suffix = parent::getUriSuffix($encoding_shortname);
+
+		if ($this->has_hls) {
+			$suffix = sprintf(
+				'%s/%s/%s',
+				$this->id,
+				'full',
+				$this->getFilename($encoding_shortname)
+			);
+
+			if ($this->getUriBase() != '') {
+				$suffix = $this->getUriBase().'/'.$suffix;
+			}
+		}
+
+		return $suffix;
+	}
+
+	// }}}
 	// {{{ public function loadByKey()
 
 	/**
