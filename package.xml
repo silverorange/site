@@ -23,10 +23,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2015-03-20</date>
- <time>10:02:13</time>
+ <date>2015-03-24</date>
+ <time>12:04:14</time>
  <version>
-  <release>2.1.31</release>
+  <release>2.1.32</release>
   <api>2.0.0</api>
  </version>
  <stability>
@@ -493,6 +493,7 @@ No release notes for you!
       <file name="getArticleNavBar.sql" role="data" />
       <file name="getArticlePath.sql" role="data" />
       <file name="getArticlePathInfo.sql" role="data" />
+      <file name="getKeywordExcerpt.sql" role="data" />
      </dir> <!-- /sql/pgsql/functions -->
      <dir name="tables">
       <file name="Account.sql" role="data" />
@@ -712,14 +713,14 @@ No release notes for you!
  <changelog>
   <release>
    <version>
-    <release>2.1.31</release>
+    <release>2.1.32</release>
     <api>2.0.0</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2015-03-20</date>
+   <date>2015-03-24</date>
    <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
 No release notes for you!
