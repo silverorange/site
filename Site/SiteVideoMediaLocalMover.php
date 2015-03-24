@@ -78,6 +78,13 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 
 	protected function moveFile(SiteVideoMedia $media, $old_path, $new_path)
 	{
+		$parts = pathinfo($new_path);
+		$directory = $parts['dirname'];
+
+		if (!file_exists($directory)) {
+			mkdir($directory, 0777, true);
+		}
+
 		copy($old_path, $new_path);
 	}
 
