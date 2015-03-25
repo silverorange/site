@@ -90,6 +90,14 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	}
 
 	// }}}
+	// {{{ protected function cleanUp()
+
+	protected function cleanUp($path)
+	{
+		$this->s3->delete_object($this->getBucket(), $path);
+	}
+
+	// }}}
 
 	// boilerplate code
 	// {{{ protected function configure()

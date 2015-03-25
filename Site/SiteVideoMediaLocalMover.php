@@ -89,6 +89,14 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 	}
 
 	// }}}
+	// {{{ protected function cleanUp()
+
+	protected function cleanUp($path)
+	{
+		unlink($path);
+	}
+
+	// }}}
 }
 
 ?>

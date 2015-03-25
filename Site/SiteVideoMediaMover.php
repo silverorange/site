@@ -27,11 +27,30 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	public $db;
 
 	// }}}
+	// {{{ protected properties
+
+	/**
+	 * @var boolean
+	 */
+	protected $clean_up = false;
+
+	// }}}
 	// {{{ public function __construct()
 
 	public function __construct($id, $filename, $title, $documentation)
 	{
 		parent::__construct($id, $filename, $title, $documentation);
+
+		$this->addCommandLineArgument(
+			new SiteCommandLineArgument(
+				array('--clean-up'),
+				'setCleanUp',
+				Site::_(
+					'This removes the old file so we are essentially renaming '.
+					'instead of copying.'
+				)
+			)
+		);
 
 		$this->initModules();
 		$this->parseCommandLineArguments();
@@ -55,6 +74,14 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	}
 
 	// }}}
+	// {{{ public function setCleanUp()
+
+	public function setCleanUp($clean_up)
+	{
+		$this->clean_up = (boolean)$clean_up;
+	}
+
+	// }}}
 	// {{{ abstract protected function hasOldPath()
 
 	abstract protected function getOldPath(SiteVideoMedia $media, $shortname);
@@ -74,6 +101,11 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 
 	abstract protected function moveFile(SiteVideoMedia $media, $old_path,
 		$new_path);
+
+	// }}}
+	// {{{ abstract protected function cleanUp()
+
+	abstract protected function cleanUp($path);
 
 	// }}}
 	// {{{ protected function getMedia()
@@ -119,6 +151,12 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 							$new_path
 						)
 					);
+
+					if ($this->clean_up) {
+						$this->debug("Cleaning up {$old_path}:");
+						$this->cleanUp($old_path);
+						$this->debug(" complete.\n");
+					}
 				} elseif (!$old_exists) {
 					$this->debug(
 						sprintf(
@@ -130,6 +168,12 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 					$this->moveFile($media, $old_path, $new_path);
 
 					$this->debug(" complete. {$old_path} -> {$new_path}\n");
+
+					if ($this->clean_up) {
+						$this->debug("Cleaning up {$old_path}:");
+						$this->cleanUp($old_path);
+						$this->debug(" complete.\n");
+					}
 				}
 			}
 		}
