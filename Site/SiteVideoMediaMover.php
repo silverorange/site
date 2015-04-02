@@ -138,13 +138,16 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 
 	protected function getMedia()
 	{
+		// If we are cleaning up old files then only get the media meida that
+		// has already been segmented (has_hls = true). If we are doing the
+		// initial move then only get media that hasn't already been segmented.
 		return SwatDB::query(
 			$this->db,
 			sprintf(
 				'select * from Media
 				where has_hls = %s and media_set = %s
 				order by id',
-				$this->db->quote(false, 'boolean'),
+				$this->db->quote($this->clean_up, 'boolean'),
 				$this->db->quote($this->getMediaSet()->id, 'integer')
 			),
 			SwatDBClassMap::get('SiteVideoMediaWrapper')
