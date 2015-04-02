@@ -34,6 +34,11 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	 */
 	protected $clean_up = false;
 
+	/**
+	 * @var string
+	 */
+	protected $media_set_shortname;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -52,8 +57,18 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 			)
 		);
 
-		$this->initModules();
-		$this->parseCommandLineArguments();
+		$shortname = new SiteCommandLineArgument(
+			array('-s', '--shortname'),
+			'setMediaSetShortname',
+			Site::_('Sets the shortname of the media set we want to move.')
+		);
+
+		$shortname->addParameter(
+			'string',
+			'shortname name must be specified.'
+		);
+
+		$this->addCommandLineArgument($shortname);
 	}
 
 	// }}}
@@ -64,6 +79,9 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	 */
 	public function run()
 	{
+		$this->initModules();
+		$this->parseCommandLineArguments();
+
 		$this->lock();
 
 		foreach ($this->getMedia() as $media) {
@@ -79,6 +97,14 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	public function setCleanUp($clean_up)
 	{
 		$this->clean_up = (boolean)$clean_up;
+	}
+
+	// }}}
+	// {{{ public function setMediaSetShortname()
+
+	public function setMediaSetShortname($shortname)
+	{
+		$this->media_set_shortname = $shortname;
 	}
 
 	// }}}
@@ -115,11 +141,40 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		return SwatDB::query(
 			$this->db,
 			sprintf(
-				'select * from Media where has_hls = %s order by id desc',
-				$this->db->quote(true, 'boolean')
+				'select * from Media
+				where has_hls = %s and media_set = %s
+				order by id',
+				$this->db->quote(false, 'boolean'),
+				$this->db->quote($this->getMediaSet()->id, 'integer')
 			),
 			SwatDBClassMap::get('SiteVideoMediaWrapper')
 		);
+	}
+
+	// }}}
+	// {{{ protected function getMediaSet()
+
+	protected function getMediaSet()
+	{
+		if ($this->media_set_shortname == '') {
+			throw new SiteException('A media set shortname must be specified.');
+		}
+
+		$class_name = SwatDBClassMap::get('SiteMediaSet');
+
+		$media_set = new $class_name();
+		$media_set->setDatabase($this->db);
+
+		if (!$media_set->loadByShortname($this->media_set_shortname)) {
+			throw new SiteException(
+				sprintf(
+					'Unable to load media set with shortname “%s”.',
+					$this->media_set_shortname
+				)
+			);
+		}
+
+		return $media_set;
 	}
 
 	// }}}
