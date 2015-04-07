@@ -160,7 +160,9 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	protected function getMediaSet()
 	{
 		if ($this->media_set_shortname == '') {
-			throw new SiteException('A media set shortname must be specified.');
+			throw new SiteCommandLineException(
+				'A media set shortname must be specified.'
+			);
 		}
 
 		$class_name = SwatDBClassMap::get('SiteMediaSet');
@@ -169,7 +171,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		$media_set->setDatabase($this->db);
 
 		if (!$media_set->loadByShortname($this->media_set_shortname)) {
-			throw new SiteException(
+			throw new SiteCommandLineException(
 				sprintf(
 					'Unable to load media set with shortname “%s”.',
 					$this->media_set_shortname
