@@ -68,8 +68,18 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		return SwatDB::query(
 			$this->db,
 			sprintf(
-				'select * from Media where has_hls = %s order by id',
-				$this->db->quote(false, 'boolean')
+				'select Media.*
+				from Media
+				where Media.has_hls = %s
+					and Media.id in (
+						select media from MediaEncodingBinding
+						where media_type in (
+							select id from MediaType where extension = %s
+						)
+					)
+				order by Media.id',
+				$this->db->quote(false, 'boolean'),
+				$this->db->quote('mp4', 'text')
 			),
 			SwatDBClassMap::get('SiteVideoMediaWrapper')
 		);
@@ -94,16 +104,18 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 			$media->save();
 		} else {
 			$encodings = $this->getEncodingIndexes($media);
-			if (count($encodings) === count($media->video_encoding_bindings)) {
+			if (count($encodings) === 0) {
+				$this->debug(' no HLS encodings');
+			} elseif (count($encodings) ===
+				count($media->video_encoding_bindings)) {
+
 				$this->writeIndex($media, $encodings);
 				$media->has_hls = true;
 				$media->save();
 
 				$this->debug(' index.m3u8 saved');
-			} elseif (count($encodings) > 0) {
-				$this->debug(' partially encoded');
 			} else {
-				$this->debug(' no HLS encodings');
+				$this->debug(' partially encoded');
 			}
 
 			$this->debug("\n");
