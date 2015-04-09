@@ -427,6 +427,25 @@ class SiteVideoMedia extends SiteMedia
 	}
 
 	// }}}
+	// {{{ protected function loadVideoEncodingBindings()
+
+	protected function loadVideoEncodingBindings()
+	{
+		$sql = sprintf(
+			'select * from MediaEncodingBinding
+			where MediaEncodingBinding.media = %s and height > %s',
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(0, 'integer')
+		);
+
+		return SwatDB::query(
+			$this->db,
+			$sql,
+			$this->getMediaEncodingBindingWrapperClass()
+		);
+	}
+
+	// }}}
 }
 
 ?>

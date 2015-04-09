@@ -94,7 +94,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 			$media->save();
 		} else {
 			$encodings = $this->getEncodingIndexes($media);
-			if (count($encodings) === count($media->encoding_bindings)) {
+			if (count($encodings) === count($media->video_encoding_bindings)) {
 				$this->writeIndex($media, $encodings);
 				$media->has_hls = true;
 				$media->save();
