@@ -145,10 +145,12 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 			$this->db,
 			sprintf(
 				'select * from Media
-				where has_hls = %s and media_set = %s
+				where has_hls = %s and media_set in (
+					select id from MediaSet where shortname = %s
+				)
 				order by id',
 				$this->db->quote($this->clean_up, 'boolean'),
-				$this->db->quote($this->getMediaSet()->id, 'integer')
+				$this->db->quote($this->getMediaSet()->shortname, 'text')
 			),
 			SwatDBClassMap::get('SiteVideoMediaWrapper')
 		);
