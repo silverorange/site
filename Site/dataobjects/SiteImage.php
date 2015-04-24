@@ -709,21 +709,22 @@ class SiteImage extends SwatDBDataObject
 
 	public function getLargestDimension()
 	{
-		$largest = null;
+		$largest_width = 0;
+		$largest_dimension = null;
 
 		// Base largest only on width instead of area as most dimensions are
 		// constrained by width. Subclass where not true.
-		foreach ($this->dimension_bindings as $binding) {
-			if ($largest === null) {
-				$largest = $binding;
-			}
-
-			if ($binding->width > $largest->width) {
-				$largest = $binding;
+		foreach ($this->getImageSet()->dimensions as $dimension) {
+			$binding = $this->getDimensionBinding($dimension->shortname);
+			if ($binding instanceof SiteImageDimensionBinding) {
+				if ($binding->width > $largest_width) {
+					$largest_width = $binding->width;
+					$largest_dimension = $dimension;
+				}
 			}
 		}
 
-		return $largest;
+		return $largest_dimension;
 	}
 
 	// }}}
@@ -849,9 +850,9 @@ class SiteImage extends SwatDBDataObject
 
 	public function processMissingDimensions($image_file)
 	{
-		foreach ($this->image_set->dimensions as $dimension) {
-			if (!$this->hasDimension($dimension)) {
-				$this->processManual($image_file, $dimension);
+		foreach ($this->getImageSet()->dimensions as $dimension) {
+			if (!$this->hasDimension($dimension->shortname)) {
+				$this->processManual($image_file, $dimension->shortname);
 			}
 		}
 	}
