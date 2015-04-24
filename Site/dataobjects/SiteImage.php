@@ -8,6 +8,7 @@ require_once 'Site/dataobjects/SiteImageSet.php';
 require_once 'Site/dataobjects/SiteImageCdnTask.php';
 require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
 require_once 'Site/exceptions/SiteInvalidImageException.php';
+require_once 'Site/exceptions/SiteInvalidImageDimensionException.php';
 
 /**
  * An image data object
@@ -888,7 +889,9 @@ class SiteImage extends SwatDBDataObject
 				$this->getFilePath($largest->shortname)
 			);
 		} else {
-			throw new SiteException('Largest dimension does not exist.');
+			throw new SiteInvalidImageDimensionException(
+				'Largest dimension does not exist.'
+			);
 		}
 	}
 
