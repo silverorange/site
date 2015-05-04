@@ -23,10 +23,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2015-04-16</date>
- <time>14:10:13</time>
+ <date>2015-05-04</date>
+ <time>16:07:52</time>
  <version>
-  <release>2.1.34</release>
+  <release>2.1.35</release>
   <api>2.0.0</api>
  </version>
  <stability>
@@ -261,6 +261,7 @@ No release notes for you!
      <file name="SiteCookieException.php" role="php" />
      <file name="SiteException.php" role="php" />
      <file name="SiteInvalidClassException.php" role="php" />
+     <file name="SiteInvalidImageDimensionException.php" role="php" />
      <file name="SiteInvalidImageException.php" role="php" />
      <file name="SiteInvalidMacException.php" role="php" />
      <file name="SiteInvalidPropertyException.php" role="php" />
@@ -712,14 +713,14 @@ No release notes for you!
  <changelog>
   <release>
    <version>
-    <release>2.1.34</release>
+    <release>2.1.35</release>
     <api>2.0.0</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2015-04-16</date>
+   <date>2015-05-04</date>
    <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
 No release notes for you!
