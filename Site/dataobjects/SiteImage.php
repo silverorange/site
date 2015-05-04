@@ -682,6 +682,30 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getLargestDimension()
+
+	public function getLargestDimension()
+	{
+		$largest_width = 0;
+		$largest_dimension = null;
+
+		// Base largest only on width instead of area as most dimensions are
+		// constrained by width. Subclass where not true.
+		foreach ($this->getImageSet()->dimensions as $dimension) {
+			try {
+				$width = $this->getWidth($dimension->shortname);
+				if ($width > $largest_width) {
+					$largest_width = $width;
+					$largest_dimension = $dimension;
+				}
+			} catch (SiteInvalidImageDimensionException $e) {
+			}
+		}
+
+		return $largest_dimension;
+	}
+
+	// }}}
 	// {{{ protected function getUriBase()
 
 	protected function getUriBase()
@@ -719,30 +743,6 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		return null;
-	}
-
-	// }}}
-	// {{{ public function getLargestDimension()
-
-	public function getLargestDimension()
-	{
-		$largest_width = 0;
-		$largest_dimension = null;
-
-		// Base largest only on width instead of area as most dimensions are
-		// constrained by width. Subclass where not true.
-		foreach ($this->getImageSet()->dimensions as $dimension) {
-			try {
-				$width = $this->getWidth($dimension->shortname);
-				if ($width > $largest_width) {
-					$largest_width = $width;
-					$largest_dimension = $dimension;
-				}
-			} catch (SiteInvalidImageDimensionException $e) {
-			}
-		}
-
-		return $largest_dimension;
 	}
 
 	// }}}
