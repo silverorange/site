@@ -426,10 +426,15 @@ class SiteImage extends SwatDBDataObject
 	{
 		$binding = $this->getDimensionBinding($dimension_shortname);
 
-		if ($binding === null)
-			throw new SwatException(sprintf(
-				'Image dimension “%s” does not exist for image %s.',
-					$dimension_shortname, $this->id));
+		if (!$binding instanceof SiteImageDimensionBinding) {
+			throw new SiteInvalidImageDimensionException(
+				sprintf(
+					'Image dimension “%s” does not exist for image %s.',
+					$dimension_shortname,
+					$this->id
+				)
+			);
+		}
 
 		return $binding->width;
 	}
@@ -440,6 +445,17 @@ class SiteImage extends SwatDBDataObject
 	public function getHeight($dimension_shortname)
 	{
 		$binding = $this->getDimensionBinding($dimension_shortname);
+
+		if (!$binding instanceof SiteImageDimensionBinding) {
+			throw new SiteInvalidImageDimensionException(
+				sprintf(
+					'Image dimension “%s” does not exist for image %s.',
+					$dimension_shortname,
+					$this->id
+				)
+			);
+		}
+
 		return $binding->height;
 	}
 
@@ -716,12 +732,13 @@ class SiteImage extends SwatDBDataObject
 		// Base largest only on width instead of area as most dimensions are
 		// constrained by width. Subclass where not true.
 		foreach ($this->getImageSet()->dimensions as $dimension) {
-			$binding = $this->getDimensionBinding($dimension->shortname);
-			if ($binding instanceof SiteImageDimensionBinding) {
-				if ($binding->width > $largest_width) {
-					$largest_width = $binding->width;
+			try {
+				$width = $this->getWidth($dimension->shortname);
+				if ($width > $largest_width) {
+					$largest_width = $width;
 					$largest_dimension = $dimension;
 				}
+			} catch (SiteInvalidImageDimensionException $e) {
 			}
 		}
 
