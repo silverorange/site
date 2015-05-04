@@ -8,6 +8,7 @@ require_once 'Site/dataobjects/SiteImageSet.php';
 require_once 'Site/dataobjects/SiteImageCdnTask.php';
 require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
 require_once 'Site/exceptions/SiteInvalidImageException.php';
+require_once 'Site/exceptions/SiteInvalidImageDimensionException.php';
 
 /**
  * An image data object
@@ -425,10 +426,15 @@ class SiteImage extends SwatDBDataObject
 	{
 		$binding = $this->getDimensionBinding($dimension_shortname);
 
-		if ($binding === null)
-			throw new SwatException(sprintf(
-				'Image dimension “%s” does not exist for image %s.',
-					$dimension_shortname, $this->id));
+		if (!$binding instanceof SiteImageDimensionBinding) {
+			throw new SiteInvalidImageDimensionException(
+				sprintf(
+					'Image dimension “%s” does not exist for image %s.',
+					$dimension_shortname,
+					$this->id
+				)
+			);
+		}
 
 		return $binding->width;
 	}
@@ -439,6 +445,17 @@ class SiteImage extends SwatDBDataObject
 	public function getHeight($dimension_shortname)
 	{
 		$binding = $this->getDimensionBinding($dimension_shortname);
+
+		if (!$binding instanceof SiteImageDimensionBinding) {
+			throw new SiteInvalidImageDimensionException(
+				sprintf(
+					'Image dimension “%s” does not exist for image %s.',
+					$dimension_shortname,
+					$this->id
+				)
+			);
+		}
+
 		return $binding->height;
 	}
 
@@ -665,6 +682,30 @@ class SiteImage extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getLargestDimension()
+
+	public function getLargestDimension()
+	{
+		$largest_width = 0;
+		$largest_dimension = null;
+
+		// Base largest only on width instead of area as most dimensions are
+		// constrained by width. Subclass where not true.
+		foreach ($this->getImageSet()->dimensions as $dimension) {
+			try {
+				$width = $this->getWidth($dimension->shortname);
+				if ($width > $largest_width) {
+					$largest_width = $width;
+					$largest_dimension = $dimension;
+				}
+			} catch (SiteInvalidImageDimensionException $e) {
+			}
+		}
+
+		return $largest_dimension;
+	}
+
+	// }}}
 	// {{{ protected function getUriBase()
 
 	protected function getUriBase()
@@ -702,28 +743,6 @@ class SiteImage extends SwatDBDataObject
 		}
 
 		return null;
-	}
-
-	// }}}
-	// {{{ public function getLargestDimension()
-
-	public function getLargestDimension()
-	{
-		$largest = null;
-
-		// Base largest only on width instead of area as most dimensions are
-		// constrained by width. Subclass where not true.
-		foreach ($this->dimension_bindings as $binding) {
-			if ($largest === null) {
-				$largest = $binding;
-			}
-
-			if ($binding->width > $largest->width) {
-				$largest = $binding;
-			}
-		}
-
-		return $largest;
 	}
 
 	// }}}
@@ -849,9 +868,9 @@ class SiteImage extends SwatDBDataObject
 
 	public function processMissingDimensions($image_file)
 	{
-		foreach ($this->image_set->dimensions as $dimension) {
-			if (!$this->hasDimension($dimension)) {
-				$this->processManual($image_file, $dimension);
+		foreach ($this->getImageSet()->dimensions as $dimension) {
+			if (!$this->hasDimension($dimension->shortname)) {
+				$this->processManual($image_file, $dimension->shortname);
 			}
 		}
 	}
@@ -887,7 +906,9 @@ class SiteImage extends SwatDBDataObject
 				$this->getFilePath($largest->shortname)
 			);
 		} else {
-			throw new SiteException('Largest dimension does not exist.');
+			throw new SiteInvalidImageDimensionException(
+				'Largest dimension does not exist.'
+			);
 		}
 	}
 
