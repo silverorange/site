@@ -1,5 +1,6 @@
 create table Media (
 	id serial,
+	uuid varchar(36), -- used for file-naming
 
 	media_set integer not null references MediaSet(id),
 	image     integer references Image(id) on delete set null,
