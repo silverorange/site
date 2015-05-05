@@ -11,6 +11,7 @@ create table Media (
 
 	has_hls boolean not null default false,
 	downloadable boolean not null default false,
+	private boolean not null default false,
 	duration integer,
 	description text,
 

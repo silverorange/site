@@ -42,7 +42,7 @@ class SiteVideoTextTracksPage extends SitePage
 		}
 
 		// for private videos, check if the user has access
-		if ($this->media->media_set->private && (
+		if ($this->media->private && (
 			!$this->app->session->isActive() ||
 			!isset($this->app->session->media_access) ||
 			!$this->app->session->media_access->offsetExists

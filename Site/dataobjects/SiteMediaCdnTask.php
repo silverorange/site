@@ -131,7 +131,7 @@ class SiteMediaCdnTask extends SiteCdnTask
 
 	protected function getAccessType()
 	{
-		return ($this->media->media_set->private)
+		return ($this->media->private)
 			? 'private'
 			: 'public';
 	}

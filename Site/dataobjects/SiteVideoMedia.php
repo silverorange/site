@@ -167,7 +167,7 @@ class SiteVideoMedia extends SiteMedia
 			$jwplayer->setSession($app->session);
 		}
 
-		$expires = ($this->media_set->private) ? '1 day' : null;
+		$expires = ($this->private) ? '1 day' : null;
 
 		if ($this->has_hls) {
 			$jwplayer->addSource(

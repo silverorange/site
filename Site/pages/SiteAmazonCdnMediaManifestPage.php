@@ -39,7 +39,7 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 		}
 
 		// for private videos, check if the user has access
-		if ($this->media->media_set->private && (
+		if ($this->media->private && (
 			!$this->app->session->isActive() ||
 			!isset($this->app->session->media_access) ||
 			!$this->app->session->media_access->offsetExists
@@ -93,7 +93,7 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 		$port = $amazon->streaming_distribution_port;
 		$distribution = $amazon->streaming_distribution;
 
-		if ($this->media->media_set->private) {
+		if ($this->media->private) {
 			$port = $amazon->private_streaming_distribution_port;
 			$distribution = $amazon->private_streaming_distribution;
 		}
@@ -126,7 +126,7 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 
 			$file_path = $this->media->getFilePath($encoding->width);
 			$path = $this->app->cdn->getStreamingUri($file_path,
-				($this->media->media_set->private) ? '1 day' : null);
+				($this->media->private) ? '1 day' : null);
 
 			$parts = parse_url($path);
 			$video_tag->src = substr($parts['path'], 1);
