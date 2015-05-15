@@ -265,6 +265,7 @@ YAHOO.util.Event.onDOMReady(function ()
 	proto.clearInterval = function()
 	{
 		if (_interval) {
+			this.auto_advance = false;
 			clearInterval(_interval);
 		}
 	};
