@@ -116,6 +116,26 @@ YAHOO.util.Event.onDOMReady(function ()
 			this.initPages();
 			this.setPage(this.current_page);
 		}, this, true);
+
+		// If images have dynamic width/height, some browsers (Safari, I'm
+		// looking at you) will return the incorrect height for the page's
+		// height until the image is loaded. Recalculating the page height
+		// once the images finish loading fixes the issue.
+		var images = container.getElementsByTagName('img');
+		var loaded_count = 0;
+		Event.on(
+			images,
+			'load',
+			function() {
+				loaded_count++;
+				if (loaded_count === images.length) {
+					this.initPages();
+					this.setPage(this.current_page);
+				}
+			},
+			this,
+			true
+		);
 	};
 
 	// }}}
@@ -163,6 +183,7 @@ YAHOO.util.Event.onDOMReady(function ()
 		var pos = 0;
 
 		for (var i = 0; i < this.pages.length; i++) {
+			Dom.setStyle(this.pages[i].element, 'height', 'auto');
 			Dom.setStyle(this.pages[i].element, 'width', width + 'px');
 
 			max_height = Math.max(max_height,
