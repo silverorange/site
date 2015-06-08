@@ -24,9 +24,9 @@
   <active>yes</active>
  </lead>
  <date>2015-06-08</date>
- <time>14:53:23</time>
+ <time>15:19:54</time>
  <version>
-  <release>1.6.23</release>
+  <release>1.6.25</release>
   <api>0.0.1</api>
  </version>
  <stability>
@@ -539,6 +539,7 @@ No release notes for you!
      <file name="jwplayer.flash.swf" role="data" />
      <file name="jwplayer.html5.js" role="data" />
      <file name="jwplayer.js" role="data" />
+     <file name="site-content-slider.js" role="data" />
      <file name="site-gravatar-entry.js" role="data" />
      <file name="site-jw-player-media-display.js" role="data" />
      <file name="site-tag-entry.js" role="data" />
@@ -548,6 +549,7 @@ No release notes for you!
      <file name="site-account-login-page.css" role="data" />
      <file name="site-account-reset-password-page.css" role="data" />
      <file name="site-contact-page.css" role="data" />
+     <file name="site-content-slider.css" role="data" />
      <file name="site-image-cell-renderer.css" role="data" />
      <file name="site-jw-player-media-display.css" role="data" />
      <file name="site-search-results-page.css" role="data" />
@@ -555,6 +557,7 @@ No release notes for you!
     </dir> <!-- /www/styles -->
    </dir> <!-- /www -->
    <file name="ChangeLog" role="data" />
+   <file name="Site-1.6.23.tgz" role="data" />
   </dir> <!-- / -->
  </contents>
  <dependencies>
@@ -659,7 +662,7 @@ No release notes for you!
  <changelog>
   <release>
    <version>
-    <release>1.6.23</release>
+    <release>1.6.25</release>
     <api>0.0.1</api>
    </version>
    <stability>
