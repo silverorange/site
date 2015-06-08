@@ -143,6 +143,9 @@ class SiteVideoMedia extends SiteMedia
 		$jwplayer->swf_uri = 'packages/site/javascript/jwplayer.flash.swf';
 		$jwplayer->key = $app->config->jwplayer->key;
 
+		$jwplayer->menu_title = $app->config->site->title;
+		$jwplayer->menu_link = $app->getBaseHref();
+
 		if ($app->session->isActive()) {
 			$jwplayer->setSession($app->session);
 		}

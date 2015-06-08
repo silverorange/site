@@ -117,7 +117,7 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 		if ($this->clear_cache) {
 			$this->debug(Site::_('Clearing cached search results ... '));
 
-			$sql = 'delete from NateGoSearchCache';
+			$sql = 'truncate NateGoSearchCache';
 			SwatDB::exec($this->db, $sql);
 
 			$this->debug(Site::_('done')."\n");
