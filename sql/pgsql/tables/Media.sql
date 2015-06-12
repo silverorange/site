@@ -1,6 +1,7 @@
 create table Media (
 	id serial,
 
+	key varchar(50),
 	media_set integer not null references MediaSet(id),
 	image     integer references Image(id) on delete set null,
 
@@ -16,7 +17,6 @@ create table Media (
 	createdate timestamp,
 
 	-- SiteVideoMedia specific fields
-	key varchar(50),
 	scrubber_image integer references Image(id) on delete set null,
 	scrubber_image_count integer not null default 0,
 
