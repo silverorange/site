@@ -434,7 +434,7 @@ class SiteMedia extends SwatDBDataObject
 	// {{{ public function loadByKey()
 
 	/**
-	 * Loads an media from its key
+	 * Loads a media object from its key
 	 *
 	 * @param string $key the key of the media to load.
 	 *
