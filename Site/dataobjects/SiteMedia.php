@@ -431,6 +431,44 @@ class SiteMedia extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function loadByKey()
+
+	/**
+	 * Loads a media object from its key
+	 *
+	 * @param string $key the key of the media to load.
+	 *
+	 * @return boolean true if the loading of this media was successful and
+	 *                  false if the media with the given key doesn't exist.
+	 */
+	public function loadByKey($key)
+	{
+		$this->checkDB();
+
+		$row = null;
+
+		if ($this->table !== null) {
+			$sql = sprintf(
+				'select * from %s where key = %s',
+				$this->table,
+				$this->db->quote($key)
+			);
+
+			$rs = SwatDB::query($this->db, $sql, null);
+			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+		}
+
+		if ($row === null) {
+			return false;
+		}
+
+		$this->initFromRow($row);
+		$this->generatePropertyHashes();
+
+		return true;
+	}
+
+	// }}}
 	// {{{ protected function loadEncodingBindings()
 
 	protected function loadEncodingBindings()
