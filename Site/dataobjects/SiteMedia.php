@@ -434,13 +434,12 @@ class SiteMedia extends SwatDBDataObject
 	// {{{ public function loadByKey()
 
 	/**
-	 * Loads an video from its key
+	 * Loads an media from its key
 	 *
-	 * @param string $key the key of the video to load.
+	 * @param string $key the key of the media to load.
 	 *
-	 * @return boolean true if the loading of this video was successful and
-	 *                  false if the video with the given key doesn't
-	 *                  exist.
+	 * @return boolean true if the loading of this media was successful and
+	 *                  false if the media with the given key doesn't exist.
 	 */
 	public function loadByKey($key)
 	{
@@ -449,16 +448,19 @@ class SiteMedia extends SwatDBDataObject
 		$row = null;
 
 		if ($this->table !== null) {
-			$sql = sprintf('select * from %s where key = %s',
+			$sql = sprintf(
+				'select * from %s where key = %s',
 				$this->table,
-				$this->db->quote($key));
+				$this->db->quote($key)
+			);
 
 			$rs = SwatDB::query($this->db, $sql, null);
 			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
 		}
 
-		if ($row === null)
+		if ($row === null) {
 			return false;
+		}
 
 		$this->initFromRow($row);
 		$this->generatePropertyHashes();
