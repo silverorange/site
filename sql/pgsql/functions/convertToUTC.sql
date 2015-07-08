@@ -7,4 +7,4 @@ CREATE OR REPLACE FUNCTION convertToUTC (timestamp, varchar(50)) RETURNS timesta
 		select into local_date ((param_date at time zone param_time_zone) at time zone 'UTC');
 		RETURN local_date;
 	END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE 'plpgsql' IMMUTABLE;
