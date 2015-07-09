@@ -228,13 +228,15 @@ abstract class SiteSearchEngine extends SwatObject
 	protected function queryResults($select_clause, $from_clause,
 		$where_clause, $order_by_clause, $limit_clause, $offset_clause)
 	{
-		$sql = sprintf('%1$s %2$s %3$s %4$s %5$s %6$s',
+		$sql = sprintf(
+			'%1$s %2$s %3$s %4$s %5$s %6$s',
 			$select_clause,
 			$from_clause,
 			$where_clause,
 			$order_by_clause,
 			$limit_clause,
-			$offset_clause);
+			$offset_clause
+		);
 
 		$results = false;
 
@@ -244,23 +246,7 @@ abstract class SiteSearchEngine extends SwatObject
 			$ids = $this->app->getCacheValue($key, $ns);
 
 			if ($ids !== false) {
-				$wrapper_class = $this->getResultWrapperClass();
-				$results = new $wrapper_class();
-				if (count($ids) > 0) {
-					$cached_results = $this->app->getCacheValue($ids, $ns);
-					if (count($cached_results) !== count($ids)) {
-						$results = false;
-					} else {
-						foreach ($cached_results as $result) {
-							$results->add($result);
-						}
-					}
-				}
-
-				if ($results !== false) {
-					$results->setDatabase($this->app->db);
-					$results->reindex();
-				}
+				$results = $this->getCachedResults($ids, $key, $ns);
 			}
 		}
 
@@ -278,6 +264,32 @@ abstract class SiteSearchEngine extends SwatObject
 
 				$this->app->addCacheValue($ids, $key, $ns);
 			}
+		}
+
+		return $results;
+	}
+
+	// }}}
+	// {{{ protected function getCachedResults()
+
+	protected function getCachedResults($ids, $key, $ns)
+	{
+		$wrapper_class = $this->getResultWrapperClass();
+		$results = new $wrapper_class();
+		if (count($ids) > 0) {
+			$cached_results = $this->app->getCacheValue($ids, $ns);
+			if (count($cached_results) !== count($ids)) {
+				$results = false;
+			} else {
+				foreach ($cached_results as $result) {
+					$results->add($result);
+				}
+			}
+		}
+
+		if ($results !== false) {
+			$results->setDatabase($this->app->db);
+			$results->reindex();
 		}
 
 		return $results;
