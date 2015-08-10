@@ -70,6 +70,7 @@ $package->addPackageDepWithChannel('optional', 'sdk', 'pear.amazonwebservices.co
 $package->addPackageDepWithChannel('optional', 'Net_Notifier', 'pear.silverorange.com', '0.1.0');
 $package->addPackageDepWithChannel('optional', 'FFmpegPHP2', 'pear.codescale.net', '1.9.2');
 $package->addPackageDepWithChannel('optional', 'PSR_Log', 'pear.silverorange.com', '1.0.0');
+$package->addExtensionDep('required', 'openssl');
 $package->addExtensionDep('optional', 'imagick', '2.0.0');
 $package->addExtensionDep('optional', 'uploadprogress', '0.3.0');
 $package->addExtensionDep('optional', 'memcached', '0.1.5');
