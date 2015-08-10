@@ -642,7 +642,9 @@ class SiteAccount extends SwatDBDataObject
 	protected function getResetPasswordValues()
 	{
 		return array(
-			'password_tag' => SwatString::hash(uniqid(rand(), true)),
+			'password_tag' => SwatString::hash(
+				openssl_random_pseudo_bytes(32)
+			),
 		);
 	}
 
