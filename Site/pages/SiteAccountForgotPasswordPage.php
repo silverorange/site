@@ -118,8 +118,8 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 			$message = $this->getAccountNotFoundMessage();
 			$this->ui->getWidget('email')->addMessage($message);
 		} else {
-			$this->sendResetPasswordMailMessage($this->account);
 			$this->account->resetPassword($this->app);
+			$this->sendResetPasswordMailMessage($this->account);
 		}
 	}
 
