@@ -611,8 +611,8 @@ class SiteAccount extends SwatDBDataObject
 
 		$email->smtp_server = $app->config->email->smtp_server;
 		$email->from_address = $app->config->email->service_address;
-		$email->from_name = sprintf('%s Customer Service', $title);
-		$email->subject = sprintf('Reset Your %s Password', $title);
+		$email->from_name = sprintf(Site::_('%s Customer Service'), $title);
+		$email->subject = sprintf(Site::_('Reset Your %s Password'), $title);
 
 		$email->send();
 	}
@@ -719,8 +719,8 @@ class SiteAccount extends SwatDBDataObject
 
 		$email->smtp_server = $app->config->email->smtp_server;
 		$email->from_address = $app->config->email->service_address;
-		$email->from_name = sprintf('%s Customer Service', $title);
-		$email->subject = sprintf('Your New %s Password', $title);
+		$email->from_name = sprintf(Site::_('%s Customer Service'), $title);
+		$email->subject = sprintf(Site::_('Your New %s Password'), $title);
 
 		$email->send();
 	}
