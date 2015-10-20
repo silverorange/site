@@ -119,7 +119,7 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 			$this->ui->getWidget('email')->addMessage($message);
 		} else {
 			$this->account->resetPassword($this->app);
-			$this->account->sendResetPasswordMailMessage($this->app);
+			$this->sendResetPasswordMailMessage($this->account);
 		}
 	}
 
@@ -139,6 +139,14 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 
 		$message->content_type = 'text/xml';
 		return $message;
+	}
+
+	// }}}
+	// {{{ protected function sendResetPasswordMailMessage()
+
+	protected function sendResetPasswordMailMessage(SiteAccount $account)
+	{
+		$account->sendResetPasswordMailMessage($this->app);
 	}
 
 	// }}}
