@@ -33,6 +33,13 @@ class SiteMedia extends SwatDBDataObject
 	public $id;
 
 	/**
+	 * Path key
+	 *
+	 * @var string
+	 */
+	public $path_key;
+
+	/**
 	 * Title
 	 *
 	 * @var string
@@ -209,12 +216,14 @@ class SiteMedia extends SwatDBDataObject
 
 	public function getDownloadUri($encoding_shortname = null, $prefix = null)
 	{
-		if ($prefix != null)
+		if ($prefix !== null) {
 			$prefix.= '/';
+		}
 
 		$id = $this->id;
-		if ($encoding_shortname != null)
+		if ($encoding_shortname !== null) {
 			$id.= '-'.$encoding_shortname;
+		}
 
 		return sprintf('%smedia%s', $prefix, $id);
 	}
@@ -745,7 +754,7 @@ class SiteMedia extends SwatDBDataObject
 		if ($this->getMediaSet()->obfuscate_filename) {
 			$filename = $this->filename;
 		} else {
-			$filename = $this->id;
+			$filename = $encoding_shortname;
 		}
 
 		return sprintf('%s.%s', $filename, $binding->media_type->extension);
