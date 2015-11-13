@@ -12,6 +12,7 @@ require_once 'Site/SiteApplicationModule.php';
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
  * @link      https://www.facebook.com/business/help/952192354843755
+ * @link      https://developers.facebook.com/docs/facebook-pixel
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
