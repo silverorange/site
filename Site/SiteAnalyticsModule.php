@@ -80,7 +80,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var string
 	 */
-	protected $facebook_account;
+	protected $facebook_pixel_id;
 
 	/**
 	 * Stack of commands to send to facebook pixels
@@ -106,7 +106,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->display_advertising =
 			$config->analytics->google_display_advertising;
 
-		$this->facebook_account = $config->analytics->facebook_account;
+		$this->facebook_pixel_id = $config->analytics->facebook_pixel_id;
 
 		$this->initOptOut();
 
@@ -246,7 +246,7 @@ JS;
 	public function hasFacebookPixel()
 	{
 		return (
-			$this->facebook_account != '' &&
+			$this->facebook_pixel_id != '' &&
 			$this->analytics_opt_out === false
 		);
 	}
@@ -325,7 +325,7 @@ JS;
 			$commands.= $this->getFacebookPixelCommand(
 				array(
 					'init',
-					$this->facebook_account,
+					$this->facebook_pixel_id,
 				)
 			);
 
