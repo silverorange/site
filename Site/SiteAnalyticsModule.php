@@ -280,6 +280,19 @@ JS;
 	}
 
 	// }}}
+	// {{{ public function getFacebookPixelImage()
+
+	public function getFacebookPixelImage()
+	{
+		return sprintf(
+			'<noscript><img height="1" width="1" style="display:none"
+			src="https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1"
+			/></noscript>',
+			SwatString::minimizeEntities($this->facebook_pixel_id)
+		)
+	}
+
+	// }}}
 	// {{{ public function getFacebookPixelInlineJavascript()
 
 	public function getFacebookPixelInlineJavascript()
