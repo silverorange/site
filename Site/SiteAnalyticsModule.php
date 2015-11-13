@@ -118,6 +118,15 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function hasAnalytics()
+
+	public function hasAnalytics()
+	{
+		return ($this->hasGoogleAnalytics() && $this->hasFacebookPixel());
+	}
+
+	// }}}
+
 	// {{{ public function hasGoogleAnalytics()
 
 	public function hasGoogleAnalytics()
