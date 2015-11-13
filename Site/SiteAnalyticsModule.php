@@ -5,13 +5,13 @@ require_once 'Site/SiteApplicationModule.php';
 /**
  * Web application module for handling site analytics.
  *
- * Currently only has support for Google Analytics, but other analytic trackers
- * could be added.
+ * Currently only has support for Google Analytics and Facebook Pixels.
  *
  * @package   Site
  * @copyright 2007-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
+ * @link      https://www.facebook.com/business/help/952192354843755
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
@@ -75,6 +75,23 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $ga_commands = array();
 
+	/**
+	 * Facebook Pixel Account
+	 *
+	 * @var string
+	 */
+	protected $facebook_account;
+
+	/**
+	 * Stack of commands to send to facebook pixels
+	 *
+	 * Each entry is an array where the first value is the facebook pixel
+	 * command, and any following values are optional command parameters.
+	 *
+	 * @var array
+	 */
+	protected $facebook_pixel_commands = array();
+
 	// }}}
 	// {{{ public function init()
 
@@ -89,11 +106,14 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->display_advertising =
 			$config->analytics->google_display_advertising;
 
+		$this->facebook_account = $config->analytics->facebook_account;
+
 		$this->initOptOut();
 
 		// skip init of the commands if we're opted out.
 		if ($this->analytics_opt_out === false) {
 			$this->initGoogleAnalyticsCommands();
+			$this->initFacebookPixelCommands();
 		}
 	}
 
@@ -213,7 +233,7 @@ JS;
 
 			$javascript = sprintf(
 				$javascript,
-				$this->getTrackingCodeSource()
+				$this->getGoogleAnalyticsTrackingCodeSource()
 			);
 		}
 
@@ -221,9 +241,115 @@ JS;
 	}
 
 	// }}}
-	// {{{ protected function getTrackingCodeSource()
+	// {{{ public function hasGoogleAnalytics()
 
-	protected function getTrackingCodeSource()
+	public function hasFacebookPixel()
+	{
+		return (
+			$this->facebook_account != '' &&
+			$this->analytics_opt_out === false
+		);
+	}
+
+	// }}}
+	// {{{ public function pushFacebookPixelCommand()
+
+	public function pushFacebookPixelCommand($command)
+	{
+		$this->facebook_pixel_commands = array_merge(
+			$this->facebook_pixel_commands,
+			$command
+		);
+	}
+
+	// }}}
+	// {{{ public function prependFacebookPixelCommand()
+
+	public function prependFacebookPixelCommand($command)
+	{
+		array_unshift($this->facebook_pixel_commands, $command);
+	}
+
+	// }}}
+	// {{{ public function getFacebookPixelInlineJavascript()
+
+	public function getFacebookPixelInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasFacebookPixel() &&
+			count($this->facebook_pixel_commands)) {
+			$javascript = sprintf(
+				"%s\n%s",
+				$this->getFacebookPixelTrackerInlineJavascript(),
+				$this->getFacebookPixelCommandsInlineJavascript()
+			);
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getFacebookPixelTrackerInlineJavascript()
+
+	public function getFacebookPixelTrackerInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasFacebookPixel()) {
+			$javascript = <<<JS
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','//connect.facebook.net/en_US/fbevents.js');
+JS;
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getFacebookPixelCommandsInlineJavascript()
+
+	public function getFacebookPixelCommandsInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasFacebookPixel() &&
+			count($this->facebook_pixel_commands)) {
+			$commands = null;
+
+			// Always init with the account and track the pageview before any
+			// further commands.
+			$commands.= $this->getFacebookPixelCommand(
+				array(
+					'init',
+					$this->facebook_account,
+				)
+			);
+
+			foreach ($this->facebook_pixel_commands as $command) {
+				$commands.= $this->getFacebookPixelCommand($command);
+			}
+
+			$javascript = <<<JS
+%s
+JS;
+
+			$javascript = sprintf(
+				$javascript,
+				$commands
+			);
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getGoogleAnalyticsTrackingCodeSource()
+
+	protected function getGoogleAnalyticsTrackingCodeSource()
 	{
 		if ($this->display_advertising) {
 			$source = ($this->app->isSecure())
@@ -252,6 +378,19 @@ JS;
 				100
 			),
 			'_trackPageview',
+		);
+	}
+
+	// }}}
+	// {{{ protected function initFacebookPixelCommands()
+
+	protected function initFacebookPixelCommands()
+	{
+		// Default commands for all sites:
+		// * Speed sampling 100% of the time.
+		// * Track the page view.
+		$this->ga_commands = array(
+			'PageView',
 		);
 	}
 
@@ -329,6 +468,39 @@ JS;
 
 		return sprintf(
 			'_gaq.push([%s%s]);',
+			SwatString::quoteJavaScriptString($method),
+			$options
+		);
+	}
+
+	// }}}
+	// {{{ protected function getFacebookPixelCommand()
+
+	protected function getFacebookPixelCommand($command)
+	{
+		$method  = null;
+		$options = null;
+
+		if (is_array($command)) {
+			$method = array_shift($command);
+
+			foreach ($command as $part) {
+				$quoted_part = (is_float($part) || is_int($part))
+					? $part
+					: SwatString::quoteJavaScriptString($part);
+
+				$options.= sprintf(
+					', %s',
+					$quoted_part
+				);
+			}
+		} else {
+			$method = $command;
+		}
+
+		return sprintf(
+			'fbq(%s, %s%s);',
+			SwatString::quoteJavaScriptString('track'),
 			SwatString::quoteJavaScriptString($method),
 			$options
 		);
