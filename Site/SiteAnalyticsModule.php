@@ -474,10 +474,7 @@ JS;
 					? $part
 					: SwatString::quoteJavaScriptString($part);
 
-				$options.= sprintf(
-					', %s',
-					$quoted_part
-				);
+				$options.= ', '.$quoted_part;
 			}
 		} else {
 			$method = $command;
@@ -506,10 +503,7 @@ JS;
 					? $part
 					: SwatString::quoteJavaScriptString($part);
 
-				$options.= sprintf(
-					', %s',
-					$quoted_part
-				);
+				$options.= ', '.$quoted_part;
 			}
 		} else {
 			$method = $command;
