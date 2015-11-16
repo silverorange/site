@@ -122,7 +122,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function hasAnalytics()
 	{
-		return ($this->hasGoogleAnalytics() && $this->hasFacebookPixel());
+		return ($this->hasGoogleAnalytics() || $this->hasFacebookPixel());
 	}
 
 	// }}}
