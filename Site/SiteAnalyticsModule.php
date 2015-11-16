@@ -294,7 +294,7 @@ XHTML;
 
 		return sprintf(
 			$xhtml,
-			SwatString::minimizeEntities($this->facebook_pixel_id)
+			SwatString::minimizeEntities(rawurlencode($this->facebook_pixel_id))
 		);
 	}
 
