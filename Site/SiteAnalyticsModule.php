@@ -463,8 +463,8 @@ JS;
 
 	protected function getGoogleAnalyticsCommand($command)
 	{
-		$method  = null;
-		$options = null;
+		$method  = '';
+		$options = '';
 
 		if (is_array($command)) {
 			$method = array_shift($command);
@@ -495,8 +495,8 @@ JS;
 
 	protected function getFacebookPixelCommand($command)
 	{
-		$method  = null;
-		$options = null;
+		$method  = '';
+		$options = '';
 
 		if (is_array($command)) {
 			$method = array_shift($command);
