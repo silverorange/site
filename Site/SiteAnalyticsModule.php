@@ -126,7 +126,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
-
 	// {{{ public function hasGoogleAnalytics()
 
 	public function hasGoogleAnalytics()
