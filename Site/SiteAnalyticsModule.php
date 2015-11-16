@@ -289,7 +289,7 @@ JS;
 			src="https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1"
 			/></noscript>',
 			SwatString::minimizeEntities($this->facebook_pixel_id)
-		)
+		);
 	}
 
 	// }}}
