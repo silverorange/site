@@ -516,8 +516,7 @@ JS;
 		}
 
 		return sprintf(
-			'fbq(%s, %s%s);',
-			SwatString::quoteJavaScriptString('track'),
+			"fbq('track', %s%s);",
 			SwatString::quoteJavaScriptString($method),
 			$options
 		);
