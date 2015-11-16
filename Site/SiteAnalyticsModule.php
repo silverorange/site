@@ -404,9 +404,8 @@ JS;
 	protected function initFacebookPixelCommands()
 	{
 		// Default commands for all sites:
-		// * Speed sampling 100% of the time.
 		// * Track the page view.
-		$this->ga_commands = array(
+		$this->facebook_pixel_commands = array(
 			'PageView',
 		);
 	}
