@@ -165,11 +165,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics() && count($this->ga_commands) > 0) {
-			$javascript = sprintf(
-				"%s\n%s",
-				$this->getGoogleAnalyticsCommandsInlineJavascript(),
-				$this->getGoogleAnalyticsTrackerInlineJavascript()
-			);
+			$javascript = $this->getGoogleAnalyticsCommandsInlineJavascript();
+			$javascript.= "\n";
+			$javascript.= $this->getGoogleAnalyticsTrackerInlineJavascript();
 		}
 
 		return $javascript;
@@ -309,12 +307,10 @@ XHTML;
 		$javascript = null;
 
 		if ($this->hasFacebookPixel() &&
-			count($this->facebook_pixel_commands)) {
-			$javascript = sprintf(
-				"%s\n%s",
-				$this->getFacebookPixelTrackerInlineJavascript(),
-				$this->getFacebookPixelCommandsInlineJavascript()
-			);
+			count($this->facebook_pixel_commands) > 0) {
+			$javascript = $this->getFacebookPixelTrackerInlineJavascript();
+			$javascript.= "\n";
+			$javascript.= $this->getFacebookPixelCommandsInlineJavascript();
 		}
 
 		return $javascript;
