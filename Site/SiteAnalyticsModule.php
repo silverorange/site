@@ -344,11 +344,9 @@ JS;
 
 		if ($this->hasFacebookPixel() &&
 			count($this->facebook_pixel_commands) > 0) {
-			$javascript = '';
-
 			// Always init with the account and track the pageview before any
 			// further commands.
-			$javascript.= $this->getFacebookPixelCommand(
+			$javascript = $this->getFacebookPixelCommand(
 				array(
 					'init',
 					$this->facebook_pixel_id,
