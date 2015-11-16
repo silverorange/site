@@ -142,7 +142,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function pushGoogleAnalyticsCommand(array $command)
 	{
-		$this->ga_commands = array_merge($this->ga_commands, $command);
+		$this->ga_commands[] = $command;
 	}
 
 	// }}}
@@ -267,10 +267,7 @@ JS;
 
 	public function pushFacebookPixelCommand(array $command)
 	{
-		$this->facebook_pixel_commands = array_merge(
-			$this->facebook_pixel_commands,
-			$command
-		);
+		$this->facebook_pixel_commands[] = $command;
 	}
 
 	// }}}
