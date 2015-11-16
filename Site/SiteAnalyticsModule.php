@@ -160,7 +160,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$javascript = null;
 
-		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
+		if ($this->hasGoogleAnalytics() && count($this->ga_commands) > 0) {
 			$javascript = sprintf(
 				"%s\n%s",
 				$this->getGoogleAnalyticsCommandsInlineJavascript(),
@@ -178,8 +178,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$javascript = null;
 
-		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
-			$commands = null;
+		if ($this->hasGoogleAnalytics() && count($this->ga_commands) > 0) {
+			$commands = '';
 
 			if ($this->enhanced_link_attribution) {
 				// Enhanced link attribution plugin comes before _setAccount in
@@ -209,7 +209,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 				$commands.= $this->getGoogleAnalyticsCommand($command);
 			}
 
-			$javascript = <<<JS
+			$javascript = <<<'JS'
 var _gaq = _gaq || [];
 %s
 JS;
@@ -231,7 +231,7 @@ JS;
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics()) {
-			$javascript = <<<JS
+			$javascript = <<<'JS'
 (function() {
 	var ga = document.createElement('script');
 	ga.type = 'text/javascript';
@@ -286,10 +286,12 @@ JS;
 
 	public function getFacebookPixelImage()
 	{
+		$xhtml = <<<'XHTML'
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1"/></noscript>
+XHTML;
+
 		return sprintf(
-			'<noscript><img height="1" width="1" style="display:none"
-			src="https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1"
-			/></noscript>',
+			$xhtml,
 			SwatString::minimizeEntities($this->facebook_pixel_id)
 		);
 	}
@@ -321,7 +323,7 @@ JS;
 		$javascript = null;
 
 		if ($this->hasFacebookPixel()) {
-			$javascript = <<<JS
+			$javascript = <<<'JS'
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
 n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
@@ -341,12 +343,12 @@ JS;
 		$javascript = null;
 
 		if ($this->hasFacebookPixel() &&
-			count($this->facebook_pixel_commands)) {
-			$commands = null;
+			count($this->facebook_pixel_commands) > 0) {
+			$javascript = '';
 
 			// Always init with the account and track the pageview before any
 			// further commands.
-			$commands.= $this->getFacebookPixelCommand(
+			$javascript.= $this->getFacebookPixelCommand(
 				array(
 					'init',
 					$this->facebook_pixel_id,
@@ -354,17 +356,8 @@ JS;
 			);
 
 			foreach ($this->facebook_pixel_commands as $command) {
-				$commands.= $this->getFacebookPixelCommand($command);
+				$javascript.= $this->getFacebookPixelCommand($command);
 			}
-
-			$javascript = <<<JS
-%s
-JS;
-
-			$javascript = sprintf(
-				$javascript,
-				$commands
-			);
 		}
 
 		return $javascript;
