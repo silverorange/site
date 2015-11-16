@@ -499,7 +499,13 @@ JS;
 			$method = array_shift($command);
 
 			foreach ($command as $part) {
-				$quoted_part = (is_float($part) || is_int($part))
+				// check for js array and don't quote those.
+				$is_array = (
+					strpos($part, '{') === 0 &&
+					strpos($part, '}') === strlen($part)
+				);
+
+				$quoted_part = (is_float($part) || is_int($part) || $is_array)
 					? $part
 					: SwatString::quoteJavaScriptString($part);
 
