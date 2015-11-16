@@ -499,11 +499,9 @@ JS;
 			$method = array_shift($command);
 
 			foreach ($command as $part) {
-				// check for js array and don't quote those.
-				$is_array = (
-					strpos($part, '{') === 0 &&
-					strpos($part, '}') === strlen($part)
-				);
+				// Facebook command parts can be json arrays, so don't further
+				// quote them.
+				$is_array = (json_encode($part) !== null);
 
 				$quoted_part = (is_float($part) || is_int($part) || $is_array)
 					? $part
