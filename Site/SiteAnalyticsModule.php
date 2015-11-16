@@ -250,7 +250,7 @@ JS;
 	}
 
 	// }}}
-	// {{{ public function hasGoogleAnalytics()
+	// {{{ public function hasFacebookPixel()
 
 	public function hasFacebookPixel()
 	{
