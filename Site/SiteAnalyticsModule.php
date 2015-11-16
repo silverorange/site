@@ -111,7 +111,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->initOptOut();
 
 		// skip init of the commands if we're opted out.
-		if ($this->analytics_opt_out === false) {
+		if (!$this->analytics_opt_out) {
 			$this->initGoogleAnalyticsCommands();
 			$this->initFacebookPixelCommands();
 		}
@@ -131,8 +131,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function hasGoogleAnalytics()
 	{
-		return ($this->google_account != '' &&
-			$this->analytics_opt_out === false);
+		return (
+			$this->google_account != '' &&
+			!$this->analytics_opt_out
+		);
 	}
 
 	// }}}
@@ -256,7 +258,7 @@ JS;
 	{
 		return (
 			$this->facebook_pixel_id != '' &&
-			$this->analytics_opt_out === false
+			!$this->analytics_opt_out
 		);
 	}
 
