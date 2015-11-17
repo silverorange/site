@@ -492,34 +492,13 @@ JS;
 
 	protected function getFacebookPixelCommand($command)
 	{
-		$method  = '';
-		$options = '';
-
-		if (is_array($command)) {
-			$method = array_shift($command);
-
-			foreach ($command as $part) {
-				// Facebook event parameters can be an array of values that
-				// should be json encoded.
-				if (is_array($part)) {
-					$formatted_part = json_encode($part);
-				} else {
-					$formatted_part = (is_float($part) || is_int($part))
-						? $part
-						: SwatString::quoteJavaScriptString($part);
-				}
-
-				$options.= ', '.$formatted_part;
-			}
-		} else {
-			$method = $command;
+		if (!is_array($command)) {
+			$command = array($command);
 		}
 
 		return sprintf(
-			"fbq(%s, %s%s);",
-			SwatString::quoteJavaScriptString($command),
-			SwatString::quoteJavaScriptString($method),
-			$options
+			'fbq(%s);',
+			implode(', ', array_map('json_encode', $command))
 		);
 	}
 
