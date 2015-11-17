@@ -94,7 +94,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 				$slot,
 				);
 
-			$analytics->prependGoogleAnalyticsCommand($ga_command);
+			$analytics->prependGoogleAnalyticsCommands($ga_command);
 		}
 	}
 
@@ -205,7 +205,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 				);
 
 			// prepend since it has to happen before the pageview
-			$analytics->prependGoogleAnalyticsCommand($ga_command);
+			$analytics->prependGoogleAnalyticsCommands($ga_command);
 		}
 	}
 

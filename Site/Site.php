@@ -237,6 +237,9 @@ class Site
 			'analytics.google_enhanced_link_attribution' => true,
 			'analytics.google_display_advertising'       => false,
 
+			// Facebook Pixel id
+			'analytics.facebook_pixel_id' => null,
+
 			// Ads
 			// Tracking id in URIs
 			'ads.tracking_id'          => 'utm_source',

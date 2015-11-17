@@ -5,13 +5,13 @@ require_once 'Site/SiteApplicationModule.php';
 /**
  * Web application module for handling site analytics.
  *
- * Currently only has support for Google Analytics, but other analytic trackers
- * could be added.
+ * Currently only has support for Google Analytics and Facebook Pixels.
  *
  * @package   Site
  * @copyright 2007-2015 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
+ * @link      https://developers.facebook.com/docs/facebook-pixel/api-reference
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
@@ -75,6 +75,23 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $ga_commands = array();
 
+	/**
+	 * Facebook Pixel Account
+	 *
+	 * @var string
+	 */
+	protected $facebook_pixel_id;
+
+	/**
+	 * Stack of commands to send to facebook pixels
+	 *
+	 * Each entry is an array where the first value is the facebook pixel
+	 * command, and any following values are optional command parameters.
+	 *
+	 * @var array
+	 */
+	protected $facebook_pixel_commands = array();
+
 	// }}}
 	// {{{ public function init()
 
@@ -89,12 +106,23 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->display_advertising =
 			$config->analytics->google_display_advertising;
 
+		$this->facebook_pixel_id = $config->analytics->facebook_pixel_id;
+
 		$this->initOptOut();
 
 		// skip init of the commands if we're opted out.
-		if ($this->analytics_opt_out === false) {
+		if (!$this->analytics_opt_out) {
 			$this->initGoogleAnalyticsCommands();
+			$this->initFacebookPixelCommands();
 		}
+	}
+
+	// }}}
+	// {{{ public function hasAnalytics()
+
+	public function hasAnalytics()
+	{
+		return ($this->hasGoogleAnalytics() || $this->hasFacebookPixel());
 	}
 
 	// }}}
@@ -102,24 +130,30 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function hasGoogleAnalytics()
 	{
-		return ($this->google_account != '' &&
-			$this->analytics_opt_out === false);
+		return (
+			$this->google_account != '' &&
+			!$this->analytics_opt_out
+		);
 	}
 
 	// }}}
-	// {{{ public function pushGoogleAnalyticsCommand()
+	// {{{ public function pushGoogleAnalyticsCommands()
 
-	public function pushGoogleAnalyticsCommand($command)
+	public function pushGoogleAnalyticsCommands(array $commands)
 	{
-		$this->ga_commands = array_merge($this->ga_commands, $command);
+		foreach ($commands as $command) {
+			$this->ga_commands[] = $command;
+		}
 	}
 
 	// }}}
-	// {{{ public function prependGoogleAnalyticsCommand()
+	// {{{ public function prependGoogleAnalyticsCommands()
 
-	public function prependGoogleAnalyticsCommand($command)
+	public function prependGoogleAnalyticsCommands(array $commands)
 	{
-		array_unshift($this->ga_commands, $command);
+		foreach ($commands as $command) {
+			array_unshift($this->ga_commands, $command);
+		}
 	}
 
 	// }}}
@@ -129,12 +163,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$javascript = null;
 
-		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
-			$javascript = sprintf(
-				"%s\n%s",
-				$this->getGoogleAnalyticsCommandsInlineJavascript(),
-				$this->getGoogleAnalyticsTrackerInlineJavascript()
-			);
+		if ($this->hasGoogleAnalytics() && count($this->ga_commands) > 0) {
+			$javascript = $this->getGoogleAnalyticsCommandsInlineJavascript();
+			$javascript.= "\n";
+			$javascript.= $this->getGoogleAnalyticsTrackerInlineJavascript();
 		}
 
 		return $javascript;
@@ -147,8 +179,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$javascript = null;
 
-		if ($this->hasGoogleAnalytics() && count($this->ga_commands)) {
-			$commands = null;
+		if ($this->hasGoogleAnalytics() && count($this->ga_commands) > 0) {
+			$commands = '';
 
 			if ($this->enhanced_link_attribution) {
 				// Enhanced link attribution plugin comes before _setAccount in
@@ -178,7 +210,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 				$commands.= $this->getGoogleAnalyticsCommand($command);
 			}
 
-			$javascript = <<<JS
+			$javascript = <<<'JS'
 var _gaq = _gaq || [];
 %s
 JS;
@@ -200,7 +232,7 @@ JS;
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics()) {
-			$javascript = <<<JS
+			$javascript = <<<'JS'
 (function() {
 	var ga = document.createElement('script');
 	ga.type = 'text/javascript';
@@ -213,7 +245,7 @@ JS;
 
 			$javascript = sprintf(
 				$javascript,
-				$this->getTrackingCodeSource()
+				$this->getGoogleAnalyticsTrackingCodeSource()
 			);
 		}
 
@@ -221,9 +253,118 @@ JS;
 	}
 
 	// }}}
-	// {{{ protected function getTrackingCodeSource()
+	// {{{ public function hasFacebookPixel()
 
-	protected function getTrackingCodeSource()
+	public function hasFacebookPixel()
+	{
+		return (
+			$this->facebook_pixel_id != '' &&
+			!$this->analytics_opt_out
+		);
+	}
+
+	// }}}
+	// {{{ public function pushFacebookPixelCommands()
+
+	public function pushFacebookPixelCommands(array $commands)
+	{
+		foreach ($commands as $command) {
+			$this->facebook_pixel_commands[] = $command;
+		}
+	}
+
+	// }}}
+	// {{{ public function prependFacebookPixelCommands()
+
+	public function prependFacebookPixelCommands(array $commands)
+	{
+		foreach ($commands as $command) {
+			array_unshift($this->facebook_pixel_commands, $command);
+		}
+	}
+
+	// }}}
+	// {{{ public function getFacebookPixelImage()
+
+	public function getFacebookPixelImage()
+	{
+		$xhtml = <<<'XHTML'
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1"/></noscript>
+XHTML;
+
+		return sprintf(
+			$xhtml,
+			SwatString::minimizeEntities(rawurlencode($this->facebook_pixel_id))
+		);
+	}
+
+	// }}}
+	// {{{ public function getFacebookPixelInlineJavascript()
+
+	public function getFacebookPixelInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasFacebookPixel() &&
+			count($this->facebook_pixel_commands) > 0) {
+			$javascript = $this->getFacebookPixelTrackerInlineJavascript();
+			$javascript.= "\n";
+			$javascript.= $this->getFacebookPixelCommandsInlineJavascript();
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getFacebookPixelTrackerInlineJavascript()
+
+	public function getFacebookPixelTrackerInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasFacebookPixel()) {
+			$javascript = <<<'JS'
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','//connect.facebook.net/en_US/fbevents.js');
+JS;
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getFacebookPixelCommandsInlineJavascript()
+
+	public function getFacebookPixelCommandsInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasFacebookPixel() &&
+			count($this->facebook_pixel_commands) > 0) {
+			// Always init with the account and track the pageview before any
+			// further commands.
+			$javascript = $this->getFacebookPixelCommand(
+				array(
+					'init',
+					$this->facebook_pixel_id,
+				)
+			);
+
+			foreach ($this->facebook_pixel_commands as $command) {
+				$javascript.= $this->getFacebookPixelCommand($command);
+			}
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getGoogleAnalyticsTrackingCodeSource()
+
+	protected function getGoogleAnalyticsTrackingCodeSource()
 	{
 		if ($this->display_advertising) {
 			$source = ($this->app->isSecure())
@@ -252,6 +393,21 @@ JS;
 				100
 			),
 			'_trackPageview',
+		);
+	}
+
+	// }}}
+	// {{{ protected function initFacebookPixelCommands()
+
+	protected function initFacebookPixelCommands()
+	{
+		// Default commands for all sites:
+		// * Track the page view.
+		$this->facebook_pixel_commands = array(
+			array(
+				'track',
+				'PageView',
+			),
 		);
 	}
 
@@ -307,8 +463,8 @@ JS;
 
 	protected function getGoogleAnalyticsCommand($command)
 	{
-		$method  = null;
-		$options = null;
+		$method  = '';
+		$options = '';
 
 		if (is_array($command)) {
 			$method = array_shift($command);
@@ -318,10 +474,7 @@ JS;
 					? $part
 					: SwatString::quoteJavaScriptString($part);
 
-				$options.= sprintf(
-					', %s',
-					$quoted_part
-				);
+				$options.= ', '.$quoted_part;
 			}
 		} else {
 			$method = $command;
@@ -331,6 +484,21 @@ JS;
 			'_gaq.push([%s%s]);',
 			SwatString::quoteJavaScriptString($method),
 			$options
+		);
+	}
+
+	// }}}
+	// {{{ protected function getFacebookPixelCommand()
+
+	protected function getFacebookPixelCommand($command)
+	{
+		if (!is_array($command)) {
+			$command = array($command);
+		}
+
+		return sprintf(
+			'fbq(%s);',
+			implode(', ', array_map('json_encode', $command))
 		);
 	}
 
