@@ -404,7 +404,10 @@ JS;
 		// Default commands for all sites:
 		// * Track the page view.
 		$this->facebook_pixel_commands = array(
-			'PageView',
+			array(
+				'track',
+				'PageView',
+			),
 		);
 	}
 
@@ -513,7 +516,8 @@ JS;
 		}
 
 		return sprintf(
-			"fbq('track', %s%s);",
+			"fbq(%s, %s%s);",
+			SwatString::quoteJavaScriptString($command),
 			SwatString::quoteJavaScriptString($method),
 			$options
 		);
