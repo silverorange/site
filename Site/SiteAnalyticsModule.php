@@ -496,8 +496,8 @@ JS;
 			$method = array_shift($command);
 
 			foreach ($command as $part) {
-				// Facebook command parts can be json arrays, so don't further
-				// quote them.
+				// Facebook event parameters can be an array of values that
+				// should be json encoded.
 				if (is_array($part)) {
 					$formatted_part = json_encode($part);
 				} else {
