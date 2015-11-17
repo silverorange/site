@@ -498,13 +498,15 @@ JS;
 			foreach ($command as $part) {
 				// Facebook command parts can be json arrays, so don't further
 				// quote them.
-				$is_array = (json_encode($part) !== null);
+				if (is_array($part)) {
+					$formatted_part = json_encode($part);
+				} else {
+					$formatted_part = (is_float($part) || is_int($part))
+						? $part
+						: SwatString::quoteJavaScriptString($part);
+				}
 
-				$quoted_part = (is_float($part) || is_int($part) || $is_array)
-					? $part
-					: SwatString::quoteJavaScriptString($part);
-
-				$options.= ', '.$quoted_part;
+				$options.= ', '.$formatted_part;
 			}
 		} else {
 			$method = $command;
