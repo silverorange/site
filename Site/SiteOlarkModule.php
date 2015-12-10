@@ -30,15 +30,14 @@ class SiteOlarkModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function displayScriptTags()
+	// {{{ public function displayScriptTag()
 
-	public function displayScriptTags()
+	public function displayScriptTag()
 	{
 		if ($this->identity == '') {
 			throw new SiteException('Olark identity is required');
 		}
 
-		ob_start();
 		?>
 		<script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){
 		f[z]=function(){
