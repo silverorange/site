@@ -11,6 +11,17 @@ require_once 'Site/SiteApplicationModule.php';
  */
 class SiteOlarkModule extends SiteApplicationModule
 {
+	// {{{ public properties
+
+	/**
+	 * Locale strings
+	 *
+	 * @var array
+	 * @see https://www.olark.com/help/languages
+	 */
+	public $locale_strings = array();
+
+	// }}}
 	// {{{ protected properties
 
 	/**
@@ -38,8 +49,24 @@ class SiteOlarkModule extends SiteApplicationModule
 			throw new SiteException('Olark identity is required');
 		}
 
+		$api_lines = array(
+			sprintf(
+				'olark.identify(%s);',
+				SwatString::quoteJavaScriptString($this->identity)
+			)
+		);
+
+		foreach ($this->locale_strings as $id => $string) {
+			$api_lines[] = sprintf(
+				'olark.configure(%s, %s);',
+				SwatString::quoteJavaScriptString('locale.'.$id),
+				SwatString::quoteJavaScriptString($string)
+			);
+		}
+
 		?>
-		<script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){
+		<script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/
+		window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){
 		f[z]=function(){
 		(a.s=a.s||[]).push(arguments)};var a=f[z]._={
 		},q=c.methods.length;while(q--){(function(n){f[z][n]=function(){
@@ -55,8 +82,8 @@ class SiteOlarkModule extends SiteApplicationModule
 		var t=b.contentWindow[g];t.write(p());t.close()}catch(x){
 		b[k]=o+'d.write("'+p().replace(/"/g,String.fromCharCode(92)+'"')+'");d.close();'}a.P(2)};ld()};nt()})({
 		loader: "static.olark.com/jsclient/loader0.js",name:"olark",methods:["configure","extend","declare","identify"]});
-		/* custom configuration goes here (www.olark.com/documentation) */
-		olark.identify(<?= SwatString::quoteJavaScriptString($this->identity) ?>);/*]]>*/</script>
+		<?= implode('', $api_lines); ?>
+		/*]]>*/</script>
 		<?php
 	}
 
