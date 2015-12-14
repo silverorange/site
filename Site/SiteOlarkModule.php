@@ -25,11 +25,11 @@ class SiteOlarkModule extends SiteApplicationModule
 	// {{{ protected properties
 
 	/**
-	 * Olark identity
+	 * Olark site ID
 	 *
 	 * @var string
 	 */
-	protected $identity;
+	protected $site_id;
 
 	// }}}
 	// {{{ public function init()
@@ -37,7 +37,7 @@ class SiteOlarkModule extends SiteApplicationModule
 	public function init()
 	{
 		$config = $this->app->getModule('SiteConfigModule');
-		$this->identity = $config->olark->identity;
+		$this->site_id = $config->olark->site_id;
 	}
 
 	// }}}
@@ -45,14 +45,14 @@ class SiteOlarkModule extends SiteApplicationModule
 
 	public function displayScriptTag()
 	{
-		if ($this->identity == '') {
-			throw new SiteException('Olark identity is required');
+		if ($this->site_id == '') {
+			throw new SiteException('Olark site-id is required');
 		}
 
 		$api_lines = array(
 			sprintf(
 				'olark.identify(%s);',
-				SwatString::quoteJavaScriptString($this->identity)
+				SwatString::quoteJavaScriptString($this->site_id)
 			)
 		);
 

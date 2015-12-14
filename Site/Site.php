@@ -361,7 +361,7 @@ class Site
 			'crypt.rounds' => '10',
 
 			// Olark
-			'olark.identity' => null,
+			'olark.site_id' => null,
 		);
 	}
 
