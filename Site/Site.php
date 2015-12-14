@@ -359,6 +359,9 @@ class Site
 			// as sane defaults.
 			'crypt.method' => 'blowfish',
 			'crypt.rounds' => '10',
+
+			// Olark
+			'olark.site_id' => null,
 		);
 	}
 
