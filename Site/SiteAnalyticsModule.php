@@ -176,6 +176,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function prependGoogleAnalyticsCommands(array $commands)
 	{
+		$comands = array_reverse($commands);
 		foreach ($commands as $command) {
 			array_unshift($this->ga_commands, $command);
 		}
@@ -303,6 +304,7 @@ JS;
 
 	public function prependFacebookPixelCommands(array $commands)
 	{
+		$comands = array_reverse($commands);
 		foreach ($commands as $command) {
 			array_unshift($this->facebook_pixel_commands, $command);
 		}
@@ -412,6 +414,7 @@ JS;
 
 	public function prependBingUETCommands(array $commands)
 	{
+		$comands = array_reverse($commands);
 		foreach ($commands as $command) {
 			array_unshift($this->bing_uet_commands, $command);
 		}
