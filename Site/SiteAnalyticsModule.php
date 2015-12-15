@@ -656,7 +656,7 @@ JS;
 
 		return sprintf(
 			'window.uetq.push(%s);',
-			implode(', ', array_map('json_encode', $command))
+			json_encode($command)
 		);
 	}
 
