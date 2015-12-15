@@ -240,6 +240,9 @@ class Site
 			// Facebook Pixel id
 			'analytics.facebook_pixel_id' => null,
 
+			// Bing Universal Event Tracker id
+			'analytics.bing_uet_id' => null,
+
 			// Ads
 			// Tracking id in URIs
 			'ads.tracking_id'          => 'utm_source',
