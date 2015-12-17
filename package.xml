@@ -23,10 +23,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2015-11-18</date>
- <time>14:43:46</time>
+ <date>2015-12-17</date>
+ <time>11:15:15</time>
  <version>
-  <release>2.1.43</release>
+  <release>2.1.44</release>
   <api>2.0.0</api>
  </version>
  <stability>
@@ -422,6 +422,7 @@ No release notes for you!
     <file name="SiteNewPasswordMailMessage.php" role="php" />
     <file name="SiteNotifierModule.php" role="php" />
     <file name="SiteObject.php" role="php" />
+    <file name="SiteOlarkModule.php" role="php" />
     <file name="SitePageFactory.php" role="php" />
     <file name="SitePath.php" role="php" />
     <file name="SitePathEntry.php" role="php" />
@@ -716,14 +717,14 @@ No release notes for you!
  <changelog>
   <release>
    <version>
-    <release>2.1.43</release>
+    <release>2.1.44</release>
     <api>2.0.0</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2015-11-18</date>
+   <date>2015-12-17</date>
    <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
 No release notes for you!
