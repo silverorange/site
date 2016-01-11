@@ -1,6 +1,5 @@
 <?php
 
-require_once 'AWSSDKforPHP/sdk.class.php';
 require_once 'Site/SiteCdnModule.php';
 require_once 'Site/exceptions/SiteCdnException.php';
 
@@ -70,14 +69,14 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	/**
 	 * The Amazon S3 accessor
 	 *
-	 * @var AmazonS3
+	 * @var Aws\S3\S3Client
 	 */
 	protected $s3;
 
 	/**
 	 * The Amazon CloudFront accessor
 	 *
-	 * @var AmazonCloudFront
+	 * @var Aws\CloudFront\CloudFrontClient
 	 */
 	protected $cf;
 
@@ -114,26 +113,20 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			);
 		}
 
-		$this->s3 = new AmazonS3(
+		$sdk = new Aws\Sdk(
 			array(
-				'key'    => $this->access_key_id,
-				'secret' => $this->access_key_secret,
+				'version' => 'latest',
+				'credentials' => array(
+					'key'    => $this->access_key_id,
+					'secret' => $this->access_key_secret,
+				),
 			)
 		);
 
-		if ($this->cloudfront_enabled) {
-			$this->cf = new AmazonCloudFront(
-				array(
-					'key'    => $this->access_key_id,
-					'secret' => $this->access_key_secret,
-				)
-			);
+		$this->s3 = $sdk->getS3Client();
 
-			if ($this->distribution_key_pair_id !== null &&
-				$this->distribution_private_key !== null) {
-				$this->cf->set_keypair_id($this->distribution_key_pair_id);
-				$this->cf->set_private_key($this->distribution_private_key);
-			}
+		if ($this->cloudfront_enabled) {
+			$this->cf = $sdk->getCloudFrontClient();
 		}
 	}
 
@@ -158,13 +151,6 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 		if ($distribution_key_pair_id !== null) {
 			$this->distribution_key_pair_id = $distribution_key_pair_id;
-		}
-
-		// If this is called after init() and the cloudfront object already
-		// exits, set the private key.
-		if ($this->cf instanceof AmazonCloudFront) {
-			$this->cf->set_keypair_id($this->distribution_key_pair_id);
-			$this->cf->set_private_key($this->distribution_private_key);
 		}
 	}
 
@@ -218,89 +204,123 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			);
 		}
 
-		$headers['x-amz-meta-md5'] = md5_file($source);
-		$headers['x-amz-storage-class'] = $this->storage_class;
-
-		$acl = AmazonS3::ACL_PRIVATE;
-
+		// Get ACL value for S3
+		$acl = 'private';
 		if (strcasecmp($access_type, 'public') === 0) {
-			$acl = AmazonS3::ACL_PUBLIC;
+			$acl = 'public-read';
 		}
 
-		$metadata = $this->s3->get_object_metadata($this->bucket, $filename);
+		// Get MD5 from S3 and from local file.
+		$metadata = $this->getMetadata($filename);
+		$metadata = $metadata['Metadata'];
+		$new_md5 = md5_file($source);
+		$old_md5 = (isset($metadata['md5'])) ? $metadata['md5'] : '';
 
-		$new_md5 = $headers['x-amz-meta-md5'];
-		$old_md5 = isset($metadata['Headers']['x-amz-meta-md5']) ?
-			$metadata['Headers']['x-amz-meta-md5'] :
-			'';
+		// Convert HTTP headers into S3 options
+		$header_options = array();
+		if (is_array($headers)) {
+			if (isset($headers['Cache-Control'])) {
+				$header_options['CacheControl'] = $headers['Cache-Control'];
+			}
+			if (isset($headers['Content-Type'])) {
+				$header_options['ContentType'] = $headers['Content-Type'];
+			}
+			if (isset($headers['Content-Disposition'])) {
+				$header_options['ContentDisposition'] =
+					$headers['Content-Disposition'];
+			}
+		}
 
-		if (($old_md5 != '') && ($new_md5 === $old_md5)) {
-			$this->handleResponse(
-				$this->s3->update_object(
-					$this->bucket,
-					$filename,
-					array(
-						'acl' => $acl,
-						'headers' => $headers,
-					)
-				)
+		if ($old_md5 != '' && $new_md5 === $old_md5) {
+			// If MD5 from local file matches S3, just update the metadata.
+			$copy_source = sprintf(
+				'%s/%s',
+				$this->bucket,
+				Aws\S3\S3Client::encodeKey($filename)
 			);
+			$options = array_merge(
+				array(
+					'ACL'               => $acl,
+					'Bucket'            => $this->bucket,
+					'CopySource'        => $copy_source,
+					'Key'               => $filename,
+					'Metadata'          => $metadata,
+					'MetadataDirective' => 'REPLACE',
+					'StorageClass'      => $this->storage_class,
+				),
+				$header_options
+			);
+			try {
+				$this->s3->copyObject($options);
+			} catch (Aws\Exception\AwsException $e) {
+				throw new SiteCdnException($e);
+			}
 		} else {
-			$this->handleResponse(
-				$this->s3->create_object(
-					$this->bucket,
-					$filename,
-					array(
-						'acl' => $acl,
-						'headers' => $headers,
-						'fileUpload' => $source,
-					)
-				)
+			// If the MD5 on S3 does not match, upload the file content and
+			// set the MD5 in the S3 object metadata.
+			$metadata['md5'] = $new_md5;
+			$options = array_merge(
+				array(
+					'ACL'          => $acl,
+					'Bucket'       => $this->bucket,
+					'Key'          => $filename,
+					'Metadata'     => $metadata,
+					'SourceFile'   => $source,
+					'StorageClass' => $this->storage_class,
+				),
+				$header_options
 			);
+			try {
+				$this->s3->putObject($options);
+			} catch (Aws\Exception\AwsException $e) {
+				throw new SiteCdnException($e);
+			}
 		}
 	}
 
 	// }}}
-	// {{{ public function copyFile()
+	// {{{ public function moveFile()
 
 	/**
 	 * Moves a file around in the S3 bucket.
 	 *
-	 * @param string $filename the current name of the file to move.
+	 * @param string $old_filename the current name of the file to move.
 	 * @param string $new_filename the new name of the file to move.
-	 * @param string $access_type the access type, public/private, of the file.
+	 * @param string $access_type  the access type, public/private, of the file.
 	 *
 	 * @throws SiteCdnException if the CDN encounters any problems
 	 */
 	public function moveFile($old_filename, $new_filename,
 		$access_type = 'private')
 	{
-		// Since we can't use the old ACL, at least support passing in a new ACL
-		$acl = AmazonS3::ACL_PRIVATE;
+		// The getObjectAcl method returns extremely detailed information about
+		// user access levels. We just want to set 'private' or 'public-read'
+		// for the moved file. Since we can't easily look up the old ACL, at
+		// least support passing in a new ACL
+		$acl = 'private';
 		if (strcasecmp($access_type, 'public') === 0) {
-			$acl = AmazonS3::ACL_PUBLIC;
+			$acl = 'public-read';
 		}
 
-		// TODO: Need a simplier way to look up the current ACL as the constant
-		// as this returns a bigger set of information.
-		//$acl = $this->s3->getObjectAcl($this->bucket, $old_filename);
-
-		$this->handleResponse(
-			$this->s3->copy_object(
-				array(
-					'bucket'   => $this->bucket,
-					'filename' => $old_filename,
-				),
-				array(
-					'bucket'   => $this->bucket,
-					'filename' => $new_filename,
-				),
-				array(
-					'acl' => $acl,
-					'storage' => $this->storage_class,
-				)
-			)
+		$copy_source = sprintf(
+			'%s/%s',
+			$this->bucket,
+			Aws\S3\S3Client::encodeKey($old_filename)
 		);
+
+		try {
+			$this->s3->copyObject(
+				array(
+					'ACL'          => $acl,
+					'Bucket'       => $this->bucket,
+					'CopySource'   => $copy_source,
+					'Key'          => $new_filename,
+					'StorageClass' => $this->storage_class,
+				)
+			);
+		} catch (Aws\Exception\AwsException $e) {
+			throw new SiteCdnException($e);
+		}
 
 		// S3 has no concept of move, so remove the old version once it has
 		// been copied.
@@ -319,12 +339,16 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public function removeFile($filename)
 	{
-		$this->handleResponse(
-			$this->s3->delete_object(
-				$this->bucket,
-				$filename
-			)
-		);
+		try {
+			$this->s3->deleteObject(
+				array(
+					'Bucket' => $this->bucket,
+					'Key'    => $filename,
+				)
+			);
+		} catch (Aws\Exception\AwsException $e) {
+			throw new SiteCdnException($e);
+		}
 	}
 
 	// }}}
@@ -350,19 +374,36 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		}
 
 		if ($this->app->config->amazon->cloudfront_enabled &&
-			$this->cf instanceof AmazonCloudFront) {
+			$this->cf instanceof Aws\CloudFront\CloudFrontClient) {
 			$uri = $this->getCloudFrontUri($filename, $expires, false, $secure);
 		} else {
-			$options = array(
-				'https' => $secure,
-			);
+			if ($expires === null) {
+				$uri = $this->s3->getObjectUrl(
+					array(
+						'Bucket' => $this->bucket,
+						'Key'    => $filename
+					)
+				);
+			} else {
+				$command = $this->s3->getCommand(
+					'GetObject',
+					array(
+						'Bucket' => $this->bucket,
+						'Key'    => $filename,
+					)
+				);
 
-			$uri = $this->s3->get_object_url(
-				$this->bucket,
-				$filename,
-				$expires,
-				$options
-			);
+				$request = $this->s3->createPresignedRequest(
+					$command,
+					$expires
+				);
+
+				$uri = $request->getUri();
+			}
+
+			if (!$secure) {
+				$uri = preg_replace('/^https:/', 'http:', $uri);
+			}
 		}
 
 		return $uri;
@@ -392,7 +433,12 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 	public function getMetadata($filename)
 	{
-		return $this->s3->get_object_metadata($this->bucket, $filename);
+		return $this->s3->headObject(
+			array(
+				'Bucket' => $this->bucket,
+				'Key'    => $filename
+			)
+		);
 	}
 
 	// }}}
@@ -401,7 +447,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	public function hasStreamingDistribution()
 	{
 		return (
-			$this->cf instanceof AmazonCloudFront &&
+			$this->cf instanceof Aws\CloudFront\CloudFrontClient &&
 			$this->streaming_distribution !== null
 		);
 	}
@@ -415,25 +461,29 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		$config = $this->app->config->amazon;
 
 		if (!$config->cloudfront_enabled ||
-			!$this->cf instanceof AmazonCloudFront) {
-			throw new SwatException('CloudFront must be enabled '.
-				'streaming URIs in the Amazon CDN module');
+			!$this->cf instanceof Aws\CloudFront\CloudFrontClient) {
+			throw new SwatException(
+				'CloudFront must be enabled to get CloudFront URIs in the '.
+				'Amazon CDN module'
+			);
 		}
 
 		if ($streaming) {
 			if (!$this->hasStreamingDistribution()) {
-				throw new SwatException('Distribution keys are required for '.
-					'streaming URIs in the Amazon CDN module');
+				throw new SwatException(
+					'Streaming distribution must be specified for streaming '.
+					'URIs in the Amazon CDN module'
+				);
 			}
 
-			$distribution = ($expires === null) ?
-				'streaming_distribution' :
-				'private_streaming_distribution';
+			$distribution = ($expires === null)
+				? 'streaming_distribution'
+				: 'private_streaming_distribution';
 
 		} else {
-			$distribution = ($expires === null) ?
-				'distribution' :
-				'private_distribution';
+			$distribution = ($expires === null)
+				? 'distribution'
+				: 'private_distribution';
 		}
 
 		if ($config->$distribution === null) {
@@ -449,52 +499,25 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			 $secure = $this->app->isSecure();
 		}
 
-		if ($expires === null) {
-			$uri = sprintf(
-				'%s://%s/%s',
-				$secure ?
-					'https' :
-					'http',
-				$config->$distribution,
-				$filename
-			);
-		} else {
-			$options = array(
-				'Secure' => $secure,
-			);
+		$uri = sprintf(
+			'%s://%s/%s',
+			$secure ? 'https' : 'http',
+			$config->$distribution,
+			$filename
+		);
 
-			$uri = $this->cf->get_private_object_url(
-				$config->$distribution,
-				$filename,
-				$expires,
-				$options
+		if ($expires !== null) {
+			$uri = $this->cf->getSignedUrl(
+				array(
+					'url'         => $uri,
+					'expires'     => $expires,
+					'key_pair_id' => $this->distribution_key_pair_id,
+					'private_key' => $this->distribution_private_key,
+				)
 			);
 		}
 
 		return $uri;
-	}
-
-	// }}}
-	// {{{ protected function handleResponse()
-
-	/**
-	 * Handles a response from a CDN operation
-	 *
-	 * @param CFResponse $response the response to the CDN operation.
-	 *
-	 * @throws SiteCdnException if the response indicates an error
-	 */
-	protected function handleResponse(CFResponse $response)
-	{
-		if (!$response->isOK()) {
-			if ($response->body instanceof SimpleXMLElement) {
-				$message = $response->body->asXML();
-			} else {
-				$message = 'No error response body provided.';
-			}
-
-			throw new SiteCdnException($message, $response->status);
-		}
 	}
 
 	// }}}

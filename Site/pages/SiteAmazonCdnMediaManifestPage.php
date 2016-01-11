@@ -1,6 +1,5 @@
 <?php
 
-require_once 'AWSSDKforPHP/sdk.class.php';
 require_once 'Site/dataobjects/SiteVideoMediaWrapper.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotAuthorizedException.php';

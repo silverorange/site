@@ -1,6 +1,5 @@
 <?php
 
-require_once 'AWSSDKforPHP/sdk.class.php';
 require_once 'Site/SiteDatabaseModule.php';
 require_once 'Site/SiteCommandLineConfigModule.php';
 require_once 'Site/SiteCommandLineApplication.php';
@@ -21,7 +20,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 	/**
 	 * S3 SDK
 	 *
-	 * @var AmazonS3
+	 * @var Aws\S3\S3Client
 	 */
 	public $s3;
 
@@ -92,7 +91,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 	{
 		$this->debug("Checking {$media->id}:");
 
-		$index_exists = $this->s3->if_object_exists(
+		$index_exists = $this->s3->doesObjectExist(
 			$this->config->amazon->bucket,
 			$this->getHLSPath($media).'/index.m3u8'
 		);
@@ -137,12 +136,13 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 	{
 		$encodings = array();
 
-		$files = $this->s3->get_object_list(
-			$this->config->amazon->bucket,
+		$result = $this->s3->listObjects(
 			array(
-				'prefix' => $this->getHLSPath($media)
+				'Bucket' => $this->config->amazon->bucket,
+				'Prefix' => $this->getHLSPath($media),
 			)
 		);
+		$files = $result->search('Contents[].Key');
 
 		foreach ($files as $file) {
 			$local_path = substr($file, strlen($this->getHLSPath($media)) + 1);
@@ -185,16 +185,16 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		}
 
 		$acl = ($media->media_set->private)
-			? AmazonS3::ACL_AUTH_READ
-			: AmazonS3::ACL_PUBLIC;
+			? 'authenticated-read'
+			: 'public-read';
 
-		$this->s3->create_object(
-			$this->config->amazon->bucket,
-			$this->getHLSPath($media).'/index.m3u8',
+		$this->s3->putObject(
 			array(
-				'acl' => $acl,
-				'body' => $file_contents,
-				'contentType' => 'application/x-mpegURL',
+				'ACL'         => $acl,
+				'Body'        => $file_contents,
+				'Bucket'      => $this->config->amazon->bucket,
+				'Key'         => $this->getHLSPath($media).'/index.m3u8',
+				'ContentType' => 'application/x-mpegURL',
 			)
 		);
 	}
@@ -220,10 +220,13 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 
 		$this->database->dsn = $config->database->dsn;
 
-		$this->s3 = new AmazonS3(
+		$this->s3 = new Aws\S3\S3Client(
 			array(
-				'key'    => $config->amazon->access_key_id,
-				'secret' => $config->amazon->access_key_secret,
+				'version' => 'latest',
+				'credentials' => array(
+					'key'    => $config->amazon->access_key_id,
+					'secret' => $config->amazon->access_key_secret,
+				),
 			)
 		);
 	}
