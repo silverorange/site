@@ -127,6 +127,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		$this->facebook_pixel_id = $config->analytics->facebook_pixel_id;
 		$this->bing_uet_id = $config->analytics->bing_uet_id;
+		$this->twitter_pixel_id = $config->analytics->twitter_pixel_id;
 
 		$this->initOptOut();
 
@@ -146,8 +147,31 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return (
 			$this->hasGoogleAnalytics() ||
 			$this->hasFacebookPixel() ||
+			$this->hasTwitterTracking() ||
 			$this->hasBingUET()
 		);
+	}
+
+	// }}}
+	// {{{ public function getInlineJavascript()
+
+	public function getInlineJavascript()
+	{
+		$js = '';
+
+		if ($this->hasFacebookPixel()) {
+			$js.= $this->getFacebookPixelInlineJavascript();
+		}
+
+		if ($this->hasBingUET()) {
+			$js.= $this->getBingUETInlineJavascript();
+		}
+
+		if ($this->hasGoogleAnalytics()) {
+			$js.= $this->getGoogleAnalyticsInlineJavascript();
+		}
+
+		return $js;
 	}
 
 	// }}}
@@ -386,6 +410,17 @@ JS;
 		}
 
 		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function hasTwitterTracking()
+
+	public function hasTwitterTracking()
+	{
+		return (
+			$this->twitter_pixel_id != '' &&
+			!$this->analytics_opt_out
+		);
 	}
 
 	// }}}
