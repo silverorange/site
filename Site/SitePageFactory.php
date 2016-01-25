@@ -10,7 +10,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * Resolves and creates pages for a web application
  *
  * @package   Site
- * @copyright 2006-2015 silverorange
+ * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SitePageFactory

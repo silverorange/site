@@ -10,7 +10,7 @@ require_once 'Site/dataobjects/SiteAccountWrapper.php';
  * Index page for Suspicious Accounts
  *
  * @package   Site
- * @copyright 2012-2015 silverorange
+ * @copyright 2012-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountSuspicious extends AdminIndex

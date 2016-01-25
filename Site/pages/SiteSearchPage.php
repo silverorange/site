@@ -6,7 +6,7 @@ require_once 'Site/pages/SiteSearchResultsPage.php';
  * Page for displaying a search form above search results.
  *
  * @package   Site
- * @copyright 2007-2015 silverorange
+ * @copyright 2007-2016 silverorange
  */
 class SiteSearchPage extends SiteSearchResultsPage
 {

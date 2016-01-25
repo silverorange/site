@@ -6,7 +6,7 @@ require_once 'Site/SiteApplicationModule.php';
  * Module for dislaying Olark live chat
  *
  * @package   Site
- * @copyright 2015 silverorange
+ * @copyright 2015-2016 silverorange
  * @link      https://www.olark.com/api
  */
 class SiteOlarkModule extends SiteApplicationModule

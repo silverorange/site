@@ -10,7 +10,7 @@ require_once 'Site/pages/SitePage.php';
  * See also {@link https://bugs.webkit.org/show_bug.cgi?id=5760}.
  *
  * @package   Site
- * @copyright 2010-2015 silverorange
+ * @copyright 2010-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteConnectionClosePage extends SitePage

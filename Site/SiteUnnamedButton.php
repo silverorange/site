@@ -9,7 +9,7 @@ require_once 'Swat/SwatButton.php';
  * style but not button names.
  *
  * @package   Site
- * @copyright 2006-2015 silverorange
+ * @copyright 2006-2016 silverorange
  */
 class SiteUnnamedButton extends SwatButton
 {

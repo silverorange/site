@@ -7,7 +7,7 @@ require_once 'Site/exceptions/SiteException.php';
  * to a file that already exists on disk.
  *
  * @package   Site
- * @copyright 2013-2015 silverorange
+ * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteBotrMediaCommandLineFileExistsException

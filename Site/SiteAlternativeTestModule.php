@@ -6,7 +6,7 @@ require_once 'Site/SiteApplicationModule.php';
  * Web application module for testing alternatives.
  *
  * @package   Site
- * @copyright 2008-2015 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html
  */

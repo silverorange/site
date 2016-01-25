@@ -7,7 +7,7 @@ require_once __DIR__.'/SiteAbstractConfigPage.php';
  * package.
  *
  * @package   Site
- * @copyright 2009-2015 silverorange
+ * @copyright 2009-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteConfigPage extends SiteAbstractConfigPage

@@ -4,7 +4,7 @@
  * Interface for a fulltext search result
  *
  * @package   Site
- * @copyright 2007-2015 silverorange
+ * @copyright 2007-2016 silverorange
  */
 interface SiteFulltextSearchResult
 {

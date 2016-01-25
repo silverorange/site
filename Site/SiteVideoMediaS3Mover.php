@@ -9,7 +9,7 @@ require_once 'Site/SiteVideoMediaMover.php';
  * Temporary script until we can fix our encoding process to include HLS.
  *
  * @package   Site
- * @copyright 2015 silverorange
+ * @copyright 2015-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteVideoMediaMover
  */

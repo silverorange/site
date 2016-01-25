@@ -14,7 +14,7 @@ require_once 'Site/exceptions/SiteInvalidImageDimensionException.php';
  * An image data object
  *
  * @package   Site
- * @copyright 2008-2015 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImage extends SwatDBDataObject

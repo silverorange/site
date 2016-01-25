@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteVideoMediaSet.php';
  * A recordset wrapper class for SiteVideoMediaSet objects
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteVideoMediaSet
  */

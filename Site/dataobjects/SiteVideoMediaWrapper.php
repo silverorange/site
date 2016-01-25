@@ -9,7 +9,7 @@ require_once 'Site/dataobjects/SiteVideoMediaEncodingBindingWrapper.php';
  * A recordset wrapper class for SiteVideoMedia objects
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteVideoMedia
  */

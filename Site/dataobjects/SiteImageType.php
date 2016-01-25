@@ -6,7 +6,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  * An image type data object
  *
  * @package   Site
- * @copyright 2008-2015 silverorange
+ * @copyright 2008-2016 silverorange
  */
 class SiteImageType extends SwatDBDataObject
 {

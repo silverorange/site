@@ -8,7 +8,7 @@ require_once 'Site/dataobjects/SiteAccountLoginHistory.php';
  * A recordset wrapper class for SiteAccountLoginHistory objects
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @see       SiteAccountLoginHistory
  */
 class SiteAccountLoginHistoryWrapper extends SwatDBRecordsetWrapper

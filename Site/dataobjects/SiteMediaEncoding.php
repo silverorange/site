@@ -14,7 +14,7 @@ require_once 'Site/dataobjects/SiteMediaType.php';
  * WebM and H.264.
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMediaEncoding extends SwatDBDataObject

@@ -9,7 +9,7 @@ require_once 'Site/dataobjects/SiteMediaCdnTask.php';
  * These videos are then queued for uploading to S3.
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      When we upgrade to a version of PHP that supports the curl option
  *            CURLOPT_MAX_RECV_SPEED_LARGE (>= PHP 5.4), switch to curl for the

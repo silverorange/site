@@ -13,7 +13,7 @@ require_once 'Site/dataobjects/SiteVideoImage.php';
  *  - Mark Media as imported.
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Support for importing into multiple MediaSets (perhaps based on
  *            the encoding profiles present on the Media we're importing).

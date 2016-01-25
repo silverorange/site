@@ -13,7 +13,7 @@ require_once 'Site/dataobjects/SiteMediaEncodingWrapper.php';
  *       set the lazy_load option to true.
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @see       SiteAttachmentCdnTask
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

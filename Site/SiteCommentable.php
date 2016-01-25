@@ -8,7 +8,7 @@ require_once 'Site/dataobjects/SiteComment.php';
  * Interaface for an object that can receive comments
  *
  * @package   Site
- * @copyright 2010-2015 silverorange
+ * @copyright 2010-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 interface SiteCommentable extends SiteCommentStatus, SwatDBRecordable

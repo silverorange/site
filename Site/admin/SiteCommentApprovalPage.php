@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteComment.php';
  * Abstract approval page
  *
  * @package   Site
- * @copyright 2008-2015 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentApprovalPage extends AdminApproval

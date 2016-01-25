@@ -8,7 +8,7 @@ require_once 'Site/exceptions/SiteCookieException.php';
  * Web application module for cookies
  *
  * @package   Site
- * @copyright 2006-2015 silverorange
+ * @copyright 2006-2016 silverorange
  * @todo      For sites that use multiple instances on their own subdomains set
  *            the subdomain on the cookies to prevent all cookies from existing
  *            on the parent domain. Also useful would be setting correct path

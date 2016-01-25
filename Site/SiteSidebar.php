@@ -17,7 +17,7 @@ require_once 'Site/gadgets/SiteGadget.php';
  * have the special CSS class 'site-sidebar-gadget-last' applied.
  *
  * @package   Site
- * @copyright 2008-2015 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteGadget
  */

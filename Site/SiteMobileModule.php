@@ -14,7 +14,7 @@ require_once 'Site/exceptions/SiteException.php';
  * also be used to detect if the site is the mobile version.
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMobileModule extends SiteApplicationModule
