@@ -12,7 +12,7 @@ require_once 'Site/exceptions/SiteCommandLineException.php';
  * Abstract application to queue metadata updates for SiteMedia on a CDN
  *
  * @package   Site
- * @copyright 2012-2015 silverorange
+ * @copyright 2012-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Make this a more generic base class for updating CDN based files?
  */

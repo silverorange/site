@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteAccount.php';
  * A recordset wrapper class for SiteAccount objects
  *
  * @package   Site
- * @copyright 2006-2015 silverorange
+ * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  */

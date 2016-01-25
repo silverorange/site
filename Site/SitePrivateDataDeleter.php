@@ -6,7 +6,7 @@ require_once 'Swat/SwatObject.php';
  * Abstract base for a class that deletes private data
  *
  * @package   Site
- * @copyright 2006-2015 silverorange
+ * @copyright 2006-2016 silverorange
  */
 abstract class SitePrivateDataDeleter extends SwatObject
 {

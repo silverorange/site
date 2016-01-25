@@ -9,7 +9,7 @@ require_once 'Admin/AdminDependencyEntry.php';
  * Delete confirmation page for Accounts
  *
  * @package   Site
- * @copyright 2012-2015 silverorange
+ * @copyright 2012-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountDelete extends AdminDBDelete

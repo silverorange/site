@@ -9,7 +9,7 @@ require_once 'Swat/SwatHtmlTag.php';
 
 /**
  * @package   Site
- * @copyright 2013-2015 silverorange
+ * @copyright 2013-2016 silverorange
  */
 class SiteAmazonCdnMediaManifestPage extends SitePage
 {

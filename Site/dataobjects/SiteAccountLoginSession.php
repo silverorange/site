@@ -9,7 +9,7 @@ require_once 'Site/dataobjects/SiteAccount.php';
  * and to track and display active sessions to the user.
  *
  * @package   Site
- * @copyright 2012-2015 silverorange
+ * @copyright 2012-2016 silverorange
  */
 class SiteAccountLoginSession extends SwatDBDataObject
 {

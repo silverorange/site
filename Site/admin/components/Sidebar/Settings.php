@@ -13,7 +13,7 @@ require_once 'Site/dataobjects/SiteGadgetInstance.php';
  * Page for editing sidebar gadget instance settings
  *
  * @package   Site
- * @copyright 2008-2015 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteSidebarSettings extends AdminDBEdit

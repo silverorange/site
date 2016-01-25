@@ -15,7 +15,7 @@ require_once 'Site/exceptions/SiteBotrMediaCommandLineSourceFileException.php';
  * Abstract application for applications that access media on bits on the run.
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      do something better with the isMarkedX() methods. Maybe move the
  *            tags to constants.

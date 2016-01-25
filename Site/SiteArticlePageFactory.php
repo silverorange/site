@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteArticleWrapper.php';
  * Resolves and creates article pages in a web application
  *
  * @package   Site
- * @copyright 2006-2015 silverorange
+ * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticlePageFactory extends SitePageFactory

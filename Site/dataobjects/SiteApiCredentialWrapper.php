@@ -8,7 +8,7 @@ require_once 'Site/dataobjects/SiteApiCredential.php';
  * A recordset wrapper class for SiteApiCredential objects
  *
  * @package   Site
- * @copyright 2013-2015 silverorange
+ * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteApiCredential
  */

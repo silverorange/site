@@ -11,7 +11,7 @@ require_once 'Site/dataobjects/SiteAudioMediaWrapper.php';
  * Recalculates the duration of all media in a media set
  *
  * @package   Site
- * @copyright 2015 silverorange
+ * @copyright 2015-2016 silverorange
  */
 class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 {

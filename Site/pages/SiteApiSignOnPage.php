@@ -11,7 +11,7 @@ require_once 'Site/exceptions/SiteSingleSignOnException.php';
  * Page for logging into an account via a sign-on token
  *
  * @package   Site
- * @copyright 2013-2015 silverorange
+ * @copyright 2013-2016 silverorange
  * @see       SiteSignOnToken
  */
 abstract class SiteApiSignOnPage extends SitePage

@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteArticle.php';
  * A recordset wrapper class for SiteArticle objects
  *
  * @package   Site
- * @copyright 2006-2015 silverorange
+ * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteArticle
  */

@@ -16,7 +16,7 @@ require_once 'Swat/SwatString.php';
  *                                       characters in the content are escaped.
  *
  * @package   Site
- * @copyright 2008-2015 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContentGadget extends SiteGadget

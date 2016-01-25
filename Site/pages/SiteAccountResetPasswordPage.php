@@ -10,7 +10,7 @@ require_once 'Swat/SwatUI.php';
  * Users are required to enter a new password.
  *
  * @package   Site
- * @copyright 2006-2015 silverorange
+ * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteAccount
  * @see       SiteAccountForgotPasswordPage

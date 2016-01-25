@@ -6,7 +6,7 @@ require_once 'Admin/AdminSearchClause.php';
 
 /**
  * @package   Site
- * @copyright 2012-2015 silverorange
+ * @copyright 2012-2016 silverorange
  */
 class SiteAccountSearch
 {

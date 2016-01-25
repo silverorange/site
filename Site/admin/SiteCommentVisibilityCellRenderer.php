@@ -6,7 +6,7 @@ require_once 'Swat/SwatCellRenderer.php';
  * A cell renderer for rendering visibility of site comments
  *
  * @package   Site
- * @copyright 2008-2015 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteCommentVisibilityCellRenderer extends SwatCellRenderer

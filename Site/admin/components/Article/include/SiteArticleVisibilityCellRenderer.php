@@ -6,7 +6,7 @@ require_once 'Swat/SwatCellRenderer.php';
  * Cell renderer that displays a summary of the visibility of an article
  *
  * @package   Site
- * @copyright 2005-2015 silverorange
+ * @copyright 2005-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticleVisibilityCellRenderer extends SwatCellRenderer

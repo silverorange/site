@@ -11,7 +11,7 @@ require_once 'Site/exceptions/SiteCommandLineException.php';
  * Application to generate m3u8 index files for HLS video
  *
  * @package   Site
- * @copyright 2015 silverorange
+ * @copyright 2015-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteHLSIndexGenerator extends SiteCommandLineApplication

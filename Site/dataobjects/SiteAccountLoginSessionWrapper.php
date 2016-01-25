@@ -8,7 +8,7 @@ require_once 'Site/dataobjects/SiteAccountLoginSession.php';
  * A recordset wrapper class for SiteAccountLoginSession objects
  *
  * @package   Site
- * @copyright 2012-2015 silverorange
+ * @copyright 2012-2016 silverorange
  * @see       SiteAccountLoginSession
  */
 class SiteAccountLoginSessionWrapper extends SwatDBRecordsetWrapper

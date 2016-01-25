@@ -6,7 +6,7 @@ require_once 'Site/dataobjects/SiteImage.php';
  * An image data object for video-scrubber thumbnail images
  *
  * @package   Site
- * @copyright 2013-2015 silverorange
+ * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteVideoScrubberImage extends SiteImage

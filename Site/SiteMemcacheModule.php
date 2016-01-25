@@ -21,7 +21,7 @@ require_once 'SwatDB/SwatDBCacheNsFlushable.php';
  * Optional namespacing allows flushing of the cache on a per-namespace level.
  *
  * @package   Site
- * @copyright 2008-2015 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsFlushable

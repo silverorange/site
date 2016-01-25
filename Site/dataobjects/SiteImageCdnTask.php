@@ -11,7 +11,7 @@ require_once 'Site/exceptions/SiteCdnException.php';
  * A task that should be performed on a CDN in the near future
  *
  * @package   Site
- * @copyright 2010-2015 silverorange
+ * @copyright 2010-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImageCdnTask extends SiteCdnTask

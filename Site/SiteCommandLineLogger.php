@@ -11,7 +11,7 @@ require_once 'Psr/Log/LoggerInterface.php';
  * a Console_CommandLine_Outputter
  *
  * @package   Site
- * @copyright 2013-2015 silverorange
+ * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteCommandLineLogger implements Psr\Log\LoggerInterface

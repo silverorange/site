@@ -12,7 +12,7 @@ require_once 'Site/dataobjects/SiteMediaTypeWrapper.php';
  *       undesirable, set the lazy_load option to true.
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @see       SiteMediaEncodingBinding
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

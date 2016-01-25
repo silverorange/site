@@ -6,7 +6,7 @@ require_once 'Swat/SwatError.php';
  * An error in Site
  *
  * @package   Site
- * @copyright 2006-2015 silverorange
+ * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteError extends SwatError

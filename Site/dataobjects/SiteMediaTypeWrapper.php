@@ -7,7 +7,7 @@ require_once 'Site/dataobjects/SiteMediaType.php';
  * A recordset wrapper class for SiteMediaType objects
  *
  * @package   Site
- * @copyright 2011-2015 silverorange
+ * @copyright 2011-2016 silverorange
  * @see       SiteMediaType
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

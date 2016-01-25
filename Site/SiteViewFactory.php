@@ -34,7 +34,7 @@ require_once 'Swat/exceptions/SwatClassNotFoundException.php';
  * {@link SiteViewFactory::removePath()} methods.
  *
  * @package   Site
- * @copyright 2009-2015 silverorange
+ * @copyright 2009-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       SiteView
  */

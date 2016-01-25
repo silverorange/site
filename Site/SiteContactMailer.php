@@ -16,7 +16,7 @@ require_once 'Site/dataobjects/SiteContactMessageWrapper.php';
  * are addressed to support staff for the website.
  *
  * @package   Site
- * @copyright 2010-2015 silverorange
+ * @copyright 2010-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteContactMailer extends SiteCommandLineApplication
