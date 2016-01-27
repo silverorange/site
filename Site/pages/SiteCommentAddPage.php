@@ -159,7 +159,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->comment->spam = $this->isSpam();
 		$this->item->addComment($this->comment);
 		$this->item->save();
-		$this->comment->postSave();
+		$this->comment->postSave($this->app);
 	}
 
 	// }}}
