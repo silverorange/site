@@ -92,8 +92,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 			switch ($this->getItemCommentStatus()) {
 			case SiteCommentStatus::OPEN:
 			case SiteCommentStatus::MODERATED:
-				$this->updateComment();
-				$this->saveComment();
+				$this->processComment();
 				break;
 			default:
 				throw new SiteCommentJSONException(
@@ -107,6 +106,15 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 			}
 			$this->handleException($e);
 		}
+	}
+
+	// }}}
+	// {{{ protected function processComment()
+
+	protected function processComment()
+	{
+		$this->updateComment();
+		$this->saveComment();
 	}
 
 	// }}}
@@ -151,7 +159,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->comment->spam = $this->isSpam();
 		$this->item->addComment($this->comment);
 		$this->item->save();
-		$this->comment->postSave($this->app);
+		$this->comment->postSave();
 	}
 
 	// }}}
