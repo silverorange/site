@@ -128,8 +128,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	/**
 	 * Stack of commands to send to twitter pixels
 	 *
-	 * Each entry is an array where the first value is the twitter pixel
-	 * command, and any following values are optional command parameters.
+	 * Commands are key-value pairs.
 	 *
 	 * @var array
 	 */
