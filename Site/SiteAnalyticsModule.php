@@ -669,7 +669,7 @@ XHTML;
 			$xhtml,
 			SwatString::minimizeEntities($track_pixel),
 			SwatString::minimizeEntities($purchase_pixel),
-			implode('&', $query_vars)
+			implode('&amp;', $query_vars)
 		);
 	}
 
