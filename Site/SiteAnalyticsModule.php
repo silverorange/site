@@ -697,10 +697,22 @@ XHTML;
 var twitter_script = document.createElement('script');
 twitter_script.type = 'text/javascript';
 twitter_script.src = '//platform.twitter.com/oct.js';
-twitter_script.onload = function() {
+
+var onload = function() {
 	twttr.conversion.trackPid(%s);
 	twttr.conversion.trackPid(%s, %s);
 };
+
+if (typeof document.attachEvent === 'object') {
+	// Support IE8
+	twitter_script.onreadystatechange = function() {
+		if (twitter_script.readyState === 'loaded') {
+			onload();
+		}
+	};
+} else {
+	twitter_script.onload = onload;
+}
 
 var s = document.getElementsByTagName('script')[0];
 s.parentNode.insertBefore(twitter_script, s);
