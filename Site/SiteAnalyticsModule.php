@@ -694,12 +694,11 @@ XHTML;
 	{
 		$javascript = <<<'JS'
 (function() {
-var ga = document.createElement('script');
-ga.type = 'text/javascript';
-ga.async = true;
-ga.src = '//platform.twitter.com/oct.js';
+var twitter_script = document.createElement('script');
+twitter_script.type = 'text/javascript';
+twitter_script.src = '//platform.twitter.com/oct.js';
 var s = document.getElementsByTagName('script')[0];
-s.parentNode.insertBefore(ga, s);
+s.parentNode.insertBefore(twitter_script, s);
 
 twttr.conversion.trackPid(%s);
 twttr.conversion.trackPid(%s, %s);
