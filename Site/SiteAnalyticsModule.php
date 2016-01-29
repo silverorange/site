@@ -697,11 +697,13 @@ XHTML;
 var twitter_script = document.createElement('script');
 twitter_script.type = 'text/javascript';
 twitter_script.src = '//platform.twitter.com/oct.js';
+twitter_script.onload = function() {
+	twttr.conversion.trackPid(%s);
+	twttr.conversion.trackPid(%s, %s);
+};
+
 var s = document.getElementsByTagName('script')[0];
 s.parentNode.insertBefore(twitter_script, s);
-
-twttr.conversion.trackPid(%s);
-twttr.conversion.trackPid(%s, %s);
 })();
 JS;
 
