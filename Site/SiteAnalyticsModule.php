@@ -678,7 +678,7 @@ XHTML;
 
 	public function getTwitterPixelInlineJavascript()
 	{
-		$javascript = null;
+		$javascript = '';
 
 		if ($this->hasTwitterPixel()) {
 			$javascript = $this->getTwitterPixelTrackerInlineJavascript();
