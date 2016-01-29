@@ -185,7 +185,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function displayAnalytics()
 	{
-		$this->displayGoogleAnalytics();
 		$this->displayFacebookPixelImage();
 		$this->displayTwitterPixelImages();
 		$this->displayBingUETImage();
@@ -416,19 +415,6 @@ JS;
 	}
 
 	// }}}
-	// {{{ protected function displayGoogleAnalytics()
-
-	protected function displayGoogleAnalytics()
-	{
-		if ($this->hasGoogleAnalytics()) {
-			$js = $this->getGoogleAnalyticsInlineJavascript();
-			if ($js != '') {
-				Swat::displayInlineJavaScript($js);
-			}
-		}
-	}
-
-	// }}}
 	// {{{ protected function getGoogleAnalyticsTrackingCodeSource()
 
 	protected function getGoogleAnalyticsTrackingCodeSource()
@@ -611,19 +597,6 @@ JS;
 			$image = $this->getFacebookPixelImage();
 			if ($image != '') {
 				echo $image;
-			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function displayFacebookPixel()
-
-	protected function displayFacebookPixel()
-	{
-		if ($this->hasFacebookPixel()) {
-			$js = $this->getFacebookPixelInlineJavascript();
-			if ($js != '') {
-				Swat::displayInlineJavaScript($js);
 			}
 		}
 	}
@@ -896,19 +869,6 @@ JS;
 			'window.uetq.push(%s);',
 			json_encode($command)
 		);
-	}
-
-	// }}}
-	// {{{ protected function displayBingUET()
-
-	protected function displayBingUET()
-	{
-		if ($this->hasBingUET()) {
-			$js = $this->getBingUETInlineJavascript();
-			if ($js != '') {
-				Swat::displayInlineJavaScript($js);
-			}
-		}
 	}
 
 	// }}}
