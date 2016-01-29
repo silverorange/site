@@ -706,7 +706,8 @@ var onload = function() {
 if (typeof document.attachEvent === 'object') {
 	// Support IE8
 	twitter_script.onreadystatechange = function() {
-		if (twitter_script.readyState === 'loaded') {
+		if (['loaded', 'complete'].contains(twitter_script.readyState)) {
+			twitter_script.onreadystatechange = null;
 			onload();
 		}
 	};
