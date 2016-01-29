@@ -640,17 +640,6 @@ JS;
 	}
 
 	// }}}
-	// {{{ public function prependTwitterPixelCommands()
-
-	public function prependTwitterPixelCommands(array $commands)
-	{
-		$comands = array_reverse($commands);
-		foreach ($commands as $command) {
-			array_unshift($this->twitter_pixel_commands, $command);
-		}
-	}
-
-	// }}}
 	// {{{ public function getTwitterPixelImages()
 
 	public function getTwitterPixelImages()
