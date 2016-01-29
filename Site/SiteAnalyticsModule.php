@@ -191,9 +191,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function getInlineJavascript()
+	// {{{ public function getInlineJavaScript()
 
-	public function getInlineJavascript()
+	public function getInlineJavaScript()
 	{
 		$js = '';
 
