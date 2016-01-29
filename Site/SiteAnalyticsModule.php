@@ -234,9 +234,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		if (isset($_GET['AnalyticsOptIn'])) {
 			$this->analytics_opt_out = false;
-			if ($cookie_module === null) {
-				$e = new SiteException('Attempting to remove Analytics Opt '.
-					'Out Cookie with no SiteCookieModule available.');
+			if (!$cookie_module instanceof SiteCookieModule) {
+				$e = new SiteException(
+					'Attempting to remove Analytics Opt '.
+					'Out Cookie with no SiteCookieModule available.'
+				);
 
 				$e->processAndContinue();
 			} else {
@@ -248,9 +250,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		// string for some reason.
 		if (isset($_GET['AnalyticsOptOut'])) {
 			$this->analytics_opt_out = true;
-			if ($cookie_module === null) {
-				$e = new SiteException('Attempting to set Analytics Opt Out '.
-					'Cookie with no SiteCookieModule available.');
+			if (!$cookie_module instanceof SiteCookieModule) {
+				$e = new SiteException(
+					'Attempting to set Analytics Opt Out '.
+					'Cookie with no SiteCookieModule available.'
+				);
 
 				$e->processAndContinue();
 			} else {
@@ -258,7 +262,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 				$cookie_module->setCookie(
 					'AnalyticsOptOut',
 					'1',
-					strtotime('+10 Years')
+					strtotime('+10 years')
 				);
 			}
 		}
