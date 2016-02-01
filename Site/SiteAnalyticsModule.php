@@ -181,9 +181,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function displayAnalytics()
+	// {{{ public function displayNoScriptContent()
 
-	public function displayAnalytics()
+	public function displayNoScriptContent()
 	{
 		$this->displayFacebookPixelImage();
 		$this->displayTwitterPixelImages();
@@ -191,9 +191,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ public function getInlineJavaScript()
+	// {{{ public function displayScriptContent()
 
-	public function getInlineJavaScript()
+	public function displayScriptContent()
 	{
 		$js = '';
 
@@ -213,7 +213,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			$js.= $this->getTwitterPixelInlineJavascript();
 		}
 
-		return $js;
+		if ($js != '') {
+			Swat::displayInlineJavaScript($js);
+		}
 	}
 
 	// }}}
