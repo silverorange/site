@@ -240,6 +240,10 @@ class Site
 			// Facebook Pixel id
 			'analytics.facebook_pixel_id' => null,
 
+			// Twitter Pixel ids
+			'analytics.twitter_track_pixel_id' => null,
+			'analytics.twitter_purchase_pixel_id' => null,
+
 			// Bing Universal Event Tracker id
 			'analytics.bing_uet_id' => null,
 

@@ -111,6 +111,29 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $bing_uet_commands = array();
 
+	/**
+	 * Twitter Pixel User-Tracking Tag
+	 *
+	 * @var string
+	 */
+	protected $twitter_track_pixel_id;
+
+	/**
+	 * Twitter Pixel Purchase Tag
+	 *
+	 * @var string
+	 */
+	protected $twitter_purchase_pixel_id;
+
+	/**
+	 * Stack of commands to send to twitter pixels
+	 *
+	 * Commands are key-value pairs.
+	 *
+	 * @var array
+	 */
+	protected $twitter_pixel_commands = array();
+
 	// }}}
 	// {{{ public function init()
 
@@ -127,6 +150,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		$this->facebook_pixel_id = $config->analytics->facebook_pixel_id;
 		$this->bing_uet_id = $config->analytics->bing_uet_id;
+
+		$this->twitter_track_pixel_id =
+			$config->analytics->twitter_track_pixel_id;
+
+		$this->twitter_purchase_pixel_id =
+			$config->analytics->twitter_purchase_pixel_id;
 
 		$this->initOptOut();
 
@@ -146,11 +175,103 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return (
 			$this->hasGoogleAnalytics() ||
 			$this->hasFacebookPixel() ||
+			$this->hasTwitterPixel() ||
 			$this->hasBingUET()
 		);
 	}
 
 	// }}}
+	// {{{ public function displayNoScriptContent()
+
+	public function displayNoScriptContent()
+	{
+		$this->displayFacebookPixelImage();
+		$this->displayTwitterPixelImages();
+		$this->displayBingUETImage();
+	}
+
+	// }}}
+	// {{{ public function displayScriptContent()
+
+	public function displayScriptContent()
+	{
+		$js = '';
+
+		if ($this->hasFacebookPixel()) {
+			$js.= $this->getFacebookPixelInlineJavascript();
+		}
+
+		if ($this->hasBingUET()) {
+			$js.= $this->getBingUETInlineJavascript();
+		}
+
+		if ($this->hasGoogleAnalytics()) {
+			$js.= $this->getGoogleAnalyticsInlineJavascript();
+		}
+
+		if ($this->hasTwitterPixel()) {
+			$js.= $this->getTwitterPixelInlineJavascript();
+		}
+
+		if ($js != '') {
+			Swat::displayInlineJavaScript($js);
+		}
+	}
+
+	// }}}
+	// {{{ protected function initOptOut()
+
+	protected function initOptOut()
+	{
+		$cookie_module = null;
+
+		if ($this->app->hasModule('SiteCookieModule')) {
+			$cookie_module = $this->app->getModule('SiteCookieModule');
+
+			if (isset($cookie_module->AnalyticsOptOut)) {
+				$this->analytics_opt_out = true;
+			}
+		}
+
+		if (isset($_GET['AnalyticsOptIn'])) {
+			$this->analytics_opt_out = false;
+			if (!$cookie_module instanceof SiteCookieModule) {
+				$e = new SiteException(
+					'Attempting to remove Analytics Opt '.
+					'Out Cookie with no SiteCookieModule available.'
+				);
+
+				$e->processAndContinue();
+			} else {
+				$cookie_module->removeCookie('AnalyticsOptOut');
+			}
+		}
+
+		// Opt Out trumps opt in if you include them both flags in your query
+		// string for some reason.
+		if (isset($_GET['AnalyticsOptOut'])) {
+			$this->analytics_opt_out = true;
+			if (!$cookie_module instanceof SiteCookieModule) {
+				$e = new SiteException(
+					'Attempting to set Analytics Opt Out '.
+					'Cookie with no SiteCookieModule available.'
+				);
+
+				$e->processAndContinue();
+			} else {
+				// 10 years should be equivalent to never expiring.
+				$cookie_module->setCookie(
+					'AnalyticsOptOut',
+					'1',
+					strtotime('+10 years')
+				);
+			}
+		}
+	}
+
+	// }}}
+
+	// Google Analytics
 	// {{{ public function hasGoogleAnalytics()
 
 	public function hasGoogleAnalytics()
@@ -279,6 +400,72 @@ JS;
 	}
 
 	// }}}
+	// {{{ protected function initGoogleAnalyticsCommands()
+
+	protected function initGoogleAnalyticsCommands()
+	{
+		// Default commands for all sites:
+		// * Speed sampling 100% of the time.
+		// * Track the page view.
+		$this->ga_commands = array(
+			array(
+				'_setSiteSpeedSampleRate',
+				100
+			),
+			'_trackPageview',
+		);
+	}
+
+	// }}}
+	// {{{ protected function getGoogleAnalyticsTrackingCodeSource()
+
+	protected function getGoogleAnalyticsTrackingCodeSource()
+	{
+		if ($this->display_advertising) {
+			$source = ($this->app->isSecure())
+				? 'https://stats.g.doubleclick.net/dc.js'
+				: 'http://stats.g.doubleclick.net/dc.js';
+		} else {
+			$source = ($this->app->isSecure())
+				? 'https://ssl.google-analytics.com/ga.js'
+				: 'http://www.google-analytics.com/ga.js';
+		}
+
+		return $source;
+	}
+
+	// }}}
+	// {{{ protected function getGoogleAnalyticsCommand()
+
+	protected function getGoogleAnalyticsCommand($command)
+	{
+		$method  = '';
+		$options = '';
+
+		if (is_array($command)) {
+			$method = array_shift($command);
+
+			foreach ($command as $part) {
+				$quoted_part = (is_float($part) || is_int($part))
+					? $part
+					: SwatString::quoteJavaScriptString($part);
+
+				$options.= ', '.$quoted_part;
+			}
+		} else {
+			$method = $command;
+		}
+
+		return sprintf(
+			'_gaq.push([%s%s]);',
+			SwatString::quoteJavaScriptString($method),
+			$options
+		);
+	}
+
+	// }}}
+
+	// Facebook
 	// {{{ public function hasFacebookPixel()
 
 	public function hasFacebookPixel()
@@ -389,6 +576,176 @@ JS;
 	}
 
 	// }}}
+	// {{{ protected function initFacebookPixelCommands()
+
+	protected function initFacebookPixelCommands()
+	{
+		// Default commands for all sites:
+		// * Track the page view.
+		$this->facebook_pixel_commands = array(
+			array(
+				'track',
+				'PageView',
+			),
+		);
+	}
+
+	// }}}
+	// {{{ protected function displayFacebookPixelImage()
+
+	protected function displayFacebookPixelImage()
+	{
+		if ($this->hasFacebookPixel()) {
+			$image = $this->getFacebookPixelImage();
+			if ($image != '') {
+				echo $image;
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function getFacebookPixelCommand()
+
+	protected function getFacebookPixelCommand($command)
+	{
+		if (!is_array($command)) {
+			$command = array($command);
+		}
+
+		return sprintf(
+			'fbq(%s);',
+			implode(', ', array_map('json_encode', $command))
+		);
+	}
+
+	// }}}
+
+	// Twitter
+	// {{{ public function hasTwitterPixel()
+
+	public function hasTwitterPixel()
+	{
+		return (
+			$this->twitter_track_pixel_id != '' &&
+			!$this->analytics_opt_out
+		);
+	}
+
+	// }}}
+	// {{{ public function pushTwitterPixelCommands()
+
+	public function pushTwitterPixelCommands(array $commands)
+	{
+		foreach ($commands as $name => $value) {
+			$this->twitter_pixel_commands[$name] = $value;
+		}
+	}
+
+	// }}}
+	// {{{ public function getTwitterPixelImages()
+
+	public function getTwitterPixelImages()
+	{
+		$xhtml = <<<'XHTML'
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
+<img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
+<img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%2$s&amp;p_id=Twitter&%3$s" />
+<img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
+</noscript>
+XHTML;
+
+		$track_pixel = rawurlencode($this->twitter_track_pixel_id);
+		$purchase_pixel = rawurlencode($this->twitter_purchase_pixel_id);
+
+		$query_vars = array();
+		foreach ($this->twitter_pixel_commands as $name => $value) {
+			$query_vars[$name] = sprintf(
+				'%s=%s',
+				SwatString::minimizeEntities(rawurlencode($name)),
+				SwatString::minimizeEntities(rawurlencode($value))
+			);
+		}
+
+		return sprintf(
+			$xhtml,
+			SwatString::minimizeEntities($track_pixel),
+			SwatString::minimizeEntities($purchase_pixel),
+			implode('&amp;', $query_vars)
+		);
+	}
+
+	// }}}
+	// {{{ public function getTwitterPixelInlineJavascript()
+
+	public function getTwitterPixelInlineJavascript()
+	{
+		$javascript = '';
+
+		if ($this->hasTwitterPixel()) {
+			$javascript = $this->getTwitterPixelTrackerInlineJavascript();
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getTwitterPixelTrackerInlineJavascript()
+
+	public function getTwitterPixelTrackerInlineJavascript()
+	{
+		$javascript = <<<'JS'
+(function() {
+var twitter_script = document.createElement('script');
+twitter_script.type = 'text/javascript';
+twitter_script.src = '//platform.twitter.com/oct.js';
+
+var onload = function() {
+	twttr.conversion.trackPid(%s);
+	twttr.conversion.trackPid(%s, %s);
+};
+
+if (typeof document.attachEvent === 'object') {
+	// Support IE8
+	twitter_script.onreadystatechange = function() {
+		if (['loaded', 'complete'].contains(twitter_script.readyState)) {
+			twitter_script.onreadystatechange = null;
+			onload();
+		}
+	};
+} else {
+	twitter_script.onload = onload;
+}
+
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(twitter_script, s);
+})();
+JS;
+
+		return sprintf(
+			$javascript,
+			SwatString::quoteJavaScriptString($this->twitter_track_pixel_id),
+			SwatString::quoteJavaScriptString($this->twitter_purchase_pixel_id),
+			json_encode($this->twitter_pixel_commands)
+		);
+	}
+
+	// }}}
+	// {{{ protected function displayTwitterPixelImages()
+
+	protected function displayTwitterPixelImages()
+	{
+		if ($this->hasTwitterPixel()) {
+			$images = $this->getTwitterPixelImages();
+			if ($images != '') {
+				echo $images;
+			}
+		}
+	}
+
+	// }}}
+
+	// Bing
 	// {{{ public function hasBingUET()
 
 	public function hasBingUET()
@@ -495,56 +852,6 @@ JS;
 	}
 
 	// }}}
-	// {{{ protected function getGoogleAnalyticsTrackingCodeSource()
-
-	protected function getGoogleAnalyticsTrackingCodeSource()
-	{
-		if ($this->display_advertising) {
-			$source = ($this->app->isSecure())
-				? 'https://stats.g.doubleclick.net/dc.js'
-				: 'http://stats.g.doubleclick.net/dc.js';
-		} else {
-			$source = ($this->app->isSecure())
-				? 'https://ssl.google-analytics.com/ga.js'
-				: 'http://www.google-analytics.com/ga.js';
-		}
-
-		return $source;
-	}
-
-	// }}}
-	// {{{ protected function initGoogleAnalyticsCommands()
-
-	protected function initGoogleAnalyticsCommands()
-	{
-		// Default commands for all sites:
-		// * Speed sampling 100% of the time.
-		// * Track the page view.
-		$this->ga_commands = array(
-			array(
-				'_setSiteSpeedSampleRate',
-				100
-			),
-			'_trackPageview',
-		);
-	}
-
-	// }}}
-	// {{{ protected function initFacebookPixelCommands()
-
-	protected function initFacebookPixelCommands()
-	{
-		// Default commands for all sites:
-		// * Track the page view.
-		$this->facebook_pixel_commands = array(
-			array(
-				'track',
-				'PageView',
-			),
-		);
-	}
-
-	// }}}
 	// {{{ protected function initBingUETCommands()
 
 	protected function initBingUETCommands()
@@ -552,97 +859,6 @@ JS;
 		// No default commands to init, as the basic track page view happens
 		// in the tracker setup javascript in
 		// SiteAnalyticsModule::getBingUETTrackerInlineJavascript().
-	}
-
-	// }}}
-	// {{{ protected function initOptOut()
-
-	protected function initOptOut()
-	{
-		$cookie_module = null;
-
-		if ($this->app->hasModule('SiteCookieModule')) {
-			$cookie_module = $this->app->getModule('SiteCookieModule');
-
-			if (isset($cookie_module->AnalyticsOptOut)) {
-				$this->analytics_opt_out = true;
-			}
-		}
-
-		if (isset($_GET['AnalyticsOptIn'])) {
-			$this->analytics_opt_out = false;
-			if ($cookie_module === null) {
-				$e = new SiteException('Attempting to remove Analytics Opt '.
-					'Out Cookie with no SiteCookieModule available.');
-
-				$e->processAndContinue();
-			} else {
-				$cookie_module->removeCookie('AnalyticsOptOut');
-			}
-		}
-
-		// Opt Out trumps opt in if you include them both flags in your query
-		// string for some reason.
-		if (isset($_GET['AnalyticsOptOut'])) {
-			$this->analytics_opt_out = true;
-			if ($cookie_module === null) {
-				$e = new SiteException('Attempting to set Analytics Opt Out '.
-					'Cookie with no SiteCookieModule available.');
-
-				$e->processAndContinue();
-			} else {
-				// 10 years should be equivalent to never expiring.
-				$cookie_module->setCookie(
-					'AnalyticsOptOut',
-					'1',
-					strtotime('+10 Years')
-				);
-			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function getGoogleAnalyticsCommand()
-
-	protected function getGoogleAnalyticsCommand($command)
-	{
-		$method  = '';
-		$options = '';
-
-		if (is_array($command)) {
-			$method = array_shift($command);
-
-			foreach ($command as $part) {
-				$quoted_part = (is_float($part) || is_int($part))
-					? $part
-					: SwatString::quoteJavaScriptString($part);
-
-				$options.= ', '.$quoted_part;
-			}
-		} else {
-			$method = $command;
-		}
-
-		return sprintf(
-			'_gaq.push([%s%s]);',
-			SwatString::quoteJavaScriptString($method),
-			$options
-		);
-	}
-
-	// }}}
-	// {{{ protected function getFacebookPixelCommand()
-
-	protected function getFacebookPixelCommand($command)
-	{
-		if (!is_array($command)) {
-			$command = array($command);
-		}
-
-		return sprintf(
-			'fbq(%s);',
-			implode(', ', array_map('json_encode', $command))
-		);
 	}
 
 	// }}}
@@ -658,6 +874,19 @@ JS;
 			'window.uetq.push(%s);',
 			json_encode($command)
 		);
+	}
+
+	// }}}
+	// {{{ protected function displayBingUETImage()
+
+	protected function displayBingUETImage()
+	{
+		if ($this->hasBingUET()) {
+			$image = $this->getBingUETImage();
+			if ($image != '') {
+				echo $image;
+			}
+		}
 	}
 
 	// }}}
