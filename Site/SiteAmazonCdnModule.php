@@ -123,10 +123,10 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			)
 		);
 
-		$this->s3 = $sdk->getS3Client();
+		$this->s3 = $sdk->createS3();
 
 		if ($this->cloudfront_enabled) {
-			$this->cf = $sdk->getCloudFrontClient();
+			$this->cf = $sdk->createCloudFront();
 		}
 	}
 
