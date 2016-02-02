@@ -63,15 +63,6 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public $distribution_private_key_file;
 
-	/**
-	 * AWS region endpoint
-	 *
-	 * @var string
-	 *
-	 * @see http://docs.aws.amazon.com/general/latest/gr/rande.html
-	 */
-	public $region = 'us-east-1';
-
 	// }}}
 	// {{{ protected properties
 
@@ -125,7 +116,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		$sdk = new Aws\Sdk(
 			array(
 				'version' => 'latest',
-				'region'  => $this->region,
+				'region'  => $this->app->config->amazon->region,
 				'credentials' => array(
 					'key'    => $this->access_key_id,
 					'secret' => $this->access_key_secret,
