@@ -17,14 +17,58 @@ class SiteConcentrateFileFinder
 	{
 		$files = array();
 
-		foreach ($this->getIncludeDirs() as $include_dir) {
-			if (preg_match('!pear/lib$!', $include_dir) === 1) {
-				$files = array_merge($this->getPearDataFiles($include_dir),
-					$files);
-			} else {
-				$files = array_merge(
-					$this->getDevelopmentDataFiles($include_dir),
-					$files);
+		if (preg_match('!pear/lib$!', get_include_path()) === 1) {
+			// Load data files from PEAR data directories and from other
+			// include paths.
+			foreach ($this->getIncludeDirs() as $include_dir) {
+				if (preg_match('!pear/lib$!', $include_dir) === 1) {
+					$files = array_merge(
+						$this->getPearDataFiles($include_dir),
+						$files
+					);
+				} else {
+					$files = array_merge(
+						$this->getDevelopmentDataFiles($include_dir),
+						$files
+					);
+				}
+			}
+		} else {
+			// Load data files from composer module directories.
+			$files = $this->getComposerDataFiles();
+		}
+
+		return $files;
+	}
+
+	// }}}
+	// {{{ protected function getComposerDataFiles()
+
+	protected function getComposerDataFiles()
+	{
+		$files = array();
+
+		$vendor_dir = '../vendor';
+		if (is_dir($vendor_dir)) {
+			$dir = dir($vendor_dir);
+			while (false !== ($vendor_name = $dir->read())) {
+				if (is_dir($vendor_name)) {
+					$dir = dir($vendor_name);
+					while (false !== ($package_name = $dir->read())) {
+						$dependency_dir = $vendor_dir.DIRECTORY_SEPARATOR.
+							$vendor_name.DIRECTORY_SEPARATOR.
+							$package_name.DIRECTORY_SEPARATOR.'dependencies';
+
+						$finder = new Concentrate_DataProvider_FileFinderDirectory(
+							$dependency_dir
+						);
+
+						$files = array_merge(
+							$files,
+							$finder->getDataFiles()
+						);
+					}
+				}
 			}
 		}
 
