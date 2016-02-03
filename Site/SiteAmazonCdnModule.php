@@ -90,13 +90,6 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	protected $storage_class = 'STANDARD';
 
-	/**
-	 * CloudFront distribution private key
-	 *
-	 * @var string
-	 */
-	protected $distribution_private_key;
-
 	// }}}
 	// {{{ public function init()
 
@@ -138,9 +131,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		$distribution_key_pair_id = null)
 	{
 		if (file_exists($distribution_private_key_file)) {
-			$this->distribution_private_key = file_get_contents(
-				$distribution_private_key_file
-			);
+			$this->distribution_private_key_file =
+				$distribution_private_key_file;
 		} else {
 			throw new SiteCdnException(
 				sprintf(
@@ -513,7 +505,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 					'url'         => $uri,
 					'expires'     => $expires,
 					'key_pair_id' => $this->distribution_key_pair_id,
-					'private_key' => $this->distribution_private_key,
+					'private_key' => $this->distribution_private_key_file,
 				)
 			);
 		}
