@@ -191,7 +191,7 @@ abstract class SiteCommentUi
 
 	protected function relocate()
 	{
-		switch ($comment_status) {
+		switch ($this->getCommentStatus()) {
 		case SiteCommentStatus::OPEN:
 			$uri = $this->getThankYouUri().
 				'#comment'.$this->comment->id;
