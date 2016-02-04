@@ -14,15 +14,6 @@
 	display: inline-block;
 }
 
-.account-login-page #stay_logged_in_field {
-	display: inline;
-	margin-left: 5px;
-}
-
-.account-login-page #stay_logged_in_field label {
-	vertical-align: middle;
-}
-
 .account-login-page #new_customers_frame p {
 	margin: 0 0 1em 0;
 }

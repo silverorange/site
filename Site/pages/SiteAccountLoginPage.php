@@ -121,8 +121,7 @@ class SiteAccountLoginPage extends SiteUiPage
 	protected function postLoginProcess()
 	{
 		// save persistent login if stay-logged-in is checked
-		if ($this->app->config->account->persistent_login_enabled &&
-			$this->ui->getWidget('stay_logged_in')->value) {
+		if ($this->app->config->account->persistent_login_enabled) {
 			$this->app->session->setLoginCookie();
 		}
 	}
@@ -168,10 +167,6 @@ class SiteAccountLoginPage extends SiteUiPage
 
 		$login_form = $this->ui->getWidget('login_form');
 		$login_form->action = $this->source;
-
-		if ($this->app->config->account->persistent_login_enabled) {
-			$this->ui->getWidget('stay_logged_in_field')->visible = true;
-		}
 
 		$this->buildForgotPasswordLink();
 		$this->buildNewCustomersFrame();
