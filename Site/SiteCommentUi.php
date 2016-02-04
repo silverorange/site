@@ -113,26 +113,8 @@ abstract class SiteCommentUi
 
 			$this->processComment();
 
-			if ($this->ui->getWidget('post_button')->hasBeenClicked()) {
-				$this->saveComment();
-
-				switch ($comment_status) {
-				case SiteCommentStatus::OPEN:
-					$uri = $this->getThankYouUri().
-						'#comment'.$this->comment->id;
-
-					break;
-
-				case SiteCommentStatus::MODERATED:
-					$uri = $this->getThankYouUri().'#submit_comment';
-					break;
-
-				default:
-					$uri = $this->source;
-					break;
-				}
-
-				$this->app->relocate($uri);
+			if ($this->hasPublishBeenClicked()) {
+				$this->relocate();
 			}
 		}
 
@@ -150,9 +132,9 @@ abstract class SiteCommentUi
 	abstract protected function getPermalink(SiteComment $comment);
 
 	// }}}
-	// {{{ protected function processComment()
+	// {{{ protected function updateComment()
 
-	protected function processComment()
+	protected function updateComment()
 	{
 		$now = new SwatDate();
 		$now->toUTC();
@@ -189,6 +171,43 @@ abstract class SiteCommentUi
 		}
 
 		$this->setCommentPost($this->comment, $this->post);
+	}
+
+	// }}}
+	// {{{ protected function processComment()
+
+	protected function processComment()
+	{
+		// Preview button still updates the comment without actually saving it.
+		$this->updateComment();
+
+		if ($this->hasPublishBeenClicked()) {
+			$this->saveComment();
+		}
+	}
+
+	// }}}
+	// {{{ protected function relocate()
+
+	protected function relocate()
+	{
+		switch ($this->getCommentStatus()) {
+		case SiteCommentStatus::OPEN:
+			$uri = $this->getThankYouUri().
+				'#comment'.$this->comment->id;
+
+			break;
+
+		case SiteCommentStatus::MODERATED:
+			$uri = $this->getThankYouUri().'#submit_comment';
+			break;
+
+		default:
+			$uri = $this->source;
+			break;
+		}
+
+		$this->app->relocate($uri);
 	}
 
 	// }}}
@@ -280,6 +299,14 @@ abstract class SiteCommentUi
 		}
 
 		return $is_spam;
+	}
+
+	// }}}
+	// {{{ protected function hasPublishBeenClicked()
+
+	protected function hasPublishBeenClicked()
+	{
+		return ($this->ui->getWidget('post_button')->hasBeenClicked());
 	}
 
 	// }}}
