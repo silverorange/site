@@ -33,9 +33,9 @@
 	],
 	"require": {
 		"php": ">=5.5.0",
-		"lib-iconv": "*",
-		"lib-openssl": "*",
-		"lib-pcre": "*",
+		"ext-iconv": "*",
+		"ext-openssl": "*",
+		"ext-pcre": "*",
 		"aws/aws-sdk-php": "^3.0.0",
 		"codescale/ffmpeg-php": "^2.7.0",
 		"pear/mail": "^1.2.0",
