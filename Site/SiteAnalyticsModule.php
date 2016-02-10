@@ -650,10 +650,17 @@ JS;
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
 <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
-<img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%2$s&amp;p_id=Twitter&%3$s" />
+</noscript>
+XHTML;
+
+		if (count($this->twitter_pixel_commands) > 0) {
+			$xhtml.= <<<'XHTML'
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
 <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
 </noscript>
 XHTML;
+		}
 
 		$track_pixel = rawurlencode($this->twitter_track_pixel_id);
 		$purchase_pixel = rawurlencode($this->twitter_purchase_pixel_id);
@@ -694,16 +701,29 @@ XHTML;
 
 	public function getTwitterPixelTrackerInlineJavascript()
 	{
+		$twitter_functions = sprintf(
+			"\ntwttr.conversion.trackPid(%s);\n",
+			SwatString::quoteJavaScriptString($this->twitter_track_pixel_id)
+		);
+
+		if (count($this->twitter_pixel_commands) > 0) {
+			$twitter_functions.= "\n";
+			$twitter_functions.= sprintf(
+				"twttr.conversion.trackPid(%s, %s);\n",
+				SwatString::quoteJavaScriptString(
+					$this->twitter_purchase_pixel_id
+				),
+				json_encode($this->twitter_pixel_commands)
+			);
+		}
+
 		$javascript = <<<'JS'
 (function() {
 var twitter_script = document.createElement('script');
 twitter_script.type = 'text/javascript';
 twitter_script.src = '//platform.twitter.com/oct.js';
 
-var onload = function() {
-	twttr.conversion.trackPid(%s);
-	twttr.conversion.trackPid(%s, %s);
-};
+var onload = function() { %s };
 
 if (typeof document.attachEvent === 'object') {
 	// Support IE8
@@ -724,9 +744,7 @@ JS;
 
 		return sprintf(
 			$javascript,
-			SwatString::quoteJavaScriptString($this->twitter_track_pixel_id),
-			SwatString::quoteJavaScriptString($this->twitter_purchase_pixel_id),
-			json_encode($this->twitter_pixel_commands)
+			$twitter_functions
 		);
 	}
 
