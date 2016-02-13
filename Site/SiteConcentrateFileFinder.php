@@ -48,19 +48,29 @@ class SiteConcentrateFileFinder
 	{
 		$files = array();
 
-		$vendor_dir = '../vendor';
-		if (is_dir($vendor_dir)) {
-			$dir = dir($vendor_dir);
-			while (false !== ($vendor_name = $dir->read())) {
-				if (is_dir($vendor_name)) {
-					$dir = dir($vendor_name);
-					while (false !== ($package_name = $dir->read())) {
-						$dependency_dir = $vendor_dir.DIRECTORY_SEPARATOR.
-							$vendor_name.DIRECTORY_SEPARATOR.
-							$package_name.DIRECTORY_SEPARATOR.'dependencies';
+		$base_path = '../vendor';
+		if (is_dir($base_path)) {
+			$base_dir = dir($base_path);
+			while (false !== ($vendor_name = $base_dir->read())) {
+				if ($vendor_name === '.' ||
+					$vendor_name === '..' ||
+					$vendor_name === 'bin' ||
+					$vendor_name === 'autoload.php') {
+					continue;
+				}
+
+				$vendor_path = $base_path.DIRECTORY_SEPARATOR.$vendor_name;
+				if (is_dir($vendor_path)) {
+					$vendor_dir = dir($vendor_path);
+					while (false !== ($package_name = $vendor_dir->read())) {
+						if ($package_name === '.' || $package_name === '..') {
+							continue;
+						}
 
 						$finder = new Concentrate_DataProvider_FileFinderDirectory(
-							$dependency_dir
+							$vendor_path.DIRECTORY_SEPARATOR.
+							$package_name.DIRECTORY_SEPARATOR.
+							'dependencies'
 						);
 
 						$files = array_merge(
