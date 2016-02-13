@@ -34,8 +34,12 @@ class SiteConcentrateFileFinder
 				}
 			}
 		} else {
-			// Load data files from composer module directories.
-			$files = $this->getComposerDataFiles();
+			// Load data files from composer module directories and from site
+			// dependency directory.
+			$files = array_merge(
+				$this->getSiteDataFiles(),
+				$this->getComposerDataFiles()
+			);
 		}
 
 		return $files;
@@ -48,7 +52,12 @@ class SiteConcentrateFileFinder
 	{
 		$files = array();
 
-		$base_path = '../vendor';
+		$www_path = realpath('.');
+		while (basename($www_path) !== 'www') {
+			$www_path = dirname($www_path);
+		}
+
+		$base_path = dirname($www_path).DIRECTORY_SEPARATOR.'vendor';
 		if (is_dir($base_path)) {
 			$base_dir = dir($base_path);
 			while (false !== ($vendor_name = $base_dir->read())) {
@@ -80,6 +89,24 @@ class SiteConcentrateFileFinder
 					}
 				}
 			}
+		}
+
+		return $files;
+	}
+
+	// }}}
+	// {{{ protected function getSiteDataFiles()
+
+	protected function getSiteDataFiles()
+	{
+		$files = array();
+
+		$finder = new Concentrate_DataProvider_FileFinderDirectory(
+			'..'.DIRECTORY_SEPARATOR.'dependencies'
+		);
+
+		foreach ($finder->getDataFiles() as $filename) {
+			$files[] = $filename;
 		}
 
 		return $files;
