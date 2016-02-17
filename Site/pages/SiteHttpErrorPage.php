@@ -81,10 +81,26 @@ class SiteHttpErrorPage extends SitePage
 
 	protected function display()
 	{
-		printf('<p>%s</p>', $this->getSummary());
+		$p_tag = new SwatHtmlTag('p');
+		$p_tag->class = 'summary';
+		$p_tag->setContent($this->getSummary());
+		$p_tag->display();
+
 		$this->displaySuggestions();
-		printf(Site::_('HTTP status code: %s').'<br />', $this->http_status_code);
-		printf(Site::_('URI: %s').'<br />', $this->uri);
+
+		echo '<p class="debug-info">';
+
+		printf(
+			Site::_('HTTP status code: %s').'<br />',
+			SwatString::minimizeEntities($this->http_status_code)
+		);
+
+		printf(
+			Site::_('URI: %s').'<br />',
+			SwatString::minimizeEntities($this->uri)
+		);
+
+		echo '</p>';
 	}
 
 	// }}}
@@ -94,12 +110,13 @@ class SiteHttpErrorPage extends SitePage
 	{
 		$suggestions = $this->getSuggestions();
 
-		if (count($suggestions) == 0)
+		if (count($suggestions) === 0) {
 			return;
+		}
 
-		echo '<ul class="spaced">';
+		echo '<ul class="suggestions spaced">';
+
 		$li_tag = new SwatHtmlTag('li');
-
 		foreach ($suggestions as $suggestion) {
 			$li_tag->setContent($suggestion, 'text/xml');
 			$li_tag->display();
@@ -113,17 +130,21 @@ class SiteHttpErrorPage extends SitePage
 
 	protected function getSuggestions()
 	{
-		$suggestions = array();
-
-		$suggestions['contact'] = Site::_(
-			'If you followed a link from our site or elsewhere, please '.
-			'contact us and let us know where you came from so we can do our '.
-			'best to fix it.');
-
-		$suggestions['typo'] = Site::_(
-			'If you typed in the address, please double check the spelling.');
-
-		return $suggestions;
+		return array(
+			'contact' => SwatString::minimizeEntities(
+				Site::_(
+					'If you followed a link from our site or elsewhere, '.
+					'please contact us and let us know where you came from '.
+					'so we can do our best to fix it.'
+				)
+			),
+			'typo' => SwatString::minimizeEntities(
+				Site::_(
+					'If you typed in the address, please double check the '.
+					'spelling.'
+				)
+			),
+		);
 	}
 
 	// }}}
@@ -173,14 +194,28 @@ class SiteHttpErrorPage extends SitePage
 	{
 		switch($this->http_status_code) {
 		case 404:
-			return Site::_('Sorry, we couldn’t find the page you were looking for.');
+			return Site::_(
+				'Sorry, we couldn’t find the page you were looking for.'
+			);
 		case 403:
 			return Site::_('Sorry, the page you requested is not accessible.');
 		case 500:
 		default:
-			return Site::_('Sorry, there was a problem loading the page you '.
-				'requested.');
+			return Site::_(
+				'Sorry, there was a problem loading the page you requested.'
+			);
 		}
+	}
+
+	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+		$this->layout->addBodyClass('http-error-page');
 	}
 
 	// }}}
