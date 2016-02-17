@@ -735,6 +735,49 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
+	// {{{ public function relocateWithQueryString()
+
+	/**
+	 * Relocates to another URI while maintaining the current query string.
+	 *
+	 * This is useful for keeping things like google UTM strings being
+	 * maintained in automatic redirects.
+	 *
+	 * @param string $uri the URI to relocate to.
+	 * @param boolean $secure optional. Whether or not the base href should be
+	 *                         a secure URI. The default value of null
+	 *                         maintains the same security as the current page.
+	 *                         This parameter only has an effect if the
+	 *                         <i>$uri</i> is relative.
+	 * @param boolean $append_sid optional. Whether or not to append the
+	 *                             session identifier to the URI. If null, this
+	 *                             is determined automatically by the
+	 *                             {@link SiteSessionModule::appendSessionId()}
+	 *                             method.
+	 * @param boolean $permanent Whether or not to the relocate is permanent.
+	 *                            Set true for urls that are permanently
+	 *                            moved.
+	 */
+	public function relocateWithQueryString($uri, $secure = null,
+		$append_sid = null, $permanent = false)
+	{
+		$source_uri = parse_url($_SERVER['REQUEST_URI']);
+		$query_string = (isset($source_uri['query']))
+			? $source_uri['query']
+			: '';
+
+		if ($query_string !== '') {
+			$concatenator = (strpos($uri, '?') === false)
+				? '?'
+				: '&';
+
+			$uri.= $concatenator.$query_string;
+		}
+
+		$this->relocate($uri, $secure, $append_sid, $permanent);
+	}
+
+	// }}}
 	// {{{ public function getUri()
 
 	/**
