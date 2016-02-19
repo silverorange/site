@@ -708,13 +708,14 @@ class SiteWebApplication extends SiteApplication
 	 *                         This parameter only has an effect if the
 	 *                         <i>$uri</i> is relative.
 	 * @param boolean $append_sid optional. Whether or not to append the
-	 *                             session identifier to the URI. If null, this
-	 *                             is determined automatically by the
+	 *                             session identifier to the URI. If null or
+	 *                             unspecified, this is determined automatically
+	 *                             by the
 	 *                             {@link SiteSessionModule::appendSessionId()}
 	 *                             method.
-	 * @param boolean $permanent Whether or not to the relocate is permanent.
-	 *                            Set true for urls that are permanently
-	 *                            moved.
+	 * @param boolean $permanent optional. Whether or not to the relocate is
+	 *                            permanent. Set true for URIs that are
+	 *                            permanently moved. By default this is false.
 	 */
 	public function relocate($uri, $secure = null, $append_sid = null,
 		$permanent = false)
@@ -750,13 +751,14 @@ class SiteWebApplication extends SiteApplication
 	 *                         This parameter only has an effect if the
 	 *                         <i>$uri</i> is relative.
 	 * @param boolean $append_sid optional. Whether or not to append the
-	 *                             session identifier to the URI. If null, this
-	 *                             is determined automatically by the
+	 *                             session identifier to the URI. If null or
+	 *                             unspecified, this is determined automatically
+	 *                             by the
 	 *                             {@link SiteSessionModule::appendSessionId()}
 	 *                             method.
-	 * @param boolean $permanent Whether or not to the relocate is permanent.
-	 *                            Set true for urls that are permanently
-	 *                            moved.
+	 * @param boolean $permanent optional. Whether or not to the relocate is
+	 *                            permanent. Set true for URIs that are
+	 *                            permanently moved. By default this is false.
 	 */
 	public function relocateWithQueryString($uri, $secure = null,
 		$append_sid = null, $permanent = false)
