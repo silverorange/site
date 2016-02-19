@@ -761,12 +761,9 @@ class SiteWebApplication extends SiteApplication
 	public function relocateWithQueryString($uri, $secure = null,
 		$append_sid = null, $permanent = false)
 	{
-		$source_uri = parse_url($_SERVER['REQUEST_URI']);
-		$query_string = (isset($source_uri['query']))
-			? $source_uri['query']
-			: '';
+		$query_string = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
 
-		if ($query_string !== '') {
+		if ($query_string !== null) {
 			$concatenator = (strpos($uri, '?') === false)
 				? '?'
 				: '&';
