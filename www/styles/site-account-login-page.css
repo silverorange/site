@@ -1,9 +1,5 @@
 /* Account Login page */
 
-.ie6 .account-login-page #login_frame {
-	display: inline;
-}
-
 .account-login-page #password {
 	vertical-align: middle;
 }

@@ -23,14 +23,6 @@
 	padding: 0.2em 0;
 }
 
-.ie6 .swat-tile-view .swat-tile span.title {
-	height: 2.4em;
-}
-
-.ie6 .swat-tile-view .swat-tile a span.title {
-	cursor: pointer;
-}
-
 .swat-tile-view .swat-tile .site-image-wrapper {
 	display: table-cell;
 	vertical-align: middle;

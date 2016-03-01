@@ -34,8 +34,6 @@
 	bottom: 0;
 	z-index: 2;
 	background: #fff;
-	-moz-border-radius: 0;
-	-webkit-border-radius: 0;
 	border-radius: 0;
 }
 
