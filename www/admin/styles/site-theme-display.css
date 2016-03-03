@@ -4,11 +4,6 @@
 	padding: 1em;
 }
 
-/* IE min-height hack */
-.ie6 .site-theme-display {
-	height: 104px;
-}
-
 .site-theme-display-selected {
 	background: #f8f6f0;
 	border: 1px solid #e7ddc8;

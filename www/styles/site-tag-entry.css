@@ -17,10 +17,6 @@
 	vertical-align: middle;
 }
 
-.ie6 .site-tag-entry input {
-	position: absolute; /* abs for ie quirks */
-}
-
 .site-tag-entry .site-tag-autocomplete-container {
 	position: relative;
 }
@@ -78,10 +74,6 @@ li.site-tag-prehighlight {
 	list-style-type: none;
 }
 
-.ie6 .site-tag-array li {
-	background: #fff; /* For IE6 opacity fading */
-}
-
 .site-tag-array li.new-tag {
 	color: #348c28;
 	background: #dbf6d7;
@@ -98,18 +90,6 @@ li.site-tag-prehighlight {
 	padding: 0 0 2px 16px;
 	font-size: 85%;
 	color: #438d04;
-}
-
-/* prevent image from displaying underneath input in IE6 */
-.ie6 .site-tag-entry .site-tag-entry-add-tag {
-	position: relative;
-	display: block;
-	padding: 0;
-	width: 16px;
-	height: 16px;
-	left: 154px;
-	top: 2px;
-	zoom: 1;
 }
 
 .site-tag-entry .site-tag-entry-add-insensitive {
