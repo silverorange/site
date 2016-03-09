@@ -177,7 +177,7 @@ abstract class SiteCommentDisplay extends SwatControl
 	{
 		$status_span = new SwatHtmlTag('span');
 		$status_span->id = $this->id.'_status';
-		$status_spam->class = 'site-comment-display-status';
+		$status_span->class = 'site-comment-display-status';
 		$status_span->open();
 
 		if ($this->comment->spam) {
