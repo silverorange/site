@@ -110,11 +110,10 @@ class SiteAudioMedia extends SiteMedia
 					}
 				}
 			} catch (AMQPConnectionException $e) {
-				// Ignore connection error; will just use the old non-amqp code
-				// path.
+			} catch (AMQPQueueException $e) {
 			} catch (SiteAMQPJobFailureException $e) {
-				// Ignore job failure; will just use the old non-amqp code
-				// path.
+				// Ignore connection, queueing or job failure; will just use the
+				// old non-amqp code path.
 			} catch (Exception $e) {
 				// Unknown failure. We can still use the old non-amqp code but
 				// Also process the exception so we know what is failing.
