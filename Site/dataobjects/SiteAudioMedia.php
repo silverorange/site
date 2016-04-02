@@ -123,33 +123,67 @@ class SiteAudioMedia extends SiteMedia
 				$exception->processAndContinue();
 			}
 		}
-
+*/
 		if ($duration === null) {
 			// No AMQP or AMQP failed, just run the duration script on this
-			// server.
+			// server. Run just the ffprobe first, so we can check it's return
+			// code.
 			$command = sprintf(
 				'ffprobe '.
 					'-select_streams a '.
 					'-show_packets '.
 					'-show_entries packet=pts_time '.
 					'-v quiet '.
-					'%s '.
-				'| '.
-				'grep pts_time '.
-				'| '.
-				'tail -1 '.
-				'| '.
-				'cut -d "=" -f 2 ',
+					'%s ',
 				escapeshellcmd($file_path)
 			);
 
-			$duration = intval(
-				round(
-					trim(
-						shell_exec($command)
+			exec($command, $command_output, $returned_value);
+
+			// Turn the command output back to a multi-line string.
+			$command_output = implode("\n", $command_output);
+
+			if ($returned_value === 0) {
+				// If ffprobe has worked, strip the time from it's output.
+				$command = sprintf(
+					'echo %s | grep pts_time'.
+					'| '.
+					'tail -1 '.
+					'| '.
+					'cut -d "=" -f 2 ',
+					escapeshellcmd($command_output)
+				);
+
+				$raw_duration = shell_exec($command);
+				if (strlen($raw_duration) > 0) {
+					$duration = intval(round(trim($raw_duration)));
+				} else {
+					$exception = new SiteException(
+						'Audio Media Duration lookup with ffprobe failed. '.
+						'Empty string returned for duration.'
+					);
+
+					throw $exception;
+				}
+			} else {
+				$command_output_out = (strlen($command_output) > 0)
+					? sprintf(
+						"Command Output:\n%s\n\n",
+						$command_output
 					)
-				)
-			);
+					: '';
+
+				$exception = new SiteException(
+					sprintf(
+						"Audio Media Duration lookup with ffprobe failed.\n\n".
+						"Command Return Code:\n%s\n\n%s",
+						$returned_value,
+						$command_output_out
+					)
+				);
+
+				throw $exception;
+			}
 		}
 
 		return $duration;
