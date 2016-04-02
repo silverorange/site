@@ -115,6 +115,12 @@ class SiteAudioMedia extends SiteMedia
 			} catch (SiteAMQPJobFailureException $e) {
 				// Ignore job failure; will just use the old non-amqp code
 				// path.
+			} catch (Exception $e) {
+				// Unknown failure. We can still use the old non-amqp code but
+				// Also process the exception so we know what is failing.
+				require_once('Site/exceptions/SiteAMQPJobException.php');
+				$exception = new SiteAMQPJobException($e);
+				$exception->processAndContinue();
 			}
 		}
 
