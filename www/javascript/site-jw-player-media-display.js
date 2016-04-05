@@ -668,6 +668,7 @@ SiteJwPlayerMediaDisplay.prototype.drawDialogs = function()
 		this.appendCompleteMessage();
 
 		if (this.display_on_complete_message_on_load &&
+			this.start_position > 0 &&
 			this.start_position > this.duration - 60) {
 			this.displayCompleteMessage();
 		}
