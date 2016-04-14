@@ -110,40 +110,73 @@ class SiteAudioMedia extends SiteMedia
 					}
 				}
 			} catch (AMQPConnectionException $e) {
-				// Ignore connection error; will just use the old non-amqp code
-				// path.
+			} catch (AMQPQueueException $e) {
 			} catch (SiteAMQPJobFailureException $e) {
-				// Ignore job failure; will just use the old non-amqp code
-				// path.
+				// Ignore connection, queueing or job failure; will just use the
+				// old non-amqp code path.
+			} catch (Exception $e) {
+				// Unknown failure. We can still use the old non-amqp code but
+				// Also process the exception so we know what is failing.
+				require_once('Site/exceptions/SiteAMQPJobException.php');
+				$exception = new SiteAMQPJobException($e);
+				$exception->processAndContinue();
 			}
 		}
 
 		if ($duration === null) {
 			// No AMQP or AMQP failed, just run the duration script on this
-			// server.
+			// server. Run just the ffprobe first, so we can check it's return
+			// code.
 			$command = sprintf(
 				'ffprobe '.
 					'-select_streams a '.
 					'-show_packets '.
 					'-show_entries packet=pts_time '.
 					'-v quiet '.
-					'%s '.
-				'| '.
-				'grep pts_time '.
-				'| '.
-				'tail -1 '.
-				'| '.
-				'cut -d "=" -f 2 ',
+					'%s ',
 				escapeshellcmd($file_path)
 			);
 
-			$duration = intval(
-				round(
-					trim(
-						shell_exec($command)
+			$returned_value = 0;
+			$command_output = '';
+			exec($command, $command_output, $returned_value);
+
+			// If ffprobe has worked, get the time from it's output, otherwise
+			// throw an exception.
+			if ($returned_value === 0) {
+
+				// Get pts_time lines from output
+				$time_lines = array_filter($command_output, function($line) {
+					return (strstr($line, 'pts_time') !== false);
+				});
+
+				if (count($time_lines) > 0) {
+					// Get the last line and parse out duration.
+					$last_time = end($time_lines);
+					$time_parts = explode('=', $last_time, 2);
+					if (count($time_parts) > 1) {
+						$duration = (integer)round($time_parts[1]);
+					}
+				}
+
+
+				if ($duration === null) {
+					throw new SiteException(
+						'Audio media duration lookup with ffprobe failed. '.
+						'Unable to parse duration from output.'
+					);
+				}
+			} else {
+				throw new SiteException(
+					sprintf(
+						"Audio media duration lookup with ffprobe failed.\n\n".
+						"Ran command:\n%s\n\n".
+						"With return code:\n%s",
+						$command,
+						$returned_value
 					)
-				)
-			);
+				);
+			}
 		}
 
 		return $duration;
