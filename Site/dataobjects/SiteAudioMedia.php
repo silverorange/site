@@ -138,6 +138,7 @@ class SiteAudioMedia extends SiteMedia
 			);
 
 			$returned_value = 0;
+			$command_output = '';
 			exec($command, $command_output, $returned_value);
 
 			// If ffprobe has worked, get the time from it's output, otherwise
