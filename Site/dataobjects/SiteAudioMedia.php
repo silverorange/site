@@ -137,51 +137,44 @@ class SiteAudioMedia extends SiteMedia
 				escapeshellcmd($file_path)
 			);
 
+			$returned_value = 0;
 			exec($command, $command_output, $returned_value);
 
-			// Turn the command output back to a multi-line string.
-			$command_output = implode("\n", $command_output);
-
+			// If ffprobe has worked, get the time from it's output, otherwise
+			// throw an exception.
 			if ($returned_value === 0) {
-				// If ffprobe has worked, strip the time from it's output.
-				$command = sprintf(
-					'echo %s | grep pts_time'.
-					'| '.
-					'tail -1 '.
-					'| '.
-					'cut -d "=" -f 2 ',
-					escapeshellcmd($command_output)
-				);
 
-				$raw_duration = shell_exec($command);
-				if (strlen($raw_duration) > 0) {
-					$duration = intval(round(trim($raw_duration)));
-				} else {
-					$exception = new SiteException(
-						'Audio Media Duration lookup with ffprobe failed. '.
-						'Empty string returned for duration.'
+				// Get pts_time lines from output
+				$time_lines = array_filter($command_output, function($line) {
+					return (strstr($line, 'pts_time') !== false);
+				});
+
+				if (count($time_lines) > 0) {
+					// Get the last line and parse out duration.
+					$last_time = end($time_lines);
+					$time_parts = explode('=', $last_time, 2);
+					if (count($time_parts) > 1) {
+						$duration = (integer)round($time_parts[1]);
+					}
+				}
+
+
+				if ($duration === null) {
+					throw new SiteException(
+						'Audio media duration lookup with ffprobe failed. '.
+						'Unable to parse duration from output.'
 					);
-
-					throw $exception;
 				}
 			} else {
-				$command_output_out = (strlen($command_output) > 0)
-					? sprintf(
-						"Command Output:\n%s\n\n",
-						$command_output
-					)
-					: '';
-
-				$exception = new SiteException(
+				throw new SiteException(
 					sprintf(
-						"Audio Media Duration lookup with ffprobe failed.\n\n".
-						"Command Return Code:\n%s\n\n%s",
-						$returned_value,
-						$command_output_out
+						"Audio media duration lookup with ffprobe failed.\n\n".
+						"Ran command:\n%s\n\n".
+						"With return code:\n%s\n\n%s",
+						$command,
+						$returned_value
 					)
 				);
-
-				throw $exception;
 			}
 		}
 
