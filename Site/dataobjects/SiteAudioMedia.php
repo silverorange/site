@@ -171,7 +171,7 @@ class SiteAudioMedia extends SiteMedia
 					sprintf(
 						"Audio media duration lookup with ffprobe failed.\n\n".
 						"Ran command:\n%s\n\n".
-						"With return code:\n%s\n\n%s",
+						"With return code:\n%s",
 						$command,
 						$returned_value
 					)
