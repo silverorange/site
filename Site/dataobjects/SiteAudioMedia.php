@@ -122,7 +122,7 @@ class SiteAudioMedia extends SiteMedia
 				$exception->processAndContinue();
 			}
 		}
-*/
+
 		if ($duration === null) {
 			// No AMQP or AMQP failed, just run the duration script on this
 			// server. Run just the ffprobe first, so we can check it's return
