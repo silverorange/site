@@ -1,9 +1,9 @@
 create table Media (
 	id serial,
 
-	path_key   varchar(30) not null,
-	media_set  integer not null references MediaSet(id),
-	image      integer references Image(id) on delete set null,
+	path_key  varchar(30) not null,
+	media_set integer not null references MediaSet(id),
+	image     integer references Image(id) on delete set null,
 
 	title             varchar(255),
 	filename          varchar(255),
