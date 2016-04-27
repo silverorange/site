@@ -10,6 +10,17 @@ require_once 'Site/dataobjects/SiteMedia.php';
  */
 class SiteAudioMedia extends SiteMedia
 {
+	// {{{ class constants
+
+	/**
+	 * Starting offset in seconds to look for pts_time packets with ffprobe
+	 *
+	 * If this is greater than the duration of the stream ffprobe just seeks to
+	 * the end of the stream.
+	 */
+	const FFPROBE_DEFAULT_OFFSET = 432000; // 12 hours
+
+	// }}}
 	// {{{ public function getFormattedDuration()
 
 	/**
@@ -124,17 +135,23 @@ class SiteAudioMedia extends SiteMedia
 		}
 
 		if ($duration === null) {
+			$bin = trim(`which ffprobe`);
+
 			// No AMQP or AMQP failed, just run the duration script on this
 			// server. Run just the ffprobe first, so we can check it's return
 			// code.
 			$command = sprintf(
-				'ffprobe '.
+				'%s '.
+					'-print_format json '.
+					'-read_intervals %s%% '.
 					'-select_streams a '.
 					'-show_packets '.
 					'-show_entries packet=pts_time '.
 					'-v quiet '.
 					'%s ',
-				escapeshellcmd($file_path)
+				$bin,
+				escapeshellarg(self::FFPROBE_DEFAULT_OFFSET),
+				escapeshellarg($file_path)
 			);
 
 			$returned_value = 0;
@@ -144,21 +161,15 @@ class SiteAudioMedia extends SiteMedia
 			// If ffprobe has worked, get the time from it's output, otherwise
 			// throw an exception.
 			if ($returned_value === 0) {
+				$result = implode('', $command_output);
+				$result = json_decode($result, true);
 
-				// Get pts_time lines from output
-				$time_lines = array_filter($command_output, function($line) {
-					return (strstr($line, 'pts_time') !== false);
-				});
-
-				if (count($time_lines) > 0) {
-					// Get the last line and parse out duration.
-					$last_time = end($time_lines);
-					$time_parts = explode('=', $last_time, 2);
-					if (count($time_parts) > 1) {
-						$duration = (integer)round($time_parts[1]);
-					}
+				if ($result !== null &&
+					is_array($result['packets']) &&
+					count($result['packets']) > 0) {
+					$packet = end($result['packets']);
+					$duration = round($packet['pts_time']);
 				}
-
 
 				if ($duration === null) {
 					throw new SiteException(
