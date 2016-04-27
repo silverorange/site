@@ -135,7 +135,7 @@ class SiteAudioMedia extends SiteMedia
 		}
 
 		if ($duration === null) {
-			$bin = `which ffprobe`;
+			$bin = trim(`which ffprobe`);
 
 			// No AMQP or AMQP failed, just run the duration script on this
 			// server. Run just the ffprobe first, so we can check it's return
