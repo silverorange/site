@@ -45,7 +45,6 @@
 		"pear/text_password": "^1.1.1",
 		"silverorange/mdb2": "^2.4.1",
 		"silverorange/concentrate": ">=0.1.0",
-		"silverorange/silverorange_autoloader": "*",
 		"silverorange/swat": "^2.2.0"
 	},
 	"suggest": {
@@ -62,7 +61,7 @@
 		"silverorange/net_notifier": "Enables async notifications from web applications using web sockets."
 	},
 	"autoload": {
-		"file": [ "autoload.php" ]
+		"classmap": [ "Site/" ]
 	},
 	"include-path": [
 		"./"
