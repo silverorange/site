@@ -168,7 +168,7 @@ class SiteAudioMedia extends SiteMedia
 					isset($result['format']['duration'])) {
 
 					$format = $result['format']['format_name'];
-					$duration = $result['format']['duration'];
+					$duration = (integer)round($result['format']['duration']);
 				}
 
 				if ($duration === null) {
@@ -221,7 +221,7 @@ class SiteAudioMedia extends SiteMedia
 						is_array($result['packets']) &&
 						count($result['packets']) > 0) {
 						$packet = end($result['packets']);
-						$duration = round($packet['pts_time']);
+						$duration = (integer)round($packet['pts_time']);
 					}
 
 					if ($duration === null) {
