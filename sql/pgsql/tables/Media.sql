@@ -1,5 +1,6 @@
 create table Media (
 	id serial,
+	uuid varchar(36), -- used for file-naming
 
 	key varchar(50),
 	media_set integer not null references MediaSet(id),
@@ -11,6 +12,7 @@ create table Media (
 
 	has_hls boolean not null default false,
 	downloadable boolean not null default false,
+	private boolean not null default false,
 	duration integer,
 	description text,
 

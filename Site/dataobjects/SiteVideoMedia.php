@@ -167,7 +167,7 @@ class SiteVideoMedia extends SiteMedia
 			$jwplayer->setSession($app->session);
 		}
 
-		$expires = ($this->media_set->private) ? '1 day' : null;
+		$expires = ($this->private) ? '1 day' : null;
 
 		if ($this->has_hls) {
 			$jwplayer->addSource(
@@ -286,7 +286,7 @@ class SiteVideoMedia extends SiteMedia
 				DIRECTORY_SEPARATOR,
 				array(
 					$this->getFileBase(),
-					$this->id,
+					$this->uuid,
 					'full'
 				)
 			);
@@ -324,7 +324,7 @@ class SiteVideoMedia extends SiteMedia
 	{
 		$items = array(
 			$this->getFileBase(),
-			$this->id,
+			$this->uuid,
 			'hls',
 			'index.m3u8',
 		);
@@ -342,7 +342,7 @@ class SiteVideoMedia extends SiteMedia
 		if ($this->has_hls) {
 			$suffix = sprintf(
 				'%s/%s/%s',
-				$this->id,
+				$this->uuid,
 				'full',
 				$this->getFilename($encoding_shortname)
 			);

@@ -70,7 +70,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 
 	protected function moveFile(SiteVideoMedia $media, $old_path, $new_path)
 	{
-		$acl = ($media->media_set->private)
+		$acl = ($media->private)
 			? AmazonS3::ACL_AUTH_READ
 			: AmazonS3::ACL_PUBLIC;
 

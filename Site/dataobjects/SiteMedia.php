@@ -75,6 +75,13 @@ class SiteMedia extends SwatDBDataObject
 	public $duration;
 
 	/**
+	 * Whether or not this media is private
+	 *
+	 * @var boolean
+	 */
+	public $private;
+
+	/**
 	 * The date that this media was created
 	 *
 	 * @var SwatDate

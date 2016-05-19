@@ -224,7 +224,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 		if ($this->media === null) {
 			throw new SwatException('Media must be specified');
-		} elseif ($this->media->media_set->private) {
+		} elseif ($this->media->private) {
 			if ($this->session === null) {
 				throw new SwatException('Private video, session must be set');
 			} elseif (!$this->session->isActive()) {
@@ -233,7 +233,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			}
 		}
 
-		if ($this->session !== null && $this->media->media_set->private) {
+		if ($this->session !== null && $this->media->private) {
 			if (!isset($this->session->media_access)) {
 				$this->session->media_access = new ArrayObject();
 			}
