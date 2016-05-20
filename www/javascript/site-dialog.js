@@ -681,6 +681,7 @@ SiteDialog.handleLayoutChange = function()
 
 	proto.handleDocumentKeyDown = function(e)
 	{
+		// allow escape key to close dialog
 		if (this.isOpened() && e.keyCode === 27) {
 			this.closeWithAnimation();
 		}
