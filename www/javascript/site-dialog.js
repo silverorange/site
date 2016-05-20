@@ -345,6 +345,14 @@ SiteDialog.handleLayoutChange = function()
 				this,
 				true
 			);
+
+			Event.on(
+				document.body,
+				'keydown',
+				this.handleDocumentKeyDown,
+				this,
+				true
+			);
 		}
 
 		if (SiteDialog.is_desktop && this.config.relative_container) {
@@ -668,6 +676,13 @@ SiteDialog.handleLayoutChange = function()
 			if (!prevent_close) {
 				this.closeWithAnimation();
 			}
+		}
+	};
+
+	proto.handleDocumentKeyDown = function(e)
+	{
+		if (this.isOpened() && e.keyCode === 27) {
+			this.closeWithAnimation();
 		}
 	};
 
