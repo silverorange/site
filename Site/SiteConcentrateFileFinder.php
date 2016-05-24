@@ -17,15 +17,96 @@ class SiteConcentrateFileFinder
 	{
 		$files = array();
 
-		foreach ($this->getIncludeDirs() as $include_dir) {
-			if (preg_match('!pear/lib$!', $include_dir) === 1) {
-				$files = array_merge($this->getPearDataFiles($include_dir),
-					$files);
-			} else {
-				$files = array_merge(
-					$this->getDevelopmentDataFiles($include_dir),
-					$files);
+		if (preg_match('!pear/lib$!', get_include_path()) === 1) {
+			// Load data files from PEAR data directories and from other
+			// include paths.
+			foreach ($this->getIncludeDirs() as $include_dir) {
+				if (preg_match('!pear/lib$!', $include_dir) === 1) {
+					$files = array_merge(
+						$this->getPearDataFiles($include_dir),
+						$files
+					);
+				} else {
+					$files = array_merge(
+						$this->getDevelopmentDataFiles($include_dir),
+						$files
+					);
+				}
 			}
+		} else {
+			// Load data files from composer module directories and from site
+			// dependency directory.
+			$files = array_merge(
+				$this->getSiteDataFiles(),
+				$this->getComposerDataFiles()
+			);
+		}
+
+		return $files;
+	}
+
+	// }}}
+	// {{{ protected function getComposerDataFiles()
+
+	protected function getComposerDataFiles()
+	{
+		$files = array();
+
+		$www_path = realpath('.');
+		while (basename($www_path) !== 'www') {
+			$www_path = dirname($www_path);
+		}
+
+		$base_path = dirname($www_path).DIRECTORY_SEPARATOR.'vendor';
+		if (is_dir($base_path)) {
+			$base_dir = dir($base_path);
+			while (false !== ($vendor_name = $base_dir->read())) {
+				if ($vendor_name === '.' ||
+					$vendor_name === '..' ||
+					$vendor_name === 'bin' ||
+					$vendor_name === 'autoload.php') {
+					continue;
+				}
+
+				$vendor_path = $base_path.DIRECTORY_SEPARATOR.$vendor_name;
+				if (is_dir($vendor_path)) {
+					$vendor_dir = dir($vendor_path);
+					while (false !== ($package_name = $vendor_dir->read())) {
+						if ($package_name === '.' || $package_name === '..') {
+							continue;
+						}
+
+						$finder = new Concentrate_DataProvider_FileFinderDirectory(
+							$vendor_path.DIRECTORY_SEPARATOR.
+							$package_name.DIRECTORY_SEPARATOR.
+							'dependencies'
+						);
+
+						$files = array_merge(
+							$files,
+							$finder->getDataFiles()
+						);
+					}
+				}
+			}
+		}
+
+		return $files;
+	}
+
+	// }}}
+	// {{{ protected function getSiteDataFiles()
+
+	protected function getSiteDataFiles()
+	{
+		$files = array();
+
+		$finder = new Concentrate_DataProvider_FileFinderDirectory(
+			'..'.DIRECTORY_SEPARATOR.'dependencies'
+		);
+
+		foreach ($finder->getDataFiles() as $filename) {
+			$files[] = $filename;
 		}
 
 		return $files;

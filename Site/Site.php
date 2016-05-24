@@ -292,6 +292,10 @@ class Site
 			// comments
 			'comment.akismet_key'      => null,
 
+			// amazon AWS
+			// @see http://docs.aws.amazon.com/general/latest/gr/rande.html
+			'amazon.region' => 'us-east-1',
+
 			// amazon S3
 			'amazon.bucket'             => null,
 			'amazon.access_key_id'      => null,

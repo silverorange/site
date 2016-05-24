@@ -1,6 +1,5 @@
 <?php
 
-require_once 'AWSSDKforPHP/sdk.class.php';
 require_once 'Site/SiteVideoMediaMover.php';
 
 /**
@@ -15,14 +14,14 @@ require_once 'Site/SiteVideoMediaMover.php';
  */
 class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 {
-	// {{{ public properties
+	// {{{ protected properties
 
 	/**
 	 * S3 SDK
 	 *
-	 * @var AmazonS3
+	 * @var Aws\S3\S3Client
 	 */
-	public $s3;
+	protected $s3;
 
 	// }}}
 	// {{{ public function getBucket()
@@ -33,7 +32,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	}
 
 	// }}}
-	// {{{ protected function hasOldPath()
+	// {{{ protected function getOldPath()
 
 	protected function getOldPath(SiteVideoMedia $media, $shortname)
 	{
@@ -46,7 +45,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	}
 
 	// }}}
-	// {{{ protected function hasNewPath()
+	// {{{ protected function getNewPath()
 
 	protected function getNewPath(SiteVideoMedia $media, $shortname)
 	{
@@ -62,7 +61,12 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 
 	protected function hasFile($path)
 	{
-		return $this->s3->if_object_exists($this->getBucket(), $path);
+		return $this->s3->doesObjectExist(
+			array(
+				'Bucket' => $this->getBucket(),
+				'Key'    => $path,
+			)
+		);
 	}
 
 	// }}}
@@ -71,20 +75,21 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	protected function moveFile(SiteVideoMedia $media, $old_path, $new_path)
 	{
 		$acl = ($media->media_set->private)
-			? AmazonS3::ACL_AUTH_READ
-			: AmazonS3::ACL_PUBLIC;
+			? 'authenticated-read'
+			: 'public-read';
 
-		$this->s3->copy_object(
+		$copy_source = sprintf(
+			'%s/%s',
+			$this->getBucket(),
+			Aws\S3\S3Client::encodeKey($old_path)
+		);
+
+		$this->s3->copyObject(
 			array(
-				'bucket' => $this->getBucket(),
-				'filename' => $old_path
-			),
-			array(
-				'bucket' => $this->getBucket(),
-				'filename' => $new_path
-			),
-			array(
-				'acl' => $acl,
+				'ACL'        => $acl,
+				'Bucket'     => $this->getBucket(),
+				'CopySource' => $copy_source,
+				'Key'        => $new_path
 			)
 		);
 	}
@@ -94,7 +99,12 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 
 	protected function cleanUp($path)
 	{
-		$this->s3->delete_object($this->getBucket(), $path);
+		$this->s3->deleteObject(
+			array(
+				'Bucket' => $this->getBucket(),
+				'Key'    => $path,
+			)
+		);
 	}
 
 	// }}}
@@ -106,10 +116,12 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	{
 		parent::configure($config);
 
-		$this->s3 = new AmazonS3(
+		$this->s3 = new Aws\S3\S3Client(
 			array(
-				'key'    => $config->amazon->access_key_id,
-				'secret' => $config->amazon->access_key_secret,
+				'credentials' => array(
+					'key'    => $config->amazon->access_key_id,
+					'secret' => $config->amazon->access_key_secret,
+				),
 			)
 		);
 	}

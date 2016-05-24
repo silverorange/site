@@ -7,7 +7,7 @@ require_once 'Site/SiteApplication.php';
 require_once 'Site/SiteLayoutData.php';
 require_once 'Site/SiteHtmlHeadEntrySetDisplayerFactory.php';
 require_once 'Site/exceptions/SiteInvalidPropertyException.php';
-require_once 'Concentrate/CLI.php';
+require_once 'Concentrate/FlagFile.php';
 
 /**
  * Base class for a layout
@@ -346,7 +346,7 @@ class SiteLayout extends SiteObject
 	{
 		$www_root = dirname($_SERVER['SCRIPT_FILENAME']);
 		$filename = $www_root.DIRECTORY_SEPARATOR.
-			Concentrate_CLI::FILENAME_FLAG_COMBINED;
+			Concentrate_FlagFile::COMBINED;
 
 		return file_exists($filename);
 	}
@@ -364,7 +364,7 @@ class SiteLayout extends SiteObject
 	{
 		$www_root = dirname($_SERVER['SCRIPT_FILENAME']);
 		$filename = $www_root.DIRECTORY_SEPARATOR.
-			Concentrate_CLI::FILENAME_FLAG_COMPILED;
+			Concentrate_FlagFile::COMPILED;
 
 		return file_exists($filename);
 	}
@@ -382,7 +382,7 @@ class SiteLayout extends SiteObject
 	{
 		$www_root = dirname($_SERVER['SCRIPT_FILENAME']);
 		$filename = $www_root.DIRECTORY_SEPARATOR.
-			Concentrate_CLI::FILENAME_FLAG_MINIFIED;
+			Concentrate_FlagFile::MINIFIED;
 
 		return file_exists($filename);
 	}
