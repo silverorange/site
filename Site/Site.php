@@ -373,6 +373,11 @@ class Site
 
 			// Olark
 			'olark.site_id' => null,
+
+			// White Chipmunk Tracker
+			'white_chipmunk.enabled' => false,
+			'white_chipmunk.site_shortname' => null,
+			'white_chipmunk.salt' => null,
 		);
 	}
 
