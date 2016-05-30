@@ -170,8 +170,9 @@ class SiteWhiteChipmunkModule extends SiteApplicationModule
 	 */
 	public function __get($name)
 	{
-		if (!isset($_COOKIE[$name]))
+		if (!isset($_COOKIE[$name])) {
 			throw new SiteCookieException("Cookie '{$name}' is not set.");
+		}
 
 		try {
 			$value = SwatString::signedUnserialize(
