@@ -14,6 +14,7 @@ class SiteWhiteChipmunkModule extends SiteApplicationModule
 
 	protected $enabled = true;
 	protected $cookie_name;
+	protected $conversions = array();
 
 	// }}}
 	// {{{ public function init()
@@ -25,6 +26,17 @@ class SiteWhiteChipmunkModule extends SiteApplicationModule
 		$this->cookie_name = sprintf(
 			'%s_chipmunk_uuid',
 			$config->white_chipmunk->shortname
+		);
+	}
+
+	// }}}
+	// {{{ public function addConversion()
+
+	public function addConversion($sku, $value)
+	{
+		$this->conversions = array(
+			$sku,
+			$value
 		);
 	}
 
@@ -41,13 +53,26 @@ class SiteWhiteChipmunkModule extends SiteApplicationModule
 				)
 				: '';
 
+			$conversions = '';
+			$count = 0;
+			foreach ($this->conversions as $conversion) {
+				$conversions.= sprintf(
+					'&sku%1$s=%2$s&conversionvalue%1$s=%3$s',
+					$count,
+					urlencode($this->sku),
+					urlencode($this->conversion_value)
+				);
+				$count++;
+			}
+
 			printf(
 				'<div style="display: none;">'.
 				'<img height="1" width="1" border="0" '.
-				'src="https://www.whitechipmunk.com/%s?uid=%s%s" /></div>',
+				'src="https://www.whitechipmunk.com/%s?uid=%s%s%s" /></div>',
 				urlencode($this->app->config->white_chipmunk->shortname),
 				urlencode($this->getUUID()),
-				$referrer
+				$referrer,
+				$conversions
 			);
 		}
 	}
