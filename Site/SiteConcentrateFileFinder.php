@@ -17,7 +17,14 @@ class SiteConcentrateFileFinder
 	{
 		$files = array();
 
-		if (preg_match('!pear/lib$!', get_include_path()) === 1) {
+		if ($this->hasComposerLock()) {
+			// Load data files from composer module directories and from site
+			// dependency directory.
+			$files = array_merge(
+				$this->getSiteDataFiles(),
+				$this->getComposerDataFiles()
+			);
+		} else {
 			// Load data files from PEAR data directories and from other
 			// include paths.
 			foreach ($this->getIncludeDirs() as $include_dir) {
@@ -33,16 +40,40 @@ class SiteConcentrateFileFinder
 					);
 				}
 			}
-		} else {
-			// Load data files from composer module directories and from site
-			// dependency directory.
-			$files = array_merge(
-				$this->getSiteDataFiles(),
-				$this->getComposerDataFiles()
-			);
 		}
 
 		return $files;
+	}
+
+	// }}}
+	// {{{ protected function getWwwPath()
+
+	protected function getWwwPath()
+	{
+		$www_path = realpath('.');
+
+		while (basename($www_path) !== 'www') {
+			$www_path = dirname($www_path);
+		}
+
+		return $www_path;
+	}
+
+	// }}}
+	// {{{ protected function getRootPath()
+
+	protected function getRootPath()
+	{
+		return dirname($this->getWwwPath());
+	}
+
+	// }}}
+	// {{{ protected function hasComposerLock()
+
+	protected function hasComposerLock()
+	{
+		$filepath = $this->getRootPath().DIRECTORY_SEPARATOR.'composer.lock';
+		return file_exists($filepath);
 	}
 
 	// }}}
@@ -52,11 +83,7 @@ class SiteConcentrateFileFinder
 	{
 		$files = array();
 
-		$www_path = realpath('.');
-		while (basename($www_path) !== 'www') {
-			$www_path = dirname($www_path);
-		}
-
+		$www_path = $this->getWwwPath();
 		$base_path = dirname($www_path).DIRECTORY_SEPARATOR.'vendor';
 		if (is_dir($base_path)) {
 			$base_dir = dir($base_path);
@@ -102,7 +129,7 @@ class SiteConcentrateFileFinder
 		$files = array();
 
 		$finder = new Concentrate_DataProvider_FileFinderDirectory(
-			'..'.DIRECTORY_SEPARATOR.'dependencies'
+			$this->getRootPath().DIRECTORY_SEPARATOR.'dependencies'
 		);
 
 		foreach ($finder->getDataFiles() as $filename) {
