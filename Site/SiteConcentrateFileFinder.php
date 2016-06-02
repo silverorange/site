@@ -15,34 +15,12 @@ class SiteConcentrateFileFinder
 
 	public function getDataFiles()
 	{
-		$files = array();
-
-		if ($this->hasComposerLock()) {
-			// Load data files from composer module directories and from site
-			// dependency directory.
-			$files = array_merge(
-				$this->getSiteDataFiles(),
-				$this->getComposerDataFiles()
-			);
-		} else {
-			// Load data files from PEAR data directories and from other
-			// include paths.
-			foreach ($this->getIncludeDirs() as $include_dir) {
-				if (preg_match('!pear/lib$!', $include_dir) === 1) {
-					$files = array_merge(
-						$this->getPearDataFiles($include_dir),
-						$files
-					);
-				} else {
-					$files = array_merge(
-						$this->getDevelopmentDataFiles($include_dir),
-						$files
-					);
-				}
-			}
-		}
-
-		return $files;
+		// Load data files from composer module directories and from site
+		// dependency directory.
+		return array_merge(
+			$this->getSiteDataFiles(),
+			$this->getComposerDataFiles()
+		);
 	}
 
 	// }}}
@@ -65,15 +43,6 @@ class SiteConcentrateFileFinder
 	protected function getRootPath()
 	{
 		return dirname($this->getWwwPath());
-	}
-
-	// }}}
-	// {{{ protected function hasComposerLock()
-
-	protected function hasComposerLock()
-	{
-		$filepath = $this->getRootPath().DIRECTORY_SEPARATOR.'composer.lock';
-		return file_exists($filepath);
 	}
 
 	// }}}
@@ -140,40 +109,6 @@ class SiteConcentrateFileFinder
 	}
 
 	// }}}
-	// {{{ protected function getPearDataFiles()
-
-	protected function getPearDataFiles($include_dir)
-	{
-		$files = array();
-
-		// pear versions
-		$include_dir = str_replace('pear/lib', 'pear/data',
-			$include_dir);
-
-		if (is_dir($include_dir)) {
-			$dir = dir($include_dir);
-			while (false !== ($sub_dir = $dir->read())) {
-
-				$dependency_dir = $include_dir.DIRECTORY_SEPARATOR.
-					$sub_dir.DIRECTORY_SEPARATOR.'dependencies';
-
-				$finder = new Concentrate_DataProvider_FileFinderDirectory(
-					$dependency_dir);
-
-				foreach ($finder->getDataFiles() as $filename) {
-					$key = $this->getPearKey($filename);
-					if (!isset($files[$key])) {
-						$files[$key] = $filename;
-					}
-				}
-			}
-			$dir->close();
-		}
-
-		return $files;
-	}
-
-	// }}}
 	// {{{ protected function getDevelopmentDataFiles()
 
 	protected function getDevelopmentDataFiles($include_dir)
@@ -193,22 +128,6 @@ class SiteConcentrateFileFinder
 		}
 
 		return $files;
-	}
-
-	// }}}
-	// {{{ protected function getPearKey()
-
-	protected function getPearKey($filename)
-	{
-		$key = $filename;
-
-		$matches = array();
-		$expression = '!data/(.*)?/dependencies/(.*)?$!';
-		if (preg_match($expression, $filename, $matches) === 1) {
-			$key = strtolower($matches[1]).'/'.$matches[2];
-		}
-
-		return $key;
 	}
 
 	// }}}
