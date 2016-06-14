@@ -532,7 +532,7 @@ class SiteImage extends SwatDBDataObject
 		$binding = $this->getDimensionBinding($shortname);
 		if ($binding->on_cdn && self::$cdn_base != null) {
 			$uri = self::$cdn_base.$uri;
-		} else if ($prefix !== null && !strpos($uri, '://')) {
+		} else if ($prefix !== null && !mb_strpos($uri, '://')) {
 			$uri = $prefix.$uri;
 		}
 

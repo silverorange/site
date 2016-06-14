@@ -113,7 +113,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function setSkin($skin)
 	{
-		if (strpos($skin, '.xml') === false) {
+		if (mb_strpos($skin, '.xml') === false) {
 			if ($skin === null) {
 				$skin = 'six';
 			}

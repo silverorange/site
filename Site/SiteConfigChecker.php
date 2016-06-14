@@ -88,7 +88,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 	public function addDefinitions(array $definitions)
 	{
 		foreach ($definitions as $qualified_name => $default_value) {
-			if (strpos($qualified_name, '.') === false) {
+			if (mb_strpos($qualified_name, '.') === false) {
 				throw new SiteException(sprintf(
 					"Qualified name of configuration definition '%s' must be ".
 					"of the form section.name.", $qualified_name));
@@ -168,7 +168,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		$this->filename = (string)$filename;
 
 		$class_name = ucfirst(preg_replace_callback('/-(.)/',
-			create_function('$matches', 'return strtoupper($matches[1]);'),
+			create_function('$matches', 'return mb_strtoupper($matches[1]);'),
 			basename(str_replace('.ini', '', $filename))));
 	}
 

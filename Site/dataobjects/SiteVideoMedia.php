@@ -131,7 +131,7 @@ class SiteVideoMedia extends SiteMedia
 		foreach ($this->encoding_bindings as $binding) {
 			// Return first encoding that has an audio mime type. This can be
 			// improved in the future.
-			if (strpos($binding->media_type->mime_type, 'audio') !== false) {
+			if (mb_strpos($binding->media_type->mime_type, 'audio') !== false) {
 				$audio = $binding;
 				break;
 			}

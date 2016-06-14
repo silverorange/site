@@ -230,7 +230,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$user_agent = null;
 
 		if (isset($_SERVER['HTTP_USER_AGENT'])) {
-			$user_agent = substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
+			$user_agent = mb_substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
 		}
 
 		return $user_agent;

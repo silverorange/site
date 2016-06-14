@@ -145,7 +145,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		$files = $result->search('Contents[].Key');
 
 		foreach ($files as $file) {
-			$local_path = substr($file, strlen($this->getHLSPath($media)) + 1);
+			$local_path = mb_substr($file, mb_strlen($this->getHLSPath($media)) + 1);
 			$info = pathinfo($local_path);
 			if (isset($info['extension']) &&
 				$info['extension'] == 'm3u8' &&

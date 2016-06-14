@@ -194,7 +194,7 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 			// Name and Value have a 64 byte limit according to google
 			// documentation. Since currently value is always 1 chars, limit
 			// name to 63 chars.
-			$name = substr($name, 0, 63);
+			$name = mb_substr($name, 0, 63);
 
 			$ga_command = array(
 				'_setCustomVar',

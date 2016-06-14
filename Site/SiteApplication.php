@@ -203,7 +203,7 @@ abstract class SiteApplication extends SiteObject
 			$locale = $this->locale;
 
 		if ($locale !== null)
-			$country = substr($locale, 3, 2);
+			$country = mb_substr($locale, 3, 2);
 
 		return $country;
 	}

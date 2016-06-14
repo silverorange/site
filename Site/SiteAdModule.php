@@ -404,7 +404,7 @@ class SiteAdModule extends SiteApplicationModule
 		// truncate HTTP referrer to 255 characters
 		if ($ad_referrer->http_referer !== null) {
 			$ad_referrer->http_referer =
-				substr($ad_referrer->http_referer, 0, 255);
+				mb_substr($ad_referrer->http_referer, 0, 255);
 		}
 
 		$ad_referrer->ad = $ad;
@@ -466,11 +466,11 @@ class SiteAdModule extends SiteApplicationModule
 		// if tracking id didn't find anything, check for Google Analytic
 		// tracking vars that signify an ad network.
 		if ($ad_network === null) {
-			$utm_medium = strtolower(SiteApplication::initVar('utm_medium',
+			$utm_medium = mb_strtolower(SiteApplication::initVar('utm_medium',
 				null, SiteApplication::VAR_GET));
 
 			if (in_array($utm_medium, $this->ad_network_utm_mediums)) {
-				$utm_source = strtolower(SiteApplication::initVar('utm_source',
+				$utm_source = mb_strtolower(SiteApplication::initVar('utm_source',
 					null, SiteApplication::VAR_GET));
 
 				if (array_key_exists($utm_source,

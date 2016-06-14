@@ -676,7 +676,7 @@ class SiteMedia extends SwatDBDataObject
 		$binding = $this->getEncodingBinding($shortname);
 		if ($binding->on_cdn && self::$cdn_base != '') {
 			$uri = self::$cdn_base.$uri;
-		} else if ($prefix != '' && !strpos($uri, '://')) {
+		} else if ($prefix != '' && !mb_strpos($uri, '://')) {
 			$uri = $prefix.$uri;
 		}
 

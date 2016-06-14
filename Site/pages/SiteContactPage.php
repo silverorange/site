@@ -160,7 +160,7 @@ class SiteContactPage extends SiteDBEditPage
 			// Only save if the user-agent was successfully converted to UTF-8.
 			if ($user_agent !== false) {
 				// set max length based on database field length
-				$user_agent = substr($user_agent, 0, 255);
+				$user_agent = mb_substr($user_agent, 0, 255);
 				$message->user_agent = $user_agent;
 			}
 		}

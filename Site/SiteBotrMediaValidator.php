@@ -175,7 +175,7 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 		parent::handleSourceFileException($key, $path, $file, $e);
 
 		$e = new SiteCommandLineException($e);
-		if (strpos($e, 'SplFileInfo::getSize(): stat failed') !== false) {
+		if (mb_strpos($e, 'SplFileInfo::getSize(): stat failed') !== false) {
 			// don't report the error if we're marking them as valid anyway.
 			if (!$this->mark_large_files_valid) {
 				$this->failed_files[$key]['path']  = $path;

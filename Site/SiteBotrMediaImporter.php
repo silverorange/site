@@ -309,7 +309,7 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 				// script. As well, Media that already exist in the media table
 				// can't be reimported.
 				if ($this->force_import ||
-					strpos($media_file['tags'], $this->imported_tag) ===
+					mb_strpos($media_file['tags'], $this->imported_tag) ===
 					false) {
 					if ($this->mediaRowExists($media_file['key']) === true) {
 						$this->already_imported_count++;
