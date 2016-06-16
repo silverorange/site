@@ -123,15 +123,12 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 
 			$video_tag = new SwatHtmlTag('video');
 
-			$file_path = $this->media->getFilePath($encoding->width);
-			$path = $this->app->cdn->getStreamingUri($file_path,
-				($this->media->media_set->private) ? '1 day' : null);
-
-			$parts = parse_url($path);
-			$video_tag->src = substr($parts['path'], 1);
-			if (isset($parts['query'])) {
-				$video_tag->src.= '?'.$parts['query'];
-			}
+			// Modern AWS SDK automatically chops off the base href for signed
+			// RTMP URLs.
+			$video_tag->src = $this->app->cdn->getStreamingUri(
+				$this->media->getFilePath($encoding->width),
+				($this->media->media_set->private) ? '1 day' : null
+			);
 
 			$video_tag->width = $binding->width;
 			$video_tag->height = $binding->height;
