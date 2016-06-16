@@ -498,9 +498,15 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			 $secure = $this->app->isSecure();
 		}
 
+		if ($streaming) {
+			$protocol = 'rtmp';
+		} else {
+			$protocol = ($secure) ? 'https' : 'http';
+		}
+
 		$uri = sprintf(
 			'%s://%s/%s',
-			$secure ? 'https' : 'http',
+			$protocol,
 			$config->$distribution,
 			$filename
 		);
