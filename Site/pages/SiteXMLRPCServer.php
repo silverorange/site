@@ -2,7 +2,6 @@
 
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/layouts/SiteXMLRPCServerLayout.php';
-require_once 'XML/RPC2/Server.php';
 
 /**
  * Base class for an XML-RPC Server
