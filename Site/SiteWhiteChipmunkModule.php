@@ -103,12 +103,11 @@ class SiteWhiteChipmunkModule extends SiteApplicationModule
 	 * @param string $name the name of the cookie to set.
 	 * @param mixed $value the value of the cookie.
 	 * @param mixed $expiry the expiry date as a UNIX timestamp or a
-	                         string parsable by strtotime().
+	 *                       string parsable by strtotime().
 	 * @param string $path the URL path this cookie is valid for.
-	 * @param string $domain the domain this cookie is valid for.
 	 */
 	protected function setCookie($name, $value, $expiry = null,
-		$path = '/', $domain = null)
+		$path = '/')
 	{
 		if ($expiry === null) {
 			$expiry = strtotime('+90 days');
@@ -132,9 +131,8 @@ class SiteWhiteChipmunkModule extends SiteApplicationModule
 	 *
 	 * @param string $name the name of the cookie to set.
 	 * @param string $path the URL path this cookie is valid for.
-	 * @param string $domain the domain this cookie is valid for.
 	 */
-	protected function removeCookie($name, $path = '/', $domain = null)
+	protected function removeCookie($name, $path = '/')
 	{
 		// Set expiry time to the past. The expiry of 25 hours in the past is
 		// used because time() uses the server's local time and some browsers
@@ -147,12 +145,7 @@ class SiteWhiteChipmunkModule extends SiteApplicationModule
 		// unsetting cookies.
 		$value = 0;
 
-		// TODO: get from application when on a multi-instance site.
-		//if ($domain = null)
-		//	$domain =
-
 		setcookie($name, $value, $expiry, $path);
-		//setcookie($name, $value, $expiry, $path, $domain);
 
 		unset($_COOKIE[$name]);
 	}
