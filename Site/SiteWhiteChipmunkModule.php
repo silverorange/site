@@ -17,6 +17,26 @@ class SiteWhiteChipmunkModule extends SiteApplicationModule
 	protected $conversions = array();
 
 	// }}}
+	// {{{ public function depends()
+
+	/**
+	 * Gets the module features this module depends on
+	 *
+	 * The site account session module depends on the SiteDatabaseModule
+	 * feature.
+	 *
+	 * @return array an array of {@link SiteApplicationModuleDependency}
+	 *                        objects defining the features this module
+	 *                        depends on.
+	 */
+	public function depends()
+	{
+		$depends = parent::depends();
+		$depends[] = new SiteApplicationModuleDependency('SiteConfigModule');
+		return $depends;
+	}
+
+	// }}}
 	// {{{ public function init()
 
 	public function init()
