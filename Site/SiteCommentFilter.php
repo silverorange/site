@@ -64,11 +64,6 @@ class SiteCommentFilter
 	 */
 	protected static $tag_stack = array();
 
-	/**
-	 * @var boolean
-	 */
-	protected static $use_mb_string = null;
-
 	// }}}
 	// {{{ public static function parse()
 
@@ -82,11 +77,6 @@ class SiteCommentFilter
 	 */
 	public static function parse($comment, $strip_invalid_tags = false)
 	{
-		if (self::$use_mb_string === null) {
-			self::$use_mb_string = (extension_loaded('mbstring') &&
-				(ini_get('mbstring.func_overload') & 2) === 2);
-		}
-
 		self::$tag_stack = array();
 
 		ob_start();
@@ -290,11 +280,7 @@ class SiteCommentFilter
 		$start  = $from;
 		$length = $to - $from;
 
-		if (self::$use_mb_string) {
-			return mb_substr($string, $start, $length, '8bit');
-		}
-
-		return mb_substr($string, $start, $length);
+		return mb_substr($string, $start, $length, '8bit');
 	}
 
 	// }}}
@@ -302,11 +288,7 @@ class SiteCommentFilter
 
 	protected static function getByteLength($string)
 	{
-		if (self::$use_mb_string) {
-			return mb_strlen($string, '8bit');
-		}
-
-		return mb_strlen($string);
+		return mb_strlen($string, '8bit');
 	}
 
 	// }}}
