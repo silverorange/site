@@ -52,7 +52,7 @@ class SiteCookieModule extends SiteApplicationModule
 	 * @param string $name the name of the cookie to set.
 	 * @param mixed $value the value of the cookie.
 	 * @param mixed $expiry the expiry date as a UNIX timestamp or a
-	                         string parsable by strtotime().
+	 *                       string parsable by strtotime().
 	 * @param string $path the URL path this cookie is valid for.
 	 * @param string $domain the domain this cookie is valid for.
 	 */
