@@ -288,7 +288,7 @@ abstract class SitePageFactory
 
 				// look for class file in class map
 				foreach ($class_map as $package_prefix => $path) {
-					$length = strlen($package_prefix);
+					$length = mb_strlen($package_prefix);
 					if (strncmp($class, $package_prefix, $length) === 0) {
 						$class_file = "{$path}/{$class}.php";
 						break;

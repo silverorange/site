@@ -281,7 +281,7 @@ class SiteAttachment extends SwatDBDataObject
 
 	public function getDownloadUri($prefix = '')
 	{
-		if (strlen($prefix) > 0)
+		if (mb_strlen($prefix) > 0)
 			$prefix.= '/';
 
 		return sprintf('%sattachment%s', $prefix, $this->id);
@@ -296,7 +296,7 @@ class SiteAttachment extends SwatDBDataObject
 
 		if ($this->on_cdn && self::$cdn_base != '') {
 			$uri = self::$cdn_base.$uri;
-		} elseif ($prefix != '' && !strpos($uri, '://')) {
+		} elseif ($prefix != '' && !mb_strpos($uri, '://')) {
 			$uri = $prefix.$uri;
 		}
 

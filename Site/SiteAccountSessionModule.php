@@ -564,7 +564,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 			// UTF-8.
 			if ($user_agent !== false) {
 				// set max length based on database field length
-				$user_agent = substr($user_agent, 0, 255);
+				$user_agent = mb_substr($user_agent, 0, 255);
 				$login_session->user_agent = $user_agent;
 			}
 

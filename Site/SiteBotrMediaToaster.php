@@ -236,7 +236,7 @@ class SiteBotrMediaToaster
 
 		foreach ($options as $key => $value) {
 			// special case for search as it's a key prefix.
-			$lookup_key = (substr($key, 0, 6) === 'search') ?
+			$lookup_key = (mb_substr($key, 0, 6) === 'search') ?
 				'search' :
 				$key;
 

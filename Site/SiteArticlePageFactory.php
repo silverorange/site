@@ -311,7 +311,7 @@ class SiteArticlePageFactory extends SitePageFactory
 	protected function getArticle($path)
 	{
 		// don't try to resolve articles that are deeper than the max depth
-		if (substr_count($path, '/') >= SiteArticle::MAX_DEPTH) {
+		if (mb_substr_count($path, '/') >= SiteArticle::MAX_DEPTH) {
 			require_once('Site/exceptions/SitePathTooLongException.php');
 			throw new SitePathTooLongException(
 				sprintf('Article path too long: ‘%s’', $path));
@@ -368,7 +368,7 @@ class SiteArticlePageFactory extends SitePageFactory
 		}
 
 		// don't try to find articles with more than 254 characters in the path
-		if (strlen($path) > 254) {
+		if (mb_strlen($path) > 254) {
 			require_once('Site/exceptions/SitePathTooLongException.php');
 			throw new SitePathTooLongException(
 				sprintf('Path is too long: ‘%s’', $path));

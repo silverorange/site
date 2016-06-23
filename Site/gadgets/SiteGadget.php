@@ -332,7 +332,7 @@ abstract class SiteGadget extends SwatUIObject
 	 */
 	public function addAnalyticsQueryString($link)
 	{
-		$concatenater = (strpos($link, '?')) ? '&' : '?';
+		$concatenater = (mb_strpos($link, '?')) ? '&' : '?';
 
 		return spring('%s%s%s=%s',
 			$link,

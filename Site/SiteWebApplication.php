@@ -286,7 +286,7 @@ class SiteWebApplication extends SiteApplication
 
 		// if base URI starts with a forward-slash, it might be an SVN
 		// working-copy on the staging server
-		if (substr($this->base_uri, 0, 1) == '/') {
+		if (mb_substr($this->base_uri, 0, 1) == '/') {
 			// check for '/trunk/' in the base URI and replace with the current
 			// working directory if found; also allow for instance names in the
 			// working-copy URIs
@@ -725,7 +725,7 @@ class SiteWebApplication extends SiteApplication
 			$this->session instanceof SiteSessionModule)
 				$uri = $this->session->appendSessionId($uri, $append_sid);
 
-		if (substr($uri, 0, 1) != '/' && strpos($uri, '://') === false)
+		if (mb_substr($uri, 0, 1) != '/' && mb_strpos($uri, '://') === false)
 			$uri = $this->getBaseHref($secure).$uri;
 
 		if ($permanent)
@@ -766,7 +766,7 @@ class SiteWebApplication extends SiteApplication
 		$query_string = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
 
 		if ($query_string !== null) {
-			$concatenator = (strpos($uri, '?') === false)
+			$concatenator = (mb_strpos($uri, '?') === false)
 				? '?'
 				: '&';
 
@@ -827,7 +827,7 @@ class SiteWebApplication extends SiteApplication
 		}
 
 		if ($max_length !== null && $remote_ip !== null) {
-			$remote_ip = substr($remote_ip, 0, (int)$max_length);
+			$remote_ip = mb_substr($remote_ip, 0, (int)$max_length);
 		}
 
 		return $remote_ip;
@@ -879,7 +879,7 @@ class SiteWebApplication extends SiteApplication
 		if ($this->config->uri->admin_base != '') {
 			$admin_base_href = $this->config->uri->admin_base;
 
-			if (substr($admin_base_href, 0, 1) == '/') {
+			if (mb_substr($admin_base_href, 0, 1) == '/') {
 				$admin_base_href = $this->getProtocol($secure).
 					$this->getServerName($secure).$admin_base_href;
 			}
@@ -937,18 +937,18 @@ class SiteWebApplication extends SiteApplication
 
 		$base_uri = $this->secure ? $this->secure_base_uri : $this->base_uri;
 		$protocol = $this->getProtocol();
-		$protocol_length = strlen($protocol);
+		$protocol_length = mb_strlen($protocol);
 
 		if (strncmp($base_uri, $protocol, $protocol_length) === 0) {
-			$pos = strpos($base_uri, '/', $protocol_length);
+			$pos = mb_strpos($base_uri, '/', $protocol_length);
 
 			if ($pos !== false)
-				$base_uri = substr($base_uri, $pos);
+				$base_uri = mb_substr($base_uri, $pos);
 		}
 
-		$base_uri_length = strlen($base_uri);
+		$base_uri_length = mb_strlen($base_uri);
 		if (strncmp($base_uri, $this->uri, $base_uri_length) === 0)
-			$uri = substr($this->uri, $base_uri_length);
+			$uri = mb_substr($this->uri, $base_uri_length);
 		else
 			$uri = $this->uri;
 
@@ -957,7 +957,7 @@ class SiteWebApplication extends SiteApplication
 		if (isset($this->mobile) && $this->mobile->isMobileUrl() &&
 				$this->mobile->getPrefix() !== null) {
 
-			$uri = substr($uri, strlen($this->mobile->getPrefix()) + 1);
+			$uri = mb_substr($uri, mb_strlen($this->mobile->getPrefix()) + 1);
 		}
 
 		return $uri;
@@ -1022,7 +1022,7 @@ class SiteWebApplication extends SiteApplication
 		else
 			$base_uri = $this->base_uri;
 
-		if (substr($base_uri, 0, 1) == '/')
+		if (mb_substr($base_uri, 0, 1) == '/')
 			$base_href = $this->getProtocol($secure).
 				$this->getServerName($secure).$base_uri;
 		else

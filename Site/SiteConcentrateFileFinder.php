@@ -140,7 +140,7 @@ class SiteConcentrateFileFinder
 		$matches = array();
 		$expression = '!packages/(.*)?/.*?/dependencies/(.*)?$!';
 		if (preg_match($expression, $filename, $matches) === 1) {
-			$key = strtolower($matches[1]).'/'.$matches[2];
+			$key = mb_strtolower($matches[1]).'/'.$matches[2];
 		}
 
 		return $key;

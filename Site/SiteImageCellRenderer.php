@@ -167,7 +167,7 @@ class SiteImageCellRenderer extends SwatCellRenderer
 			else
 				$span_tag->setContent($title);
 
-			if (strlen($title) > self::MAX_TITLE_LENGTH)
+			if (mb_strlen($title) > self::MAX_TITLE_LENGTH)
 				$span_tag->title = $title;
 
 			$span_tag->display();

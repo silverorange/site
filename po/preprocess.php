@@ -61,7 +61,7 @@ for ($i = 0; $i < count($tokens); $i++) {
 		// most whitespace in gettext is from concatenation, ignore it
 		case T_WHITESPACE:
 			if ($in_gettext) {
-				if (strpos($text, "\n") !== false) {
+				if (mb_strpos($text, "\n") !== false) {
 					$gettext_blank_lines++;
 				}
 			} else {
@@ -100,7 +100,7 @@ for ($i = 0; $i < count($tokens); $i++) {
 				if ($string[0] === "'")
 					$string = str_replace("\\'", "'", $string);
 
-				$string = substr($string, 1, -1);
+				$string = mb_substr($string, 1, -1);
 				$string = str_replace("'", "\\'", $string);
 				$output.= $string;
 			} else {

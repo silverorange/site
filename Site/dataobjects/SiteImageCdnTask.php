@@ -84,7 +84,7 @@ class SiteImageCdnTask extends SiteCdnTask
 
 			$headers = $this->image->getHttpHeaders($shortname);
 
-			if (strlen($this->override_http_headers)) {
+			if (mb_strlen($this->override_http_headers)) {
 				$headers = array_merge(
 					$headers, unserialize($this->override_http_headers)
 				);

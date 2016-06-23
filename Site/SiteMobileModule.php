@@ -417,7 +417,7 @@ class SiteMobileModule extends SiteApplicationModule
 				your|
 				zeto|
 				zte\-
-				/ix', substr($useragent, 0, 4)));
+				/ix', mb_substr($useragent, 0, 4)));
 
 		return $match;
 	}

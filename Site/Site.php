@@ -93,7 +93,7 @@ class Site
 	public static function setupGettext()
 	{
 		$path = '@DATA-DIR@/Site/locale';
-		if (substr($path, 0 ,1) === '@')
+		if (mb_substr($path, 0 ,1) === '@')
 			$path = __DIR__.'/../locale';
 
 		bindtextdomain(Site::GETTEXT_DOMAIN, $path);

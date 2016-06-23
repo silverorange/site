@@ -37,10 +37,10 @@ class SiteHttpErrorPage extends SitePage
 		array_shift($exp);
 		array_shift($exp);
 		$prefix = '/'.implode('/', $exp);
-		$len = strlen($prefix);
+		$len = mb_strlen($prefix);
 
 		if (strncmp($prefix, $_SERVER['REQUEST_URI'], $len) == 0)
-			$this->uri = substr($_SERVER['REQUEST_URI'], $len);
+			$this->uri = mb_substr($_SERVER['REQUEST_URI'], $len);
 		else
 			$this->uri = $_SERVER['REQUEST_URI'];
 	}

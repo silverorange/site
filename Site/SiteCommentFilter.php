@@ -294,7 +294,7 @@ class SiteCommentFilter
 			return mb_substr($string, $start, $length, '8bit');
 		}
 
-		return substr($string, $start, $length);
+		return mb_substr($string, $start, $length);
 	}
 
 	// }}}
@@ -306,7 +306,7 @@ class SiteCommentFilter
 			return mb_strlen($string, '8bit');
 		}
 
-		return strlen($string);
+		return mb_strlen($string);
 	}
 
 	// }}}

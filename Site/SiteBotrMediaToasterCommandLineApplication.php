@@ -318,7 +318,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 				$key = $file->getFileName();
 
 				// ignore .DS_Store and ._ files
-				$skip = ((substr($key, 0, 2) == '._') || $key == '.DS_Store');
+				$skip = ((mb_substr($key, 0, 2) == '._') || $key == '.DS_Store');
 
 				$extension = $this->getExtension($key);
 				$directory = end(explode('/', $file->getPath()));
@@ -467,7 +467,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 			if ($filter_key == '*') {
 				// TODO: search recursively through any arrays.
 				foreach ($media_file as $key => $value) {
-					if (stripos($value, $filter_term) !== false) {
+					if (mb_stripos($value, $filter_term) !== false) {
 						$exclude = true;
 						break;
 					}
@@ -479,7 +479,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 				if (count($filter_key_parts) > 1) {
 					if (isset(
 							$media_file[$filter_key_parts[0]][$filter_key_parts[1]]
-						) && stripos(
+						) && mb_stripos(
 							$media_file[$filter_key_parts[0]][$filter_key_parts[1]],
 							$filter_term
 						) !== false) {
@@ -487,7 +487,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 					}
 				} else {
 					if (array_key_exists($key, $media_file)) {
-						if (stripos($attribute_value, $filter_term) !== false) {
+						if (mb_stripos($attribute_value, $filter_term) !== false) {
 							$exclude = true;
 						}
 					}

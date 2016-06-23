@@ -302,7 +302,7 @@ class SiteSessionModule extends SiteApplicationModule
 		if ($this->isActive()) {
 
 			if ($append_sid === null) {
-				$is_relative_uri = (strpos($uri, '://') === false);
+				$is_relative_uri = (mb_strpos($uri, '://') === false);
 				$has_cookie = isset($_COOKIE[$this->getSessionName()]);
 				$append_sid = $is_relative_uri && !$has_cookie;
 			}
@@ -311,8 +311,8 @@ class SiteSessionModule extends SiteApplicationModule
 				$sid = sprintf('%s=%s', $this->getSessionName(),
 					$this->getSessionId());
 
-				if (strpos($uri, $sid) === false) {
-					if (strpos($uri, '?') === false)
+				if (mb_strpos($uri, $sid) === false) {
+					if (mb_strpos($uri, '?') === false)
 						$uri.= '?';
 					else
 						$uri.= '&';

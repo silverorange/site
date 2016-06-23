@@ -357,7 +357,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 				$term = SiteApplication::initVar('TERM', '',
 					SiteApplication::VAR_ENV);
 
-				$bold = (strpos($term, 'xterm') !== false);
+				$bold = (mb_strpos($term, 'xterm') !== false);
 			}
 
 			if ($bold) {

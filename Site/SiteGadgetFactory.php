@@ -251,7 +251,7 @@ class SiteGadgetFactory extends SwatObject
 			foreach (self::getGadgetFiles() as $file) {
 				$filename = $file->getFilename();
 
-				$class_name = substr($filename, 0, -4);
+				$class_name = mb_substr($filename, 0, -4);
 
 				if (!class_exists($class_name)) {
 					require_once $file->getRealPath();

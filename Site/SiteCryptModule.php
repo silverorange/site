@@ -77,7 +77,7 @@ class SiteCryptModule extends SiteApplicationModule
 	{
 		// If the password isn't a crypt style password than it's in the old
 		// style form of a salted MD5 hash.
-		if (substr($password_hash, 0, 1) === '$') {
+		if (mb_substr($password_hash, 0, 1) === '$') {
 			$hash = crypt($password, $password_hash);
 		} else {
 			$salt = base64_decode($password_salt, true);
