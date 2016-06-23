@@ -295,7 +295,8 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 					}
 				} catch(SiteBotrMediaToasterException $e) {
 					// If it's not found, we've already deleted it.
-					if (mb_strpos($e->getMessage(), 'Code: NotFound') === false) {
+					$strpos = mb_strpos($e->getMessage(), 'Code: NotFound');
+					if ($strpos === false) {
 						$e->processAndContinue();
 					}
 				}

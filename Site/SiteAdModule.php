@@ -470,8 +470,13 @@ class SiteAdModule extends SiteApplicationModule
 				null, SiteApplication::VAR_GET));
 
 			if (in_array($utm_medium, $this->ad_network_utm_mediums)) {
-				$utm_source = mb_strtolower(SiteApplication::initVar('utm_source',
-					null, SiteApplication::VAR_GET));
+				$utm_source = mb_strtolower(
+					SiteApplication::initVar(
+						'utm_source',
+						null,
+						SiteApplication::VAR_GET
+					)
+				);
 
 				if (array_key_exists($utm_source,
 					$this->ad_network_utm_sources)) {
