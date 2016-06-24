@@ -220,11 +220,17 @@ class SiteMultipartMailMessage extends SiteObject
 		$mime->setTXTBody($this->text_body);
 		$mime->setHTMLBody($this->convertCssToInlineStyles($this->html_body));
 
-		foreach ($this->cc_list as $address)
-			$mime->addCc($address);
+		foreach ($this->cc_list as $address) {
+			if (trim($address) != '') {
+				$mime->addCc($address);
+			}
+		}
 
-		foreach ($this->bcc_list as $address)
-			$mime->addBcc($address);
+		foreach ($this->bcc_list as $address) {
+			if (trim($address) != '') {
+				$mime->addBcc($address);
+			}
+		}
 
 		// file attachments
 		foreach ($this->attachments as $attachment) {
