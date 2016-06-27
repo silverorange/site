@@ -220,13 +220,11 @@ class SiteMultipartMailMessage extends SiteObject
 		$mime->setTXTBody($this->text_body);
 		$mime->setHTMLBody($this->convertCssToInlineStyles($this->html_body));
 
-		foreach ($this->cc_list as $address) {
-			if (trim($address) != '') {
-				$mime->addCc($address);
-			}
+		foreach ($this->getCcArray() as $address) {
+			$mime->addCc($address);
 		}
 
-		foreach ($this->bcc_list as $address) {
+		foreach ($this->getBccArray() as $address) {
 			if (trim($address) != '') {
 				$mime->addBcc($address);
 			}
@@ -343,6 +341,34 @@ class SiteMultipartMailMessage extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function getCcArray()
+
+	/**
+	 * Gets an array of email addresses for CC
+	 *
+	 * @return arrays $email addresses for CC.
+	 */
+	public function getCcArray()
+	{
+		// array_filter will remove blank values
+		return array_filter($this->cc_list);
+	}
+
+	// }}}
+	// {{{ public function getBccArray()
+
+	/**
+	 * Gets an array of email addresses for BCC
+	 *
+	 * @return arrays $email addresses for BCC.
+	 */
+	public function getBccArray()
+	{
+		// array_filter will remove blank values
+		return array_filter($this->bcc_list);
+	}
+
+	// }}}
 	// {{{ public function addAttachmentFromString()
 
 	public function addAttachmentFromString($data, $filename = null,
@@ -372,13 +398,11 @@ class SiteMultipartMailMessage extends SiteObject
 
 	protected function getRecipients()
 	{
-		$recipients = array($this->to_address);
-
-		// add cc addresses
-		$recipients = array_merge($recipients, $this->cc_list);
-
-		// add bcc addresses
-		$recipients = array_merge($recipients, $this->bcc_list);
+		$recipients = array_merge(
+			array($this->to_address),
+			$this->getCcArray(),
+			$this->getBccArray()
+		);
 
 		return implode(', ', $recipients);
 	}
@@ -423,13 +447,13 @@ class SiteMultipartMailMessage extends SiteObject
 			$this->app->db->quote($this->to_address, 'text'),
 			$this->app->db->quote('to', 'text'));
 
-		foreach ($this->cc_list as $recipient) {
+		foreach ($this->getCcArray() as $recipient) {
 			$values[] = sprintf($values_sql,
 				$this->app->db->quote($recipient, 'text'),
 				$this->app->db->quote('cc', 'text'));
 		}
 
-		foreach ($this->bcc_list as $recipient) {
+		foreach ($this->getBccArray() as $recipient) {
 			$values[] = sprintf($values_sql,
 				$this->app->db->quote($recipient, 'text'),
 				$this->app->db->quote('bcc', 'text'));
