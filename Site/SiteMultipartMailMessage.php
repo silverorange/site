@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Swat/SwatDate.php';
-require_once 'Swat/SwatString.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/exceptions/SiteMailException.php';
 
@@ -351,7 +350,7 @@ class SiteMultipartMailMessage extends SiteObject
 	{
 		$list = array();
 		foreach ($this->cc_list as $email) {
-			if (SwatString::validateEmailAddress(trim($email))) {
+			if (trim($email) != '') {
 				$list[] = trim($email);
 			}
 		}
@@ -371,7 +370,7 @@ class SiteMultipartMailMessage extends SiteObject
 	{
 		$list = array();
 		foreach ($this->bcc_list as $email) {
-			if (SwatString::validateEmailAddress(trim($email))) {
+			if (trim($email) != '') {
 				$list[] = trim($email);
 			}
 		}
