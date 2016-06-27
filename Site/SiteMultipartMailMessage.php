@@ -225,9 +225,7 @@ class SiteMultipartMailMessage extends SiteObject
 		}
 
 		foreach ($this->getBccArray() as $address) {
-			if (trim($address) != '') {
-				$mime->addBcc($address);
-			}
+			$mime->addBcc($address);
 		}
 
 		// file attachments
