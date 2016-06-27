@@ -378,6 +378,9 @@ class Site
 			'white_chipmunk.enabled' => false,
 			'white_chipmunk.site_shortname' => null,
 			'white_chipmunk.salt' => null,
+
+			// Mandrill
+			'mandrill.api_key' => null,
 		);
 	}
 
