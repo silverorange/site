@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Swat/SwatDate.php';
+require_once 'Swat/SwatString.php';
 require_once 'Site/SiteObject.php';
 require_once 'Site/exceptions/SiteMailException.php';
 
@@ -220,11 +221,11 @@ class SiteMultipartMailMessage extends SiteObject
 		$mime->setTXTBody($this->text_body);
 		$mime->setHTMLBody($this->convertCssToInlineStyles($this->html_body));
 
-		foreach ($this->getCcArray() as $address) {
+		foreach ($this->getCcList() as $address) {
 			$mime->addCc($address);
 		}
 
-		foreach ($this->getBccArray() as $address) {
+		foreach ($this->getBccList() as $address) {
 			$mime->addBcc($address);
 		}
 
@@ -339,31 +340,43 @@ class SiteMultipartMailMessage extends SiteObject
 	}
 
 	// }}}
-	// {{{ public function getCcArray()
+	// {{{ public function getCcList()
 
 	/**
 	 * Gets an array of email addresses for CC
 	 *
 	 * @return arrays $email addresses for CC.
 	 */
-	public function getCcArray()
+	public function getCcList()
 	{
-		// array_filter will remove blank values
-		return array_filter($this->cc_list);
+		$list = array();
+		foreach ($this->cc_list as $email) {
+			if (SwatString::validateEmailAddress(trim($email))) {
+				$list[] = trim($email);
+			}
+		}
+
+		return $list;
 	}
 
 	// }}}
-	// {{{ public function getBccArray()
+	// {{{ public function getBccList()
 
 	/**
 	 * Gets an array of email addresses for BCC
 	 *
 	 * @return arrays $email addresses for BCC.
 	 */
-	public function getBccArray()
+	public function getBccList()
 	{
-		// array_filter will remove blank values
-		return array_filter($this->bcc_list);
+		$list = array();
+		foreach ($this->bcc_list as $email) {
+			if (SwatString::validateEmailAddress(trim($email))) {
+				$list[] = trim($email);
+			}
+		}
+
+		return $list;
 	}
 
 	// }}}
@@ -398,8 +411,8 @@ class SiteMultipartMailMessage extends SiteObject
 	{
 		$recipients = array_merge(
 			array($this->to_address),
-			$this->getCcArray(),
-			$this->getBccArray()
+			$this->getCcList(),
+			$this->getBccList()
 		);
 
 		return implode(', ', $recipients);
@@ -445,13 +458,13 @@ class SiteMultipartMailMessage extends SiteObject
 			$this->app->db->quote($this->to_address, 'text'),
 			$this->app->db->quote('to', 'text'));
 
-		foreach ($this->getCcArray() as $recipient) {
+		foreach ($this->getCcList() as $recipient) {
 			$values[] = sprintf($values_sql,
 				$this->app->db->quote($recipient, 'text'),
 				$this->app->db->quote('cc', 'text'));
 		}
 
-		foreach ($this->getBccArray() as $recipient) {
+		foreach ($this->getBccList() as $recipient) {
 			$values[] = sprintf($values_sql,
 				$this->app->db->quote($recipient, 'text'),
 				$this->app->db->quote('bcc', 'text'));
