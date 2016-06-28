@@ -205,7 +205,6 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 		// Get MD5 from S3 and from local file.
 		$metadata = $this->getMetadata($filename);
-		$metadata = $metadata['Metadata'];
 		$new_md5 = md5_file($source);
 		$old_md5 = (isset($metadata['md5'])) ? $metadata['md5'] : '';
 
@@ -426,12 +425,24 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 	public function getMetadata($filename)
 	{
-		return $this->s3->headObject(
-			array(
-				'Bucket' => $this->bucket,
-				'Key'    => $filename
-			)
-		);
+		$metadata = array();
+
+		try {
+			$result = $this->s3->headObject(
+				array(
+					'Bucket' => $this->bucket,
+					'Key'    => $filename
+				)
+			);
+
+			$metadata = $result['Metadata'];
+		} catch (Aws\S3\Exception\S3Exception $e) {
+			if ($e->getAwsErrorCode() !== 'NotFound') {
+				throw new SiteCdnException($e);
+			}
+		}
+
+		return $metadata;
 	}
 
 	// }}}
