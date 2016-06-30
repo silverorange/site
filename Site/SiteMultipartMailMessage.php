@@ -205,8 +205,6 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	public function send()
 	{
-		// create multipart-mime message
-		$crlf = "\n";
 		$mime = new Mail_mime($crlf);
 
 		$mime->setSubject($this->subject);
