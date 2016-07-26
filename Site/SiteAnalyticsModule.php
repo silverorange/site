@@ -499,11 +499,15 @@ JS;
 	// }}}
 	// {{{ public function prependFacebookPixelCommands()
 
-	public function prependFacebookPixelCommands(array $commands)
+	public function prependFacebookPixelCommands(array $commands, $facebook_pixel_id = '')
 	{
+		if ($facebook_pixel_id == '') {
+			$facebook_pixel_id = $this->facebook_pixel_id;
+		}
+
 		$comands = array_reverse($commands);
 		foreach ($commands as $command) {
-			array_unshift($this->facebook_pixel_commands, $command);
+			array_unshift($this->facebook_pixel_commands[$facebook_pixel_id], $command);
 		}
 	}
 
