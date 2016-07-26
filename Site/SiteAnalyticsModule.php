@@ -545,7 +545,9 @@ XHTML;
 				);
 
 				$javascript.= "\n";
-				$javascript.= $this->getFacebookPixelCommandsInlineJavascript();
+				$javascript.= $this->getFacebookPixelCommandsInlineJavascript(
+					$id
+				);
 			}
 		}
 
