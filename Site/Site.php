@@ -381,6 +381,7 @@ class Site
 
 			// Mandrill
 			'mandrill.api_key' => null,
+			'mandrill.template_prefix' => null,
 		);
 	}
 
