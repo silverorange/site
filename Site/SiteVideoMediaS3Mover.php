@@ -61,12 +61,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 
 	protected function hasFile($path)
 	{
-		return $this->s3->doesObjectExist(
-			array(
-				'Bucket' => $this->getBucket(),
-				'Key'    => $path,
-			)
-		);
+		return $this->s3->doesObjectExist($this->getBucket(), $path);
 	}
 
 	// }}}
