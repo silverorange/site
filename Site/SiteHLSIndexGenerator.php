@@ -135,37 +135,47 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 	protected function getEncodingIndexes(SiteMedia $media)
 	{
 		$encodings = array();
+		$all_files = array();
 
-		$result = $this->s3->listObjects(
-			array(
-				'Bucket' => $this->config->amazon->bucket,
-				'Prefix' => $this->getHLSPath($media),
-			)
+		$params = array(
+			'Bucket' => $this->config->amazon->bucket,
+			'Prefix' => $this->getHLSPath($media),
 		);
-		$files = $result->search('Contents[].Key');
 
-		if ($files !== null) {
-			foreach ($files as $file) {
-				$local_path = mb_substr(
-					$file,
-					mb_strlen($this->getHLSPath($media)) + 1
+		do {
+			$result = $this->s3->listObjectsV2($params);
+
+			$files = $result->search('Contents[].Key');
+
+			if (is_array($files)) {
+				$all_files = array_merge($files, $all_files);
+			}
+
+			$params['ContinuationToken'] = $result['NextContinuationToken'];
+
+			$is_truncated = $result['IsTruncated'];
+		} while ($is_truncated);
+
+		foreach ($all_files as $file) {
+			$local_path = mb_substr(
+				$file,
+				mb_strlen($this->getHLSPath($media)) + 1
+			);
+
+			$info = pathinfo($local_path);
+			if (isset($info['extension']) &&
+				$info['extension'] == 'm3u8' &&
+				$info['dirname'] != '.') {
+
+				$path_parts = explode('/', $info['dirname']);
+				$shortname = $path_parts[0];
+				$binding = $media->getEncodingBinding($shortname);
+				$bandwidth = (int)($binding->filesize / $media->duration * 8);
+				$encodings[$shortname] = array(
+					'path'       => $local_path,
+					'resolution' => $binding->width.'x'.$binding->height,
+					'bandwidth'  => $bandwidth,
 				);
-
-				$info = pathinfo($local_path);
-				if (isset($info['extension']) &&
-					$info['extension'] == 'm3u8' &&
-					$info['dirname'] != '.') {
-
-					$path_parts = explode('/', $info['dirname']);
-					$shortname = $path_parts[0];
-					$binding = $media->getEncodingBinding($shortname);
-					$bandwidth = (int)($binding->filesize / $media->duration * 8);
-					$encodings[$shortname] = array(
-						'path'       => $local_path,
-						'resolution' => $binding->width.'x'.$binding->height,
-						'bandwidth'  => $bandwidth,
-					);
-				}
 			}
 		}
 
