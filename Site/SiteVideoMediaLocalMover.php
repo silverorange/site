@@ -93,7 +93,9 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 
 	protected function cleanUp($path)
 	{
-		unlink($path);
+		if (file_exists($path)) {
+			unlink($path);
+		}
 	}
 
 	// }}}
