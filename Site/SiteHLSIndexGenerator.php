@@ -144,22 +144,28 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		);
 		$files = $result->search('Contents[].Key');
 
-		foreach ($files as $file) {
-			$local_path = mb_substr($file, mb_strlen($this->getHLSPath($media)) + 1);
-			$info = pathinfo($local_path);
-			if (isset($info['extension']) &&
-				$info['extension'] == 'm3u8' &&
-				$info['dirname'] != '.') {
-
-				$path_parts = explode('/', $info['dirname']);
-				$shortname = $path_parts[0];
-				$binding = $media->getEncodingBinding($shortname);
-				$bandwidth = (int)($binding->filesize / $media->duration * 8);
-				$encodings[$shortname] = array(
-					'path'       => $local_path,
-					'resolution' => $binding->width.'x'.$binding->height,
-					'bandwidth'  => $bandwidth,
+		if ($files !== null) {
+			foreach ($files as $file) {
+				$local_path = mb_substr(
+					$file,
+					mb_strlen($this->getHLSPath($media)) + 1
 				);
+
+				$info = pathinfo($local_path);
+				if (isset($info['extension']) &&
+					$info['extension'] == 'm3u8' &&
+					$info['dirname'] != '.') {
+
+					$path_parts = explode('/', $info['dirname']);
+					$shortname = $path_parts[0];
+					$binding = $media->getEncodingBinding($shortname);
+					$bandwidth = (int)($binding->filesize / $media->duration * 8);
+					$encodings[$shortname] = array(
+						'path'       => $local_path,
+						'resolution' => $binding->width.'x'.$binding->height,
+						'bandwidth'  => $bandwidth,
+					);
+				}
 			}
 		}
 
