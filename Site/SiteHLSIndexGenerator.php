@@ -223,6 +223,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		$this->s3 = new Aws\S3\S3Client(
 			array(
 				'version' => 'latest',
+				'region'  => $config->amazon->region,
 				'credentials' => array(
 					'key'    => $config->amazon->access_key_id,
 					'secret' => $config->amazon->access_key_secret,
