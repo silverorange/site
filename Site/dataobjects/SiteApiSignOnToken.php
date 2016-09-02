@@ -4,13 +4,13 @@ require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteApiCredential.php';
 
 /**
- * A one-time use sign-on token
+ * A one-time use token used to sign on using the API
  *
  * @package   Site
  * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteSignOnToken extends SwatDBDataObject
+class SiteApiSignOnToken extends SwatDBDataObject
 {
 	// {{{ public properties
 
@@ -43,11 +43,13 @@ class SiteSignOnToken extends SwatDBDataObject
 	{
 		parent::init();
 
-		$this->table = 'SignOnToken';
+		$this->table = 'ApiSignOnToken';
 		$this->id_field = 'integer:id';
 
-		$this->registerInternalProperty('api_credential',
-			SwatDBClassMap::get('SiteApiCredential'));
+		$this->registerInternalProperty(
+			'api_credential',
+			SwatDBClassMap::get('SiteApiCredential')
+		);
 
 		$this->registerDateProperty('createdate');
 	}

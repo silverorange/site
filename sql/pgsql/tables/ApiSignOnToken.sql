@@ -1,4 +1,4 @@
-create table SignOnToken (
+create table ApiSignOnToken (
 	id serial,
 
 	ident varchar(255) not null,
@@ -9,3 +9,6 @@ create table SignOnToken (
 
 	primary key (id)
 );
+
+create index ApiSignOnToken_ident_index on ApiSignOnToken(ident);
+create index ApiSignOnToken_token_index on ApiSignOnToken(token);

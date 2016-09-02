@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Site/pages/SitePage.php';
-require_once 'Site/dataobjects/SiteSignOnToken.php';
+require_once 'Site/dataobjects/SiteApiSignOnToken.php';
 require_once 'Site/dataobjects/SiteApiCredential.php';
 
 /**
@@ -32,7 +32,8 @@ class SiteApiGetTokenPage extends SitePage
 
 		$response = $this->getJsonResponse(
 			$this->getIdent(),
-			$this->getVar('key'));
+			$this->getVar('key')
+		);
 
 		$this->layout->startCapture('content');
 		echo json_encode($response);
@@ -44,8 +45,11 @@ class SiteApiGetTokenPage extends SitePage
 
 	protected function getVar($name)
 	{
-		return SiteApplication::initVar($name, null,
-			SiteApplication::VAR_GET);
+		return SiteApplication::initVar(
+			$name,
+			null,
+			SiteApplication::VAR_GET
+		);
 	}
 
 	// }}}
@@ -62,10 +66,10 @@ class SiteApiGetTokenPage extends SitePage
 	protected function getJsonResponse($ident, $key)
 	{
 		$class_name = SwatDBClassMap::get('SiteApiCredential');
-		$credentials = new $class_name();
-		$credentials->setDatabase($this->app->db);
+		$credential = new $class_name();
+		$credential->setDatabase($this->app->db);
 
-		if (!$credentials->loadByApiKey($key)) {
+		if (!$credential->loadByApiKey($key)) {
 			return array(
 				'status' => array(
 					'code'    => 'error',
@@ -83,26 +87,26 @@ class SiteApiGetTokenPage extends SitePage
 			);
 		}
 
-		$response = $this->getSignOnToken($ident, $credentials);
+		$response = $this->getSignOnToken($ident, $credential);
 		return $response;
 	}
 
 	// }}}
 	// {{{ protected function getSignOnToken()
 
-	protected function getSignOnToken($ident, SiteApiCredential $credentials)
+	protected function getSignOnToken($ident, SiteApiCredential $credential)
 	{
-		$class_name = SwatDBClassMap::get('SiteSignOnToken');
-		$sign_on_token = new $class_name();
-		$sign_on_token->setDatabase($this->app->db);
+		$class_name = SwatDBClassMap::get('SiteApiSignOnToken');
+		$token = new $class_name();
+		$token->setDatabase($this->app->db);
 
-		if (!$sign_on_token->loadByIdent($ident, $credentials)) {
-			$sign_on_token->ident = $ident;
-			$sign_on_token->api_credential = $credentials->id;
-			$sign_on_token->token = uniqid();
-			$sign_on_token->createdate = new SwatDate();
-			$sign_on_token->createdate->toUTC();
-			$sign_on_token->save();
+		if (!$token->loadByIdent($ident, $credential)) {
+			$token->ident = $ident;
+			$token->api_credential = $credential->id;
+			$token->token = uniqid();
+			$token->createdate = new SwatDate();
+			$token->createdate->toUTC();
+			$token->save();
 		}
 
 		return array(
@@ -110,7 +114,7 @@ class SiteApiGetTokenPage extends SitePage
 				'code'    => 'ok',
 				'message' => '',
 			),
-			'token'  => $sign_on_token->token,
+			'token'  => $token->token,
 		);
 	}
 

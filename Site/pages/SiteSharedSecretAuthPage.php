@@ -33,10 +33,15 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 			$expected = $this->getHashMac($message, $key);
 			$provided = (isset($_GET['mac'])) ? $_GET['mac'] : '';
 
-			throw new SiteInvalidMacException(sprintf(
-				"Invalid message authentication code.\n\n".
-				"Code expected: %s.\n".
-				"Code provided: %s.", $expected, $provided));
+			throw new SiteInvalidMacException(
+				sprintf(
+					"Invalid message authentication code.\n\n".
+					"Code expected: %s.\n".
+					"Code provided: %s.",
+					$expected,
+					$provided
+				)
+			);
 		}
 
 		parent::init();
@@ -54,15 +59,19 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 		}
 
 		$class_name = SwatDBClassMap::get('SiteApiCredential');
-		$credentials = new $class_name();
-		$credentials->setDatabase($this->app->db);
+		$credential = new $class_name();
+		$credential->setDatabase($this->app->db);
 
-		if (!$credentials->loadByApiKey($api_key)) {
-			throw new SiteInvalidMacException(sprintf(
-				'Unable to load shared secret for API key: %s.', $api_key));
+		if (!$credential->loadByApiKey($api_key)) {
+			throw new SiteInvalidMacException(
+				sprintf(
+					'Unable to load shared secret for API key: %s.',
+					$api_key
+				)
+			);
 		}
 
-		return $credentials->api_shared_secret;
+		return $credential->api_shared_secret;
 	}
 
 	// }}}
@@ -94,20 +103,6 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 
 		return ((isset($_GET['mac'])) &&
 			($this->getHashMac($message, $key) === $_GET['mac']));
-	}
-
-	// }}}
-	// {{{ protected function getApiKey()
-
-	protected function getApiKey()
-	{
-		$api_key = (isset($_GET['key'])) ? $_GET['key'] : '';
-
-		if ($api_key == '') {
-			throw new SiteInvalidMacException('No API key provided.');
-		}
-
-		return $api_key;
 	}
 
 	// }}}
