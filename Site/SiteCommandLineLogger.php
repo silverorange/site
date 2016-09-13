@@ -3,8 +3,6 @@
 /* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
 
 require_once 'Console/CommandLine.php';
-require_once 'Psr/Log/LogLevel.php';
-require_once 'Psr/Log/LoggerInterface.php';
 
 /**
  * PSR-3 compliant logger that sends messages to STDOUT and STDERR through
