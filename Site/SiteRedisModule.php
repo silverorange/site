@@ -115,6 +115,14 @@ class SiteRedisModule extends SiteApplicationModule
 			try {
 				$this->redis->select($config->database);
 
+				// Do a ping with PHP notices suppressed. This checks for the
+				// protected mode connection error since Redis 3.2.0. Errors
+				// are suppressed because the phpredis extension raises a
+				// notice on failure.
+				$reporting = error_reporting(0);
+				$this->redis->ping();
+				error_reporting($reporting);
+
 				if ($config->prefix != '') {
 					$prefix = $config->prefix;
 					if (!preg_match('/:$/', $prefix)) {
@@ -125,6 +133,17 @@ class SiteRedisModule extends SiteApplicationModule
 
 				$this->connected = true;
 			} catch (RedisException $e) {
+				// Handle Redis 3.2.0 protected mode connection error. See
+				// https://github.com/phpredis/phpredis/issues/831
+				$protected_mode_error =
+					'protocol error, got \'n\' as reply type byte';
+
+				if ($e->getMessage() === $protected_mode_error) {
+					throw new RedisException(
+						'Protected mode prevented connection to Redis. '.
+						'Check your Redis configuration and try again.'
+					);
+				}
 			}
 		}
 	}
