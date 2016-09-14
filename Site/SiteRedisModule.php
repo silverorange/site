@@ -138,9 +138,9 @@ class SiteRedisModule extends SiteApplicationModule
 				$protected_mode_error =
 					'protocol error, got \'n\' as reply type byte';
 
-				if (trim($e->getMessage()) === $protected_mode_error) {
+				if ($e->getMessage() === $protected_mode_error) {
 					throw new RedisException(
-						'Protected mode prevented connection to Redis '.
+						'Protected mode prevented connection to Redis. '.
 						'Check your Redis configuration and try again.'
 					);
 				}
