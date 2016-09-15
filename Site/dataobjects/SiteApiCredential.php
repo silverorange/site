@@ -47,7 +47,7 @@ class SiteApiCredential extends SwatDBDataObject
 	// }}}
 	// {{{ public function loadByApiKey()
 
-	public function loadByApiKey($key)
+	public function loadByApiKey($key, SiteInstance $instance =  null)
 	{
 		$this->checkDB();
 
@@ -57,7 +57,16 @@ class SiteApiCredential extends SwatDBDataObject
 			$sql = sprintf(
 				'select * from %s where api_key = %s',
 				$this->table,
-				$this->db->quote($key, 'text'));
+				$this->db->quote($key, 'text')
+			);
+
+			if ($instance instanceof SiteInstance) {
+				$sql = sprintf(
+					'%s and instance = %s',
+					$sql,
+					$this->db->quote($instance->id, 'integer')
+				);
+			}
 
 			$rs = SwatDB::query($this->db, $sql, null);
 			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
@@ -80,6 +89,11 @@ class SiteApiCredential extends SwatDBDataObject
 		$this->table = 'ApiCredential';
 		$this->id_field = 'integer:id';
 		$this->registerDateProperty('createdate');
+
+		$this->registerInternalProperty(
+			'instance',
+			SwatDBClassMap::get('SiteInstance')
+		);
 	}
 
 	// }}}
