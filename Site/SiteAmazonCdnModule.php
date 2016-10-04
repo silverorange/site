@@ -137,7 +137,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			throw new SiteCdnException(
 				sprintf(
 					'Distribution Private Key ‘%s’ missing.',
-					$file
+					$distribution_private_key_file
 				)
 			);
 		}
