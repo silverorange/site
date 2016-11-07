@@ -26,7 +26,7 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  * $crypt = $this->app->getModule('SiteCryptModule');
  *
  * $new_account = new SiteAccount();
- * $new_account->email = 'account@example.com';
+ * $new_account->setEmail('account@example.com');
  * $new_account->setPasswordHash($crypt->generateHash('secretpassword'));
  * $new_account->save();
  * </code>
@@ -40,8 +40,8 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  * // using regular data-object load() method
  * $account = new SiteAccount();
  * $account->load(123);
- * echo 'Hello ' . $account->fullname;
- * $account->email = 'new_address@example.com';
+ * echo 'Hello ' . $account->getFullName();
+ * $account->setEmail('new_address@example.com');
  * $account->save();
  *
  * // using loadWithEmail()
@@ -53,8 +53,8 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  *     $password_salt = $account->password_salt;
  *
  *     if($crypt->verifyHash('secretpassword', $password_hash, $password_salt)) {
- *         echo 'Hello ' . $account->fullname;
- *         $account->email = 'new_address@example.com';
+ *         echo 'Hello ' . $account->getFullName();
+ *         $account->setEmail('new_address@example.com');
  *         $account->save();
  *     }
  * }
@@ -71,8 +71,8 @@ require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
  * <code>
  * $sql = '-- select an account here';
  * $account = $db->query($sql, null, true, 'Account');
- * echo 'Hello ' . $account->fullname;
- * $account->email = 'new_address@example.com';
+ * echo 'Hello ' . $account->getFullName();
+ * $account->setEmail('new_address@example.com');
  * $account->save();
  * </code>
  *
@@ -94,20 +94,6 @@ class SiteAccount extends SwatDBDataObject
 	 * @var string
 	 */
 	public $id;
-
-	/**
-	 * The full name of this account
-	 *
-	 * @var string
-	 */
-	public $fullname;
-
-	/**
-	 * The email address of this account
-	 *
-	 * @var string
-	 */
-	public $email;
 
 	/**
 	 * Hashed version of this account's salted password
@@ -175,6 +161,20 @@ class SiteAccount extends SwatDBDataObject
 	 * @see SiteAccount::getSuspiciousActivity()
 	 */
 	protected $suspicious_activity;
+
+	/**
+	 * The full name of this account
+	 *
+	 * @var string
+	 */
+	protected $fullname;
+
+	/**
+	 * The email address of this account
+	 *
+	 * @var string
+	 */
+	protected $email;
 
 	// }}}
 	// {{{ public function loadWithEmail()
@@ -310,22 +310,6 @@ class SiteAccount extends SwatDBDataObject
 		}
 
 		return $this->load($id);
-	}
-
-	// }}}
-	// {{{ public function getFullName()
-
-	/**
-	 * Gets the full name of the person who owns this account
-	 *
-	 * Having this method allows subclasses to split the full name into an
-	 * arbitrary number of fields. For example, first name and last name.
-	 *
-	 * @return string the full name of the person who owns this account.
-	 */
-	public function getFullName()
-	{
-		return $this->fullname;
 	}
 
 	// }}}
@@ -526,6 +510,70 @@ class SiteAccount extends SwatDBDataObject
 		}
 
 		return $history;
+	}
+
+	// }}}
+	// {{{ protected function getProtectedPropertyList()
+
+	protected function getProtectedPropertyList()
+	{
+		$properties = parent::getProtectedPropertyList();
+
+		$properties['fullname'] = array(
+			'get' => 'getFullname',
+			'set' => 'setFullname'
+		);
+
+		$properties['email'] = array(
+			'get' => 'getEmail',
+			'set' => 'setEmail'
+		);
+
+		return $properties;
+	}
+
+	// }}}
+
+	// getters
+	// {{{ public function getFullName()
+
+	/**
+	 * Gets the full name of the person who owns this account
+	 *
+	 * Having this method allows subclasses to split the full name into an
+	 * arbitrary number of fields. For example, first name and last name.
+	 *
+	 * @return string the full name of the person who owns this account.
+	 */
+	public function getFullName()
+	{
+		return $this->fullname;
+	}
+
+	// }}}
+	// {{{ public function getEmail()
+
+	public function getEmail()
+	{
+		return $this->email;
+	}
+
+	// }}}
+
+	// setters
+	// {{{ public function setFullName()
+
+	public function setFullName($fullname)
+	{
+		$this->fullname = $fullname;
+	}
+
+	// }}}
+	// {{{ public function setEmail()
+
+	public function setEmail($email)
+	{
+		$this->email = $email;
 	}
 
 	// }}}
