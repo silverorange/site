@@ -520,8 +520,8 @@ class SiteAccount extends SwatDBDataObject
 		$properties = parent::getProtectedPropertyList();
 
 		$properties['fullname'] = array(
-			'get' => 'getFullname',
-			'set' => 'setFullname'
+			'get' => 'getFullName',
+			'set' => 'setFullName'
 		);
 
 		$properties['email'] = array(
