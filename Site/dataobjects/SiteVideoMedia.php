@@ -308,7 +308,7 @@ class SiteVideoMedia extends SiteMedia
 		} elseif ($this->has_hls) {
 			$filename = $encoding_shortname;
 		} else {
-			$filename = $this->id;
+			$filename = $this->path_key;
 		}
 
 		return sprintf('%s.%s',
