@@ -370,12 +370,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			$uri = $this->getCloudFrontUri($filename, $expires, false, $secure);
 		} else {
 			if ($expires === null) {
-				$uri = $this->s3->getObjectUrl(
-					array(
-						'Bucket' => $this->bucket,
-						'Key'    => $filename
-					)
-				);
+				$uri = $this->s3->getObjectUrl($this->bucket, $filename);
 			} else {
 				$command = $this->s3->getCommand(
 					'GetObject',

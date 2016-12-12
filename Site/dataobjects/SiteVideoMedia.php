@@ -286,7 +286,7 @@ class SiteVideoMedia extends SiteMedia
 				DIRECTORY_SEPARATOR,
 				array(
 					$this->getFileBase(),
-					$this->id,
+					$this->path_key,
 					'full'
 				)
 			);
@@ -308,7 +308,7 @@ class SiteVideoMedia extends SiteMedia
 		} elseif ($this->has_hls) {
 			$filename = $encoding_shortname;
 		} else {
-			$filename = $this->id;
+			$filename = $this->path_key;
 		}
 
 		return sprintf('%s.%s',
@@ -324,7 +324,7 @@ class SiteVideoMedia extends SiteMedia
 	{
 		$items = array(
 			$this->getFileBase(),
-			$this->id,
+			$this->path_key,
 			'hls',
 			'index.m3u8',
 		);
@@ -342,7 +342,7 @@ class SiteVideoMedia extends SiteMedia
 		if ($this->has_hls) {
 			$suffix = sprintf(
 				'%s/%s/%s',
-				$this->id,
+				$this->path_key,
 				'full',
 				$this->getFilename($encoding_shortname)
 			);

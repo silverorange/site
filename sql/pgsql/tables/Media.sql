@@ -1,7 +1,7 @@
 create table Media (
 	id serial,
 
-	key varchar(50),
+	path_key  varchar(30) not null,
 	media_set integer not null references MediaSet(id),
 	image     integer references Image(id) on delete set null,
 
@@ -14,6 +14,8 @@ create table Media (
 	duration integer,
 	description text,
 
+	key varchar(50), -- deprecated
+
 	createdate timestamp,
 
 	-- SiteVideoMedia specific fields
@@ -22,3 +24,5 @@ create table Media (
 
 	primary key (id)
 );
+
+create index Media_path_key_index on Media(path_key);
