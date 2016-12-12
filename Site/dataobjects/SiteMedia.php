@@ -754,7 +754,7 @@ class SiteMedia extends SwatDBDataObject
 		if ($this->getMediaSet()->obfuscate_filename) {
 			$filename = $this->filename;
 		} else {
-			$filename = $encoding_shortname;
+			$filename = $this->id;
 		}
 
 		return sprintf('%s.%s', $filename, $binding->media_type->extension);
