@@ -96,18 +96,6 @@ class SiteAccount extends SwatDBDataObject
 	public $id;
 
 	/**
-	 * Hashed version of this account's salted password
-	 *
-	 * By design, there is no way to get the actual password of this account
-	 * through the SiteAccount object.
-	 *
-	 * @var string
-	 *
-	 * @see SiteAccount::setPasswordHash()
-	 */
-	public $password;
-
-	/**
 	 * The salt value used to protect this account's password base-64 encoded
 	 *
 	 * @var string
@@ -175,6 +163,18 @@ class SiteAccount extends SwatDBDataObject
 	 * @var string
 	 */
 	protected $email;
+
+	/**
+	 * Hashed version of this account's salted password
+	 *
+	 * By design, there is no way to get the actual password of this account
+	 * through the SiteAccount object.
+	 *
+	 * @var string
+	 *
+	 * @see SiteAccount::setPasswordHash()
+	 */
+	protected $password;
 
 	// }}}
 	// {{{ public function loadWithEmail()
@@ -529,6 +529,11 @@ class SiteAccount extends SwatDBDataObject
 			'set' => 'setEmail'
 		);
 
+		$properties['password'] = array(
+			'get' => 'getPassword',
+			'set' => 'setPassword'
+		);
+
 		return $properties;
 	}
 
@@ -559,6 +564,14 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getPassword()
+
+	public function getPassword()
+	{
+		return $this->password;
+	}
+
+	// }}}
 
 	// setters
 	// {{{ public function setFullName()
@@ -577,6 +590,14 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function setPassword()
+
+	public function setPassword($password)
+	{
+		$this->password = $password;
+	}
+
+	// }}}
 
 	// password methods
 	// {{{ public function setPasswordHash()
@@ -588,7 +609,7 @@ class SiteAccount extends SwatDBDataObject
 	 */
 	public function setPasswordHash($password_hash)
 	{
-		$this->password = $password_hash;
+		$this->setPassword($password_hash);
 
 		// Note: Site now uses crypt() for password hashing. The salt is stored
 		// in the same field as the hashed password.
@@ -813,8 +834,9 @@ class SiteAccount extends SwatDBDataObject
 		// Note: SiteAccount now uses crypt() for password hashing. The salt
 		// is stored in the same field as the hashed password.
 		$this->password_salt        = null;
-		$this->password             = $values['password'];
 		$this->unencrypted_password = $values['unencrypted_password'];
+
+		$this->setPassword($values['password']);
 	}
 
 	// }}}
