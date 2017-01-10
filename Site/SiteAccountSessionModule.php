@@ -360,13 +360,13 @@ class SiteAccountSessionModule extends SiteSessionModule
 	// {{{ public function isAccountDirty()
 
 	/**
-	 * Gets whether or not the logged account in this session needs to be
+	 * Gets whether or not the logged in account in this session needs to be
 	 * reloaded from the database
 	 *
 	 * If no account is logged in, false is returned.
 	 *
-	 * @return boolean whether or not the logged account in this session needs
-	 *                  to be reloaded from the database.
+	 * @return boolean whether or not the logged in account in this session
+	 *                  needs to be reloaded from the database.
 	 */
 	public function isAccountDirty()
 	{
