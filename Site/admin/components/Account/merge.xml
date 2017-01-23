@@ -1,0 +1,57 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+
+	<!-- {{{ Details of selected -->
+	<widget class="SwatFrame" id="details_frame">
+		<widget class="SwatDetailsView" id="details_view">
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Name</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">fullname</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Email</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">email</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="createdate">
+				<property name="title" translatable="yes">Created On</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">createdate</property>
+				</object>
+			</object>
+		</widget>
+	</widget>
+	<!-- }}} -->
+
+
+	<!-- {{{ Search Form -->
+	<widget class="SwatFrame" id="search_frame">
+		<property name="title" translatable="yes">Find Account To Merge</property>
+		<widget class="SwatForm" id="search_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Name</property>
+				<widget class="SwatEntry" id="search_fullname" />
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Email Address</property>
+				<widget class="SwatEntry" id="search_email" />
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Instance</property>
+				<property name="visible" type="boolean">false</property>
+				<widget class="SwatFlydown" id="search_instance" />
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button">
+					<property name="title" translatable="yes">Search</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+	<!-- }}} -->
+</swatml>
