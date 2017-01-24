@@ -29,6 +29,8 @@ class SiteAccountMerge extends AdminSearch
 	 */
 	protected $account;
 
+	// }}}
+
 	// init phase
 	// {{{ protected function initInternal()
 
@@ -37,18 +39,23 @@ class SiteAccountMerge extends AdminSearch
 		parent::initInternal();
 
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->getMergeXml());
 		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->id = SiteApplication::initVar('id');
-	}
+		$this->getAccount();
 
-	// }}}
-	// {{{ protected function getMergeXml()
+		$form = $this->ui->getWidget('search_form');
+		$form->addHiddenField('id', $this->id);
 
-	protected function getMergeXml()
-	{
-		return 'Site/admin/components/Account/merge.xml';
+		$table_view = $this->ui->getWidget('index_view');
+		$link_renderer = $table_view
+			->getColumn('fullname')
+			->getRenderer('link_renderer');
+
+		$link_renderer->link = sprintf(
+			'Account/MergeSummary?id1=%s&amp;id2=%%s',
+			$this->id
+		);
 	}
 
 	// }}}
@@ -56,11 +63,23 @@ class SiteAccountMerge extends AdminSearch
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Account/index.xml';
+		return 'Site/admin/components/Account/merge.xml';
 	}
 
 	// }}}
 
+	// process phase
+	// {{{ protected function processInternal()
+
+	protected function processInternal()
+	{
+		parent::processInternal();
+
+		$pager = $this->ui->getWidget('pager');
+		$pager->process();
+	}
+
+	// }}}
 	// build phase
 	// {{{ protected function buildInternal()
 
@@ -74,7 +93,6 @@ class SiteAccountMerge extends AdminSearch
 
 		if ($view->hasColumn('instance') &&
 			$this->ui->hasWidget('search_instance')) {
-
 			$view->getColumn('instance')->visible =
 				($this->ui->getWidget('search_instance')->value === null) &&
 				$this->ui->getWidget('search_instance')->parent->visible;
@@ -106,14 +124,17 @@ class SiteAccountMerge extends AdminSearch
 			if (!$this->account->load($this->id)) {
 				throw new AdminNotFoundException(sprintf(
 					Site::_('An account with an id of ‘%d’ does not exist.'),
-					$this->id));
+					$this->id
+				));
 			}
 
 			$instance_id = $this->app->getInstanceId();
 			if ($instance_id !== null) {
 				if ($this->account->instance->id !== $instance_id) {
-					throw new AdminNotFoundException(sprintf(Store::_(
-						'Incorrect instance for account ‘%d’.'), $this->id));
+					throw new AdminNotFoundException(sprintf(
+						Store::_('Incorrect instance for account ‘%d’.'),
+						$this->id
+					));
 				}
 			}
 		}
@@ -139,6 +160,18 @@ class SiteAccountMerge extends AdminSearch
 		$date_renderer->display_time_zone = $this->app->default_time_zone;
 
 		$details_view->data = $ds;
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		$this->navbar->addEntry(new SwatNavBarEntry(
+			$this->account->fullname,
+			sprintf('Account/Details?id=%s', $this->id)));
+		$this->navbar->addEntry(new SwatNavBarEntry(Site::_('Merge')));
+		$this->title = Site::_('Merge');
 	}
 
 	// }}}
@@ -190,23 +223,12 @@ class SiteAccountMerge extends AdminSearch
 	}
 
 	// }}}
-	// {{{ protected function getDetailsStore()
-
-	protected function getDetailsStore(SiteAccount $account, $row)
-	{
-		$ds = new SwatDetailsStore($account);
-		$ds->fullname = $account->getFullname();
-
-		return $ds;
-	}
-
-	// }}}
 	// {{{ protected function getSQL()
 
 	protected function getSQL()
 	{
 		return 'select Account.id, Account.fullname,
-			Account.email, Account.instance
+			Account.email, Account.createdate
 			from Account
 			%s
 			where %s
