@@ -68,15 +68,15 @@
 
 
 		<!-- {{{ Form submit bar -->
-		<widget class="SwatForm" id="edit_form">
+		<widget class="SwatForm" id="merge_form">
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="cancel_button">
 					<property name="title">Cancel</property>
 				</widget>
-				<widget class="SwatButton" id="submit_keep_first_button">
+				<widget class="SwatButton" id="keep_first_button">
 					<property name="title">Merge and Keep First Account</property>
 				</widget>
-				<widget class="SwatButton" id="submit_keep_second_button">
+				<widget class="SwatButton" id="keep_second_button">
 					<property name="title">Merge and Keep Second Account</property>
 				</widget>
 			</widget>

@@ -53,7 +53,7 @@ class SiteAccountMerge extends AdminSearch
 			->getRenderer('link_renderer');
 
 		$link_renderer->link = sprintf(
-			'Account/MergeSummary?id1=%s&amp;id2=%%s',
+			'Account/MergeSummary?id=%s&amp;id2=%%s',
 			$this->id
 		);
 	}

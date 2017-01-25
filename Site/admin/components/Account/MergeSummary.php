@@ -22,7 +22,7 @@ class SiteAccountMergeSummary extends AdminSearch
 	/**
 	 * @var integer
 	 */
-	protected $id1;
+	protected $id;
 
 	/**
 	 * @var SiteAccount
@@ -51,12 +51,27 @@ class SiteAccountMergeSummary extends AdminSearch
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
 		$this->ui->loadFromXML($this->getUiXml());
 
-		$this->id1 = SiteApplication::initVar('id1');
-		$this->account1 = $this->getAccount($this->id1, $this->account1);
+		$this->id = SiteApplication::initVar('id');
+		$this->account1 = $this->getAccount($this->id, $this->account1);
 
 		$this->id2 = SiteApplication::initVar('id2');
 		$this->account2 = $this->getAccount($this->id2, $this->account2);
 
+		$form = $this->ui->getWidget('merge_form');
+		$form->addHiddenField('id', $this->id);
+		$form->addHiddenField('id2', $this->id2);
+
+		$keep_first_button = $this->ui->getWidget('keep_first_button');
+		$keep_first_button->title = sprintf(
+			"Merge and keep %s",
+			$this->account1->email
+		);
+
+		$keep_second_button = $this->ui->getWidget('keep_second_button');
+		$keep_second_button->title = sprintf(
+			"Merge and keep %s",
+			$this->account2->email
+		);
 	}
 
 	// }}}
@@ -75,7 +90,27 @@ class SiteAccountMergeSummary extends AdminSearch
 	protected function processInternal()
 	{
 		parent::processInternal();
-		//todo
+		$form = $this->ui->getWidget('merge_form');
+
+		if ($form->isProcessed()) {
+			if ($this->ui->getWidget('cancel_button')->hasBeenClicked()) {
+				$this->app->relocate('Account');
+
+			} else if ($this->ui->getWidget('keep_first_button')->hasBeenClicked()) {
+				$this->app->relocate(sprintf(
+					'Account/MergeConfirm?id=%s&id2=%s&keep_first=1',
+					$this->id,
+					$this->id2
+				));
+
+			} else if ($this->ui->getWidget('keep_second_button')->hasBeenClicked()) {
+				$this->app->relocate(sprintf(
+					'Account/MergeConfirm?id=%s&id2=%s&keep_first=0',
+					$this->id,
+					$this->id2
+				));
+			}
+		}
 	}
 
 	// }}}
@@ -85,7 +120,6 @@ class SiteAccountMergeSummary extends AdminSearch
 	protected function buildInternal()
 	{
 		parent::buildInternal();
-
 
 		$this->buildAccountDetailsFrame();
 	}
@@ -179,10 +213,14 @@ class SiteAccountMergeSummary extends AdminSearch
 	{
 		$this->navbar->addEntry(new SwatNavBarEntry(
 			$this->account1->fullname,
-			sprintf('Account/Details?id=%s', $this->id1)));
+			sprintf('Account/Details?id=%s', $this->id)
+		));
+
 		$this->navbar->addEntry(new SwatNavBarEntry(
 			Site::_('Merge'),
-			sprintf('Account/Merge?id=%s', $this->id1)));
+			sprintf('Account/Merge?id=%s', $this->id)
+		));
+
 		$this->navbar->addEntry(new SwatNavBarEntry(sprintf(
 			Site::_('Merge With %s'),
 			$this->account2->fullname
