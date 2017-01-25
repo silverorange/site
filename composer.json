@@ -46,7 +46,7 @@
 		"pear/text_password": "^1.1.1",
 		"silverorange/mdb2": "^2.4.1",
 		"silverorange/concentrate": ">=0.1.2",
-		"silverorange/swat": "^2.4.0"
+		"silverorange/swat": "^2.5.0"
 	},
 	"suggest": {
 		"ext-amqp": "Allows some operations to use a message queue system.",
