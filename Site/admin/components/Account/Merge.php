@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminSearch.php';
-require_once 'Admin/AdminSearchClause.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatTableStore.php';
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'Site/dataobjects/SiteAccountWrapper.php';
-require_once 'Site/admin/SiteAccountSearch.php';
-
 /**
  * Merge Search page for Accounts
  *
@@ -169,7 +161,8 @@ class SiteAccountMerge extends AdminSearch
 	{
 		$this->navbar->addEntry(new SwatNavBarEntry(
 			$this->account->fullname,
-			sprintf('Account/Details?id=%s', $this->id)));
+			sprintf('Account/Details?id=%s', $this->id)
+		));
 		$this->navbar->addEntry(new SwatNavBarEntry(Site::_('Merge')));
 		$this->title = Site::_('Merge');
 	}
