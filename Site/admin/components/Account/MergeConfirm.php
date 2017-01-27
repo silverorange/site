@@ -116,7 +116,25 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
 		$source_account = $this->getSourceAccount();
 		$target_account = $this->getTargetAccount();
-		$this->mergeAccounts();
+
+		$transaction = new SwatDBTransaction($this->app->db);
+		try {
+			$this->mergeAccounts($source_account, $target_account);
+
+			$now = new SwatDate();
+			$now->toUTC();
+			$source_account->delete_date = $this->app->db->quote($now, 'date');
+			$this->addNote($source_account, $target_account);
+
+			$target_account->delete_date = null;
+			$this->addNote($target_account, $source_account);
+
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			var_dump($e);
+			throw $e;
+		}
 
 		$message = new SwatMessage(
 			sprintf(
@@ -132,9 +150,23 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 	}
 	// }}}
 	// {{{ abstract protected function mergeAccounts()
-	abstract protected function mergeAccounts();
+	abstract protected function mergeAccounts($source_account, $target_account);
 
 	// }}}
+	// {{{ protected function addNote()
+
+	protected function addNote($this_account, $other_account)
+	{
+		$note = sprintf("Merged with account %s.", $other_account->email);
+		if ($this_account->notes !== null) {
+			$this_account->notes .= " ".$note;
+		} else {
+			$this_account->notes = $note;
+		}
+		$this_account->save();
+	}
+	// }}}
+
 	// {{{ protected function relocate()
 
 	protected function relocate()
