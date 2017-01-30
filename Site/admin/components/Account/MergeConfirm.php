@@ -138,7 +138,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
 		$message = new SwatMessage(
 			sprintf(
-				Rap::_(
+				Site::_(
 					'Successfully merged the account "%s" into "%s".'
 				),
 				SwatString::minimizeEntities($source_account->email),
@@ -186,7 +186,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
 		echo '<h3>';
 		printf(
-			Rap::_(
+			Site::_(
 				'Are you sure you want to merge the account %s into %s?'
 			),
 			SwatString::minimizeEntities($this->getSourceAccount()->email),
@@ -196,7 +196,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
 		echo '<p>';
 		printf(
-			Rap::_(
+			Site::_(
 				'This will transfer all items from %s to %s and deactivate '.
 				'the unused account.'
 			),
@@ -210,7 +210,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		$message->content_type = 'text/xml';
 
 		$this->ui->getWidget('yes_button')->title =
-			Rap::_('Merge Accounts');
+			Site::_('Merge Accounts');
 	}
 
 	// }}}
@@ -251,7 +251,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 			sprintf('Account/MergeSummary?id=%s&id2=%s', $this->id, $this->id2)
 		));
 
-		$this->navbar->createEntry(Rap::_('Confirm'));
+		$this->navbar->createEntry(Site::_('Confirm'));
 	}
 	// }}}
 }
