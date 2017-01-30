@@ -189,7 +189,7 @@ class SiteArticleEdit extends AdminDBEdit
 
 	protected function loadDBData()
 	{
-		$this->ui->setValues(get_object_vars($this->edit_article));
+		$this->ui->setValues($this->edit_article->getAttributes());
 
 		$this->parent = $this->edit_article->getInternalValue('parent');
 		$form = $this->ui->getWidget('edit_form');

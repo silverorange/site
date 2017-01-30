@@ -165,7 +165,7 @@ class SiteAccountEdit extends AdminDBEdit
 
 	protected function loadDBData()
 	{
-		$this->ui->setValues(get_object_vars($this->account));
+		$this->ui->setValues($this->account->getAttributes());
 	}
 
 	// }}}
