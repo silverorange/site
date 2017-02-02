@@ -933,6 +933,7 @@ JS;
 	}
 
 	// }}}
+
 	// Salesforce Pardot
 	// {{{ public function hasPardot()
 
