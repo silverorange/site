@@ -134,6 +134,20 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $twitter_pixel_commands = array();
 
+	/**
+	 * Salesforce Pardot Account ID
+	 *
+	 * @var string
+	 */
+	protected $pardot_account_id;
+
+	/**
+	 * Salesforce Pardot Campaign ID
+	 *
+	 * @var string
+	 */
+	protected $pardot_campaign_id;
+
 	// }}}
 	// {{{ public function init()
 
@@ -157,6 +171,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->twitter_purchase_pixel_id =
 			$config->analytics->twitter_purchase_pixel_id;
 
+		$this->pardot_account_id =
+			$config->analytics->pardot_account_id;
+
+		$this->pardot_campaign_id =
+			$config->analytics->pardot_campaign_id;
+
 		$this->initOptOut();
 
 		// skip init of the commands if we're opted out.
@@ -176,7 +196,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			$this->hasGoogleAnalytics() ||
 			$this->hasFacebookPixel() ||
 			$this->hasTwitterPixel() ||
-			$this->hasBingUET()
+			$this->hasBingUET() ||
+			$this->hasPardot()
 		);
 	}
 
@@ -211,6 +232,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		if ($this->hasTwitterPixel()) {
 			$js.= $this->getTwitterPixelInlineJavascript();
+		}
+
+		if ($this->hasPardot()) {
+			$js.= $this->getPardotInlineJavascript();
 		}
 
 		if ($js != '') {
@@ -905,6 +930,65 @@ JS;
 				echo $image;
 			}
 		}
+	}
+
+	// }}}
+	// Salesforce Pardot
+	// {{{ public function hasPardot()
+
+	public function hasPardot()
+	{
+		return (
+			$this->pardot_account_id != '' &&
+			$this->pardot_campaign_id != '' &&
+			!$this->analytics_opt_out
+		);
+	}
+
+	// }}}
+
+	// {{{ public function getPardotInlineJavascript()
+
+	public function getPardotInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasPardot()) {
+			$javascript.= $this->getPardotTrackerInlineJavascript();
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getPardotTrackerInlineJavascript()
+
+	public function getPardotTrackerInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasPardot()) {
+			$javascript = <<<'JS'
+piAId = %s;
+piCId = %s;
+
+(function() {
+	function async_load(){
+		var s = document.createElement('script'); s.type = 'text/javascript';
+		s.src = ('https:' == document.location.protocol ? 'https://pi' : 'http://cdn') + '.pardot.com/pd.js';
+		var c = document.getElementsByTagName('script')[0]; c.parentNode.insertBefore(s, c);
+	}
+	if(window.attachEvent) { window.attachEvent('onload', async_load); }
+	else { window.addEventListener('load', async_load, false); }
+})();
+JS;
+		}
+
+		return sprintf(
+			$javascript,
+			SwatString::quoteJavaScriptString($this->pardot_account_id),
+			SwatString::quoteJavaScriptString($this->pardot_campaign_id)
+		);
 	}
 
 	// }}}
