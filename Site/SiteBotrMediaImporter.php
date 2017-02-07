@@ -454,6 +454,12 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 		$media_object = $this->getMediaObject($media_file);
 		$media_object->save();
 
+		// Hacky fix for setting the path_key to the id of the media. Path key
+		// has been added for new transcoding servies, and Botr support is being
+		// depreciated, but this will keep the importer working until that time.
+		$media_object->path_key = $media_object->id;
+		$media_object->save();
+
 		$imported_count = 0;
 		$encodings = $this->toaster->getEncodingsByKey($media_file['key']);
 		foreach($encodings as $encoding) {
