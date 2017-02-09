@@ -1,11 +1,11 @@
 .merge-details-view {
-	display:inline-block;
+	display: inline-block;
 }
 
 .section-header .swat-details-view-field-header {
     width: 100%;
     font-size: 122%;
-    color: #333 !important;
+    color: #333;
 }
 
 .section-header:not(:first-child) .swat-details-view-field-header {

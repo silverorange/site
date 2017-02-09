@@ -12,10 +12,10 @@ require_once 'Site/admin/SiteAccountSearch.php';
  * Merge Summary page for Accounts
  *
  * @package   Site
- * @copyright 2006-2016 silverorange
+ * @copyright 2006-2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteAccountMergeSummary extends AdminSearch
+class SiteAccountMergeSummary extends AdminPage
 {
 	// {{{ protected properties
 
@@ -40,7 +40,6 @@ class SiteAccountMergeSummary extends AdminSearch
 	protected $account2;
 
 	// }}}
-
 	// init phase
 	// {{{ protected function initInternal()
 
@@ -52,26 +51,10 @@ class SiteAccountMergeSummary extends AdminSearch
 		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->id = SiteApplication::initVar('id');
-		$this->account1 = $this->getAccount($this->id, $this->account1);
+		$this->account1 = $this->getAccount($this->id);
 
 		$this->id2 = SiteApplication::initVar('id2');
-		$this->account2 = $this->getAccount($this->id2, $this->account2);
-
-		$form = $this->ui->getWidget('merge_form');
-		$form->addHiddenField('id', $this->id);
-		$form->addHiddenField('id2', $this->id2);
-
-		$keep_first_button = $this->ui->getWidget('keep_first_button');
-		$keep_first_button->title = sprintf(
-			"Merge and keep %s",
-			$this->account1->email
-		);
-
-		$keep_second_button = $this->ui->getWidget('keep_second_button');
-		$keep_second_button->title = sprintf(
-			"Merge and keep %s",
-			$this->account2->email
-		);
+		$this->account2 = $this->getAccount($this->id2);
 	}
 
 	// }}}
@@ -83,7 +66,6 @@ class SiteAccountMergeSummary extends AdminSearch
 	}
 
 	// }}}
-
 	// process phase
 	// {{{ protected function processInternal()
 
@@ -94,16 +76,17 @@ class SiteAccountMergeSummary extends AdminSearch
 
 		if ($form->isProcessed()) {
 			if ($this->ui->getWidget('cancel_button')->hasBeenClicked()) {
-				$this->app->relocate('Account');
-
-			} else if ($this->ui->getWidget('keep_first_button')->hasBeenClicked()) {
+				$this->app->relocate(sprintf(
+					'Account/Details?id=%s',
+					$this->id
+				));
+			} elseif ($this->ui->getWidget('keep_first_button')->hasBeenClicked()) {
 				$this->app->relocate(sprintf(
 					'Account/MergeConfirm?id=%s&id2=%s&keep_first=1',
 					$this->id,
 					$this->id2
 				));
-
-			} else if ($this->ui->getWidget('keep_second_button')->hasBeenClicked()) {
+			} elseif ($this->ui->getWidget('keep_second_button')->hasBeenClicked()) {
 				$this->app->relocate(sprintf(
 					'Account/MergeConfirm?id=%s&id2=%s&keep_first=0',
 					$this->id,
@@ -121,13 +104,29 @@ class SiteAccountMergeSummary extends AdminSearch
 	{
 		parent::buildInternal();
 
+		$form = $this->ui->getWidget('merge_form');
+		$form->addHiddenField('id', $this->id);
+		$form->addHiddenField('id2', $this->id2);
+
+		$keep_first_button = $this->ui->getWidget('keep_first_button');
+		$keep_first_button->title = sprintf(
+			'Merge and keep %s',
+			$this->account1->email
+		);
+
+		$keep_second_button = $this->ui->getWidget('keep_second_button');
+		$keep_second_button->title = sprintf(
+			'Merge and keep %s',
+			$this->account2->email
+		);
+
 		$this->buildAccountDetailsFrame();
 	}
 
 	// }}}
 	// {{{ protected function getAccountDetailsStore()
 
-	protected function getAccountDetailsStore($account)
+	protected function getAccountDetailsStore(SiteAccount $account)
 	{
 		$ds = new SwatDetailsStore($account);
 		$ds->fullname = $account->getFullname();
@@ -137,29 +136,27 @@ class SiteAccountMergeSummary extends AdminSearch
 	// }}}
 	// {{{ protected function getAccount()
 
-	protected function getAccount($id, $account)
+	protected function getAccount($id)
 	{
-		if ($account === null) {
-			$account_class = SwatDBClassMap::get('SiteAccount');
+		$account_class = SwatDBClassMap::get('SiteAccount');
 
-			$account = new $account_class();
-			$account->setDatabase($this->app->db);
+		$account = new $account_class();
+		$account->setDatabase($this->app->db);
 
-			if (!$account->load($id)) {
+		if (!$account->load($id)) {
+			throw new AdminNotFoundException(sprintf(
+				Site::_('An account with an id of ‘%d’ does not exist.'),
+				$id
+			));
+		}
+
+		$instance_id = $this->app->getInstanceId();
+		if ($instance_id !== null) {
+			if ($account->instance->id !== $instance_id) {
 				throw new AdminNotFoundException(sprintf(
-					Site::_('An account with an id of ‘%d’ does not exist.'),
+					Site::_('Incorrect instance for account ‘%d’.'),
 					$id
 				));
-			}
-
-			$instance_id = $this->app->getInstanceId();
-			if ($instance_id !== null) {
-				if ($account->instance->id !== $instance_id) {
-					throw new AdminNotFoundException(sprintf(
-						Store::_('Incorrect instance for account ‘%d’.'),
-						$id
-					));
-				}
 			}
 		}
 
@@ -197,8 +194,10 @@ class SiteAccountMergeSummary extends AdminSearch
 	// }}}
 	// {{{ protected function buildAccountDetails()
 
-	protected function buildAccountDetails($ds, $details_view)
-	{
+	protected function buildAccountDetails(
+		SwatDetailsStore $ds,
+		SwatDetailsView $details_view
+	) {
 		$date_field = $details_view->getField('createdate');
 		$date_renderer = $date_field->getRendererByPosition();
 		$date_renderer->display_time_zone = $this->app->default_time_zone;
@@ -211,68 +210,20 @@ class SiteAccountMergeSummary extends AdminSearch
 
 	protected function buildNavBar()
 	{
-		$this->navbar->addEntry(new SwatNavBarEntry(
-			$this->account1->fullname,
+		$this->navbar->createEntry(
+			$this->account1->getFullname(),
 			sprintf('Account/Details?id=%s', $this->id)
-		));
+		);
 
-		$this->navbar->addEntry(new SwatNavBarEntry(
+		$this->navbar->createEntry(
 			Site::_('Merge'),
 			sprintf('Account/Merge?id=%s', $this->id)
-		));
+		);
 
-		$this->navbar->addEntry(new SwatNavBarEntry(sprintf(
+		$this->navbar->createEntry(sprintf(
 			Site::_('Merge With %s'),
-			$this->account2->fullname
-		)));
-	}
-
-	// }}}
-	// {{{ protected function getTableModel()
-
-	protected function getTableModel(SwatView $view)
-	{
-		$search = $this->getAccountSearch();
-
-		$pager = $this->ui->getWidget('pager');
-		$pager->total_records = SwatDB::queryOne(
-			$this->app->db,
-			sprintf(
-				'select count(1) from Account %s where %s',
-				$search->getJoinClause(),
-				$this->getWhereClause()
-			)
-		);
-
-		$sql = sprintf(
-			$this->getSQL(),
-			$search->getJoinClause(),
-			$this->getWhereClause(),
-			$this->getOrderByClause($view, $search->getOrderByClause())
-		);
-
-		$this->app->db->setLimit($pager->page_size, $pager->current_record);
-
-		$accounts = SwatDB::query($this->app->db, $sql);
-
-		if (count($accounts) > 0) {
-			$this->ui->getWidget('results_message')->content =
-				$pager->getResultsMessage('result', 'results');
-		}
-
-		$class_name = SwatDBClassMap::get('SiteAccount');
-		$store = new SwatTableStore();
-		foreach ($accounts as $row) {
-			if ($row instanceof SiteAccount) {
-				$account = $row;
-			} else {
-				$account = new $class_name($row);
-				$account->setDatabase($this->app->db);
-			}
-			$store->add($this->getDetailsStore($account, $row));
-		}
-
-		return $store;
+			$this->account2->getFullname()
+		));
 	}
 
 	// }}}
@@ -299,7 +250,7 @@ class SiteAccountMergeSummary extends AdminSearch
 			'delete_date %s %s and id != %s and %s',
 			SwatDB::equalityOperator(null),
 			$this->app->db->quote(null, 'date'),
-			$this->id,
+			$this->app->db->quote($this->id, 'integer'),
 			$search->getWhereClause()
 		);
 	}

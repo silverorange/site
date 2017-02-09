@@ -8,7 +8,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
  * Account merge confirmation page
  *
  * @package   Site
- * @copyright 2016 silverorange
+ * @copyright 2017 silverorange
  */
 abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 {
@@ -40,7 +40,6 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 	protected $keep_first;
 
 	// }}}
-
 	// init phase
 	// {{{ protected function initInternal()
 
@@ -54,42 +53,42 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		$this->id2 = SiteApplication::initVar('id2');
 		$this->account2 = $this->getAccount($this->id2, $this->account2);
 
-		$this->keep_first = SiteApplication::initVar('keep_first');
+		$this->keep_first = SiteApplication::initVar('keep_first', false);
 	}
 
 	// }}}
 	// {{{ protected function getAccount()
 
-	protected function getAccount($id, $account)
+	protected function getAccount($id)
 	{
-		if ($account === null) {
-			$account_class = SwatDBClassMap::get('SiteAccount');
+		$account_class = SwatDBClassMap::get('SiteAccount');
 
-			$account = new $account_class();
-			$account->setDatabase($this->app->db);
+		$account = new $account_class();
+		$account->setDatabase($this->app->db);
 
-			if (!$account->load($id)) {
+		if (!$account->load($id)) {
+			throw new AdminNotFoundException(sprintf(
+				Site::_('An account with an id of ‘%d’ does not exist.'),
+				$id
+			));
+		}
+
+		$instance_id = $this->app->getInstanceId();
+		if ($instance_id !== null) {
+			if ($account->instance->id !== $instance_id) {
 				throw new AdminNotFoundException(sprintf(
-					Site::_('An account with an id of ‘%d’ does not exist.'),
+					Site::_('Incorrect instance for account ‘%d’.'),
 					$id
 				));
-			}
-
-			$instance_id = $this->app->getInstanceId();
-			if ($instance_id !== null) {
-				if ($account->instance->id !== $instance_id) {
-					throw new AdminNotFoundException(sprintf(
-						Store::_('Incorrect instance for account ‘%d’.'),
-						$id
-					));
-				}
 			}
 		}
 
 		return $account;
 	}
+
 	// }}}
 	// {{{ protected function getSourceAccount()
+
 	protected function getSourceAccount()
 	{
 		if (!$this->keep_first) {
@@ -97,8 +96,10 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		}
 		return $this->account2;
 	}
+
 	// }}}
 	// {{{ protected function getTargetAccount()
+
 	protected function getTargetAccount()
 	{
 		if ($this->keep_first) {
@@ -106,10 +107,11 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		}
 		return $this->account2;
 	}
-	// }}}
 
+	// }}}
 	// process phase
 	// {{{ protected function processDBData()
+
 	protected function processDBData()
 	{
 		parent::processDBData();
@@ -123,58 +125,64 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
 			$now = new SwatDate();
 			$now->toUTC();
-			$source_account->delete_date = $this->app->db->quote($now, 'date');
+			$source_account->delete_date = $now;
 			$this->addNote($source_account, $target_account);
 
 			$target_account->delete_date = null;
 			$this->addNote($target_account, $source_account);
 
 			$transaction->commit();
-		} catch (Exception $e) {
+		} catch (SwatDBException $e) {
 			$transaction->rollback();
-			var_dump($e);
 			throw $e;
 		}
 
 		$message = new SwatMessage(
 			sprintf(
 				Site::_(
-					'Successfully merged the account "%s" into "%s".'
+					'Successfully merged the account “%s” into “%s”.'
 				),
-				SwatString::minimizeEntities($source_account->email),
-				SwatString::minimizeEntities($target_account->email)
+				$source_account->email,
+				$target_account->email
 			)
 		);
 
 		$this->app->messages->add($message);
 	}
+
 	// }}}
 	// {{{ abstract protected function mergeAccounts()
-	abstract protected function mergeAccounts($source_account, $target_account);
+
+	abstract protected function mergeAccounts(
+		SiteAccount $source_account,
+		SiteAccount $target_account
+	);
 
 	// }}}
 	// {{{ protected function addNote()
 
-	protected function addNote($this_account, $other_account)
-	{
-		$note = sprintf("Merged with account %s.", $other_account->email);
-		if ($this_account->notes !== null) {
-			$this_account->notes .= " ".$note;
+	protected function addNote(
+		SiteAccount $this_account,
+		SiteAccount $other_account
+	) {
+		$note = sprintf('Merged with account %s.', $other_account->email);
+		if ($this_account->notes != '') {
+			$this_account->notes .= ' '.$note;
 		} else {
 			$this_account->notes = $note;
 		}
 		$this_account->save();
 	}
-	// }}}
 
+	// }}}
 	// {{{ protected function relocate()
 
 	protected function relocate()
 	{
-		$this->app->relocate('Account');
+		$this->app->relocate(sprintf('Account/Details?id=%s', $this->id));
 	}
-	// }}}
 
+	// }}}
 	// build phase
 	// {{{ protected function buildInternal()
 
@@ -235,24 +243,25 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
 		$this->navbar->popEntry();
 
-		$this->navbar->addEntry(new SwatNavBarEntry(
+		$this->navbar->createEntry(
 			$this->account->fullname,
 			sprintf('Account/Details?id=%s', $this->id)
-		));
+		);
 
-		$this->navbar->addEntry(new SwatNavBarEntry(
+		$this->navbar->createEntry(
 			Site::_('Merge'),
 			sprintf('Account/Merge?id=%s', $this->id)
-		));
+		);
 
 
-		$this->navbar->addEntry(new SwatNavBarEntry(
+		$this->navbar->createEntry(
 			sprintf(Site::_('Merge With %s'), $this->account2->fullname),
 			sprintf('Account/MergeSummary?id=%s&id2=%s', $this->id, $this->id2)
-		));
+		);
 
 		$this->navbar->createEntry(Site::_('Confirm'));
 	}
+
 	// }}}
 }
 ?>
