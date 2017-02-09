@@ -72,8 +72,9 @@ class SiteAccountMergeSummary extends AdminPage
 	protected function processInternal()
 	{
 		parent::processInternal();
-		$form = $this->ui->getWidget('merge_form');
 
+		$form = $this->ui->getWidget('merge_form');
+		$form->process();
 		if ($form->isProcessed()) {
 			if ($this->ui->getWidget('cancel_button')->hasBeenClicked()) {
 				$this->app->relocate(sprintf(
@@ -105,6 +106,7 @@ class SiteAccountMergeSummary extends AdminPage
 		parent::buildInternal();
 
 		$form = $this->ui->getWidget('merge_form');
+		$form->action = $this->source;
 		$form->addHiddenField('id', $this->id);
 		$form->addHiddenField('id2', $this->id2);
 
