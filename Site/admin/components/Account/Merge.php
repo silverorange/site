@@ -22,6 +22,7 @@ class SiteAccountMerge extends AdminSearch
 	protected $account;
 
 	// }}}
+
 	// init phase
 	// {{{ protected function initInternal()
 
@@ -45,6 +46,7 @@ class SiteAccountMerge extends AdminSearch
 	}
 
 	// }}}
+
 	// process phase
 	// {{{ protected function processInternal()
 
@@ -57,6 +59,7 @@ class SiteAccountMerge extends AdminSearch
 	}
 
 	// }}}
+
 	// build phase
 	// {{{ protected function buildInternal()
 

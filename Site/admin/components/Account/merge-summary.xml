@@ -2,10 +2,9 @@
 <!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
 <swatml>
 	<widget class="SwatMessageDisplay" id="message_display" />
-
 	<widget class="SwatFrame" id="details_frame">
-
 		<!-- {{{ Details of first account -->
+
 		<widget class="SwatDetailsView" id="details_view_left">
 			<property name="classes[]">merge-details-view</property>
 			<object class="SwatDetailsViewVerticalField">
@@ -33,10 +32,10 @@
 				</object>
 			</object>
 		</widget>
+
 		<!-- }}} -->
-
-
 		<!-- {{{ Details of second account -->
+
 		<widget class="SwatDetailsView" id="details_view_right">
 			<property name="classes[]">merge-details-view</property>
 			<object class="SwatDetailsViewVerticalField">
@@ -64,10 +63,10 @@
 				</object>
 			</object>
 		</widget>
+
 		<!-- }}} -->
-
-
 		<!-- {{{ Form submit bar -->
+
 		<widget class="SwatForm" id="merge_form">
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="cancel_button">
@@ -81,6 +80,7 @@
 				</widget>
 			</widget>
 		</widget>
+
 		<!-- }}} -->
 	</widget>
 </swatml>

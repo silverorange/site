@@ -40,6 +40,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 	protected $keep_first;
 
 	// }}}
+
 	// init phase
 	// {{{ protected function initInternal()
 
@@ -109,6 +110,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 	}
 
 	// }}}
+
 	// process phase
 	// {{{ protected function processDBData()
 
@@ -167,7 +169,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 	) {
 		$note = sprintf('Merged with account %s.', $other_account->email);
 		if ($this_account->notes != '') {
-			$this_account->notes .= ' '.$note;
+			$this_account->notes.= ' '.$note;
 		} else {
 			$this_account->notes = $note;
 		}
@@ -179,10 +181,12 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
 	protected function relocate()
 	{
-		$this->app->relocate(sprintf('Account/Details?id=%s', $this->id));
+		$id = ($this->keep_first) ? $this->id : $this->id2;
+		$this->app->relocate(sprintf('Account/Details?id=%s', $id));
 	}
 
 	// }}}
+
 	// build phase
 	// {{{ protected function buildInternal()
 
@@ -264,4 +268,5 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
 	// }}}
 }
+
 ?>
