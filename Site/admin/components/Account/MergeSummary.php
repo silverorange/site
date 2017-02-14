@@ -40,6 +40,7 @@ class SiteAccountMergeSummary extends AdminPage
 	protected $account2;
 
 	// }}}
+
 	// init phase
 	// {{{ protected function initInternal()
 
@@ -66,6 +67,7 @@ class SiteAccountMergeSummary extends AdminPage
 	}
 
 	// }}}
+
 	// process phase
 	// {{{ protected function processInternal()
 
@@ -98,6 +100,7 @@ class SiteAccountMergeSummary extends AdminPage
 	}
 
 	// }}}
+
 	// build phase
 	// {{{ protected function buildInternal()
 
@@ -272,6 +275,7 @@ class SiteAccountMergeSummary extends AdminPage
 	}
 
 	// }}}
+
 	// finalize phase
 	// {{{ public function finalize()
 
