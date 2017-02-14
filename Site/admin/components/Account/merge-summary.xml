@@ -1,0 +1,86 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="details_frame">
+		<!-- {{{ Details of first account -->
+
+		<widget class="SwatDetailsView" id="details_view_left">
+			<property name="classes[]">merge-details-view</property>
+			<object class="SwatDetailsViewVerticalField">
+				<property name="title" translatable="yes">Account 1</property>
+				<property name="show_colon" type="boolean">false</property>
+				<property name="classes[]">section-header</property>
+				<object class="SwatTextCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Name</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">fullname</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Email</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">email</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="createdate">
+				<property name="title" translatable="yes">Created On</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">createdate</property>
+				</object>
+			</object>
+		</widget>
+
+		<!-- }}} -->
+		<!-- {{{ Details of second account -->
+
+		<widget class="SwatDetailsView" id="details_view_right">
+			<property name="classes[]">merge-details-view</property>
+			<object class="SwatDetailsViewVerticalField">
+				<property name="title" translatable="yes">Account 2</property>
+				<property name="show_colon" type="boolean">false</property>
+				<property name="classes[]">section-header</property>
+				<object class="SwatTextCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Name</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">fullname</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Email</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">email</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="createdate">
+				<property name="title" translatable="yes">Created On</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">createdate</property>
+				</object>
+			</object>
+		</widget>
+
+		<!-- }}} -->
+		<!-- {{{ Form submit bar -->
+
+		<widget class="SwatForm" id="merge_form">
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="cancel_button">
+					<property name="title">Cancel</property>
+				</widget>
+				<widget class="SwatButton" id="keep_first_button">
+					<property name="title">Merge and Keep First Account</property>
+				</widget>
+				<widget class="SwatButton" id="keep_second_button">
+					<property name="title">Merge and Keep Second Account</property>
+				</widget>
+			</widget>
+		</widget>
+
+		<!-- }}} -->
+	</widget>
+</swatml>
