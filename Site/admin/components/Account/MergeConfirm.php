@@ -181,7 +181,8 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
 	protected function relocate()
 	{
-		$this->app->relocate(sprintf('Account/Details?id=%s', $this->id));
+		$id = ($this->keep_first) ? $this->id : $this->id2;
+		$this->app->relocate(sprintf('Account/Details?id=%s', $id));
 	}
 
 	// }}}
