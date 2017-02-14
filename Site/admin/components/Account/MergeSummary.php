@@ -1,12 +1,8 @@
 <?php
 
-require_once 'Admin/pages/AdminSearch.php';
-require_once 'Admin/AdminSearchClause.php';
+require_once 'Admin/pages/AdminPage.php';
 require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatTableStore.php';
 require_once 'Swat/SwatDetailsStore.php';
-require_once 'Site/dataobjects/SiteAccountWrapper.php';
-require_once 'Site/admin/SiteAccountSearch.php';
 
 /**
  * Merge Summary page for Accounts
@@ -229,49 +225,6 @@ class SiteAccountMergeSummary extends AdminPage
 			Site::_('Merge With %s'),
 			$this->account2->getFullname()
 		));
-	}
-
-	// }}}
-	// {{{ protected function getSQL()
-
-	protected function getSQL()
-	{
-		return 'select Account.id, Account.fullname,
-			Account.email, Account.createdate
-			from Account
-			%s
-			where %s
-			order by %s';
-	}
-
-	// }}}
-	// {{{ protected function getWhereClause()
-
-	protected function getWhereClause()
-	{
-		$search = $this->getAccountSearch();
-
-		return sprintf(
-			'delete_date %s %s and id != %s and %s',
-			SwatDB::equalityOperator(null),
-			$this->app->db->quote(null, 'date'),
-			$this->app->db->quote($this->id, 'integer'),
-			$search->getWhereClause()
-		);
-	}
-
-	// }}}
-	// {{{ protected function getAccountSearch()
-
-	protected function getAccountSearch()
-	{
-		static $search = null;
-
-		if ($search === null) {
-			$search = new SiteAccountSearch($this->app, $this->ui);
-		}
-
-		return $search;
 	}
 
 	// }}}
