@@ -1,6 +1,5 @@
 <?php
 
-require_once 'XML/RPCAjax.php';
 require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'Site/dataobjects/SiteVideoMedia.php';
 
