@@ -54,7 +54,7 @@ class SiteMediaPosterFrame extends AdminDBEdit
 		}
 
 		$instance_id = $this->app->getInstanceId();
-		if ($instance_id !== null) {
+		if ($instance_id != '') {
 			if ($this->getMediaInstanceId() !== $instance_id) {
 				throw new AdminNotFoundException(
 					sprintf(
@@ -128,7 +128,7 @@ class SiteMediaPosterFrame extends AdminDBEdit
 
 	protected function loadDBData()
 	{
-		$this->ui->setValues(get_object_vars($this->media));
+		$this->ui->setValues($this->media->getAttributes());
 	}
 
 	// }}}
@@ -144,9 +144,9 @@ class SiteMediaPosterFrame extends AdminDBEdit
 
 	protected function getMediaInstanceId()
 	{
-		return ($this->getMediaInstance() instanceof SiteInstance) ?
-			$this->getMediaInstance()->id :
-			null;
+		return ($this->getMediaInstance() instanceof SiteInstance)
+			? $this->getMediaInstance()->id
+			: null;
 	}
 
 	// }}}
@@ -156,10 +156,10 @@ class SiteMediaPosterFrame extends AdminDBEdit
 	{
 		parent::buildNavBar();
 
-		$entries = $this->navbar->popEntries(2);
+		$this->navbar->popEntries(2);
 
 		if ($this->app->isMultipleInstanceAdmin()) {
-			$instance = $this->media->media_set->instance;
+			$instance = $this->getMediaInstance();
 			$instance_link = sprintf('Instance/Details?id=%s', $instance->id);
 			$this->layout->navbar->createEntry(
 				$instance->title,
