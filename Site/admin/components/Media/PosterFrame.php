@@ -128,7 +128,7 @@ class SiteMediaPosterFrame extends AdminDBEdit
 
 	protected function loadDBData()
 	{
-		$this->ui->setValues($this->media->getAttributes());
+		$this->ui->setValues(get_object_vars($this->media));
 	}
 
 	// }}}
