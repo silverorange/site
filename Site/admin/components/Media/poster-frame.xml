@@ -11,6 +11,7 @@
 			<widget class="SwatFormField" id="custom_image_field">
 				<property name="title" translatable="yes">Custom Poster Frame</property>
 				<widget class="SwatFileEntry" id="custom_image">
+					<property name="required" type="boolean">true</property>
 					<property name="accept_mime_types[]">image/jpeg</property>
 					<property name="accept_mime_types[]">image/png</property>
 					<property name="accept_mime_types[]">image/tiff</property>
