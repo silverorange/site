@@ -610,7 +610,15 @@ class SiteSessionModule extends SiteApplicationModule
 		// Explicitly set the session cookie since PHP doesn't do this
 		// sometimes on SSL requests.
 		if (ini_get('session.use_cookies') == 1) {
-			setcookie(session_name(), session_id(), 0, '/');
+			$cookie_name = session_name();
+			$cookie_value = session_id();
+
+			setcookie($cookie_name, $cookie_value, 0, '/');
+
+			// Also explicitly set $_COOKIE since its value is only accessible
+			// on subsequent page loads and we may need the value during the
+			// remainder of the current request.
+			$_COOKIE[$cookie_name] = $cookie_value;
 		}
 
 		$this->restoreRegisteredObjectDBConnections();
