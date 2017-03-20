@@ -172,6 +172,21 @@ class SiteAccountEditPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ protected function updateAccountPassword()
+
+	protected function updateAccountPassword(SwatForm $form)
+	{
+		$password = $this->ui->getWidget('password')->value;
+		if ($password != '') {
+			$crypt = $this->app->getModule('SiteCryptModule');
+
+			$this->account->setPasswordHash(
+				$crypt->generateHash($password)
+			);
+		}
+	}
+
+	// }}}
 	// {{{ protected function saveData()
 
 	protected function saveData(SwatForm $form)
@@ -183,14 +198,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 			$message = $this->getSavedMessage($form);
 
 			if ($this->isNew($form)) {
-				$password = $this->ui->getWidget('password')->value;
-				if ($password != '') {
-					$crypt = $this->app->getModule('SiteCryptModule');
-
-					$this->account->setPasswordHash(
-						$crypt->generateHash($password)
-					);
-				}
+				$this->updateAccountPassword($form);
 
 				$this->account->createdate = new SwatDate();
 				$this->account->createdate->toUTC();
