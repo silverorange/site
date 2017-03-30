@@ -6,11 +6,10 @@ require_once 'Site/dataobjects/SiteAccount.php';
 require_once 'SwatDB/SwatDB.php';
 
 /**
- * Page to generate a new password for an account and email the new password
- * to the account holder
+ * Page to send a password-reset email to the account holder
  *
  * @package   Site
- * @copyright 2006-2016 silverorange
+ * @copyright 2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountForgotPassword extends AdminConfirmation
