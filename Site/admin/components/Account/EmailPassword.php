@@ -22,6 +22,11 @@ class SiteAccountEmailPassword extends AdminConfirmation
 	 */
 	protected $account;
 
+	/**
+	 * @var Array
+	 */
+	protected $uiStrings = [];
+
 	// }}}
 
 	// init phase
@@ -100,6 +105,8 @@ class SiteAccountEmailPassword extends AdminConfirmation
 	{
 		parent::buildInternal();
 
+		$strings = $this->getUiStrings();
+
 		$form = $this->ui->getWidget('confirmation_form');
 		$form->addHiddenField('id', $this->id);
 
@@ -108,14 +115,13 @@ class SiteAccountEmailPassword extends AdminConfirmation
 		$this->navbar->createEntry($this->account->getFullname(),
 			sprintf('Account/Details?id=%s', $this->id));
 
-		$this->navbar->createEntry(Site::_('Email New Password Confirmation'));
+		$this->navbar->createEntry($strings['nav_bar']);
 
 		$message = $this->ui->getWidget('confirmation_message');
 		$message->content = $this->getConfirmationMessage();
 		$message->content_type = 'text/xml';
 
-		$this->ui->getWidget('yes_button')->title =
-			Site::_('Reset & Email Password');
+		$this->ui->getWidget('yes_button')->title = $strings['yes_button'];
 	}
 
 	// }}}
@@ -123,13 +129,13 @@ class SiteAccountEmailPassword extends AdminConfirmation
 
 	private function getConfirmationMessage()
 	{
+		$strings = $this->getUiStrings();
+
 		ob_start();
 
 		$confirmation_title = new SwatHtmlTag('h3');
 
-		$confirmation_title->setContent(sprintf(
-			Site::_('Are you sure you want to reset the password for %s?'),
-			$this->account->getFullname()));
+		$confirmation_title->setContent($strings['confirmation_title']);
 
 		$confirmation_title->display();
 
@@ -141,10 +147,36 @@ class SiteAccountEmailPassword extends AdminConfirmation
 		$email_anchor->display();
 		$email_tag = ob_get_clean();
 
-		printf(Site::_('A new password will be generated and sent to %s.'),
-			$email_tag);
+		printf($strings['confirmation_message'], $email_tag);
 
 		return ob_get_clean();
+	}
+
+	// }}}
+	// {{{ protected function getUiStrings()
+
+	protected function getUiStrings()
+	{
+		if (empty($this->uiStrings)) {
+			$this->uiStrings['yes_button'] = Site::_(
+				'Reset & Email Password'
+			);
+
+			$this->uiStrings['nav_bar'] = Site::_(
+				'Email New Password Confirmation'
+			);
+
+			$this->uiStrings['confirmation_message'] = Site::_(
+				'A new password will be generated and sent to %s.'
+			);
+
+			$this->uiStrings['confirmation_title'] = sprintf(
+				Site::_('Are you sure you want to reset the password for %s?'),
+				$this->account->getFullname()
+			);
+		}
+
+		return $this->uiStrings;
 	}
 
 	// }}}
