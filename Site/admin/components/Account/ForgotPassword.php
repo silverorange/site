@@ -21,11 +21,6 @@ class SiteAccountForgotPassword extends AdminConfirmation
 	 */
 	protected $account;
 
-	/**
-	 * @var Array
-	 */
-	protected $ui_strings = [];
-
 	// }}}
 
 	// init phase
@@ -53,16 +48,23 @@ class SiteAccountForgotPassword extends AdminConfirmation
 			$this->account->setDatabase($this->app->db);
 
 			if (!$this->account->load($this->id)) {
-				throw new AdminNotFoundException(sprintf(
-					Site::_('A account with an id of ‘%d’ does not exist.'),
-					$this->id));
+				throw new AdminNotFoundException(
+					sprintf(
+						Site::_('A account with an id of ‘%d’ does not exist.'),
+						$this->id
+					)
+				);
 			}
 
 			$instance_id = $this->app->getInstanceId();
 			if ($instance_id !== null) {
 				if ($this->account->instance->id !== $instance_id) {
-					throw new AdminNotFoundException(sprintf(Store::_(
-						'Incorrect instance for account ‘%d’.'), $this->id));
+					throw new AdminNotFoundException(
+						sprintf(
+							Store::_('Incorrect instance for account ‘%d’.'),
+							$this->id
+						)
+					);
 				}
 			}
 		}
@@ -86,8 +88,8 @@ class SiteAccountForgotPassword extends AdminConfirmation
 			$message = new SwatMessage(
 				sprintf(
 					Site::_(
-					'A password-reset email has been sent to'.
-					' <a href="mailto:%1$s">%1$s</a>.'
+						'A password-reset email has been sent to'.
+						' <a href="mailto:%1$s">%1$s</a>.'
 					),
 					SwatString::minimizeEntities($this->account->email)
 				)
@@ -107,37 +109,49 @@ class SiteAccountForgotPassword extends AdminConfirmation
 	{
 		parent::buildInternal();
 
-		$strings = $this->getUiStrings();
-
 		$form = $this->ui->getWidget('confirmation_form');
 		$form->addHiddenField('id', $this->id);
 
 		$this->title = $this->account->getFullname();
 
-		$this->navbar->createEntry($this->account->getFullname(),
-			sprintf('Account/Details?id=%s', $this->id));
+		$this->navbar->createEntry(
+			$this->account->getFullname(),
+			sprintf(
+				'Account/Details?id=%s',
+				$this->id
+			)
+		);
 
-		$this->navbar->createEntry($strings['nav_bar']);
+		$this->navbar->createEntry(
+			Site::_('Send Forgot Password Reset Email')
+		);
 
 		$message = $this->ui->getWidget('confirmation_message');
 		$message->content = $this->getConfirmationMessage();
 		$message->content_type = 'text/xml';
 
-		$this->ui->getWidget('yes_button')->title = $strings['yes_button'];
+		$this->ui->getWidget('yes_button')->title =
+			Site::_('Send Forgot Password Reset Email');
 	}
 
 	// }}}
-	// {{{ private function getConfirmationMessage()
+	// {{{ protected function getConfirmationMessage()
 
-	private function getConfirmationMessage()
+	protected function getConfirmationMessage()
 	{
-		$strings = $this->getUiStrings();
-
 		ob_start();
 
 		$confirmation_title = new SwatHtmlTag('h3');
 
-		$confirmation_title->setContent($strings['confirmation_title']);
+		$confirmation_title->setContent(
+			sprintf(
+				Site::_(
+					'Are you sure you want to send a password reset email to'.
+					' %s?'
+				),
+				$this->account->getFullname()
+			)
+		);
 
 		$confirmation_title->display();
 
@@ -149,42 +163,15 @@ class SiteAccountForgotPassword extends AdminConfirmation
 		$email_anchor->display();
 		$email_tag = ob_get_clean();
 
-		printf($strings['confirmation_message'], $email_tag);
+		printf(
+			Site::_('The email will be sent to %s.'),
+			$email_tag
+		);
 
 		return ob_get_clean();
 	}
 
 	// }}}
-    // {{{ protected function getUiStrings()
-
-    protected function getUiStrings()
-    {
-        if (empty($this->uiStrings)) {
-            $this->uiStrings['yes_button'] = Site::_(
-                'Send a Password-Reset Email'
-            );
-
-            $this->uiStrings['nav_bar'] = Site::_(
-                'Email Password Reset Confirmation'
-            );
-
-            $this->uiStrings['confirmation_message'] = Site::_(
-                'The email will be sent to %s.'
-            );
-
-            $this->uiStrings['confirmation_title'] = sprintf(
-                Site::_(
-                    'Are you sure you want to send a password-reset email to'.
-                    ' %s?'
-                ),
-                $this->account->getFullname()
-            );
-        }
-
-        return $this->uiStrings;
-    }
-
-    // }}}
 }
 
 ?>
