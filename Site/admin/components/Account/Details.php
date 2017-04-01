@@ -92,7 +92,7 @@ class SiteAccountDetails extends AdminIndex
 		$this->buildAccountDetails();
 
 		$toolbar = $this->ui->getWidget('details_toolbar');
-		$toolbar->setToolLinkValues($this->id);
+		$toolbar->setToolLinkValues($this->account->id);
 	}
 
 	// }}}
