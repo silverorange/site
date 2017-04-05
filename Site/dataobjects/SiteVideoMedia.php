@@ -111,6 +111,11 @@ class SiteVideoMedia extends SiteMedia
 		$smallest = null;
 
 		foreach ($this->encoding_bindings as $binding) {
+			// Bindings with no, or negative width are not video bindings.
+			if ($binding->width <= 0) {
+				continue;
+			}
+			
 			if ((($smallest === null) && ($binding->width !== null)) ||
 				(($smallest !== null) &&
 					($binding->width < $smallest->width))) {
