@@ -493,47 +493,65 @@ JS;
 	// Facebook
 	// {{{ public function hasFacebookPixel()
 
-	public function hasFacebookPixel()
+	public function hasFacebookPixel($facebook_pixel_id = '')
 	{
+		if ($facebook_pixel_id == '') {
+			$facebook_pixel_id = $this->facebook_pixel_id;
+		}
+
 		return (
-			$this->facebook_pixel_id != '' &&
-			!$this->analytics_opt_out
+			array_key_exists(
+				$facebook_pixel_id,
+				$this->facebook_pixel_commands
+			) && !$this->analytics_opt_out
 		);
 	}
 
 	// }}}
 	// {{{ public function pushFacebookPixelCommands()
 
-	public function pushFacebookPixelCommands(array $commands)
+	public function pushFacebookPixelCommands(array $commands, $facebook_pixel_id = '')
 	{
+		if ($facebook_pixel_id == '') {
+			$facebook_pixel_id = $this->facebook_pixel_id;
+		}
+
 		foreach ($commands as $command) {
-			$this->facebook_pixel_commands[] = $command;
+			$this->facebook_pixel_commands[$facebook_pixel_id][] = $command;
 		}
 	}
 
 	// }}}
 	// {{{ public function prependFacebookPixelCommands()
 
-	public function prependFacebookPixelCommands(array $commands)
+	public function prependFacebookPixelCommands(array $commands, $facebook_pixel_id = '')
 	{
+		if ($facebook_pixel_id == '') {
+			$facebook_pixel_id = $this->facebook_pixel_id;
+		}
+
 		$comands = array_reverse($commands);
 		foreach ($commands as $command) {
-			array_unshift($this->facebook_pixel_commands, $command);
+			array_unshift($this->facebook_pixel_commands[$facebook_pixel_id], $command);
 		}
 	}
 
 	// }}}
 	// {{{ public function getFacebookPixelImage()
 
-	public function getFacebookPixelImage()
+	public function getFacebookPixelImage($facebook_pixel_id = '')
 	{
+		if ($facebook_pixel_id == '') {
+			$facebook_pixel_id = $this->facebook_pixel_id;
+		}
+
 		$xhtml = <<<'XHTML'
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1"/></noscript>
 XHTML;
 
 		return sprintf(
 			$xhtml,
-			SwatString::minimizeEntities(rawurlencode($this->facebook_pixel_id))
+			SwatString::minimizeEntities(rawurlencode($facebook_pixel_id))
 		);
 	}
 
@@ -544,11 +562,18 @@ XHTML;
 	{
 		$javascript = null;
 
-		if ($this->hasFacebookPixel() &&
-			count($this->facebook_pixel_commands) > 0) {
-			$javascript = $this->getFacebookPixelTrackerInlineJavascript();
-			$javascript.= "\n";
-			$javascript.= $this->getFacebookPixelCommandsInlineJavascript();
+		foreach ($this->facebook_pixel_commands as $id => $commands) {
+			if ($this->hasFacebookPixel($id) &&
+				count($commands) > 0) {
+				$javascript = $this->getFacebookPixelTrackerInlineJavascript(
+					$id
+				);
+
+				$javascript.= "\n";
+				$javascript.= $this->getFacebookPixelCommandsInlineJavascript(
+					$id
+				);
+			}
 		}
 
 		return $javascript;
@@ -557,11 +582,15 @@ XHTML;
 	// }}}
 	// {{{ public function getFacebookPixelTrackerInlineJavascript()
 
-	public function getFacebookPixelTrackerInlineJavascript()
+	public function getFacebookPixelTrackerInlineJavascript($facebook_pixel_id = '')
 	{
+		if ($facebook_pixel_id == '') {
+			$facebook_pixel_id = $this->facebook_pixel_id;
+		}
+
 		$javascript = null;
 
-		if ($this->hasFacebookPixel()) {
+		if ($this->hasFacebookPixel($facebook_pixel_id)) {
 			$javascript = <<<'JS'
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
@@ -577,22 +606,26 @@ JS;
 	// }}}
 	// {{{ public function getFacebookPixelCommandsInlineJavascript()
 
-	public function getFacebookPixelCommandsInlineJavascript()
+	public function getFacebookPixelCommandsInlineJavascript($facebook_pixel_id = '')
 	{
+		if ($facebook_pixel_id == '') {
+			$facebook_pixel_id = $this->facebook_pixel_id;
+		}
+
 		$javascript = null;
 
-		if ($this->hasFacebookPixel() &&
-			count($this->facebook_pixel_commands) > 0) {
+		if ($this->hasFacebookPixel($facebook_pixel_id) &&
+			count($this->facebook_pixel_commands[$facebook_pixel_id]) > 0) {
 			// Always init with the account and track the pageview before any
 			// further commands.
 			$javascript = $this->getFacebookPixelCommand(
 				array(
 					'init',
-					$this->facebook_pixel_id,
+					$facebook_pixel_id,
 				)
 			);
 
-			foreach ($this->facebook_pixel_commands as $command) {
+			foreach ($facebook_pixel_commands[$facebook_pixel_id] as $command) {
 				$javascript.= $this->getFacebookPixelCommand($command);
 			}
 		}
@@ -618,10 +651,14 @@ JS;
 	// }}}
 	// {{{ protected function displayFacebookPixelImage()
 
-	protected function displayFacebookPixelImage()
+	protected function displayFacebookPixelImage($facebook_pixel_id = '')
 	{
-		if ($this->hasFacebookPixel()) {
-			$image = $this->getFacebookPixelImage();
+		if ($facebook_pixel_id == '') {
+			$facebook_pixel_id = $this->facebook_pixel_id;
+		}
+
+		if ($this->hasFacebookPixel($facebook_pixel_id)) {
+			$image = $this->getFacebookPixelImage($facebook_pixel_id);
 			if ($image != '') {
 				echo $image;
 			}
