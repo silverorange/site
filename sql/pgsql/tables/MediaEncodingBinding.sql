@@ -3,7 +3,7 @@ create table MediaEncodingBinding (
 	media_encoding integer not null references MediaEncoding(id),
 	media_type     integer not null references MediaType(id),
 
-	filesize integer,
+	filesize bigint,
 
 	on_cdn boolean not null default false,
 
