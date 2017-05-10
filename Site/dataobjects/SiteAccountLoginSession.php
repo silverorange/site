@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Active sessions for this account. Used for both persistent login via cookie,
  * and to track and display active sessions to the user.

@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Page for displaying search results
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An image type data object
  *

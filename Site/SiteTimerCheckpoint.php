@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A timer checkpoint set by {@link SiteTimerModule}
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Slider widget to select between different comment statuses
  *

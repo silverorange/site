@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Application to copy video to the new directory structure
  *

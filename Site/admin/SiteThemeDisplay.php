@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Displays a theme with a button to select the theme
  *

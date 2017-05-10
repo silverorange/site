@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An exception in Site package
  *

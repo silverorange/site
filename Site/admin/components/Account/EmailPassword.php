@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page to generate a new password for an account and email the new password
  * to the account holder

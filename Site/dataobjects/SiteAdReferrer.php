@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Tracked inbound ad referrer
  *

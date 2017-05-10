@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Recalculates the duration of all media in a media set
  *

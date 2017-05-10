@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A BOTR-specific media set object
  *

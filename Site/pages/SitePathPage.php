@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Path page decorator
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A setting value for a particular gadget instance
  *

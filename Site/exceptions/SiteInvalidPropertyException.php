@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when an invalid property of an object is accessed
  *

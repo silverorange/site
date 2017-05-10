@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Abstract application to queue metadata updates for SiteMedia on a CDN
  *

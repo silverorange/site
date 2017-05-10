@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A parameter for a command line argument
  *

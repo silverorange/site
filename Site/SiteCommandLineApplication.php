@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An application designed to run on the command line
  *

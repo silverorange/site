@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page to manage pending comments on posts
  *

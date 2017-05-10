@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Web application module for working with mobile devices
  *

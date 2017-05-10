@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An abstract search engine
  *

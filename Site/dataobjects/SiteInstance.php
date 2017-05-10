@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A dataobject class for site instances
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Parses the bodytext of a comment
  *

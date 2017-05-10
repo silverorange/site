@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Layout for an XMLRPC Server
  *

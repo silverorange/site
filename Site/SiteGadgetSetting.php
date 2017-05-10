@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Setting types and the corresponding PHP types are:
  *

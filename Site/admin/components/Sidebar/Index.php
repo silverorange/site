@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Index page for sidebar gadgets
  *

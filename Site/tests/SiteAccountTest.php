@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Test account login, creation, logout
  *

@@ -2,7 +2,6 @@
 
 /* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
 
-
 /**
  * PSR-3 compliant logger that sends messages to STDOUT and STDERR through
  * a Console_CommandLine_Outputter
@@ -219,7 +218,6 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 
 	// }}}
 	// {{{ public function notice()
-
 
 	/**
 	 * Logs normal, but significant events

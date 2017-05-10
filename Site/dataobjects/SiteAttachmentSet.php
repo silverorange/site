@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An attachment set
  *

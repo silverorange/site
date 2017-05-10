@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Index page for Articles
  *

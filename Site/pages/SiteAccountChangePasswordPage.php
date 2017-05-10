@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page for changing the password of an account
  *

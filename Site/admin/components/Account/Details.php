@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Details page for accounts
  *

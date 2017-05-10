@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Module for dislaying WhiteChimpmunk tracking pixels.
  *

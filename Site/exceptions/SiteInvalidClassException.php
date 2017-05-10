@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when an object is of the wrong class
  *

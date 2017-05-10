@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Simple API page that provides sign on tokens to third parties
  *

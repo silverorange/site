@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A generated XML Site Map
  *

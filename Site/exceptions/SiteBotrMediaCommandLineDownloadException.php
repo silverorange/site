@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Exception for download related issues in SiteBotrMediaCommandLine
  * applications.

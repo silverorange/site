@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Builds an object to display HTML head entries for an application using
  * the Concentrate library

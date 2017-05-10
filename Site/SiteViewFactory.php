@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Factory for creating object views
  *

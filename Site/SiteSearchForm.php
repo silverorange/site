@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Custom form with overridden displayHiddenFields() method to not display
  * any hidden fields

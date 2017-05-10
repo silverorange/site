@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when a requested image dimension is not valid or does not exist
  *

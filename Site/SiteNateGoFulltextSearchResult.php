@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A fulltext search result that uses NateGoSearch
  *

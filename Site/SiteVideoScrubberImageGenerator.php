@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Generates media thumbnails for the video scrubber
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Container for package wide static methods
  *

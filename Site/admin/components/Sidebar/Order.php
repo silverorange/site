@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Order tool for sidebar gadgets
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page decorator that uses shared secret to check request authenticity
  *

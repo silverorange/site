@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A recordset wrapper class for SiteVideoMediaSet objects
  *

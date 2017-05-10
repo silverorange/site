@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  *
  * @package   Site
@@ -217,7 +216,6 @@ class SiteContactPage extends SiteDBEditPage
 			Site::_('An error has occurred. Your message was not sent.'),
 			'system-error'
 		);
-
 
 		$message->secondary_content = sprintf(
 			Site::_(

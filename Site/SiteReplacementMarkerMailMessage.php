@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Multipart text/html email message with replacement marker support
  *

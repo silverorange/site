@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when the path we're looking up has invalid UFF-8 in it.
  *

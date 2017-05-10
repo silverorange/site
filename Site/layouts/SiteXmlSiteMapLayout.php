@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Layout for an XML site map
  *

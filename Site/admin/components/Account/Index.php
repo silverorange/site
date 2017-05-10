@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Index page for Accounts
  *

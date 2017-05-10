@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Deletes video and encodings from BOTR.
  *

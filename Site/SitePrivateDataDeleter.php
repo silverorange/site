@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Abstract base for a class that deletes private data
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An recordset wrapper class for SiteImage objects that doesn't automatically
  * load dimension bindings

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A button without an XHTML name
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Dependency object for an application modules
  *

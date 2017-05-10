@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A account for a web application
  *

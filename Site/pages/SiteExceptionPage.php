@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A page to display exceptions
  *

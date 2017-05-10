@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when an image can't be processed
  *

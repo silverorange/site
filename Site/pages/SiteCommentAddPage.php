@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page for adding a comment asynchronously via a JSON request
  *

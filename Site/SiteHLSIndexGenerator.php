@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Application to generate m3u8 index files for HLS video
  *

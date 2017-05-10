@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page to reset the password for an account
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A cell renderer for rendering visibility of site comments
  *

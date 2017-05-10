@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Configuration section for the configuration module
  *

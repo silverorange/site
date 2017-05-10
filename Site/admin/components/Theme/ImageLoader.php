@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Theme thumbnail image loader
  *

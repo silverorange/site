@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Tool used to duplicate all downloadable videos onto our local filesystem.
  * These videos are then queued for uploading to S3.

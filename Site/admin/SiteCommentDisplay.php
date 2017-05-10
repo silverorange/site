@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Displays a comment with optional buttons to edit, set published status
  * delete and mark as spam

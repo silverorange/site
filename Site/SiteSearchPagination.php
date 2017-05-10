@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A pagination widget for GET-based searches
  *

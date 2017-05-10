@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Poster frame edit page for SiteVideoMedia
  *

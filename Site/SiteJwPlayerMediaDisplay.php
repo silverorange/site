@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Display class for SiteMedia using JWPlayer
  *

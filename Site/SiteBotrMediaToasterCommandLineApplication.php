@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Abstract application for applications that access media on bits on the run.
  *

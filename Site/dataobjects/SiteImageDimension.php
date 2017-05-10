@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An image dimension data object
  *

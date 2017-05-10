@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page for displaying a search form above search results.
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Application to send pending contact message emails
  *
@@ -320,7 +319,6 @@ class SiteContactMailer extends SiteCommandLineApplication
 				Site::_('General Message (%s)'),
 				$message->email);
 		}
-
 
 		return $subject;
 	}

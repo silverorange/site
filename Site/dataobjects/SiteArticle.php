@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An article in an web application
  *

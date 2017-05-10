@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An entry widget where it is possible to specify the input name manually
  *

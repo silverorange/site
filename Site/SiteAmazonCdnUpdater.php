@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Application to process queued SiteCdnTasks using SiteAmazonCdnModule
  *

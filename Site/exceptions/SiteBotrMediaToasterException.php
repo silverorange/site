@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Generic Exception for SiteBotrMediaToaster calls.
  *

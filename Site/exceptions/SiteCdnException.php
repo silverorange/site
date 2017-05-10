@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when dealing with a CDN
  *

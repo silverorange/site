@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Base class for a web application
  *
@@ -948,7 +947,6 @@ class SiteWebApplication extends SiteApplication
 			$uri = mb_substr($this->uri, $base_uri_length);
 		else
 			$uri = $this->uri;
-
 
 		// trim mobile prefix from beginning of relative uri
 		if (isset($this->mobile) && $this->mobile->isMobileUrl() &&

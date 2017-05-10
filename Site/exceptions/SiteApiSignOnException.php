@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Generic exception to be used during the API sign on process
  *

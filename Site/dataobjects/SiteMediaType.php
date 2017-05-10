@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A media type object
  *

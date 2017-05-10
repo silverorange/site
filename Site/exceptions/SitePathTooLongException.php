@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when the path we're looking up is longer that 254 characters
  *

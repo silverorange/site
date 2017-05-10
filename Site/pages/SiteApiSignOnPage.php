@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page for logging into an account via a sign-on token
  *

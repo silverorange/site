@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when dealing with cookies
  *

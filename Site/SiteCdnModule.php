@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Base class for application modules that provide access to a CDN
  *

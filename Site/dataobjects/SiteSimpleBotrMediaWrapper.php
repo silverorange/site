@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A simple recordset wrapper class for SiteBotrMedia objects that doesn't
  * do any pre-loading of sub-dataobjects.

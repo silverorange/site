@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Performs actions on comments via AJAX
  *

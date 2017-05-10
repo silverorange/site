@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Application to validate media on BOTR.
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when running a command line application.
  *

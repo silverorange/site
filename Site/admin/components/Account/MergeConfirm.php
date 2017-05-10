@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Account merge confirmation page
  *
@@ -253,7 +252,6 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 			Site::_('Merge'),
 			sprintf('Account/Merge?id=%s', $this->id)
 		);
-
 
 		$this->navbar->createEntry(
 			sprintf(Site::_('Merge With %s'), $this->account2->fullname),

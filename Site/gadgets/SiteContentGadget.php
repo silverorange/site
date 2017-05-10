@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Displays arbitrary content
  *

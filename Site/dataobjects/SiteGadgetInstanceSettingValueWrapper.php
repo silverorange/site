@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A recordset wrapper for gadget instance setting values
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Connection: Close page
  *

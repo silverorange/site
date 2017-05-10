@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Config page used for displaying and saving config settings for the Site
  * package.

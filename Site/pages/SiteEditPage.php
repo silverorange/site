@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Base class for edit pages
  *

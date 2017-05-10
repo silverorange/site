@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Application module for crypt based password hashing
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A one-time use token used to sign on using the API
  *

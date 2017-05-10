@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Search page for Articles
  *

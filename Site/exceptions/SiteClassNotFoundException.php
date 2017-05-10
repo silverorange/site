@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when a class is not found
  *

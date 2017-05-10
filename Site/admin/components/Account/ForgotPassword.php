@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page to send a password-reset email to the account holder
  *

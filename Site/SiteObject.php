@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * The base object type for the site package
  *

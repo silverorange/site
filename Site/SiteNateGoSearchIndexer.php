@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Site search indexer application for NateGoSearch
  *

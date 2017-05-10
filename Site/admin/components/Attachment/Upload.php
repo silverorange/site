@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Upload page for attachments
  *

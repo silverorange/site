@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Advertisements that are tracked on an applcation
  *

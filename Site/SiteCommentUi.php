@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Handle the init, processing, and display of a comment UI
  *

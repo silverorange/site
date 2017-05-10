@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Cleans up dead SiteAccountLoginSession entries in the database.
  *

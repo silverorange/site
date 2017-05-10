@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Multipart text/html email message
  *

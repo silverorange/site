@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Resolves and creates pages for a web application
  *

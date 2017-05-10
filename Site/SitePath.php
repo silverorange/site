@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An ordered set of {@link SitePathEntry} objects representing a
  * path in a {@link SiteWebApplication}

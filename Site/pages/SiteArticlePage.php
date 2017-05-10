@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Article page decorator
  *

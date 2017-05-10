@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Removes old contact messages which can contain personal information. As it
  * would be too hard to filter the message for personal information, it just

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Container for layout properties
  *

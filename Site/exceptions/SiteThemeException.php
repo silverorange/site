@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Thrown when parsing themes
  *

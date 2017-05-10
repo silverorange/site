@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An XML-RPC server for image upload status
  *

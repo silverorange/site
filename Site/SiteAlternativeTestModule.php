@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Web application module for testing alternatives.
  *

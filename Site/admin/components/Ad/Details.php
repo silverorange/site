@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Report page for Ads
  *

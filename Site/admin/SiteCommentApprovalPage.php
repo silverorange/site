@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Abstract approval page
  *

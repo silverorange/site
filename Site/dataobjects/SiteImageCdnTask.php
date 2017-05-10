@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A task that should be performed on a CDN in the near future
  *

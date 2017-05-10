@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Download page for attachments
  *

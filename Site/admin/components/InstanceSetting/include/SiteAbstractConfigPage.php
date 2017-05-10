@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Abstract page that initilizes, loads and saves a user interface based on
  * current configuration settings.

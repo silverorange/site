@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A cell renderer for SiteImages
  *

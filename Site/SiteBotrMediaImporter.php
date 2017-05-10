@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Application to import new media from BOTR into the Media DB tables
  *  - Check to make sure all encoding is done. If not wait till done.

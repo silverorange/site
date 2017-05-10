@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Interaface for an object that can receive comments
  *

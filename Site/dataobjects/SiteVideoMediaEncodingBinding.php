@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A video-specific media encoding binding object
  *

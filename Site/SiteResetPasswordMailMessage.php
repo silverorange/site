@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Email that is sent to account holders when they request new passwords
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Framework for a command line application to remove personal data.
  *

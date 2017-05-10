@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A page decorator to add a message display to the top of a page if their are
  * app messages.

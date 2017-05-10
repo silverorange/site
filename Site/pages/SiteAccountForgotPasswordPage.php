@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page for requesting a new password for forgotten account passwords
  *

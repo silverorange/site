@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An article search engine
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Processes actions on articles
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Common configuration module for command-line applications
  *

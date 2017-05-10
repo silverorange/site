@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A gadget that belongs to a site instance
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Sidebar widget that can contain multiple gadgets
  *

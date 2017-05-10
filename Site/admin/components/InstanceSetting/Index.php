@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Main page used to edit instance configuration settings.
  *

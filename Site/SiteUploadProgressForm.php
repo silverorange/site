@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A form with a upload progress bar
  *

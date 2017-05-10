@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Encodes all media on BOTR to the default profiles if they haven't already
  * been encoded, as well as optional large profiles. This does nothing to the

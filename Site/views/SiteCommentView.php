@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * View for Site comment objects
  *

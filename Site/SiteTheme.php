@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Theme for a site
  *

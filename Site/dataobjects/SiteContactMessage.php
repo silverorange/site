@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Contact message
  *

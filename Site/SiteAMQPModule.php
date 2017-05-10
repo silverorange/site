@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Web application module for sending messages to an AMQP broker
  *

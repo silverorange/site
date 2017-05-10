@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Command line application for checking if an ini file is valid
  *

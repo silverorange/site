@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Module for dislaying Olark live chat
  *

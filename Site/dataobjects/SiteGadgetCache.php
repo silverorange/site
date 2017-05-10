@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A cache for a particular gadget instance
  *

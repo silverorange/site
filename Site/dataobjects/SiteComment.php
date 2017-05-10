@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A comment on a site
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Handles creation of gadget objects
  *

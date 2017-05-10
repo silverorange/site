@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Abstract delete page for site images.
  *

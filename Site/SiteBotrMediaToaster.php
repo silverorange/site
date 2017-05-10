@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Wrapper class for the Bits on the Run API.
  *
@@ -715,7 +714,6 @@ class SiteBotrMediaToaster
 	}
 
 	// }}}
-
 
 	// Content Display Methods
 	// {{{ public function getMediaPlayer()

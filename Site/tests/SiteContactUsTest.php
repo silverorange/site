@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Test contact us form
  *
