@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteException.php';
 
 /**
  * Thrown when page is not authorized when http auth is used

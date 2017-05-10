@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplicationModule.php';
 
 /**
  * Web application module for testing alternatives.

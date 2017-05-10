@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteApiCredential.php';
 
 /**
  * A one-time use token used to sign on using the API

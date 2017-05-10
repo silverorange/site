@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteExceptionPage.php';
 
 /**
  * A page to display exceptions

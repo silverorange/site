@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
 
 /**
  * Abstract base for a class that deletes private data

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'PackageConfig.php';
 
 /**
  * Command line application for checking if an ini file is valid

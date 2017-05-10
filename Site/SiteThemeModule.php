@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/exceptions/SiteThemeException.php';
-require_once 'Site/SiteTheme.php';
 
 /**
  * Web application module for handling themeing

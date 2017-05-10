@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteObject.php';
-require_once 'Site/SiteCommandLineArgumentParameter.php';
 
 /**
  * A command line argument for a command line application

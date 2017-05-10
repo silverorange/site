@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteVideoMediaWrapper.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/exceptions/SiteNotAuthorizedException.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Swat/SwatHtmlTag.php';
 
 /**
  * @package   Site

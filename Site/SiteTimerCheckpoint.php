@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
 
 /**
  * A timer checkpoint set by {@link SiteTimerModule}

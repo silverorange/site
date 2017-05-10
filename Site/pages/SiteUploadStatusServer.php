@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteXMLRPCServer.php';
 
 /**
  * An XML-RPC server for upload status

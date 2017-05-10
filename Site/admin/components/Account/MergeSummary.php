@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminPage.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatDetailsStore.php';
 
 /**
  * Merge Summary page for Accounts

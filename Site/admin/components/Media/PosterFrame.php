@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Site/dataobjects/SiteVideoMedia.php';
 
 /**
  * Poster frame edit page for SiteVideoMedia

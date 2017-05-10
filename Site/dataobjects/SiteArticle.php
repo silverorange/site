@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Swat/SwatNavBarEntry.php';
-require_once 'SwatDB/SwatDBDataObject.php';
 
 /**
  * An article in an web application

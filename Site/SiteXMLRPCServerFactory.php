@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Site/layouts/SiteXMLRPCServerLayout.php';
-require_once 'Site/SitePageFactory.php';
 
 /**
  * @package   Site

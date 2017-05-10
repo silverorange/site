@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePageDecorator.php';
 
 /**
  * A page decorator to add a message display to the top of a page if their are

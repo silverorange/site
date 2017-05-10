@@ -1,12 +1,5 @@
 <?php
 
-require_once 'Swat/SwatUI.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/Site.php';
-require_once 'Site/SiteViewFactory.php';
-require_once 'Site/SiteCommentStatus.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Services/Akismet2.php';
 
 /**
  * Handle the init, processing, and display of a comment UI

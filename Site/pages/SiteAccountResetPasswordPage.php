@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteEditPage.php';
-require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Swat/SwatUI.php';
 
 /**
  * Page to reset the password for an account

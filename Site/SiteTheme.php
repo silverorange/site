@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-require_once 'Site/exceptions/SiteThemeException.php';
 
 /**
  * Theme for a site

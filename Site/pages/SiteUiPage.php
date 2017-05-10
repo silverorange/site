@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Swat/SwatUI.php';
-require_once 'Site/pages/SitePageDecorator.php';
 
 /**
  * Base class for UI pages

@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Swat/SwatUI.php';
 
 /**
  * Abstract page that initilizes, loads and saves a user interface based on

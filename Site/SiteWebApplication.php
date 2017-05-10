@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplication.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/pages/SiteXhtmlExceptionPage.php';
 
 /**
  * Base class for a web application

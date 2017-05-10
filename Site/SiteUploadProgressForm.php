@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Swat/SwatForm.php';
-require_once 'Swat/SwatProgressBar.php';
-require_once 'Swat/SwatYUI.php';
-require_once 'Swat/exceptions/SwatException.php';
-require_once 'XML/RPCAjax.php';
 
 /**
  * A form with a upload progress bar

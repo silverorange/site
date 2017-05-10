@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteGadgetInstanceSettingValue.php';
 
 /**
  * A recordset wrapper for gadget instance setting values

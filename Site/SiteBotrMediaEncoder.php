@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
 
 /**
  * Encodes all media on BOTR to the default profiles if they haven't already

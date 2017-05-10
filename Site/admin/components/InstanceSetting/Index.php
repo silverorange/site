@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Swat/SwatNoteBookPage.php';
-require_once 'Swat/SwatMessage.php';
-require_once __DIR__.'/include/SiteConfigPage.php';
 
 /**
  * Main page used to edit instance configuration settings.

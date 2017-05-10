@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/layouts/SiteLayout.php';
-require_once 'Admin/pages/AdminPage.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
 
 /**
  * Theme thumbnail image loader

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteObject.php';
-require_once 'Site/exceptions/SiteInvalidPropertyException.php';
 
 /**
  * Container for layout properties

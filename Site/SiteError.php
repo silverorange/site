@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Swat/SwatError.php';
 
 /**
  * An error in Site

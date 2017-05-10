@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminObjectEdit.php';
 
 /**
  * Upload page for attachments

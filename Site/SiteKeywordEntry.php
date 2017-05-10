@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Swat/SwatEntry.php';
 
 /**
  * An entry widget where it is possible to specify the input name manually

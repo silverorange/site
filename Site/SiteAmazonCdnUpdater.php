@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteCdnUpdater.php';
-require_once 'Site/SiteAmazonCdnModule.php';
 
 /**
  * Application to process queued SiteCdnTasks using SiteAmazonCdnModule

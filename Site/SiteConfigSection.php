@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-require_once 'Site/exceptions/SiteException.php';
-require_once 'Site/SiteConfigModule.php';
 
 /**
  * Configuration section for the configuration module

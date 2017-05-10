@@ -1,12 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminSearch.php';
-require_once 'Admin/AdminSearchClause.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatTableStore.php';
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'Site/dataobjects/SiteAccountWrapper.php';
-require_once 'Site/admin/SiteAccountSearch.php';
 
 /**
  * Index page for Accounts

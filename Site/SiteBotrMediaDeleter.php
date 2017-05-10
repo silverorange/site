@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
 
 /**
  * Deletes video and encodings from BOTR.

@@ -1,13 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/SiteConfigModule.php';
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteMultipleInstanceModule.php';
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/SiteMultipartMailMessage.php';
-require_once 'Site/dataobjects/SiteContactMessageWrapper.php';
 
 /**
  * Application to send pending contact message emails

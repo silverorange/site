@@ -1,11 +1,5 @@
 <?php
 
-require_once 'SwatDB/exceptions/SwatDBException.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBTransaction.php';
-require_once 'Site/exceptions/SiteException.php';
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/SiteConfigSection.php';
 
 /**
  * Web application module for site configuration

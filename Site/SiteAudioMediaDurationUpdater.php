@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/SiteCommandLineArgument.php';
-require_once 'Site/SiteConfigModule.php';
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteAMQPModule.php';
-require_once 'Site/dataobjects/SiteAudioMediaWrapper.php';
 
 /**
  * Recalculates the duration of all media in a media set

@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteImageSet.php';
-require_once 'Site/dataobjects/SiteImageType.php';
 
 /**
  * An image dimension data object

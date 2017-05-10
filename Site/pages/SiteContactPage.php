@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Services/Akismet2.php';
-require_once 'Swat/SwatUI.php';
-require_once 'Swat/SwatString.php';
-require_once 'Site/dataobjects/SiteContactMessage.php';
-require_once 'Site/SiteMultipartMailMessage.php';
-require_once 'Site/pages/SiteDBEditPage.php';
 
 /**
  *

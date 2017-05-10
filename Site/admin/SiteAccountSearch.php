@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatUI.php';
-require_once 'Site/SiteApplication.php';
-require_once 'Admin/AdminSearchClause.php';
 
 /**
  * @package   Site

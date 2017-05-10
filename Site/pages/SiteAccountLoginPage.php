@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteUiPage.php';
 
 /**
  * Page for logging into an account

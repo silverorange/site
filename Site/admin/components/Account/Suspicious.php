@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminIndex.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatTableStore.php';
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'Site/dataobjects/SiteAccountWrapper.php';
 
 /**
  * Index page for Suspicious Accounts

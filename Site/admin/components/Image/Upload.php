@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminObjectEdit.php';
-require_once 'Site/dataobjects/SiteImage.php';
 
 /**
  * Upload page for SiteImages

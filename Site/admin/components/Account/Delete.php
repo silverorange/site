@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminDBDelete.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Admin/AdminListDependency.php';
-require_once 'Admin/AdminDependencyEntry.php';
 
 /**
  * Delete confirmation page for Accounts

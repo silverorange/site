@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteCdnTaskWrapper.php';
-require_once 'Site/dataobjects/SiteAttachmentCdnTask.php';
-require_once 'Site/dataobjects/SiteAttachmentWrapper.php';
 
 /**
  * A recordset wrapper class for SiteAttachmentCdnTask objects

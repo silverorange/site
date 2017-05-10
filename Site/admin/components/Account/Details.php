@@ -1,11 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminIndex.php';
-require_once 'SwatDB/SwatDBClassMap.php';
 
 /**
  * Details page for accounts

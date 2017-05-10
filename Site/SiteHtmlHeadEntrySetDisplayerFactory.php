@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Concentrate/CacheArray.php';
-require_once 'Concentrate/CacheAPC.php';
-require_once 'Concentrate/CacheMemcache.php';
-require_once 'Concentrate/DataProvider.php';
-require_once 'Swat/SwatHtmlHeadEntrySet.php';
-require_once 'Swat/SwatHtmlHeadEntrySetDisplayer.php';
-require_once 'Site/SiteConcentrateFileFinder.php';
-require_once 'Site/SiteApplication.php';
 
 /**
  * Builds an object to display HTML head entries for an application using

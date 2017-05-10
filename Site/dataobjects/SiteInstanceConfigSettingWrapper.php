@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteInstanceConfigSetting.php';
 
 /**
  * A recordset wrapper class for SiteInstanceConfigSetting objects

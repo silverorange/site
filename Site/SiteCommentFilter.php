@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Swat/SwatString.php';
 
 /**
  * Parses the bodytext of a comment

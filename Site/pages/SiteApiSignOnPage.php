@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Site/dataobjects/SiteApiCredential.php';
-require_once 'Site/dataobjects/SiteApiSignOnToken.php';
-require_once 'Site/exceptions/SiteApiSignOnException.php';
 
 /**
  * Page for logging into an account via a sign-on token

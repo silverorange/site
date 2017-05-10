@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Swat/SwatHtmlHeadEntrySet.php';
-require_once 'Swat/SwatHtmlHeadEntrySetDisplayer.php';
-require_once 'Site/SiteObject.php';
-require_once 'Site/SiteApplication.php';
-require_once 'Site/SiteLayoutData.php';
-require_once 'Site/SiteHtmlHeadEntrySetDisplayerFactory.php';
-require_once 'Site/exceptions/SiteInvalidPropertyException.php';
-require_once 'Concentrate/FlagFile.php';
 
 /**
  * Base class for a layout

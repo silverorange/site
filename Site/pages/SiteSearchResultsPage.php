@@ -1,12 +1,6 @@
 <?php
 
-require_once 'Site/pages/SiteArticlePage.php';
-require_once 'Site/SiteNateGoFulltextSearchEngine.php';
-require_once 'Site/SiteArticleSearchEngine.php';
-require_once 'Swat/SwatUI.php';
 
-require_once 'Swat/SwatNavBar.php';
-require_once 'Swat/SwatString.php';
 
 /**
  * Page for displaying search results

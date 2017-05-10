@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminPage.php';
-require_once 'Site/admin/SiteThemeDisplay.php';
-require_once 'SwatDB/exceptions/SwatDBException.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBTransaction.php';
 
 /**
  * Page for selecting a theme

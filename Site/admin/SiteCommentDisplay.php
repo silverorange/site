@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Swat/SwatControl.php';
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'Swat/SwatYUI.php';
-require_once 'Site/Site.php';
-require_once 'Site/SiteViewFactory.php';
-require_once 'XML/RPCAjax.php';
 
 /**
  * Displays a comment with optional buttons to edit, set published status

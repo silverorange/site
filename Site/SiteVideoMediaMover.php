@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteCommandLineConfigModule.php';
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/dataobjects/SiteVideoMediaWrapper.php';
-require_once 'Site/exceptions/SiteCommandLineException.php';
 
 /**
  * Application to copy video to the new directory structure

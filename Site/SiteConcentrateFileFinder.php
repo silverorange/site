@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Concentrate/DataProvider/FileFinderInterface.php';
-require_once 'Concentrate/DataProvider/FileFinderDirectory.php';
 
 /**
  * @package   Site

@@ -1,6 +1,5 @@
 <?php
 
-require_once 'SiteApplicationModule.php';
 
 /**
  * Base class for application modules that provide access to a CDN

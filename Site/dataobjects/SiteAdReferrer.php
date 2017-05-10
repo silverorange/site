@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteAd.php';
 
 /**
  * Tracked inbound ad referrer

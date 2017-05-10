@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminPage.php';
-require_once 'Admin/AdminSearchClause.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Swat/SwatString.php';
-require_once 'Site/admin/SiteCommentDisplay.php';
 
 /**
  * Page to manage pending comments on posts

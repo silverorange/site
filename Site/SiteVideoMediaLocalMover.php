@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/SiteVideoMediaMover.php';
 
 /**
  * Application to copy video to the new local directory structure

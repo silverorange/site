@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/exceptions/SiteException.php';
 
 /**
  * Application module for crypt based password hashing

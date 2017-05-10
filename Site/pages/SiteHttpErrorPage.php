@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-require_once 'Swat/SwatHtmlTag.php';
 
 /**
  * @package   Site

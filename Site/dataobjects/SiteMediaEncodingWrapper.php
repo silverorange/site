@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteMediaEncoding.php';
 
 /**
  * A recordset wrapper class for MediaEncoding objects

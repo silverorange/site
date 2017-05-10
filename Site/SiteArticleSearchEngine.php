@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteSearchEngine.php';
-require_once 'Site/dataobjects/SiteArticleWrapper.php';
 
 /**
  * An article search engine

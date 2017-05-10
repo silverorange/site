@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteFulltextSearchResult.php';
-require_once 'NateGoSearch/NateGoSearchResult.php';
 
 /**
  * A fulltext search result that uses NateGoSearch

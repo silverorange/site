@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/SitePath.php';
 
 /**
  * @package   Site

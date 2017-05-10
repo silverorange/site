@@ -1,12 +1,5 @@
 <?php
 
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteCommandLineConfigModule.php';
-require_once 'Site/SiteMultipleInstanceModule.php';
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/dataobjects/SiteMediaWrapper.php';
-require_once 'Site/dataobjects/SiteMediaCdnTask.php';
-require_once 'Site/exceptions/SiteCommandLineException.php';
 
 /**
  * Abstract application to queue metadata updates for SiteMedia on a CDN

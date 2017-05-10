@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteBotrMedia.php';
-require_once 'Site/dataobjects/SiteSimpleMediaWrapper.php';
 
 /**
  * A simple recordset wrapper class for SiteBotrMedia objects that doesn't

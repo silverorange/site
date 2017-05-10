@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/layouts/SiteLayout.php';
 
 /**
  * Layout for an XML site map

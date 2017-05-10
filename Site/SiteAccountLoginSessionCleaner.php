@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/SiteConfigModule.php';
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteSessionModule.php';
-require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
 
 /**
  * Cleans up dead SiteAccountLoginSession entries in the database.

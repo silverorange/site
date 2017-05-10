@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Site/SiteGadgetFactory.php';
-require_once 'Site/dataobjects/SiteGadgetInstanceSettingValue.php';
-require_once 'Site/dataobjects/SiteGadgetInstanceSettingValueWrapper.php';
-require_once 'Site/dataobjects/SiteGadgetInstance.php';
 
 /**
  * Page for editing sidebar gadget instance settings

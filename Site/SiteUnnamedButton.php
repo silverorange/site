@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Swat/SwatButton.php';
 
 /**
  * A button without an XHTML name

@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteDBEditPage.php';
 
 /**
  * Page for listing current persistent login sessions

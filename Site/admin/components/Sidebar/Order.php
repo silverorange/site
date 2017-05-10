@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminDBOrder.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Site/SiteGadgetFactory.php';
-require_once 'Site/dataobjects/SiteGadgetInstanceWrapper.php';
 
 /**
  * Order tool for sidebar gadgets

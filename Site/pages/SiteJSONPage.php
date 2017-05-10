@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
 
 /**
  * @package   Site

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/exceptions/SiteAMQPJobFailureException.php';
 
 /**
  * Web application module for sending messages to an AMQP broker

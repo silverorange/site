@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
 
 /**
  * Tool used to download all missing originals from bits on the run

@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteException.php';
-require_once 'Site/SiteApplicationModule.php';
-require_once 'SwatDB/exceptions/SwatDBException.php';
-require_once 'MDB2.php';
 
 /**
  * Application module for database connectivity

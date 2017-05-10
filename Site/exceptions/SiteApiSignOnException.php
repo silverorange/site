@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Swat/exceptions/SwatException.php';
 
 /**
  * Generic exception to be used during the API sign on process

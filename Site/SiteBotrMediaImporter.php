@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Swat/SwatViewSelection.php';
-require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
-require_once 'Site/dataobjects/SiteBotrMedia.php';
-require_once 'Site/dataobjects/SiteBotrMediaSet.php';
-require_once 'Site/dataobjects/SiteVideoImage.php';
 
 /**
  * Application to import new media from BOTR into the Media DB tables

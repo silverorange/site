@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplicationModule.php';
 
 /**
  * Module for dislaying WhiteChimpmunk tracking pixels.

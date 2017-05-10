@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteImageWrapper.php';
 
 /**
  * An recordset wrapper class for SiteImage objects that doesn't automatically

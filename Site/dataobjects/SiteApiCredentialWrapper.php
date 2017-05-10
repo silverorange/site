@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteApiCredential.php';
 
 /**
  * A recordset wrapper class for SiteApiCredential objects

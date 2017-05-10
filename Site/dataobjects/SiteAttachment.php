@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteAttachmentSet.php';
-require_once 'Site/dataobjects/SiteAttachmentCdnTask.php';
 
 /**
  * An attachment

@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-require_once 'Site/SiteFulltextSearchResult.php';
-require_once 'Site/SiteMemcacheModule.php';
 
 /**
  * An abstract search engine

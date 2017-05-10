@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteAttachmentSet.php';
 
 /**
  * A recordset wrapper class for SiteAttachmentSet objects

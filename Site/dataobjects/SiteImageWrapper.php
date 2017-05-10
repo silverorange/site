@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteImage.php';
-require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
 
 /**
  * A recordset wrapper class for SiteImage objects

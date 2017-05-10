@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminDBConfirmation.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBClassMap.php';
 
 /**
  * Account merge confirmation page

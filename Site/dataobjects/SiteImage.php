@@ -1,14 +1,5 @@
 <?php
 
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'SwatDB/SwatDBTransaction.php';
-require_once 'Site/dataobjects/SiteImageSet.php';
-require_once 'Site/dataobjects/SiteImageCdnTask.php';
-require_once 'Site/dataobjects/SiteImageDimensionBindingWrapper.php';
-require_once 'Site/exceptions/SiteInvalidImageException.php';
-require_once 'Site/exceptions/SiteInvalidImageDimensionException.php';
 
 /**
  * An image data object

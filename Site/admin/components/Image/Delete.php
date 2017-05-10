@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminObjectDelete.php';
-require_once 'Site/dataobjects/SiteImageWrapper.php';
 
 /**
  * Abstract delete page for site images.

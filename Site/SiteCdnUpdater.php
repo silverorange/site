@@ -1,16 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/SiteConfigModule.php';
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/dataobjects/SiteAttachmentCdnTaskWrapper.php';
-require_once 'Site/dataobjects/SiteAttachmentWrapper.php';
-require_once 'Site/dataobjects/SiteImageCdnTaskWrapper.php';
-require_once 'Site/dataobjects/SiteImageWrapper.php';
-require_once 'Site/dataobjects/SiteMediaCdnTaskWrapper.php';
-require_once 'Site/dataobjects/SiteMediaWrapper.php';
 
 /**
  * Application to process queued SiteCdnTasks

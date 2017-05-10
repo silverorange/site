@@ -1,11 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Admin/pages/AdminDBDelete.php';
-require_once 'Admin/AdminListDependency.php';
-require_once 'Site/SiteGadgetFactory.php';
-require_once 'Site/dataobjects/SiteGadgetInstanceWrapper.php';
 
 /**
  * Delete confirmation page for sidebar gadgets

@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Swat/SwatMessage.php';
-require_once 'Site/dataobjects/SiteAd.php';
 
 /**
  * Edit page for Ads

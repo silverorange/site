@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteConfigModule.php';
-require_once 'SwatDB/SwatDB.php';
 
 /**
  * Abstract base class for a search indexer applications

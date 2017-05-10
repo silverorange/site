@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatString.php';
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/exceptions/SiteCookieException.php';
 
 /**
  * Web application module for cookies
