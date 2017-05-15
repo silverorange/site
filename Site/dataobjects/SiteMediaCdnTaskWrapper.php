@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteCdnTaskWrapper.php';
-require_once 'Site/dataobjects/SiteMediaCdnTask.php';
-require_once 'Site/dataobjects/SiteMediaWrapper.php';
-require_once 'Site/dataobjects/SiteMediaEncodingWrapper.php';
-
 /**
  * A recordset wrapper class for SiteMediaCdnTask objects
  *

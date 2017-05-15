@@ -1,12 +1,5 @@
 <?php
 
-require_once 'Site/SiteSessionModule.php';
-require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Site/dataobjects/SiteAccountLoginSession.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Swat/SwatDate.php';
-require_once 'Swat/SwatForm.php';
-
 /**
  * Web application module for sessions with accounts.
  *

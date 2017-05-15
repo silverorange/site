@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
-
 /**
  * Application to validate media on BOTR.
  *

@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Swat/SwatOptionControl.php';
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'Swat/SwatYUI.php';
-require_once 'Swat/exceptions/SwatObjectNotFoundException.php';
-
 /**
  * Slider widget to select between different comment statuses
  *

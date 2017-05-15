@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Swat/SwatControl.php';
-require_once 'Site/dataobjects/SiteMedia.php';
-require_once 'Site/dataobjects/SiteMediaEncoding.php';
-
 /**
  * Display class for SiteMedia using JWPlayer
  *

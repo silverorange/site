@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/gadgets/SiteGadget.php';
-require_once 'Swat/SwatString.php';
-
 /**
  * Displays arbitrary content
  *

@@ -1,9 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/dataobjects/SiteAccount.php';
-
 /**
  * Active sessions for this account. Used for both persistent login via cookie,
  * and to track and display active sessions to the user.

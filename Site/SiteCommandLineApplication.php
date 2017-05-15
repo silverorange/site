@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplication.php';
-require_once 'Site/exceptions/SiteCommandLineException.php';
-require_once 'Site/SiteCommandLineArgument.php';
-
 /**
  * An application designed to run on the command line
  *

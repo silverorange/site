@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-
 /**
  * @package   Site
  * @copyright 2013-2016 silverorange

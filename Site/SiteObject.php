@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-require_once 'Site/Site.php';
-
 /**
  * The base object type for the site package
  *

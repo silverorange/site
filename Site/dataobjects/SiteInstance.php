@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteInstanceConfigSettingWrapper.php';
-
 /**
  * A dataobject class for site instances
  *

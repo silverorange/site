@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Swat/exceptions/SwatException.php';
-require_once 'Swat/SwatError.php';
-require_once 'Site/SiteErrorLogger.php';
-require_once 'Site/SiteExceptionLogger.php';
-require_once 'Site/SiteConfigModule.php';
-
 /**
  * Common configuration module for command-line applications
  *

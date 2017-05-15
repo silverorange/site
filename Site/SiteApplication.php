@@ -1,15 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteException.php';
-require_once 'Site/Site.php';
-require_once 'Site/SiteObject.php';
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/SiteExceptionLogger.php';
-require_once 'Site/SiteErrorLogger.php';
-require_once 'Swat/SwatError.php';
-require_once 'Swat/SwatDate.php';
-require_once 'Swat/exceptions/SwatException.php';
-
 /**
  * Base class for an application
  *

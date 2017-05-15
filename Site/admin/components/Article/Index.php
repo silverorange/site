@@ -1,14 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminIndex.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatString.php';
-require_once 'Site/dataobjects/SiteArticle.php';
-
-require_once 'include/SiteArticleActionsProcessor.php';
-require_once 'include/SiteArticleVisibilityCellRenderer.php';
-
 /**
  * Index page for Articles
  *

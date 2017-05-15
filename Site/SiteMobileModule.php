@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/exceptions/SiteException.php';
-
 /**
  * Web application module for working with mobile devices
  *

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Turing/TuringSeleniumTest.php';
-
 /**
  * Test account login, creation, logout
  *

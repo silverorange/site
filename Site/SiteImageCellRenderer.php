@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'Swat/SwatCellRenderer.php';
-require_once 'Swat/SwatImageCellRenderer.php';
-
 /**
  * A cell renderer for SiteImages
  *

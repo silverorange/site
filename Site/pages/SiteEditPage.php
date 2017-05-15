@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Swat/SwatString.php';
-require_once 'Swat/SwatDateEntry.php';
-require_once 'Swat/exceptions/SwatInvalidPropertyException.php';
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/pages/SiteUiPage.php';
-
 /**
  * Base class for edit pages
  *

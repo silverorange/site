@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePageDecorator.php';
-require_once 'Site/exceptions/SiteInvalidMacException.php';
-
 /**
  * Page decorator that uses shared secret to check request authenticity
  *

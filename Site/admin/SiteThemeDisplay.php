@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Swat/SwatImageDisplay.php';
-require_once 'Swat/SwatControl.php';
-require_once 'Swat/SwatString.php';
-require_once 'Site/SiteTheme.php';
-
 /**
  * Displays a theme with a button to select the theme
  *

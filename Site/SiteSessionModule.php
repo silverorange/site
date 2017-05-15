@@ -1,11 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordable.php';
-require_once 'Swat/exceptions/SwatClassNotFoundException.php';
-require_once 'Site/exceptions/SiteException.php';
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/SiteDatabaseModule.php';
-
 /**
  * Web application module for sessions
  *

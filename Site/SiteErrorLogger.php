@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Swat/SwatErrorLogger.php';
-
 /**
  * An error logger that creates HTML files containing error details and puts a
  * link in the system error log to the details file

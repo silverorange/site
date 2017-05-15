@@ -1,11 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'Site/dataobjects/SiteComment.php';
-require_once 'Site/pages/SiteXMLRPCServer.php';
-require_once 'Site/layouts/SiteXMLRPCServerLayout.php';
-require_once 'Services/Akismet2.php';
-
 /**
  * Performs actions on comments via AJAX
  *

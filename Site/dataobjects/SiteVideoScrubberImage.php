@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteImage.php';
-
 /**
  * An image data object for video-scrubber thumbnail images
  *

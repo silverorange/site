@@ -1,12 +1,5 @@
 <?php
 
-require_once 'BotrAPI.php';
-require_once 'Swat/SwatHtmlHeadEntrySet.php';
-require_once 'Site/exceptions/SiteBotrMediaToasterException.php';
-require_once 'Site/dataobjects/SiteBotrMedia.php';
-require_once 'Site/dataobjects/SiteBotrMediaEncoding.php';
-require_once 'Site/dataobjects/SiteBotrMediaPlayer.php';
-
 /**
  * Wrapper class for the Bits on the Run API.
  *
@@ -721,7 +714,6 @@ class SiteBotrMediaToaster
 	}
 
 	// }}}
-
 
 	// Content Display Methods
 	// {{{ public function getMediaPlayer()

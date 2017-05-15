@@ -1,10 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteMedia.php';
-require_once 'Site/dataobjects/SiteMediaSetWrapper.php';
-require_once 'Site/dataobjects/SiteMediaEncodingBindingWrapper.php';
-
 /**
  * A recordset wrapper class for SiteMedia objects
  *

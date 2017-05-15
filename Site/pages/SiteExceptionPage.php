@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-
 /**
  * A page to display exceptions
  *

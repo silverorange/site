@@ -1,10 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/SitePrivateDataDeleter.php';
-require_once 'Site/Site.php';
-
 /**
  * Removes old contact messages which can contain personal information. As it
  * would be too hard to filter the message for personal information, it just

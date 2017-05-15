@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Swat/SwatNavBar.php';
-require_once 'Swat/SwatNavBarEntry.php';
-require_once 'Site/SitePathEntry.php';
-
 /**
  * An ordered set of {@link SitePathEntry} objects representing a
  * path in a {@link SiteWebApplication}

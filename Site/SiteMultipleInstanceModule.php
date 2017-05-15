@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/dataobjects/SiteInstance.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-
 /**
  * Web application module for multiple instances
  *

@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteContactMessage.php';
-
 /**
  * A recordset wrapper class for SiteContactMessage objects
  *

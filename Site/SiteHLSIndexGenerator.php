@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteCommandLineConfigModule.php';
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/dataobjects/SiteVideoMediaWrapper.php';
-require_once 'Site/exceptions/SiteCommandLineException.php';
-
 /**
  * Application to generate m3u8 index files for HLS video
  *

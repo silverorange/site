@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteMediaEncodingBinding.php';
-
 /**
  * A video-specific media encoding binding object
  *

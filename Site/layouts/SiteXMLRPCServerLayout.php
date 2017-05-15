@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/layouts/SiteLayout.php';
-
 /**
  * Layout for an XMLRPC Server
  *

@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Text/Password.php';
-require_once 'Swat/SwatUI.php';
-require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Site/pages/SiteUiPage.php';
-
 /**
  * Page for requesting a new password for forgotten account passwords
  *

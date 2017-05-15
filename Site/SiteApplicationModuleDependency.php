@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-
 /**
  * Dependency object for an application modules
  *

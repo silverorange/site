@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatObject.php';
-require_once 'Swat/exceptions/SwatClassNotFoundException.php';
-
 /**
  * Factory for creating object views
  *

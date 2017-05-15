@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteException.php';
-
 /**
  * Thrown when something is not found
  *

@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/SiteCdnModule.php';
-require_once 'Site/exceptions/SiteCdnException.php';
-
 /**
  * Application module that provides access to an Amazon S3 bucket.
  *

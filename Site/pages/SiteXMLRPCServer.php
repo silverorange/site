@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/layouts/SiteXMLRPCServerLayout.php';
-
 /**
  * Base class for an XML-RPC Server
  *

@@ -1,10 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteInstance.php';
-require_once 'Site/dataobjects/SiteGadgetCacheWrapper.php';
-require_once 'Site/dataobjects/SiteGadgetInstanceSettingValueWrapper.php';
-
 /**
  * A gadget that belongs to a site instance
  *

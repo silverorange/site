@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteMultipartMailMessage.php';
-
 /**
  * Multipart text/html email message with replacement marker support
  *

@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminPage.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatDetailsStore.php';
-
 /**
  * Merge Summary page for Accounts
  *
@@ -171,7 +167,6 @@ class SiteAccountMergeSummary extends AdminPage
 	{
 		$ds1 = $this->getAccountDetailsStore($this->account1);
 		$ds2 = $this->getAccountDetailsStore($this->account2);
-
 
 		$this->buildAccountDetails(
 			$ds1,

@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Site/Site.php';
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/SiteCommandLineArgument.php';
-require_once 'Site/SiteConfigModule.php';
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/dataobjects/SiteVideoMediaWrapper.php';
-require_once 'FFmpegPHP2/FFmpegAutoloader.php';
-
 /**
  * Generates media thumbnails for the video scrubber
  *

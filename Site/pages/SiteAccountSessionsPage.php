@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteDBEditPage.php';
-
 /**
  * Page for listing current persistent login sessions
  *
@@ -472,7 +470,6 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 			$login_date = $this->app->session->account->last_login;
 
 		}
-
 
 		$this->displayLoginInformation($user_agent, $login_date);
 	}

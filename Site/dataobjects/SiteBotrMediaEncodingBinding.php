@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteVideoMediaEncodingBinding.php';
-
 /**
  * A BOTR-specific media encoding binding object
  *

@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/SiteBotrMediaToasterCommandLineApplication.php';
-require_once 'Site/dataobjects/SiteBotrMediaWrapper.php';
-require_once 'Site/dataobjects/SiteMediaCdnTask.php';
-
 /**
  * Tool used to duplicate all downloadable videos onto our local filesystem.
  * These videos are then queued for uploading to S3.

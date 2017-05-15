@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'Swat/SwatObject.php';
-
 /**
  * Setting types and the corresponding PHP types are:
  *

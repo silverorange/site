@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteVideoMediaEncodingBindingWrapper.php';
-require_once 'Site/dataobjects/SiteBotrMediaEncodingBinding.php';
-
 /**
  * A recordset wrapper class for SiteBotrMediaEncodingBinding objects
  *

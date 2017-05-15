@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteBotrMediaSet.php';
-
 /**
  * A BOTR-specific media player object
  *

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteException.php';
-
 /**
  * Thrown when an image can't be processed
  *

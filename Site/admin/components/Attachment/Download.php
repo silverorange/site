@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminPage.php';
-
 /**
  * Download page for attachments
  *

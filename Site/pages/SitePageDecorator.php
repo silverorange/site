@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteAbstractPage.php';
-
 /**
  * Base class for a page decorator
  *

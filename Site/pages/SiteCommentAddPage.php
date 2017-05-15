@@ -1,15 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/SiteViewFactory.php';
-require_once 'Site/pages/SitePageDecorator.php';
-require_once 'Site/layouts/SiteLayout.php';
-require_once 'Site/exceptions/SiteCommentJSONException.php';
-require_once 'Site/dataobjects/SiteComment.php';
-require_once 'Services/Akismet2.php';
-require_once 'Services/Akismet2/Comment.php';
-
 /**
  * Page for adding a comment asynchronously via a JSON request
  *

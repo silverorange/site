@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/dataobjects/SiteApiSignOnToken.php';
-require_once 'Site/dataobjects/SiteApiCredential.php';
-
 /**
  * Simple API page that provides sign on tokens to third parties
  *

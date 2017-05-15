@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Site/SiteGadgetFactory.php';
-require_once 'Site/dataobjects/SiteGadgetInstance.php';
-
 /**
  * Page for adding a sidebar gadget
  *

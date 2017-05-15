@@ -1,10 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Swat/SwatString.php';
-require_once 'Site/SiteCommentFilter.php';
-require_once 'NateGoSearch/NateGoSearch.php';
-
 /**
  * A comment on a site
  *

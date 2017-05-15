@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Swat/SwatPagination.php';
-
 /**
  * A pagination widget for GET-based searches
  *

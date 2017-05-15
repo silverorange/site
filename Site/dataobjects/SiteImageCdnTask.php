@@ -1,12 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'SwatDB/SwatDBTransaction.php';
-require_once 'Site/dataobjects/SiteCdnTask.php';
-require_once 'Site/dataobjects/SiteImage.php';
-require_once 'Site/dataobjects/SiteImageDimension.php';
-require_once 'Site/exceptions/SiteCdnException.php';
-
 /**
  * A task that should be performed on a CDN in the near future
  *

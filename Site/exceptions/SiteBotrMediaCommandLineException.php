@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteBotrMediaToasterException.php';
-
 /**
  * Exception for SiteBotrMediaCommandLine applications.
  *

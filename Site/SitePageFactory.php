@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Site/SiteWebApplication.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/layouts/SiteLayout.php';
-require_once 'Site/exceptions/SiteClassNotFoundException.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-
 /**
  * Resolves and creates pages for a web application
  *

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteBotrMediaCommandLineException.php';
-
 /**
  * Exception for download related issues in SiteBotrMediaCommandLine
  * applications.

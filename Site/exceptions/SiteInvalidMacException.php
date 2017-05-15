@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Swat/exceptions/SwatException.php';
-
 /**
  * Exception caused by the use of an invalid MAC on the shared secret page
  *

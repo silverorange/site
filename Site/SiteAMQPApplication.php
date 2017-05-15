@@ -2,12 +2,6 @@
 
 /* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
 
-require_once 'Console/CommandLine.php';
-require_once 'Site/Site.php';
-require_once 'Site/SiteApplication.php';
-require_once 'Site/SiteAMQPCommandLine.php';
-require_once 'Site/SiteAMQPJob.php';
-
 /**
  * Application that does a AMQP task
  *

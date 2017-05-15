@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/exceptions/SwatException.php';
-require_once 'PEAR.php';
-
 /**
  * An exception in Site package
  *

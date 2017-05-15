@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatEmailEntry.php';
-require_once 'Swat/SwatYUI.php';
-
 /**
  * @package   Site
  * @copyright 2013-2016 silverorange

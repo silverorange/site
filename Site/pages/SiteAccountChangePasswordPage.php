@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteEditPage.php';
-
 /**
  * Page for changing the password of an account
  *

@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/exceptions/SiteClassNotFoundException.php';
-require_once 'Site/exceptions/SiteInvalidClassException.php';
-require_once 'Swat/SwatMessage.php';
-
 /**
  * Web application module for site messages
  *

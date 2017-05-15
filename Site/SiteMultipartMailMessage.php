@@ -1,12 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'Site/SiteObject.php';
-require_once 'Site/exceptions/SiteMailException.php';
-
-require_once 'Mail.php';
-require_once 'Mail/mime.php';
-
 /**
  * Multipart text/html email message
  *

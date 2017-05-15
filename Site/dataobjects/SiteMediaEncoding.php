@@ -1,10 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteInstance.php';
-require_once 'Site/dataobjects/SiteMediaSet.php';
-require_once 'Site/dataobjects/SiteMediaType.php';
-
 /**
  * A media encoding object
  *

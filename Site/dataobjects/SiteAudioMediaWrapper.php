@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteMediaWrapper.php';
-require_once 'Site/dataobjects/SiteAudioMedia.php';
-
 /**
  * A recordset wrapper class for SiteAudioMedia objects
  *

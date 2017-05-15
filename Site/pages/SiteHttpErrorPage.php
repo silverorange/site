@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-require_once 'Swat/SwatHtmlTag.php';
-
 /**
  * @package   Site
  * @copyright 2006-2016 silverorange

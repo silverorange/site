@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminApproval.php';
-require_once 'Site/dataobjects/SiteComment.php';
-
 /**
  * Abstract approval page
  *

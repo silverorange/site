@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__.'/SiteAbstractConfigPage.php';
-
 /**
  * Config page used for displaying and saving config settings for the Site
  * package.

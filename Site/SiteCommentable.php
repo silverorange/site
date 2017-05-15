@@ -1,9 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordable.php';
-require_once 'Site/SiteCommentStatus.php';
-require_once 'Site/dataobjects/SiteComment.php';
-
 /**
  * Interaface for an object that can receive comments
  *

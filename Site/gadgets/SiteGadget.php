@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplication.php';
-require_once 'Swat/SwatUIObject.php';
-require_once 'Site/SiteGadgetSetting.php';
-require_once 'Site/dataobjects/SiteGadgetInstance.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-
 /**
  * Base class for creating sidebar gadgets
  *

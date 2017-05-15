@@ -2,15 +2,6 @@
 
 /* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
 
-require_once 'Swat/exceptions/SwatException.php';
-require_once 'Swat/exceptions/SwatInvalidClassException.php';
-require_once 'Swat/SwatInputControl.php';
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'Swat/SwatState.php';
-require_once 'Swat/SwatString.php';
-require_once 'Swat/SwatMessage.php';
-require_once 'Swat/SwatYUI.php';
-
 /**
  * Control for creating new tags and selecting multiple tags from a array of
  * tags

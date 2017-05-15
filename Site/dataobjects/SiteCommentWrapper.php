@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteComment.php';
-
 /**
  * A recordset wrapper class for SiteComment objects
  *

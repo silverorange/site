@@ -2,9 +2,6 @@
 
 /* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
 
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Site/exceptions/SiteException.php';
-
 /**
  * Application module for using Redis
  *

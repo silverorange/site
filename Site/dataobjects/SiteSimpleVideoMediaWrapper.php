@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Site/dataobjects/SiteVideoMedia.php';
-
 /**
  * A simple recordset wrapper class for SiteVideoMedia objects that doesn't
  * do any pre-loading of sub-dataobjects.

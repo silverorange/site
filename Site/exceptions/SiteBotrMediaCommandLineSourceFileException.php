@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteBotrMediaCommandLineException.php';
-
 /**
  * Exception for adding source files in SiteBotrMediaCommandLine applications.
  *

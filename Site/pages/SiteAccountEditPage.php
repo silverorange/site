@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'Site/pages/SiteDBEditPage.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Swat/SwatUI.php';
-
 /**
  * @package   Site
  * @copyright 2006-2016 silverorange

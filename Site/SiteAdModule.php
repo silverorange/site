@@ -1,12 +1,5 @@
 <?php
 
-require_once 'Site/SiteApplicationModule.php';
-require_once 'Swat/SwatDate.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/dataobjects/SiteAd.php';
-require_once 'Site/dataobjects/SiteAdReferrer.php';
-
 /**
  * Web application module for handling ad tracking
  *

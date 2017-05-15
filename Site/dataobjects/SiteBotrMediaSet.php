@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteVideoMediaSet.php';
-require_once 'Site/dataobjects/SiteBotrMediaPlayerWrapper.php';
-require_once 'Site/dataobjects/SiteBotrMediaEncodingWrapper.php';
-
 /**
  * A BOTR-specific media set object
  *

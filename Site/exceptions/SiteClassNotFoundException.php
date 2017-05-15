@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteException.php';
-
 /**
  * Thrown when a class is not found
  *

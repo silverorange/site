@@ -1,16 +1,5 @@
 <?php
 
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'Site/SiteCommandLineConfigModule.php';
-require_once 'Site/SiteMultipleInstanceModule.php';
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/SiteBotrMediaToaster.php';
-require_once 'Site/dataobjects/SiteBotrMediaWrapper.php';
-require_once 'Site/exceptions/SiteBotrMediaCommandLineException.php';
-require_once 'Site/exceptions/SiteBotrMediaCommandLineDownloadException.php';
-require_once 'Site/exceptions/SiteBotrMediaCommandLineFileExistsException.php';
-require_once 'Site/exceptions/SiteBotrMediaCommandLineSourceFileException.php';
-
 /**
  * Abstract application for applications that access media on bits on the run.
  *

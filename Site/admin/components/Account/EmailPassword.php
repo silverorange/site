@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminConfirmation.php';
-require_once 'Admin/exceptions/AdminNoAccessException.php';
-require_once 'Site/dataobjects/SiteAccount.php';
-require_once 'SwatDB/SwatDB.php';
-
 /**
  * Page to generate a new password for an account and email the new password
  * to the account holder

@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'SwatDB/SwatDBDataObject.php';
-
 /**
  * A setting value for a particular gadget instance
  *

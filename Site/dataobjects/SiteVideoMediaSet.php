@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteMediaSet.php';
-require_once 'Site/dataobjects/SiteVideoMediaEncodingWrapper.php';
-
 /**
  * A video-specific media set object
  *

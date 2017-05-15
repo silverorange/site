@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Swat/SwatCellRenderer.php';
-
 /**
  * Cell renderer that displays a summary of the visibility of an article
  *

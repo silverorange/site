@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePageDecorator.php';
-require_once 'Site/layouts/SiteXmlSiteMapLayout.php';
-require_once 'Site/dataobjects/SiteArticleWrapper.php';
-
 /**
  * A generated XML Site Map
  *

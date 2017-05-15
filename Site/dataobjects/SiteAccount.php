@@ -1,15 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatString.php';
-require_once 'Swat/SwatDate.php';
-require_once 'Site/SiteNewPasswordMailMessage.php';
-require_once 'Site/SiteResetPasswordMailMessage.php';
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteAccountWrapper.php';
-require_once 'Site/dataobjects/SiteAccountLoginHistoryWrapper.php';
-require_once 'Site/dataobjects/SiteAccountLoginSessionWrapper.php';
-
 /**
  * A account for a web application
  *

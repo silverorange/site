@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'Swat/SwatString.php';
-require_once 'Site/pages/SitePageDecorator.php';
-require_once 'Site/SitePath.php';
-
 /**
  * Path page decorator
  *

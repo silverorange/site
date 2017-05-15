@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteVideoMediaSetWrapper.php';
-require_once 'Site/dataobjects/SiteBotrMediaSet.php';
-
 /**
  * A recordset wrapper class for SiteBotrMediaSet objects
  *

@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'Swat/SwatString.php';
-require_once 'Site/dataobjects/SiteArticle.php';
-require_once 'Site/pages/SitePathPage.php';
-require_once 'Site/exceptions/SiteException.php';
-
 /**
  * Article page decorator
  *

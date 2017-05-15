@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/exceptions/SwatDBException.php';
-require_once 'Site/pages/SiteEditPage.php';
-
 /**
  * Base class for database edit pages
  *

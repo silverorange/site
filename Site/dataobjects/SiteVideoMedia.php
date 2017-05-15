@@ -1,12 +1,5 @@
 <?php
 
-require_once 'Site/SiteJwPlayerMediaDisplay.php';
-require_once 'Site/dataobjects/SiteMedia.php';
-require_once 'Site/dataobjects/SiteVideoImage.php';
-require_once 'Site/dataobjects/SiteVideoScrubberImage.php';
-require_once 'Site/dataobjects/SiteVideoMediaSet.php';
-require_once 'Site/dataobjects/SiteVideoMediaEncodingBindingWrapper.php';
-
 /**
  * A video-specific media object
  *

@@ -1,12 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatString.php';
-require_once 'Site/SitePageFactory.php';
-require_once 'Site/SiteArticlePath.php';
-require_once 'Site/pages/SiteArticlePage.php';
-require_once 'Site/dataobjects/SiteArticleWrapper.php';
-
 /**
  * Resolves and creates article pages in a web application
  *

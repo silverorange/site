@@ -1,11 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'SwatDB/SwatDBTransaction.php';
-require_once 'Site/dataobjects/SiteCdnTask.php';
-require_once 'Site/dataobjects/SiteAttachment.php';
-require_once 'Site/exceptions/SiteCdnException.php';
-
 /**
  * An attachment task that should be preformed to a CDN in the near future
  *

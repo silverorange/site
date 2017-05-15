@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteException.php';
-
 /**
  * @package   Site
  * @copyright 2011-2016 silverorange

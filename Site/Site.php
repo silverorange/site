@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Swat/Swat.php';
-require_once 'Swat/SwatUI.php';
-require_once 'Site/SiteError.php';
-require_once 'Site/exceptions/SiteException.php';
-
 /**
  * Container for package wide static methods
  *
