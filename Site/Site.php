@@ -4,7 +4,7 @@
  * Container for package wide static methods
  *
  * @package   Site
- * @copyright 2005-2016 silverorange
+ * @copyright 2005-2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class Site
@@ -19,12 +19,22 @@ class Site
 	const GETTEXT_DOMAIN = 'site';
 
 	// }}}
+	// {{{ private properties
+
+	/**
+	 * Whether or not this package is initialized
+	 *
+	 * @var boolean
+	 */
+	private static $is_initialized = false;
+
+	// }}}
 	// {{{ public static function _()
 
 	/**
 	 * Translates a phrase
 	 *
-	 * This is an alias for {@link Site::gettext()}.
+	 * This is an alias for {@link self::gettext()}.
 	 *
 	 * @param string $message the phrase to be translated.
 	 *
@@ -32,7 +42,7 @@ class Site
 	 */
 	public static function _($message)
 	{
-		return Site::gettext($message);
+		return self::gettext($message);
 	}
 
 	// }}}
@@ -50,7 +60,7 @@ class Site
 	 */
 	public static function gettext($message)
 	{
-		return dgettext(Site::GETTEXT_DOMAIN, $message);
+		return dgettext(self::GETTEXT_DOMAIN, $message);
 	}
 
 	// }}}
@@ -78,7 +88,7 @@ class Site
 	 */
 	public static function ngettext($singular_message, $plural_message, $number)
 	{
-		return dngettext(Site::GETTEXT_DOMAIN,
+		return dngettext(self::GETTEXT_DOMAIN,
 			$singular_message, $plural_message, $number);
 	}
 
@@ -91,8 +101,8 @@ class Site
 		if (mb_substr($path, 0 ,1) === '@')
 			$path = __DIR__.'/../locale';
 
-		bindtextdomain(Site::GETTEXT_DOMAIN, $path);
-		bind_textdomain_codeset(Site::GETTEXT_DOMAIN, 'UTF-8');
+		bindtextdomain(self::GETTEXT_DOMAIN, $path);
+		bind_textdomain_codeset(self::GETTEXT_DOMAIN, 'UTF-8');
 	}
 
 	// }}}
@@ -385,45 +395,38 @@ class Site
 	}
 
 	// }}}
-}
+	// {{{ public static function init()
 
-// {{{ dummy dngettext()
-
-/*
- * Define a dummy dngettext() for when gettext is not available.
- */
-if (!function_exists("dngettext")) {
-	function dngettext($domain, $messageid1, $messageid2, $n)
+	public static function init()
 	{
-		if ($n == 1)
-			return $messageid1;
+		if (self::$is_initialized) {
+			return;
+		}
 
-		return $messageid2;
-    }
-}
+		Swat::init();
 
-// }}}
-// {{{ dummy dgettext()
+		self::setupGettext();
 
-/*
- * Define a dummy dgettext() for when gettext is not available.
- */
-if (!function_exists("dgettext")) {
-	function dgettext($domain, $messageid)
-	{
-		return $messageid;
+		SwatUI::mapClassPrefixToPath('Site', 'Site');
+
+		// Setup custom exception and error handlers.
+		SiteError::setupHandler();
+		SiteException::setupHandler();
+
+		self::$is_initialized = true;
 	}
+
+	// }}}
+	// {{{ private function __construct()
+
+	/**
+	 * Prevent instantiation of this static class
+	 */
+	private function __construct()
+	{
+	}
+
+	// }}}
 }
-
-// }}}
-
-Site::setupGettext();
-SwatUI::mapClassPrefixToPath('Site', 'Site');
-
-/*
- * Setup custom exception and error handlers.
- */
-SiteError::setupHandler();
-SiteException::setupHandler();
 
 ?>
