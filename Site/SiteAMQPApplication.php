@@ -1,7 +1,5 @@
 <?php
 
-/* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
-
 /**
  * Application that does a AMQP task
  *
@@ -203,7 +201,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 	 *
 	 * Subclasses must implement this method to perform work.
 	 *
-	 * @param SiteAMQPJob $job 
+	 * @param SiteAMQPJob $job
 	 */
 	abstract protected function doWork(SiteAMQPJob $job);
 
