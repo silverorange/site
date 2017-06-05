@@ -111,33 +111,6 @@ class SiteGadgetFactory extends SwatObject
 
 			$include_paths = explode(PATH_SEPARATOR, get_include_path());
 
-			// try to load class definition for the gadget class
-			if (!class_exists($class_name) && count(self::$paths) > 0) {
-				foreach (self::$paths as $path) {
-					if ($path[0] == '/') {
-						// path is absolute
-						$filename = sprintf('%s/%s.php',
-							$path, $class_name);
-
-						if (file_exists($filename)) {
-							require_once $filename;
-							break;
-						}
-					} else {
-						// path is relative to include path
-						foreach ($include_paths as $include_path) {
-							$filename = sprintf('%s/%s/%s.php',
-								$include_path, $path, $class_name);
-
-							if (file_exists($filename)) {
-								require_once $filename;
-								break 2;
-							}
-						}
-					}
-				}
-			}
-
 			if (!class_exists($class_name)) {
 				throw new SwatClassNotFoundException(
 					'No gadget of class "'.$class_name.'" exists.');
@@ -246,10 +219,6 @@ class SiteGadgetFactory extends SwatObject
 				$filename = $file->getFilename();
 
 				$class_name = mb_substr($filename, 0, -4);
-
-				if (!class_exists($class_name)) {
-					require_once $file->getRealPath();
-				}
 
 				if (!class_exists($class_name)) {
 					throw new SwatClassNotFoundException(

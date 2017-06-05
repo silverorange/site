@@ -239,7 +239,6 @@ class SiteTheme extends SwatObject
 		$filename   = 'layouts/'.$class_name.'.php';
 
 		if ($this->fileExists($filename)) {
-			require_once $this->path.'/'.$filename;
 			if (!class_exists($class_name)) {
 				throw new SiteThemeException(sprintf('Theme layout file "%s" '.
 					'must contain a class named "%s"',

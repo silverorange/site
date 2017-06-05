@@ -1,8 +1,6 @@
 <?php
 
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/SiteConfigModule.php';
-require_once 'Site/SiteAMQPModule.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 class AMQPTestClient extends SiteCommandLineApplication
 {

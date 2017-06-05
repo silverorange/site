@@ -73,9 +73,6 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 	 */
 	public function registerMessageClass($class_name, $filename = null)
 	{
-		if (!class_exists($class_name) && $filename !== null)
-			require_once $filename;
-
 		if (!class_exists($class_name))
 			throw new SiteClassNotFoundException(sprintf('Class ‘%s’ is not '.
 				'defined and cannot be registered in this message module.',

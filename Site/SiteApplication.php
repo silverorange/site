@@ -137,7 +137,6 @@ abstract class SiteApplication extends SiteObject
 			try {
 				$config_module = $this->getModule('SiteConfigModule');
 			} catch (SiteException $e) {
-				require_once 'Site/SiteConfigModule.php';
 				$config_module = new SiteConfigModule($this);
 				$this->addModule($config_module, 'config');
 			}
@@ -324,8 +323,6 @@ abstract class SiteApplication extends SiteObject
 		if (!$has_nate_go_search_queue) {
 			return;
 		}
-
-		require_once 'NateGoSearch/NateGoSearch.php';
 
 		$type = NateGoSearch::getDocumentType($this->db, $document_type);
 		if ($type === null) {
