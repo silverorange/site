@@ -801,8 +801,6 @@ class SiteAccount extends SwatDBDataObject
 
 	protected function getGeneratePasswordValues(SiteApplication $app)
 	{
-		require_once 'Text/Password.php';
-
 		$crypt = $app->getModule('SiteCryptModule');
 
 		$password      = Text_Password::Create();

@@ -201,7 +201,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		}
 
 		if ($this->record_end_point) {
-			require_once 'XML/RPCAjax.php';
 			$ajax = new XML_RPCAjax();
 			$this->html_head_entry_set->addEntrySet(
 				$ajax->getHtmlHeadEntrySet());

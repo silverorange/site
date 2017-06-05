@@ -91,7 +91,6 @@ class SiteSidebarSettings extends AdminDBEdit
 		foreach ($settings as $id => $setting) {
 			switch ($setting->getType()) {
 			case 'boolean':
-				require_once 'Swat/SwatCheckbox.php';
 				$widget = new SwatCheckbox();
 				$widget->id = $id;
 				// default boolean values
@@ -99,25 +98,21 @@ class SiteSidebarSettings extends AdminDBEdit
 				break;
 
 			case 'date':
-				require_once 'Swat/SwatDateEntry.php';
 				$widget = new SwatDateEntry();
 				$widget->id = $id;
 				break;
 
 			case 'integer':
-				require_once 'Swat/SwatIntegerEntry.php';
 				$widget = new SwatIntegerEntry();
 				$widget->id = $id;
 				break;
 
 			case 'integer':
-				require_once 'Swat/SwatFloatEntry.php';
 				$widget = new SwatFloatEntry();
 				$widget->id = $id;
 				break;
 
 			case 'text':
-				require_once 'Swat/SwatTextarea.php';
 				$widget = new SwatTextarea();
 				$widget->id = $id;
 				$widget->rows = 4;
@@ -126,14 +121,12 @@ class SiteSidebarSettings extends AdminDBEdit
 
 			case 'string':
 			default:
-				require_once 'Swat/SwatEntry.php';
 				$widget = new SwatEntry();
 				$widget->id = $id;
 				break;
 
 			}
 
-			require_once 'Swat/SwatFormField.php';
 			$field = new SwatFormField();
 			$field->title = $setting->getTitle();
 

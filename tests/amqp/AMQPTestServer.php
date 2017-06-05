@@ -1,8 +1,6 @@
 <?php
 
-require_once 'Site/SiteAMQPApplication.php';
-require_once 'Site/SiteConfigModule.php';
-require_once 'Site/SiteCommandLineLogger.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 class AMQPTestServer extends SiteAMQPApplication
 {

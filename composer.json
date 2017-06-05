@@ -72,8 +72,5 @@
 	},
 	"autoload": {
 		"classmap": [ "Site/" ]
-	},
-	"include-path": [
-		"./"
-	]
+	}
 }
