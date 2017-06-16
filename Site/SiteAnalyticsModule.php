@@ -154,6 +154,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected $friendbuy_account_id;
 
 	/**
+	 * Friendbuy Site ID
+	 *
+	 * @var string
+	 */
+	protected $friendbuy_site_id;
+
+	/**
 	 * Stack of commands to send to Friendbuy pixels
 	 *
 	 * Commands are key-value pairs.
@@ -193,6 +200,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		$this->friendbuy_account_id =
 			$config->analytics->friendbuy_account_id;
+
+		$this->friendbuy_site_id =
+			$config->analytics->friendbuy_site_id;
 
 		$this->initOptOut();
 
@@ -1022,6 +1032,7 @@ JS;
 	{
 		return (
 			$this->friendbuy_account_id != '' &&
+			$this->friendbuy_site_id != '' &&
 			!$this->analytics_opt_out
 		);
 	}
