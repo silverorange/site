@@ -27,7 +27,6 @@ class SiteSentryExceptionLogger extends SiteExceptionLogger {
 	 *
 	 * @param Raven_Client $client the sentry client to use
 	 */
-
 	public function __construct(Raven_Client $client) {
 		$this->client = $client;
 	}
