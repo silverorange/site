@@ -387,13 +387,13 @@ abstract class SiteApplication extends SiteObject
 	protected function configureErrorHandling(SiteConfigModule $config)
 	{
 		if (isset($config->exceptions->log_location))
-			SwatException::addLogger(new SiteExceptionLogger(
+			SwatException::setLogger(new SiteExceptionLogger(
 				$config->exceptions->log_location,
 				$config->exceptions->base_uri,
 				$config->exceptions->unix_group));
 
 		if (isset($config->errors->log_location))
-			SwatError::addLogger(new SiteErrorLogger(
+			SwatError::setLogger(new SiteErrorLogger(
 				$config->errors->log_location,
 				$config->errors->base_uri,
 				$config->errors->unix_group));
