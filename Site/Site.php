@@ -258,7 +258,6 @@ class Site
 
 			// Friendbuy Pixel ids
 			'analytics.friendbuy_account_id' => null,
-			'analytics.friendbook_site_id' => null,
 
 			// Ads
 			// Tracking id in URIs

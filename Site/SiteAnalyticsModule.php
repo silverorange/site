@@ -154,13 +154,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected $friendbuy_account_id;
 
 	/**
-	 * Friendbuy Site ID
-	 *
-	 * @var string
-	 */
-	protected $friendbuy_site_id;
-
-	/**
 	 * Stack of commands to send to Friendbuy pixels
 	 *
 	 * Commands are key-value pairs.
@@ -201,9 +194,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->friendbuy_account_id =
 			$config->analytics->friendbuy_account_id;
 
-		$this->friendbuy_site_id =
-			$config->analytics->friendbuy_site_id;
-
 		$this->initOptOut();
 
 		// skip init of the commands if we're opted out.
@@ -238,9 +228,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->displayFacebookPixelImage();
 		$this->displayTwitterPixelImages();
 		$this->displayBingUETImage();
-
-		// TODO: Confirm this is even supported by Friendbuy.
-		$this->displayFriendbuyPixelImage();
 	}
 
 	// }}}
@@ -268,6 +255,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		if ($this->hasPardot()) {
 			$js.= $this->getPardotInlineJavascript();
+		}
+
+		if ($this->hasFriendbuyPixel()) {
+			$js.= $this->getFriendbuyPixelInlineJavascript();
 		}
 
 		if ($js != '') {
@@ -1032,7 +1023,6 @@ JS;
 	{
 		return (
 			$this->friendbuy_account_id != '' &&
-			$this->friendbuy_site_id != '' &&
 			!$this->analytics_opt_out
 		);
 	}
@@ -1048,19 +1038,21 @@ JS;
 	}
 
 	// }}}
-	// {{{ protected function getFriendbuyPixelCommandsInlineJavaScript()
+	// {{{ protected function getFriendbuyPixelInlineJavascript()
 
-	protected function getFriendbuyPixelCommandsInLineJavaScript()
+	protected function getFriendbuyPixelInlineJavascript()
 	{
 		$javascript = null;
 
 		if ($this->hasFriendbuyPixel() &&
 			count ($this->friendbuy_pixel_commands) > 0) {
 			$javascript = "window['friendbuy'] = window['friendbuy'] || [];";
+
 			foreach ($this->friendbuy_pixel_commands as $command) {
 				$javascript.= $this->getFriendbuyPixelCommand($command);
 			}
 
+			$javascript.= $this->getFriendbuyReferralWidgetsInlineJavaScript();
 		}
 
 		return $javascript;
@@ -1082,24 +1074,9 @@ JS;
 	}
 
 	// }}}
-	// {{{ public function getFriendbuyPixelTrackerInlineJavaScript()
+	// {{{ public function getFriendbuyReferralWidgetsInlineJavaScript()
 
-	public function getFriendbuyPixelTrackerInlineJavaScript()
-	{
-		$javascript = '';
-
-		if ($this->hasFriendbuyPixel()) {
-			$javascript = $this->getFriendbuyPixelCommandsInlineJavascript();
-		}
-
-		return $javascript;
-
-	}
-
-	// }}}
-	// {{{ public function getFriendbuyReferralTrackerInlineJavaScript()
-
-	public function getFriendbuyReferralWidgetsTrackerInlineJavaScript()
+	public function getFriendbuyReferralWidgetsInlineJavaScript()
 	{
 		$javascript = '';
 
@@ -1109,9 +1086,6 @@ JS;
   b = f.createElement(r), y = f.getElementsByTagName(r)[0];b.async = 1;b.src = n;y.parentNode.insertBefore(b, y);
 })(document, 'script', '//djnf6e5yyirys.cloudfront.net/js/friendbuy.min.js');
 JS;
-
-			$javascript = $this->getFriendbuyPixelCommandsInLineJavaScript()
-				. $javascript;
 		}
 
 		return $javascript;
@@ -1122,6 +1096,35 @@ JS;
 
 	public function displayFriendBuyPostPurchaseOverlay()
 	{
+	}
+
+	// }}}
+	// {{{ protected function initFriendbuyPixelCommands()
+
+	protected function initFriendbuyPixelCommands()
+	{
+		// Default commands for all sites:
+		// * Track the customer.
+		if ($this->app->session->isLoggedIn()) {
+			$account = $this->app->session->account;
+			$this->friendbuy_pixel_commands = array(
+				array(
+					'site',
+					$this->friendbuy_account_id
+				)
+			);
+
+			$this->friendbuy_pixel_commands[]= array(
+				'track',
+				'customer',
+				array(
+					'id'         => $account->email,
+					'email'      => $account->email,
+					'first_name' => $account->first_name,
+					'last_name'  => $account->last_name,
+				)
+			);
+		}
 	}
 
 	// }}}
