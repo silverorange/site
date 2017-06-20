@@ -44,6 +44,7 @@
 		"pear/net_smtp": "^1.6.3",
 		"pear/services_akismet2": ">=0.3.1",
 		"pear/text_password": "^1.1.1",
+		"sentry/sentry": "^1.7.0",
 		"silverorange/mdb2": "^2.4.1",
 		"silverorange/concentrate": ">=0.1.2",
 		"silverorange/swat": "^2.7.0"

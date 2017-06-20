@@ -387,16 +387,23 @@ abstract class SiteApplication extends SiteObject
 	protected function configureErrorHandling(SiteConfigModule $config)
 	{
 		if (isset($config->exceptions->log_location))
-			SwatException::setLogger(new SiteExceptionLogger(
+			SwatException::addLogger(new SiteExceptionLogger(
 				$config->exceptions->log_location,
 				$config->exceptions->base_uri,
 				$config->exceptions->unix_group));
 
 		if (isset($config->errors->log_location))
-			SwatError::setLogger(new SiteErrorLogger(
+			SwatError::addLogger(new SiteErrorLogger(
 				$config->errors->log_location,
 				$config->errors->base_uri,
 				$config->errors->unix_group));
+
+		if (isset($config->sentry->dsn)) {
+			// Default breadcrumb handlers override the error_reporting settings, so we disable them
+			$client = new Raven_Client($config->sentry->dsn, array('install_default_breadcrumb_handlers' => false));
+			SwatException::addLogger(new SiteSentryExceptionLogger($client));
+			SwatError::addLogger(new SiteSentryErrorLogger($client));
+		}
 
 		if (isset($config->errors->fatal_severity))
 			SwatError::setFatalSeverity($config->errors->fatal_severity);
