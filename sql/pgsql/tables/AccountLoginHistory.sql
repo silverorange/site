@@ -8,3 +8,5 @@ create table AccountLoginHistory (
 
 	primary key (id)
 );
+
+create index AccountLoginHistory_account_index on AccountLoginHistory(account);
