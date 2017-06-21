@@ -146,6 +146,22 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $pardot_campaign_id;
 
+	/**
+	 * Friendbuy Account ID
+	 *
+	 * @var string
+	 */
+	protected $friendbuy_account_id;
+
+	/**
+	 * Stack of commands to send to Friendbuy pixels
+	 *
+	 * Commands are key-value pairs.
+	 *
+	 * @var array
+	 */
+	protected $friendbuy_pixel_commands = array();
+
 	// }}}
 	// {{{ public function init()
 
@@ -175,6 +191,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->pardot_campaign_id =
 			$config->analytics->pardot_campaign_id;
 
+		$this->friendbuy_account_id =
+			$config->analytics->friendbuy_account_id;
+
 		$this->initOptOut();
 
 		// skip init of the commands if we're opted out.
@@ -182,6 +201,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			$this->initGoogleAnalyticsCommands();
 			$this->initFacebookPixelCommands();
 			$this->initBingUETCommands();
+			$this->initFriendbuyPixelCommands();
 		}
 	}
 
@@ -195,7 +215,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			$this->hasFacebookPixel() ||
 			$this->hasTwitterPixel() ||
 			$this->hasBingUET() ||
-			$this->hasPardot()
+			$this->hasPardot() ||
+			$this->hasFriendbuyPixel()
 		);
 	}
 
@@ -234,6 +255,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		if ($this->hasPardot()) {
 			$js.= $this->getPardotInlineJavascript();
+		}
+
+		if ($this->hasFriendbuyPixel()) {
+			$js.= $this->getFriendbuyPixelInlineJavascript();
 		}
 
 		if ($js != '') {
@@ -945,7 +970,6 @@ JS;
 	}
 
 	// }}}
-
 	// {{{ public function getPardotInlineJavascript()
 
 	public function getPardotInlineJavascript()
@@ -988,6 +1012,109 @@ JS;
 			SwatString::quoteJavaScriptString($this->pardot_account_id),
 			SwatString::quoteJavaScriptString($this->pardot_campaign_id)
 		);
+	}
+
+	// }}}
+
+	// Friendbuy
+	// {{{ public function hasFriendbuyPixel()
+
+	public function hasFriendbuyPixel()
+	{
+		return (
+			$this->friendbuy_account_id != '' &&
+			!$this->analytics_opt_out
+		);
+	}
+
+	// }}}
+	// {{{ public function pushFriendbuyPixelCommands()
+
+	public function pushFriendbuyPixelCommands(array $commands)
+	{
+		foreach ($commands as $command) {
+			$this->friendbuy_pixel_commands[] = $command;
+		}
+	}
+
+	// }}}
+	// {{{ protected function getFriendbuyPixelInlineJavascript()
+
+	protected function getFriendbuyPixelInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasFriendbuyPixel() &&
+			count ($this->friendbuy_pixel_commands) > 0) {
+			$javascript = "window['friendbuy'] = window['friendbuy'] || [];";
+
+			foreach ($this->friendbuy_pixel_commands as $command) {
+				$javascript.= $this->getFriendbuyPixelCommand($command);
+			}
+
+			$javascript.= $this->getFriendbuyReferralWidgetsInlineJavaScript();
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getFriendbuyPixelCommand()
+
+	protected function getFriendbuyPixelCommand(array $command)
+	{
+		$javascript = "window['friendbuy'].push(";
+		$javascript.= json_encode($command);
+		$javascript.= ');';
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getFriendbuyReferralWidgetsInlineJavaScript()
+
+	public function getFriendbuyReferralWidgetsInlineJavaScript()
+	{
+		$javascript = '';
+
+		if ($this->hasFriendBuyPixel()) {
+			$javascript = <<<'JS'
+(function (f, r, n, d, b, y) {
+  b = f.createElement(r), y = f.getElementsByTagName(r)[0];b.async = 1;b.src = n;y.parentNode.insertBefore(b, y);
+})(document, 'script', '//djnf6e5yyirys.cloudfront.net/js/friendbuy.min.js');
+JS;
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function initFriendbuyPixelCommands()
+
+	protected function initFriendbuyPixelCommands()
+	{
+		// Default commands for all sites:
+		// * Track the customer.
+		if ($this->app->session->isLoggedIn()) {
+			$account = $this->app->session->account;
+			$this->friendbuy_pixel_commands = array(
+				array(
+					'site',
+					$this->friendbuy_account_id
+				)
+			);
+
+			$this->friendbuy_pixel_commands[] = array(
+				'track',
+				'customer',
+				array(
+					'id'         => $account->email,
+					'email'      => $account->email,
+					'first_name' => $account->first_name,
+					'last_name'  => $account->last_name,
+				)
+			);
+		}
 	}
 
 	// }}}

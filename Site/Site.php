@@ -256,6 +256,9 @@ class Site
 			'analytics.pardot_account_id' => null,
 			'analytics.pardot_campaign_id' => null,
 
+			// Friendbuy Pixel ids
+			'analytics.friendbuy_account_id' => null,
+
 			// Ads
 			// Tracking id in URIs
 			'ads.tracking_id'          => 'utm_source',
