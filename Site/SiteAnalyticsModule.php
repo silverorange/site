@@ -1061,14 +1061,11 @@ JS;
 	// }}}
 	// {{{ protected function getFriendbuyPixelCommand()
 
-	protected function getFriendbuyPixelCommand($command) {
-		$javascript = '';
-
-		if (is_array($command)) {
-			$javascript = "window['friendbuy'].push(";
-			$javascript.= json_encode($command);
-			$javascript.= ');';
-		}
+	protected function getFriendbuyPixelCommand(array $command)
+	{
+		$javascript = "window['friendbuy'].push(";
+		$javascript.= json_encode($command);
+		$javascript.= ');';
 
 		return $javascript;
 	}
@@ -1092,13 +1089,6 @@ JS;
 	}
 
 	// }}}
-	// {{{ public function displayFriendBuyPostPurchaseOverlay()
-
-	public function displayFriendBuyPostPurchaseOverlay()
-	{
-	}
-
-	// }}}
 	// {{{ protected function initFriendbuyPixelCommands()
 
 	protected function initFriendbuyPixelCommands()
@@ -1114,7 +1104,7 @@ JS;
 				)
 			);
 
-			$this->friendbuy_pixel_commands[]= array(
+			$this->friendbuy_pixel_commands[] = array(
 				'track',
 				'customer',
 				array(
