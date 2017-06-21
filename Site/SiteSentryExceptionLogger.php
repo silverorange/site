@@ -38,10 +38,9 @@ class SiteSentryExceptionLogger extends SiteExceptionLogger {
 	 * Logs an exception
 	 */
 	public function log(SwatException $e) {
-		if ($e instanceof SiteNotFoundException)
-			return;
-
-		$this->client->captureException($e);
+		if (!($e instanceof SiteNotFoundException)) {
+			$this->client->captureException($e);
+		}
 	}
 
 	//}}}

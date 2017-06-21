@@ -38,11 +38,17 @@ class SiteSentryErrorLogger extends SiteErrorLogger {
 	 * Logs an error
 	 */
 	public function log(SwatError $e) {
-		if ($this->filter($e))
-			return;
-
-		$ex = new ErrorException($e->getMessage(), 0, $e->getSeverity(), $e->getFile(), $e->getLine());
-		$this->client->captureException($ex);
+		if (!$this->filter($e)) {
+			$this->client->captureException(
+				new ErrorException(
+					$e->getMessage(),
+					0,
+					$e->getSeverity(),
+					$e->getFile(),
+					$e->getLine()
+				)
+			);
+		}
 	}
 
 	// }}}
