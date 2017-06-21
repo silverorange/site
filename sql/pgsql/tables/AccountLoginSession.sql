@@ -14,3 +14,4 @@ create table AccountLoginSession (
 );
 
 create index AccountLoginSession_tag on AccountLoginSession(tag);
+create index AccountLoginSession_account_index on AccountLoginSession(account);
