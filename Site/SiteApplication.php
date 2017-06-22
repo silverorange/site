@@ -398,6 +398,19 @@ abstract class SiteApplication extends SiteObject
 				$config->errors->base_uri,
 				$config->errors->unix_group));
 
+		if (isset($config->sentry->dsn)) {
+			// Default breadcrumb handlers override the error_reporting
+			// settings, so we disable them
+			$client = new Raven_Client(
+				$config->sentry->dsn,
+				array(
+					'install_default_breadcrumb_handlers' => false,
+				)
+			);
+			SwatException::addLogger(new SiteSentryExceptionLogger($client));
+			SwatError::addLogger(new SiteSentryErrorLogger($client));
+		}
+
 		if (isset($config->errors->fatal_severity))
 			SwatError::setFatalSeverity($config->errors->fatal_severity);
 	}
