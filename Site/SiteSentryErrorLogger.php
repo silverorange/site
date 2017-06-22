@@ -4,10 +4,11 @@
  * An error logger that sends error details to Sentry
  *
  * @package   Site
- * @copyright 2006-2016 silverorange
+ * @copyright 2006-2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteSentryErrorLogger extends SiteErrorLogger {
+class SiteSentryErrorLogger extends SiteErrorLogger
+{
 	// {{{ protected properties
 
 	/**
@@ -27,7 +28,8 @@ class SiteSentryErrorLogger extends SiteErrorLogger {
 	 *
 	 * @param Raven_Client $client the sentry client to use
 	 */
-	public function __construct(Raven_Client $client) {
+	public function __construct(Raven_Client $client)
+	{
 		$this->client = $client;
 	}
 
@@ -36,8 +38,11 @@ class SiteSentryErrorLogger extends SiteErrorLogger {
 
 	/**
 	 * Logs an error
+	 *
+	 * @param SwatError $e the error to log
 	 */
-	public function log(SwatError $e) {
+	public function log(SwatError $e)
+	{
 		if (!$this->filter($e)) {
 			$this->client->captureException(
 				new ErrorException(
@@ -53,3 +58,5 @@ class SiteSentryErrorLogger extends SiteErrorLogger {
 
 	// }}}
 }
+
+?>

@@ -393,7 +393,7 @@ class Site
 			'mandrill.template_prefix' => null,
 
 			// Sentry error logging
-			'sentry.dsn' => null
+			'sentry.dsn' => null,
 		);
 	}
 

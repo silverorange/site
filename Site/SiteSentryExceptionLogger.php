@@ -4,10 +4,11 @@
  * An exception logger that send exception details to Sentry
  *
  * @package   Site
- * @copyright 2006-2016 silverorange
+ * @copyright 2006-2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteSentryExceptionLogger extends SiteExceptionLogger {
+class SiteSentryExceptionLogger extends SiteExceptionLogger
+{
 	// {{{ protected properties
 
 	/**
@@ -27,7 +28,8 @@ class SiteSentryExceptionLogger extends SiteExceptionLogger {
 	 *
 	 * @param Raven_Client $client the sentry client to use
 	 */
-	public function __construct(Raven_Client $client) {
+	public function __construct(Raven_Client $client)
+	{
 		$this->client = $client;
 	}
 
@@ -36,9 +38,12 @@ class SiteSentryExceptionLogger extends SiteExceptionLogger {
 
 	/**
 	 * Logs an exception
+	 *
+	 * @param SwatException $e the exception to log
 	 */
-	public function log(SwatException $e) {
-		if (!($e instanceof SiteNotFoundException)) {
+	public function log(SwatException $e)
+	{
+		if (!$e instanceof SiteNotFoundException) {
 			$this->client->captureException($e);
 		}
 	}
@@ -46,3 +51,4 @@ class SiteSentryExceptionLogger extends SiteExceptionLogger {
 	//}}}
 }
 
+?>
