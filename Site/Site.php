@@ -397,6 +397,7 @@ class Site
 
 			// Sentry error logging
 			'sentry.dsn' => null,
+			'sentry.environment' => null,
 		);
 	}
 
