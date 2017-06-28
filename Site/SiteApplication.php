@@ -405,7 +405,7 @@ abstract class SiteApplication extends SiteObject
 				$config->sentry->dsn,
 				array(
 					'install_default_breadcrumb_handlers' => false,
-					'environment' => $config->sentry->environment
+					'environment' => $config->sentry->environment,
 				)
 			);
 			SwatException::addLogger(new SiteSentryExceptionLogger($client));
