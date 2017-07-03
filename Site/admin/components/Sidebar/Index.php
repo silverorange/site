@@ -29,7 +29,7 @@ class SiteSidebarIndex extends AdminIndex
 	// process phase
 	// {{{ protected function processActions()
 
-	public function processActions(SwatTableView $view, SwatActions $actions)
+	public function processActions(SwatView $view, SwatActions $actions)
 	{
 		switch ($actions->selected->id) {
 		case 'delete':
