@@ -9,11 +9,6 @@
  */
 class SiteJwPlayerMediaDisplay extends SwatControl
 {
-	// {{{ public static properties
-
-	public static $location_identifier;
-
-	// }}}
 	// {{{ public properties
 
 	public $key;
@@ -46,7 +41,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $aspect_ratio = array();
 	protected $skin;
 	protected $stretching;
-	protected $manifest_uri;
 	protected $vtt_uri;
 
 	// }}}
@@ -93,10 +87,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 		if ($this->skin === null) {
 			$this->setSkin($media->media_set->skin);
-		}
-
-		if ($this->manifest_uri === null) {
-			$this->setManifestUri('smil/'.$media->id.'.smil');
 		}
 
 		if ($this->vtt_uri === null) {
@@ -169,14 +159,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public function setSession(SiteSessionModule $session)
 	{
 		$this->session = $session;
-	}
-
-	// }}}
-	// {{{ public function setManifestUri()
-
-	public function setManifestUri($uri)
-	{
-		$this->manifest_uri = $uri;
 	}
 
 	// }}}
@@ -273,17 +255,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$this->aspect_ratio['width'],
 			$this->aspect_ratio['height']);
 
-		// don't do RTMP when the file has HLS
-		if (!$this->media->has_hls) {
-			$javascript.= sprintf(
-				"\t%s.addSource(%s);\n",
-				$this->getJavascriptVariableName(),
-				SwatString::quoteJavaScriptString(
-					$this->getManifestUri()
-				)
-			);
-		}
-
 		if ($this->media->getInternalValue('scrubber_image') !== null) {
 			$javascript.= sprintf("\t%s.vtt_uri = %s;\n",
 				$this->getJavascriptVariableName(),
@@ -372,15 +343,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 				SwatString::quoteJavascriptString($this->menu_title));
 		}
 
-		// A unqiue location for the user. Used for storing location-specific
-		// info such as if RTMP is blocked
-		if (self::$location_identifier !== null) {
-			$javascript.= sprintf("\t%s.location_identifier = %s;\n",
-				$this->getJavascriptVariableName(),
-				SwatString::quoteJavascriptString(md5(
-					self::$location_identifier)));
-		}
-
 		foreach ($this->valid_mime_types as $mime_type) {
 			$javascript.= sprintf("\t%s.addValidMimeType(%s);\n",
 				$this->getJavascriptVariableName(),
@@ -396,14 +358,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected function getJavascriptClassName()
 	{
 		return 'SiteJwPlayerMediaDisplay';
-	}
-
-	// }}}
-	// {{{ protected function getManifestUri()
-
-	protected function getManifestUri()
-	{
-		return $this->manifest_uri;
 	}
 
 	// }}}
