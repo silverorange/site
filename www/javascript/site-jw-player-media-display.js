@@ -127,10 +127,6 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		that.on_ready_event.fire(that);
 	});
 
-	this.player.onFullscreen(function (e) {
-		that.handleFullscreen(e.fullscreen);
-	});
-
 	if (this.record_end_point) {
 		this.recordEndPoint();
 	}
@@ -422,44 +418,6 @@ SiteJwPlayerMediaDisplay.prototype.getPlayerHeight = function()
 
 	return parseInt(region.width *
 		this.aspect_ratio[1] / this.aspect_ratio[0], 10);
-};
-
-// }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function()
-
-SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function(fullscreen)
-{
-	// only automatically change the quality for HTML5
-	if (this.player.getRenderingMode() == 'flash') {
-		return;
-	}
-
-	if (fullscreen) {
-		var default_source = this.getBestQualitySource(
-			YAHOO.util.Dom.getViewportWidth(),
-			YAHOO.util.Dom.getViewportHeight());
-	} else {
-		// Disable this for now. JwPlayer has a bug when paused videos return
-		// from fullscreen they start playing again. On desktop browsers/tablets
-		// this is annoying. On phones that require fullscreen playback it leads
-		// to not being able to close the video.
-		//var region = YAHOO.util.Dom.getRegion(this.container);
-		//var default_source = this.getBestQualitySource(
-		//	region.width, region.height);
-		var default_source = null;
-	}
-
-	if (default_source !== null) {
-		// look up the level from the source
-		var levels = this.player.getQualityLevels();
-
-		for (var i = 0; i < levels.length; i++) {
-			if (levels[i].label == default_source.label) {
-				this.player.setCurrentQuality(i);
-				break;
-			}
-		}
-	}
 };
 
 // }}}
