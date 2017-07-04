@@ -607,24 +607,6 @@ SiteJwPlayerMediaDisplay.prototype.appendResumeMessage = function()
 };
 
 // }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.appendErrorMessage = function()
-
-SiteJwPlayerMediaDisplay.prototype.appendErrorMessage = function()
-{
-	this.error_overlay = document.createElement('div');
-	this.error_overlay.style.display = 'none';
-	this.error_overlay.className = 'overlay-content error-overlay';
-
-	var div = document.createElement('div');
-	this.error_overlay.appendChild(div);
-	this.overlay.parentNode.appendChild(this.error_overlay);
-
-	YAHOO.util.Event.on(window, 'resize', function () {
-		this.positionOverlay(this.error_overlay);
-	}, this, true);
-};
-
-// }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.displayCompleteMessage = function()
 
 SiteJwPlayerMediaDisplay.prototype.displayCompleteMessage = function()
@@ -642,18 +624,6 @@ SiteJwPlayerMediaDisplay.prototype.displayResumeMessage = function()
 	this.overlay.style.display = 'block';
 	this.resume_overlay.style.display = 'block';
 	this.positionOverlay(this.resume_overlay);
-};
-
-// }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.displayErrorMessage = function()
-
-SiteJwPlayerMediaDisplay.prototype.displayErrorMessage = function(message)
-{
-	this.error_overlay.firstChild.innerHTML = message;
-
-	this.overlay.style.display = 'block';
-	this.error_overlay.style.display = 'block';
-	this.positionOverlay(this.error_overlay);
 };
 
 // }}}
