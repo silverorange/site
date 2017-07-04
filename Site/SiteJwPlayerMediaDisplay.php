@@ -22,7 +22,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $record_end_point = false;
 	public $on_complete_message = null;
 	public $swf_uri = null;
-	public $space_to_pause = false;
 	public $menu_title = null;
 	public $menu_link = null;
 	public $playback_rate_controls = null;
@@ -110,31 +109,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function setSkin($skin)
 	{
-		if (mb_strpos($skin, '.xml') === false) {
-			if ($skin === null) {
-				$skin = 'six';
-			}
-
-			$valid_skins = array(
-				'six',
-				'bekle',
-				'modieus',
-				'glow',
-				'five',
-				'beelden',
-				'stormtrooper',
-				'vapor',
-				'roundster',
-			);
-
-			if (!in_array($skin, $valid_skins)) {
-				throw new SwatException('Skin not valid');
-			} else {
-				$this->skin = 'packages/site/javascript/jwplayer-skins/'.$skin.'.xml';
-			}
-		} else {
-			$this->skin = $skin;
-		}
+		$this->skin = $skin;
 	}
 
 	// }}}
@@ -365,12 +340,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.record_end_point = %s;\n",
 				$this->getJavascriptVariableName(),
 				($this->record_end_point) ? 'true' : 'false');
-		}
-
-		if ($this->space_to_pause) {
-			$javascript.= sprintf("\t%s.space_to_pause = %s;\n",
-				$this->getJavascriptVariableName(),
-				($this->space_to_pause) ? 'true' : 'false');
 		}
 
 		if ($this->on_complete_message !== null) {
