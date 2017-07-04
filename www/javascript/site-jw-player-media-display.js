@@ -61,7 +61,6 @@ function SiteJwPlayerMediaDisplay(media_id)
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
 
-//SiteJwPlayerMediaDisplay.primaryPlayerType = 'flash'; // to allow for RTMP streaming
 SiteJwPlayerMediaDisplay.current_player_id = null;
 SiteJwPlayerMediaDisplay.record_interval = 30; // in seconds
 SiteJwPlayerMediaDisplay.players = [];
