@@ -108,7 +108,7 @@ class SiteVideoMedia extends SiteMedia
 			if ($binding->width <= 0) {
 				continue;
 			}
-			
+
 			if ((($smallest === null) && ($binding->width !== null)) ||
 				(($smallest !== null) &&
 					($binding->width < $smallest->width))) {
@@ -145,7 +145,7 @@ class SiteVideoMedia extends SiteMedia
 	{
 		$jwplayer = new SiteJwPlayerMediaDisplay('video'.$this->id);
 		$jwplayer->setMedia($this);
-		$jwplayer->swf_uri = 'packages/site/javascript/jwplayer.flash.swf';
+		$jwplayer->swf_uri = 'packages/site/jwplayer/jwplayer.flash.swf';
 		$jwplayer->key = $app->config->jwplayer->key;
 
 		$jwplayer->menu_title = $app->config->site->title;
