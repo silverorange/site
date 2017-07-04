@@ -856,18 +856,14 @@ SiteJwPlayerMediaDisplay.prototype.seek = function(position)
 {
 	var that = this;
 
-	if (YAHOO.env.ua.ios || YAHOO.env.ua.android) {
-		this.player.onTime(function(e) {
-			if (!that.seek_done && e.position > 1) {
-				that.player.seek(position);
-				that.seek_done = true;
-			}
-		});
+	this.player.on('firstFrame', function() {
+		if (!that.seek_done) {
+			that.player.seek(position);
+			that.seek_done = true;
+		}
+	});
 
-		this.play();
-	} else {
-		this.player.seek(position);
-	}
+	this.play();
 };
 
 // }}}
