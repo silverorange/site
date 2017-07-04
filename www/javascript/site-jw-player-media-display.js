@@ -25,24 +25,11 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.menu_title = null;
 	this.menu_link = null;
 
-	this.location_identifier = null;
-
 	this.upgrade_message = null;
 	this.on_complete_message = null;
 	this.resume_message =
 		'<p>You’ve previously watched part of this video.</p>' +
 		'<p>Would you like to:</p>';
-
-	this.rtmp_error_message =
-		'<h3>We can’t stream video to you</h3>' +
-		'<p>Unfortunately, your firewall seems to be blocking us. To work ' +
-		'around this, try switching to a browser that supports HTML5 ' +
-		'video, like the latest version of Internet Explorer, Chrome, or ' +
-		'Safari.</p>';
-
-	this.android_rtmp_error_message =
-		'<h3>We can’t stream video to you</h3>' +
-		'<p>Unfortunately, your firewall seems to be blocking us.</p>';
 
 	// whether or not to show the on-complete-message when the video loads.
 	// this is useful if you want to remind the user they've seen the video
@@ -135,9 +122,6 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 	// this.debug();
 
 	var that = this;
-	this.player.onError(function (error) {
-		that.handleError(error);
-	});
 
 	this.player.onReady(function() {
 		that.on_ready_event.fire(that);
@@ -227,11 +211,6 @@ SiteJwPlayerMediaDisplay.prototype.getPrimaryPlayerType = function()
 {
 	var player_type = SiteJwPlayerMediaDisplay.primaryPlayerType;
 
-	if (this.location_identifier !== null &&
-		YAHOO.util.Cookie.get(this.location_identifier + '_type') == 'html5') {
-		player_type = 'html5';
-	}
-
 	return player_type;
 };
 
@@ -271,16 +250,9 @@ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 		default_source['default'] = true;
 	}
 
-	var rtmp_blocked = (YAHOO.util.Cookie.get(
-		this.location_identifier + '_rtmp_status') == 'blocked');
-
 	// clone sources so that jwplayer doesn't wipe out the width property
 	var sources = [];
 	for (var i = 0; i < this.sources.length; i++) {
-		if (rtmp_blocked && this.sources[i].file.slice(-5) == '.smil') {
-			continue;
-		}
-
 		var s = {};
 		s.prototype = this.sources[i].prototype;
 		for (var k in this.sources[i]) {
@@ -521,39 +493,6 @@ SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function(fullscreen)
 				break;
 			}
 		}
-	}
-};
-
-// }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.handleError = function()
-
-SiteJwPlayerMediaDisplay.prototype.handleError = function(error)
-{
-	this.appendErrorMessage();
-
-	switch (error.message) {
-	case 'Error loading stream: Could not connect to server' :
-		// set a cookie to remove the RTMP source and reload the playlist
-		if (this.player.getRenderingMode() == 'flash') {
-			var rtmp_blocked = (YAHOO.util.Cookie.get(
-				this.location_identifier + '_rtmp_status') == 'blocked');
-
-			if (!rtmp_blocked) {
-				YAHOO.util.Cookie.set(this.location_identifier + '_rtmp_status',
-					'blocked');
-
-				this.player.load(this.getPlaylist());
-				this.player.play();
-			} else {
-				if (YAHOO.env.ua.android) {
-					this.displayErrorMessage(this.android_rtmp_error_message);
-				} else {
-					this.displayErrorMessage(this.rtmp_error_message);
-				}
-			}
-		}
-
-		break;
 	}
 };
 
