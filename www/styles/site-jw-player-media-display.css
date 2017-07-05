@@ -6,7 +6,7 @@
 	background: rgba(255, 255, 255, 0.5);
 	border-radius: 10px;
 	width: 80%;
-	margin: 0 10%;	
+	margin: 0 10%;
 	text-shadow: none;
 	font-size: 14px;
 	color: #333;
@@ -49,4 +49,8 @@
 	text-align: center;
 	color: #666;
 	text-shadow: none;
+}
+
+.video-player.no-captions .jw-icon-cc {
+	display: none;
 }
