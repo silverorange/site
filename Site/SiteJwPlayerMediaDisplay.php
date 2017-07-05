@@ -20,6 +20,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $menu_title = null;
 	public $menu_link = null;
 	public $playback_rate_controls = null;
+	public $has_captions = false;
 
 	/*
 	 * Whether or not to show the on-complete-message when the video loads
@@ -216,13 +217,25 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			}
 		}
 
+
 		echo '<div class="video-player-container">';
-		echo '<div class="video-player" id="media_display_'.
-			$this->media->id.'">';
+
+		$video_player_div = new SwatHtmlTag('div');
+		$video_player_div->class = 'video-player';
+
+		// Safari (iOS and OS X) will show a CC icon even if the SMIL file
+		// only contains the scrubber image. Us a css class to hide it.
+		$video_player_div->class.= ($this->has_captions)
+			? ' has-captions'
+			: ' no-captions';
+
+		$video_player_div->id = 'media_display_'.$this->media->id;
+		$video_player_div->open();
 
 		echo '<div id="media_display_container_'.$this->media->id.'"></div>';
 
-		echo '</div>';
+		$video_player_div->close();
+
 		echo '</div>';
 
 		Swat::displayInlineJavaScript($this->getJavascript());
