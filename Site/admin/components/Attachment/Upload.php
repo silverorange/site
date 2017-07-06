@@ -18,7 +18,7 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Attachment/upload.xml';
+		return __DIR__.'/upload.xml';
 	}
 
 	// }}}

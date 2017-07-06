@@ -24,7 +24,7 @@ class SiteAccountLoginPage extends SiteUiPage
 
 	protected function getUiXml()
 	{
-		return 'Site/pages/account-login.xml';
+		return __DIR__.'/account-login.xml';
 	}
 
 	// }}}

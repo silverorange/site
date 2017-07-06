@@ -16,7 +16,7 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 	 *
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/InstanceSetting/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	/**
 	 * An array containing each config page that will be linked into the main

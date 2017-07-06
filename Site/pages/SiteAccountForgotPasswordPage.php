@@ -23,7 +23,7 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 
 	protected function getUiXml()
 	{
-		return 'Site/pages/account-forgot-password.xml';
+		return __DIR__.'/account-forgot-password.xml';
 	}
 
 	// }}}

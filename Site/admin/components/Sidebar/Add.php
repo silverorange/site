@@ -19,7 +19,7 @@ class SiteSidebarAdd extends AdminDBEdit
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/Sidebar/add.xml';
+	protected $ui_xml = __DIR__.'/add.xml';
 
 	// }}}
 

@@ -40,7 +40,7 @@ class SiteAccountIndex extends AdminSearch
 
 	protected function getSearchXml()
 	{
-		return 'Site/admin/components/Account/search.xml';
+		return __DIR__.'/search.xml';
 	}
 
 	// }}}
@@ -48,7 +48,7 @@ class SiteAccountIndex extends AdminSearch
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Account/index.xml';
+		return __DIR__.'/index.xml';
 	}
 
 	// }}}

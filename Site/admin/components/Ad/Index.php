@@ -14,7 +14,7 @@ class SiteAdIndex extends AdminIndex
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/Ad/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	// }}}
 

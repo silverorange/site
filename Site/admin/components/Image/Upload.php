@@ -62,7 +62,7 @@ abstract class SiteImageUpload extends AdminObjectEdit
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Image/upload.xml';
+		return __DIR__.'/upload.xml';
 	}
 
 	// }}}

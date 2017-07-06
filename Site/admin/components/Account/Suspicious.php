@@ -14,7 +14,7 @@ class SiteAccountSuspicious extends AdminIndex
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/Account/suspicious.xml';
+	protected $ui_xml = __DIR__.'/suspicious.xml';
 
 	// }}}
 
