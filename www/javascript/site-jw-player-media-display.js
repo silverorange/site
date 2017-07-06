@@ -660,12 +660,24 @@ SiteJwPlayerMediaDisplay.prototype.seek = function(position)
 {
 	var that = this;
 
-	this.player.on('firstFrame', function() {
-		if (!that.seek_done) {
-			that.player.seek(position);
-			that.seek_done = true;
-		}
-	});
+	// Old versions of Android don't play nicely with firstFrame when
+	// seeking. It causes the video to look all messed up like it's
+	// waiting for a keyframe to come along.
+	if (YAHOO.env.ua.android) {
+		this.player.onTime(function(e) {
+			if (!that.seek_done && e.position > 1) {
+				that.seek_done = true;
+				that.player.seek(position);
+			}
+		});
+	} else {
+		this.player.on('firstFrame', function() {
+			if (!that.seek_done) {
+				that.player.seek(position);
+				that.seek_done = true;
+			}
+		});
+	}
 
 	this.play();
 };
