@@ -65,7 +65,7 @@ abstract class SiteCommentIndex extends AdminPage
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Comment/index.xml';
+		return __DIR__.'/index.xml';
 	}
 
 	// }}}

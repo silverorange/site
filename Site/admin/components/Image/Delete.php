@@ -18,7 +18,7 @@ abstract class SiteImageDelete extends AdminObjectDelete
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Image/delete.xml';
+		return __DIR__.'/delete.xml';
 	}
 
 	// }}}

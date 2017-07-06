@@ -22,7 +22,7 @@ class SiteSearchPage extends SiteSearchResultsPage
 	 *
 	 * @var string
 	 */
-	protected $form_ui_xml = 'Site/pages/search-form.xml';
+	protected $form_ui_xml = __DIR__.'/search-form.xml';
 
 	// }}}
 

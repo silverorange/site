@@ -21,7 +21,7 @@ class SiteSidebarSettings extends AdminDBEdit
 	 */
 	protected $gadget;
 
-	protected $ui_xml = 'Site/admin/components/Sidebar/settings.xml';
+	protected $ui_xml = __DIR__.'/settings.xml';
 
 	protected $setting_widgets = array();
 

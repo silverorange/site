@@ -14,7 +14,7 @@ class SiteThemeIndex extends AdminPage
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/Theme/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	/**
 	 * @var array

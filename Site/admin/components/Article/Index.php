@@ -17,7 +17,7 @@ class SiteArticleIndex extends AdminIndex
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/Article/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	/**
 	 * @var SiteArticle

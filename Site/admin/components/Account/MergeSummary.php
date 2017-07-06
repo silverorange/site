@@ -55,7 +55,7 @@ class SiteAccountMergeSummary extends AdminPage
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Account/merge-summary.xml';
+		return __DIR__.'/merge-summary.xml';
 	}
 
 	// }}}

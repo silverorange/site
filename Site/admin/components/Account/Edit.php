@@ -62,7 +62,7 @@ class SiteAccountEdit extends AdminDBEdit
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Account/edit.xml';
+		return __DIR__.'/edit.xml';
 	}
 
 	// }}}
