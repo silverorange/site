@@ -20,19 +20,19 @@ class SiteDefaultTemplate implements SiteTemplateInterface
 
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<base href="<?= $data->basehref ?>" />
-	<?=$data->html_head_entries?>
-	<title><?= $data->html_title ?></title>
+	<base href="{$data->basehref}" />
+	{$data->html_head_entries}
+	<title>{$data->html_title}</title>
 	<link rel="icon" href="favicon.ico" type="image/x-icon" />
-	<meta name="description" content="<?= $data->meta_description ?>" />
-	<meta name="ids" content="<?= $data->meta_keywords ?>" />
+	<meta name="description" content="{$data->meta_description}" />
+	<meta name="ids" content="{$data->meta_keywords}" />
 </head>
 
 <body>
 	<div id="main-content">
 		<div id="body-content">
-			<h2 id="page-title"><?= $data->title ?></h2>
-			<?= $data->content ?>
+			<h2 id="page-title">{$data->title}</h2>
+			{$data->content}
 		</div>
 	</div>
 </body>
