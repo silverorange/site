@@ -26,7 +26,7 @@ class SiteThemeImageLoader extends AdminPage
 
 	protected function createLayout()
 	{
-		return new SiteLayout($this->app, SiteBlankTheme::class);
+		return new SiteLayout($this->app, SiteFileLoaderTheme::class);
 	}
 
 	// }}}
