@@ -7,7 +7,7 @@
  * @copyright 2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-interface SiteLayoutTemplate
+interface SiteTemplateInterface
 {
 	// {{{ public function display()
 
