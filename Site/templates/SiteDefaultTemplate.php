@@ -21,7 +21,7 @@ class SiteDefaultTemplate implements SiteTemplate
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<base href="<?= $data->basehref ?>" />
-	<?=$this->html_head_entries?>
+	<?=$data->html_head_entries?>
 	<title><?= $data->html_title ?></title>
 	<link rel="icon" href="favicon.ico" type="image/x-icon" />
 	<meta name="description" content="<?= $data->meta_description ?>" />
