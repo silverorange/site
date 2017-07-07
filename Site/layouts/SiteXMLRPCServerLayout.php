@@ -11,9 +11,9 @@ class SiteXMLRPCServerLayout extends SiteLayout
 {
 	// {{{ public function __construct()
 
-	public function __construct($app, $filename = null)
+	public function __construct($app, $template_name = null)
 	{
-		parent::__construct($app, 'Site/layouts/xhtml/xmlrpcserver.php');
+		parent::__construct($app, SiteXMLRPCServerTemplate::class);
 	}
 
 	// }}}

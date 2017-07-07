@@ -19,7 +19,7 @@ abstract class SiteJSONPage extends SitePage
 		$this->setLayout(
 			new SiteLayout(
 				$this->app,
-				'Site/layouts/xhtml/json.php'
+				SiteJSONTemplate::class
 			)
 		);
 	}

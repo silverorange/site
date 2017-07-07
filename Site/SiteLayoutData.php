@@ -16,9 +16,10 @@ class SiteLayoutData extends SiteObject
 	// }}}
 	// {{{ public function display()
 
-	public function display($filename)
+	public function display($template_class)
 	{
-		require $filename;
+		$template = new $template_class();
+		$template->display($this);
 	}
 
 	// }}}

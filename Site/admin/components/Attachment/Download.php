@@ -36,7 +36,7 @@ abstract class SiteAttachmentDownload extends AdminPage
 
 	protected function createLayout()
 	{
-		return new SiteLayout($this->app, 'Site/layouts/xhtml/fileloader.php');
+		return new SiteLayout($this->app, SiteBlankLayout::class);
 	}
 
 	// }}}

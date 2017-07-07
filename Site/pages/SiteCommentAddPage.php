@@ -31,7 +31,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 
 	protected function createLayout()
 	{
-		return new SiteLayout($this->app, 'Site/layouts/xhtml/json.php');
+		return new SiteLayout($this->app, SiteJSONTemplate::class);
 	}
 
 	// }}}

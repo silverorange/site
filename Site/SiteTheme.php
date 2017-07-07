@@ -236,35 +236,36 @@ class SiteTheme extends SwatObject
 	public function getLayoutClass()
 	{
 		$class_name = $this->getShortname(true).'Layout';
-		$filename   = 'layouts/'.$class_name.'.php';
 
-		if ($this->fileExists($filename)) {
-			if (!class_exists($class_name)) {
-				throw new SiteThemeException(sprintf('Theme layout file "%s" '.
-					'must contain a class named "%s"',
-					$filename, $class_name));
-			}
-		} else {
-			$class_name = null;
+		if (!class_exists($class_name)) {
+			throw new SiteThemeException(
+				sprintf(
+					'Theme layout must contain a class named "%s"',
+					$class_name
+				)
+			);
 		}
 
 		return $class_name;
 	}
 
 	// }}}
-	// {{{ public function getTemplateFile()
+	// {{{ public function getTemplateClass()
 
-	public function getTemplateFile()
+	public function getTemplateClass()
 	{
-		$filename = 'layouts/xhtml/template.php';
+		$class_name = $this->getShortname(true).'Template';
 
-		if ($this->fileExists($filename)) {
-			$filename = $this->path.'/'.$filename;
-		} else {
-			$filename = null;
+		if (!class_exists($class_name)) {
+			throw new SiteThemeException(
+				sprintf(
+					'Theme template must contain a class named "%s"',
+					$class_name
+				)
+			);
 		}
 
-		return $filename;
+		return $class_name;
 	}
 
 	// }}}
