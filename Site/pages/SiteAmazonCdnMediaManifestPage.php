@@ -15,7 +15,7 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 
 	protected function createLayout()
 	{
-		return new SiteLayout($this->app, 'Site/layouts/xhtml/smil.php');
+		return new SiteLayout($this->app, SiteSMILTemplate::class);
 	}
 
 	// }}}

@@ -17,8 +17,7 @@ class SiteConnectionClosePage extends SitePage
 
 	protected function createLayout()
 	{
-		return new SiteLayout($this->app,
-			__DIR__.'/../layouts/xhtml/blank.php');
+		return new SiteLayout($this->app, SiteBlankTemplate::class);
 	}
 
 	// }}}

@@ -40,31 +40,32 @@ class SiteLayout extends SiteObject
 	// }}}
 	// {{{ private properties
 
-	private $filename = null;
+	private $template_class = null;
 	private $current_capture = null;
 	private $capture_prepend = false;
 
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, $filename = null)
+	public function __construct(SiteApplication $app, $template_class = null)
 	{
 		$this->app = $app;
 		$this->html_head_entries = new SwatHtmlHeadEntrySet();
 
-		if ($filename === null)
-			$filename = 'Site/layouts/xhtml/default.php';
+		if ($template_class === null) {
+			$template_class = SiteDefaultTemplate::class;
+		}
 
-		$this->filename = $filename;
+		$this->template_class = $template_class;
 		$this->data = new SiteLayoutData();
 	}
 
 	// }}}
-	// {{{ public function setFilename()
+	// {{{ public function setTemplateClass()
 
-	public function setFilename($filename)
+	public function setTemplateClass($template_class)
 	{
-		$this->filename = $filename;
+		$this->template_class = $template_class;
 	}
 
 	// }}}
@@ -72,7 +73,7 @@ class SiteLayout extends SiteObject
 
 	public function display()
 	{
-		$this->data->display($this->filename);
+		$this->data->display($this->template_class);
 	}
 
 	// }}}
