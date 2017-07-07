@@ -5,7 +5,7 @@
  * @copyright 2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteXMLRPSServerTemplate implements SiteTemplate
+class SiteXMLRPSServerTemplate implements SiteTemplateInterface
 {
 	// {{{ public function display()
 
