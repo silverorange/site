@@ -106,7 +106,6 @@ class SiteAccountForgotPassword extends AdminConfirmation
 
 		$form = $this->ui->getWidget('confirmation_form');
 		$form->addHiddenField('id', $this->id);
-
 		$this->title = $this->account->getFullname();
 
 		$this->navbar->createEntry(
@@ -125,8 +124,14 @@ class SiteAccountForgotPassword extends AdminConfirmation
 		$message->content = $this->getConfirmationMessage();
 		$message->content_type = 'text/xml';
 
-		$this->ui->getWidget('yes_button')->title =
-			Site::_('Send Forgot Password Reset Email');
+		$yes_button = $this->ui->getWidget('yes_button');
+		$yes_button->title = Site::_('Send Forgot Password Reset Email');
+		$yes_button->show_processing_throbber = true;
+
+		$form->addStyleSheet(
+			'packages/site/styles/site-admin-forgot-password-page.css'
+		);
+
 	}
 
 	// }}}
