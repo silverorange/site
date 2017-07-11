@@ -109,8 +109,6 @@ class SiteGadgetFactory extends SwatObject
 					'specified in gadget instance is not a valid class name.');
 			}
 
-			$include_paths = explode(PATH_SEPARATOR, get_include_path());
-
 			if (!class_exists($class_name)) {
 				throw new SwatClassNotFoundException(
 					'No gadget of class "'.$class_name.'" exists.');
