@@ -49,6 +49,9 @@
 		"silverorange/concentrate": ">=0.1.2",
 		"silverorange/swat": "^2.8.0"
 	},
+	"require-dev": {
+		"silverorange/coding-standard": "^0.1.0"
+	},
 	"suggest": {
 		"ext-amqp": "Allows some operations to use a message queue system.",
 		"ext-imagick": "Enables SiteImage processing abilities.",
@@ -62,17 +65,14 @@
 		"silverorange/nate_go_search": "Article search indexing and CME search index framework.",
 		"silverorange/net_notifier": "Enables async notifications from web applications using web sockets."
 	},
+	"scripts": {
+		"post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src",
+		"post-update-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src"
+	},
 	"autoload": {
 		"classmap": [ "Site/" ]
 	},
 	"include-path": [
 		"./"
-	],
-	"require-dev": {
-		"silverorange/coding-standard": "^0.1.0"
-	},
-	"scripts": {
-		"post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src",
-		"post-update-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src"
-	}
+	]
 }
