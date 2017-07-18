@@ -443,7 +443,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	{
 		$codecs = array();
 		foreach ($mime_types as $type) {
-			$codecs[] = array_pop(explode('/', $type));
+			$exploded_type = explode('/', $type);
+			$codecs[] = array_pop($exploded_type);
 		}
 
 		return sprintf('Videos on this site require either '.
