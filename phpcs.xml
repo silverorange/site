@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ruleset name="Site">
+	<arg name="colors" />
+	<arg name="tab-width" value="4" />
+	<arg name="extensions" value="php" />
+	<arg name="encoding" value="utf-8" />
+	<arg name="warning-severity" value="0" />
+	<arg value="p" /><!-- show progress -->
+
+	<file>./Site</file>
+
+	<exclude-pattern>*/layouts/xhtml/*</exclude-pattern>
+
+	<rule ref="SilverorangeLegacy" />
+</ruleset>
