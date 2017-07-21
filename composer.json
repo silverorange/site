@@ -45,7 +45,7 @@
 		"pear/services_akismet2": ">=0.3.1",
 		"pear/text_password": "^1.1.1",
 		"silverorange/mdb2": "^2.4.1",
-		"silverorange/concentrate": ">=0.1.2",
+		"silverorange/concentrate": "<1.0.0",
 		"silverorange/swat": "^2.2.0"
 	},
 	"suggest": {
