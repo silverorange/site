@@ -23,5 +23,12 @@ pipeline {
                 '''
             }
         }
+
+        stage('Test') {
+            steps {
+                sh 'ssh jenkins@roble'
+                pwd
+            }
+        }
     }
 }
