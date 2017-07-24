@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Install Composer Dependencies') {
             steps {
+                echo 'I am changing the Jenkinsfile'
                 sh 'rm -rf composer.lock vendor/'
                 sh 'composer install'
             }
