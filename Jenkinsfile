@@ -37,5 +37,12 @@ pipeline {
                 sh './vendor/bin/phpcs'
             }
         }
+
+        stage('Test') {
+            steps {
+                sh 'ssh jenkins@roble'
+                pwd
+            }
+        }
     }
 }
