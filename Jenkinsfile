@@ -40,7 +40,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'ssh jenkins@roble'
+                sh 'ssh -T jenkins@roble'
                 echo pwd
             }
         }
