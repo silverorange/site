@@ -120,9 +120,12 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 	public function setLargeFileReference($filename)
 	{
 		if (file_exists($filename)) {
-			if (($handle = fopen($filename, "r")) !== false) {
-				while (($line = fgetcsv($handle)) !== false) {
+			$handle = fopen($filename, 'r');
+			if ($handle !== false) {
+				$line = fgetcsv($handle);
+				while ($line !== false) {
 					$this->large_file_reference[$line[0]] = $line[1];
+					$line = fgetcsv($handle);
 				}
 				fclose($handle);
 			}
@@ -167,9 +170,12 @@ class SiteBotrMediaValidator extends SiteBotrMediaToasterCommandLineApplication
 	// }}}
 	// {{{ protected function handleSourceFileException()
 
-	protected function handleSourceFileException($key, $path, SplFileInfo $file,
-		Exception $e)
-	{
+	protected function handleSourceFileException(
+		$key,
+		$path,
+		SplFileInfo $file,
+		Exception $e
+	) {
 		parent::handleSourceFileException($key, $path, $file, $e);
 
 		$e = new SiteCommandLineException($e);

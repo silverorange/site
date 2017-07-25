@@ -22,7 +22,7 @@ class SiteException extends SwatException
 		if (is_object($message) && ($message instanceof PEAR_Error)) {
 			$error = $message;
 			$message = $error->getMessage();
-			$message .= "\n".$error->getUserInfo();
+			$message.= "\n".$error->getUserInfo();
 			$code = $error->getCode();
 		}
 

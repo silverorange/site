@@ -215,7 +215,7 @@ class SiteAccountMerge extends AdminSearch
 		$class_name = SwatDBClassMap::get('SiteAccount');
 		$store = new SwatTableStore();
 		foreach ($accounts as $account) {
-		  $store->add($this->getDetailsStore($account));
+			$store->add($this->getDetailsStore($account));
 		}
 
 		return $store;

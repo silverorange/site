@@ -62,9 +62,12 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 	 * @param string $application_title The title of the application -
 	 *        displayed in the email as the site name.
 	 */
-	public function __construct(SiteApplication $app, SiteAccount $account,
-		$new_password, $application_title)
-	{
+	public function __construct(
+		SiteApplication $app,
+		SiteAccount $account,
+		$new_password,
+		$application_title
+	) {
 		parent::__construct($app);
 
 		$this->new_password = $new_password;

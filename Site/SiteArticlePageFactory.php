@@ -118,10 +118,13 @@ class SiteArticlePageFactory extends SitePageFactory
 	 *
 	 * @return SiteAbstractPage the decorated page.
 	 */
-	protected function applyDecorators(SiteAbstractPage $page,
-		array $decorators, SiteArticle $article, SiteArticlePath $path,
-		array $arguments)
-	{
+	protected function applyDecorators(
+		SiteAbstractPage $page,
+		array $decorators,
+		SiteArticle $article,
+		SiteArticlePath $path,
+		array $arguments
+	) {
 		$has_article_decorator = false;
 		$decorators = array_reverse($decorators);
 		foreach ($decorators as $decorator) {
@@ -280,9 +283,10 @@ class SiteArticlePageFactory extends SitePageFactory
 	/**
 	 * @return SiteAbstractPage
 	 */
-	protected function getNotVisiblePage(SiteArticle $article,
-		SiteLayout $layout)
-	{
+	protected function getNotVisiblePage(
+		SiteArticle $article,
+		SiteLayout $layout
+	) {
 		// sub-classes can return a custom page here
 
 		// by default, throw an excpetion

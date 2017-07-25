@@ -84,9 +84,11 @@ class SiteApiSignOnToken extends SwatDBDataObject
 	// }}}
 	// {{{ public function loadByIdentAndToken()
 
-	public function loadByIdentAndToken($ident, $token,
-		SiteApiCredential $credential)
-	{
+	public function loadByIdentAndToken(
+		$ident,
+		$token,
+		SiteApiCredential $credential
+	) {
 		$this->checkDB();
 
 		$row = null;

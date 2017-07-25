@@ -8,8 +8,7 @@
  * @see       SiteBotrMediaEncodingBinding
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteBotrMediaEncodingBindingWrapper
-	extends SiteVideoMediaEncodingBindingWrapper
+class SiteBotrMediaEncodingBindingWrapper extends SiteVideoMediaEncodingBindingWrapper
 {
 	// {{{ protected function init()
 

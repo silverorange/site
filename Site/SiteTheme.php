@@ -465,7 +465,7 @@ class SiteTheme extends SwatObject
 					break;
 
 				case 'license':
-					$theme->license= $node->nodeValue;
+					$theme->license = $node->nodeValue;
 					break;
 
 				default:

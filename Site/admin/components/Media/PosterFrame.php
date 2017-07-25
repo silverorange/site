@@ -169,4 +169,5 @@ class SiteMediaPosterFrame extends AdminDBEdit
 
 	// }}}
 }
+
 ?>

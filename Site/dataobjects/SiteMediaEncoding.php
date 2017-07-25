@@ -68,9 +68,11 @@ class SiteMediaEncoding extends SwatDBDataObject
 	 * @return boolean true if a encoding was successfully loaded and false if
 	 *                  no encoding was found at the specified shortname.
 	 */
-	public function loadByShortname($set_shortname, $encoding_shortname,
-		SiteInstance $instance = null)
-	{
+	public function loadByShortname(
+		$set_shortname,
+		$encoding_shortname,
+		SiteInstance $instance = null
+	) {
 		$this->checkDB();
 
 		$found = false;

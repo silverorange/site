@@ -11,7 +11,7 @@ class SiteVideoImage extends SiteImage
 {
 	// {{{ public function getUri()
 
-    public function getUri($shortname = '720', $prefix = null)
+	public function getUri($shortname = '720', $prefix = null)
 	{
 		return parent::getUri($shortname, $prefix);
 	}

@@ -94,9 +94,9 @@ class SiteSearchPagination extends SwatPagination
 		foreach($vars as $name => $value) {
 			if (is_array($value)) {
 				foreach ($value as $sub_value)
-					$link .= $name.'[]='.urlencode($sub_value).'&';
+					$link.= $name.'[]='.urlencode($sub_value).'&';
 			} elseif ($value != '') {
-				$link .= $name.'='.urlencode($value).'&';
+				$link.= $name.'='.urlencode($value).'&';
 			}
 		}
 

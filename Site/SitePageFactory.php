@@ -170,9 +170,11 @@ abstract class SitePageFactory
 	 * @throws SiteNotFoundException if no file could be resolved for the given
 	 *                                class and the given class is undefined.
 	 */
-	protected function instantiatePage($class, SiteLayout $layout,
-		array $arguments = array())
-	{
+	protected function instantiatePage(
+		$class,
+		SiteLayout $layout,
+		array $arguments = array()
+	) {
 		if (!$this->isPage($class)) {
 			throw new SiteClassNotFoundException(sprintf('The provided page '.
 				'class ‘%s’ is not a SitePage.', $class), 0, $class);

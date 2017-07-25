@@ -160,9 +160,10 @@ abstract class SiteGadget extends SwatUIObject
 	 * @param SiteGadgetInstance $instance the gadget instance used to bind
 	 *                                      setting values to this gadget.
 	 */
-	public function __construct(SiteApplication $app,
-		SiteGadgetInstance $instance)
-	{
+	public function __construct(
+		SiteApplication $app,
+		SiteGadgetInstance $instance
+	) {
 		parent::__construct();
 
 		$this->default_title = Site::_('Untitled Gadget');
@@ -309,9 +310,10 @@ abstract class SiteGadget extends SwatUIObject
 	 * @param string $query_parameter the query parameter to add.
 	 * @param string $query_name the query name to use when added.
 	 */
-	public function setAnalyticsQueryValue($query_parameter,
-		$query_name = 'link')
-	{
+	public function setAnalyticsQueryValue(
+		$query_parameter,
+		$query_name = 'link'
+	) {
 		$this->analytics_query_parameter = $query_parameter;
 		$this->analytics_query_name      = $query_name;
 	}
@@ -683,9 +685,12 @@ abstract class SiteGadget extends SwatUIObject
 	 * @param mixed $default optional. The default value of the setting. If
 	 *                         not specified, null is used.
 	 */
-	protected final function defineSetting($name, $title, $type = 'string',
-		$default = null)
-	{
+	protected final function defineSetting(
+		$name,
+		$title,
+		$type = 'string',
+		$default = null
+	) {
 		$this->settings[$name] = new SiteGadgetSetting($name, $title, $type,
 			$default);
 	}

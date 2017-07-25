@@ -212,9 +212,11 @@ class SiteVideoMedia extends SiteMedia
 	// }}}
 	// {{{ public function getMediaPlayerByKey()
 
-	public function getMediaPlayerByKey(SiteApplication $app,
-		$key, $file_base = 'media')
-	{
+	public function getMediaPlayerByKey(
+		SiteApplication $app,
+		$key,
+		$file_base = 'media'
+	) {
 		if ($this->db === null) {
 			$this->setDatabase($app->db);
 		}

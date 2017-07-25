@@ -221,9 +221,14 @@ abstract class SiteSearchEngine extends SwatObject
 	 *
 	 * @return SwatDBRecordsetWrapper the results.
 	 */
-	protected function queryResults($select_clause, $from_clause,
-		$where_clause, $order_by_clause, $limit_clause, $offset_clause)
-	{
+	protected function queryResults(
+		$select_clause,
+		$from_clause,
+		$where_clause,
+		$order_by_clause,
+		$limit_clause,
+		$offset_clause
+	) {
 		$sql = sprintf(
 			'%1$s %2$s %3$s %4$s %5$s %6$s',
 			$select_clause,

@@ -276,7 +276,7 @@ class SiteMultipartMailMessage extends SiteObject
 		}
 
 		if ($this->sender != '') {
-			$headers['Sender'] =  $this->getAddressHeader(
+			$headers['Sender'] = $this->getAddressHeader(
 				$this->sender,
 				$this->sender_name
 			);
@@ -372,9 +372,11 @@ class SiteMultipartMailMessage extends SiteObject
 	// }}}
 	// {{{ public function addAttachmentFromString()
 
-	public function addAttachmentFromString($data, $filename = null,
-		$content_type = null)
-	{
+	public function addAttachmentFromString(
+		$data,
+		$filename = null,
+		$content_type = null
+	) {
 		$this->string_attachments[] = array(
 			'data'         => $data,
 			'filename'     => $filename,

@@ -46,9 +46,11 @@ abstract class SiteCommentUi
 	// init phase
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteCommentable $post,
-		$source)
-	{
+	public function __construct(
+		SiteApplication $app,
+		SiteCommentable $post,
+		$source
+	) {
 		$this->post   = $post;
 		$this->app    = $app;
 		$this->source = $source;
@@ -115,8 +117,10 @@ abstract class SiteCommentUi
 	// }}}
 	// {{{ abstract protected function setCommentPost()
 
-	abstract protected function setCommentPost(SiteComment $comment,
-		SiteCommentStatus $post);
+	abstract protected function setCommentPost(
+		SiteComment $comment,
+		SiteCommentStatus $post
+	);
 
 	// }}}
 	// {{{ abstract protected function getPermalink()
@@ -230,9 +234,10 @@ abstract class SiteCommentUi
 	// }}}
 	// {{{ protected function addCommentToPost()
 
-	protected function addCommentToPost(SiteCommentStatus $post,
-		SiteComment $comment)
-	{
+	protected function addCommentToPost(
+		SiteCommentStatus $post,
+		SiteComment $comment
+	) {
 		$post->addComment($comment);
 	}
 

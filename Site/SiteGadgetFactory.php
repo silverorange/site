@@ -94,9 +94,10 @@ class SiteGadgetFactory extends SwatObject
 	 *                                    not be found in the current gadget
 	 *                                    search path.
 	 */
-	public static function get(SiteApplication $app,
-		SiteGadgetInstance $instance)
-	{
+	public static function get(
+		SiteApplication $app,
+		SiteGadgetInstance $instance
+	) {
 		$key = spl_object_hash($instance).spl_object_hash($app);
 
 		if (!array_key_exists($key, self::$gadgets)) {

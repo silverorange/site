@@ -60,9 +60,11 @@ class SiteAMQPJob
 	 *                               data.
 	 * @param AMQPQueue    $queue    the queue where this job originated.
 	 */
-	public function __construct(AMQPExchange $exchange, AMQPEnvelope $envelope,
-		AMQPQueue $queue)
-	{
+	public function __construct(
+		AMQPExchange $exchange,
+		AMQPEnvelope $envelope,
+		AMQPQueue $queue
+	) {
 		$this->exchange = $exchange;
 		$this->envelope = $envelope;
 		$this->queue = $queue;

@@ -25,7 +25,7 @@ abstract class SiteCommentView extends SiteView
 {
 	// {{{ protected properties
 
-	/** 
+	/**
 	 * @var integer
 	 *
 	 * @see SiteCommentView::setBodytextSummaryLength()

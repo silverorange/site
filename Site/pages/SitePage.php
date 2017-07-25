@@ -25,9 +25,11 @@ class SitePage extends SiteAbstractPage
 	 *                          {@link SiteAbstractPage::getArgument()} and
 	 *                          {@link SiteAbstractPage::getArgumentMap()}.
 	 */
-	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		array $arguments = array())
-	{
+	public function __construct(
+		SiteApplication $app,
+		SiteLayout $layout = null,
+		array $arguments = array()
+	) {
 		$this->app       = $app;
 		$this->layout    = ($layout === null) ? $this->createLayout() : $layout;
 		$this->arguments = $arguments;

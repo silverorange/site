@@ -34,9 +34,12 @@ class SiteAlternativeTestModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function registerTest()
 
-	public function registerTest($name, $default_value = 0, $variants = 1,
-		$slot = null)
-	{
+	public function registerTest(
+		$name,
+		$default_value = 0,
+		$variants = 1,
+		$slot = null
+	) {
 		$this->tests[$name] = $default_value;
 
 		// Slots are used by GA custom variables, hence slots only matter if we

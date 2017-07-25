@@ -314,7 +314,7 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 	/**
 	 * Manually specify the instance for the memcache module
 	 *
- 	 * If the application already specifies an instance, the SiteMemcacheModule
+	  * If the application already specifies an instance, the SiteMemcacheModule
 	 * will automatically use the specified instance for naming keys. In
 	 * certain situations though, such as flushing the namespace for more than
 	 * one instance in a system script, manually specifying the current instance
@@ -360,7 +360,7 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 	 * Whether memcache is currently enabled on the site
 	 *
 	 * @return boolean
- 	 */
+	  */
 	protected function enabled()
 	{
 		return $this->app->config->memcache->enabled;

@@ -9,8 +9,7 @@
  * @todo      do something better with the isMarkedX() methods. Maybe move the
  *            tags to constants.
  */
-abstract class SiteBotrMediaToasterCommandLineApplication
-	extends SiteCommandLineApplication
+abstract class SiteBotrMediaToasterCommandLineApplication extends SiteCommandLineApplication
 {
 	// {{{ public properties
 
@@ -71,6 +70,8 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	 */
 	protected $media_objects = array();
 
+	// Ignore these lines because the link extends the max line width
+	// @codingStandardsIgnoreStart
 	/**
 	 * Search filters when looking up BOTR media by API.
 	 *
@@ -81,6 +82,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	 *
 	 * @var array
 	 */
+	// @codingStandardsIgnoreEnd
 	protected $search_filters = array();
 
 	/**
@@ -390,9 +392,12 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	// }}}
 	// {{{ protected function handleSourceFileException()
 
-	protected function handleSourceFileException($key, $path, SplFileInfo $file,
-		Exception $e)
-	{
+	protected function handleSourceFileException(
+		$key,
+		$path,
+		SplFileInfo $file,
+		Exception $e
+	) {
 		// do nothing by default.
 	}
 
@@ -719,9 +724,12 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 	// }}}
 	// {{{ protected function download($from, $to)
 
-	protected function download($source, $destination, $prefix = null,
-		$filesize_to_check = null)
-	{
+	protected function download(
+		$source,
+		$destination,
+		$prefix = null,
+		$filesize_to_check = null
+	) {
 		if ($filesize_to_check > PHP_INT_MAX) {
 			throw new SiteBotrMediaCommandLineDownloadException(
 				sprintf(
@@ -742,7 +750,7 @@ abstract class SiteBotrMediaToasterCommandLineApplication
 
 		// separate the prefix with a dash for prettier temp filenames
 		if ($prefix !== null) {
-			$prefix.='-';
+			$prefix.= '-';
 		}
 
 		// add SiteBotrMedia to the prefix for easier searching on the temp

@@ -143,8 +143,9 @@ abstract class SiteEditPage extends SiteUiPage
 	// {{{ protected function assignUiValuesToObject()
 
 	protected function assignUiValuesToObject(
-		SwatDBDataObject $object, array $names)
-	{
+		SwatDBDataObject $object,
+		array $names
+	) {
 		foreach ($names as $name) {
 			$this->assignUiValueToObject($object, $name);
 		}
@@ -342,8 +343,9 @@ abstract class SiteEditPage extends SiteUiPage
 	// {{{ protected function assignObjectValuesToUi()
 
 	protected function assignObjectValuesToUi(
-		SwatDBDataObject $object, array $names)
-	{
+		SwatDBDataObject $object,
+		array $names
+	) {
 		foreach ($names as $name) {
 			$this->assignObjectValueToUi($object, $name);
 		}
