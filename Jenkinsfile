@@ -26,8 +26,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'ssh -T sysadmin@roble'
-                echo pwd
+                sh 'echo $CHANGE_ID'
             }
         }
     }
