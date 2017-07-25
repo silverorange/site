@@ -59,7 +59,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		$yui = new SwatYUI(array('swf', 'event', 'cookie'));
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
-		$this->addJavascript('packages/site/jwplayer/jwplayer.js');
+		$this->addJavascript('packages/jwplayer/jwplayer.js');
 		$this->addJavascript(
 			'packages/site/javascript/site-jw-player-media-display.js'
 		);
