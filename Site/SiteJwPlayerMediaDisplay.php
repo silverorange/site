@@ -217,7 +217,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			}
 		}
 
-
 		echo '<div class="video-player-container">';
 
 		$video_player_div = new SwatHtmlTag('div');

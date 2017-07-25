@@ -1119,7 +1119,7 @@ class SiteWebApplication extends SiteApplication
 			 */
 			$regexp = '/localhost:[0-9]+/u';
 
-			if (preg_match($regexp,  $server_name)) {
+			if (preg_match($regexp, $server_name)) {
 				if ($secure)
 					$server_name = 'localhost:8443';
 				else
