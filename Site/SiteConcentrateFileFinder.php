@@ -53,7 +53,8 @@ class SiteConcentrateFileFinder
 		$base_path = dirname($www_path).DIRECTORY_SEPARATOR.'vendor';
 		if (is_dir($base_path)) {
 			$base_dir = dir($base_path);
-			while (false !== ($vendor_name = $base_dir->read())) {
+			$vendor_name = $base_dir->read();
+			while ($vendor_name !== false) {
 				if ($vendor_name === '.' ||
 					$vendor_name === '..' ||
 					$vendor_name === 'bin' ||
@@ -64,7 +65,8 @@ class SiteConcentrateFileFinder
 				$vendor_path = $base_path.DIRECTORY_SEPARATOR.$vendor_name;
 				if (is_dir($vendor_path)) {
 					$vendor_dir = dir($vendor_path);
-					while (false !== ($package_name = $vendor_dir->read())) {
+					$package_name = $vendor_dir->read();
+					while ($package_name !== false) {
 						if ($package_name === '.' || $package_name === '..') {
 							continue;
 						}

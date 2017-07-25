@@ -166,10 +166,10 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 
 	protected function enterNewAccountFields()
 	{
-		$this->type('fullname',         self::$account_name);
-		$this->type('email',            self::$account_email);
-		$this->type('confirm_email',    self::$account_email);
-		$this->type('password',         self::$account_password);
+		$this->type('fullname', self::$account_name);
+		$this->type('email', self::$account_email);
+		$this->type('confirm_email', self::$account_email);
+		$this->type('password', self::$account_password);
 		$this->type('confirm_password', self::$account_password);
 	}
 

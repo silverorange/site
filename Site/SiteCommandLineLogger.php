@@ -302,7 +302,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		$replace = array();
 
 		foreach ($context as $key => $value) {
-			$replace['{' . $key . '}'] = $value;
+			$replace['{'.$key.'}'] = $value;
 		}
 
 		return strtr($message, $replace);

@@ -33,7 +33,7 @@ class SiteTimerModule extends SiteApplicationModule
 	private $started_checkpoints = array();
 
 	// }}}
-    // {{{ public function init()
+	// {{{ public function init()
 
 	/**
 	 * Initializes this timer module
@@ -43,7 +43,7 @@ class SiteTimerModule extends SiteApplicationModule
 		$this->reset();
 	}
 
-    // }}}
+	// }}}
 	// {{{ public function getTime()
 
 	/**

@@ -40,9 +40,12 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 	// }}}
 	// {{{ protected function displayPath()
 
-	protected function displayPath($path, $last_modified = null, $frequency = null,
-		$priority = null)
-	{
+	protected function displayPath(
+		$path,
+		$last_modified = null,
+		$frequency = null,
+		$priority = null
+	) {
 		echo "<url>\n";
 
 		printf("<loc>%s</loc>\n",

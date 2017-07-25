@@ -43,9 +43,12 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 * @param integer $source optional. The setting source of the
 	 *                         <code>$values</code> array.
 	 */
-	public function __construct($name, array $values, SiteConfigModule $config,
-		$source = SiteConfigModule::SOURCE_FILE)
-	{
+	public function __construct(
+		$name,
+		array $values,
+		SiteConfigModule $config,
+		$source = SiteConfigModule::SOURCE_FILE
+	) {
 		$this->name = (string)$name;
 		$this->values = $values;
 		$this->config = $config;

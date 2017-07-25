@@ -146,14 +146,14 @@ class SiteVideoScrubberImageGenerator extends
 			$path = $media->getFilePath($encoding_shortname);
 
 			if (!file_exists($path)) {
-				$message= "'".$path."' not found for media ".$media->id;
+				$message = "'".$path."' not found for media ".$media->id;
 				$exception = new SiteCommandLineException($message);
 				$exception->processAndContinue();
 				$this->debug($message."\n\n");
 				$path = null;
 			}
 		} else {
-			$message= "Encoding '".$encoding_shortname."' not found for ".
+			$message = "Encoding '".$encoding_shortname."' not found for ".
 				"media ".$media->id;
 
 			$exception = new SiteCommandLineException($message);

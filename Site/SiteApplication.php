@@ -682,15 +682,18 @@ abstract class SiteApplication extends SiteObject
 	 * @throws SiteException if the module provides a feature already provided
 	 *                       by an existing module in this application.
 	 */
-	protected function addDefaultModule(array &$module_ids,
-		array &$modules_by_provides, array &$added_modules,
-		SiteApplicationModule $module, array &$dependent_stack)
-	{
+	protected function addDefaultModule(
+		array &$module_ids,
+		array &$modules_by_provides,
+		array &$added_modules,
+		SiteApplicationModule $module,
+		array &$dependent_stack
+	) {
 		// check for circular dependency
 		if (array_key_exists(spl_object_hash($module), $dependent_stack)) {
 			$circular_dependency = '';
 			foreach ($dependent_stack as $dependency)
-				$circular_dependency.= get_class($dependency). ' => ';
+				$circular_dependency.= get_class($dependency).' => ';
 
 			$circular_dependency.= get_class($module);
 			throw new SiteException(sprintf(
@@ -805,9 +808,12 @@ abstract class SiteApplication extends SiteObject
 	 * @param string  $name_space
 	 * @param integer $expiration
 	 */
-	public function addCacheValue($value, $key, $name_space = null,
-		$expiration = 0)
-	{
+	public function addCacheValue(
+		$value,
+		$key,
+		$name_space = null,
+		$expiration = 0
+	) {
 		register_shutdown_function(array($this, 'cacheOnShutdown'),
 			$value, $key, $name_space, $expiration);
 	}
@@ -895,9 +901,13 @@ abstract class SiteApplication extends SiteObject
 	// }}}
 	// {{{ public function addCacheRecordset()
 
-	public function addCacheRecordset(SwatDBRecordsetWrapper $recordset,
-		$key, $name_space = null, $index_property = 'id', $expiration = 0)
-	{
+	public function addCacheRecordset(
+		SwatDBRecordsetWrapper $recordset,
+		$key,
+		$name_space = null,
+		$index_property = 'id',
+		$expiration = 0
+	) {
 		$ids = array();
 		foreach ($recordset as $object) {
 			$object_key = $key.'.'.$object->$index_property;
@@ -947,9 +957,12 @@ abstract class SiteApplication extends SiteObject
 	 * Callback method used by addCacheValue(). Must be public, but should not
 	 * be accessed directly.
 	 */
-	public function cacheOnShutdown($value, $key = null, $name_space = null,
-		$expiration = 0)
-	{
+	public function cacheOnShutdown(
+		$value,
+		$key = null,
+		$name_space = null,
+		$expiration = 0
+	) {
 		if ($this->hasModule('SiteMemcacheModule')) {
 			$cache = $this->getModule('SiteMemcacheModule');
 

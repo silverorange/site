@@ -607,9 +607,10 @@ class SiteMedia extends SwatDBDataObject
 	 * @param SiteMediaEncoding $encoding the media encoding we're queuing the
 	 *                                     action for.
 	 */
-	protected function queueCdnTask($operation,
-		SiteMediaEncoding $encoding)
-	{
+	protected function queueCdnTask(
+		$operation,
+		SiteMediaEncoding $encoding
+	) {
 		$this->checkDB();
 
 		$class_name = SwatDBClassMap::get('SiteMediaCdnTask');

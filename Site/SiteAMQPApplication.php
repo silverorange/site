@@ -85,7 +85,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 		Psr\Log\LoggerInterface $logger,
 		$config = null
 	) {
-		parent::__construct('aqmp-' . $queue, $config);
+		parent::__construct('aqmp-'.$queue, $config);
 
 		$this->queue  = $queue;
 		$this->logger = $logger;
@@ -130,23 +130,23 @@ abstract class SiteAMQPApplication extends SiteApplication
 					$connection->connect();
 					$this->channel = new AMQPChannel($connection);
 					$this->exchange = new AMQPExchange($this->channel);
-					$this->logger->debug(Site::_('done') . PHP_EOL);
+					$this->logger->debug(Site::_('done').PHP_EOL);
 
 					$this->work();
 				} catch (AMQPConnectionException $e) {
-					$this->logger->debug(Site::_('connection error') . PHP_EOL);
+					$this->logger->debug(Site::_('connection error').PHP_EOL);
 
 					if ($e->getMessage() ===
 						'Socket error: could not connect to host.') {
 						$this->logger->error(
-							'Could not connect to AMQP server on host ' .
-							'{host}.' . PHP_EOL,
+							'Could not connect to AMQP server on host '.
+							'{host}.'.PHP_EOL,
 							array(
 								'host' => $this->cli->args['address'],
 							)
 						);
 					} else {
-						$this->logger->error($e->getMessage() . PHP_EOL);
+						$this->logger->error($e->getMessage().PHP_EOL);
 					}
 
 					sleep(10);
@@ -154,7 +154,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 			}
 
 		} catch (Console_CommandLine_Exception $e) {
-			$this->logger->error($e->getMessage() . PHP_EOL);
+			$this->logger->error($e->getMessage().PHP_EOL);
 			exit(1);
 		}
 	}
@@ -245,8 +245,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 		$queue->declareQueue();
 
 		$this->logger->debug(
-			'=== ' . Site::_('Ready for work.') . ' ===' .
-			PHP_EOL . PHP_EOL
+			'=== '.Site::_('Ready for work.').' ==='.
+			PHP_EOL.PHP_EOL
 		);
 
 		while (true) {
@@ -255,10 +255,11 @@ abstract class SiteAMQPApplication extends SiteApplication
 			}
 
 			if ($this->canWork()) {
-				if (($envelope = $queue->get()) === false) {
+				$envelope = $queue->get();
+				if ($envelope === false) {
 					usleep(self::WORK_LOOP_TIMEOUT * 1000);
 					$this->logger->debug(
-						'=: ' . Site::_('work loop timeout') . PHP_EOL
+						'=: '.Site::_('work loop timeout').PHP_EOL
 					);
 				} else {
 					$this->doWork(
@@ -309,7 +310,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 	 */
 	protected function handleSigTerm()
 	{
-		$this->logger->info(Site::_('Got SIGTERM, shutting down.' . PHP_EOL));
+		$this->logger->info(Site::_('Got SIGTERM, shutting down.'.PHP_EOL));
 		exit();
 	}
 

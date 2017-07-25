@@ -276,8 +276,8 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 			$cookie = $this->app->getModule('SiteCookieModule');
 			$value = array(
 				'fullname' => $this->getParameter('fullname', true),
-				'link'     => $this->getParameter('link',     false),
-				'email'    => $this->getParameter('email',    true),
+				'link'     => $this->getParameter('link', false),
+				'email'    => $this->getParameter('email', true),
 			);
 
 			$cookie->setCookie('comment_credentials', $value);

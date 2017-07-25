@@ -98,7 +98,7 @@ class Site
 	public static function setupGettext()
 	{
 		$path = '@DATA-DIR@/Site/locale';
-		if (mb_substr($path, 0 ,1) === '@')
+		if (mb_substr($path, 0, 1) === '@')
 			$path = __DIR__.'/../locale';
 
 		bindtextdomain(self::GETTEXT_DOMAIN, $path);
@@ -117,7 +117,7 @@ class Site
 	 */
 	public static function displayMethods($object)
 	{
-		echo sprintf(Site::_('Methods for class %s:'), get_class($object));
+		echo sprintf(self::_('Methods for class %s:'), get_class($object));
 		echo '<ul>';
 
 		foreach (get_class_methods(get_class($object)) as $method_name)
@@ -140,7 +140,7 @@ class Site
 	{
 		$class = get_class($object);
 
-		echo sprintf(Site::_('Properties for class %s:'), $class);
+		echo sprintf(self::_('Properties for class %s:'), $class);
 		echo '<ul>';
 
 		foreach (get_class_vars($class) as $property_name => $value) {

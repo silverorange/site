@@ -78,9 +78,10 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function queueCdnTask()
 
-	protected function queueCdnTask(SiteMedia $media,
-		SiteMediaEncoding $encoding)
-	{
+	protected function queueCdnTask(
+		SiteMedia $media,
+		SiteMediaEncoding $encoding
+	) {
 		$class_name = SwatDBClassMap::get('SiteMediaCdnTask');
 
 		$task = new $class_name();

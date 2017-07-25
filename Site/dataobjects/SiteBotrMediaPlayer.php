@@ -61,9 +61,11 @@ class SiteBotrMediaPlayer extends SwatDBDataObject
 	 * @return boolean true if a player was successfully loaded and false if
 	 *                  no player was found at the specified shortname.
 	 */
-	public function loadByShortname($set_shortname, $player_shortname,
-		SiteInstance $instance = null)
-	{
+	public function loadByShortname(
+		$set_shortname,
+		$player_shortname,
+		SiteInstance $instance = null
+	) {
 		$this->checkDB();
 
 		$found = false;

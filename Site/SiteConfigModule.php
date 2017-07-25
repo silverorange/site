@@ -610,7 +610,7 @@ class SiteConfigModule extends SiteApplicationModule
 					if (array_key_exists($section, $this->definitions) &&
 						array_key_exists($name, $this->definitions[$section])) {
 
-						$this->$section->$name = $row->value;
+						$this->$section->{$name} = $row->value;
 						$this->setSource(
 							$section, $name, self::SOURCE_DATABASE);
 					}
@@ -652,7 +652,7 @@ class SiteConfigModule extends SiteApplicationModule
 				if (array_key_exists($section, $this->definitions) &&
 					array_key_exists($name, $this->definitions[$section])) {
 
-					$this->$section->$name = $setting->value;
+					$this->$section->{$name} = $setting->value;
 					$this->setSource(
 						$section, $name, self::SOURCE_DATABASE);
 				}

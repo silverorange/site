@@ -713,9 +713,12 @@ class SiteWebApplication extends SiteApplication
 	 *                            permanent. Set true for URIs that are
 	 *                            permanently moved. By default this is false.
 	 */
-	public function relocate($uri, $secure = null, $append_sid = null,
-		$permanent = false)
-	{
+	public function relocate(
+		$uri,
+		$secure = null,
+		$append_sid = null,
+		$permanent = false
+	) {
 		// check for session module
 		if (isset($this->session) &&
 			$this->session instanceof SiteSessionModule)
@@ -756,9 +759,12 @@ class SiteWebApplication extends SiteApplication
 	 *                            permanent. Set true for URIs that are
 	 *                            permanently moved. By default this is false.
 	 */
-	public function relocateWithQueryString($uri, $secure = null,
-		$append_sid = null, $permanent = false)
-	{
+	public function relocateWithQueryString(
+		$uri,
+		$secure = null,
+		$append_sid = null,
+		$permanent = false
+	) {
 		$query_string = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
 
 		if ($query_string !== null) {
@@ -1124,7 +1130,7 @@ class SiteWebApplication extends SiteApplication
 			 */
 			$regexp = '/localhost:[0-9]+/u';
 
-			if (preg_match($regexp,  $server_name)) {
+			if (preg_match($regexp, $server_name)) {
 				if ($secure)
 					$server_name = 'localhost:8443';
 				else

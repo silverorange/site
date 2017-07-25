@@ -7,8 +7,7 @@
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteBotrMediaOriginalDownloader
-	extends SiteBotrMediaToasterCommandLineApplication
+class SiteBotrMediaOriginalDownloader extends SiteBotrMediaToasterCommandLineApplication
 {
 	// run phase
 	// {{{ public function runInternal()

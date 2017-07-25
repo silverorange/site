@@ -124,9 +124,12 @@ class SiteWhiteChipmunkModule extends SiteApplicationModule
 	 *                       string parsable by strtotime().
 	 * @param string $path the URL path this cookie is valid for.
 	 */
-	protected function setCookie($name, $value, $expiry = null,
-		$path = '/')
-	{
+	protected function setCookie(
+		$name,
+		$value,
+		$expiry = null,
+		$path = '/'
+	) {
 		if ($expiry === null) {
 			$expiry = strtotime('+90 days');
 		} elseif (is_string($expiry)) {

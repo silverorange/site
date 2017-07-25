@@ -493,9 +493,11 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	// }}}
 	// {{{ protected function displayLoginInformation()
 
-	protected function displayLoginInformation($user_agent,
-		SwatDate $login_date, SwatWidget $logout_button = null)
-	{
+	protected function displayLoginInformation(
+		$user_agent,
+		SwatDate $login_date,
+		SwatWidget $logout_button = null
+	) {
 		$locale = SwatI18NLocale::get();
 
 		$now = new SwatDate();

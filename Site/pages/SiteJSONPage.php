@@ -9,9 +9,11 @@ abstract class SiteJSONPage extends SitePage
 {
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		array $arguments = array())
-	{
+	public function __construct(
+		SiteApplication $app,
+		SiteLayout $layout = null,
+		array $arguments = array()
+	) {
 		parent::__construct($app, $layout, $arguments);
 
 		$this->setLayout(

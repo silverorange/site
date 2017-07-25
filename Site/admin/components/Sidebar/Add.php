@@ -60,7 +60,7 @@ class SiteSidebarAdd extends AdminDBEdit
 				$span_tag = new SwatHtmlTag('span');
 				$span_tag->class = 'swat-note';
 				$span_tag->setContent($gadget->description);
-				$option_title.='<br />'.$span_tag;
+				$option_title.= '<br />'.$span_tag;
 			}
 
 			$options[$gadget_class] = $option_title;

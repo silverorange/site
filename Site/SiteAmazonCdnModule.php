@@ -124,9 +124,10 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	// }}}
 	// {{{ public function setDistributionPrivateKey()
 
-	public function setDistributionPrivateKey($distribution_private_key_file,
-		$distribution_key_pair_id = null)
-	{
+	public function setDistributionPrivateKey(
+		$distribution_private_key_file,
+		$distribution_key_pair_id = null
+	) {
 		if (file_exists($distribution_private_key_file)) {
 			$this->distribution_private_key_file =
 				$distribution_private_key_file;
@@ -173,9 +174,12 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 *
 	 * @throws SiteCdnException if the CDN encounters any problems
 	 */
-	public function copyFile($filename, $source, $headers,
-		$access_type = 'private')
-	{
+	public function copyFile(
+		$filename,
+		$source,
+		$headers,
+		$access_type = 'private'
+	) {
 		if (!is_file($source)) {
 			throw new SiteCdnException(
 				sprintf(
@@ -279,9 +283,11 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 *
 	 * @throws SiteCdnException if the CDN encounters any problems
 	 */
-	public function moveFile($old_filename, $new_filename,
-		$access_type = 'private')
-	{
+	public function moveFile(
+		$old_filename,
+		$new_filename,
+		$access_type = 'private'
+	) {
 		// The getObjectAcl method returns extremely detailed information about
 		// user access levels. We just want to set 'private' or 'public-read'
 		// for the moved file. Since we can't easily look up the old ACL, at
@@ -451,9 +457,12 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	// }}}
 	// {{{ protected function getCloudFrontUri()
 
-	protected function getCloudFrontUri($filename, $expires = null,
-		$streaming = null, $secure = null)
-	{
+	protected function getCloudFrontUri(
+		$filename,
+		$expires = null,
+		$streaming = null,
+		$secure = null
+	) {
 		// 1.x SDK allowed passing strtotime formatted strings for expiration
 		// dates. Modern SDK requires an integer.
 		if ($expires !== null && is_string($expires)) {
