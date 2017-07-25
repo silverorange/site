@@ -41,6 +41,8 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'echo $CHANGE_ID'
+                sh 'echo $BRANCH_NAME'
+                sh 'echo $JOB_NAME'
             }
         }
     }
