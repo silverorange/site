@@ -8,7 +8,8 @@
  * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteBotrMediaCommandLineFileExistsException extends SiteBotrMediaCommandLineException
+class SiteBotrMediaCommandLineFileExistsException extends
+	SiteBotrMediaCommandLineException
 {
 }
 

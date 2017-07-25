@@ -251,7 +251,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 *
 	 * @param array $tag_array the array of tags that appear
 	 *                       pre-selected for this entry widget.
-	  */
+	 */
 	public function setSelectedTagArray(array $tag_array)
 	{
 		$this->selected_tag_array = $tag_array;
