@@ -48,8 +48,8 @@ pipeline {
                 withCredentials([string(credentialsId: '2c149a6f-e5fa-41a0-bb32-1fb23595de77', variable: 'auth_token')]) {
                     sh '''
                         var=$(echo \'silverorange/site/PR-231\' | sed -e \'s/PR-/pulls\\//g\')
-                        query_url='https:api.github.com/repos/'$var
-                        curl -H 'authorization: Bearer $auth_token' $query_url
+                        query_url=\'https://api.github.com/repos/\'$var
+                        curl -H \'authorization: Bearer $auth_token\' $query_url
                     '''
                 }
             }
