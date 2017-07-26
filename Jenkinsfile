@@ -45,10 +45,7 @@ pipeline {
                 sh 'echo $JOB_NAME'
                 sh 'echo $JOB_BASE_NAME'
                 sh 'echo $CHANGE_TARGET'
-                sh """
-                    url_end=\$(echo silverorange/site/PR-231 | sed -e "s/PR-/pull\//g")
-                    echo "https://api.github.com/repos/"\$url_end
-                """
+                sh 'var=$(echo "silverorange/site/PR-231" | sed -e "s/PR-/pulls\//g")'
             }
         }
     }
