@@ -50,7 +50,8 @@ pipeline {
                         echo $auth_token
                         var=$(echo \'silverorange/site/PR-231\' | sed -e \'s/PR-/pulls\\//g\')
                         query_url=\'https://api.github.com/repos/\'$var
-                        curl -u sogitbot:$auth_token $query_url | jq .body
+                        curl -u sogitbot:$auth_token $query_url | jq .body \ |
+                        grep -o "[Rr]equires.*\r"
                     '''
                 }
             }
