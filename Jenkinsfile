@@ -51,7 +51,7 @@ pipeline {
                         var=$(echo \'silverorange/site/PR-231\' | sed -e \'s/PR-/pulls\\//g\')
                         query_url=\'https://api.github.com/repos/\'$var
                         body_text=$(curl -u sogitbot:$auth_token $query_url | jq .body)
-                        if github_links=$(grep -o $body_text); then
+                        if github_links=$(echo $body_text | grep -o \'[Rr]equires.*\\r\'); then
                             echo 'multiple URLs found'
                             grep -o $github_links \'github.com\\/silverorange\\/\\w*\\/pull\\/[0-9]*'
                         fi
