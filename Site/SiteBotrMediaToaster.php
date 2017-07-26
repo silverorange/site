@@ -1002,11 +1002,11 @@ class SiteBotrMediaToaster
 			$message = 'API Unavailable';
 		} elseif (is_array($response) == false) {
 			// all api responses should return an array. if we receive something
-			// else back, var_dump it so we know what it is.
-			ob_start();
-			var_dump($response);
-			$message = sprintf('Unexpected Response: %s',
-				ob_get_clean());
+			// else back, dump it so we know what it is.
+			$message = sprintf(
+				'Unexpected Response: %s',
+				print_r($response, true)
+			);
 		} elseif ($response['status'] == 'error') {
 			$message = sprintf("%s\n\nCode: %s\n\nMessage:\n%s",
 				$response['title'],
