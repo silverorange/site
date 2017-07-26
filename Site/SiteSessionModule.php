@@ -172,9 +172,10 @@ class SiteSessionModule extends SiteApplicationModule
 	 * @param array $parameters optional. The paramaters to pass to the
 	 *                           callback. Use an empty array for no parameters.
 	 */
-	public function registerActivateCallback($callback,
-		array $parameters = array())
-	{
+	public function registerActivateCallback(
+		$callback,
+		array $parameters = array()
+	) {
 		if (!is_callable($callback))
 			throw new SiteException('Cannot register invalid callback.');
 

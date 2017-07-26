@@ -550,10 +550,11 @@ JS;
 
 	public function getFacebookPixelImage()
 	{
+		// @codingStandardsIgnoreStart
 		$xhtml = <<<'XHTML'
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1"/></noscript>
 XHTML;
-
+		// @codingStandardsIgnoreEnd
 		return sprintf(
 			$xhtml,
 			SwatString::minimizeEntities(rawurlencode($this->facebook_pixel_id))
@@ -694,20 +695,23 @@ JS;
 
 	public function getTwitterPixelImages()
 	{
+		// @codingStandardsIgnoreStart
 		$xhtml = <<<'XHTML'
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
 <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
 </noscript>
 XHTML;
-
+		// @codingStandardsIgnoreEnd
 		if (count($this->twitter_pixel_commands) > 0) {
+			//@codingStandardsIgnoreStart
 			$xhtml.= <<<'XHTML'
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
 <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
 </noscript>
 XHTML;
+			// @codingStandardsIgnoreEnd
 		}
 
 		$track_pixel = rawurlencode($this->twitter_track_pixel_id);
@@ -848,10 +852,11 @@ JS;
 
 	public function getBingUETImage()
 	{
+		// @codingStandardsIgnoreStart
 		$xhtml = <<<'XHTML'
 <noscript><img src="//bat.bing.com/action/0?ti=%s&Ver=2" height="0" width="0" style="display:none; visibility: hidden;" /></noscript>
 XHTML;
-
+		// @codingStandardsIgnoreEnd
 		return sprintf(
 			$xhtml,
 			SwatString::minimizeEntities(rawurlencode($this->bing_uet_id))
@@ -888,10 +893,12 @@ XHTML;
 		$javascript = null;
 
 		if ($this->hasBingUET()) {
+			// @codingStandardsIgnoreStart
 			$javascript = <<<'JS'
 (function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"%s"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
 window.uetq = window.uetq || [];
 JS;
+			// @codingStandardsIgnoreEnd
 		}
 
 		return sprintf(
@@ -991,6 +998,7 @@ JS;
 		$javascript = null;
 
 		if ($this->hasPardot()) {
+			// @codingStandardsIgnoreStart
 			$javascript = <<<'JS'
 piAId = %s;
 piCId = %s;
@@ -1005,6 +1013,7 @@ piCId = %s;
 	else { window.addEventListener('load', async_load, false); }
 })();
 JS;
+			// @codingStandardsIgnoreEnd
 		}
 
 		return sprintf(
@@ -1078,11 +1087,13 @@ JS;
 		$javascript = '';
 
 		if ($this->hasFriendBuyPixel()) {
+			// @codingStandardsIgnoreStart
 			$javascript = <<<'JS'
 (function (f, r, n, d, b, y) {
   b = f.createElement(r), y = f.getElementsByTagName(r)[0];b.async = 1;b.src = n;y.parentNode.insertBefore(b, y);
 })(document, 'script', '//djnf6e5yyirys.cloudfront.net/js/friendbuy.min.js');
 JS;
+			// @codingStandardsIgnoreEnd
 		}
 
 		return $javascript;

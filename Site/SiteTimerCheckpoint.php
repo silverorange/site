@@ -14,7 +14,7 @@ class SiteTimerCheckpoint extends SwatObject
 	/**
 	 * The time when this checkpoint was created in milliseconds
 	 *
-	 * @var double 
+	 * @var double
 	 */
 	private $time;
 

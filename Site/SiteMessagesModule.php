@@ -23,7 +23,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 	protected $session_is_initialized = false;
 
 	// }}}
-    // {{{ public function init()
+	// {{{ public function init()
 
 	/**
 	 * Initializes this messages module
@@ -37,7 +37,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 			$this->initSession();
 	}
 
-    // }}}
+	// }}}
 	// {{{ public function depends()
 
 	/**
@@ -81,7 +81,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 				'defined and cannot be registered in this message module.',
 				$class), 0, $class);
 
-		if (strcmp($class_name, 'SwatMessage') != 0 &&
+		if ($class_name !== 'SwatMessage' &&
 			!is_subclass_of($class_name, 'SwatMessage'))
 			throw new SiteInvalidClassException(sprintf('Class ‘%s’ is not '.
 				'a SwatMessage and cannot be registered in this message '.
@@ -89,7 +89,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 	}
 
 	// }}}
-    // {{{ public function add()
+	// {{{ public function add()
 
 	/**
 	 * Adds a message to this module
@@ -107,8 +107,8 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 		$this->app->session->messages[] = $message;
 	}
 
-    // }}}
-    // {{{ public function getAll()
+	// }}}
+	// {{{ public function getAll()
 
 	/**
 	 * Gets all messages from this module
@@ -132,7 +132,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 		return $messages;
 	}
 
-    // }}}
+	// }}}
 	// {{{ public function count()
 
 	/**
@@ -151,7 +151,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 	}
 
 	// }}}
-    // {{{ protected function initSession()
+	// {{{ protected function initSession()
 
 	/**
 	 * Initializes session variables used by this module
@@ -166,7 +166,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 		}
 	}
 
-    // }}}
+	// }}}
 }
 
 ?>

@@ -38,7 +38,7 @@ class SiteAccountLoginSessionCleaner extends SiteCommandLineApplication
 		$count = 0;
 		foreach ($sessions as $session) {
 			if (!$this->session->sessionFileExists($session->session_id)) {
-//				$session->delete();
+				// $session->delete();
 				$count++;
 			}
 		}

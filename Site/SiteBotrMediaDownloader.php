@@ -310,18 +310,20 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	// }}}
 	// {{{ protected function isDownloadable()
 
-	protected function isDownloadable(SiteBotrMedia $media_object,
-		SiteBotrMediaEncodingBinding $binding)
-	{
+	protected function isDownloadable(
+		SiteBotrMedia $media_object,
+		SiteBotrMediaEncodingBinding $binding
+	) {
 		return true;
 	}
 
 	// }}}
 	// {{{ protected function downloadAndQueueBinding()
 
-	protected function downloadAndQueueBinding(SiteBotrMedia $media_object,
-		SiteBotrMediaEncodingBinding $binding)
-	{
+	protected function downloadAndQueueBinding(
+		SiteBotrMedia $media_object,
+		SiteBotrMediaEncodingBinding $binding
+	) {
 		$downloaded = false;
 
 		$encoding = $media_object->media_set->encodings->getByIndex(
@@ -371,9 +373,10 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	// }}}
 	// {{{ protected function isQueueable()
 
-	protected function isQueueable(SiteBotrMedia $media_object,
-		SiteBotrMediaEncodingBinding $binding)
-	{
+	protected function isQueueable(
+		SiteBotrMedia $media_object,
+		SiteBotrMediaEncodingBinding $binding
+	) {
 		// make sure the media set is supposed to be on the cdn.
 		return ($media_object->media_set->use_cdn ||
 			!$this->config->amazon->streaming_distribution !== null);
@@ -382,10 +385,11 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	// }}}
 	// {{{ protected function downloadFile()
 
-	protected function downloadFile(SiteBotrMedia $media_object,
+	protected function downloadFile(
+		SiteBotrMedia $media_object,
 		SiteBotrMediaEncodingBinding $binding,
-		SiteBotrMediaEncoding $encoding)
-	{
+		SiteBotrMediaEncoding $encoding
+	) {
 		$destination = $media_object->getFilePath($encoding->shortname);
 		$prefix      = $media_object->id;
 		$filesize    = $binding->filesize;
@@ -403,9 +407,10 @@ class SiteBotrMediaDownloader extends SiteBotrMediaToasterCommandLineApplication
 	// }}}
 	// {{{ protected function queueCdnTask()
 
-	protected function queueCdnTask(SiteBotrMedia $media,
-		SiteBotrMediaEncoding $encoding)
-	{
+	protected function queueCdnTask(
+		SiteBotrMedia $media,
+		SiteBotrMediaEncoding $encoding
+	) {
 		$class_name = SwatDBClassMap::get('SiteMediaCdnTask');
 
 		$task = new $class_name();

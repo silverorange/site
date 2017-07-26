@@ -52,9 +52,13 @@ class SiteCookieModule extends SiteApplicationModule
 	 * @param string $path the URL path this cookie is valid for.
 	 * @param string $domain the domain this cookie is valid for.
 	 */
-	public function setCookie($name, $value, $expiry = null,
-		$path = '/', $domain = null)
-	{
+	public function setCookie(
+		$name,
+		$value,
+		$expiry = null,
+		$path = '/',
+		$domain = null
+	) {
 		$name = $this->getPrefix().'_'.$name;
 
 		if ($expiry === null)

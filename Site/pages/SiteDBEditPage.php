@@ -58,9 +58,10 @@ abstract class SiteDBEditPage extends SiteEditPage
 	// }}}
 	// {{{ protected function handleException()
 
-	protected function handleException(SwatDBTransaction $transaction,
-		Exception $e)
-	{
+	protected function handleException(
+		SwatDBTransaction $transaction,
+		Exception $e
+	) {
 		throw $e;
 	}
 

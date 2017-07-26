@@ -608,8 +608,9 @@ class SiteBotrMediaImporter extends SiteBotrMediaToasterCommandLineApplication
 	// {{{ protected function getMediaEncodingBindingObject()
 
 	protected function getMediaEncodingBindingObject(
-		SiteBotrMedia $media_object, array $encoding)
-	{
+		SiteBotrMedia $media_object,
+		array $encoding
+	) {
 		$binding_object = null;
 
 		try {

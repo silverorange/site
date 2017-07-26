@@ -19,8 +19,12 @@ abstract class SiteCdnModule extends SiteApplicationModule
 	 * @param array $headers an array of headers associated with the file.
 	 * @param string $access_type the access type, public/private, of the file.
 	 */
-	abstract public function copyFile($filename, $source, $headers,
-		$access_type);
+	abstract public function copyFile(
+		$filename,
+		$source,
+		$headers,
+		$access_type
+	);
 
 	// }}}
 	// {{{ abstract public function removeFile()
@@ -36,12 +40,12 @@ abstract class SiteCdnModule extends SiteApplicationModule
 	// {{{ abstract public function getUri()
 
 	/**
-	 * Gets a URI for a file on the CDN 
+	 * Gets a URI for a file on the CDN
 	 *
 	 * @param string $filename the name of the file.
 	 * @param string $expires expiration time expressed either as a number
 	 *                        of seconds since UNIX Epoch, or any string
-	 *                        that strtotime() can understand 
+	 *                        that strtotime() can understand
 	 */
 	abstract public function getUri($filename, $expires = null);
 
@@ -49,12 +53,12 @@ abstract class SiteCdnModule extends SiteApplicationModule
 	// {{{ abstract public function getStreamingUri()
 
 	/**
-	 * Gets a uri for a file on the CDN 
+	 * Gets a uri for a file on the CDN
 	 *
 	 * @param string $filename the name of the file.
 	 * @param string $expires expiration time expressed either as a number
 	 *                        of seconds since UNIX Epoch, or any string
-	 *                        that strtotime() can understand 
+	 *                        that strtotime() can understand
 	 */
 	abstract public function getStreamingUri($filename, $expires = null);
 

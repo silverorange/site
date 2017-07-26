@@ -87,7 +87,8 @@ class SiteBotrMediaToaster
 
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app) {
+	public function __construct(SiteApplication $app)
+	{
 		$this->app = $app;
 
 		$this->setKey($app->config->botr->key);
@@ -179,9 +180,10 @@ class SiteBotrMediaToaster
 	 *
 	 * @return string the upload url to post the form to.
 	 */
-	public function getUploadUrl(array $response,
-		$redirect_address = null)
-	{
+	public function getUploadUrl(
+		array $response,
+		$redirect_address = null
+	) {
 		// TODO: what should we use for api_format? BotrAPI uses php, so using
 		// for now.
 		$link = sprintf(
@@ -300,9 +302,10 @@ class SiteBotrMediaToaster
 	// }}}
 	// {{{ public function encodeMedia()
 
-	public function encodeMedia(SiteBotrMedia $media,
-		SiteBotrMediaEncoding $encoding)
-	{
+	public function encodeMedia(
+		SiteBotrMedia $media,
+		SiteBotrMediaEncoding $encoding
+	) {
 		return $this->encodeMediaByKeys($media->key, $encoding->key);
 	}
 
@@ -456,27 +459,30 @@ class SiteBotrMediaToaster
 	// }}}
 	// {{{ public function updateMediaAddTags()
 
-	public function updateMediaAddTags(SiteBotrMedia $media,
-		array $tags = array())
-	{
+	public function updateMediaAddTags(
+		SiteBotrMedia $media,
+		array $tags = array()
+	) {
 		return $this->updateMediaAddTagsByKey($media->key, $tags);
 	}
 
 	// }}}
 	// {{{ public function updateMediaReplaceTags()
 
-	public function updateMediaReplaceTags(SiteBotrMedia $media,
-		array $tags = array())
-	{
+	public function updateMediaReplaceTags(
+		SiteBotrMedia $media,
+		array $tags = array()
+	) {
 		return $this->updateMediaReplaceTagsByKey($media->key, $tags);
 	}
 
 	// }}}
 	// {{{ public function updateMediaRemoveTags()
 
-	public function updateMediaRemoveTags(SiteBotrMedia $media,
-		array $tags = array())
-	{
+	public function updateMediaRemoveTags(
+		SiteBotrMedia $media,
+		array $tags = array()
+	) {
 		return $this->updateMediaRemoveTagsByKey($media->key, $tags);
 	}
 
@@ -618,9 +624,15 @@ class SiteBotrMediaToaster
 	 *
 	 * @return boolean. True on success.
 	 */
-	public function createEncodingProfile($name, $format, $video_quality = 5,
-		$audio_quality = 5, $width = 320, $upscale = false, $default = 'none')
-	{
+	public function createEncodingProfile(
+		$name,
+		$format,
+		$video_quality = 5,
+		$audio_quality = 5,
+		$width = 320,
+		$upscale = false,
+		$default = 'none'
+	) {
 		$settings = array(
 			'name'          => $name,
 			'format_key'    => $format,
@@ -718,9 +730,10 @@ class SiteBotrMediaToaster
 	// Content Display Methods
 	// {{{ public function getMediaPlayer()
 
-	public function getMediaPlayer(SiteBotrMedia $media,
-		SiteBotrMediaPlayer $player)
-	{
+	public function getMediaPlayer(
+		SiteBotrMedia $media,
+		SiteBotrMediaPlayer $player
+	) {
 		return $this->getMediaPlayerByKeys($media->key, $player->key);
 	}
 
@@ -816,9 +829,10 @@ class SiteBotrMediaToaster
 	 *
 	 * @return string The uri of the direct download.
 	 */
-	public function getMediaDownload(SiteBotrMedia $media,
-		SiteBotrMediaEncoding $encoding)
-	{
+	public function getMediaDownload(
+		SiteBotrMedia $media,
+		SiteBotrMediaEncoding $encoding
+	) {
 		$binding   = $media->getEncodingBinding($encoding->shortname);
 		$extension = $binding->media_type->extension;
 
@@ -840,9 +854,11 @@ class SiteBotrMediaToaster
 	 *
 	 * @return string The uri of the direct download.
 	 */
-	public function getMediaDownloadByKeys($media_key, $encoding_key,
-		$extension = 'mp4')
-	{
+	public function getMediaDownloadByKeys(
+		$media_key,
+		$encoding_key,
+		$extension = 'mp4'
+	) {
 		$path = sprintf('videos/%s-%s.%s',
 			$media_key,
 			$encoding_key,
@@ -854,9 +870,10 @@ class SiteBotrMediaToaster
 	// }}}
 	// {{{ public function getMediaPreviewLink()
 
-	public function getMediaPreviewLink(SiteBotrMedia $media,
-		SiteBotrMediaPlayer $player)
-	{
+	public function getMediaPreviewLink(
+		SiteBotrMedia $media,
+		SiteBotrMediaPlayer $player
+	) {
 		return $this->getMediaPreviewLinkByKeys($media->key, $player->key);
 	}
 
@@ -985,11 +1002,11 @@ class SiteBotrMediaToaster
 			$message = 'API Unavailable';
 		} elseif (is_array($response) == false) {
 			// all api responses should return an array. if we receive something
-			// else back, var_dump it so we know what it is.
-			ob_start();
-			var_dump($response);
-			$message = sprintf('Unexpected Response: %s',
-				ob_get_clean());
+			// else back, dump it so we know what it is.
+			$message = sprintf(
+				'Unexpected Response: %s',
+				print_r($response, true)
+			);
 		} elseif ($response['status'] == 'error') {
 			$message = sprintf("%s\n\nCode: %s\n\nMessage:\n%s",
 				$response['title'],

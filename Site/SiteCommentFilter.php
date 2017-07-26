@@ -98,7 +98,7 @@ class SiteCommentFilter
 		$comment = self::parse($comment, $strip_invalid_tags);
 
 		$comment = str_replace("\r\n", "\n", $comment);
-		$comment = str_replace("\r",   "\n", $comment);
+		$comment = str_replace("\r", "\n", $comment);
 		$comment = preg_replace('/[\x0a\s]*\n\n[\x0a\s]*/s', '</p><p>',
 			$comment);
 
@@ -118,9 +118,11 @@ class SiteCommentFilter
 	 * @param boolean $self_closing
 	 * @param array $attributes
 	 */
-	public static function addTag($tag, $self_closing = false,
-		array $attributes = null)
-	{
+	public static function addTag(
+		$tag,
+		$self_closing = false,
+		array $attributes = null
+	) {
 		if ($attributes === null)
 			$attributes = array();
 
@@ -201,17 +203,14 @@ class SiteCommentFilter
 
 						self::startTag($match[0][0], $tag['tag']);
 
-					// check if it is a closing tag
 					} elseif (array_key_exists('n'.$tag['tag'], $match) &&
 						$match['n'.$tag['tag']][1] != -1) {
-
+						// check if it is a closing tag
 						self::endTag($match[0][0], $tag['tag']);
 					}
-
-				// check if it is a self-closing tag
 				} elseif (array_key_exists($tag['tag'], $match) &&
 					$match[$tag['tag']][1] != -1) {
-
+					// check if it is a self-closing tag
 					self::selfClosingTag($match[0][0], $tag['tag']);
 				}
 			}

@@ -61,7 +61,7 @@ class SiteOlarkModule extends SiteApplicationModule
 				SwatString::quoteJavaScriptString($string)
 			);
 		}
-
+		// @codingStandardsIgnoreStart
 		?>
 		<script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/
 		window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){
@@ -80,9 +80,10 @@ class SiteOlarkModule extends SiteApplicationModule
 		var t=b.contentWindow[g];t.write(p());t.close()}catch(x){
 		b[k]=o+'d.write("'+p().replace(/"/g,String.fromCharCode(92)+'"')+'");d.close();'}a.P(2)};ld()};nt()})({
 		loader: "static.olark.com/jsclient/loader0.js",name:"olark",methods:["configure","extend","declare","identify"]});
-		<?= implode('', $api_lines); ?>
+		<?php echo implode('', $api_lines); ?>
 		/*]]>*/</script>
 		<?php
+		// @codingStandardsIgnoreEnd
 	}
 
 	// }}}

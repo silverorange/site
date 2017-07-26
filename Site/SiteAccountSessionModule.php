@@ -84,9 +84,11 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 *                       if the email/password pair did not match an
 	 *                       account.
 	 */
-	public function login($email, $password,
-		$regenerate_id = SiteSessionModule::REGENERATE_ID)
-	{
+	public function login(
+		$email,
+		$password,
+		$regenerate_id = SiteSessionModule::REGENERATE_ID
+	) {
 		if ($this->isLoggedIn())
 			$this->logout();
 
@@ -149,9 +151,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * @return boolean true if the account was successfully logged in and false
 	 *                       if the id does not match an account.
 	 */
-	public function loginById($id,
-		$regenerate_id = SiteSessionModule::REGENERATE_ID)
-	{
+	public function loginById(
+		$id,
+		$regenerate_id = SiteSessionModule::REGENERATE_ID
+	) {
 		if ($this->isLoggedIn())
 			$this->logout();
 
@@ -196,14 +199,15 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * @param boolean $new_login_session optional. Whether or not this is a new
 	 *                                    login session. If true it saves the
 	 *                                    login session upon successful login.
-     *                                    Defaults to true.
+	 *                                    Defaults to true.
 	 *
 	 * @return boolean true.
 	 */
-	public function loginByAccount(SiteAccount $account,
+	public function loginByAccount(
+		SiteAccount $account,
 		$regenerate_id = SiteSessionModule::REGENERATE_ID,
-		$new_login_session = true)
-	{
+		$new_login_session = true
+	) {
 		if ($this->isLoggedIn())
 			$this->logout();
 
@@ -248,9 +252,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * @return boolean true if the account was successfully logged in and false
 	 *                       if the tag does not match an account.
 	 */
-	public function loginByTag($tag,
-		$regenerate_id = SiteSessionModule::REGENERATE_ID)
-	{
+	public function loginByTag(
+		$tag,
+		$regenerate_id = SiteSessionModule::REGENERATE_ID
+	) {
 		$logged_in = false;
 
 		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
@@ -410,9 +415,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * @param array $parameters optional. The paramaters to pass to the
 	 *                           callback. Use an empty array for no parameters.
 	 */
-	public function registerLoginCallback($callback,
-		array $parameters = array())
-	{
+	public function registerLoginCallback(
+		$callback,
+		array $parameters = array()
+	) {
 		if (!is_callable($callback))
 			throw new SiteException('Cannot register invalid callback.');
 
@@ -434,9 +440,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 * @param array $parameters optional. The paramaters to pass to the
 	 *                           callback. Use an empty array for no parameters.
 	 */
-	public function registerLogoutCallback($callback,
-		array $parameters = array())
-	{
+	public function registerLogoutCallback(
+		$callback,
+		array $parameters = array()
+	) {
 		if (!is_callable($callback))
 			throw new SiteException('Cannot register invalid callback.');
 
@@ -706,9 +713,11 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 *
 	 * @deprecated Use {@link SiteSessionModule::registerObject()} instead.
 	 */
-	public function registerDataObject($name, $class,
-		$destroy_on_logout = true)
-	{
+	public function registerDataObject(
+		$name,
+		$class,
+		$destroy_on_logout = true
+	) {
 		parent::registerObject($name, $class, $destroy_on_logout);
 	}
 

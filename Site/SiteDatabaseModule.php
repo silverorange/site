@@ -13,7 +13,7 @@
  */
 class SiteDatabaseModule extends SiteApplicationModule
 {
-    // {{{ public properties
+	// {{{ public properties
 
 	/**
 	 * DSN of database
@@ -38,8 +38,8 @@ class SiteDatabaseModule extends SiteApplicationModule
 	 */
 	protected $connection = null;
 
-    // }}}
-    // {{{ public function init()
+	// }}}
+	// {{{ public function init()
 
 	public function init()
 	{
@@ -56,7 +56,7 @@ class SiteDatabaseModule extends SiteApplicationModule
 		$this->app->db = $this->getConnection();
 	}
 
-    // }}}
+	// }}}
 	// {{{ public function getConnection()
 
 	/**

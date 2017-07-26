@@ -271,9 +271,10 @@ class SiteAccount extends SwatDBDataObject
 	 * @return boolean true if the loading was successful and false if it was
 	 *                  not.
 	 */
-	public function loadByPasswordTag($password_tag,
-		SiteInstance $instance = null)
-	{
+	public function loadByPasswordTag(
+		$password_tag,
+		SiteInstance $instance = null
+	) {
 		$this->checkDB();
 
 		// delete_date is checked in this query so we select the correct

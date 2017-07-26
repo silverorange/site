@@ -406,7 +406,7 @@ class SiteSidebar extends SwatWidget implements SwatUIParent
 		$css_class_names = array();
 
 		// get the ancestors that are swat classes
-		while (strcmp($php_class_name, 'SiteGadget') !== 0) {
+		while ($php_class_name !== 'SiteGadget') {
 			$css_class_name = mb_strtolower(preg_replace('/([A-Z])/u',
 				'-\1', $php_class_name));
 

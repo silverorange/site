@@ -50,9 +50,11 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	 * @param string $base_uri optional.
 	 * @param integer $unix_group optional.
 	 */
-	public function __construct($log_location, $base_uri = null,
-		$unix_group = null)
-	{
+	public function __construct(
+		$log_location,
+		$base_uri = null,
+		$unix_group = null
+	) {
 		$this->log_location = $log_location;
 		$this->base_uri     = $base_uri;
 		$this->unix_group   = $unix_group;
@@ -83,8 +85,8 @@ class SiteExceptionLogger extends SwatExceptionLogger
 			if ($this->unix_group !== null)
 				chgrp($log_path, $this->unix_group);
 		}
-
-		if (($log_file = fopen($log_filepath, 'w')) !== false) {
+		$log_file = fopen($log_filepath, 'w');
+		if ($log_file !== false) {
 			fwrite($log_file, $this->getBody($e));
 			fclose($log_file);
 

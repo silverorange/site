@@ -45,9 +45,10 @@ class SiteSiteMapPage extends SitePage
 	// }}}
 	// {{{ protected function displaySubArticles()
 
-	protected function displaySubArticles(SiteArticleWrapper $articles,
-		$path = null)
-	{
+	protected function displaySubArticles(
+		SiteArticleWrapper $articles,
+		$path = null
+	) {
 		if (count($articles) == 0)
 			return;
 

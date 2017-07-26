@@ -123,7 +123,7 @@ class SiteContactMessage extends SwatDBDataObject
 
 			$instance_id  = ($instance === null) ? null : $instance->id;
 			if ($instance_id !== null) {
-				$sql.=sprintf(' and instance %s %s',
+				$sql.= sprintf(' and instance %s %s',
 					SwatDB::equalityOperator($instance_id),
 					$this->db->quote($instance_id, 'integer'));
 			}

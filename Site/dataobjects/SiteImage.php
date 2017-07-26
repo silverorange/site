@@ -935,9 +935,13 @@ class SiteImage extends SwatDBDataObject
 	 *                box
 	 * @param string $shortname The shortname of the dimension
 	 */
-	public function setCropBox($width, $height, $offset_x, $offset_y,
-		$dimension_shortname = null)
-	{
+	public function setCropBox(
+		$width,
+		$height,
+		$offset_x,
+		$offset_y,
+		$dimension_shortname = null
+	) {
 		$crop_box = array($width, $height, $offset_x, $offset_y);
 
 		if ($dimension_shortname === null)
@@ -955,16 +959,17 @@ class SiteImage extends SwatDBDataObject
 	 * @param string $image_file location of image to process.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function processDimension($image_file,
-		SiteImageDimension $dimension)
-	{
+	protected function processDimension(
+		$image_file,
+		SiteImageDimension $dimension
+	) {
 		$imagick = $this->getImagick($image_file, $dimension);
 
 		$this->processDimensionInternal($imagick, $dimension);
 		$this->saveDimensionBinding($imagick, $dimension);
 
-		if ($dimension->max_width    === null &&
-			$dimension->max_height   === null &&
+		if ($dimension->max_width === null &&
+			$dimension->max_height === null &&
 			$dimension->default_type === null) {
 
 			$this->copyFile($image_file, $dimension);
@@ -989,9 +994,10 @@ class SiteImage extends SwatDBDataObject
 	// }}}
 	// {{{ protected function processDimensionInternal()
 
-	protected function processDimensionInternal(Imagick $imagick,
-		SiteImageDimension $dimension)
-	{
+	protected function processDimensionInternal(
+		Imagick $imagick,
+		SiteImageDimension $dimension
+	) {
 		$crop_box = $this->getCropBox($dimension);
 
 		if ($crop_box !== null) {
@@ -1014,9 +1020,10 @@ class SiteImage extends SwatDBDataObject
 	 * @param Imagick $imagick the imagick instance to work with.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function cropToDimension(Imagick $imagick,
-		SiteImageDimension $dimension)
-	{
+	protected function cropToDimension(
+		Imagick $imagick,
+		SiteImageDimension $dimension
+	) {
 		$height = $dimension->max_height;
 		$width = $dimension->max_width;
 
@@ -1074,9 +1081,10 @@ class SiteImage extends SwatDBDataObject
 	 *
 	 * @return array The x and y offsets
 	 */
-	protected function calculateCropToDimensionOffset(Imagick $imagick,
-		SiteImageDimension $dimension)
-	{
+	protected function calculateCropToDimensionOffset(
+		Imagick $imagick,
+		SiteImageDimension $dimension
+	) {
 		$height = $dimension->max_height;
 		$width = $dimension->max_width;
 
@@ -1122,9 +1130,10 @@ class SiteImage extends SwatDBDataObject
 	 * @param Imagick $imagick the imagick instance to work with.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function fitToDimension(Imagick $imagick,
-		SiteImageDimension $dimension)
-	{
+	protected function fitToDimension(
+		Imagick $imagick,
+		SiteImageDimension $dimension
+	) {
 		$this->setDimensionDpi($imagick, $dimension);
 
 		if ($dimension->max_width !== null &&
@@ -1212,9 +1221,11 @@ class SiteImage extends SwatDBDataObject
 	// }}}
 	// {{{ protected function setDimensionDpi()
 
-	protected function setDimensionDpi(Imagick $imagick,
-		SiteImageDimension $dimension, $resized_width = null)
-	{
+	protected function setDimensionDpi(
+		Imagick $imagick,
+		SiteImageDimension $dimension,
+		$resized_width = null
+	) {
 		if ($resized_width === null) {
 			$resized_width = 1;
 			$original_width = 1;
@@ -1239,9 +1250,10 @@ class SiteImage extends SwatDBDataObject
 	 * @param Imagick $imagick the imagick instance to work with.
 	 * @param SiteImageDimension $dimension the image's dimension.
 	 */
-	protected function saveDimensionBinding(Imagick $imagick,
-		SiteImageDimension $dimension)
-	{
+	protected function saveDimensionBinding(
+		Imagick $imagick,
+		SiteImageDimension $dimension
+	) {
 		$class_name = $this->getImageDimensionBindingClassName();
 		$binding = new $class_name();
 		$binding->image      = $this->id;
@@ -1273,8 +1285,8 @@ class SiteImage extends SwatDBDataObject
 	 * @param SiteImageDimension $dimension the image's dimension.
 	 */
 	protected function saveDimensionBindingFileSize(
-		SiteImageDimension $dimension)
-	{
+		SiteImageDimension $dimension
+	) {
 		$binding = $this->getDimensionBinding($dimension->shortname);
 		if ($binding instanceof SiteImageDimensionBinding) {
 			// Binding has to duplicated or SwatDBDataObject will try to insert
@@ -1306,9 +1318,10 @@ class SiteImage extends SwatDBDataObject
 	 *
 	 * @return SiteImageType The type of image for the dimension
 	 */
-	protected function getDimensionImageType(Imagick $imagick,
-		SiteImageDimension $dimension)
-	{
+	protected function getDimensionImageType(
+		Imagick $imagick,
+		SiteImageDimension $dimension
+	) {
 		if ($dimension->default_type === null) {
 			$class_name = SwatDBClassMap::get('SiteImageType');
 			$image_type = new $class_name();
@@ -1348,8 +1361,8 @@ class SiteImage extends SwatDBDataObject
 	 */
 	protected function getDimensionBindingFileSize(
 		SiteImageDimension $dimension,
-		SiteImageDimensionBinding $dimension_binding)
-	{
+		SiteImageDimensionBinding $dimension_binding
+	) {
 		$file = $this->getFilePath($dimension->shortname);
 
 		if (!file_exists($file)) {
@@ -1374,9 +1387,10 @@ class SiteImage extends SwatDBDataObject
 	 * @param Imagick $imagick the imagick instance to work with.
 	 * @param SiteImageDimension $dimension the dimension to save.
 	 */
-	protected function saveFile(Imagick $imagick,
-		SiteImageDimension $dimension)
-	{
+	protected function saveFile(
+		Imagick $imagick,
+		SiteImageDimension $dimension
+	) {
 		$imagick->setCompressionQuality($dimension->quality);
 
 		if ($dimension->interlace)
@@ -1425,9 +1439,10 @@ class SiteImage extends SwatDBDataObject
 	 * @param string $image_file the image file to process.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function getImagick($image_file,
-		SiteImageDimension $dimension)
-	{
+	protected function getImagick(
+		$image_file,
+		SiteImageDimension $dimension
+	) {
 		$imagick = null;
 
 		$crop_box = $this->getCropBox($dimension);
@@ -1460,9 +1475,10 @@ class SiteImage extends SwatDBDataObject
 	 * @param string $image_file the image file to process.
 	 * @param SiteImageDimension $dimension the dimension to process.
 	 */
-	protected function getNewImagick($image_file,
-		SiteImageDimension $dimension)
-	{
+	protected function getNewImagick(
+		$image_file,
+		SiteImageDimension $dimension
+	) {
 		$crop_box = $this->getCropBox($dimension);
 		$imagick = new Imagick();
 
@@ -1630,9 +1646,10 @@ class SiteImage extends SwatDBDataObject
 	 * @param SiteImageDimension $dimension the image dimension we're queuing
 	 *                                       the action for.
 	 */
-	protected function queueCdnTask($operation,
-		SiteImageDimension $dimension = null)
-	{
+	protected function queueCdnTask(
+		$operation,
+		SiteImageDimension $dimension = null
+	) {
 		$class_name = SwatDBClassMap::get('SiteImageCdnTask');
 
 		$task = new $class_name();

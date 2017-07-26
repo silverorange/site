@@ -119,8 +119,11 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	// }}}
 	// {{{ abstract protected function moveFile()
 
-	abstract protected function moveFile(SiteVideoMedia $media, $old_path,
-		$new_path);
+	abstract protected function moveFile(
+		SiteVideoMedia $media,
+		$old_path,
+		$new_path
+	);
 
 	// }}}
 	// {{{ abstract protected function cleanUp()

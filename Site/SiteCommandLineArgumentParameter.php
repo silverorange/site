@@ -20,7 +20,7 @@ class SiteCommandLineArgumentParameter extends SiteObject
 	protected $error_message;
 
 	/**
-	 * The type of this parameter 
+	 * The type of this parameter
 	 *
 	 * Type must be one of 'int', 'integer', 'double', 'float', or 'string'.
 	 *
@@ -61,7 +61,7 @@ class SiteCommandLineArgumentParameter extends SiteObject
 	// {{{ public function getErrorMessage()
 
 	/**
-	 * Gets the error message text of this parameter 
+	 * Gets the error message text of this parameter
 	 *
 	 * @return string a message displayed when the user omits a this required
 	 *                 parameter or when the user specifies value for this
@@ -117,7 +117,7 @@ class SiteCommandLineArgumentParameter extends SiteObject
 		switch ($this->type) {
 		case 'integer':
 		case 'int':
-			if (is_numeric($value) && strcmp((int)$value, $value) == 0)
+			if (is_numeric($value) && $value === (string)$value)
 				$valid = true;
 
 			break;

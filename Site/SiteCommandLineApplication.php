@@ -108,9 +108,12 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 * @throws SiteCommandLineException if this application is not created in a
 	 *                                   commandline environment.
 	 */
-	public function __construct($id, $config_filename, $title,
-		$documentation = null)
-	{
+	public function __construct(
+		$id,
+		$config_filename,
+		$title,
+		$documentation = null
+	) {
 		if (!isset($_SERVER['argv'])) {
 			throw new SiteCommandLineException('Command line applications '.
 				'must be run from the command line.');
@@ -416,9 +419,11 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 *                             terminate execution. If not specified, 1 is
 	 *                             used.
 	 */
-	protected function terminate($string, $verbosity = self::VERBOSITY_ERRORS,
-		$error_code = 1)
-	{
+	protected function terminate(
+		$string,
+		$verbosity = self::VERBOSITY_ERRORS,
+		$error_code = 1
+	) {
 		$this->output($string, $verbosity);
 		exit((int)$error_code);
 	}

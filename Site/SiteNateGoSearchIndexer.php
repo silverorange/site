@@ -24,9 +24,12 @@ class SiteNateGoSearchIndexer extends SiteSearchIndexer
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct($id, $config_filename, $title,
-		$documentation = null)
-	{
+	public function __construct(
+		$id,
+		$config_filename,
+		$title,
+		$documentation = null
+	) {
 		parent::__construct($id, $config_filename, $title, $documentation);
 
 		$all = new SiteCommandLineArgument(array('-A', '--all'),

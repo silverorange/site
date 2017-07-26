@@ -68,7 +68,7 @@ abstract class SiteAbstractConfigPage
 						$changed_settings[] = $section.'.'.$name;
 					}
 				} else if ($config->$section->$name !== $widget->value) {
-					$config->$section->$name = $widget->value;
+					$config->{$section}->{$name} = $widget->value;
 					$changed_settings[] = $section.'.'.$name;
 				}
 			}

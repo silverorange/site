@@ -100,12 +100,12 @@ class SiteLayout extends SiteObject
 
 		if (isset($this->data->$name)) {
 			if ($this->capture_prepend) {
-				$this->data->$name = ob_get_clean().$this->data->$name;
+				$this->data->{$name} = ob_get_clean().$this->data->$name;
 			} else {
 				$this->data->$name.= ob_get_clean();
 			}
 		} else {
-			$this->data->$name = ob_get_clean();
+			$this->data->{$name} = ob_get_clean();
 		}
 
 		$this->current_capture = null;
@@ -121,7 +121,7 @@ class SiteLayout extends SiteObject
 				'exist and cannot be cleared.');
 		}
 
-		$this->data->$name = '';
+		$this->data->{$name} = '';
 	}
 
 	// }}}

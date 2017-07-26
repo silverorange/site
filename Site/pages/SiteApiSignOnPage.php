@@ -52,9 +52,11 @@ abstract class SiteApiSignOnPage extends SitePage
 	// }}}
 	// {{{ protected function getToken()
 
-	protected function getToken($ident, $token_string,
-		SiteApiCredential $credential)
-	{
+	protected function getToken(
+		$ident,
+		$token_string,
+		SiteApiCredential $credential
+	) {
 		$class_name = SwatDBClassMap::get('SiteApiSignOnToken');
 		$token = new $class_name();
 		$token->setDatabase($this->app->db);

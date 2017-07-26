@@ -103,9 +103,12 @@ class SiteAMQPModule extends SiteApplicationModule
 	 *
 	 * @return void
 	 */
-	public function doAsyncNs($namespace, $exchange, $message,
-		array $attributes = array())
-	{
+	public function doAsyncNs(
+		$namespace,
+		$exchange,
+		$message,
+		array $attributes = array()
+	) {
 		// always persist messages
 		$attributes = array_merge(
 			$attributes,
@@ -183,9 +186,12 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * @throws SiteAMQPJobFailureException if the job processor can't process
 	 *         the job.
 	 */
-	public function doSyncNs($namespace, $exchange, $message,
-		array $attributes = array())
-	{
+	public function doSyncNs(
+		$namespace,
+		$exchange,
+		$message,
+		array $attributes = array()
+	) {
 		$this->connect();
 
 		$correlation_id = uniqid(true);
@@ -216,7 +222,7 @@ class SiteAMQPModule extends SiteApplicationModule
 		// callback function must return true or false in order to be handled
 		// correctly by the AMQP extension. If an exception is thrown in this
 		// callback, behavior is undefined.
-		$callback = function(AMQPEnvelope $envelope, AMQPQueue $queue)
+		$callback = function (AMQPEnvelope $envelope, AMQPQueue $queue)
 			use (&$response, $correlation_id)
 		{
 			// Make sure we get the reply message we are looking for. This handles
@@ -226,7 +232,8 @@ class SiteAMQPModule extends SiteApplicationModule
 
 				// Parse the response. If the response can not be parsed, create a
 				// failure response value.
-				if (($response = json_decode($raw_body, true)) === null ||
+				$response = json_decode($raw_body, true);
+				if ($response === null ||
 					!isset($response['status'])) {
 					$response = array(
 						'status'   => 'fail',
