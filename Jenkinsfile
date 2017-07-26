@@ -39,7 +39,7 @@ pipeline {
                         body_text=$(curl -u sogitbot:$auth_token $query_url | jq .body)
                         if line_of_links=$(echo $body_text | grep -o \'[Rr]equires.*\\r\'); then
                             echo 'Requirements found'
-                            echo $line_of links \
+                            echo $line_of_links \
                             | grep -o $github_links \'github.com\\/silverorange\\/\\w*\\/pull\\/[0-9]*' \
                             | while read -r line ; do
                                 echo "Processing $line"
