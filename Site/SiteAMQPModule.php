@@ -223,7 +223,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		// correctly by the AMQP extension. If an exception is thrown in this
 		// callback, behavior is undefined.
 		$callback = function (AMQPEnvelope $envelope, AMQPQueue $queue)
- use (&$response, $correlation_id) {
+			use (&$response, $correlation_id)
+		{
 			// Make sure we get the reply message we are looking for. This handles
 			// possible race conditinos on the queue broker.
 			if ($envelope->getCorrelationId() === $correlation_id) {
