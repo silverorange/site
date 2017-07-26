@@ -31,7 +31,7 @@ pipeline {
                 sh 'echo $JOB_NAME'
                 sh 'echo $JOB_BASE_NAME'
                 sh 'echo $CHANGE_TARGET'
-                sh 'var=$(echo "silverorange/site/PR-231" | sed -e "s/PR-/pulls\//g")'
+                sh 'var=$(echo \"silverorange/site/PR-231\" | sed -e \"s/PR-/pulls\\//g\")'
             }
         }
     }
