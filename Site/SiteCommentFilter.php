@@ -203,17 +203,14 @@ class SiteCommentFilter
 
 						self::startTag($match[0][0], $tag['tag']);
 
-						// check if it is a closing tag
 					} elseif (array_key_exists('n'.$tag['tag'], $match) &&
 						$match['n'.$tag['tag']][1] != -1) {
-
+						// check if it is a closing tag
 						self::endTag($match[0][0], $tag['tag']);
 					}
-
-					// check if it is a self-closing tag
 				} elseif (array_key_exists($tag['tag'], $match) &&
 					$match[$tag['tag']][1] != -1) {
-
+					// check if it is a self-closing tag
 					self::selfClosingTag($match[0][0], $tag['tag']);
 				}
 			}

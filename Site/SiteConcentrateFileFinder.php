@@ -81,8 +81,10 @@ class SiteConcentrateFileFinder
 							$files,
 							$finder->getDataFiles()
 						);
+						$package_name = $vendor_dir->read();
 					}
 				}
+				$vendor_name = $base_dir->read();
 			}
 		}
 

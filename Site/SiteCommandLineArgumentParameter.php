@@ -117,9 +117,7 @@ class SiteCommandLineArgumentParameter extends SiteObject
 		switch ($this->type) {
 		case 'integer':
 		case 'int':
-			$firstCast = (int)$value;
-			$secondCast = (string)$value;
-			if (is_numeric($value) && $value === $secondCast)
+			if (is_numeric($value) && $value === (string)$value)
 				$valid = true;
 
 			break;

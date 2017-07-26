@@ -88,8 +88,8 @@ class SiteAudioMedia extends SiteMedia
 			}
 
 			$transaction->commit();
-			// TODO: Specialize this.
 		} catch (Exception $e) {
+			// TODO: Specialize this.
 			throw $e;
 			$transaction->rollback();
 		}
