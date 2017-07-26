@@ -51,7 +51,7 @@ pipeline {
                         var=$(echo \'silverorange/site/PR-231\' | sed -e \'s/PR-/pulls\\//g\')
                         query_url=\'https://api.github.com/repos/\'$var
                         body_text=$(curl -u sogitbot:$auth_token $query_url | jq .body)
-                        if line_of_links=$(echo $body_text | grep -o \'[Rr]equires.*\\r\'); then
+                        if line_of_links=$(echo $body_text | grep -o \'([Rr]equires|[Dd]epends (up)?on).*\\r\'); then
                             echo 'Requirements found'
                             echo $line_of_links \
                             | grep -o $github_links \'github.com\\/silverorange\\/\\w*\\/pull\\/[0-9]*' \
