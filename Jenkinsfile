@@ -49,7 +49,7 @@ pipeline {
                     sh '''
                         var=$(echo \'silverorange/site/PR-231\' | sed -e \'s/PR-/pulls\\//g\')
                         query_url=\'https://api.github.com/repos/\'$var
-                        curl -H \'authorization: Bearer $auth_token\' $query_url
+                        curl -H \'authorization: Bearer \$auth_token\' $query_url
                     '''
                 }
             }
