@@ -38,7 +38,7 @@ pipeline {
                         query_url=\'https://api.github.com/repos/\'$var
                         curl -u sogitbot:$auth_token $query_url | jq .body | \
                         grep -o \'[Rr]equires.*\\r\' | \
-                        grep -o \'github.com\/silverorange\/\w*\/pull\/\d*\'
+                        grep -o \'github.com\\/silverorange\\/\\w*\\/pull\\/\\d*\'
                     '''
                 }
             }
