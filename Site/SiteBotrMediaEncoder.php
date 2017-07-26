@@ -9,9 +9,9 @@
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @todo      Allow encoding to arbitrary encoding profiles. Also add flag to
- *            call getDistinctDimensions() and getEncodingProfiles() with nicely
- *            returned info (or possibly import the profiles into MediaEncoding.
- *            Allow setting audio encodings only on certain media by tag.
+ *            call getEncodingProfiles() with nicely returned info (or possibly
+ *            import the profiles into MediaEncoding. Allow setting audio
+ *            encodings only on certain media by tag.
  */
 
 class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
@@ -92,7 +92,6 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 	{
 		$this->debug("Starting encoding jobs...\n");
 		//$this->resetTitles();
-		//$this->getDistinctDimensions();
 		$this->setOriginalFilenames();
 		$this->getEncodingProfiles();
 		$this->startEncodingJobs();
@@ -107,28 +106,6 @@ class SiteBotrMediaEncoder extends SiteBotrMediaToasterCommandLineApplication
 		return array(
 			$this->encoded_tag,
 		);
-	}
-
-	// }}}
-	// {{{ public function getDistinctDimensions()
-
-	protected function getDistinctDimensions()
-	{
-		// TODO, set this up somewhere in a less hacky manner
-		$dimensions = array();
-		foreach ($this->getMedia() as $media_file) {
-			$original = $this->toaster->getOriginalByKey($media_file['key']);
-			$key = $original['width'].'x'.$original['height'];
-			if (isset($dimensions[$key])) {
-				$dimensions[$key]['count']++;
-			} else {
-				$dimensions[$key]['count'] = 1;
-				$dimensions[$key]['ratio'] = $original['width'] /
-					$original['height'];
-			}
-		}
-
-		var_dump($dimensions);
 	}
 
 	// }}}
