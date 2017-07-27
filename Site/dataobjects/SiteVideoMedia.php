@@ -145,7 +145,7 @@ class SiteVideoMedia extends SiteMedia
 	{
 		$jwplayer = new SiteJwPlayerMediaDisplay('video'.$this->id);
 		$jwplayer->setMedia($this);
-		$jwplayer->swf_uri = 'packages/site/javascript/jwplayer.flash.swf';
+		$jwplayer->swf_uri = 'packages/jwplayer/jwplayer.flash.swf';
 		$jwplayer->key = $app->config->jwplayer->key;
 
 		$jwplayer->menu_title = $app->config->site->title;

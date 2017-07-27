@@ -61,7 +61,7 @@
 		"ext-uploadprogress": "Allows showing upload progress for SiteFileEntry widgets.",
 		"pear/xml_rpc2": "Enables XML-RPC server pages.",
 		"psr/log": "Enables logging using the PSR logging interface.",
-		"silverorange/botr_api": "Enables video processing using the Bits On The Run API.",
+		"silverorange/jwplayer": "Enables video player support.",
 		"silverorange/nate_go_search": "Article search indexing and CME search index framework.",
 		"silverorange/net_notifier": "Enables async notifications from web applications using web sockets."
 	},

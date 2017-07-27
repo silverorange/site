@@ -11,38 +11,25 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.images  = [];
 	this.valid_mime_types = [];
 
-	this.skin = null;
+	this.skin = 'seven';
 	this.stretching = null;
 	this.image = null;
 	this.duration = null;
 	this.aspect_ratio = [];
 	this.start_position = 0;
 	this.record_end_point = false;
-	this.space_to_pause = false;
 	this.swf_uri = null;
 	this.vtt_uri = null;
+	this.playback_rate_controls = true;
 
 	this.menu_title = null;
 	this.menu_link = null;
-
-	this.location_identifier = null;
 
 	this.upgrade_message = null;
 	this.on_complete_message = null;
 	this.resume_message =
 		'<p>You’ve previously watched part of this video.</p>' +
 		'<p>Would you like to:</p>';
-
-	this.rtmp_error_message =
-		'<h3>We can’t stream video to you</h3>' +
-		'<p>Unfortunately, your firewall seems to be blocking us. To work ' +
-		'around this, try switching to a browser that supports HTML5 ' +
-		'video, like the latest version of Internet Explorer, Chrome, or ' +
-		'Safari.</p>';
-
-	this.android_rtmp_error_message =
-		'<h3>We can’t stream video to you</h3>' +
-		'<p>Unfortunately, your firewall seems to be blocking us.</p>';
 
 	// whether or not to show the on-complete-message when the video loads.
 	// this is useful if you want to remind the user they've seen the video
@@ -61,7 +48,6 @@ function SiteJwPlayerMediaDisplay(media_id)
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
 
-SiteJwPlayerMediaDisplay.primaryPlayerType = 'flash'; // to allow for RTMP streaming
 SiteJwPlayerMediaDisplay.current_player_id = null;
 SiteJwPlayerMediaDisplay.record_interval = 30; // in seconds
 SiteJwPlayerMediaDisplay.players = [];
@@ -72,16 +58,16 @@ SiteJwPlayerMediaDisplay.prototype.init = function()
 {
 	this.container = document.getElementById('media_display_' + this.media_id);
 
-	if (this.isVideoSupported()) {
-		this.embedPlayer();
-		this.drawDialogs();
-	} else {
+	this.embedPlayer();
+	this.drawDialogs();
+
+	var that = this;
+	this.player.on('setupError', function() {
 		var upgrade = document.createElement('div');
 		upgrade.className = 'video-player-upgrade';
-		upgrade.innerHTML = this.upgrade_message;
-		this.container.appendChild(upgrade);
+		upgrade.innerHTML = that.upgrade_message;
+		that.container.appendChild(upgrade);
 
-		var that = this;
 		function resizeUpgradeContainer() {
 			var container_height = that.getPlayerHeight();
 			that.container.style.position = 'relative';
@@ -95,7 +81,7 @@ SiteJwPlayerMediaDisplay.prototype.init = function()
 
 		YAHOO.util.Event.on(window, 'resize', resizeUpgradeContainer);
 		resizeUpgradeContainer();
-	}
+	});
 };
 
 // }}}
@@ -124,6 +110,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		flashplayer: this.swf_uri,
 		abouttext:   this.menu_title,
 		aboutlink:   this.menu_link,
+		playbackRateControls: this.playback_rate_controls,
 		analytics:   {
 			enabled: false // turn off JW Player's built-in analytics
 		},
@@ -135,24 +122,13 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 	// this.debug();
 
 	var that = this;
-	this.player.onError(function (error) {
-		that.handleError(error);
-	});
 
 	this.player.onReady(function() {
 		that.on_ready_event.fire(that);
 	});
 
-	this.player.onFullscreen(function (e) {
-		that.handleFullscreen(e.fullscreen);
-	});
-
 	if (this.record_end_point) {
 		this.recordEndPoint();
-	}
-
-	if (this.space_to_pause) {
-		this.handleSpaceBar();
 	}
 
 	this.player.onBeforePlay(function() {
@@ -191,50 +167,11 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 };
 
 // }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
-
-SiteJwPlayerMediaDisplay.prototype.isVideoSupported = function()
-{
-	var html5_video = this.isHTML5VideoSupported();
-	var flash10 = typeof(YAHOO.util.SWFDetect) === 'undefined'
-		|| YAHOO.util.SWFDetect.isFlashVersionAtLeast(10);
-
-	return (flash10 || html5_video);
-};
-
-// }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.isHTML5VideoSupported = function()
-
-SiteJwPlayerMediaDisplay.prototype.isHTML5VideoSupported = function()
-{
-	// check to see if HTML5 video tag is supported
-	var video_tag = document.createElement('video');
-
-	var html5_video = false;
-	if (video_tag.canPlayType) {
-		for (var i = 0; i < this.valid_mime_types.length; i++) {
-			var mime_type = this.valid_mime_types[i];
-			if (video_tag.canPlayType(mime_type).replace(/no/, '')) {
-				html5_video = true;
-				break;
-			}
-		}
-	}
-
-	return html5_video;
-};
-
-// }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.getPrimaryPlayerType = function()
 
 SiteJwPlayerMediaDisplay.prototype.getPrimaryPlayerType = function()
 {
 	var player_type = SiteJwPlayerMediaDisplay.primaryPlayerType;
-
-	if (this.location_identifier !== null &&
-		YAHOO.util.Cookie.get(this.location_identifier + '_type') == 'html5') {
-		player_type = 'html5';
-	}
 
 	return player_type;
 };
@@ -275,16 +212,9 @@ SiteJwPlayerMediaDisplay.prototype.getSources = function()
 		default_source['default'] = true;
 	}
 
-	var rtmp_blocked = (YAHOO.util.Cookie.get(
-		this.location_identifier + '_rtmp_status') == 'blocked');
-
 	// clone sources so that jwplayer doesn't wipe out the width property
 	var sources = [];
 	for (var i = 0; i < this.sources.length; i++) {
-		if (rtmp_blocked && this.sources[i].file.slice(-5) == '.smil') {
-			continue;
-		}
-
 		var s = {};
 		s.prototype = this.sources[i].prototype;
 		for (var k in this.sources[i]) {
@@ -355,9 +285,9 @@ SiteJwPlayerMediaDisplay.prototype.getImage = function()
 
 SiteJwPlayerMediaDisplay.prototype.getSkin = function()
 {
-	var base_tag = document.getElementsByTagName('base');
-	var base_href = (base_tag.length > 0) ? base_tag[0].href : '';
-	return base_href + this.skin;
+	return {
+		name: this.skin
+	};
 };
 
 // }}}
@@ -488,100 +418,6 @@ SiteJwPlayerMediaDisplay.prototype.getPlayerHeight = function()
 
 	return parseInt(region.width *
 		this.aspect_ratio[1] / this.aspect_ratio[0], 10);
-};
-
-// }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function()
-
-SiteJwPlayerMediaDisplay.prototype.handleFullscreen = function(fullscreen)
-{
-	// only automatically change the quality for HTML5
-	if (this.player.getRenderingMode() == 'flash') {
-		return;
-	}
-
-	if (fullscreen) {
-		var default_source = this.getBestQualitySource(
-			YAHOO.util.Dom.getViewportWidth(),
-			YAHOO.util.Dom.getViewportHeight());
-	} else {
-		// Disable this for now. JwPlayer has a bug when paused videos return
-		// from fullscreen they start playing again. On desktop browsers/tablets
-		// this is annoying. On phones that require fullscreen playback it leads
-		// to not being able to close the video.
-		//var region = YAHOO.util.Dom.getRegion(this.container);
-		//var default_source = this.getBestQualitySource(
-		//	region.width, region.height);
-		var default_source = null;
-	}
-
-	if (default_source !== null) {
-		// look up the level from the source
-		var levels = this.player.getQualityLevels();
-
-		for (var i = 0; i < levels.length; i++) {
-			if (levels[i].label == default_source.label) {
-				this.player.setCurrentQuality(i);
-				break;
-			}
-		}
-	}
-};
-
-// }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.handleSpaceBar = function()
-
-SiteJwPlayerMediaDisplay.prototype.handleSpaceBar = function()
-{
-	YAHOO.util.Event.on(document, 'keydown', function (e) {
-		var target = YAHOO.util.Event.getTarget(e);
-
-		// don't capture keyboard events for inputs
-		var tag = target.tagName.toLowerCase();
-		if (tag === 'textarea' || tag === 'input' ||
-			this.player_id != SiteJwPlayerMediaDisplay.current_player_id) {
-			return;
-		}
-
-		if (YAHOO.util.Event.getCharCode(e) == 32) {
-			// toggle between play/pause
-			this.player.play();
-			YAHOO.util.Event.preventDefault(e);
-		}
-	}, this, true);
-};
-
-// }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.handleError = function()
-
-SiteJwPlayerMediaDisplay.prototype.handleError = function(error)
-{
-	this.appendErrorMessage();
-
-	switch (error.message) {
-	case 'Error loading stream: Could not connect to server' :
-		// set a cookie to remove the RTMP source and reload the playlist
-		if (this.player.getRenderingMode() == 'flash') {
-			var rtmp_blocked = (YAHOO.util.Cookie.get(
-				this.location_identifier + '_rtmp_status') == 'blocked');
-
-			if (!rtmp_blocked) {
-				YAHOO.util.Cookie.set(this.location_identifier + '_rtmp_status',
-					'blocked');
-
-				this.player.load(this.getPlaylist());
-				this.player.play();
-			} else {
-				if (YAHOO.env.ua.android) {
-					this.displayErrorMessage(this.android_rtmp_error_message);
-				} else {
-					this.displayErrorMessage(this.rtmp_error_message);
-				}
-			}
-		}
-
-		break;
-	}
 };
 
 // }}}
@@ -771,24 +607,6 @@ SiteJwPlayerMediaDisplay.prototype.appendResumeMessage = function()
 };
 
 // }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.appendErrorMessage = function()
-
-SiteJwPlayerMediaDisplay.prototype.appendErrorMessage = function()
-{
-	this.error_overlay = document.createElement('div');
-	this.error_overlay.style.display = 'none';
-	this.error_overlay.className = 'overlay-content error-overlay';
-
-	var div = document.createElement('div');
-	this.error_overlay.appendChild(div);
-	this.overlay.parentNode.appendChild(this.error_overlay);
-
-	YAHOO.util.Event.on(window, 'resize', function () {
-		this.positionOverlay(this.error_overlay);
-	}, this, true);
-};
-
-// }}}
 // {{{ SiteJwPlayerMediaDisplay.prototype.displayCompleteMessage = function()
 
 SiteJwPlayerMediaDisplay.prototype.displayCompleteMessage = function()
@@ -806,18 +624,6 @@ SiteJwPlayerMediaDisplay.prototype.displayResumeMessage = function()
 	this.overlay.style.display = 'block';
 	this.resume_overlay.style.display = 'block';
 	this.positionOverlay(this.resume_overlay);
-};
-
-// }}}
-// {{{ SiteJwPlayerMediaDisplay.prototype.displayErrorMessage = function()
-
-SiteJwPlayerMediaDisplay.prototype.displayErrorMessage = function(message)
-{
-	this.error_overlay.firstChild.innerHTML = message;
-
-	this.overlay.style.display = 'block';
-	this.error_overlay.style.display = 'block';
-	this.positionOverlay(this.error_overlay);
 };
 
 // }}}
@@ -854,18 +660,26 @@ SiteJwPlayerMediaDisplay.prototype.seek = function(position)
 {
 	var that = this;
 
-	if (YAHOO.env.ua.ios || YAHOO.env.ua.android) {
+	// Old versions of Android don't play nicely with firstFrame when
+	// seeking. It causes the video to look all messed up like it's
+	// waiting for a keyframe to come along.
+	if (YAHOO.env.ua.android) {
 		this.player.onTime(function(e) {
 			if (!that.seek_done && e.position > 1) {
+				that.seek_done = true;
+				that.player.seek(position);
+			}
+		});
+	} else {
+		this.player.on('firstFrame', function() {
+			if (!that.seek_done) {
 				that.player.seek(position);
 				that.seek_done = true;
 			}
 		});
-
-		this.play();
-	} else {
-		this.player.seek(position);
 	}
+
+	this.play();
 };
 
 // }}}

@@ -9,11 +9,6 @@
  */
 class SiteJwPlayerMediaDisplay extends SwatControl
 {
-	// {{{ public static properties
-
-	public static $location_identifier;
-
-	// }}}
 	// {{{ public properties
 
 	public $key;
@@ -22,9 +17,10 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $record_end_point = false;
 	public $on_complete_message = null;
 	public $swf_uri = null;
-	public $space_to_pause = false;
 	public $menu_title = null;
 	public $menu_link = null;
+	public $playback_rate_controls = null;
+	public $has_captions = false;
 
 	/*
 	 * Whether or not to show the on-complete-message when the video loads
@@ -46,7 +42,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $aspect_ratio = array();
 	protected $skin;
 	protected $stretching;
-	protected $manifest_uri;
 	protected $vtt_uri;
 
 	// }}}
@@ -64,7 +59,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		$yui = new SwatYUI(array('swf', 'event', 'cookie'));
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
-		$this->addJavascript('packages/site/javascript/jwplayer.js');
+		$this->addJavascript('packages/jwplayer/jwplayer.js');
 		$this->addJavascript(
 			'packages/site/javascript/site-jw-player-media-display.js'
 		);
@@ -95,10 +90,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$this->setSkin($media->media_set->skin);
 		}
 
-		if ($this->manifest_uri === null) {
-			$this->setManifestUri('smil/'.$media->id.'.smil');
-		}
-
 		if ($this->vtt_uri === null) {
 			$this->setVttUri('vtt/'.$media->id.'.vtt');
 		}
@@ -109,31 +100,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function setSkin($skin)
 	{
-		if (mb_strpos($skin, '.xml') === false) {
-			if ($skin === null) {
-				$skin = 'six';
-			}
-
-			$valid_skins = array(
-				'six',
-				'bekle',
-				'modieus',
-				'glow',
-				'five',
-				'beelden',
-				'stormtrooper',
-				'vapor',
-				'roundster',
-			);
-
-			if (!in_array($skin, $valid_skins)) {
-				throw new SwatException('Skin not valid');
-			} else {
-				$this->skin = 'packages/site/javascript/jwplayer-skins/'.$skin.'.xml';
-			}
-		} else {
-			$this->skin = $skin;
-		}
+		$this->skin = $skin;
 	}
 
 	// }}}
@@ -196,14 +163,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	}
 
 	// }}}
-	// {{{ public function setManifestUri()
-
-	public function setManifestUri($uri)
-	{
-		$this->manifest_uri = $uri;
-	}
-
-	// }}}
 	// {{{ public function setVttUri()
 
 	public function setVttUri($uri)
@@ -258,12 +217,23 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		}
 
 		echo '<div class="video-player-container">';
-		echo '<div class="video-player" id="media_display_'.
-			$this->media->id.'">';
+
+		$video_player_div = new SwatHtmlTag('div');
+		$video_player_div->class = 'video-player';
+
+		// Safari (iOS and OS X) will show a CC icon even if the SMIL file
+		// only contains the scrubber image. Us a css class to hide it.
+		$video_player_div->class.= ($this->has_captions)
+			? ' has-captions'
+			: ' no-captions';
+
+		$video_player_div->id = 'media_display_'.$this->media->id;
+		$video_player_div->open();
 
 		echo '<div id="media_display_container_'.$this->media->id.'"></div>';
 
-		echo '</div>';
+		$video_player_div->close();
+
 		echo '</div>';
 
 		Swat::displayInlineJavaScript($this->getJavascript());
@@ -295,17 +265,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$this->getJavascriptVariableName(),
 			$this->aspect_ratio['width'],
 			$this->aspect_ratio['height']);
-
-		// don't do RTMP when the file has HLS
-		if (!$this->media->has_hls) {
-			$javascript.= sprintf(
-				"\t%s.addSource(%s);\n",
-				$this->getJavascriptVariableName(),
-				SwatString::quoteJavaScriptString(
-					$this->getManifestUri()
-				)
-			);
-		}
 
 		if ($this->media->getInternalValue('scrubber_image') !== null) {
 			$javascript.= sprintf("\t%s.vtt_uri = %s;\n",
@@ -340,6 +299,14 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 				SwatString::quoteJavaScriptString($this->stretching));
 		}
 
+		if ($this->playback_rate_controls !== null) {
+			$javascript.= sprintf(
+				"\t%s.playback_rate_controls = %s;\n",
+				$this->getJavascriptVariableName(),
+				$this->playback_rate_controls ? 'true' : 'false'
+			);
+		}
+
 		foreach ($this->images as $image) {
 			$javascript.= sprintf("\t%s.addImage(%s, %d);\n",
 				$this->getJavascriptVariableName(),
@@ -355,12 +322,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.record_end_point = %s;\n",
 				$this->getJavascriptVariableName(),
 				($this->record_end_point) ? 'true' : 'false');
-		}
-
-		if ($this->space_to_pause) {
-			$javascript.= sprintf("\t%s.space_to_pause = %s;\n",
-				$this->getJavascriptVariableName(),
-				($this->space_to_pause) ? 'true' : 'false');
 		}
 
 		if ($this->on_complete_message !== null) {
@@ -393,15 +354,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 				SwatString::quoteJavascriptString($this->menu_title));
 		}
 
-		// A unqiue location for the user. Used for storing location-specific
-		// info such as if RTMP is blocked
-		if (self::$location_identifier !== null) {
-			$javascript.= sprintf("\t%s.location_identifier = %s;\n",
-				$this->getJavascriptVariableName(),
-				SwatString::quoteJavascriptString(md5(
-					self::$location_identifier)));
-		}
-
 		foreach ($this->valid_mime_types as $mime_type) {
 			$javascript.= sprintf("\t%s.addValidMimeType(%s);\n",
 				$this->getJavascriptVariableName(),
@@ -417,14 +369,6 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected function getJavascriptClassName()
 	{
 		return 'SiteJwPlayerMediaDisplay';
-	}
-
-	// }}}
-	// {{{ protected function getManifestUri()
-
-	protected function getManifestUri()
-	{
-		return $this->manifest_uri;
 	}
 
 	// }}}
@@ -450,7 +394,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			'<a href="http://en.wikipedia.org/wiki/HTML5_video" '.
 			'target="_blank">HTML5 video support</a> (%s %s) or '.
 			'<a href="http://get.adobe.com/flashplayer/" target="_blank">'.
-			'Adobe Flash Player</a> (version 10 or higher). '.
+			'Adobe Flash Player</a> (version 18 or higher). '.
 			'Please upgrade your browser and try again.',
 			SwatString::toList($codecs, 'or'),
 			ngettext('codec', 'codecs', count($codecs)));
