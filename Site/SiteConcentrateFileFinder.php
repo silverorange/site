@@ -59,6 +59,7 @@ class SiteConcentrateFileFinder
 					$vendor_name === '..' ||
 					$vendor_name === 'bin' ||
 					$vendor_name === 'autoload.php') {
+					$vendor_name = $base_dir->read();
 					continue;
 				}
 
@@ -68,6 +69,7 @@ class SiteConcentrateFileFinder
 					$package_name = $vendor_dir->read();
 					while ($package_name !== false) {
 						if ($package_name === '.' || $package_name === '..') {
+							$package_name = $vendor_dir->read();
 							continue;
 						}
 
