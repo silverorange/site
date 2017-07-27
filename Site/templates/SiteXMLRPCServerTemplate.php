@@ -5,7 +5,7 @@
  * @copyright 2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteXMLRPSServerTemplate extends SiteAbstractTemplate
+class SiteXMLRPCServerTemplate extends SiteAbstractTemplate
 {
 	// {{{ public function display()
 
@@ -17,7 +17,7 @@ class SiteXMLRPSServerTemplate extends SiteAbstractTemplate
 		// Disable any caching with HTTP headers
 		// Any date in the past will do here
 		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-		header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+		header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 
 		// Set always modified
 		// for HTTP/1.1
