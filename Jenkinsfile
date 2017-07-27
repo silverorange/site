@@ -28,7 +28,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: '2c149a6f-e5fa-41a0-bb32-1fb23595de77', variable: 'auth_token')]) {
                     sh '''
-                       $api_url=\$(echo $JOB_NAME | sed -e \'s/PR-/pulls\\//g\')
+                       $api_url=\$(echo \$JOB_NAME | sed -e \'s/PR-/pulls\\//g\')
                        git clone git@github.com:Qcode/jenkins-scripts.git
                        npm install jenkins-scripts
                        node jenkins-scripts/modifyComposer.js $auth_token $api_url
