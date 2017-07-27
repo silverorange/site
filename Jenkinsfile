@@ -46,6 +46,7 @@ pipeline {
                        git clone git@github.com:Qcode/jenkins-scripts.git
                        npm install jenkins-scripts
                        node jenkins-scripts/modifyComposer.js $auth_token $api_url
+                       composer update
                     '''
                 }
             }
