@@ -25,7 +25,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 *
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/pages/search-results.xml';
+	protected $ui_xml = __DIR__.'/search-results.xml';
 
 	/**
 	 * The fulltext result object

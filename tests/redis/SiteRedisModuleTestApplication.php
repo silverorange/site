@@ -1,10 +1,10 @@
 <?php
 
-require_once 'Site/SiteApplication.php';
-require_once 'Site/SiteConfigModule.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 class SiteRedisModuleTestApplication extends SiteApplication
 {
+
 	public function run()
 	{
 	}
@@ -15,6 +15,7 @@ class SiteRedisModuleTestApplication extends SiteApplication
 			'config' => 'SiteConfigModule',
 		);
 	}
+
 }
 
 ?>

@@ -27,7 +27,7 @@ class SiteAdDetails extends AdminIndex
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/Ad/details.xml';
+	protected $ui_xml = __DIR__.'/details.xml';
 
 	/**
 	 * @var array

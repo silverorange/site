@@ -14,7 +14,7 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 
 	protected function getUiXml()
 	{
-		return 'Site/pages/account-change-password.xml';
+		return __DIR__.'/account-change-password.xml';
 	}
 
 	// }}}

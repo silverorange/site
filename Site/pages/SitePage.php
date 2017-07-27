@@ -40,7 +40,7 @@ class SitePage extends SiteAbstractPage
 
 	protected function createLayout()
 	{
-		return new SiteLayout($this->app, 'Site/layouts/xhtml/default.php');
+		return new SiteLayout($this->app, SiteDefaultTemplate::class);
 	}
 
 	// }}}

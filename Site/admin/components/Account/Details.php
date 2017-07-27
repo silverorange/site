@@ -70,7 +70,7 @@ class SiteAccountDetails extends AdminIndex
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Account/details.xml';
+		return __DIR__.'/details.xml';
 	}
 
 	// }}}

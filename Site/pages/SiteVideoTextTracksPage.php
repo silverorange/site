@@ -16,7 +16,7 @@ class SiteVideoTextTracksPage extends SitePage
 
 	protected function createLayout()
 	{
-		return new SiteLayout($this->app, 'Site/layouts/xhtml/vtt.php');
+		return new SiteLayout($this->app, SiteVTTTemplate::class);
 	}
 
 	// }}}

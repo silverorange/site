@@ -277,30 +277,6 @@ abstract class SitePageFactory
 	protected function loadClass($class, $class_path, array $class_map)
 	{
 		if (!class_exists($class)) {
-			$class_file = $class_path.'/'.$class.'.php';
-
-			if (!file_exists($class_file)) {
-				$class_file = null;
-
-				// look for class file in class map
-				foreach ($class_map as $package_prefix => $path) {
-					$length = mb_strlen($package_prefix);
-					if (strncmp($class, $package_prefix, $length) === 0) {
-						$class_file = "{$path}/{$class}.php";
-						break;
-					}
-				}
-			}
-
-			if ($class_file === null) {
-				throw new SiteNotFoundException(
-					sprintf('No file found for class ‘%s’', $class));
-			}
-
-			require_once $class_file;
-		}
-
-		if (!class_exists($class)) {
 			throw new SiteClassNotFoundException(
 				sprintf('No class definition found for class ‘%s’', $class),
 				0, $class);

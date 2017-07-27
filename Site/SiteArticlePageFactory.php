@@ -309,7 +309,6 @@ class SiteArticlePageFactory extends SitePageFactory
 	{
 		// don't try to resolve articles that are deeper than the max depth
 		if (mb_substr_count($path, '/') >= SiteArticle::MAX_DEPTH) {
-			require_once('Site/exceptions/SitePathTooLongException.php');
 			throw new SitePathTooLongException(
 				sprintf('Article path too long: ‘%s’', $path));
 		}
@@ -353,7 +352,6 @@ class SiteArticlePageFactory extends SitePageFactory
 	{
 		// don't try to find articles with invalid UTF-8 in the path
 		if (!SwatString::validateUtf8($path)) {
-			require_once('Site/exceptions/SitePathInvalidUtf8Exception.php');
 			throw new SitePathInvalidUtf8Exception(
 				sprintf(
 					'Path is not valid UTF-8: "%s"',
@@ -366,7 +364,6 @@ class SiteArticlePageFactory extends SitePageFactory
 
 		// don't try to find articles with more than 254 characters in the path
 		if (mb_strlen($path) > 254) {
-			require_once('Site/exceptions/SitePathTooLongException.php');
 			throw new SitePathTooLongException(
 				sprintf('Path is too long: ‘%s’', $path));
 		}

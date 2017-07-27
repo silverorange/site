@@ -34,7 +34,7 @@ class SiteCommentEdit extends AdminDBEdit
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Comment/edit.xml';
+		return __DIR__.'/edit.xml';
 	}
 
 	// }}}

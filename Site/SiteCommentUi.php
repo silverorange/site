@@ -79,7 +79,7 @@ abstract class SiteCommentUi
 
 	protected function getUiXml()
 	{
-		return 'Site/pages/comment-edit.xml';
+		return __DIR__.'/comment-edit.xml';
 	}
 
 	// }}}

@@ -23,7 +23,7 @@ class SiteArticleSearch extends AdminSearch
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Site/admin/components/Article/search.xml';
+	protected $ui_xml = __DIR__.'/search.xml';
 
 	// }}}
 

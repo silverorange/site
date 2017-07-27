@@ -22,7 +22,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 
 	protected function getUiXml()
 	{
-		return 'Site/pages/account-reset-password.xml';
+		return __DIR__.'/account-reset-password.xml';
 	}
 
 	// }}}

@@ -42,7 +42,7 @@ class SiteAccountMerge extends AdminSearch
 
 	protected function getUiXml()
 	{
-		return 'Site/admin/components/Account/merge.xml';
+		return __DIR__.'/merge.xml';
 	}
 
 	// }}}

@@ -11,7 +11,7 @@ class SiteSidebarIndex extends AdminIndex
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Site/admin/components/Sidebar/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	// }}}
 

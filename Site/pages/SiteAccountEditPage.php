@@ -24,7 +24,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 	protected function getUiXml()
 	{
-		return 'Site/pages/account-edit.xml';
+		return __DIR__.'/account-edit.xml';
 	}
 
 	// }}}

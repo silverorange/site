@@ -12,7 +12,7 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function getUiXml()
 	{
-		return 'Site/pages/contact.xml';
+		return __DIR__.'/contact.xml';
 	}
 
 	// }}}

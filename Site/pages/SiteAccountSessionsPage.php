@@ -23,7 +23,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 	protected function getUiXml()
 	{
-		return 'Site/pages/account-sessions.xml';
+		return __DIR__.'/account-sessions.xml';
 	}
 
 	// }}}
