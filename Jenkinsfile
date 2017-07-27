@@ -26,25 +26,12 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'echo $CHANGE_ID'
-                sh 'echo $BRANCH_NAME'
-                sh 'echo $JOB_NAME'
-                sh 'echo $JOB_BASE_NAME'
-                sh 'echo $CHANGE_TARGET'
                 withCredentials([string(credentialsId: '2c149a6f-e5fa-41a0-bb32-1fb23595de77', variable: 'auth_token')]) {
                     sh '''
-                        echo $auth_token
-                        var=$(echo \'silverorange/site/PR-231\' | sed -e \'s/PR-/pulls\\//g\')
-                        query_url=\'https://api.github.com/repos/\'$var
-                        body_text=$(curl -u sogitbot:$auth_token $query_url | jq .body)
-                        if line_of_links=$(echo $body_text | grep -o -E \'([Rr]equires|[Dd]epends (up)?on).*\\r\'); then
-                            echo 'Requirements found'
-                            echo $line_of_links \
-                            | grep -o $github_links \'github.com\\/silverorange\\/\\w*\\/pull\\/[0-9]*' \
-                            | while read -r line ; do
-                                echo "Processing $line"
-                            done
-                        fi
+                       $api_url=$(echo $JOB_NAME | sed -e \'s/PR-/pulls\\//g\')
+                       git clone git@github.com:Qcode/jenkins-scripts.git
+                       npm install jenkins-scripts
+                       node jenkins-scripts/modifyComposer.js $auth_token $api_url
                     '''
                 }
             }
