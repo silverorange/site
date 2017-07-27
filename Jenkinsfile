@@ -16,6 +16,7 @@ pipeline {
             }
             steps {
                 sh '''
+                    composer install 'silverorange/coding-standard'
                     master_sha=$(git rev-parse origin/master)
                     newest_sha=$(git rev-parse HEAD)
                     ./vendor/bin/phpcs \
