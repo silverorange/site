@@ -1,10 +1,10 @@
 pipeline {
     agent any
     stages {
-        stage('Install Composer Dependencies') {
+        stage('Reset Build Environment') {
             steps {
-                sh 'rm -rf composer.lock vendor/'
-                sh 'composer install'
+                sh 'rm -rf composer.lock vendor/ jenkins-scripts/'
+                sh 'git checkout composer.json'
             }
         }
 
@@ -32,7 +32,7 @@ pipeline {
                        git clone git@github.com:Qcode/jenkins-scripts.git
                        npm install jenkins-scripts
                        node jenkins-scripts/modifyComposer.js $auth_token $api_url
-                       composer update
+                       composer install
                     '''
                 }
             }
