@@ -11,7 +11,7 @@ pipeline {
         stage('Lint') {
             steps {
                 sh '''
-                    composer install 'silverorange/coding-standard'
+                    composer update 'silverorange/coding-standard'
                     master_sha=$(git rev-parse origin/master)
                     newest_sha=$(git rev-parse HEAD)
                     ./vendor/bin/phpcs \
