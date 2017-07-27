@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/SiteRedisModuleTestApplication.php';
+require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__.'/SiteRedisModuleTestApplication.php';
 
 class SiteRedisModuleTest extends PHPUnit_Framework_TestCase
 {
@@ -32,6 +32,7 @@ class SiteRedisModuleTest extends PHPUnit_Framework_TestCase
 			$this->redis->getKeys('*')
 		);
 	}
+
 }
 
 ?>

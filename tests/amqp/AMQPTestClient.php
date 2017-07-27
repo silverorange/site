@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 class AMQPTestClient extends SiteCommandLineApplication
 {
@@ -20,7 +20,7 @@ class AMQPTestClient extends SiteCommandLineApplication
 		$this->debug("Async test:\n", true);
 
 		foreach ($strings as $string) {
-			$this->debug($string . "\n");
+			$this->debug($string."\n");
 			$this->amqp->doAsync('strrev', $string);
 		}
 
@@ -29,7 +29,7 @@ class AMQPTestClient extends SiteCommandLineApplication
 
 		try {
 			foreach ($strings as $string) {
-				$this->debug($string . ' => ');
+				$this->debug($string.' => ');
 				$this->debug($this->amqp->doSync('strrev', $string));
 				$this->debug("\n");
 			}
