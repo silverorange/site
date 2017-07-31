@@ -8,23 +8,33 @@ pipeline {
             }
         }
 
-        stage('Lint') {
+        stage('Lint Modified Files') {
+            when {
+                not {
+                    branch 'master'
+                }
+            }
             steps {
                 sh '''
                     master_sha=$(git rev-parse origin/master)
                     newest_sha=$(git rev-parse HEAD)
-                    if [[ $BRANCH_NAME == "master" ]]; then
-                        ./vendor/bin/phpcs
-                    else
-                        ./vendor/bin/phpcs \
-                        --standard=SilverorangeTransitional \
-                        --tab-width=4 \
-                        --encoding=utf-8 \
-                        --warning-severity=0 \
-                        --extensions=php \
-                        $(git diff --diff-filter=ACRM --name-only $master_sha...$newest_sha)
-                    fi
+                    ./vendor/bin/phpcs \
+                    --standard=SilverorangeTransitional \
+                    --tab-width=4 \
+                    --encoding=utf-8 \
+                    --warning-severity=0 \
+                    --extensions=php \
+                    $(git diff --diff-filter=ACRM --name-only $master_sha...$newest_sha)
                 '''
+            }
+        }
+
+        stage('Lint Entire Project') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh './vendor/bin/phpcs'
             }
         }
     }
