@@ -13,13 +13,17 @@ pipeline {
                 sh '''
                     master_sha=$(git rev-parse origin/master)
                     newest_sha=$(git rev-parse HEAD)
-                    ./vendor/bin/phpcs \
-                    --standard=SilverorangeTransitional \
-                    --tab-width=4 \
-                    --encoding=utf-8 \
-                    --warning-severity=0 \
-                    --extensions=php \
-                    $(git diff --diff-filter=ACRM --name-only $master_sha...$newest_sha)
+                    if [[ $BRANCH_NAME == "master" ]]; then
+                        ./vendor/bin/phpcs
+                    else
+                        ./vendor/bin/phpcs \
+                        --standard=SilverorangeTransitional \
+                        --tab-width=4 \
+                        --encoding=utf-8 \
+                        --warning-severity=0 \
+                        --extensions=php \
+                        $(git diff --diff-filter=ACRM --name-only $master_sha...$newest_sha)
+                    fi
                 '''
             }
         }
