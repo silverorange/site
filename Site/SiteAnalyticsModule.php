@@ -1121,11 +1121,29 @@ JS;
 				array(
 					'id'         => $account->email,
 					'email'      => $account->email,
-					'first_name' => $account->first_name,
-					'last_name'  => $account->last_name,
+					'first_name' => $this->getFriendbuyFirstName($account),
+					'last_name'  => $this->getFriendbuyLastName($account),
 				)
 			);
 		}
+	}
+
+	// }}}
+	// {{{ protected function getFriendbuyFirstName()
+
+	protected function getFriendbuyFirstName(SiteAccount $account)
+	{
+		$parts = SiteFullnameParser::parse($account->getFullName());
+		return $parts['first'];
+	}
+
+	// }}}
+	// {{{ protected function getFriendbuyLastName()
+
+	protected function getFriendbuyLastName(SiteAccount $account)
+	{
+		$parts = SiteFullnameParser::parse($account->getFullName());
+		return $parts['last'];
 	}
 
 	// }}}
