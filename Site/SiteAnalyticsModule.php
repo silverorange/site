@@ -1047,6 +1047,26 @@ JS;
 	}
 
 	// }}}
+	// {{{ public function getFriendbuyReferralWidgetsInlineJavaScript()
+
+	public function getFriendbuyReferralWidgetsInlineJavaScript()
+	{
+		$javascript = '';
+
+		if ($this->hasFriendBuyPixel()) {
+			// @codingStandardsIgnoreStart
+			$javascript = <<<'JS'
+(function (f, r, n, d, b, y) {
+  b = f.createElement(r), y = f.getElementsByTagName(r)[0];b.async = 1;b.src = n;y.parentNode.insertBefore(b, y);
+})(document, 'script', '//djnf6e5yyirys.cloudfront.net/js/friendbuy.min.js');
+JS;
+			// @codingStandardsIgnoreEnd
+		}
+
+		return $javascript;
+	}
+
+	// }}}
 	// {{{ protected function getFriendbuyPixelInlineJavascript()
 
 	protected function getFriendbuyPixelInlineJavascript()
@@ -1075,26 +1095,6 @@ JS;
 		$javascript = "window['friendbuy'].push(";
 		$javascript.= json_encode($command);
 		$javascript.= ');';
-
-		return $javascript;
-	}
-
-	// }}}
-	// {{{ public function getFriendbuyReferralWidgetsInlineJavaScript()
-
-	public function getFriendbuyReferralWidgetsInlineJavaScript()
-	{
-		$javascript = '';
-
-		if ($this->hasFriendBuyPixel()) {
-			// @codingStandardsIgnoreStart
-			$javascript = <<<'JS'
-(function (f, r, n, d, b, y) {
-  b = f.createElement(r), y = f.getElementsByTagName(r)[0];b.async = 1;b.src = n;y.parentNode.insertBefore(b, y);
-})(document, 'script', '//djnf6e5yyirys.cloudfront.net/js/friendbuy.min.js');
-JS;
-			// @codingStandardsIgnoreEnd
-		}
 
 		return $javascript;
 	}
