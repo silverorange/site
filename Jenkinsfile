@@ -37,5 +37,23 @@ pipeline {
                 sh './vendor/bin/phpcs'
             }
         }
+
+        stage('Run Selenium Tests') {
+            steps {
+                withCredentials([string(credentialsId: '2c149a6f-e5fa-41a0-bb32-1fb23595de77', variable: 'auth_token')]) {
+                    sh '''
+                       api_url=$(echo $JOB_NAME | sed -e \'s/PR-/pulls\\//g\')
+                       sudo -u sysadmin \
+                       ssh -o StrictHostKeyChecking=no roble "/so/sites/pcrap-tests/work-ross/runTests.sh $auth_token $api_url package $(pwd)"
+                    '''
+                }
+            }
+            post {
+                always {
+                    junit 'logs/Silverorange-Rap-Test-*.xml'
+                    archiveArtifacts artifacts: 'logs/*.html, logs/results.xml, logs/*.png'
+                }
+            }
+        }
     }
 }
