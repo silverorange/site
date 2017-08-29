@@ -1,10 +1,13 @@
 pipeline {
     agent any
     stages {
-        stage('Install Composer Dependencies') {
+        stage('Install Linter') {
             steps {
-                sh 'rm -rf composer.lock vendor/'
-                sh 'composer install'
+                sh '''
+                    rm -rf composer.json composer.lock vendor/
+                    composer require 'silverorange/coding-standard'
+                    ./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src
+                '''
             }
         }
 
@@ -35,6 +38,17 @@ pipeline {
             }
             steps {
                 sh './vendor/bin/phpcs'
+            }
+        }
+
+        stage('Install Composer Dependencies') {
+            steps {
+                sh '''
+                    rm -rf vendor/ composer.json composer.lock
+                    git checkout composer.json
+                    git checkout composer.lock || true
+                    composer install
+                '''
             }
         }
     }
