@@ -44,14 +44,14 @@ pipeline {
                     sh '''
                        api_url=$(echo $JOB_NAME | sed -e \'s/PR-/pulls\\//g\')
                        sudo -u sysadmin \
-                       ssh -o StrictHostKeyChecking=no roble "/so/sites/pcrap-tests/work-ross/runTests.sh $auth_token $api_url package $(pwd)"
+                       ssh -o StrictHostKeyChecking=no roble "run-tests-with-jenkins $auth_token $api_url package $(pwd)"
                     '''
                 }
             }
             post {
                 always {
-                    junit 'logs/Silverorange-Rap-Test-*.xml'
-                    archiveArtifacts artifacts: 'logs/*.html, logs/results.xml, logs/*.png'
+                    junit 'Silverorange-*.xml'
+                    archiveArtifacts artifacts: '*.html, results*.xml, *.png'
                 }
             }
         }
