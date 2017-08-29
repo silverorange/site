@@ -53,7 +53,7 @@ pipeline {
                     if [[ -f tmpComposer.lock ]]; then
                         mv tmpComposer.lock composer.lock
                     fi
-                    sh 'composer install'
+                    composer install
                 '''
             }
         }
