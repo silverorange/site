@@ -1,10 +1,16 @@
 pipeline {
     agent any
     stages {
-        stage('Install Composer Dependencies') {
+        stage('Install Linter') {
             steps {
-                sh 'rm -rf composer.lock vendor/'
-                sh 'composer install'
+                sh '''
+                    mv composer.json tmpComposer.json
+                    if [[ -f composer.lock ]] ; then
+                        mv composer.lock tmpComposer.lock
+                    fi
+                    rm -rf vendor/
+                    composer require 'silverorange/coding-standard'
+                '''
             }
         }
 
@@ -35,6 +41,19 @@ pipeline {
             }
             steps {
                 sh './vendor/bin/phpcs'
+            }
+        }
+
+        stage('Install Composer Dependencies') {
+            steps {
+                sh '''
+                    rm -rf composer.json composer.lock
+                    mv tmpComposer.json composer.json
+                    if [[ -f tmpComposer.lock ]]; then
+                        mv tmpComposer.lock composer.lock
+                    fi
+                    sh 'composer install'
+                '''
             }
         }
     }

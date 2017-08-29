@@ -117,5 +117,3 @@ class SiteAccountLoginSessionCleaner extends SiteCommandLineApplication
 	}
 
 }
-
-?>
