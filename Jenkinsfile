@@ -4,11 +4,7 @@ pipeline {
         stage('Install Linter') {
             steps {
                 sh '''
-                    mv composer.json tmpComposer.json
-                    if [[ -f composer.lock ]] ; then
-                        mv composer.lock tmpComposer.lock
-                    fi
-                    rm -rf vendor/
+                    rm -rf composer.json composer.lock vendor/
                     composer require 'silverorange/coding-standard'
                     ./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src
                 '''
@@ -48,11 +44,9 @@ pipeline {
         stage('Install Composer Dependencies') {
             steps {
                 sh '''
-                    rm -rf composer.json composer.lock
-                    mv tmpComposer.json composer.json
-                    if [[ -f tmpComposer.lock ]]; then
-                        mv tmpComposer.lock composer.lock
-                    fi
+                    rm -rf vendor/ composer.json composer.lock
+                    git checkout composer.json
+                    git checkout composer.lock> /dev/null
                     composer install
                 '''
             }
