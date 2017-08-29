@@ -46,7 +46,7 @@ pipeline {
                 sh '''
                     rm -rf vendor/ composer.json composer.lock
                     git checkout composer.json
-                    git checkout composer.lock> /dev/null
+                    git checkout composer.lock || true
                     composer install
                 '''
             }
