@@ -10,6 +10,7 @@ pipeline {
                     fi
                     rm -rf vendor/
                     composer require 'silverorange/coding-standard'
+                    ./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src
                 '''
             }
         }
