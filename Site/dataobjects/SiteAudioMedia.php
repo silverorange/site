@@ -196,6 +196,21 @@ class SiteAudioMedia extends SiteMedia
 					$file_path,
 					self::FFPROBE_DEFAULT_OFFSET
 				);
+
+				if ($duration === null) {
+					// Depending on the encoding, some MP3s will return no
+					// packets when read_intervals goes past the end of the
+					// file. If no packets are returned, run again and read all
+					// packets. It's slower, but it works.
+					$duration = $this->parseMp3Duration($file_path, 0);
+				}
+
+				if ($duration === null) {
+					throw new SiteException(
+						'Audio media duration lookup with ffprobe failed. '.
+						'Unable to parse duration from output.'
+					);
+				}
 			}
 		}
 
@@ -235,7 +250,7 @@ class SiteAudioMedia extends SiteMedia
 	// }}}
 	// {{{ protected function parseMp3Duration()
 
-	protected function parseMp3Duration($file_path, $offset = 0)
+	protected function parseMp3Duration($file_path, $offset)
 	{
 		$bin = trim(`which ffprobe`);
 
@@ -269,21 +284,6 @@ class SiteAudioMedia extends SiteMedia
 				count($result['packets']) > 0) {
 				$packet = end($result['packets']);
 				$duration = (integer)round($packet['pts_time']);
-			}
-
-			if ($duration === null && $offset > 0) {
-				// Depending on the encoding, some MP3s will return no packets
-				// when read_intervals goes past the end of the file. If
-				// no packets are returned, run again and read all packets.
-				// It's slower, but it works.
-				$duration = $this->parseMp3Duration($file_path);
-			}
-
-			if ($duration === null) {
-				throw new SiteException(
-					'Audio media duration lookup with ffprobe failed. '.
-					'Unable to parse duration from output.'
-				);
 			}
 		} else {
 			throw new SiteException(
