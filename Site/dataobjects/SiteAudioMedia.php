@@ -192,56 +192,10 @@ class SiteAudioMedia extends SiteMedia
 			// If the file is a MP3 file, ignore the metadata duration and
 			// calculate duration based on raw packets.
 			if (in_array('mp3', explode(',', mb_strtolower($format)))) {
-				$duration = null;
-
-				$command = sprintf(
-					'%s '.
-						'-print_format json '.
-						'-read_intervals %s%% '.
-						'-select_streams a '.
-						'-show_entries packet=pts_time '.
-						'-v quiet '.
-						'%s ',
-					$bin,
-					escapeshellarg(self::FFPROBE_DEFAULT_OFFSET),
-					escapeshellarg($file_path)
+				$duration = $this->parseMp3Duration(
+					$file_path,
+					self::FFPROBE_DEFAULT_OFFSET
 				);
-
-				$returned_value = 0;
-				$command_output = '';
-				exec($command, $command_output, $returned_value);
-
-				// If ffprobe has worked, get the time from it's output,
-				// otherwise throw an exception.
-				if ($returned_value === 0) {
-					$result = implode('', $command_output);
-					$result = json_decode($result, true);
-
-					if ($result !== null &&
-						is_array($result['packets']) &&
-						count($result['packets']) > 0) {
-						$packet = end($result['packets']);
-						$duration = (integer)round($packet['pts_time']);
-					}
-
-					if ($duration === null) {
-						throw new SiteException(
-							'Audio media duration lookup with ffprobe failed. '.
-							'Unable to parse duration from output.'
-						);
-					}
-				} else {
-					throw new SiteException(
-						sprintf(
-							"Audio media duration lookup with ffprobe ".
-							"failed.\n\n".
-							"Ran command:\n%s\n\n".
-							"With return code:\n%s",
-							$command,
-							$returned_value
-						)
-					);
-				}
 			}
 		}
 
@@ -276,6 +230,75 @@ class SiteAudioMedia extends SiteMedia
 		}
 
 		$this->encoding_bindings->add($binding);
+	}
+
+	// }}}
+	// {{{ protected function parseMp3Duration()
+
+	protected function parseMp3Duration($file_path, $interval = 0)
+	{
+		$bin = trim(`which ffprobe`);
+
+		$duration = null;
+
+		$command = sprintf(
+			'%s '.
+				'-print_format json '.
+				'-read_intervals %s%% '.
+				'-select_streams a '.
+				'-show_entries packet=pts_time '.
+				'-v quiet '.
+				'%s ',
+			$bin,
+			escapeshellarg($interval),
+			escapeshellarg($file_path)
+		);
+
+		$returned_value = 0;
+		$command_output = '';
+		exec($command, $command_output, $returned_value);
+
+		// If ffprobe has worked, get the time from it's output,
+		// otherwise throw an exception.
+		if ($returned_value === 0) {
+			$result = implode('', $command_output);
+			$result = json_decode($result, true);
+
+			if ($result !== null &&
+				is_array($result['packets']) &&
+				count($result['packets']) > 0) {
+				$packet = end($result['packets']);
+				$duration = (integer)round($packet['pts_time']);
+			}
+
+			if ($duration === null && $interval > 0) {
+				// Depending on the encoding, some MP3s will return no packets
+				// when read_intervals goes past the end of the file. If
+				// no packets are returned, run again and read all packets.
+				// It's slower, but it works.
+				$duration = $this->parseMp3Duration($file_path);
+			}
+
+			if ($duration === null) {
+				throw new SiteException(
+					'Audio media duration lookup with ffprobe failed. '.
+					'Unable to parse duration from output.'
+				);
+			}
+		} else {
+			throw new SiteException(
+				sprintf(
+					"Audio media duration lookup with ffprobe ".
+					"failed.\n\n".
+					"Ran command:\n%s\n\n".
+					"With return code:\n%s",
+					$command,
+					$returned_value
+				)
+			);
+		}
+
+		return $duration;
 	}
 
 	// }}}
