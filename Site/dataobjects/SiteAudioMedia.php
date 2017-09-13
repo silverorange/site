@@ -235,7 +235,7 @@ class SiteAudioMedia extends SiteMedia
 	// }}}
 	// {{{ protected function parseMp3Duration()
 
-	protected function parseMp3Duration($file_path, $interval = 0)
+	protected function parseMp3Duration($file_path, $intervals = 0)
 	{
 		$bin = trim(`which ffprobe`);
 
@@ -250,7 +250,7 @@ class SiteAudioMedia extends SiteMedia
 				'-v quiet '.
 				'%s ',
 			$bin,
-			escapeshellarg($interval),
+			escapeshellarg($intervals),
 			escapeshellarg($file_path)
 		);
 
@@ -271,7 +271,7 @@ class SiteAudioMedia extends SiteMedia
 				$duration = (integer)round($packet['pts_time']);
 			}
 
-			if ($duration === null && $interval > 0) {
+			if ($duration === null && $intervals > 0) {
 				// Depending on the encoding, some MP3s will return no packets
 				// when read_intervals goes past the end of the file. If
 				// no packets are returned, run again and read all packets.
