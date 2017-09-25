@@ -21,6 +21,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $menu_link = null;
 	public $playback_rate_controls = null;
 	public $has_captions = false;
+	public $mute = false;
+	public $auto_start = false;
 
 	/*
 	 * Whether or not to show the on-complete-message when the video loads
@@ -168,6 +170,22 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public function setVttUri($uri)
 	{
 		$this->vtt_uri = $uri;
+	}
+
+	// }}}
+	// {{{ public function setMute()
+
+	public function setMute($mute)
+	{
+		$this->mute = (bool)$mute;
+	}
+
+	// }}}
+	// {{{ public function setAutoStart()
+
+	public function setAutoStart($auto_start)
+	{
+		$this->auto_start = (bool)$auto_start;
 	}
 
 	// }}}
@@ -358,6 +376,20 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			$javascript.= sprintf("\t%s.addValidMimeType(%s);\n",
 				$this->getJavascriptVariableName(),
 				SwatString::quoteJavaScriptString($mime_type));
+		}
+
+		if ($this->mute) {
+			$javascript.= sprintf(
+				"\t%s.mute = true;\n",
+				$this->getJavascriptVariableName()
+			);
+		}
+
+		if ($this->auto_start) {
+			$javascript.= sprintf(
+				"\t%s.auto_start = true;\n",
+				$this->getJavascriptVariableName()
+			);
 		}
 
 		return $javascript;
