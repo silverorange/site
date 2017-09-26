@@ -21,6 +21,8 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.swf_uri = null;
 	this.vtt_uri = null;
 	this.playback_rate_controls = true;
+	this.mute = false;
+	this.auto_start = false;
 
 	this.menu_title = null;
 	this.menu_link = null;
@@ -111,6 +113,8 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		abouttext:   this.menu_title,
 		aboutlink:   this.menu_link,
 		playbackRateControls: this.playback_rate_controls,
+		mute:        this.mute,
+		autostart:   this.auto_start,
 		analytics:   {
 			enabled: false // turn off JW Player's built-in analytics
 		},
