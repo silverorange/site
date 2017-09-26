@@ -21,9 +21,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $menu_link = null;
 	public $playback_rate_controls = null;
 	public $has_captions = false;
-	public $mute = false;
-	public $auto_start = false;
-
+	
 	/*
 	 * Whether or not to show the on-complete-message when the video loads
 	 *
@@ -45,6 +43,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $skin;
 	protected $stretching;
 	protected $vtt_uri;
+	protected $mute = false;
+	protected $auto_start = false;
 
 	// }}}
 	// {{{ public function __construct()
