@@ -45,6 +45,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $vtt_uri;
 	protected $mute = false;
 	protected $auto_start = false;
+	protected $controls = true;
+	protected $repeat = false;
 
 	// }}}
 	// {{{ public function __construct()
@@ -186,6 +188,22 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public function setAutoStart($auto_start)
 	{
 		$this->auto_start = (bool)$auto_start;
+	}
+
+	// }}}
+	// {{{ public function setControls()
+
+	public function setControls($controls)
+	{
+		$this->controls = (bool)$controls;
+	}
+
+	// }}}
+	// {{{ public function setRepeat()
+
+	public function setRepeat($repeat)
+	{
+		$this->repeat = (bool)$repeat;
 	}
 
 	// }}}
@@ -388,6 +406,20 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		if ($this->auto_start) {
 			$javascript.= sprintf(
 				"\t%s.auto_start = true;\n",
+				$this->getJavascriptVariableName()
+			);
+		}
+
+		if (!$this->controls) {
+			$javascript.= sprintf(
+				"\t%s.controls = false;\n",
+				$this->getJavascriptVariableName()
+			);
+		}
+
+		if ($this->repeat) {
+			$javascript.= sprintf(
+				"\t%s.repeat = true;\n",
 				$this->getJavascriptVariableName()
 			);
 		}
