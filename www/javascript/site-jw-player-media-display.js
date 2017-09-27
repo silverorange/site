@@ -23,6 +23,8 @@ function SiteJwPlayerMediaDisplay(media_id)
 	this.playback_rate_controls = true;
 	this.mute = false;
 	this.auto_start = false;
+	this.controls = true;
+	this.repeat = false;
 
 	this.menu_title = null;
 	this.menu_link = null;
@@ -115,6 +117,8 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		playbackRateControls: this.playback_rate_controls,
 		mute:        this.mute,
 		autostart:   this.auto_start,
+		controls:    this.controls,
+		repeat:      this.repeat,
 		analytics:   {
 			enabled: false // turn off JW Player's built-in analytics
 		},
