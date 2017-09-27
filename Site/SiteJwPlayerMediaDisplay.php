@@ -308,7 +308,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public function getContainerId()
 	{
 		if ($this->container_id == '') {
-			$this->setContainerId('media_display_' . $this->media->id);
+			$this->setContainerId('media_display_'.$this->media->id);
 		}
 
 		return $this->container_id;
@@ -328,7 +328,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public function getPlayerId()
 	{
 		if ($this->player_id == '') {
-			$this->setPlayerId('media_display_container_' . $this->media->id);
+			$this->setPlayerId('media_display_container_'.$this->media->id);
 		}
 
 		return $this->player_id;
