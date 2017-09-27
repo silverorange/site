@@ -3,9 +3,10 @@
  *
  * @copyright 2011-2016 silverorange
  */
-function SiteJwPlayerMediaDisplay(media_id)
+function SiteJwPlayerMediaDisplay(media_id, container_id)
 {
 	this.media_id = media_id;
+	this.container_id = container_id;
 
 	this.sources = [];
 	this.images  = [];
@@ -60,7 +61,7 @@ SiteJwPlayerMediaDisplay.players = [];
 
 SiteJwPlayerMediaDisplay.prototype.init = function()
 {
-	this.container = document.getElementById('media_display_' + this.media_id);
+	this.container = document.getElementById(this.container_id);
 
 	this.embedPlayer();
 	this.drawDialogs();
