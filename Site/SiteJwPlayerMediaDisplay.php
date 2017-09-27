@@ -47,6 +47,9 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $auto_start = false;
 	protected $controls = true;
 	protected $repeat = false;
+	protected $container_id;
+	protected $player_id;
+	protected $javascript_variable_name;
 
 	// }}}
 	// {{{ public function __construct()
@@ -254,21 +257,24 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 		echo '<div class="video-player-container">';
 
-		$video_player_div = new SwatHtmlTag('div');
-		$video_player_div->class = 'video-player';
+		$container_div = new SwatHtmlTag('div');
+		$container_div->class = 'video-player';
 
 		// Safari (iOS and OS X) will show a CC icon even if the SMIL file
 		// only contains the scrubber image. Us a css class to hide it.
-		$video_player_div->class.= ($this->has_captions)
+		$container_div->class.= ($this->has_captions)
 			? ' has-captions'
 			: ' no-captions';
 
-		$video_player_div->id = 'media_display_'.$this->media->id;
-		$video_player_div->open();
+		$container_div->id = $this->getContainerId();
+		$container_div->open();
 
-		echo '<div id="media_display_container_'.$this->media->id.'"></div>';
+		$player_div = new SwatHtmlTag('div');
+		$player_div->id = $this->getPlayerId();
+		$player_div->open();
+		$player_div->close();
 
-		$video_player_div->close();
+		$container_div->close();
 
 		echo '</div>';
 
@@ -280,7 +286,61 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function getJavascriptVariableName()
 	{
-		return sprintf('site_%s_media', $this->media->id);
+		if ($this->javascript_variable_name == '') {
+			$this->setJavascriptVariableName(
+				sprintf('site_%s_media', $this->media->id)
+			);
+		}
+
+		return $this->javascript_variable_name;
+	}
+
+	// }}}
+	// {{{ public function setJavascriptVariableName()
+
+	public function setJavascriptVariableName($javascript_variable_name)
+	{
+		$this->javascript_variable_name = $javascript_variable_name;
+	}
+
+	// }}}
+	// {{{ publuc function getContainerId()
+
+	public function getContainerId()
+	{
+		if ($this->container_id == '') {
+			$this->setContainerId('media_display_'.$this->media->id);
+		}
+
+		return $this->container_id;
+	}
+
+	// }}}
+	// {{{ publuc function setContainerId()
+
+	public function setContainerId($container_id)
+	{
+		$this->container_id = $container_id;
+	}
+
+	// }}}
+	// {{{ publuc function getPlayerId()
+
+	public function getPlayerId()
+	{
+		if ($this->player_id == '') {
+			$this->setPlayerId('media_display_container_'.$this->media->id);
+		}
+
+		return $this->player_id;
+	}
+
+	// }}}
+	// {{{ publuc function setPlayerId()
+
+	public function setPlayerId($player_id)
+	{
+		$this->player_id = $player_id;
 	}
 
 	// }}}
@@ -288,10 +348,12 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	protected function getJavascript()
 	{
-		$javascript = sprintf("\tvar %s = new %s(%d);\n",
+		$javascript = sprintf("\tvar %s = new %s(%d, %s);\n",
 			$this->getJavascriptVariableName(),
 			$this->getJavascriptClassName(),
-			$this->media->id);
+			$this->media->id,
+			SwatString::quoteJavaScriptString($this->getContainerId())
+		);
 
 		$javascript.= sprintf("\t%s.duration = %d;\n",
 			$this->getJavascriptVariableName(),
