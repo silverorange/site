@@ -271,9 +271,10 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 		$player_div = new SwatHtmlTag('div');
 		$player_div->id = $this->getPlayerId();
-		$player_div->display();
-
+		$player_div->open();
 		$player_div->close();
+
+		$container_div->close();
 
 		echo '</div>';
 
