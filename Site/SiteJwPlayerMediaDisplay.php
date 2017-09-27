@@ -21,7 +21,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	public $menu_link = null;
 	public $playback_rate_controls = null;
 	public $has_captions = false;
-	
+
 	/*
 	 * Whether or not to show the on-complete-message when the video loads
 	 *
