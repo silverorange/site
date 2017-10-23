@@ -59,11 +59,11 @@
 		"ext-pnctl": "Process control management for command-line applications.",
 		"ext-redis": "Allow connecting applications to a Redis data store.",
 		"ext-uploadprogress": "Allows showing upload progress for SiteFileEntry widgets.",
-		"pear/xml_rpc2": "Enables XML-RPC server pages.",
 		"psr/log": "Enables logging using the PSR logging interface.",
 		"silverorange/jwplayer": "Enables video player support.",
 		"silverorange/nate_go_search": "Article search indexing and CME search index framework.",
-		"silverorange/net_notifier": "Enables async notifications from web applications using web sockets."
+		"silverorange/net_notifier": "Enables async notifications from web applications using web sockets.",
+		"silverorange/xml_rpc2": "Enables XML-RPC server pages."
 	},
 	"scripts": {
 		"lint": "./vendor/bin/phpcs",
