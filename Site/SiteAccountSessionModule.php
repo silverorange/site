@@ -25,6 +25,28 @@ class SiteAccountSessionModule extends SiteSessionModule
 	protected $logout_callbacks = array();
 
 	// }}}
+	// {{{ public function __construct()
+
+	/**
+	 * Creates a site account session module
+	 *
+	 * @param SiteApplication $app the application this module belongs to.
+	 *
+	 * @throws SiteException if there is no cookie module loaded the account
+	 *                       session module throws an exception.
+	 *
+	 * @throws SiteException if there is no database module loaded the account
+	 *                       session module throws an exception.
+	 */
+	public function __construct(SiteApplication $app)
+	{
+		parent::__construct($app);
+
+		$this->registerLoginCallback(array($this, 'setSentryUserContext'));
+		$this->registerLogoutCallback(array($this, 'setSentryUserContext'));
+	}
+
+	// }}}
 	// {{{ public function init()
 
 	/**
@@ -696,6 +718,33 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 		$cookie = $this->app->getModule('SiteCookieModule');
 		$cookie->removeCookie('account_id');
+	}
+
+	// }}}
+	// {{{ protected function getErrorContext()
+
+	/**
+	 * Gets the user-context array for error reporting
+	 *
+	 * @return array the user-context array for error reporting.
+	 */
+	protected function getErrorContext()
+	{
+		$data = parent::getErrorContext();
+
+		if ($this->isLoggedIn()) {
+			$data = array_merge(
+				$data,
+				[
+					'id' => $this->account->id,
+					'name' => $this->account->getFullName(),
+					'email' => $this->account->email,
+				]
+			);
+			unset($data['account']);
+		}
+
+		return $data;
 	}
 
 	// }}}
