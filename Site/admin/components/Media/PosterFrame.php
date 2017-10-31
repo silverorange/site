@@ -82,7 +82,7 @@ class SiteMediaPosterFrame extends AdminDBEdit
 			$class_name = SwatDBClassMap::get('SiteVideoImage');
 			$image = new $class_name();
 
-			if ($image->hasProperty('modified_date')) {
+			if ($image->hasDateProperty('modified_date')) {
 				$image->modified_date = new SwatDate();
 				$image->modified_date->toUTC();
 			}
