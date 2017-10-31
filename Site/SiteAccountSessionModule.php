@@ -741,7 +741,6 @@ class SiteAccountSessionModule extends SiteSessionModule
 					'email' => $this->account->email,
 				]
 			);
-			unset($data['account']);
 		}
 
 		return $data;
