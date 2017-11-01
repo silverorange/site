@@ -171,10 +171,13 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 	 */
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'config'   => 'SiteCommandLineConfigModule',
-			'database' => 'SiteDatabaseModule',
-			'instance' => 'SiteMultipleInstanceModule',
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'config' => SiteCommandLineConfigModule::class,
+				'database' => SiteDatabaseModule::class,
+				'instance' => SiteMultipleInstanceModule::class,
+			]
 		);
 	}
 

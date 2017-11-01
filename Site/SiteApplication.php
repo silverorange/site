@@ -732,14 +732,17 @@ abstract class SiteApplication extends SiteObject
 	 * application. The public property names correspond directly to the module
 	 * identifiers specified in the module list array.
 	 *
-	 * No modules are loaded by default. Subclasses of SiteApplication may
-	 * specify their own list of modules to load by overriding this method.
+	 * By default, the Sentry error reporting module is loaded. Subclasses of
+	 * SiteApplication may specify their own list of modules to load by
+	 * overriding this method.
 	 *
 	 * @return array the default list of modules to load for this application.
 	 */
 	protected function getDefaultModuleList()
 	{
-		return array();
+		return [
+			'sentry' => SiteSentryModule::class,
+		];
 	}
 
 	// }}}
