@@ -105,9 +105,12 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'database' => 'SiteDatabaseModule',
-			'instance' => 'SiteMultipleInstanceModule',
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'database' => SiteDatabaseModule::class,
+				'instance' => SiteMultipleInstanceModule::class,
+			]
 		);
 	}
 

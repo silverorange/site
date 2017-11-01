@@ -257,10 +257,13 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 	 */
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'config'   => 'SiteConfigModule',
-			'database' => 'SiteDatabaseModule',
-			'amqp'     => 'SiteAMQPModule',
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'config' => SiteConfigModule::class,
+				'database' => SiteDatabaseModule::class,
+				'amqp' => SiteAMQPModule::class,
+			]
 		);
 	}
 

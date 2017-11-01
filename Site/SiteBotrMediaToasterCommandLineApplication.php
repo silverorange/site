@@ -870,9 +870,12 @@ abstract class SiteBotrMediaToasterCommandLineApplication extends SiteCommandLin
 
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'database' => 'SiteDatabaseModule',
-			'instance' => 'SiteMultipleInstanceModule',
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'database' => SiteDatabaseModule::class,
+				'instance' => SiteMultipleInstanceModule::class,
+			]
 		);
 	}
 

@@ -253,9 +253,12 @@ class SiteVideoScrubberImageGenerator extends
 	 */
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'config'   => 'SiteConfigModule',
-			'database' => 'SiteDatabaseModule',
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'config' => SiteConfigModule::class,
+				'database' => SiteDatabaseModule::class,
+			]
 		);
 	}
 

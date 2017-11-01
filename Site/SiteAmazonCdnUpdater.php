@@ -30,10 +30,12 @@ class SiteAmazonCdnUpdater extends SiteCdnUpdater
 
 	protected function getDefaultModuleList()
 	{
-		$list = parent::getDefaultModuleList();
-		$list['cdn'] = 'SiteAmazonCdnModule';
-
-		return $list;
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'cdn' => SiteAmazonCdnModule::class,
+			]
+		);
 	}
 
 	// }}}

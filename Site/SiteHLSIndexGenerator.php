@@ -216,8 +216,11 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'database' => 'SiteDatabaseModule',
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'database' => SiteDatabaseModule::class,
+			]
 		);
 	}
 

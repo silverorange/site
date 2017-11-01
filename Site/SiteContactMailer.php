@@ -384,10 +384,13 @@ class SiteContactMailer extends SiteCommandLineApplication
 	 */
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'config'   => 'SiteConfigModule',
-			'database' => 'SiteDatabaseModule',
-			'instance' => 'SiteMultipleInstanceModule',
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'config' => SiteConfigModule::class,
+				'database' => SiteDatabaseModule::class,
+				'instance' => SiteMultipleInstanceModule::class,
+			]
 		);
 	}
 

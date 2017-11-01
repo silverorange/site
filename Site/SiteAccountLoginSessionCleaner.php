@@ -86,10 +86,13 @@ class SiteAccountLoginSessionCleaner extends SiteCommandLineApplication
 	 */
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'config'   => 'SiteConfigModule',
-			'database' => 'SiteDatabaseModule',
-			'session'  => 'SiteSessionModule',
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'config' => SiteConfigModule::class,
+				'database' => SiteDatabaseModule::class,
+				'session' => SiteSessionModule::class,
+			]
 		);
 	}
 
