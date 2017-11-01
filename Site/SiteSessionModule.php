@@ -4,7 +4,7 @@
  * Web application module for sessions
  *
  * @package   Site
- * @copyright 2006-2016 silverorange
+ * @copyright 2006-2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteSessionModule extends SiteApplicationModule
@@ -66,10 +66,20 @@ class SiteSessionModule extends SiteApplicationModule
 	public function __construct(SiteApplication $app)
 	{
 		$this->registerActivateCallback(
-			array($this, 'regenerateAuthenticationToken'));
+			array($this, 'regenerateAuthenticationToken')
+		);
+
+		$this->registerActivateCallback(
+			array($this, 'setSentryUserContext')
+		);
 
 		$this->registerRegenerateIdCallback(
-			array($this, 'regenerateAuthenticationToken'));
+			array($this, 'regenerateAuthenticationToken')
+		);
+
+		$this->registerRegenerateIdCallback(
+			array($this, 'setSentryUserContext')
+		);
 
 		parent::__construct($app);
 	}
@@ -113,6 +123,11 @@ class SiteSessionModule extends SiteApplicationModule
 		$depends[] = new SiteApplicationModuleDependency('SiteConfigModule');
 		$depends[] = new SiteApplicationModuleDependency(
 			'SiteMultipleInstanceModule', false);
+
+		$depends[] = new SiteApplicationModuleDependency(
+			'SiteSentryModule',
+			false
+		);
 
 		return $depends;
 	}
@@ -382,6 +397,8 @@ class SiteSessionModule extends SiteApplicationModule
 				$this->app->relocate($uri, null, false);
 			}
 		}
+
+		$this->setSentryUserContext();
 	}
 
 	// }}}
@@ -690,6 +707,47 @@ class SiteSessionModule extends SiteApplicationModule
 					'be loaded before the session is restored.',
 					$class), 0, $class);
 			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function getErrorUserContext()
+
+	/**
+	 * Gets the user-context array for error reporting
+	 *
+	 * @return array the user-context array for error reporting.
+	 */
+	protected function getErrorUserContext()
+	{
+		$data = [];
+
+		if ($this->isActive()) {
+			$data = [
+				'session_id' => $this->getSessionId(),
+				'data' => $_SESSION,
+			];
+
+			if (!empty($_SERVER['REMOTE_ADDR'])) {
+				$data['ip_address'] = $_SERVER['REMOTE_ADDR'];
+			}
+		}
+
+		return $data;
+	}
+
+	// }}}
+	// {{{ protected function setSentryUserContext()
+
+	/**
+	 * Sets the user-context for the sentry module if the application has a
+	 * sentry module
+	 */
+	protected function setSentryUserContext()
+	{
+		if ($this->app->hasModule('SiteSentryModule')) {
+			$client = $this->app->getModule('SiteSentryModule')->getClient();
+			$client->user_context($this->getErrorUserContext());
 		}
 	}
 
