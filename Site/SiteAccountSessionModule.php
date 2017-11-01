@@ -721,16 +721,16 @@ class SiteAccountSessionModule extends SiteSessionModule
 	}
 
 	// }}}
-	// {{{ protected function getErrorContext()
+	// {{{ protected function getErrorUserContext()
 
 	/**
 	 * Gets the user-context array for error reporting
 	 *
 	 * @return array the user-context array for error reporting.
 	 */
-	protected function getErrorContext()
+	protected function getErrorUserContext()
 	{
-		$data = parent::getErrorContext();
+		$data = parent::getErrorUserContext();
 
 		if ($this->isLoggedIn()) {
 			$data = array_merge(

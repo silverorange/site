@@ -711,14 +711,14 @@ class SiteSessionModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ protected function getErrorContext()
+	// {{{ protected function getErrorUserContext()
 
 	/**
 	 * Gets the user-context array for error reporting
 	 *
 	 * @return array the user-context array for error reporting.
 	 */
-	protected function getErrorContext()
+	protected function getErrorUserContext()
 	{
 		$data = [];
 
