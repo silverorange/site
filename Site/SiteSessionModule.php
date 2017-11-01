@@ -747,7 +747,7 @@ class SiteSessionModule extends SiteApplicationModule
 	{
 		if ($this->app->hasModule('SiteSentryModule')) {
 			$client = $this->app->getModule('SiteSentryModule')->getClient();
-			$client->user_context($this->getErrorContext());
+			$client->user_context($this->getErrorUserContext());
 		}
 	}
 
