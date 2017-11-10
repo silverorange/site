@@ -278,6 +278,9 @@ class Site
 			'email.smtp_password'      => null,
 			'email.log'                => true,
 
+			// to address for test emails
+			'email.test_address'    => null,
+
 			// to address for contact-us emails
 			'email.contact_address'    => null,
 

@@ -4,7 +4,7 @@
  * Multipart text/html email message
  *
  * @package   Site
- * @copyright 2006-2016 silverorange
+ * @copyright 2006-2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMultipartMailMessage extends SiteObject
@@ -211,12 +211,15 @@ class SiteMultipartMailMessage extends SiteObject
 		$mime->setTXTBody($this->text_body);
 		$mime->setHTMLBody($this->convertCssToInlineStyles($this->html_body));
 
-		foreach ($this->getCcList() as $address) {
-			$mime->addCc($address);
-		}
+		// don't send CC emails if test-address is specified
+		if ($this->app->config->email->test_address == '') {
+			foreach ($this->getCcList() as $address) {
+				$mime->addCc($address);
+			}
 
-		foreach ($this->getBccList() as $address) {
-			$mime->addBcc($address);
+			foreach ($this->getBccList() as $address) {
+				$mime->addBcc($address);
+			}
 		}
 
 		// file attachments
@@ -266,10 +269,17 @@ class SiteMultipartMailMessage extends SiteObject
 
 		$headers['Date'] = $this->date->getRFC2822();
 
-		$headers['To'] = $this->getAddressHeader(
-			$this->to_address,
-			$this->to_name
-		);
+		if ($this->app->config->email->test_address == '') {
+			$headers['To'] = $this->getAddressHeader(
+				$this->to_address,
+				$this->to_name
+			);
+		} else {
+			$headers['To'] = $this->getAddressHeader(
+				$this->app->config->email->test_address,
+				$this->to_name
+			);
+		}
 
 		if ($this->reply_to_address != '') {
 			$headers['Reply-To'] = $this->reply_to_address;
@@ -401,11 +411,15 @@ class SiteMultipartMailMessage extends SiteObject
 
 	protected function getRecipients()
 	{
-		$recipients = array_merge(
-			array($this->to_address),
-			$this->getCcList(),
-			$this->getBccList()
-		);
+		if ($this->app->config->email->test_address == '') {
+			$recipients = array_merge(
+				array($this->to_address),
+				$this->getCcList(),
+				$this->getBccList()
+			);
+		} else {
+			$recipients = array($this->app->config->email->test_address);
+		}
 
 		return implode(', ', $recipients);
 	}
