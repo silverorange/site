@@ -212,6 +212,16 @@ class SiteVideoMedia extends SiteMedia
 	// }}}
 	// {{{ public function getMediaPlayerByKey()
 
+	/**
+	 * Loads a media object from its key
+	 *
+	 * @param string $key the key of the media to load.
+	 *
+	 * @return SiteJwPlayerMediaDisplay
+	 *
+	 * @deprecated Key will be null on newly-uploaded videos.
+	 *             Use getMediaPlayerByPathKey instead.
+	 */
 	public function getMediaPlayerByKey(
 		SiteApplication $app,
 		$key,
@@ -223,6 +233,33 @@ class SiteVideoMedia extends SiteMedia
 
 		if (!$this->loadByKey($key)) {
 			throw new SwatException('Video not found for key: '.$key);
+		}
+
+		$this->setFileBase($file_base);
+		return $this->getMediaPlayer($app);
+	}
+
+	// }}}
+	// {{{ public function getMediaPlayerByPathKey()
+
+	/**
+	 * Loads a media object from its path key
+	 *
+	 * @param string $key the key of the media to load.
+	 *
+	 * @return SiteJwPlayerMediaDisplay
+	 */
+	public function getMediaPlayerByPathKey(
+		SiteApplication $app,
+		$key,
+		$file_base = 'media'
+	) {
+		if ($this->db === null) {
+			$this->setDatabase($app->db);
+		}
+
+		if (!$this->loadByPathKey($key)) {
+			throw new SwatException('Video not found for path key: '.$key);
 		}
 
 		$this->setFileBase($file_base);

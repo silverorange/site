@@ -442,7 +442,10 @@ class SiteMedia extends SwatDBDataObject
 	 * @param string $key the key of the media to load.
 	 *
 	 * @return boolean true if the loading of this media was successful and
-	 *                  false if the media with the given key doesn't exist.
+	 *                 false if the media with the given key doesn't exist.
+	 *
+	 * @deprecated Key will be null on newly-uploaded videos.
+	 *             Use loadByPathKey instead.
 	 */
 	public function loadByKey($key)
 	{
@@ -453,6 +456,44 @@ class SiteMedia extends SwatDBDataObject
 		if ($this->table !== null) {
 			$sql = sprintf(
 				'select * from %s where key = %s',
+				$this->table,
+				$this->db->quote($key)
+			);
+
+			$rs = SwatDB::query($this->db, $sql, null);
+			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+		}
+
+		if ($row === null) {
+			return false;
+		}
+
+		$this->initFromRow($row);
+		$this->generatePropertyHashes();
+
+		return true;
+	}
+
+	// }}}
+	// {{{ public function loadByPathKey()
+
+	/**
+	 * Loads a media object from its path key
+	 *
+	 * @param string $key the path key of the media to load.
+	 *
+	 * @return boolean true if the loading of this media was successful and
+	 *                 false if the media with the given key doesn't exist.
+	 */
+	public function loadByPathKey($key)
+	{
+		$this->checkDB();
+
+		$row = null;
+
+		if ($this->table !== null) {
+			$sql = sprintf(
+				'select * from %s where path_key = %s',
 				$this->table,
 				$this->db->quote($key)
 			);
