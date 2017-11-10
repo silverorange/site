@@ -411,11 +411,15 @@ class SiteMultipartMailMessage extends SiteObject
 
 	protected function getRecipients()
 	{
-		$recipients = array_merge(
-			array($this->to_address),
-			$this->getCcList(),
-			$this->getBccList()
-		);
+		if ($this->app->config->email->test_address == '') {
+			$recipients = array_merge(
+				array($this->to_address),
+				$this->getCcList(),
+				$this->getBccList()
+			);
+		} else {
+			$recipients = [$this->app->config->email->test_address];
+		}
 
 		return implode(', ', $recipients);
 	}
