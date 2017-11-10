@@ -4,7 +4,7 @@
  * Multipart text/html email message
  *
  * @package   Site
- * @copyright 2006-2016 silverorange
+ * @copyright 2006-2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMultipartMailMessage extends SiteObject
@@ -418,7 +418,7 @@ class SiteMultipartMailMessage extends SiteObject
 				$this->getBccList()
 			);
 		} else {
-			$recipients = [$this->app->config->email->test_address];
+			$recipients = array($this->app->config->email->test_address);
 		}
 
 		return implode(', ', $recipients);
