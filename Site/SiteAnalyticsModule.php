@@ -178,7 +178,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->friendbuy_account_id =
 			$config->analytics->friendbuy_account_id;
 
-		$this->initOptOut();
+		if (!$config->analytics->enabled) {
+			// We don't want to have any analytics on this site
+			// So we'll treat everyone as an opt-out
+			$this->analytics_opt_out = true;
+		} else {
+			$this->initOptOut();
+		}
 
 		// skip init of the commands if we're opted out.
 		if (!$this->analytics_opt_out) {
