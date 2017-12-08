@@ -486,12 +486,14 @@ SiteJwPlayerMediaDisplay.prototype.setupAnalytics = function()
 	var player = this.player;
 	var currentItem = player.getPlaylistItem(player.getPlaylistIndex());
 	var title = currentItem.file;
-	var fireEvent = function(action, value) {
+	// fire a GA event
+	function fireEvent(action, value) {
 		if (_gaq) {
 			_gaq.push(['_trackEvent', 'JW Player Video', action, title, value]);
 		}
 	}
-	var getPos = function getPos() {
+	// return the current position in milliseconds
+	function getPos() {
 		return Math.floor(player.getPosition() * 1000);
 	}
 
@@ -504,8 +506,8 @@ SiteJwPlayerMediaDisplay.prototype.setupAnalytics = function()
 	});
 
 	player.on('seek', function(event) {
-		fireEvent('SeekStart', Math.floor(event.position));
-		fireEvent('SeekEnd', Math.floor(event.offset));
+		fireEvent('SeekStart', Math.floor(event.position * 1000));
+		fireEvent('SeekEnd', Math.floor(event.offset * 1000));
 	});
 
 	player.on('complete', function() {
