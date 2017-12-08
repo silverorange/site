@@ -65,6 +65,7 @@ SiteJwPlayerMediaDisplay.prototype.init = function()
 
 	this.embedPlayer();
 	this.drawDialogs();
+	this.setupAnalytics();
 
 	var that = this;
 	this.player.on('setupError', function() {
@@ -122,8 +123,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		repeat:      this.repeat,
 		analytics:   {
 			enabled: false // turn off JW Player's built-in analytics
-		},
-		ga:          {} // this can be blank. JW Player will use the _gaq var.
+		}
 	};
 
 	this.player = jwplayer(this.player_id).setup(options);
@@ -478,6 +478,45 @@ SiteJwPlayerMediaDisplay.prototype.debug = function()
 		debug_container.innerHTML = content;
 	});
 };
+
+// }}}
+// {{{ SiteJwPlayerMediaDisplay.prototype.setupAnalytics = function()
+SiteJwPlayerMediaDisplay.prototype.setupAnalytics = function()
+{
+	var player = this.player;
+	var currentItem = player.getPlaylistItem(player.getPlaylistIndex());
+	var title = currentItem.file;
+	var fireEvent = function(action, value) {
+		if (_gaq) {
+			_gaq.push(['_trackEvent', 'JW Player Video', action, title, value]);
+		}
+	}
+	var getPos = function getPos() {
+		return Math.floor(player.getPosition() * 1000);
+	}
+
+	player.on('play', function() {
+		fireEvent('Play', getPos());
+	});
+
+	player.on('pause', function() {
+		fireEvent('Pause', getPos());
+	});
+
+	player.on('seek', function(event) {
+		fireEvent('SeekStart', Math.floor(event.position));
+		fireEvent('SeekEnd', Math.floor(event.offset));
+	});
+
+	player.on('complete', function() {
+		fireEvent('Complete', getPos());
+	});
+
+	player.on('playbackRateChanged', function(event) {
+		fireEvent('PlaybackRate', event.playbackRate);
+	});
+
+}
 
 // }}}
 
