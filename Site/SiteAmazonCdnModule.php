@@ -335,12 +335,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	public function removeFile($filename)
 	{
 		try {
-			$this->s3->deleteObject(
-				array(
-					'Bucket' => $this->bucket,
-					'Key'    => $filename,
-				)
-			);
+			$this->s3->deleteMatchingObjects($this->bucket, $filename);
 		} catch (Aws\Exception\AwsException $e) {
 			throw new SiteCdnException($e);
 		}
