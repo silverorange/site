@@ -457,7 +457,6 @@ class SiteVideoMedia extends SiteMedia
 				$this->path_key,
 			);
 
-
 			$class_name = SwatDBClassMap::get('SiteMediaCdnTask');
 			$task = new $class_name();
 			$task->setDatabase($this->db);
