@@ -447,6 +447,26 @@ class SiteVideoMedia extends SiteMedia
 	}
 
 	// }}}
+	// {{{ protected function deleteCdnFiles()
+
+	protected function deleteCdnFiles()
+	{
+		if ($this->getUriBase() != '') {
+			$path = array(
+				$this->getUriBase(),
+				$this->path_key,
+			);
+
+			$class_name = SwatDBClassMap::get('SiteMediaCdnTask');
+			$task = new $class_name();
+			$task->setDatabase($this->db);
+			$task->operation = 'delete';
+			$task->file_path = implode(DIRECTORY_SEPARATOR, $path);
+			$task->save();
+		}
+	}
+
+	// }}}
 }
 
 ?>
