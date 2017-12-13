@@ -40,6 +40,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected $google_account;
 
 	/**
+	 * Flag to tell whether analytics are enabled on this site.
+	 *
+	 * @var boolean
+	 */
+	protected $analytics_enabled = true;
+
+	/**
 	 * Flag to tell whether the user has opted out of analytics.
 	 *
 	 * @var boolean
@@ -178,6 +185,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->friendbuy_account_id =
 			$config->analytics->friendbuy_account_id;
 
+		if (!$config->analytics->enabled) {
+			$this->analytics_enabled = false;
+		}
+
 		$this->initOptOut();
 
 		// skip init of the commands if we're opted out.
@@ -304,7 +315,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		return (
 			$this->google_account != '' &&
-			!$this->analytics_opt_out
+			!$this->analytics_opt_out &&
+			$this->analytics_enabled
 		);
 	}
 
@@ -498,7 +510,8 @@ JS;
 	{
 		return (
 			$this->facebook_pixel_id != '' &&
-			!$this->analytics_opt_out
+			!$this->analytics_opt_out &&
+			$this->analytics_enabled
 		);
 	}
 
@@ -654,7 +667,8 @@ JS;
 	{
 		return (
 			$this->twitter_track_pixel_id != '' &&
-			!$this->analytics_opt_out
+			!$this->analytics_opt_out &&
+			$this->analytics_enabled
 		);
 	}
 
@@ -800,7 +814,8 @@ JS;
 	{
 		return (
 			$this->bing_uet_id != '' &&
-			!$this->analytics_opt_out
+			!$this->analytics_opt_out &&
+			$this->analytics_enabled
 		);
 	}
 
@@ -950,7 +965,8 @@ JS;
 		return (
 			$this->pardot_account_id != '' &&
 			$this->pardot_campaign_id != '' &&
-			!$this->analytics_opt_out
+			!$this->analytics_opt_out &&
+			$this->analytics_enabled
 		);
 	}
 
