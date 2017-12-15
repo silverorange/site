@@ -491,9 +491,9 @@ class SiteMultipartMailMessage extends SiteObject
 	{
 		// Emogrifier is optional. If not included, just return the regular
 		// HTML with inline CSS
-		if ($html != '' && class_exists('Emogrifier')) {
+		if ($html != '' && class_exists('Pelago\Emogrifier')) {
 			$reset_errors = libxml_use_internal_errors(true);
-			$emogrifier = new Emogrifier($html);
+			$emogrifier = new \Pelago\Emogrifier($html);
 			$inlined = $emogrifier->emogrify();
 
 			// log errors so we can find XML defects
