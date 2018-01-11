@@ -124,11 +124,6 @@ class SiteSessionModule extends SiteApplicationModule
 		$depends[] = new SiteApplicationModuleDependency(
 			'SiteMultipleInstanceModule', false);
 
-		$depends[] = new SiteApplicationModuleDependency(
-			'SiteSentryModule',
-			false
-		);
-
 		return $depends;
 	}
 
@@ -745,8 +740,8 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	protected function setSentryUserContext()
 	{
-		if ($this->app->hasModule('SiteSentryModule')) {
-			$client = $this->app->getModule('SiteSentryModule')->getClient();
+		$client = $this->app->getSentryClient();
+		if ($client instanceof Raven_Client) {
 			$client->user_context($this->getErrorUserContext());
 		}
 	}
