@@ -151,7 +151,7 @@ abstract class SiteApplication extends SiteObject
 
 			$this->addConfigDefinitions($config_module);
 			$config_module->load($config_filename);
-			$this->setupErrorHandling($config_module);
+			$this->setUpErrorHandling($config_module);
 			$this->configure($config_module);
 		}
 	}
@@ -388,7 +388,7 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ protected function setupErrorHandling()
+	// {{{ protected function setUpErrorHandling()
 
 	/**
 	 * Configures error and exception handling of this application
@@ -397,21 +397,21 @@ abstract class SiteApplication extends SiteObject
 	 *                                  to use for configuring the other
 	 *                                  modules.
 	 */
-	protected function setupErrorHandling(SiteConfigModule $config)
+	protected function setUpErrorHandling(SiteConfigModule $config)
 	{
-		$this->setupFileErrorHandling($config);
-		$this->setupSentryErrorHandling($config);
+		$this->setUpFileErrorHandling($config);
+		$this->setUpSentryErrorHandling($config);
 	}
 
 	// }}}
-	// {{{ protected function setupFileErrorHandling()
+	// {{{ protected function setUpFileErrorHandling()
 
 	/**
 	 * Configures file based error and exception handling of this application
 	 *
 	 * @param SiteConfigModule $config the config module of this application.
 	 */
-	protected function setupFileErrorHandling(SiteConfigModule $config)
+	protected function setUpFileErrorHandling(SiteConfigModule $config)
 	{
 		if (isset($config->exceptions->log_location)) {
 			SwatException::addLogger(
@@ -439,14 +439,14 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ protected function setupSentryErrorHandling()
+	// {{{ protected function setUpSentryErrorHandling()
 
 	/**
 	 * Configures sentry based error and exception handling of this application
 	 *
 	 * @param SiteConfigModule $config the config module of this application.
 	 */
-	protected function setupSentryErrorHandling(SiteConfigModule $config)
+	protected function setUpSentryErrorHandling(SiteConfigModule $config)
 	{
 		$client = new Raven_Client(
 			$config->sentry->dsn,
