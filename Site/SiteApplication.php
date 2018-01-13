@@ -104,6 +104,15 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected $locale;
 
+	/**
+	 * The Sentry client
+	 *
+	 * @var Raven_Client
+	 *
+	 * @see SiteApplication::getSentryClient()
+	 */
+	protected $sentry_client;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -142,6 +151,7 @@ abstract class SiteApplication extends SiteObject
 
 			$this->addConfigDefinitions($config_module);
 			$config_module->load($config_filename);
+			$this->setUpErrorHandling($config_module);
 			$this->configure($config_module);
 		}
 	}
@@ -348,6 +358,14 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function getSentryClient()
+
+	public function getSentryClient()
+	{
+		return $this->sentry_client;
+	}
+
+	// }}}
 	// {{{ protected function configure()
 
 	/**
@@ -367,11 +385,10 @@ abstract class SiteApplication extends SiteObject
 	protected function configure(SiteConfigModule $config)
 	{
 		$config->configure();
-		$this->configureErrorHandling($config);
 	}
 
 	// }}}
-	// {{{ protected function configureErrorHandling()
+	// {{{ protected function setUpErrorHandling()
 
 	/**
 	 * Configures error and exception handling of this application
@@ -380,22 +397,77 @@ abstract class SiteApplication extends SiteObject
 	 *                                  to use for configuring the other
 	 *                                  modules.
 	 */
-	protected function configureErrorHandling(SiteConfigModule $config)
+	protected function setUpErrorHandling(SiteConfigModule $config)
 	{
-		if (isset($config->exceptions->log_location))
-			SwatException::setLogger(new SiteExceptionLogger(
-				$config->exceptions->log_location,
-				$config->exceptions->base_uri,
-				$config->exceptions->unix_group));
+		$this->setUpFileErrorHandling($config);
+		$this->setUpSentryErrorHandling($config);
+	}
 
-		if (isset($config->errors->log_location))
-			SwatError::setLogger(new SiteErrorLogger(
-				$config->errors->log_location,
-				$config->errors->base_uri,
-				$config->errors->unix_group));
+	// }}}
+	// {{{ protected function setUpFileErrorHandling()
 
-		if (isset($config->errors->fatal_severity))
+	/**
+	 * Configures file based error and exception handling of this application
+	 *
+	 * @param SiteConfigModule $config the config module of this application.
+	 */
+	protected function setUpFileErrorHandling(SiteConfigModule $config)
+	{
+		if (isset($config->exceptions->log_location)) {
+			SwatException::addLogger(
+				new SiteExceptionLogger(
+					$config->exceptions->log_location,
+					$config->exceptions->base_uri,
+					$config->exceptions->unix_group
+				)
+			);
+		}
+
+		if (isset($config->errors->log_location)) {
+			SwatError::addLogger(
+				new SiteErrorLogger(
+					$config->errors->log_location,
+					$config->errors->base_uri,
+					$config->errors->unix_group
+				)
+			);
+		}
+
+		if (isset($config->errors->fatal_severity)) {
 			SwatError::setFatalSeverity($config->errors->fatal_severity);
+		}
+	}
+
+	// }}}
+	// {{{ protected function setUpSentryErrorHandling()
+
+	/**
+	 * Configures sentry based error and exception handling of this application
+	 *
+	 * @param SiteConfigModule $config the config module of this application.
+	 */
+	protected function setUpSentryErrorHandling(SiteConfigModule $config)
+	{
+		$client = new Raven_Client(
+			$config->sentry->dsn,
+			array(
+				// Default breadcrumb handlers override the error_reporting
+				// settings, so we disable them
+				'install_default_breadcrumb_handlers' => false,
+				// Catch fatal errors with Sentry.
+				'install_shutdown_handler' => true,
+				'environment' => $config->sentry->environment,
+			)
+		);
+
+		SwatException::addLogger(new SiteSentryExceptionLogger($client));
+		SwatError::addLogger(new SiteSentryErrorLogger($client));
+
+		// Add fatal error handling.
+		$error_handler = new Raven_ErrorHandler($client, false, null);
+		$error_handler->registerShutdownFunction();
+
+		$this->sentry_client = $client;
 	}
 
 	// }}}
@@ -732,17 +804,11 @@ abstract class SiteApplication extends SiteObject
 	 * application. The public property names correspond directly to the module
 	 * identifiers specified in the module list array.
 	 *
-	 * By default, the Sentry error reporting module is loaded. Subclasses of
-	 * SiteApplication may specify their own list of modules to load by
-	 * overriding this method.
-	 *
 	 * @return array the default list of modules to load for this application.
 	 */
 	protected function getDefaultModuleList()
 	{
-		return [
-			'sentry' => SiteSentryModule::class,
-		];
+		return [];
 	}
 
 	// }}}
