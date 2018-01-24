@@ -20,11 +20,6 @@ class SiteArticleSearch extends AdminSearch
 	protected $where_clause;
 	protected $order_by_clause;
 
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = __DIR__.'/search.xml';
-
 	// }}}
 
 	// init phase
@@ -35,9 +30,17 @@ class SiteArticleSearch extends AdminSearch
 		parent::initInternal();
 
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->navbar->createEntry(Site::_('Search'));
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/search.xml';
 	}
 
 	// }}}

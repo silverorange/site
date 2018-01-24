@@ -9,15 +9,6 @@
  */
 class SiteAccountSuspicious extends AdminIndex
 {
-	// {{{ protected properties
-
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = __DIR__.'/suspicious.xml';
-
-	// }}}
-
 	// init phase
 	// {{{ protected function initInternal()
 
@@ -26,7 +17,15 @@ class SiteAccountSuspicious extends AdminIndex
 		parent::initInternal();
 
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/suspicious.xml';
 	}
 
 	// }}}

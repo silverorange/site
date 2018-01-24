@@ -12,11 +12,6 @@ class SiteAdEdit extends AdminDBEdit
 	// {{{ protected properties
 
 	/**
-	 * @var string
-	 */
-	protected $ui_xml = __DIR__.'/edit.xml';
-
-	/**
 	 * @var SiteAd
 	 */
 	protected $ad;
@@ -30,7 +25,7 @@ class SiteAdEdit extends AdminDBEdit
 	{
 		parent::initInternal();
 		$this->initAd();
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 	}
 
 	// }}}
@@ -46,6 +41,14 @@ class SiteAdEdit extends AdminDBEdit
 			throw new AdminNotFoundException(
 				Site::_('Editing ads is not allowed.'));
 		}
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/edit.xml';
 	}
 
 	// }}}

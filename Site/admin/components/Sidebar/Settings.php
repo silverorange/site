@@ -21,8 +21,6 @@ class SiteSidebarSettings extends AdminDBEdit
 	 */
 	protected $gadget;
 
-	protected $ui_xml = __DIR__.'/settings.xml';
-
 	protected $setting_widgets = array();
 
 	// }}}
@@ -33,7 +31,7 @@ class SiteSidebarSettings extends AdminDBEdit
 	protected function initInternal()
 	{
 		parent::initInternal();
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 		$this->initGadgetInstance();
 		$this->initGadget();
 		$this->initSettingsUi();
@@ -176,6 +174,14 @@ class SiteSidebarSettings extends AdminDBEdit
 		}
 
 		return $value;
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/settings.xml';
 	}
 
 	// }}}

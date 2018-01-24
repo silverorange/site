@@ -12,13 +12,6 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 	// {{{ protected properties
 
 	/**
-	 * The location of the XML file for the main user interface.
-	 *
-	 * @var string
-	 */
-	protected $ui_xml = __DIR__.'/index.xml';
-
-	/**
 	 * An array containing each config page that will be linked into the main
 	 * user interface.
 	 *
@@ -35,7 +28,7 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 	{
 		parent::initInternal();
 
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 
 		if (!$this->app->hasModule('SiteMultipleInstanceModule')) {
 			$text = Site::_(
@@ -64,6 +57,14 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 	protected function initConfigPages()
 	{
 		$this->config_pages[] = new SiteConfigPage();
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/index.xml';
 	}
 
 	// }}}

@@ -16,11 +16,6 @@ class SiteSidebarAdd extends AdminDBEdit
 	 */
 	protected $gadget_instance;
 
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = __DIR__.'/add.xml';
-
 	// }}}
 
 	// init phase
@@ -29,7 +24,7 @@ class SiteSidebarAdd extends AdminDBEdit
 	protected function initInternal()
 	{
 		parent::initInternal();
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 		$this->initGadgetInstance();
 		$this->initGadgetList();
 	}
@@ -71,6 +66,14 @@ class SiteSidebarAdd extends AdminDBEdit
 		foreach ($options as $gadget_class => $option_title)
 			$radio_list->addOption($gadget_class, $option_title,
 				'text/xml');
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/add.xml';
 	}
 
 	// }}}
