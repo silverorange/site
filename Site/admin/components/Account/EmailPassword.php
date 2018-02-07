@@ -25,7 +25,7 @@ class SiteAccountEmailPassword extends AdminConfirmation
 	protected function initInternal()
 	{
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->id = SiteApplication::initVar('id');
 

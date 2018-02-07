@@ -25,11 +25,6 @@ class SiteAdDetails extends AdminIndex
 	protected $ad;
 
 	/**
-	 * @var string
-	 */
-	protected $ui_xml = __DIR__.'/details.xml';
-
-	/**
 	 * @var array
 	 */
 	protected $periods;
@@ -49,7 +44,7 @@ class SiteAdDetails extends AdminIndex
 				sprintf('Ad with an id of ‘%s’ not found.', $id));
 		}
 
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 		$this->ui->getWidget('index_frame')->subtitle = $this->ad->title;
 
 		$this->periods = array(
@@ -75,6 +70,14 @@ class SiteAdDetails extends AdminIndex
 		$this->ad = new $class_name();
 		$this->ad->setDatabase($this->app->db);
 		return $this->ad->load($id);
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/details.xml';
 	}
 
 	// }}}

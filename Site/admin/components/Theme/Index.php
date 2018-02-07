@@ -12,11 +12,6 @@ class SiteThemeIndex extends AdminPage
 	// {{{ protected properties
 
 	/**
-	 * @var string
-	 */
-	protected $ui_xml = __DIR__.'/index.xml';
-
-	/**
 	 * @var array
 	 */
 	protected $themes;
@@ -29,7 +24,7 @@ class SiteThemeIndex extends AdminPage
 	protected function initInternal()
 	{
 		parent::initInternal();
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 		$this->initThemes();
 		$this->initThemeReplicator();
 	}
@@ -68,6 +63,14 @@ class SiteThemeIndex extends AdminPage
 	{
 		$theme_replicator = $this->ui->getWidget('theme_replicator');
 		$theme_replicator->replication_ids = array_keys($this->themes);
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/index.xml';
 	}
 
 	// }}}

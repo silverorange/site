@@ -15,11 +15,6 @@ class SiteArticleIndex extends AdminIndex
 	protected $parent = null;
 
 	/**
-	 * @var string
-	 */
-	protected $ui_xml = __DIR__.'/index.xml';
-
-	/**
 	 * @var SiteArticle
 	 */
 	protected $article;
@@ -32,7 +27,7 @@ class SiteArticleIndex extends AdminIndex
 	protected function initInternal()
 	{
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->id = SiteApplication::initVar('id');
 
@@ -54,6 +49,14 @@ class SiteArticleIndex extends AdminIndex
 				sprintf(Site::_('Article with id ‘%s’ not found.'),
 					$this->id));
 		}
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/index.xml';
 	}
 
 	// }}}

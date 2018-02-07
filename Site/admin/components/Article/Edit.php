@@ -14,11 +14,6 @@ class SiteArticleEdit extends AdminDBEdit
 	protected $parent;
 	protected $edit_article;
 
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = __DIR__.'/edit.xml';
-
 	// }}}
 
 	// init phase
@@ -29,7 +24,7 @@ class SiteArticleEdit extends AdminDBEdit
 		parent::initInternal();
 
 		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->initArticle();
 
@@ -57,6 +52,14 @@ class SiteArticleEdit extends AdminDBEdit
 					sprintf(Site::_('Article with id "%s" not found.'),
 						$this->id));
 		}
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/edit.xml';
 	}
 
 	// }}}

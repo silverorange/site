@@ -9,19 +9,21 @@
  */
 class SiteSidebarIndex extends AdminIndex
 {
-	// {{{ protected properties
-
-	protected $ui_xml = __DIR__.'/index.xml';
-
-	// }}}
-
 	// init phase
 	// {{{ protected function initInternal()
 
 	protected function initInternal()
 	{
 		parent::initInternal();
-		$this->ui->loadFromXML($this->ui_xml);
+		$this->ui->loadFromXML($this->getUiXml());
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return __DIR__.'/index.xml';
 	}
 
 	// }}}
