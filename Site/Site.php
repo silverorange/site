@@ -257,8 +257,11 @@ class Site
 			'analytics.pardot_account_id' => null,
 			'analytics.pardot_campaign_id' => null,
 
-			// Friendbuy Pixel ids
+			// Friendbuy Pixel id
 			'analytics.friendbuy_account_id' => null,
+
+			// VWO Tracking id
+			'analytics.vwo_account_id' => null,
 
 			// Ads
 			// Tracking id in URIs
