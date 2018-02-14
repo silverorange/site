@@ -3,11 +3,11 @@
 /**
  * Web application module for handling site analytics.
  *
- * Currently only has support for Google Analytics, Facebook Pixels and
- * Bing Universal Event Tracking.
+ * Currently has support for Google Analytics, Facebook Pixels,
+ * Bing Universal Event Tracking, Pardot and VWO.
  *
  * @package   Site
- * @copyright 2007-2016 silverorange
+ * @copyright 2007-2018 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
  * @link      https://developers.facebook.com/docs/facebook-pixel/api-reference
@@ -153,6 +153,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $pardot_campaign_id;
 
+	/**
+	 * VWO Account ID
+	 *
+	 * @var string
+	 */
+	protected $vwo_account_id;
+
 	// }}}
 	// {{{ public function init()
 
@@ -185,6 +192,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->friendbuy_account_id =
 			$config->analytics->friendbuy_account_id;
 
+		$this->vwo_account_id =
+			$config->analytics->vwo_account_id;
+
 		if (!$config->analytics->enabled) {
 			$this->analytics_enabled = false;
 		}
@@ -209,7 +219,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			$this->hasFacebookPixel() ||
 			$this->hasTwitterPixel() ||
 			$this->hasBingUET() ||
-			$this->hasPardot()
+			$this->hasPardot() ||
+			$this->hasVWO()
 		);
 	}
 
@@ -248,6 +259,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		if ($this->hasPardot()) {
 			$js.= $this->getPardotInlineJavascript();
+		}
+
+		if ($this->hasVWO()) {
+			$js.= $this->getVWOInlineJavascript();
 		}
 
 		if ($js != '') {
@@ -1014,6 +1029,61 @@ JS;
 			$javascript,
 			SwatString::quoteJavaScriptString($this->pardot_account_id),
 			SwatString::quoteJavaScriptString($this->pardot_campaign_id)
+		);
+	}
+
+	// }}}
+
+	// VWO
+	// {{{ public function hasVWO()
+
+	public function hasVWO()
+	{
+		return (
+			$this->vwo_account_id != '' &&
+			!$this->analytics_opt_out &&
+			$this->analytics_enabled
+		);
+	}
+
+	// }}}
+	// {{{ public function getVWOInlineJavascript()
+
+	public function getVWOInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasVWO()) {
+			$javascript.= $this->getVWOTrackerInlineJavascript();
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getVWOTrackerInlineJavascript()
+
+	public function getVWOTrackerInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasVWO()) {
+			// @codingStandardsIgnoreStart
+			$javascript = <<<'JS'
+var _vwo_code=(function(){
+var account_id=%s,
+settings_tolerance=2000,
+library_tolerance=2500,
+use_existing_jquery=false,
+/* DO NOT EDIT BELOW THIS LINE */
+f=false,d=document;return{use_existing_jquery:function(){return use_existing_jquery;},library_tolerance:function(){return library_tolerance;},finish:function(){if(!f){f=true;var a=d.getElementById('_vis_opt_path_hides');if(a)a.parentNode.removeChild(a);}},finished:function(){return f;},load:function(a){var b=d.createElement('script');b.src=a;b.type='text/javascript';b.innerText;b.onerror=function(){_vwo_code.finish();};d.getElementsByTagName('head')[0].appendChild(b);},init:function(){settings_timer=setTimeout('_vwo_code.finish()',settings_tolerance);var a=d.createElement('style'),b='body{opacity:0 !important;filter:alpha(opacity=0) !important;background:none !important;}',h=d.getElementsByTagName('head')[0];a.setAttribute('id','_vis_opt_path_hides');a.setAttribute('type','text/css');if(a.styleSheet)a.styleSheet.cssText=b;else a.appendChild(d.createTextNode(b));h.appendChild(a);this.load('//dev.visualwebsiteoptimizer.com/j.php?a='+account_id+'&u='+encodeURIComponent(d.URL)+'&r='+Math.random());return settings_timer;}};}());_vwo_settings_timer=_vwo_code.init();
+JS;
+			// @codingStandardsIgnoreEnd
+		}
+
+		return sprintf(
+			$javascript,
+			SwatString::quoteJavaScriptString($this->vwo_account_id)
 		);
 	}
 
