@@ -31,6 +31,20 @@
 			"email": "steven@silverorange.com"
 		}
 	],
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://composer",
+			"options": {
+				"ssl": {
+					"cafile": "/etc/nginx/tls.crt/composer.crt"
+				}
+			}
+		},
+		{
+			"packagist": false
+		}
+	],
 	"require": {
 		"php": ">=5.5.0",
 		"ext-iconv": "*",
@@ -45,7 +59,6 @@
 		"pear/services_akismet2": ">=0.3.1",
 		"pear/text_password": "^1.1.1",
 		"sentry/sentry": "^1.7.0",
-		"silverorange/admin": "^4.0.0",
 		"silverorange/mdb2": "^3.0.0",
 		"silverorange/concentrate": "^1.0.0",
 		"silverorange/swat": "^3.0.0"
@@ -62,6 +75,7 @@
 		"ext-uploadprogress": "Allows showing upload progress for SiteFileEntry widgets.",
 		"pelago/emogrifier": "Inlines CSS in multipart mail messages.",
 		"psr/log": "Enables logging using the PSR logging interface.",
+		"silverorange/admin": "Enables admin components",
 		"silverorange/jwplayer": "Enables video player support.",
 		"silverorange/nate_go_search": "Article search indexing and CME search index framework.",
 		"silverorange/net_notifier": "Enables async notifications from web applications using web sockets.",
