@@ -4,7 +4,7 @@
  * Web application module for handling site analytics.
  *
  * Currently has support for Google Analytics, Facebook Pixels,
- * Bing Universal Event Tracking, Pardot and VWO.
+ * Bing Universal Event Tracking, Pardot, VWO and Hotjar.
  *
  * @package   Site
  * @copyright 2007-2018 silverorange
@@ -160,6 +160,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $vwo_account_id;
 
+	/**
+	 * Hotjar Account ID
+	 *
+	 * @var string
+	 */
+	protected $hotjar_account_id;
+
 	// }}}
 	// {{{ public function init()
 
@@ -195,6 +202,9 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->vwo_account_id =
 			$config->analytics->vwo_account_id;
 
+		$this->hotjar_account_id =
+			$config->analytics->hotjar_account_id;
+
 		if (!$config->analytics->enabled) {
 			$this->analytics_enabled = false;
 		}
@@ -220,7 +230,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			$this->hasTwitterPixel() ||
 			$this->hasBingUET() ||
 			$this->hasPardot() ||
-			$this->hasVWO()
+			$this->hasVWO() ||
+			$this->hasHotjar()
 		);
 	}
 
@@ -241,6 +252,14 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$js = '';
 
+		if ($this->hasVWO()) {
+			$js.= $this->getVWOInlineJavascript();
+		}
+
+		if ($this->hasHotjar()) {
+			$js.= $this->getHotjarInlineJavascript();
+		}
+
 		if ($this->hasFacebookPixel()) {
 			$js.= $this->getFacebookPixelInlineJavascript();
 		}
@@ -259,10 +278,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		if ($this->hasPardot()) {
 			$js.= $this->getPardotInlineJavascript();
-		}
-
-		if ($this->hasVWO()) {
-			$js.= $this->getVWOInlineJavascript();
 		}
 
 		if ($js != '') {
@@ -1084,6 +1099,62 @@ JS;
 		return sprintf(
 			$javascript,
 			SwatString::quoteJavaScriptString($this->vwo_account_id)
+		);
+	}
+
+	// }}}
+
+	// Hotjar
+	// {{{ public function hasHotjar()
+
+	public function hasHotjar()
+	{
+		return (
+			$this->hotjar_account_id != '' &&
+			!$this->analytics_opt_out &&
+			$this->analytics_enabled
+		);
+	}
+
+	// }}}
+	// {{{ public function getHotjarInlineJavascript()
+
+	public function getHotjarInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasHotjar()) {
+			$javascript.= $this->getHotjarTrackerInlineJavascript();
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getHotjarTrackerInlineJavascript()
+
+	public function getHotjarTrackerInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasHotjar()) {
+			// @codingStandardsIgnoreStart
+			$javascript = <<<'JS'
+(function(h,o,t,j,a,r){
+    h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+    h._hjSettings={hjid:%s,hjsv:6};
+    a=o.getElementsByTagName('head')[0];
+    r=o.createElement('script');r.async=1;
+    r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+    a.appendChild(r);
+})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+JS;
+			// @codingStandardsIgnoreEnd
+		}
+
+		return sprintf(
+			$javascript,
+			$this->hotjar_account_id
 		);
 	}
 
