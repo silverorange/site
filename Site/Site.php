@@ -263,6 +263,9 @@ class Site
 			// VWO Tracking id
 			'analytics.vwo_account_id' => null,
 
+			// Hotjar Tracking id
+			'analytics.hotjar_account_id' => null,
+
 			// Ads
 			// Tracking id in URIs
 			'ads.tracking_id'          => 'utm_source',
