@@ -31,14 +31,6 @@ class SiteCommandLineConfigModule extends SiteConfigModule
 	{
 		parent::configure();
 
-		if (isset($this->exceptions->log_location))
-			SwatException::setLogger(new SiteExceptionLogger(
-				$this->exceptions->log_location, $this->exceptions->base_uri));
-
-		if (isset($this->errors->log_location))
-			SwatError::setLogger(new SiteErrorLogger(
-				$this->errors->log_location, $this->errors->base_uri));
-
 		$this->app->database->dsn = $this->database->dsn;
 
 		if ($this->date->time_zone !== null) {
