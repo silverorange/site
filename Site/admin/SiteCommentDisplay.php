@@ -361,8 +361,7 @@ abstract class SiteCommentDisplay extends SwatControl
 		$delete_confirmation_text  = SwatString::quoteJavaScriptString(
 			Site::_('Delete comment?'));
 
-		return
-			"SiteCommentDisplay.edit_text   = {$edit_text};\n".
+		return "SiteCommentDisplay.edit_text   = {$edit_text};\n".
 			"SiteCommentDisplay.approve_text   = {$approve_text};\n".
 			"SiteCommentDisplay.deny_text      = {$deny_text};\n".
 			"SiteCommentDisplay.publish_text   = {$publish_text};\n".
