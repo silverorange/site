@@ -372,8 +372,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		$new_text    = SwatString::quoteJavaScriptString(Site::_('(new)'));
 		$add_text    = SwatString::quoteJavaScriptString(Site::_('Add Tag'));
 
-		return
-			"SiteTagEntry.remove_text = {$remove_text};\n".
+		return "SiteTagEntry.remove_text = {$remove_text};\n".
 			"SiteTagEntry.new_text    = {$new_text};\n".
 			"SiteTagEntry.add_text    = {$add_text};\n";
 	}
