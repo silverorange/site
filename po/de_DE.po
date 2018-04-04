@@ -120,19 +120,6 @@ msgstr ""
 msgid "Image of %s"
 msgstr ""
 
-#: ../Site/admin/SiteThemeDisplay.php.gettext:80
-msgid "View Screenshot"
-msgstr ""
-
-#: ../Site/admin/SiteThemeDisplay.php.gettext:87
-#, php-format
-msgid "Thumbnail image for %s"
-msgstr ""
-
-#: ../Site/admin/SiteThemeDisplay.php.gettext:212
-msgid "Select Theme"
-msgstr ""
-
 #: ../Site/admin/components/Sidebar/Settings.php.gettext:62
 #: ../Site/admin/components/Sidebar/Settings.php.gettext:69
 #: ../Site/admin/components/Sidebar/Settings.php.gettext:76
