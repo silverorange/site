@@ -21,15 +21,6 @@ msgstr ""
 msgid "Not Found"
 msgstr ""
 
-#: ../Site/gadgets/SiteGadget.php.gettext:153
-msgid "Untitled Gadget"
-msgstr ""
-
-#: ../Site/gadgets/SiteGadget.php.gettext:473
-#: ../Site/gadgets/SiteGadget.php.gettext:495
-msgid "Current gadget does not have a cache."
-msgstr ""
-
 #: ../Site/gadgets/SiteContentGadget.php.gettext:52
 msgid "Arbitrary Content"
 msgstr ""
