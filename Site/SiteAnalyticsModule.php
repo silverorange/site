@@ -490,13 +490,9 @@ JS;
 	protected function getGoogleAnalyticsTrackingCodeSource()
 	{
 		if ($this->display_advertising) {
-			$source = ($this->app->isSecure())
-				? 'https://stats.g.doubleclick.net/dc.js'
-				: 'http://stats.g.doubleclick.net/dc.js';
+			$source = 'https://stats.g.doubleclick.net/dc.js';
 		} else {
-			$source = ($this->app->isSecure())
-				? 'https://ssl.google-analytics.com/ga.js'
-				: 'http://www.google-analytics.com/ga.js';
+			$source = 'https://ssl.google-analytics.com/ga.js';
 		}
 
 		return $source;

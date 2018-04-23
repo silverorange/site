@@ -217,10 +217,8 @@ class Site
 
 			// URIs
 			'uri.base'                 => null,
-			'uri.secure_base'          => null,
 			'uri.absolute_base'        => null,
 			'uri.cdn_base'             => null,
-			'uri.secure_cdn_base'      => null,
 			'uri.admin_base'           => null,
 			'uri.account_login'        => 'account/login',
 

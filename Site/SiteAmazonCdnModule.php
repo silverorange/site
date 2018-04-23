@@ -4,7 +4,7 @@
  * Application module that provides access to an Amazon S3 bucket.
  *
  * @package   Site
- * @copyright 2010-2016 silverorange
+ * @copyright 2010-2018 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAmazonCdnModule extends SiteCdnModule
@@ -351,21 +351,14 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 * @param string $expires expiration time expressed either as a number
 	 *                        of seconds since UNIX Epoch, or any string
 	 *                        that strtotime() can understand
-	 * @param boolean $secure whether or not to use HTTPS. If not set, the
-	 *                        value will fall back to
-	 *                        SiteWebApplication::isSecure().
 	 */
-	public function getUri($filename, $expires = null, $secure = null)
+	public function getUri($filename, $expires = null)
 	{
 		$uri = null;
 
-		if ($secure === null) {
-			$secure = $this->app->isSecure();
-		}
-
 		if ($this->app->config->amazon->cloudfront_enabled &&
 			$this->cf instanceof Aws\CloudFront\CloudFrontClient) {
-			$uri = $this->getCloudFrontUri($filename, $expires, false, $secure);
+			$uri = $this->getCloudFrontUri($filename, $expires, false);
 		} else {
 			if ($expires === null) {
 				$uri = $this->s3->getObjectUrl($this->bucket, $filename);
@@ -385,10 +378,6 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 				$uri = $request->getUri();
 			}
-
-			if (!$secure) {
-				$uri = preg_replace('/^https:/', 'http:', $uri);
-			}
 		}
 
 		return $uri;
@@ -404,13 +393,10 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 * @param string $expires expiration time expressed either as a number
 	 *                        of seconds since UNIX Epoch, or any string
 	 *                        that strtotime() can understand
-	 * @param boolean $secure whether or not to use HTTPS. If not set, the
-	 *                        value will fall back to
-	 *                        SiteWebApplication::isSecure().
 	 */
-	public function getStreamingUri($filename, $expires = null, $secure = null)
+	public function getStreamingUri($filename, $expires = null)
 	{
-		return $this->getCloudFrontUri($filename, $expires, true, $secure);
+		return $this->getCloudFrontUri($filename, $expires, true);
 	}
 
 	// }}}
@@ -456,7 +442,6 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		$filename,
 		$expires = null,
 		$streaming = null,
-		$secure = null
 	) {
 		// 1.x SDK allowed passing strtotime formatted strings for expiration
 		// dates. Modern SDK requires an integer.
@@ -501,14 +486,10 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			);
 		}
 
-		if ($secure === null) {
-			 $secure = $this->app->isSecure();
-		}
-
 		if ($streaming) {
 			$protocol = 'rtmp';
 		} else {
-			$protocol = ($secure) ? 'https' : 'http';
+			$protocol = 'https';
 		}
 
 		$uri = sprintf(
