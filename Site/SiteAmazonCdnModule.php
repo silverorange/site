@@ -441,7 +441,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	protected function getCloudFrontUri(
 		$filename,
 		$expires = null,
-		$streaming = null,
+		$streaming = null
 	) {
 		// 1.x SDK allowed passing strtotime formatted strings for expiration
 		// dates. Modern SDK requires an integer.
@@ -452,7 +452,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		$config = $this->app->config->amazon;
 
 		if (!$config->cloudfront_enabled ||
-			!$this->cf instanceof Aws\CloudFront\CloudFrontClient) {
+			!$this->cf instanceof Aws\CloudFront\CloudFrontClient
+		) {
 			throw new SwatException(
 				'CloudFront must be enabled to get CloudFront URIs in the '.
 				'Amazon CDN module'
