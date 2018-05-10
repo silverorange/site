@@ -310,7 +310,7 @@ class SiteWebApplication extends SiteApplication
 	protected function getCdnBase()
 	{
 		return $this->config->uri->cdn_base;
-			}
+	}
 
 	// }}}
 	// {{{ protected function configure()
@@ -870,7 +870,6 @@ class SiteWebApplication extends SiteApplication
 			if ($pos !== false) {
 				$base_uri = mb_substr($base_uri, $pos);
 			}
-		}
 		}
 
 		$base_uri_length = mb_strlen($base_uri);
