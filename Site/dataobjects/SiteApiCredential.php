@@ -74,9 +74,43 @@ class SiteApiCredential extends SwatDBDataObject
 			return false;
 
 		$this->initFromRow($row);
+
 		$this->generatePropertyHashes();
 
 		return true;
+	}
+
+	// }}}
+	// {{{ public function getPromotionByType()
+
+	public function getPromotionByType($type)
+	{
+		$this->checkDB();
+
+		$row = null;
+
+		if ($this->table !== null) {
+			$sql = sprintf(
+				'SELECT *
+				FROM %s
+				INNER JOIN Promotion ON
+					Promotion.api_credential = %s.id
+				WHERE %s.id = %d
+					AND Promotion.api_sign_on_type = %s',
+				$this->table,
+				$this->table,
+				$this->table,
+				$this->id,
+				$this->db->quote($type, 'text')
+			);
+
+			$rs = SwatDB::query($this->db, $sql, null);
+			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+		}
+
+		print_r($row);
+
+		return $row;
 	}
 
 	// }}}
