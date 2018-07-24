@@ -78,6 +78,45 @@ class SitePromotion extends SwatDBDataObject
 	 */
 	public $api_sign_on_type;
 
+  // }}}
+  // {{{ public function loadByApiIdent()
+
+  public function loadByApiIdent($ident, $type, SiteApiCredential $credential)
+  {
+    $this->checkDB();
+
+    $row = null;
+
+    if ($this->table !== null) {
+      $sql = sprintf(
+        'select * from PromotionCode
+        inner join Promotion on Promotion.id = PromotionCode.promotion
+        where PromotionCode.api_ident = %s and
+          Promotion.api_credential = %s and
+          Promotion.api_type = %s
+        order by PromotionCode.createdate desc',
+        $this->db->quote($ident, 'text'),
+        $this->db->quote($credential->id, 'integer'),
+        $this->db->quote($type, 'text')
+      );
+
+      $wrapper = SwatDBClassMap::get('SitePromotionCodeWrapper');
+      $codes = SwatDB::query($this->db, $sql, $wrapper);
+      $code = $codes->getFirst();
+    }
+
+    if (!$code instanceof PromotionCode) {
+      return false;
+    }
+
+    $this->code = $code;
+
+    return $this->load(
+      $code->getInternalValue('promotion'),
+      $credential->instance
+    );
+  }
+
 	// }}}
 }
 

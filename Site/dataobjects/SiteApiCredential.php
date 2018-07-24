@@ -85,6 +85,8 @@ class SiteApiCredential extends SwatDBDataObject
 
 	public function getPromotionByType($type)
 	{
+
+		print('GETTING PROMOTION BY TYPE IN SITE');
 		$sql = sprintf(
 			'SELECT *
 			FROM %s
