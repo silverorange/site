@@ -85,8 +85,6 @@ class SiteApiCredential extends SwatDBDataObject
 
 	public function getPromotionByType($type)
 	{
-
-		print('GETTING PROMOTION BY TYPE IN SITE');
 		$sql = sprintf(
 			'SELECT *
 			FROM %s
@@ -101,11 +99,24 @@ class SiteApiCredential extends SwatDBDataObject
 			$this->db->quote($type, 'text')
 		);
 
-		return SwatDB::query(
+		//print('SQL IS: '.$sql);
+		//print('DB IS: <pre>'.print_r($this->db,1).'</pre>');
+
+		$rs = SwatDB::query(
 			$this->db,
 			$sql,
-			SwatDBClassMap::get('SitePromotion')
+			null
 		);
+
+		$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+
+		/*return SwatDB::query(
+			$this->db,
+			$sql,
+			SwatDBClassMap::get('RapPromotion')
+		);*/
+
+		print('ROW IS:' . print_r($row,1));
 	}
 
 	// }}}

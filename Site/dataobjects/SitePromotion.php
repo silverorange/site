@@ -93,7 +93,7 @@ class SitePromotion extends SwatDBDataObject
         inner join Promotion on Promotion.id = PromotionCode.promotion
         where PromotionCode.api_ident = %s and
           Promotion.api_credential = %s and
-          Promotion.api_type = %s
+          Promotion.api_sign_on_type = %s
         order by PromotionCode.createdate desc',
         $this->db->quote($ident, 'text'),
         $this->db->quote($credential->id, 'integer'),
@@ -116,6 +116,40 @@ class SitePromotion extends SwatDBDataObject
       $credential->instance
     );
   }
+
+  // }}}
+  // {{{ public function generateApiCode()
+
+  public function generateApiCode(SiteApplication $app, $api_ident)
+  {
+    $promotion_code = $this->generateCode($app);
+    $promotion_code->api_ident = $api_ident;
+    $promotion_code->save();
+
+    $this->code = $promotion_code;
+  }
+
+  // }}}
+	// {{{ protected function generateCode()
+
+	public function generateCode(SiteApplication $app)
+	{
+		$generator = new PromoPromotionCodeGenerator($app);
+		// The generator always returns an array, so pop the value off it.
+		$codes = $generator->getCodes($this, 1);
+		$code = array_pop($codes);
+
+		$class_name = SwatDBClassMap::get('SitePromotionCode');
+		$promotion_code = new $class_name();
+		$promotion_code->setDatabase($this->db);
+		$promotion_code->promotion = $this;
+		$promotion_code->code = $code;
+		$promotion_code->limited_use = true;
+		$promotion_code->createdate = new SwatDate();
+		$promotion_code->createdate->toUTC();
+
+		return $promotion_code;
+	}
 
 	// }}}
 }
