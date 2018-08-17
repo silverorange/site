@@ -344,17 +344,6 @@ class Site
 			// media
 			'media.days_to_delete_threshold' => 7, // in days
 
-			// Botr Media
-			'botr.key'                    => null,
-			'botr.secret'                 => null,
-			'botr.base'                   => 'http://content.bitsontherun.com/',
-			'botr.secure_base'            => 'https://content.bitsontherun.com/',
-			'botr.content_signing'        => true,
-			'botr.public_content_expiry'  => '+1 Year',
-			'botr.private_content_expiry' => '+1 Minute',
-			'botr.dashboard_username'     => null,
-			'botr.dashboard_password'     => null,
-
 			// JWPlayer
 			'jwplayer.key'                => null,
 
