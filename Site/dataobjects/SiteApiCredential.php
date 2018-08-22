@@ -99,24 +99,11 @@ class SiteApiCredential extends SwatDBDataObject
 			$this->db->quote($type, 'text')
 		);
 
-		//print('SQL IS: '.$sql);
-		//print('DB IS: <pre>'.print_r($this->db,1).'</pre>');
-
-		$rs = SwatDB::query(
+		return SwatDB::query(
 			$this->db,
 			$sql,
-			null
+			SwatDBClassMap::get('RapPromotionWrapper')
 		);
-
-		$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
-
-		/*return SwatDB::query(
-			$this->db,
-			$sql,
-			SwatDBClassMap::get('RapPromotion')
-		);*/
-
-		print('ROW IS:' . print_r($row,1));
 	}
 
 	// }}}
