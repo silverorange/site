@@ -403,9 +403,6 @@ class Site
 			// Sentry error logging
 			'sentry.dsn' => null,
 			'sentry.environment' => null,
-
-			'hippo_pay.api_base' => null,
-			'hippo_pay.api_admin_token' => null,
 		);
 	}
 
