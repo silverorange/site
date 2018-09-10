@@ -74,7 +74,6 @@ class SiteApiCredential extends SwatDBDataObject
 			return false;
 
 		$this->initFromRow($row);
-
 		$this->generatePropertyHashes();
 
 		return true;
@@ -85,25 +84,28 @@ class SiteApiCredential extends SwatDBDataObject
 
 	public function getPromotionByType($type)
 	{
+		$this->checkDB();
+
 		$sql = sprintf(
 			'SELECT *
 			FROM %s
 			INNER JOIN Promotion ON
 				Promotion.api_credential = %s.id
-			WHERE %s.id = %d
+			WHERE %s.id = %s
 				AND Promotion.api_sign_on_type = %s',
 			$this->table,
 			$this->table,
 			$this->table,
-			$this->id,
+			$this->db->quote($this->id, 'integer'),
 			$this->db->quote($type, 'text')
 		);
 
+		// There should only be one type in the database
 		return SwatDB::query(
 			$this->db,
 			$sql,
 			SwatDBClassMap::get('RapPromotionWrapper')
-		);
+		)->getFirst();
 	}
 
 	// }}}

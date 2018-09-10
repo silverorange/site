@@ -859,30 +859,6 @@ class SiteAccount extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function loadByApiIdent()
-
-	public function loadByApiIdent($ident, SiteApiCredential $credential)
-	{
-		$this->checkDB();
-
-		$sql = sprintf(
-			'select account from Subscription
-			where api_ident = %s and api_credential = %s
-			order by createdate desc',
-			$this->db->quote($ident, 'text'),
-			$this->db->quote($credential->id, 'integer')
-		);
-
-		$id = SwatDB::queryOne($this->db, $sql);
-
-		if ($id === null) {
-			return false;
-		}
-
-		return $this->load($id);
-	}
-
-	// }}}
 }
 
 ?>
