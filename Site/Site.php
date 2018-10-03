@@ -191,7 +191,7 @@ class Site
 			'site.resource_tag'        => null,
 
 			// Shortname for the site
-			'site.shortname'           => null
+			'site.shortname'           => null,
 
 			// Resource tag, used for uncaching html-head-entries.
 			'resources.tag'            => null,
