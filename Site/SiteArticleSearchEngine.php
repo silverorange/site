@@ -59,11 +59,12 @@ class SiteArticleSearchEngine extends SiteSearchEngine
 
 	protected function getOrderByClause()
 	{
-		if ($this->fulltext_result === null)
+		if ($this->fulltext_result === null) {
 			$clause = sprintf('order by Article.title');
-		else
+		} else {
 			$clause =
 				$this->fulltext_result->getOrderByClause('Article.title');
+		}
 
 		return $clause;
 	}

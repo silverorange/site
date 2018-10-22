@@ -82,26 +82,31 @@ class SiteSearchPagination extends SwatPagination
 		$this->unset_get_vars[] = 'type';
 		$this->unset_get_vars[] = 'instance';
 
-		foreach($vars as $name => $value)
-			if (in_array($name, $this->unset_get_vars))
+		foreach($vars as $name => $value) {
+			if (in_array($name, $this->unset_get_vars)) {
 				unset($vars[$name]);
+			}
+		}
 
-		if ($this->link === null)
+		if ($this->link === null) {
 			$link = '?';
-		else
+		} else {
 			$link = $this->link.'?';
+		}
 
 		foreach($vars as $name => $value) {
 			if (is_array($value)) {
-				foreach ($value as $sub_value)
+				foreach ($value as $sub_value) {
 					$link.= $name.'[]='.urlencode($sub_value).'&';
+				}
 			} elseif ($value != '') {
 				$link.= $name.'='.urlencode($value).'&';
 			}
 		}
 
-		if ($this->type !== null)
+		if ($this->type !== null) {
 			$link.= sprintf('type=%s&', $this->type);
+		}
 
 		$link = str_replace('%', '%%', $link);
 		$link.= 'page=%s';

@@ -54,13 +54,17 @@ class SiteUploadStatusServer extends SiteXMLRPCServer
 			$response['statuses'] = array();
 
 			foreach ($clients as $client_id => $upload_id) {
-				if (function_exists('uploadprogress_get_info') &&
-					$status = uploadprogress_get_info($upload_id)) {
-					$status_struct = array();
-					foreach ($status as $key => $value)
-						$status_struct[$key] = $value;
-
-					$response['statuses'][$client_id] = $status_struct;
+				if (function_exists('uploadprogress_get_info')) {
+					$status = uploadprogress_get_info($upload_id);
+					if ($status) {
+						$status_struct = array();
+						foreach ($status as $key => $value) {
+							$status_struct[$key] = $value;
+						}
+						$response['statuses'][$client_id] = $status_struct;
+					} else {
+						$response['statuses'][$client_id] = 'none';
+					}
 				} else {
 					$response['statuses'][$client_id] = 'none';
 				}

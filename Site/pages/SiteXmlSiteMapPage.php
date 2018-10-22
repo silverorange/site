@@ -94,10 +94,11 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 	protected function displayArticles($articles, $path = null)
 	{
 		foreach ($articles as $article) {
-			if ($path === null)
+			if ($path === null) {
 				$article_path = $article->shortname;
-			else
+			} else {
 				$article_path = $path.'/'.$article->shortname;
+			}
 
 			$this->displayPath($article_path, $article->modified_date, 'weekly');
 

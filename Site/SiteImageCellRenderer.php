@@ -130,12 +130,13 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		if ($this->link !== null) {
 			$a_tag = new SwatHtmlTag('a');
 
-			if ($this->link_value === null)
+			if ($this->link_value === null) {
 				$a_tag->href = $this->link;
-			elseif (is_array($this->link_value))
+			} elseif (is_array($this->link_value)) {
 				$a_tag->href = vsprintf($this->link, $this->link_value);
-			else
+			} else {
 				$a_tag->href = sprintf($this->link, $this->link_value);
+			}
 
 			$a_tag->open();
 		}
@@ -152,25 +153,29 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		if ($this->display_title) {
 			$title = $this->image->getTitle();
 
-			if ($title !== null)
+			if ($title !== null) {
 				$title = SwatString::condense($title, self::MAX_TITLE_LENGTH);
+			}
 
 			$span_tag = new SwatHtmlTag('span');
 			$span_tag->class = 'title';
 
-			if ($title === null)
+			if ($title === null) {
 				$span_tag->setContent(''); // prevent self-closing span tag
-			else
+			} else {
 				$span_tag->setContent($title);
+			}
 
-			if (mb_strlen($title) > self::MAX_TITLE_LENGTH)
+			if (mb_strlen($title) > self::MAX_TITLE_LENGTH) {
 				$span_tag->title = $title;
+			}
 
 			$span_tag->display();
 		}
 
-		if ($this->link !== null)
+		if ($this->link !== null) {
 			$a_tag->close();
+		}
 	}
 
 	// }}}

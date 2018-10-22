@@ -944,10 +944,11 @@ class SiteImage extends SwatDBDataObject
 	) {
 		$crop_box = array($width, $height, $offset_x, $offset_y);
 
-		if ($dimension_shortname === null)
+		if ($dimension_shortname === null) {
 			$this->crop_box = $crop_box;
-		else
+		} else {
 			$this->crop_boxes[$dimension_shortname] = $crop_box;
+		}
 	}
 
 	// }}}

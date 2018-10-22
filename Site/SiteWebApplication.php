@@ -566,10 +566,11 @@ class SiteWebApplication extends SiteApplication
 
 	protected function explodeSource($source)
 	{
-		if ($source == '')
+		if ($source == '') {
 			$path = array();
-		else
+		} else {
 			$path = explode('/', $source);
+		}
 
 		return $path;
 	}
@@ -929,8 +930,9 @@ class SiteWebApplication extends SiteApplication
 	 */
 	public function getBaseHrefRelativeUri($secure = null)
 	{
-		if ($secure === null)
+		if ($secure === null) {
 			$secure = $this->secure;
+		}
 
 		$base_uri = $this->secure ? $this->secure_base_uri : $this->base_uri;
 		$protocol = $this->getProtocol();
@@ -939,15 +941,17 @@ class SiteWebApplication extends SiteApplication
 		if (strncmp($base_uri, $protocol, $protocol_length) === 0) {
 			$pos = mb_strpos($base_uri, '/', $protocol_length);
 
-			if ($pos !== false)
+			if ($pos !== false) {
 				$base_uri = mb_substr($base_uri, $pos);
+			}
 		}
 
 		$base_uri_length = mb_strlen($base_uri);
-		if (strncmp($base_uri, $this->uri, $base_uri_length) === 0)
+		if (strncmp($base_uri, $this->uri, $base_uri_length) === 0) {
 			$uri = mb_substr($this->uri, $base_uri_length);
-		else
+		} else {
 			$uri = $this->uri;
+		}
 
 		// trim mobile prefix from beginning of relative uri
 		if (isset($this->mobile) && $this->mobile->isMobileUrl() &&
@@ -1010,19 +1014,22 @@ class SiteWebApplication extends SiteApplication
 	 */
 	protected function getRootBaseHref($secure = null)
 	{
-		if ($secure === null)
+		if ($secure === null) {
 			$secure = $this->secure;
+		}
 
-		if ($secure)
+		if ($secure) {
 			$base_uri = $this->secure_base_uri;
-		else
+		} else {
 			$base_uri = $this->base_uri;
+		}
 
-		if (mb_substr($base_uri, 0, 1) == '/')
+		if (mb_substr($base_uri, 0, 1) === '/') {
 			$base_href = $this->getProtocol($secure).
 				$this->getServerName($secure).$base_uri;
-		else
+		} else {
 			$base_href = $base_uri;
+		}
 
 		return $base_href;
 	}
@@ -1126,10 +1133,11 @@ class SiteWebApplication extends SiteApplication
 			$regexp = '/localhost:[0-9]+/u';
 
 			if (preg_match($regexp, $server_name)) {
-				if ($secure)
+				if ($secure) {
 					$server_name = 'localhost:8443';
-				else
+				} else {
 					$server_name = 'localhost:8080';
+				}
 			}
 		}
 
@@ -1146,13 +1154,15 @@ class SiteWebApplication extends SiteApplication
 	 */
 	protected function getProtocol($secure = null)
 	{
-		if ($secure === null)
+		if ($secure === null) {
 			$secure = $this->secure;
+		}
 
-		if ($secure)
+		if ($secure) {
 			$protocol = 'https://';
-		else
+		} else {
 			$protocol = 'http://';
+		}
 
 		return $protocol;
 	}
