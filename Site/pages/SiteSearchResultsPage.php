@@ -415,10 +415,11 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		$tips = array();
 
-		if ($this->hasSearchDataValue('keywords'))
+		if ($this->hasSearchDataValue('keywords')) {
 			$tips[] = Site::_('Try using less specific keywords');
-		else
+		} else {
 			$tips[] = Site::_('Try broadening your search');
+		}
 
 		return $tips;
 	}

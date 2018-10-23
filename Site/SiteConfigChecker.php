@@ -164,9 +164,15 @@ class SiteConfigChecker extends SiteCommandLineApplication
 	{
 		$this->filename = (string)$filename;
 
-		$class_name = ucfirst(preg_replace_callback('/-(.)/',
-			create_function('$matches', 'return mb_strtoupper($matches[1]);'),
-			basename(str_replace('.ini', '', $filename))));
+		$class_name = ucfirst(
+			preg_replace_callback(
+				'/-(.)/',
+				function ($matches) {
+					return mb_strtoupper($matches[1]);
+				},
+				basename(str_replace('.ini', '', $filename))
+			)
+		);
 	}
 
 	// }}}

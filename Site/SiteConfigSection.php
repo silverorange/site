@@ -83,10 +83,11 @@ class SiteConfigSection extends SwatObject implements Iterator
 			echo "[", $this->name, "]\n";
 			foreach ($this->values as $name => $value) {
 				if ($value != '') {
-					if ($value == 1)
+					if ($value == 1) {
 						$value = 'On';
-					else
+					} else {
 						$value = "\"".$value."\"";
+					}
 
 					echo $name, " = ", $value, "\n";
 				}
