@@ -307,10 +307,6 @@ class SiteLayout extends SiteObject
 		$minify = ($resources->minify &&
 			$this->getMinifyEnabledByFlagFile());
 
-		// get compile option
-		$compile = ($resources->compile &&
-			$this->getCompileEnabledByFlagFile());
-
 		$this->startCapture('html_head_entries');
 
 		$displayer->display(
@@ -318,8 +314,7 @@ class SiteLayout extends SiteObject
 			$this->app->getBaseHref(),
 			$tag,
 			$combine,
-			$minify,
-			$compile
+			$minify
 		);
 
 		$this->endCapture();
