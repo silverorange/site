@@ -56,7 +56,7 @@
 		"sentry/sentry": "^1.7.0",
 		"silverorange/mdb2": "^3.0.0",
 		"silverorange/concentrate": "^1.0.0",
-		"silverorange/swat": "^4.0.0"
+		"silverorange/swat": "^5.0.0"
 	},
 	"require-dev": {
 		"silverorange/coding-standard": "^1.0.0"
