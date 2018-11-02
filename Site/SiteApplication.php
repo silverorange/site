@@ -1093,6 +1093,20 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
+	// {{{ public function addSentryBreadcrumb()
+
+	public function addSentryBreadcrumb($message, $category)
+	{
+		$result = $this->sentry_client->breadcrumbs->record([
+			'message' => $message,
+			'category' => $category,
+			'level' => 'error'
+		]);
+
+		print('BREADCRUMBS RESULT IS: <pre>' .print_r($result,1).'</pre>' );
+	}
+
+	// }}}
 }
 
 ?>
