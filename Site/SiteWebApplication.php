@@ -147,31 +147,31 @@ class SiteWebApplication extends SiteApplication
 				$this->loadPage();
 
 				$this->page->layout->init();
-				$this->addSentryBreadcrumb('page layout init()', $sentryCategory);
+				$this->addSentryBreadcrumb('layout init()', $sentryCategory);
 
 				$this->page->init();
-				$this->addSentryBreadcrumb('page init()', $sentryCategory);
+				$this->addSentryBreadcrumb('init()', $sentryCategory);
 
 				$this->page->layout->process();
-				$this->addSentryBreadcrumb('page layout process()', $sentryCategory);
+				$this->addSentryBreadcrumb('layout process()', $sentryCategory);
 
 				$this->page->process();
-				$this->addSentryBreadcrumb('page process()', $sentryCategory);
+				$this->addSentryBreadcrumb('process()', $sentryCategory);
 
 				$this->page->layout->build();
-				$this->addSentryBreadcrumb('page layout build()', $sentryCategory);
+				$this->addSentryBreadcrumb('layout build()', $sentryCategory);
 
 				$this->page->build();
-				$this->addSentryBreadcrumb('page build()', $sentryCategory);
+				$this->addSentryBreadcrumb('build()', $sentryCategory);
 
 				$this->page->layout->finalize();
-				$this->addSentryBreadcrumb('page layout finalize()', $sentryCategory);
+				$this->addSentryBreadcrumb('layout finalize()', $sentryCategory);
 
 				$this->page->finalize();
-				$this->addSentryBreadcrumb('page finalize()', $sentryCategory);
+				$this->addSentryBreadcrumb('finalize()', $sentryCategory);
 
 				$this->page->layout->complete();
-				$this->addSentryBreadcrumb('page layout complete()', $sentryCategory);
+				$this->addSentryBreadcrumb('layout complete()', $sentryCategory);
 
 				// get page content
 				ob_start();
