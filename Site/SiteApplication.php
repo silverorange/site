@@ -1100,10 +1100,8 @@ abstract class SiteApplication extends SiteObject
 		$result = $this->sentry_client->breadcrumbs->record([
 			'message' => $message,
 			'category' => $category,
-			'level' => 'error'
+			'level' => 'info'
 		]);
-
-		print('BREADCRUMBS RESULT IS: <pre>' .print_r($result,1).'</pre>' );
 	}
 
 	// }}}

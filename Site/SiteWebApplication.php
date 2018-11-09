@@ -136,7 +136,7 @@ class SiteWebApplication extends SiteApplication
 			}
 		}
 
-		$sentryCategory = 'application page steps';
+		$sentryCategory = 'app steps';
 
 		try {
 			if (!$cached) {
