@@ -11,6 +11,11 @@ class SiteHttpErrorPage extends SitePage
 	protected $http_status_code = null;
 	protected $uri = null;
 
+	/**
+	 * @var SiteSentryReportDialog
+	 */
+	protected $sentry_report_dialog;
+
 	// }}}
 
 	// init phase
@@ -41,6 +46,8 @@ class SiteHttpErrorPage extends SitePage
 		} else {
 			$this->uri = $_SERVER['REQUEST_URI'];
 		}
+
+		$this->sentry_report_dialog = new SiteSentryReportDialog();
 	}
 
 	// }}}
@@ -85,6 +92,7 @@ class SiteHttpErrorPage extends SitePage
 		$p_tag->display();
 
 		$this->displaySuggestions();
+		$this->displaySentryReportDialog();
 
 		echo '<p class="debug-info">';
 
@@ -143,6 +151,14 @@ class SiteHttpErrorPage extends SitePage
 				)
 			),
 		);
+	}
+
+	// }}}
+	// {{{ protected function displaySentryReportDialog()
+
+	protected function displaySentryReportDialog()
+	{
+		echo $this->sentry_report_dialog->getInlineXhtml();
 	}
 
 	// }}}

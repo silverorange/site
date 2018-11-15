@@ -3,7 +3,7 @@
 /**
  * Generates Sentry Report Dialog for User Input
  *
- * @package   Store
+ * @package   Site
  * @copyright 2018 silverorange
  */
 class SiteSentryReportDialog
