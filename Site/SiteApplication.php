@@ -113,6 +113,11 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected $sentry_client;
 
+	/**
+	 * @var SiteSentryReportDialog
+	 */
+	protected $sentry_report_dialog;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -468,6 +473,10 @@ abstract class SiteApplication extends SiteObject
 		$error_handler->registerShutdownFunction();
 
 		$this->sentry_client = $client;
+		$this->sentry_report_dialog = new SiteSentryReportDialog(
+			$client,
+			$config->sentry->dsn
+		);
 	}
 
 	// }}}

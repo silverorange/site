@@ -29,6 +29,15 @@ class SiteExceptionPage extends SitePage
 	}
 
 	// }}}
+	// {{{ public function setReportDialog()
+
+	public function setReportDialog($report_dialog)
+	{
+				// Not getting set????
+		$this->report_dialog = $report_dialog;
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ public function init()
@@ -114,6 +123,16 @@ class SiteExceptionPage extends SitePage
 	protected function getSuggestions()
 	{
 		return array();
+	}
+
+	// }}}
+	// {{{ protected function displaySentryReportDialog()
+
+	protected function displaySentryReportDialog()
+	{
+		if ($report_dialog instanceof SiteSentryReportDialog) {
+			echo $this->sentry_report_dialog->getInlineXhtml();
+		}
 	}
 
 	// }}}

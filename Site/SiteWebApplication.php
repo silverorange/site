@@ -206,6 +206,7 @@ class SiteWebApplication extends SiteApplication
 
 			if ($this->page instanceof SiteExceptionPage) {
 				$this->page->setException($e);
+				$this->page->setReportDialog($this->sentry_report_dialog);
 			}
 
 			$this->page->layout->init();
