@@ -16,6 +16,11 @@ class SiteExceptionPage extends SitePage
 	 */
 	protected $exception;
 
+	/**
+	 * @var SiteSentryReportDialog
+	 */
+	protected $report_dialog;
+
 	// }}}
 	// {{{ public function setException()
 
@@ -33,7 +38,6 @@ class SiteExceptionPage extends SitePage
 
 	public function setReportDialog($report_dialog)
 	{
-				// Not getting set????
 		$this->report_dialog = $report_dialog;
 	}
 
@@ -130,8 +134,8 @@ class SiteExceptionPage extends SitePage
 
 	protected function displaySentryReportDialog()
 	{
-		if ($report_dialog instanceof SiteSentryReportDialog) {
-			echo $this->sentry_report_dialog->getInlineXhtml();
+		if ($this->report_dialog instanceof SiteSentryReportDialog) {
+			echo $this->report_dialog->getInlineXhtml();
 		}
 	}
 
