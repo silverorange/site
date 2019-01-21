@@ -204,8 +204,8 @@ class SiteWebApplication extends SiteApplication
 	 *
 	 * @param string $uri the URI of the full P3P XML document.
 	 *
-	 * @see http://www.w3.org/P3P/
-	 * @see http://en.wikipedia.org/wiki/P3P
+	 * @see https://www.w3.org/P3P/
+	 * @see https://en.wikipedia.org/wiki/P3P
 	 */
 	public function setP3PPolicyURI($uri)
 	{
@@ -220,8 +220,8 @@ class SiteWebApplication extends SiteApplication
 	 *
 	 * @param string $policy the P3P compact policy.
 	 *
-	 * @see http://www.w3.org/P3P/
-	 * @see http://en.wikipedia.org/wiki/P3P
+	 * @see https://www.w3.org/P3P/
+	 * @see https://en.wikipedia.org/wiki/P3P
 	 */
 	public function setP3PCompactPolicy($policy)
 	{

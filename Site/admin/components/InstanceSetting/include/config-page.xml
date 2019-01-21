@@ -17,7 +17,7 @@
 	</widget>
 	<widget class="SwatFormField">
 		<property name="title" translatable="yes">Akismet Key</property>
-		<property name="note"><![CDATA[Akismet is for automatic spam filtering. <a href="http://akismet.com/personal/">Get an API key</a>]]></property>
+		<property name="note"><![CDATA[Akismet is for automatic spam filtering. <a href="https://akismet.com/personal/">Get an API key</a>]]></property>
 		<property name="note_content_type">text/xml</property>
 		<widget class="SwatEntry" id="comment_akismet_key">
 			<property name="maxlength" type="integer">255</property>

@@ -517,9 +517,9 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		}
 
 		return sprintf('Videos on this site require either '.
-			'<a href="http://en.wikipedia.org/wiki/HTML5_video" '.
+			'<a href="https://en.wikipedia.org/wiki/HTML5_video" '.
 			'target="_blank">HTML5 video support</a> (%s %s) or '.
-			'<a href="http://get.adobe.com/flashplayer/" target="_blank">'.
+			'<a href="https://get.adobe.com/flashplayer/" target="_blank">'.
 			'Adobe Flash Player</a> (version 18 or higher). '.
 			'Please upgrade your browser and try again.',
 			SwatString::toList($codecs, 'or'),

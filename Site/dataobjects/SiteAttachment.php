@@ -168,7 +168,7 @@ class SiteAttachment extends SwatDBDataObject
 	 *
 	 * For MPEG-4 Audio, we use the non-standard but universally accepted m4a
 	 * extension. See wikipedia for more details
-	 * {@link http://en.wikipedia.org/wiki/.m4a}
+	 * {@link https://en.wikipedia.org/wiki/.m4a}.
 	 *
 	 * @returns string The extension of the file.
 	 */
@@ -368,7 +368,7 @@ class SiteAttachment extends SwatDBDataObject
 		$headers = array();
 
 		// Set a "never-expire" policy with a far future max age (10 years) as
-		// suggested http://developer.yahoo.com/performance/rules.html#expires.
+		// suggested https://developer.yahoo.com/performance/rules.html#expires.
 		// As well, set Cache-Control to public, as this allows some browsers to
 		// cache the images to disk while on https, which is a good win. This
 		// depends on setting new object ids when updating the object, if this

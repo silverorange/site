@@ -84,7 +84,7 @@ class SiteGravatarEntry extends SwatEmailEntry
 	{
 		$link = new SwatHtmlTag('a');
 		$link->id = $this->id.'_link';
-		$link->href = 'http://www.gravatar.com/';
+		$link->href = 'https://www.gravatar.com/';
 		if ($this->value != '') {
 			$link->href.= md5(trim($this->value));
 		}

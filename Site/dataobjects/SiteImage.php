@@ -620,8 +620,8 @@ class SiteImage extends SwatDBDataObject
 	 * This is for easy use of the retina technique of allowing the browser to
 	 * down-size a larger lower quality compressed image from its actual size
 	 * to half its size. See
-	 * @link{http://filamentgroup.com/lab/rwd_img_compression/} and
-	 * @link{http://www.netvlies.nl/blog/design-interactie/retina-revolution}
+	 * {@link https://www.filamentgroup.com/lab/compressive-images.html} and
+	 * {@link https://www.netvlies.nl/tips-updates/algemeen/design-interactie/retina-revolution/}
 	 * for a full explanation of this technique. This assumes sane compression
 	 * and resize filter settings have been set on the image dimension being
 	 * displayed.
@@ -659,7 +659,7 @@ class SiteImage extends SwatDBDataObject
 		$headers = array();
 
 		// Set a "never-expire" policy with a far future max age (10 years) as
-		// suggested http://developer.yahoo.com/performance/rules.html#expires.
+		// suggested https://developer.yahoo.com/performance/rules.html#expires.
 		// As well, set Cache-Control to public, as this allows some browsers to
 		// cache the images to disk while on https, which is a good win. This
 		// depends on setting new object ids when updating the object, if this
@@ -1352,7 +1352,7 @@ class SiteImage extends SwatDBDataObject
 	 *
 	 * This works around a upstream limitation of Imagick that does not allow
 	 * cloned objects to get the correct image size. See
-	 * @link{https://bugs.php.net/bug.php?id=64015}.
+	 * {@link https://bugs.php.net/bug.php?id=64015}.
 	 *
 	 * @param SiteImageDimension $dimension the image's dimension.
 	 * @param SiteImageDimensionBinding $dimension_binding the image's

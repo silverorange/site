@@ -9,9 +9,9 @@
  * @package   Site
  * @copyright 2007-2018 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
- * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
+ * @link      https://developers.google.com/analytics/devguides/collection/gajs/
  * @link      https://developers.facebook.com/docs/facebook-pixel/api-reference
- * @link      http://help.bingads.microsoft.com/apex/index/3/en-ca/n5012
+ * @link      https://help.bingads.microsoft.com/apex/index/3/en-ca/n5012
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
