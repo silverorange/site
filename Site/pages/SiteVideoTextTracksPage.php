@@ -144,8 +144,12 @@ class SiteVideoTextTracksPage extends SitePage
 			$seconds -= $minute * $minutes;
 		}
 
-		return sprintf('%02d:%02d:%02d,000',
-			$hours, $minutes, $seconds);
+		return sprintf(
+			'%02d:%02d:%02d.000',
+			$hours,
+			$minutes,
+			$seconds
+		);
 	}
 
 	// }}}
