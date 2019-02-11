@@ -99,7 +99,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * @param string $exchange   the job exchange name.
 	 * @param string $message    the job data.
 	 * @param array  $attributes optional. Additional message attributes. See
-	 *                           {@link https://secure.php.net/manual/fa/amqpexchange.publish.php}.
+	 *                           {@link https://github.com/pdezwart/php-amqp/blob/master/stubs/AMQPExchange.php#L155}
 	 *
 	 * @return void
 	 */
@@ -139,7 +139,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * @param string $exchange   the job exchange name.
 	 * @param string $message    the job data.
 	 * @param array  $attributes optional. Additional message attributes. See
-	 *                           {@link https://secure.php.net/manual/fa/amqpexchange.publish.php}.
+	 *                           {@link https://github.com/pdezwart/php-amqp/blob/master/stubs/AMQPExchange.php#L155}
 	 *
 	 * @return void
 	 */
@@ -166,7 +166,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * @param string $exchange   the job exchange name.
 	 * @param string $message    the job data.
 	 * @param array  $attributes optional. Additional message attributes. See
-	 *                           {@link https://secure.php.net/manual/fa/amqpexchange.publish.php}.
+	 *                           {@link https://github.com/pdezwart/php-amqp/blob/master/stubs/AMQPExchange.php#L155}
 	 *
 	 * @return array an array containing the following fields:
 	 *               - <kbd>status</kbd>   - a string containing "success" for
@@ -313,7 +313,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * @param string $exchange   the job exchange name.
 	 * @param string $message    the job data.
 	 * @param array  $attributes optional. Additional message attributes. See
-	 *                           {@link https://secure.php.net/manual/fa/amqpexchange.publish.php}.
+	 *                           {@link https://github.com/pdezwart/php-amqp/blob/master/stubs/AMQPExchange.php#L155}
 	 *
 	 * @return array an array containing the following fields:
 	 *               - <kbd>status</kbd>   - a string containing "success" for
