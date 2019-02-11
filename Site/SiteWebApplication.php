@@ -802,7 +802,7 @@ class SiteWebApplication extends SiteApplication
 	/**
 	 * Gets the base value for any application admin hrefs
 	 *
-	 * If the config value is set use that, otherwise fall back on the site
+	 * If the admin base config value is set use that, otherwise fall back on the site
 	 * defaults.
 	 *
 	 * @return string the base value for all application admin hrefs.
