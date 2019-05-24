@@ -6,7 +6,7 @@
  * Web-applicaitions are set up to resolve pages and handle page requests.
  *
  * @package   Site
- * @copyright 2006-2016 silverorange
+ * @copyright 2006-2018 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteWebApplication extends SiteApplication
@@ -19,14 +19,6 @@ class SiteWebApplication extends SiteApplication
 	 * @var string
 	 */
 	protected $base_uri = null;
-
-	/**
-	 * The base value for all of this application's anchor hrefs over secure
-	 * connections
-	 *
-	 * @var string
-	 */
-	protected $secure_base_uri = null;
 
 	/**
 	 * Whether or not this application is loaded over a secure connection
@@ -212,8 +204,8 @@ class SiteWebApplication extends SiteApplication
 	 *
 	 * @param string $uri the URI of the full P3P XML document.
 	 *
-	 * @see http://www.w3.org/P3P/
-	 * @see http://en.wikipedia.org/wiki/P3P
+	 * @see https://www.w3.org/P3P/
+	 * @see https://en.wikipedia.org/wiki/P3P
 	 */
 	public function setP3PPolicyURI($uri)
 	{
@@ -228,8 +220,8 @@ class SiteWebApplication extends SiteApplication
 	 *
 	 * @param string $policy the P3P compact policy.
 	 *
-	 * @see http://www.w3.org/P3P/
-	 * @see http://en.wikipedia.org/wiki/P3P
+	 * @see https://www.w3.org/P3P/
+	 * @see https://en.wikipedia.org/wiki/P3P
 	 */
 	public function setP3PCompactPolicy($policy)
 	{
@@ -261,19 +253,24 @@ class SiteWebApplication extends SiteApplication
 	 */
 	protected function parseUri()
 	{
-		$this->secure = (isset($_SERVER['HTTPS']) ||
-			(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
-			$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'));
+		$this->secure = (
+			isset($_SERVER['HTTPS']) || (
+				isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+				$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https'
+			)
+		);
 
 		// check for session module
 		if (isset($this->session) &&
 			$this->session instanceof SiteSessionModule &&
-			$this->session->isActive()) {
-
+			$this->session->isActive()
+		) {
 			// remove session ID from URI since it will be added back where
 			// necessary
-			$regexp = sprintf('/%s=[^&]*&?/u',
-				preg_quote($this->session->getSessionName(), '/'));
+			$regexp = sprintf(
+				'/%s=[^&]*&?/u',
+				preg_quote($this->session->getSessionName(), '/')
+			);
 
 			$this->uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
 		} else {
@@ -292,7 +289,6 @@ class SiteWebApplication extends SiteApplication
 				$regexp = sprintf('|%s|u', $base_uri);
 				if (preg_match($regexp, $this->uri, $matches)) {
 					$this->base_uri = $matches[0];
-					$this->secure_base_uri = $matches[0];
 				}
 			}
 		}
@@ -309,29 +305,11 @@ class SiteWebApplication extends SiteApplication
 	/**
 	 * Gets the base cdn
 	 *
-	 * @param boolean $secure whether or not the base cdn should be a secure
-	 *                         URI. The default value of null maintains the
-	 *                         same security as the current page.
-	 *
 	 * @return string the base cdn or null if cdn settings aren't set.
 	 */
-	protected function getCdnBase($secure = null)
+	protected function getCdnBase()
 	{
-		$cdn_base = null;
-
-		if ($this->config->uri->cdn_base != '' &&
-			$this->config->uri->secure_cdn_base != '') {
-
-			if ($secure === null) {
-				$secure = $this->isSecure();
-			}
-
-			$cdn_base = ($secure === true) ?
-				$this->config->uri->secure_cdn_base :
-				$this->config->uri->cdn_base;
-		}
-
-		return $cdn_base;
+		return $this->config->uri->cdn_base;
 	}
 
 	// }}}
@@ -503,7 +481,6 @@ class SiteWebApplication extends SiteApplication
 	public function getReplacementPage($source)
 	{
 		$source = $this->normalizeSource($source);
-		$this->checkSecure($source);
 		$new_page = $this->resolvePage($source);
 
 		return $new_page;
@@ -585,7 +562,6 @@ class SiteWebApplication extends SiteApplication
 	{
 		if ($this->page === null) {
 			$source = $this->normalizeSource(self::initVar('source'));
-			$this->checkSecure($source);
 			$this->page = $this->resolvePage($source);
 		}
 	}
@@ -673,17 +649,6 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
-	// {{{ public function setSecureBaseUri()
-
-	/**
-	 * Sets the base URI for secure pages
-	 */
-	public function setSecureBaseUri($uri)
-	{
-		$this->secure_base_uri = $uri;
-	}
-
-	// }}}
 	// {{{ public function relocate()
 
 	/**
@@ -694,11 +659,6 @@ class SiteWebApplication extends SiteApplication
 	 * function to be sure execution does not continue.
 	 *
 	 * @param string $uri the URI to relocate to.
-	 * @param boolean $secure optional. Whether or not the base href should be
-	 *                         a secure URI. The default value of null
-	 *                         maintains the same security as the current page.
-	 *                         This parameter only has an effect if the
-	 *                         <i>$uri</i> is relative.
 	 * @param boolean $append_sid optional. Whether or not to append the
 	 *                             session identifier to the URI. If null or
 	 *                             unspecified, this is determined automatically
@@ -711,7 +671,6 @@ class SiteWebApplication extends SiteApplication
 	 */
 	public function relocate(
 		$uri,
-		$secure = null,
 		$append_sid = null,
 		$permanent = false
 	) {
@@ -720,11 +679,13 @@ class SiteWebApplication extends SiteApplication
 			$this->session instanceof SiteSessionModule)
 				$uri = $this->session->appendSessionId($uri, $append_sid);
 
-		if (mb_substr($uri, 0, 1) != '/' && mb_strpos($uri, '://') === false)
-			$uri = $this->getBaseHref($secure).$uri;
+		if (mb_substr($uri, 0, 1) != '/' && mb_strpos($uri, '://') === false) {
+			$uri = $this->getBaseHref().$uri;
+		}
 
-		if ($permanent)
+		if ($permanent) {
 			header('HTTP/1.1 301 Moved Permanently');
+		}
 
 		header('Location: '.$uri);
 		exit();
@@ -740,11 +701,6 @@ class SiteWebApplication extends SiteApplication
 	 * maintained in automatic redirects.
 	 *
 	 * @param string $uri the URI to relocate to.
-	 * @param boolean $secure optional. Whether or not the base href should be
-	 *                         a secure URI. The default value of null
-	 *                         maintains the same security as the current page.
-	 *                         This parameter only has an effect if the
-	 *                         <i>$uri</i> is relative.
 	 * @param boolean $append_sid optional. Whether or not to append the
 	 *                             session identifier to the URI. If null or
 	 *                             unspecified, this is determined automatically
@@ -757,7 +713,6 @@ class SiteWebApplication extends SiteApplication
 	 */
 	public function relocateWithQueryString(
 		$uri,
-		$secure = null,
 		$append_sid = null,
 		$permanent = false
 	) {
@@ -771,7 +726,7 @@ class SiteWebApplication extends SiteApplication
 			$uri.= $concatenator.$query_string;
 		}
 
-		$this->relocate($uri, $secure, $append_sid, $permanent);
+		$this->relocate($uri, $append_sid, $permanent);
 	}
 
 	// }}}
@@ -785,19 +740,6 @@ class SiteWebApplication extends SiteApplication
 	public function getUri()
 	{
 		return $this->uri;
-	}
-
-	// }}}
-	// {{{ public function isSecure()
-
-	/**
-	 * Whether the current page is being accessed securely
-	 *
-	 * @return boolean whether the current page access is secure.
-	 */
-	public function isSecure()
-	{
-		return $this->secure;
 	}
 
 	// }}}
@@ -837,15 +779,11 @@ class SiteWebApplication extends SiteApplication
 	/**
 	 * Gets the base value for all application anchor hrefs
 	 *
-	 * @param boolean $secure whether or not the base href should be a secure
-	 *                         URI. The default value of null maintains the
-	 *                         same security as the current page.
-	 *
 	 * @return string the base value for all application anchor hrefs.
 	 */
-	public function getBaseHref($secure = null)
+	public function getBaseHref()
 	{
-		$base_href = $this->getRootBaseHref($secure);
+		$base_href = $this->getRootBaseHref();
 
 		if (isset($this->mobile)) {
 			if ($this->mobile->isMobileUrl() &&
@@ -864,27 +802,26 @@ class SiteWebApplication extends SiteApplication
 	/**
 	 * Gets the base value for any application admin hrefs
 	 *
-	 * Admin base value is assumed to always be secure. If the config value is
-	 * set use that, otherwise fall back on the site defaults.
+	 * If the admin base config value is set use that, otherwise fall back on the site
+	 * defaults.
 	 *
 	 * @return string the base value for all application admin hrefs.
 	 */
 	public function getAdminBaseHref()
 	{
 		$admin_base_href = null;
-		$secure = true;
 
 		if ($this->config->uri->admin_base != '') {
 			$admin_base_href = $this->config->uri->admin_base;
 
-			if (mb_substr($admin_base_href, 0, 1) == '/') {
-				$admin_base_href = $this->getProtocol($secure).
-					$this->getServerName($secure).$admin_base_href;
+			if (mb_substr($admin_base_href, 0, 1) === '/') {
+				$admin_base_href = $this->getProtocol().
+					$this->getServerName().$admin_base_href;
 			}
 		}
 
 		if ($admin_base_href === null) {
-			$admin_base_href = $this->getBaseHref($secure).'admin/';
+			$admin_base_href = $this->getBaseHref().'admin/';
 		}
 
 		return $admin_base_href;
@@ -900,17 +837,14 @@ class SiteWebApplication extends SiteApplication
 	 * anchor values. This allows us to fall back to local images if cdn
 	 * settings get turned off.
 	 *
-	 * @param boolean $secure whether or not the base cdn href should be a
-	 *                         secure URI. The default value of null maintains
-	 *                         the same security as the current page.
-	 *
 	 * @return string the base value for all application cdn anchor hrefs.
 	 */
-	public function getBaseCdnHref($secure = null)
+	public function getBaseCdnHref()
 	{
-		$base_cdn_href = $this->getCdnBase($secure);
+		$base_cdn_href = $this->getCdnBase();
+
 		if ($base_cdn_href === null) {
-			$base_cdn_href = $this->getBaseHref($secure);
+			$base_cdn_href = $this->getBaseHref();
 		}
 
 		return $base_cdn_href;
@@ -922,19 +856,11 @@ class SiteWebApplication extends SiteApplication
 	/**
 	 * Gets the URI relative to the base href
 	 *
-	 * @param boolean $secure whether or not the base href should be a secure
-	 *                         URI. The default value of null maintains the
-	 *                         same security as the current page.
-	 *
 	 * @return string the relative URI
 	 */
-	public function getBaseHrefRelativeUri($secure = null)
+	public function getBaseHrefRelativeUri()
 	{
-		if ($secure === null) {
-			$secure = $this->secure;
-		}
-
-		$base_uri = $this->secure ? $this->secure_base_uri : $this->base_uri;
+		$base_uri = $this->base_uri;
 		$protocol = $this->getProtocol();
 		$protocol_length = mb_strlen($protocol);
 
@@ -955,8 +881,8 @@ class SiteWebApplication extends SiteApplication
 
 		// trim mobile prefix from beginning of relative uri
 		if (isset($this->mobile) && $this->mobile->isMobileUrl() &&
-				$this->mobile->getPrefix() !== null) {
-
+			$this->mobile->getPrefix() !== null
+		) {
 			$uri = mb_substr($uri, mb_strlen($this->mobile->getPrefix()) + 1);
 		}
 
@@ -1006,27 +932,14 @@ class SiteWebApplication extends SiteApplication
 	/**
 	 * Gets the root part of the base-href (usually the protocol and domain)
 	 *
-	 * @param boolean $secure whether or not the base href should be a secure
-	 *                         URI. The default value of null maintains the
-	 *                         same security as the current page.
-	 *
 	 * @return string the root base href.
 	 */
-	protected function getRootBaseHref($secure = null)
+	protected function getRootBaseHref()
 	{
-		if ($secure === null) {
-			$secure = $this->secure;
-		}
-
-		if ($secure) {
-			$base_uri = $this->secure_base_uri;
-		} else {
-			$base_uri = $this->base_uri;
-		}
+		$base_uri = $this->base_uri;
 
 		if (mb_substr($base_uri, 0, 1) === '/') {
-			$base_href = $this->getProtocol($secure).
-				$this->getServerName($secure).$base_uri;
+			$base_href = $this->getProtocol().$this->getServerName().$base_uri;
 		} else {
 			$base_href = $base_uri;
 		}
@@ -1035,62 +948,12 @@ class SiteWebApplication extends SiteApplication
 	}
 
 	// }}}
-	// {{{ protected function getSecureSourceList()
-
-	/**
-	 * Gets the list of pages sources that should be secure
-	 *
-	 * The list of page sources is an array of source strings.
-	 * Entries are regular expressions.
-	 *
-	 * @return array the list of sources that should be secure.
-	 */
-	protected function getSecureSourceList()
-	{
-		return array();
-	}
-
-	// }}}
-	// {{{ protected function checkSecure()
-
-	/**
-	 * Checks if this page should be redirected in/out of SSL
-	 *
-	 * @param string The source string of this page.
-	 */
-	protected function checkSecure($source)
-	{
-		foreach ($this->getSecureSourceList() as $pattern) {
-			$pattern = str_replace('|', '\|', $pattern);
-			$regexp = '|'.$pattern.'|u';
-			if (preg_match($regexp, $source) === 1) {
-				if ($this->secure) {
-					// regenerate the session ID after entering SSL
-					if ($this->hasSession() && isset($this->session->_regenerate_id)) {
-						$this->session->regenerateId();
-						unset($this->session->_regenerate_id);
-					}
-					return;
-				} else {
-					$new_uri = $this->getAbsoluteUri(true);
-
-					// set a flag to regenerate session ID on next request when we'll be in SSL
-					if ($this->hasSession())
-						$this->session->_regenerate_id = true;
-
-					$this->relocate($new_uri, null, true);
-				}
-			}
-		}
-	}
-
-	// }}}
 	// {{{ protected function getAbsoluteUri()
 
-	protected function getAbsoluteUri($secure = null)
+	protected function getAbsoluteUri()
 	{
-		$base_href = $this->getBaseHref($secure);
-		$relative_uri = $this->getBaseHrefRelativeUri($secure);
+		$base_href = $this->getBaseHref();
+		$relative_uri = $this->getBaseHrefRelativeUri();
 		$uri = $base_href.$relative_uri;
 
 		return $uri;
@@ -1122,26 +985,9 @@ class SiteWebApplication extends SiteApplication
 	 *
 	 * @return string the servername
 	 */
-	protected function getServerName($secure = null)
+	protected function getServerName()
 	{
-		$server_name = $_SERVER['HTTP_HOST'];
-
-		if ($secure !== null && $this->secure !== $secure) {
-			/* Need to mangle servername for browsers tunnelling on
-			 * non-standard ports.
-			 */
-			$regexp = '/localhost:[0-9]+/u';
-
-			if (preg_match($regexp, $server_name)) {
-				if ($secure) {
-					$server_name = 'localhost:8443';
-				} else {
-					$server_name = 'localhost:8080';
-				}
-			}
-		}
-
-		return $server_name;
+		return $_SERVER['HTTP_HOST'];
 	}
 
 	// }}}
@@ -1152,13 +998,9 @@ class SiteWebApplication extends SiteApplication
 	 *
 	 * @return string the protocol
 	 */
-	protected function getProtocol($secure = null)
+	protected function getProtocol()
 	{
-		if ($secure === null) {
-			$secure = $this->secure;
-		}
-
-		if ($secure) {
+		if ($this->secure) {
 			$protocol = 'https://';
 		} else {
 			$protocol = 'http://';

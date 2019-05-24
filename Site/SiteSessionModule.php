@@ -389,7 +389,7 @@ class SiteSessionModule extends SiteApplicationModule
 					preg_quote($session_name, '/'));
 
 				$uri = preg_replace($regexp, '', $_SERVER['REQUEST_URI']);
-				$this->app->relocate($uri, null, false);
+				$this->app->relocate($uri, false);
 			}
 		}
 

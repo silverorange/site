@@ -217,10 +217,8 @@ class Site
 
 			// URIs
 			'uri.base'                 => null,
-			'uri.secure_base'          => null,
 			'uri.absolute_base'        => null,
 			'uri.cdn_base'             => null,
-			'uri.secure_cdn_base'      => null,
 			'uri.admin_base'           => null,
 			'uri.account_login'        => 'account/login',
 
@@ -315,7 +313,7 @@ class Site
 			'comment.akismet_key'      => null,
 
 			// amazon AWS
-			// @see http://docs.aws.amazon.com/general/latest/gr/rande.html
+			// @see https://docs.aws.amazon.com/general/latest/gr/rande.html
 			'amazon.region' => 'us-east-1',
 
 			// amazon S3
@@ -347,7 +345,7 @@ class Site
 			// Expiry dates for the privateer data deleter
 			'expiry.contact_messages' => '1 year',
 
-			// P3P headers. See http://en.wikipedia.org/wiki/P3P
+			// P3P headers. See https://en.wikipedia.org/wiki/P3P
 			'p3p.compact_policy' => null,
 			'p3p.policy_uri'     => null,
 

@@ -61,7 +61,7 @@ class SiteMobileModule extends SiteApplicationModule
 	/**
 	 * Get the URL prefix for a mobile URL
 	 *
-	 * By default, 'm', e.g. http://domain.com/m/path.
+	 * By default, 'm', e.g. https://domain.com/m/path.
 	 *
 	 * @return string The prefix for the mobile URL
 	 */

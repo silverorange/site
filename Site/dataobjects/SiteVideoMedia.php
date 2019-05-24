@@ -151,16 +151,6 @@ class SiteVideoMedia extends SiteMedia
 		$jwplayer->menu_title = $app->config->site->title;
 		$jwplayer->menu_link = $app->getBaseHref();
 
-		// Android 2 can not play back video over HTTPS from CloudFront, so
-		// force the sources as HTTP.
-		$secure = $app->isSecure();
-		if ($app->hasModule('SiteMobileModule') &&
-			$app->mobile->isAndroid() &&
-			$app->mobile->getPlatformMajorVersion() !== null &&
-			$app->mobile->getPlatformMajorVersion() == 2) {
-			$secure = false;
-		}
-
 		if ($app->session->isActive()) {
 			$jwplayer->setSession($app->session);
 		}
@@ -171,8 +161,7 @@ class SiteVideoMedia extends SiteMedia
 			$jwplayer->addSource(
 				$app->cdn->getUri(
 					$this->getHlsFilePath(),
-					$expires,
-					$secure
+					$expires
 				)
 			);
 		}
@@ -187,8 +176,7 @@ class SiteVideoMedia extends SiteMedia
 				$jwplayer->addSource(
 					$app->cdn->getUri(
 						$this->getFilePath($encoding->shortname),
-						$expires,
-						$secure
+						$expires
 					),
 					$binding->width,
 					$binding->height.'p');
