@@ -645,22 +645,6 @@ msgstr ""
 msgid "Error: in [%s], '%s' is not defined.\\n"
 msgstr ""
 
-#: ../Site/SiteUploadProgressForm.php.gettext:125
-msgid "uploading…"
-msgstr ""
-
-#: ../Site/SiteUploadProgressForm.php.gettext:126
-msgid "hours"
-msgstr ""
-
-#: ../Site/SiteUploadProgressForm.php.gettext:127
-msgid "minutes"
-msgstr ""
-
-#: ../Site/SiteUploadProgressForm.php.gettext:128
-msgid "seconds left"
-msgstr ""
-
 #: ../Site/SiteNewPasswordMailMessage.php.gettext:141
 #, php-format
 msgid ""

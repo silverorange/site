@@ -3,7 +3,7 @@
 <swatml>
 	<widget class="SwatMessageDisplay" id="message_display" />
 	<widget class="SwatFrame" id="edit_frame">
-		<widget class="SiteUploadProgressForm" id="edit_form">
+		<widget class="SwatForm" id="edit_form">
 			<widget class="SwatFormField" id="title_field">
 				<property name="title" translatable="yes">Title</property>
 				<widget class="SwatEntry" id="title">

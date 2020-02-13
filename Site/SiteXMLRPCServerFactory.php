@@ -26,9 +26,7 @@ class SiteXMLRPCServerFactory extends SitePageFactory
 
 	protected function getPageMap()
 	{
-		return array(
-			'upload-status' => 'SiteUploadStatusServer',
-		);
+		return [];
 	}
 
 	// }}}
