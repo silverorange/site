@@ -131,19 +131,6 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 	// }}}
 
 	// build phase
-	// {{{ protected function buildForm()
-
-	protected function buildForm()
-	{
-		parent::buildForm();
-
-		$form = $this->ui->getWidget('edit_form');
-		if ($form instanceof SiteUploadProgressForm) {
-			$form->upload_status_server = $this->getUploadStatusServer();
-		}
-	}
-
-	// }}}
 	// {{{ protected function buildFrame()
 
 	protected function buildFrame()
@@ -172,14 +159,6 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 
 		$this->navbar->popEntries(2);
 		$this->navbar->createEntry(Site::_('Upload Attachment'));
-	}
-
-	// }}}
-	// {{{ protected function getUploadStatusServer()
-
-	protected function getUploadStatusServer()
-	{
-		return 'Attachment/UploadStatusServer';
 	}
 
 	// }}}

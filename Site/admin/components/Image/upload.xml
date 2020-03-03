@@ -3,7 +3,7 @@
 <swatml>
 	<widget class="SwatMessageDisplay" id="message_display" />
 	<widget class="SwatFrame" id="edit_frame">
-		<widget class="SiteUploadProgressForm" id="edit_form">
+		<widget class="SwatForm" id="edit_form">
 			<widget class="SwatImageDisplay" id="image_display">
 				<property name="visible" type="boolean">false</property>
 			</widget>

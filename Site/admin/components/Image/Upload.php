@@ -396,19 +396,6 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	}
 
 	// }}}
-	// {{{ protected function buildForm()
-
-	protected function buildForm()
-	{
-		parent::buildForm();
-
-		$form = $this->ui->getWidget('edit_form');
-		if ($form instanceof SiteUploadProgressForm) {
-			$form->upload_status_server = $this->getUploadStatusServer();
-		}
-	}
-
-	// }}}
 	// {{{ protected function buildFrame()
 
 	protected function buildFrame()
@@ -455,14 +442,6 @@ abstract class SiteImageUpload extends AdminObjectEdit
 			$image_display->width   = $image->getWidth($dimension);
 			$image_display->height  = $image->getHeight($dimension);
 		}
-	}
-
-	// }}}
-	// {{{ protected function getUploadStatusServer()
-
-	protected function getUploadStatusServer()
-	{
-		return 'Image/UploadStatusServer';
 	}
 
 	// }}}
