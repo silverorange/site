@@ -67,7 +67,6 @@
 		"ext-memcached": "Allows caching various resources.",
 		"ext-pnctl": "Process control management for command-line applications.",
 		"ext-redis": "Allow connecting applications to a Redis data store.",
-		"ext-uploadprogress": "Allows showing upload progress for SiteFileEntry widgets.",
 		"pelago/emogrifier": "Inlines CSS in multipart mail messages.",
 		"psr/log": "Enables logging using the PSR logging interface.",
 		"silverorange/admin": "Enables admin components",
