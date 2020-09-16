@@ -58,7 +58,7 @@ SiteJwPlayerMediaDisplay.record_interval = 30; // in seconds
 SiteJwPlayerMediaDisplay.players = [];
 SiteJwPlayerMediaDisplay.show_resume_message = true;
 SiteJwPlayerMediaDisplay.resume_video_text =
-	'Resume Where You Left Off (%minutes%:%seconds%';
+	'Resume Where You Left Off (%minutes%:%seconds%)';
 SiteJwPlayerMediaDisplay.restart_video_text =
 	'Start From the Beginning';
 
