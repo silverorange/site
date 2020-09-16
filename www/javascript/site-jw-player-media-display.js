@@ -56,6 +56,11 @@ function SiteJwPlayerMediaDisplay(media_id, container_id)
 SiteJwPlayerMediaDisplay.current_player_id = null;
 SiteJwPlayerMediaDisplay.record_interval = 30; // in seconds
 SiteJwPlayerMediaDisplay.players = [];
+SiteJwPlayerMediaDisplay.show_resume_message = true;
+SiteJwPlayerMediaDisplay.resume_video_text =
+	'Resume Where You Left Off (%minutes%:%seconds%)';
+SiteJwPlayerMediaDisplay.restart_video_text =
+	'Start From the Beginning';
 
 // {{{ SiteJwPlayerMediaDisplay.prototype.init = function()
 
@@ -611,7 +616,9 @@ SiteJwPlayerMediaDisplay.prototype.appendResumeMessage = function()
 	this.resume_overlay.className = 'overlay-content';
 
 	var div = document.createElement('div');
-	div.innerHTML = this.resume_message;
+	if (SiteJwPlayerMediaDisplay.show_resume_message) {
+		div.innerHTML = this.resume_message;
+	}
 
 	var minutes = Math.floor(this.start_position / 60);
 	var seconds = this.start_position % 60;
@@ -620,8 +627,13 @@ SiteJwPlayerMediaDisplay.prototype.appendResumeMessage = function()
 	var resume_link = document.createElement('a');
 	resume_link.href = '#';
 	resume_link.className = 'resume-video';
-	resume_link.appendChild(document.createTextNode(
-		'Resume Where You Left Off (' + minutes + ':' + seconds + ')'));
+	resume_link.appendChild(
+		document.createTextNode(
+			SiteJwPlayerMediaDisplay.resume_video_text
+				.replace('%minutes%', minutes)
+				.replace('%seconds%', seconds)
+		)
+	);
 
 	var that = this;
 	YAHOO.util.Event.on(resume_link, 'click', function (e) {
@@ -636,8 +648,11 @@ SiteJwPlayerMediaDisplay.prototype.appendResumeMessage = function()
 	var restart_link = document.createElement('a');
 	restart_link.href = '#';
 	restart_link.className = 'restart-video';
-	restart_link.appendChild(document.createTextNode(
-		'Start From the Beginning'));
+	restart_link.appendChild(
+		document.createTextNode(
+			SiteJwPlayerMediaDisplay.restart_video_text
+		)
+	);
 
 	YAHOO.util.Event.on(restart_link, 'click', function (e) {
 		YAHOO.util.Event.preventDefault(e);
