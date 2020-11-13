@@ -4,7 +4,7 @@
  * Container for package wide static methods
  *
  * @package   Site
- * @copyright 2005-2017 silverorange
+ * @copyright 2005-2020 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class Site
@@ -255,19 +255,6 @@ class Site
 
 			// Bing Universal Event Tracker id
 			'analytics.bing_uet_id' => null,
-
-			// Salesforce Pardot Tracking ids
-			'analytics.pardot_account_id' => null,
-			'analytics.pardot_campaign_id' => null,
-
-			// Friendbuy Pixel id
-			'analytics.friendbuy_account_id' => null,
-
-			// VWO Tracking id
-			'analytics.vwo_account_id' => null,
-
-			// Hotjar Tracking id
-			'analytics.hotjar_account_id' => null,
 
 			// Ads
 			// Tracking id in URIs

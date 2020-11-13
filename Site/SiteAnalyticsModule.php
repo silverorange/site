@@ -4,10 +4,10 @@
  * Web application module for handling site analytics.
  *
  * Currently has support for Google Analytics, Facebook Pixels,
- * Bing Universal Event Tracking, Pardot, VWO and Hotjar.
+ * and Bing Universal Event Tracking.
  *
  * @package   Site
- * @copyright 2007-2018 silverorange
+ * @copyright 2007-2020 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html
  * @link      https://developers.facebook.com/docs/facebook-pixel/api-reference
@@ -139,34 +139,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $twitter_pixel_commands = array();
 
-	/**
-	 * Salesforce Pardot Account ID
-	 *
-	 * @var string
-	 */
-	protected $pardot_account_id;
-
-	/**
-	 * Salesforce Pardot Campaign ID
-	 *
-	 * @var string
-	 */
-	protected $pardot_campaign_id;
-
-	/**
-	 * VWO Account ID
-	 *
-	 * @var string
-	 */
-	protected $vwo_account_id;
-
-	/**
-	 * Hotjar Account ID
-	 *
-	 * @var string
-	 */
-	protected $hotjar_account_id;
-
 	// }}}
 	// {{{ public function init()
 
@@ -189,21 +161,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		$this->twitter_purchase_pixel_id =
 			$config->analytics->twitter_purchase_pixel_id;
-
-		$this->pardot_account_id =
-			$config->analytics->pardot_account_id;
-
-		$this->pardot_campaign_id =
-			$config->analytics->pardot_campaign_id;
-
-		$this->friendbuy_account_id =
-			$config->analytics->friendbuy_account_id;
-
-		$this->vwo_account_id =
-			$config->analytics->vwo_account_id;
-
-		$this->hotjar_account_id =
-			$config->analytics->hotjar_account_id;
 
 		if (!$config->analytics->enabled) {
 			$this->analytics_enabled = false;
@@ -228,10 +185,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			$this->hasGoogleAnalytics() ||
 			$this->hasFacebookPixel() ||
 			$this->hasTwitterPixel() ||
-			$this->hasBingUET() ||
-			$this->hasPardot() ||
-			$this->hasVWO() ||
-			$this->hasHotjar()
+			$this->hasBingUET()
 		);
 	}
 
@@ -252,14 +206,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$js = '';
 
-		if ($this->hasVWO()) {
-			$js.= $this->getVWOInlineJavascript();
-		}
-
-		if ($this->hasHotjar()) {
-			$js.= $this->getHotjarInlineJavascript();
-		}
-
 		if ($this->hasFacebookPixel()) {
 			$js.= $this->getFacebookPixelInlineJavascript();
 		}
@@ -274,10 +220,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		if ($this->hasTwitterPixel()) {
 			$js.= $this->getTwitterPixelInlineJavascript();
-		}
-
-		if ($this->hasPardot()) {
-			$js.= $this->getPardotInlineJavascript();
 		}
 
 		if ($js != '') {
@@ -983,179 +925,6 @@ JS;
 				echo $image;
 			}
 		}
-	}
-
-	// }}}
-
-	// Salesforce Pardot
-	// {{{ public function hasPardot()
-
-	public function hasPardot()
-	{
-		return (
-			$this->pardot_account_id != '' &&
-			$this->pardot_campaign_id != '' &&
-			!$this->analytics_opt_out &&
-			$this->analytics_enabled
-		);
-	}
-
-	// }}}
-	// {{{ public function getPardotInlineJavascript()
-
-	public function getPardotInlineJavascript()
-	{
-		$javascript = null;
-
-		if ($this->hasPardot()) {
-			$javascript.= $this->getPardotTrackerInlineJavascript();
-		}
-
-		return $javascript;
-	}
-
-	// }}}
-	// {{{ public function getPardotTrackerInlineJavascript()
-
-	public function getPardotTrackerInlineJavascript()
-	{
-		$javascript = null;
-
-		if ($this->hasPardot()) {
-			// @codingStandardsIgnoreStart
-			$javascript = <<<'JS'
-piAId = %s;
-piCId = %s;
-
-(function() {
-	function async_load(){
-		var s = document.createElement('script'); s.type = 'text/javascript';
-		s.src = ('https:' == document.location.protocol ? 'https://pi' : 'http://cdn') + '.pardot.com/pd.js';
-		var c = document.getElementsByTagName('script')[0]; c.parentNode.insertBefore(s, c);
-	}
-	if(window.attachEvent) { window.attachEvent('onload', async_load); }
-	else { window.addEventListener('load', async_load, false); }
-})();
-JS;
-			// @codingStandardsIgnoreEnd
-		}
-
-		return sprintf(
-			$javascript,
-			SwatString::quoteJavaScriptString($this->pardot_account_id),
-			SwatString::quoteJavaScriptString($this->pardot_campaign_id)
-		);
-	}
-
-	// }}}
-
-	// VWO
-	// {{{ public function hasVWO()
-
-	public function hasVWO()
-	{
-		return (
-			$this->vwo_account_id != '' &&
-			!$this->analytics_opt_out &&
-			$this->analytics_enabled
-		);
-	}
-
-	// }}}
-	// {{{ public function getVWOInlineJavascript()
-
-	public function getVWOInlineJavascript()
-	{
-		$javascript = null;
-
-		if ($this->hasVWO()) {
-			$javascript.= $this->getVWOTrackerInlineJavascript();
-		}
-
-		return $javascript;
-	}
-
-	// }}}
-	// {{{ public function getVWOTrackerInlineJavascript()
-
-	public function getVWOTrackerInlineJavascript()
-	{
-		$javascript = null;
-
-		if ($this->hasVWO()) {
-			// @codingStandardsIgnoreStart
-			$javascript = <<<'JS'
-var _vwo_code=(function(){
-var account_id=%s,
-settings_tolerance=2000,
-library_tolerance=2500,
-use_existing_jquery=false,
-/* DO NOT EDIT BELOW THIS LINE */
-f=false,d=document;return{use_existing_jquery:function(){return use_existing_jquery;},library_tolerance:function(){return library_tolerance;},finish:function(){if(!f){f=true;var a=d.getElementById('_vis_opt_path_hides');if(a)a.parentNode.removeChild(a);}},finished:function(){return f;},load:function(a){var b=d.createElement('script');b.src=a;b.type='text/javascript';b.innerText;b.onerror=function(){_vwo_code.finish();};d.getElementsByTagName('head')[0].appendChild(b);},init:function(){settings_timer=setTimeout('_vwo_code.finish()',settings_tolerance);var a=d.createElement('style'),b='body{opacity:0 !important;filter:alpha(opacity=0) !important;background:none !important;}',h=d.getElementsByTagName('head')[0];a.setAttribute('id','_vis_opt_path_hides');a.setAttribute('type','text/css');if(a.styleSheet)a.styleSheet.cssText=b;else a.appendChild(d.createTextNode(b));h.appendChild(a);this.load('//dev.visualwebsiteoptimizer.com/j.php?a='+account_id+'&u='+encodeURIComponent(d.URL)+'&r='+Math.random());return settings_timer;}};}());_vwo_settings_timer=_vwo_code.init();
-JS;
-			// @codingStandardsIgnoreEnd
-		}
-
-		return sprintf(
-			$javascript,
-			SwatString::quoteJavaScriptString($this->vwo_account_id)
-		);
-	}
-
-	// }}}
-
-	// Hotjar
-	// {{{ public function hasHotjar()
-
-	public function hasHotjar()
-	{
-		return (
-			$this->hotjar_account_id != '' &&
-			!$this->analytics_opt_out &&
-			$this->analytics_enabled
-		);
-	}
-
-	// }}}
-	// {{{ public function getHotjarInlineJavascript()
-
-	public function getHotjarInlineJavascript()
-	{
-		$javascript = null;
-
-		if ($this->hasHotjar()) {
-			$javascript.= $this->getHotjarTrackerInlineJavascript();
-		}
-
-		return $javascript;
-	}
-
-	// }}}
-	// {{{ public function getHotjarTrackerInlineJavascript()
-
-	public function getHotjarTrackerInlineJavascript()
-	{
-		$javascript = null;
-
-		if ($this->hasHotjar()) {
-			// @codingStandardsIgnoreStart
-			$javascript = <<<'JS'
-(function(h,o,t,j,a,r){
-    h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-    h._hjSettings={hjid:%s,hjsv:6};
-    a=o.getElementsByTagName('head')[0];
-    r=o.createElement('script');r.async=1;
-    r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-    a.appendChild(r);
-})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-JS;
-			// @codingStandardsIgnoreEnd
-		}
-
-		return sprintf(
-			$javascript,
-			$this->hotjar_account_id
-		);
 	}
 
 	// }}}
