@@ -858,10 +858,16 @@ class SiteImage extends SwatDBDataObject
 
 	public function processMissingDimensions($image_file)
 	{
+		$shortnames = [];
 		foreach ($this->getImageSet()->dimensions as $dimension) {
 			if (!$this->hasDimension($dimension->shortname)) {
-				$this->processManual($image_file, $dimension->shortname);
+				$shortnames[] = $dimension->shortname;
+
 			}
+		}
+
+		foreach ($shortnames as $shortname) {
+			$this->processManual($image_file, $shortname);
 		}
 	}
 
