@@ -246,13 +246,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		}
 
 		if ($this->key !== null) {
-			static $key_included = false;
-
-			if (!$key_included) {
-				$key_included = true;
-				Swat::displayInlineJavaScript(sprintf('jwplayer.key = %s;',
-					SwatString::quoteJavaScriptString($this->key)));
-			}
+			Swat::displayInlineJavaScript(sprintf('jwplayer.key = %s;',
+				SwatString::quoteJavaScriptString($this->key)));
 		}
 
 		echo '<div class="video-player-container">';
