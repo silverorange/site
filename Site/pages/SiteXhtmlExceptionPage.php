@@ -46,6 +46,8 @@ class SiteXhtmlExceptionPage extends SiteExceptionPage
 
 		$this->displaySuggestions();
 
+		$this->displaySentryReportDialog();
+
 		if ($this->exception instanceof SwatException &&
 			!($this->exception instanceof SiteNotAuthorizedException)) {
 			$this->exception->processAndContinue();
