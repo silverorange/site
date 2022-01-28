@@ -137,7 +137,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 
 	var that = this;
 
-	this.player.onReady(function() {
+	this.player.on('ready', function() {
 		that.on_ready_event.fire(that);
 	});
 
@@ -145,7 +145,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		this.recordEndPoint();
 	}
 
-	this.player.onBeforePlay(function() {
+	this.player.on('beforePlay', function() {
 		SiteJwPlayerMediaDisplay.current_player_id = that.player_id;
 	});
 
@@ -163,8 +163,8 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 		}
 	}
 
-	this.player.onPlay(checkIfCurrent);
-	this.player.onPlay(function() {
+	this.player.on('play', checkIfCurrent);
+	this.player.on('play', function() {
 		if (that.overlay !== null) {
 			that.overlay.style.display = 'none';
 		}
@@ -172,7 +172,7 @@ SiteJwPlayerMediaDisplay.prototype.embedPlayer = function()
 
 	// if a video inits in a hidden state, there will be no image set
 	// when the video becomes visible, set the image
-	this.player.onResize(function() {
+	this.player.on('resize', function() {
 		if (!playlist[0].image) {
 			playlist[0].image = that.getImage();
 			that.player.load(playlist);
@@ -369,9 +369,9 @@ SiteJwPlayerMediaDisplay.prototype.recordEndPoint = function()
 		}
 	}
 
-	this.player.onTime(autoRecordEndPoint);
-	this.player.onPause(recordEndPoint);
-	this.player.onSeek(recordEndPoint);
+	this.player.on('time', autoRecordEndPoint);
+	this.player.on('pause', recordEndPoint);
+	this.player.on('seek', recordEndPoint);
 };
 
 // }}}
@@ -395,10 +395,8 @@ SiteJwPlayerMediaDisplay.prototype.play = function()
 
 SiteJwPlayerMediaDisplay.prototype.pause = function()
 {
-	// Both play() and pause() are toggles for jwplayer API unless state is
-	// passed. pause(true) doesn't work correctly and is still a toggle, so
-	// use play(false) instead.
-	this.player.play(false);
+	// New version uses pause, not play with parameter
+	this.player.pause();
 };
 
 // }}}
@@ -410,7 +408,7 @@ SiteJwPlayerMediaDisplay.prototype.pauseAll = function()
 	while (typeof jwplayer(i) !== 'undefined' &&
 		typeof jwplayer(i).play !== 'undefined') {
 
-		jwplayer(i).play(false);
+		jwplayer(i).pause();
 		i++;
 	}
 };
@@ -420,7 +418,7 @@ SiteJwPlayerMediaDisplay.prototype.pauseAll = function()
 
 SiteJwPlayerMediaDisplay.prototype.onPlay = function(callback)
 {
-	this.player.onPlay(callback);
+	this.player.on('play', callback);
 };
 
 // }}}
@@ -449,7 +447,7 @@ SiteJwPlayerMediaDisplay.prototype.debug = function()
 
 	var that = this;
 
-	this.player.onMeta(function (v) {
+	this.player.on('meta', function (v) {
 		var meta = v.metadata;
 
 		var quality_levels = that.player.getQualityLevels();
@@ -545,7 +543,7 @@ SiteJwPlayerMediaDisplay.prototype.drawDialogs = function()
 		this.appendResumeMessage();
 
 		var that = this;
-		this.player.onReady(function () {
+		this.player.on('ready', function () {
 			if (that.start_position > 60 &&
 				that.start_position < that.duration - 60) {
 
@@ -565,7 +563,7 @@ SiteJwPlayerMediaDisplay.prototype.drawDialogs = function()
 		}
 
 		var that = this;
-		this.player.onComplete(function () {
+		this.player.on('complete', function () {
 			that.displayCompleteMessage();
 		});
 	}
@@ -729,7 +727,7 @@ SiteJwPlayerMediaDisplay.prototype.seek = function(position)
 	// seeking. It causes the video to look all messed up like it's
 	// waiting for a keyframe to come along.
 	if (YAHOO.env.ua.android) {
-		this.player.onTime(function(e) {
+		this.player.on('time', function(e) {
 			if (!that.seek_done && e.position > 1) {
 				that.seek_done = true;
 				that.player.seek(position);
