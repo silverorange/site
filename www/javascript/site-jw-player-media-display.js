@@ -406,7 +406,7 @@ SiteJwPlayerMediaDisplay.prototype.pauseAll = function()
 {
 	var i = 0;
 	while (typeof jwplayer(i) !== 'undefined' &&
-		typeof jwplayer(i).play !== 'undefined') {
+		typeof jwplayer(i).pause !== 'undefined') {
 
 		jwplayer(i).pause();
 		i++;
