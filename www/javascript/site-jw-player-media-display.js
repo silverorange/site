@@ -11,6 +11,7 @@ function SiteJwPlayerMediaDisplay(media_id, container_id)
 	this.sources = [];
 	this.images  = [];
 	this.valid_mime_types = [];
+	this.is_jwplayer_8 = false;
 
 	this.skin = 'seven';
 	this.stretching = null;
@@ -59,6 +60,7 @@ SiteJwPlayerMediaDisplay.players = [];
 SiteJwPlayerMediaDisplay.show_resume_message = true;
 SiteJwPlayerMediaDisplay.resume_video_text =
 	'Resume Where You Left Off (%minutes%:%seconds%)';
+
 SiteJwPlayerMediaDisplay.restart_video_text =
 	'Start From the Beginning';
 
@@ -67,6 +69,15 @@ SiteJwPlayerMediaDisplay.restart_video_text =
 SiteJwPlayerMediaDisplay.prototype.init = function()
 {
 	this.container = document.getElementById(this.container_id);
+
+	this.is_jwplayer_8 = (function() {
+		if (jwplayer) {
+			var version = /^([0-9]+)\./.exec(jwplayer.version);
+			return version && Number(version[1]) >= 8;
+		}
+
+		return false;
+	})();
 
 	this.embedPlayer();
 	this.drawDialogs();
@@ -395,8 +406,14 @@ SiteJwPlayerMediaDisplay.prototype.play = function()
 
 SiteJwPlayerMediaDisplay.prototype.pause = function()
 {
-	// New version uses pause, not play with parameter
-	this.player.pause();
+	if (this.is_jwplayer_8) {
+		this.player.pause();
+	} else {
+		// Both play() and pause() are toggles for jwplayer API unless state is
+		// passed. pause(true) doesn't work correctly and is still a toggle, so
+		// use play(false) instead.
+		this.player.play(false);
+	}
 };
 
 // }}}
@@ -406,9 +423,16 @@ SiteJwPlayerMediaDisplay.prototype.pauseAll = function()
 {
 	var i = 0;
 	while (typeof jwplayer(i) !== 'undefined' &&
-		typeof jwplayer(i).pause !== 'undefined') {
-
-		jwplayer(i).pause();
+		typeof jwplayer(i).play !== 'undefined'
+	) {
+		if (this.is_jwplayer_8) {
+			jwplayer(i).pause();
+		} else {
+			// Both play() and pause() are toggles for jwplayer API unless state
+			// is passed. pause(true) doesn't work correctly and is still a
+			// toggle, so use play(false) instead.
+			jwplayer(i).play(false);
+		}
 		i++;
 	}
 };
