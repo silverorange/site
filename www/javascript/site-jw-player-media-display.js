@@ -566,7 +566,6 @@ SiteJwPlayerMediaDisplay.prototype.drawDialogs = function()
 	// from the beginning
 	if (this.start_position > 0) {
 		this.appendResumeMessage();
-
 		var that = this;
 		this.player.on('ready', function () {
 			if (that.start_position > 10 &&
@@ -575,7 +574,6 @@ SiteJwPlayerMediaDisplay.prototype.drawDialogs = function()
 			}
 		});
 	}
-
 
 	// when the video is complete, show a message to resume or go elsewhere
 	if (this.on_complete_message !== null) {
