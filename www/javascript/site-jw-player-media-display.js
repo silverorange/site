@@ -560,18 +560,17 @@ SiteJwPlayerMediaDisplay.prototype.drawDialogs = function()
 	this.overlay.appendChild(document.createTextNode(''));
 	this.container.appendChild(this.overlay);
 
-	 // if the video has been watched before, and we're more than
-	 // 10s from the start, or 60s from the end, show a
-	 // message allowing the viewed to resume or start
-	 // from the beginning
-	 if (this.start_position > 0) {
+	// if the video has been watched before, and we're more than
+	// 10s from the start, or 60s from the end, show a
+	// message allowing the viewed to resume or start
+	// from the beginning
+	if (this.start_position > 0) {
 		this.appendResumeMessage();
 
 		var that = this;
 		this.player.on('ready', function () {
 			if (that.start_position > 10 &&
 				that.start_position < that.duration - 60) {
-
 				that.displayResumeMessage();
 			}
 		});
