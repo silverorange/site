@@ -34,6 +34,17 @@ abstract class SiteApplicationModule extends SiteObject
 	}
 
 	// }}}
+	// {{{ private properties
+
+	/**
+	 * A cache of the provides list for each module used in the application
+	 *
+	 * The array key is the module class and the value is an array of provided
+	 * dependencies.
+	 */
+	private static $provides_by_module = [];
+
+	// }}}
 	// {{{ public function depends()
 
 	/**
@@ -56,7 +67,7 @@ abstract class SiteApplicationModule extends SiteObject
 	/**
 	 * Gets the features this module provides
 	 *
-	 * By defualt, this is the class inheritance path up to and excluding
+	 * By default, this is the class inheritance path up to and excluding
 	 * SiteApplicationModule. This is normally all that is required but
 	 * subclasses may specify additional features.
 	 *
@@ -64,18 +75,18 @@ abstract class SiteApplicationModule extends SiteObject
 	 */
 	public function provides()
 	{
-		static $provides = null;
+		$module = get_called_class();
 
-		if ($provides === null) {
-			$provides = array();
+		if (!array_key_exists($module, self::$provides_by_module)) {
+			self::$provides_by_module[$module] = [];
 			$reflector = new ReflectionObject($this);
 			while ($reflector->getName() != __CLASS__) {
-				$provides[] = $reflector->getName();
+				self::$provides_by_module[$module][] = $reflector->getName();
 				$reflector = $reflector->getParentClass();
 			}
 		}
 
-		return $provides;
+		return self::$provides_by_module[$module];
 	}
 
 	// }}}
