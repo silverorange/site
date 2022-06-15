@@ -16,6 +16,11 @@ class SiteExceptionPage extends SitePage
 	 */
 	protected $exception;
 
+	/**
+	 * @var SiteSentryReportDialog
+	 */
+	protected $report_dialog;
+
 	// }}}
 	// {{{ public function setException()
 
@@ -26,6 +31,14 @@ class SiteExceptionPage extends SitePage
 		} else {
 			$this->exception = new SiteException($exception);
 		}
+	}
+
+	// }}}
+	// {{{ public function setReportDialog()
+
+	public function setReportDialog($report_dialog)
+	{
+		$this->report_dialog = $report_dialog;
 	}
 
 	// }}}
@@ -114,6 +127,16 @@ class SiteExceptionPage extends SitePage
 	protected function getSuggestions()
 	{
 		return array();
+	}
+
+	// }}}
+	// {{{ protected function displaySentryReportDialog()
+
+	protected function displaySentryReportDialog()
+	{
+		if ($this->report_dialog instanceof SiteSentryReportDialog) {
+			echo $this->report_dialog->getInlineXhtml();
+		}
 	}
 
 	// }}}

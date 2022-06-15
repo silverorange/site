@@ -128,6 +128,8 @@ class SiteWebApplication extends SiteApplication
 			}
 		}
 
+		$sentryCategory = 'app steps';
+
 		try {
 			if (!$cached) {
 				$page_data = array();
@@ -135,15 +137,33 @@ class SiteWebApplication extends SiteApplication
 				$this->setP3PHeaders();
 
 				$this->loadPage();
+
 				$this->page->layout->init();
+				$this->addSentryBreadcrumb('layout init()', $sentryCategory);
+
 				$this->page->init();
+				$this->addSentryBreadcrumb('init()', $sentryCategory);
+
 				$this->page->layout->process();
+				$this->addSentryBreadcrumb('layout process()', $sentryCategory);
+
 				$this->page->process();
+				$this->addSentryBreadcrumb('process()', $sentryCategory);
+
 				$this->page->layout->build();
+				$this->addSentryBreadcrumb('layout build()', $sentryCategory);
+
 				$this->page->build();
+				$this->addSentryBreadcrumb('build()', $sentryCategory);
+
 				$this->page->layout->finalize();
+				$this->addSentryBreadcrumb('layout finalize()', $sentryCategory);
+
 				$this->page->finalize();
+				$this->addSentryBreadcrumb('finalize()', $sentryCategory);
+
 				$this->page->layout->complete();
+				$this->addSentryBreadcrumb('layout complete()', $sentryCategory);
 
 				// get page content
 				ob_start();
@@ -178,6 +198,7 @@ class SiteWebApplication extends SiteApplication
 
 			if ($this->page instanceof SiteExceptionPage) {
 				$this->page->setException($e);
+				$this->page->setReportDialog($this->sentry_report_dialog);
 			}
 
 			$this->page->layout->init();
@@ -190,6 +211,7 @@ class SiteWebApplication extends SiteApplication
 
 			// display exception page (never cached)
 			$this->page->layout->display();
+			$this->addSentryBreadcrumb('exception page displayed', $sentryCategory);
 		}
 	}
 
@@ -1019,6 +1041,38 @@ class SiteWebApplication extends SiteApplication
 			$this->session instanceof SiteSessionModule &&
 			$this->session->isActive());
 	}
+
+
+	// }}}
+	// {{{ protected function getServerName()
+
+	/**
+	 * Gets the servername
+	 *
+	 * @param string the page step type
+	 */
+	protected function recordPageStep($type)
+	{
+		$server_name = $_SERVER['HTTP_HOST'];
+
+		if ($secure !== null && $this->secure !== $secure) {
+			/* Need to mangle servername for browsers tunnelling on
+			 * non-standard ports.
+			 */
+			$regexp = '/localhost:[0-9]+/u';
+
+			if (preg_match($regexp, $server_name)) {
+				if ($secure) {
+					$server_name = 'localhost:8443';
+				} else {
+					$server_name = 'localhost:8080';
+				}
+			}
+		}
+
+		return $server_name;
+	}
+
 
 	// }}}
 }
