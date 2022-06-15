@@ -1,5 +1,7 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+
 /**
  * Multipart text/html email message
  *
@@ -198,119 +200,99 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	public function send()
 	{
-		$mime = new Mail_mime();
+		$mailer = new PHPMailer();
 
-		$mime->setSubject($this->subject);
-		$mime->setFrom(
-			$this->getAddressHeader(
-				$this->from_address,
-				$this->from_name
-			)
+		$mailer->Subject = $this->subject;
+
+		$mailer->setFrom(
+			$this->from_address,
+			$this->from_name,
 		);
 
-		$mime->setTXTBody($this->text_body);
-		$mime->setHTMLBody($this->convertCssToInlineStyles($this->html_body));
+		$mailer->isHTML(true);
+
+		$mailer->AltBody = $this->text_body;
+
+		$mailer->Body = $this->convertCssToInlineStyles($this->html_body);
 
 		// don't send CC emails if test-address is specified
 		if ($this->app->config->email->test_address == '') {
 			foreach ($this->getCcList() as $address) {
-				$mime->addCc($address);
+				$mailer->addCc($address);
 			}
 
 			foreach ($this->getBccList() as $address) {
-				$mime->addBcc($address);
+				$mailer->addBcc($address);
 			}
 		}
 
 		// file attachments
 		foreach ($this->attachments as $attachment) {
-			$mime->addAttachment($attachment);
+			$mailer->addAttachment($attachment);
 		}
 
 		// attachments with metadata
 		foreach ($this->string_attachments as $attachment) {
-			$mime->addAttachment(
+			$mailer->addStringAttachment(
 				$attachment['data'],
-				$attachment['content_type'],
 				$attachment['filename'],
-				false
+				PHPMailer::ENCODING_BASE64,
+				$attachment['content_type'],
 			);
 		}
 
-		// create mailer
-		$email_params = array();
-		$email_params['host'] = $this->smtp_server;
+		$mailer->isSMTP();
+		$mailer->host = $this->smtp_server;
 
 		if ($this->smtp_port != '') {
-			$email_params['port'] = $this->smtp_port;
+			$mailer->Port = $this->smtp_port;
 		}
 
 		if ($this->smtp_username != '') {
-			$email_params['username'] = $this->smtp_username;
+			$mailer->Username = $this->smtp_username;
 		}
 
 		if ($this->smtp_password != '') {
-			$email_params['auth'] = true;
-			$email_params['password'] = $this->smtp_password;
+			$mailer->SMTPAuth = true;
+			$mailer->Password = $this->smtp_password;
 		}
-
-		$mailer = Mail::factory('smtp', $email_params);
-
-		if (PEAR::isError($mailer)) {
-			throw new SiteMailException($mailer);
-		}
-
-		// create additional mail headers
-		$headers = array();
 
 		if ($this->return_path != '') {
-			$headers['Return-Path'] = $this->return_path;
+			$mailer->addCustomHeader('Return-Path', $this->return_path);
 		}
 
-		$headers['Date'] = $this->date->getRFC2822();
+		$mailer->MessageDate = $this->date->getRFC2822();
 
 		if ($this->app->config->email->test_address == '') {
-			$headers['To'] = $this->getAddressHeader(
+			$mailer->addAddress(
 				$this->to_address,
 				$this->to_name
 			);
 		} else {
-			$headers['To'] = $this->getAddressHeader(
+			$mailer->addAddress(
 				$this->app->config->email->test_address,
 				$this->to_name
 			);
 		}
 
 		if ($this->reply_to_address != '') {
-			$headers['Reply-To'] = $this->reply_to_address;
+			$mailer->addReplyTo($this->reply_to_address);
 		}
 
 		if ($this->sender != '') {
-			$headers['Sender'] = $this->getAddressHeader(
-				$this->sender,
-				$this->sender_name
-			);
+			$mailer->Sender = $this->sender;
 		}
 
-		// create email body and headers
-		$mime_params = array();
-		$mime_params['head_charset'] = 'UTF-8';
-		$mime_params['text_charset'] = 'UTF-8';
-		$mime_params['text_encoding'] = 'quoted-printable';
-		$mime_params['html_charset'] = 'UTF-8';
-		$mime_params['html_encoding'] = 'quoted-printable';
-		$body = $mime->get($mime_params);
-		$headers = $mime->headers($headers);
+		$mailer->CharSet = 'UTF-8';
+
+		$mailer->Encoding = 'quoted-printable';
 
 		// send email
-		$result = $mailer->send($this->getRecipients(), $headers, $body);
+		$mailer->send();
 
 		if ($this->app->config->email->log) {
 			$this->logMessage();
 		}
-
-		if (PEAR::isError($result))
-			throw new SiteMailException($result);
 	}
 
 	// }}}

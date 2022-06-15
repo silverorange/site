@@ -46,15 +46,14 @@
 		"ext-pcre": "*",
 		"aws/aws-sdk-php": "^3.0.0",
 		"codescale/ffmpeg-php": "^2.7.0",
-		"pear/mail": "^1.2.0",
-		"pear/mail_mime": "^1.10.0",
 		"pear/net_smtp": "^1.6.3",
 		"pear/services_akismet2": ">=0.3.1",
 		"pear/text_password": "^1.1.1",
 		"sentry/sentry": "^1.7.0",
 		"silverorange/mdb2": "^3.0.0",
 		"silverorange/concentrate": "^2.0.0",
-		"silverorange/swat": "^5.4.1 || ^6.0.0"
+		"silverorange/swat": "^5.4.1 || ^6.0.0",
+		"phpmailer/phpmailer": "^6.6"
 	},
 	"require-dev": {
 		"silverorange/coding-standard": "^1.0.0"
