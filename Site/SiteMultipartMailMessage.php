@@ -1,5 +1,6 @@
 <?php
 
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
@@ -203,87 +204,91 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	public function send()
 	{
-		$email = (new Email())
-			->subject($this->subject)
-			->from(new Address(
-				$this->from_address,
-				$this->from_name
-			))
-			->text($this->text_body)
-			->html($this->convertCssToInlineStyles($this->html_body));
+		try {
+			$email = (new Email())
+				->subject($this->subject)
+				->from(new Address(
+					$this->from_address,
+					$this->from_name
+				))
+				->text($this->text_body)
+				->html($this->convertCssToInlineStyles($this->html_body));
 
-		// don't send CC emails if test-address is specified
-		if ($this->app->config->email->test_address == '') {
-			$email
-				->addCc($this->getCcList())
-				->addBcc($this->getBccList());
-		}
-
-		// file attachments
-		foreach ($this->attachments as $attachment) {
-			$email->attachFromPath($attachment);
-		}
-
-		// attachments with metadata
-		foreach ($this->string_attachments as $attachment) {
-			$email->attach(
-				$attachment['data'],
-				$attachment['filename'],
-				$attachment['content_type'],
-			);
-		}
-
-		$dsn = "smtp://";
-
-		if ($this->smtp_username != '') {
-			$dsn .= $this->smtp_username;
-			if ($this->smtp_password != '') {
-				$dsn .= ':' . $this->smtp_password;
+			// don't send CC emails if test-address is specified
+			if ($this->app->config->email->test_address == '') {
+				$email
+					->addCc($this->getCcList())
+					->addBcc($this->getBccList());
 			}
-			$dsn .= '@';
-		}
 
-		$dsn .= $this->smtp_server;
+			// file attachments
+			foreach ($this->attachments as $attachment) {
+				$email->attachFromPath($attachment);
+			}
 
-		if ($this->smtp_port != '') {
-			$dsn .= ':' . $this->smtp_port;
-		}
+			// attachments with metadata
+			foreach ($this->string_attachments as $attachment) {
+				$email->attach(
+					$attachment['data'],
+					$attachment['filename'],
+					$attachment['content_type'],
+				);
+			}
 
-		$mailer = new Mailer(Transport::fromDsn($dsn));
+			$dsn = "smtp://";
 
-		if ($this->return_path != '') {
-			$email->returnPath($this->return_path);
-		}
+			if ($this->smtp_username != '') {
+				$dsn.= $this->smtp_username;
+				if ($this->smtp_password != '') {
+					$dsn.= ':'.$this->smtp_password;
+				}
+				$dsn.= '@';
+			}
 
-		$email->date(new DateTime($this->date->getRFC2822()));
+			$dsn.= $this->smtp_server;
 
-		if ($this->app->config->email->test_address == '') {
-			$email->to(new Address(
-				$this->to_address,
-				$this->to_name
-			));
-		} else {
-			$email->to(new Address(
-				$this->app->config->email->test_address,
-				$this->to_name
-			));
-		}
+			if ($this->smtp_port != '') {
+				$dsn.= ':'.$this->smtp_port;
+			}
 
-		if ($this->reply_to_address != '') {
-			$email->replyTo($this->reply_to_address);
-		}
+			$mailer = new Mailer(Transport::fromDsn($dsn));
 
-		if ($this->sender != '') {
-			$email->sender(new Address(
-				$this->sender,
-				$this->sender_name
-			));
-		}
+			if ($this->return_path != '') {
+				$email->returnPath($this->return_path);
+			}
 
-		$mailer->send($email);
+			$email->date(new DateTime($this->date->getRFC2822()));
 
-		if ($this->app->config->email->log) {
-			$this->logMessage();
+			if ($this->app->config->email->test_address == '') {
+				$email->to(new Address(
+					$this->to_address,
+					$this->to_name
+				));
+			} else {
+				$email->to(new Address(
+					$this->app->config->email->test_address,
+					$this->to_name
+				));
+			}
+
+			if ($this->reply_to_address != '') {
+				$email->replyTo($this->reply_to_address);
+			}
+
+			if ($this->sender != '') {
+				$email->sender(new Address(
+					$this->sender,
+					$this->sender_name
+				));
+			}
+
+			$mailer->send($email);
+
+			if ($this->app->config->email->log) {
+				$this->logMessage();
+			}
+		} catch (Throwable $e) {
+			throw new SiteMailException($e->getMessage());
 		}
 	}
 
