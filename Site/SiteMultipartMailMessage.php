@@ -1,5 +1,6 @@
 <?php
 
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
@@ -200,98 +201,102 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	public function send()
 	{
-		$mailer = new PHPMailer();
+		$mailer = new PHPMailer(true);
 
-		$mailer->Subject = $this->subject;
+		try {
+			$mailer->Subject = $this->subject;
 
-		$mailer->setFrom(
-			$this->from_address,
-			$this->from_name,
-		);
+			$mailer->setFrom(
+				$this->from_address,
+				$this->from_name,
+			);
 
-		$mailer->isHTML(true);
+			$mailer->isHTML(true);
 
-		$mailer->AltBody = $this->text_body;
+			$mailer->AltBody = $this->text_body;
 
-		$mailer->Body = $this->convertCssToInlineStyles($this->html_body);
+			$mailer->Body = $this->convertCssToInlineStyles($this->html_body);
 
-		// don't send CC emails if test-address is specified
-		if ($this->app->config->email->test_address == '') {
-			foreach ($this->getCcList() as $address) {
-				$mailer->addCc($address);
+			// don't send CC emails if test-address is specified
+			if ($this->app->config->email->test_address == '') {
+				foreach ($this->getCcList() as $address) {
+					$mailer->addCc($address);
+				}
+
+				foreach ($this->getBccList() as $address) {
+					$mailer->addBcc($address);
+				}
 			}
 
-			foreach ($this->getBccList() as $address) {
-				$mailer->addBcc($address);
+			// file attachments
+			foreach ($this->attachments as $attachment) {
+				$mailer->addAttachment($attachment);
 			}
-		}
 
-		// file attachments
-		foreach ($this->attachments as $attachment) {
-			$mailer->addAttachment($attachment);
-		}
+			// attachments with metadata
+			foreach ($this->string_attachments as $attachment) {
+				$mailer->addStringAttachment(
+					$attachment['data'],
+					$attachment['filename'],
+					PHPMailer::ENCODING_BASE64,
+					$attachment['content_type'],
+				);
+			}
 
-		// attachments with metadata
-		foreach ($this->string_attachments as $attachment) {
-			$mailer->addStringAttachment(
-				$attachment['data'],
-				$attachment['filename'],
-				PHPMailer::ENCODING_BASE64,
-				$attachment['content_type'],
-			);
-		}
+			$mailer->isSMTP();
+			$mailer->host = $this->smtp_server;
 
-		$mailer->isSMTP();
-		$mailer->host = $this->smtp_server;
+			if ($this->smtp_port != '') {
+				$mailer->Port = $this->smtp_port;
+			}
 
-		if ($this->smtp_port != '') {
-			$mailer->Port = $this->smtp_port;
-		}
+			if ($this->smtp_username != '') {
+				$mailer->Username = $this->smtp_username;
+			}
 
-		if ($this->smtp_username != '') {
-			$mailer->Username = $this->smtp_username;
-		}
+			if ($this->smtp_password != '') {
+				$mailer->SMTPAuth = true;
+				$mailer->Password = $this->smtp_password;
+			}
 
-		if ($this->smtp_password != '') {
-			$mailer->SMTPAuth = true;
-			$mailer->Password = $this->smtp_password;
-		}
+			if ($this->return_path != '') {
+				$mailer->addCustomHeader('Return-Path', $this->return_path);
+			}
 
-		if ($this->return_path != '') {
-			$mailer->addCustomHeader('Return-Path', $this->return_path);
-		}
+			$mailer->MessageDate = $this->date->getRFC2822();
 
-		$mailer->MessageDate = $this->date->getRFC2822();
+			if ($this->app->config->email->test_address == '') {
+				$mailer->addAddress(
+					$this->to_address,
+					$this->to_name
+				);
+			} else {
+				$mailer->addAddress(
+					$this->app->config->email->test_address,
+					$this->to_name
+				);
+			}
 
-		if ($this->app->config->email->test_address == '') {
-			$mailer->addAddress(
-				$this->to_address,
-				$this->to_name
-			);
-		} else {
-			$mailer->addAddress(
-				$this->app->config->email->test_address,
-				$this->to_name
-			);
-		}
+			if ($this->reply_to_address != '') {
+				$mailer->addReplyTo($this->reply_to_address);
+			}
 
-		if ($this->reply_to_address != '') {
-			$mailer->addReplyTo($this->reply_to_address);
-		}
+			if ($this->sender != '') {
+				$mailer->Sender = $this->sender;
+			}
 
-		if ($this->sender != '') {
-			$mailer->Sender = $this->sender;
-		}
+			$mailer->CharSet = 'UTF-8';
 
-		$mailer->CharSet = 'UTF-8';
+			$mailer->Encoding = 'quoted-printable';
 
-		$mailer->Encoding = 'quoted-printable';
+			// send email
+			$mailer->send();
 
-		// send email
-		$mailer->send();
-
-		if ($this->app->config->email->log) {
-			$this->logMessage();
+			if ($this->app->config->email->log) {
+				$this->logMessage();
+			}
+		} catch (Exception $err) {
+			throw new SiteMailException($mailer->ErrorInfo);
 		}
 	}
 
