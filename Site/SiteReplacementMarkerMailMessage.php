@@ -66,7 +66,7 @@ abstract class SiteReplacementMarkerMailMessage extends SiteMultipartMailMessage
 	}
 
 	// }}}
-	// {{{ private final function getReplacementMarkerTextByMatches()
+	// {{{ private function getReplacementMarkerTextByMatches()
 
 	/**
 	 * Gets replacement text for a replacement marker from within a matches
@@ -77,7 +77,7 @@ abstract class SiteReplacementMarkerMailMessage extends SiteMultipartMailMessage
 	 * @return string the replacement text for the first parenthesized
 	 *                 subpattern of the <i>$matches</i> array.
 	 */
-	private final function getReplacementMarkerTextByMatches($matches)
+	private function getReplacementMarkerTextByMatches($matches)
 	{
 		if (isset($matches[1]))
 			return $this->getReplacementMarkerText($matches[1]);
