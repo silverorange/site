@@ -244,7 +244,13 @@ class SiteMultipartMailMessage extends SiteObject
 			}
 
 			$mailer->isSMTP();
-			$mailer->host = $this->smtp_server;
+			$mailer->Host = $this->smtp_server;
+
+			$mailer->SMTPOptions = array(
+				'ssl' => array(
+					'verify_peer_name' => false
+				)
+			);
 
 			if ($this->smtp_port != '') {
 				$mailer->Port = $this->smtp_port;
