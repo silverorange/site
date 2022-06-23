@@ -235,7 +235,7 @@ class SiteMultipartMailMessage extends SiteObject
 				);
 			}
 
-			$dsn = "smtp://";
+			$dsn = 'smtp://';
 
 			if ($this->smtp_username != '') {
 				$dsn.= $this->smtp_username;
@@ -249,7 +249,12 @@ class SiteMultipartMailMessage extends SiteObject
 
 			if ($this->smtp_port != '') {
 				$dsn.= ':'.$this->smtp_port;
+			} else {
+				// Default port of 25
+				$dsn.= ':25';
 			}
+
+			$dsn.= '?verify_peer=0';
 
 			$mailer = new Mailer(Transport::fromDsn($dsn));
 
