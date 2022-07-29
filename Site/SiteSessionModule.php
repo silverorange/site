@@ -740,10 +740,9 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	protected function setSentryUserContext()
 	{
-		$client = $this->app->getSentryClient();
-		if ($client instanceof Raven_Client) {
-			$client->user_context($this->getErrorUserContext());
-		}
+		\Sentry\configureScope(function (\Sentry\State\Scope $scope): void {
+			$scope->setUser($this->getErrorUserContext());
+		});
 	}
 
 	// }}}

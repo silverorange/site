@@ -11,26 +11,15 @@ class SiteSentryErrorLogger extends SiteErrorLogger
 {
 	// {{{ protected properties
 
-	/**
-	 * Client that is used to send error details to sentry
-	 *
-	 * Instantiated with dsn elsewhere and then provided in construct
-	 *
-	 * @var Raven_Client
-	 */
-	protected $client;
-
 	// }}}
 	// {{{ public function __construct()
 
 	/**
 	 * Creates a new sentry error loggger
 	 *
-	 * @param Raven_Client $client the sentry client to use
 	 */
-	public function __construct(Raven_Client $client)
+	public function __construct()
 	{
-		$this->client = $client;
 	}
 
 	// }}}
@@ -44,7 +33,7 @@ class SiteSentryErrorLogger extends SiteErrorLogger
 	public function log(SwatError $e)
 	{
 		if (!$this->filter($e)) {
-			$this->client->captureException(
+			\Sentry\captureException(
 				new ErrorException(
 					$e->getMessage(),
 					0,
