@@ -21,7 +21,7 @@ abstract class SiteAbstractTemplate implements SiteTemplateInterface
 	public function getBaseUri()
 	{
 		$uri = $_SERVER['HTTP_HOST'];
-		$is_stage = false;//( strpos($uri , "berna.silverorange.com") !== false );
+		$is_stage = ( strpos($uri , "berna.silverorange.com") !== false );
 		$stage_uri = 'https://' . $_SERVER['HTTP_HOST'] .
 			substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], "www") + 3);
 		return $is_stage 
