@@ -16,6 +16,19 @@ abstract class SiteAbstractTemplate implements SiteTemplateInterface
 		return ob_get_clean();
 	}
 
+	// {{{ public function getBaseUri()
+
+	public function getBaseUri()
+	{
+		$uri = $_SERVER['HTTP_HOST'];
+		$is_stage = false;//( strpos($uri , "berna.silverorange.com") !== false );
+		$stage_uri = 'https://' . $_SERVER['HTTP_HOST'] .
+			substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], "www") + 3);
+		return $is_stage 
+			? $stage_uri
+			: 'https://www.emrap.org';
+	}
+
 	// }}}
 }
 
