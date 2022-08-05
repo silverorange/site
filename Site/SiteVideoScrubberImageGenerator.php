@@ -1,5 +1,7 @@
 <?php
 
+use Char0n\FFMpegPHP\Movie;
+
 /**
  * Generates media thumbnails for the video scrubber
  *
@@ -169,7 +171,7 @@ class SiteVideoScrubberImageGenerator extends
 
 	protected function processMedia(SiteMedia $media, $path)
 	{
-		$movie = new FFmpegMovie($path);
+		$movie = new Movie($path);
 		$grid = new Imagick();
 
 		$position = 0;
