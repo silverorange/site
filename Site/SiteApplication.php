@@ -104,15 +104,6 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected $locale;
 
-	/**
-	 * The Sentry client
-	 *
-	 * @var Raven_Client
-	 *
-	 * @see SiteApplication::getSentryClient()
-	 */
-	protected $sentry_client;
-
 	// }}}
 	// {{{ public function __construct()
 
@@ -358,14 +349,6 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ public function getSentryClient()
-
-	public function getSentryClient()
-	{
-		return $this->sentry_client;
-	}
-
-	// }}}
 	// {{{ protected function configure()
 
 	/**
@@ -448,26 +431,17 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected function setUpSentryErrorHandling(SiteConfigModule $config)
 	{
-		$client = new Raven_Client(
-			$config->sentry->dsn,
-			array(
-				// Default breadcrumb handlers override the error_reporting
-				// settings, so we disable them
-				'install_default_breadcrumb_handlers' => false,
-				// Catch fatal errors with Sentry.
-				'install_shutdown_handler' => true,
-				'environment' => $config->sentry->environment,
-			)
-		);
+		\Sentry\Init([
+			'dsn' => $config->sentry->dsn,
+			'environment' => $config->sentry->environment,
+			'default_integrations' => false,
+			'integrations' => [
+				new \Sentry\Integration\FatalErrorListenerIntegration()
+			]
+		]);
 
-		SwatException::addLogger(new SiteSentryExceptionLogger($client));
-		SwatError::addLogger(new SiteSentryErrorLogger($client));
-
-		// Add fatal error handling.
-		$error_handler = new Raven_ErrorHandler($client, false, null);
-		$error_handler->registerShutdownFunction();
-
-		$this->sentry_client = $client;
+		SwatException::addLogger(new SiteSentryExceptionLogger());
+		SwatError::addLogger(new SiteSentryErrorLogger());
 	}
 
 	// }}}
