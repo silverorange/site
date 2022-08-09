@@ -1,5 +1,11 @@
 <?php
 
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
+
 /**
  * Multipart text/html email message
  *
@@ -198,119 +204,97 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	public function send()
 	{
-		$mime = new Mail_mime();
+		try {
+			$email = (new Email())
+				->subject($this->subject)
+				->from(new Address(
+					$this->from_address,
+					$this->from_name
+				))
+				->text($this->text_body)
+				->html($this->convertCssToInlineStyles($this->html_body));
 
-		$mime->setSubject($this->subject);
-		$mime->setFrom(
-			$this->getAddressHeader(
-				$this->from_address,
-				$this->from_name
-			)
-		);
-
-		$mime->setTXTBody($this->text_body);
-		$mime->setHTMLBody($this->convertCssToInlineStyles($this->html_body));
-
-		// don't send CC emails if test-address is specified
-		if ($this->app->config->email->test_address == '') {
-			foreach ($this->getCcList() as $address) {
-				$mime->addCc($address);
+			// don't send CC emails if test-address is specified
+			if ($this->app->config->email->test_address == '') {
+				$email
+					->addCc($this->getCcList())
+					->addBcc($this->getBccList());
 			}
 
-			foreach ($this->getBccList() as $address) {
-				$mime->addBcc($address);
+			// file attachments
+			foreach ($this->attachments as $attachment) {
+				$email->attachFromPath($attachment);
 			}
+
+			// attachments with metadata
+			foreach ($this->string_attachments as $attachment) {
+				$email->attach(
+					$attachment['data'],
+					$attachment['filename'],
+					$attachment['content_type'],
+				);
+			}
+
+			$dsn = 'smtp://';
+
+			if ($this->smtp_username != '') {
+				$dsn.= $this->smtp_username;
+				if ($this->smtp_password != '') {
+					$dsn.= ':'.$this->smtp_password;
+				}
+				$dsn.= '@';
+			}
+
+			$dsn.= $this->smtp_server;
+
+			if ($this->smtp_port != '') {
+				$dsn.= ':'.$this->smtp_port;
+			} else {
+				// Default port of 25
+				$dsn.= ':25';
+			}
+
+			$dsn.= '?verify_peer=0';
+
+			$mailer = new Mailer(Transport::fromDsn($dsn));
+
+			if ($this->return_path != '') {
+				$email->returnPath($this->return_path);
+			}
+
+			$email->date(new DateTime($this->date->getRFC2822()));
+
+			if ($this->app->config->email->test_address == '') {
+				$email->to(new Address(
+					$this->to_address,
+					$this->to_name
+				));
+			} else {
+				$email->to(new Address(
+					$this->app->config->email->test_address,
+					$this->to_name
+				));
+			}
+
+			if ($this->reply_to_address != '') {
+				$email->replyTo($this->reply_to_address);
+			}
+
+			if ($this->sender != '') {
+				$email->sender(new Address(
+					$this->sender,
+					$this->sender_name
+				));
+			}
+
+			$mailer->send($email);
+
+			if ($this->app->config->email->log) {
+				$this->logMessage();
+			}
+		} catch (Throwable $e) {
+			throw new SiteMailException($e->getMessage());
 		}
-
-		// file attachments
-		foreach ($this->attachments as $attachment) {
-			$mime->addAttachment($attachment);
-		}
-
-		// attachments with metadata
-		foreach ($this->string_attachments as $attachment) {
-			$mime->addAttachment(
-				$attachment['data'],
-				$attachment['content_type'],
-				$attachment['filename'],
-				false
-			);
-		}
-
-		// create mailer
-		$email_params = array();
-		$email_params['host'] = $this->smtp_server;
-
-		if ($this->smtp_port != '') {
-			$email_params['port'] = $this->smtp_port;
-		}
-
-		if ($this->smtp_username != '') {
-			$email_params['username'] = $this->smtp_username;
-		}
-
-		if ($this->smtp_password != '') {
-			$email_params['auth'] = true;
-			$email_params['password'] = $this->smtp_password;
-		}
-
-		$mailer = Mail::factory('smtp', $email_params);
-
-		if (PEAR::isError($mailer)) {
-			throw new SiteMailException($mailer);
-		}
-
-		// create additional mail headers
-		$headers = array();
-
-		if ($this->return_path != '') {
-			$headers['Return-Path'] = $this->return_path;
-		}
-
-		$headers['Date'] = $this->date->getRFC2822();
-
-		if ($this->app->config->email->test_address == '') {
-			$headers['To'] = $this->getAddressHeader(
-				$this->to_address,
-				$this->to_name
-			);
-		} else {
-			$headers['To'] = $this->getAddressHeader(
-				$this->app->config->email->test_address,
-				$this->to_name
-			);
-		}
-
-		if ($this->reply_to_address != '') {
-			$headers['Reply-To'] = $this->reply_to_address;
-		}
-
-		if ($this->sender != '') {
-			$headers['Sender'] = $this->getAddressHeader(
-				$this->sender,
-				$this->sender_name
-			);
-		}
-
-		// create email body and headers
-		$mime_params = array();
-		$mime_params['head_charset'] = 'UTF-8';
-		$mime_params['text_charset'] = 'UTF-8';
-		$mime_params['text_encoding'] = 'quoted-printable';
-		$mime_params['html_charset'] = 'UTF-8';
-		$mime_params['html_encoding'] = 'quoted-printable';
-		$body = $mime->get($mime_params);
-		$headers = $mime->headers($headers);
-
-		// send email
-		$result = $mailer->send($this->getRecipients(), $headers, $body);
-
-		if ($this->app->config->email->log) {
-			$this->logMessage();
-		}
-
-		if (PEAR::isError($result))
-			throw new SiteMailException($result);
 	}
 
 	// }}}
