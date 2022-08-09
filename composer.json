@@ -46,7 +46,6 @@
 		"ext-pcre": "*",
 		"aws/aws-sdk-php": "^3.0.0",
 		"codescale/ffmpeg-php": "^3.2.0",
-		"pear/services_akismet2": ">=0.3.1",
 		"pear/text_password": "^1.1.1",
 		"sentry/sdk": "^3.2",
 		"silverorange/mdb2": "^3.0.0",

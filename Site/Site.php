@@ -296,9 +296,6 @@ class Site
 			'memcache.resource_cache'      => true,
 			'memcache.resource_cache_stat' => true,
 
-			// comments
-			'comment.akismet_key'      => null,
-
 			// amazon AWS
 			// @see https://docs.aws.amazon.com/general/latest/gr/rande.html
 			'amazon.region' => 'us-east-1',

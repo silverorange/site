@@ -24,20 +24,6 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 
 		if ($comment !== null) {
 			if (!$comment->spam) {
-				// submit spam to akismet
-				if ($this->app->config->comment->akismet_key !== null) {
-					$uri = $this->app->getFrontendBaseHref();
-					try {
-						$akismet = new Services_Akismet2($uri,
-							$this->app->config->comment->akismet_key);
-
-						$akismet_comment = $this->getAkismetComment($comment);
-
-						$akismet->submitSpam($akismet_comment);
-					} catch (Exception $e) {
-					}
-				}
-
 				$comment->spam = true;
 				$comment->save();
 				$comment->postSave($this->app);
@@ -62,21 +48,6 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		$comment = $this->getComment($comment_id);
 		if ($comment !== null) {
 			if ($comment->spam) {
-
-				// submit false positive to akismet
-				if ($this->app->config->comment->akismet_key !== null) {
-					$uri = $this->app->getFrontendBaseHref();
-					try {
-						$akismet = new Services_Akismet2($uri,
-							$this->app->config->comment->akismet_key);
-
-						$akismet_comment = $this->getAkismetComment($comment);
-
-						$akismet->submitFalsePositive($akismet_comment);
-					} catch (Exception $e) {
-					}
-				}
-
 				$comment->spam = false;
 				$comment->save();
 				$comment->postSave($this->app);

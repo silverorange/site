@@ -167,44 +167,7 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function isMessageSpam(SiteContactMessage $message)
 	{
-		$is_spam = false;
-
-		if ($this->app->config->comment->akismet_key != '') {
-			$uri = $this->app->getBaseHref();
-			try {
-				$akismet = new Services_Akismet2(
-					$uri,
-					$this->app->config->comment->akismet_key
-				);
-
-				$is_spam = $akismet->isSpam(
-					$this->getAkismetComment($message),
-					true
-				);
-			} catch (Exception $e) {
-			}
-		}
-
-		return $is_spam;
-	}
-
-	// }}}
-	// {{{ protected function getAkismetComment()
-
-	protected function getAkismetComment(SiteContactMessage $message)
-	{
-		$uri = $this->app->getBaseHref();
-
-		return new Services_Akismet2_Comment(
-			array(
-				'comment_author_email' => $message->email,
-				'comment_content'      => $message->message,
-				'comment_type'         => 'comment',
-				'permalink'            => $uri.$this->source,
-				'user_ip'              => $message->ip_address,
-				'user_agent'           => $message->user_agent,
-			)
-		);
+		return false;
 	}
 
 	// }}}
