@@ -45,7 +45,7 @@
 		"ext-openssl": "*",
 		"ext-pcre": "*",
 		"aws/aws-sdk-php": "^3.0.0",
-		"codescale/ffmpeg-php": "^2.7.0",
+		"codescale/ffmpeg-php": "^3.2.0",
 		"pear/net_smtp": "^1.6.3",
 		"pear/services_akismet2": ">=0.3.1",
 		"pear/text_password": "^1.1.1",
