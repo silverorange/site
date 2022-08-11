@@ -272,30 +272,7 @@ abstract class SiteCommentUi
 
 	protected function isCommentSpam(SiteComment $comment)
 	{
-		$is_spam = false;
-
-		if ($this->app->config->comment->akismet_key !== null) {
-			$uri = $this->app->getBaseHref();
-			try {
-				$akismet = new Services_Akismet2($uri,
-					$this->app->config->comment->akismet_key);
-
-				$akismet_comment = new Services_Akismet2_Comment(
-					array(
-						'comment_author'       => $comment->fullname,
-						'comment_author_email' => $comment->email,
-						'comment_author_url'   => $comment->link,
-						'comment_content'      => $comment->bodytext,
-						'permalink'            => $this->getPermalink($comment),
-					)
-				);
-
-				$is_spam = $akismet->isSpam($akismet_comment, true);
-			} catch (Exception $e) {
-			}
-		}
-
-		return $is_spam;
+		return false;
 	}
 
 	// }}}

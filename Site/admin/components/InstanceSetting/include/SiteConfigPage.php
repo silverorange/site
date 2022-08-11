@@ -27,9 +27,6 @@ class SiteConfigPage extends SiteAbstractConfigPage
 				'title',
 				'meta_description',
 			),
-			'comment' => array(
-				'akismet_key',
-			),
 			'date' => array(
 				'time_zone',
 			),
