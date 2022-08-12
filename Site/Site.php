@@ -333,11 +333,6 @@ class Site
 			'p3p.compact_policy' => null,
 			'p3p.policy_uri'     => null,
 
-			// Sending notifications using Net_Notifier
-			'notifier.address' => null,
-			'notifier.site'    => null, // site identifier
-			'notifier.timeout' => 200, // in milliseconds
-
 			// Redis server. Specified as host[:port]
 			'redis.server'   => null,
 

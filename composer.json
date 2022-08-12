@@ -67,7 +67,6 @@
 		"silverorange/admin": "Enables admin components",
 		"silverorange/jwplayer": "Enables video player support.",
 		"silverorange/nate_go_search": "Article search indexing and CME search index framework.",
-		"silverorange/net_notifier": "Enables async notifications from web applications using web sockets.",
 		"silverorange/xml_rpc2": "Enables XML-RPC server pages."
 	},
 	"scripts": {
