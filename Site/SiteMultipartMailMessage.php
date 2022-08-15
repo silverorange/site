@@ -211,8 +211,11 @@ class SiteMultipartMailMessage extends SiteObject
 					$this->from_address,
 					$this->from_name
 				))
-				->text($this->text_body)
-				->html($this->convertCssToInlineStyles($this->html_body));
+				->text($this->text_body);
+
+			if ($this->html_body != '') {
+				$email->html($this->convertCssToInlineStyles($this->html_body));
+			}
 
 			// don't send CC emails if test-address is specified
 			if ($this->app->config->email->test_address == '') {
