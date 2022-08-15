@@ -296,7 +296,7 @@ class SiteMultipartMailMessage extends SiteObject
 				$this->logMessage();
 			}
 		} catch (Throwable $e) {
-			throw new SiteMailException($e->getMessage());
+			throw new SiteMailException($e);
 		}
 	}
 
