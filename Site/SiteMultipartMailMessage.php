@@ -220,8 +220,8 @@ class SiteMultipartMailMessage extends SiteObject
 			// don't send CC emails if test-address is specified
 			if ($this->app->config->email->test_address == '') {
 				$email
-					->addCc($this->getCcList())
-					->addBcc($this->getBccList());
+					->cc(...$this->getCcList())
+					->bcc(...$this->getBccList());
 			}
 
 			// file attachments
@@ -332,7 +332,7 @@ class SiteMultipartMailMessage extends SiteObject
 	/**
 	 * Gets an array of email addresses for CC
 	 *
-	 * @return arrays $email addresses for CC.
+	 * @return array $email addresses for CC.
 	 */
 	public function getCcList()
 	{
@@ -352,7 +352,7 @@ class SiteMultipartMailMessage extends SiteObject
 	/**
 	 * Gets an array of email addresses for BCC
 	 *
-	 * @return arrays $email addresses for BCC.
+	 * @return array $email addresses for BCC.
 	 */
 	public function getBccList()
 	{
