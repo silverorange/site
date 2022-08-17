@@ -120,7 +120,6 @@ class SiteArticleEdit extends AdminDBEdit
 		$this->edit_article->modified_date = $now->getDate();
 
 		$this->saveArticle();
-		$this->addToSearchQueue();
 
 		if (isset($this->app->memcache))
 			$this->app->memcache->flushNs('article');
@@ -130,33 +129,6 @@ class SiteArticleEdit extends AdminDBEdit
 				$this->edit_article->title));
 
 		$this->app->messages->add($message);
-	}
-
-	// }}}
-	// {{{ protected function addToSearchQueue()
-
-	protected function addToSearchQueue()
-	{
-		// this is automatically wrapped in a transaction because it is
-		// called in saveDBData()
-		$type = NateGoSearch::getDocumentType($this->app->db, 'article');
-
-		if ($type === null)
-			return;
-
-		$sql = sprintf('delete from NateGoSearchQueue
-			where document_id = %s and document_type = %s',
-			$this->app->db->quote($this->edit_article->id, 'integer'),
-			$this->app->db->quote($type, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
-
-		$sql = sprintf('insert into NateGoSearchQueue
-			(document_id, document_type) values (%s, %s)',
-			$this->app->db->quote($this->edit_article->id, 'integer'),
-			$this->app->db->quote($type, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
 	}
 
 	// }}}

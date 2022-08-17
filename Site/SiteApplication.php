@@ -307,48 +307,6 @@ abstract class SiteApplication extends SiteObject
 	}
 
 	// }}}
-	// {{{ public function addToSearchQueue()
-
-	public function addToSearchQueue($document_type, $document_id)
-	{
-		static $has_nate_go_search_queue = null;
-
-		if ($has_nate_go_search_queue === null) {
-			$has_nate_go_search_queue = in_array(
-				'nategosearchqueue',
-				$this->db->manager->listTables()
-			);
-		}
-
-		if (!$has_nate_go_search_queue) {
-			return;
-		}
-
-		$type = NateGoSearch::getDocumentType($this->db, $document_type);
-		if ($type === null) {
-			return;
-		}
-
-		$sql = sprintf(
-			'delete from NateGoSearchQueue
-			where document_id = %s and document_type = %s',
-			$this->db->quote($document_id, 'integer'),
-			$this->db->quote($type, 'integer')
-		);
-
-		SwatDB::exec($this->db, $sql);
-
-		$sql = sprintf(
-			'insert into NateGoSearchQueue
-			(document_id, document_type) values (%s, %s)',
-			$this->db->quote($document_id, 'integer'),
-			$this->db->quote($type, 'integer')
-		);
-
-		SwatDB::exec($this->db, $sql);
-	}
-
-	// }}}
 	// {{{ protected function configure()
 
 	/**
