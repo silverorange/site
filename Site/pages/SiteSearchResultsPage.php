@@ -455,9 +455,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected function searchFulltext()
 	{
-		$fulltext_result = null;
-
-		return $fulltext_result;
+		return null;
 	}
 
 	// }}}
