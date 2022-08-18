@@ -455,25 +455,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected function searchFulltext()
 	{
-		$fulltext_result = null;
-
-		return $fulltext_result;
-	}
-
-	// }}}
-	// {{{ protected function getFulltextTypes()
-
-	/**
-	 * Retrieve the content types to use when performing a fulltext search
-	 *
-	 * @return array array of content type string.
-	 */
-	protected function getFulltextTypes()
-	{
-		$types = array();
-		$types[] = 'article';
-
-		return $types;
+		return null;
 	}
 
 	// }}}
