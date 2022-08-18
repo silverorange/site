@@ -457,18 +457,6 @@ class SiteSearchResultsPage extends SiteArticlePage
 	{
 		$fulltext_result = null;
 
-		if ($this->hasSearchDataValue('keywords')) {
-			$keywords = $this->getSearchDataValue('keywords');
-
-			// TODO: remove reference to StoreApplication::getLocale()
-			$fulltext_engine = new SiteNateGoFulltextSearchEngine(
-				$this->app->db, $this->app->getLocale());
-
-			$types = $this->getFulltextTypes();
-			$fulltext_engine->setTypes($types);
-			$fulltext_result = $fulltext_engine->search($keywords);
-		}
-
 		return $fulltext_result;
 	}
 

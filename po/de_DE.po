@@ -607,34 +607,6 @@ msgstr ""
 msgid "Lock file is missing when unlocking\\n"
 msgstr ""
 
-#: ../Site/SiteNateGoSearchIndexer.php.gettext:86
-msgid "No entries in the search queue."
-msgstr ""
-
-#: ../Site/SiteNateGoSearchIndexer.php.gettext:88
-msgid ""
-"Search queue has entries. Cached search results will be cleared after "
-"indexing is complete."
-msgstr ""
-
-#: ../Site/SiteNateGoSearchIndexer.php.gettext:118
-msgid "Clearing cached search results ... "
-msgstr ""
-
-#: ../Site/SiteNateGoSearchIndexer.php.gettext:123
-#: ../Site/SiteNateGoSearchIndexer.php.gettext:153
-#: ../Site/SiteNateGoSearchIndexer.php.gettext:207
-msgid "done"
-msgstr ""
-
-#: ../Site/SiteNateGoSearchIndexer.php.gettext:135
-msgid "Repopulating article search queue ... "
-msgstr ""
-
-#: ../Site/SiteNateGoSearchIndexer.php.gettext:188
-msgid "Indexing articles ... "
-msgstr ""
-
 #: ../Site/SiteConfigChecker.php.gettext:192
 #, php-format
 msgid "Error: [%s] is not defined.\\n"

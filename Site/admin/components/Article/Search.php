@@ -11,11 +11,6 @@ class SiteArticleSearch extends AdminSearch
 {
 	// {{{ protected properties
 
-	/**
-	 * @var NateGoFulltextSearchResult
-	 */
-	protected $fulltext_result;
-
 	protected $join_clause;
 	protected $where_clause;
 	protected $order_by_clause;
@@ -133,19 +128,7 @@ class SiteArticleSearch extends AdminSearch
 
 	protected function searchArticles()
 	{
-		$keywords = $this->ui->getWidget('search_keywords')->value;
-		if (trim($keywords) == '' || $this->getSearchType() === null) {
-			$this->fulltext_result = null;
-		} else {
-			$fulltext_engine = new SiteNateGoFulltextSearchEngine(
-				$this->app->db);
-
-			$fulltext_engine->setTypes(array(
-				$this->getSearchType(),
-			));
-
-			$this->fulltext_result = $fulltext_engine->search($keywords);
-		}
+		$this->fulltext_result = null;
 	}
 
 	// }}}

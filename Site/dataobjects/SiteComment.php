@@ -194,10 +194,6 @@ class SiteComment extends SwatDBDataObject
 	public function postSave(SiteApplication $app)
 	{
 		$this->clearCache($app);
-
-		if ($this->status == self::STATUS_PUBLISHED && !$this->spam) {
-			$this->addToSearchQueue($app);
-		}
 	}
 
 	// }}}
@@ -219,13 +215,6 @@ class SiteComment extends SwatDBDataObject
 
 		$this->table = 'Comment';
 		$this->id_field = 'integer:id';
-	}
-
-	// }}}
-	// {{{ protected function addToSearchQueue()
-
-	protected function addToSearchQueue(SiteApplication $app)
-	{
 	}
 
 	// }}}
