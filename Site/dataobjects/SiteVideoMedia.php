@@ -204,7 +204,7 @@ class SiteVideoMedia extends SiteMedia
 	{
 		return new SiteJwPlayerMediaDisplay('video'.$this->id);
 	}
-	
+
 	// }}}
 	// {{{ public function getMediaPlayerByKey()
 
