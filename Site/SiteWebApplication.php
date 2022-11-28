@@ -60,6 +60,18 @@ class SiteWebApplication extends SiteApplication
 	protected $p3p_compact_policy = '';
 
 	// }}}
+	// {{{ public function __construct()
+
+	public function __construct($id, $config_filename = null)
+	{
+		// Web applications expect the local environment time zone to be UTC
+		// by default. If this is not set, some dates will incorrectly be
+		// initialized with local time.
+		date_default_timezone_set('UTC');
+		parent::__construct($id, $config_filename);
+	}
+
+	// }}}
 	// {{{ public static function cleanUriGetVar()
 
 	/**
