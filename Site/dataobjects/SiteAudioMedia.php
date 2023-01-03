@@ -74,13 +74,9 @@ class SiteAudioMedia extends SiteMedia
 				$this->processEncoding($file_path, $encoding);
 			}
 
-			// Parse the duration from the first encoding. We do this because
-			// we are unable to parse the duration from the $file_path
-			// file since it isn't readable or reachable by the AMQP server.
+			// Parse the duration from the first encoding
 			foreach ($this->getMediaSet()->encodings as $encoding) {
-				// Pass an absolute path to the AMQP server.
 				$path = realpath($this->getFilePath($encoding->shortname));
-
 				$this->duration = $this->parseDuration($app, $path);
 				$this->save();
 
@@ -102,112 +98,79 @@ class SiteAudioMedia extends SiteMedia
 	{
 		$duration = null;
 
-		if ($app->hasModule('SiteAMQPModule')) {
-			$amqp = $app->getModule('SiteAMQPModule');
-			$message = array('filename' => $file_path);
-			try {
-				$result = $amqp->doSyncNs(
-					'global',
-					'media-duration',
-					json_encode($message)
-				);
+		$bin = trim(`which ffprobe`);
 
-				if ($result['status'] === 'success') {
-					$message = json_decode($result['body'], true);
-					if ($message !== null) {
-						$duration = intval($message['duration']);
-					}
-				}
-			} catch (AMQPConnectionException $e) {
-			} catch (AMQPQueueException $e) {
-			} catch (SiteAMQPJobFailureException $e) {
-				// Ignore connection, queueing or job failure; will just use the
-				// old non-amqp code path.
-			} catch (Exception $e) {
-				// Unknown failure. We can still use the old non-amqp code but
-				// Also process the exception so we know what is failing.
-				$exception = new SiteAMQPJobException($e);
-				$exception->processAndContinue();
+		// Run just the ffprobe first, so we can check its return code.
+		$command = sprintf(
+			'%s '.
+				'-print_format json '.
+				'-select_streams a '.
+				'-show_entries format=format_name:format=duration '.
+				'-v quiet '.
+				'%s ',
+			$bin,
+			escapeshellarg($file_path)
+		);
+
+		$returned_value = 0;
+		$command_output = '';
+		exec($command, $command_output, $returned_value);
+
+		// If ffprobe has worked, get the format and time from its output,
+		// otherwise throw an exception.
+		if ($returned_value === 0) {
+			$result = implode('', $command_output);
+			$result = json_decode($result, true);
+
+			if ($result !== null &&
+				isset($result['format']) &&
+				is_array($result['format']) &&
+				isset($result['format']['format_name']) &&
+				isset($result['format']['duration'])) {
+
+				$format = $result['format']['format_name'];
+				$duration = (integer)round($result['format']['duration']);
 			}
+
+			if ($duration === null) {
+				throw new SiteException(
+					'Audio media duration lookup with ffprobe failed. '.
+					'Unable to parse format or duration from output.'
+				);
+			}
+		} else {
+			throw new SiteException(
+				sprintf(
+					"Audio media duration lookup with ffprobe failed.\n\n".
+					"Ran command:\n%s\n\n".
+					"With return code:\n%s",
+					$command,
+					$returned_value
+				)
+			);
 		}
 
-		if ($duration === null) {
-			$bin = trim(`which ffprobe`);
-
-			// No AMQP or AMQP failed, just run the duration script on this
-			// server. Run just the ffprobe first, so we can check it's return
-			// code.
-			$command = sprintf(
-				'%s '.
-					'-print_format json '.
-					'-select_streams a '.
-					'-show_entries format=format_name:format=duration '.
-					'-v quiet '.
-					'%s ',
-				$bin,
-				escapeshellarg($file_path)
+		// If the file is an MP3 file, ignore the metadata duration and
+		// calculate duration based on raw packets.
+		if (in_array('mp3', explode(',', mb_strtolower($format)))) {
+			$duration = $this->parseMp3Duration(
+				$file_path,
+				self::FFPROBE_DEFAULT_OFFSET
 			);
 
-			$returned_value = 0;
-			$command_output = '';
-			exec($command, $command_output, $returned_value);
-
-			// If ffprobe has worked, get the format and time from it's output,
-			// otherwise throw an exception.
-			if ($returned_value === 0) {
-				$result = implode('', $command_output);
-				$result = json_decode($result, true);
-
-				if ($result !== null &&
-					isset($result['format']) &&
-					is_array($result['format']) &&
-					isset($result['format']['format_name']) &&
-					isset($result['format']['duration'])) {
-
-					$format = $result['format']['format_name'];
-					$duration = (integer)round($result['format']['duration']);
-				}
-
-				if ($duration === null) {
-					throw new SiteException(
-						'Audio media duration lookup with ffprobe failed. '.
-						'Unable to parse format or duration from output.'
-					);
-				}
-			} else {
-				throw new SiteException(
-					sprintf(
-						"Audio media duration lookup with ffprobe failed.\n\n".
-						"Ran command:\n%s\n\n".
-						"With return code:\n%s",
-						$command,
-						$returned_value
-					)
-				);
+			if ($duration === null) {
+				// Depending on the encoding, some MP3s will return no
+				// packets when read_intervals goes past the end of the
+				// file. If no packets are returned, run again and read all
+				// packets. It's slower, but it works.
+				$duration = $this->parseMp3Duration($file_path, 0);
 			}
 
-			// If the file is a MP3 file, ignore the metadata duration and
-			// calculate duration based on raw packets.
-			if (in_array('mp3', explode(',', mb_strtolower($format)))) {
-				$duration = $this->parseMp3Duration(
-					$file_path,
-					self::FFPROBE_DEFAULT_OFFSET
+			if ($duration === null) {
+				throw new SiteException(
+					'Audio media duration lookup with ffprobe failed. '.
+					'Unable to parse duration from output.'
 				);
-
-				if ($duration === null) {
-					// Depending on the encoding, some MP3s will return no
-					// packets when read_intervals goes past the end of the
-					// file. If no packets are returned, run again and read all
-					// packets. It's slower, but it works.
-					$duration = $this->parseMp3Duration($file_path, 0);
-				}
-
-				if ($duration === null) {
-					throw new SiteException(
-						'Audio media duration lookup with ffprobe failed. '.
-						'Unable to parse duration from output.'
-					);
-				}
 			}
 		}
 
