@@ -235,6 +235,7 @@ class Site
 			// Google analytics website property id (UA-XXXXX-XXX)
 			'analytics.enabled'                          => true,
 			'analytics.google_account'                   => null,
+			'analytics.google4_account'                  => null,
 
 			// Google analytics account id (XXXXXXXX)
 			'analytics.google_account_id'                => null,

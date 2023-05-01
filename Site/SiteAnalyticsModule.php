@@ -7,7 +7,7 @@
  * and Bing Universal Event Tracking.
  *
  * @package   Site
- * @copyright 2007-2020 silverorange
+ * @copyright 2007-2023 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @link      https://developers.google.com/analytics/devguides/collection/gajs/
  * @link      https://developers.facebook.com/docs/facebook-pixel/api-reference
@@ -38,6 +38,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 * @var string
 	 */
 	protected $google_account;
+
+	/**
+	 * Google Analytics 4 Account
+	 *
+	 * @var string
+	 */
+	protected $google4_account;
 
 	/**
 	 * Flag to tell whether analytics are enabled on this site.
@@ -81,6 +88,16 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 * @var array
 	 */
 	protected $ga_commands = array();
+
+	/**
+	 * Stack of commands to send to google analytics 4
+	 *
+	 * Each entry is an array where the first value is the google analytics
+	 * command, and any following values are optional command parameters.
+	 *
+	 * @var array
+	 */
+	protected $ga4_commands = array();
 
 	/**
 	 * Facebook Pixel Account
@@ -150,6 +167,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->enhanced_link_attribution =
 			$config->analytics->google_enhanced_link_attribution;
 
+		$this->google4_account = $config->analytics->google4_account;
+		$this->enhanced_link_attribution =
+			false; //$config->analytics->google_enhanced_link_attribution;
+
 		$this->display_advertising =
 			$config->analytics->google_display_advertising;
 
@@ -171,6 +192,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		// skip init of the commands if we're opted out.
 		if (!$this->analytics_opt_out) {
 			$this->initGoogleAnalyticsCommands();
+			$this->initGoogleAnalytics4Commands();
 			$this->initFacebookPixelCommands();
 			$this->initBingUETCommands();
 		}
@@ -183,6 +205,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		return (
 			$this->hasGoogleAnalytics() ||
+			$this->hasGoogleAnalytics4() ||
 			$this->hasFacebookPixel() ||
 			$this->hasTwitterPixel() ||
 			$this->hasBingUET()
@@ -216,6 +239,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		if ($this->hasGoogleAnalytics()) {
 			$js.= $this->getGoogleAnalyticsInlineJavascript();
+		}
+
+		if ($this->hasGoogleAnalytics4()) {
+			$js.= $this->getGoogleAnalytics4InlineJavascript();
 		}
 
 		if ($this->hasTwitterPixel()) {
@@ -293,12 +320,36 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
+
+	// Google Analytics
+	// {{{ public function hasGoogleAnalytics4()
+
+	public function hasGoogleAnalytics4()
+	{
+		return (
+			$this->google4_account != '' &&
+			!$this->analytics_opt_out &&
+			$this->analytics_enabled
+		);
+	}
+
+	// }}}
 	// {{{ public function pushGoogleAnalyticsCommands()
 
 	public function pushGoogleAnalyticsCommands(array $commands)
 	{
 		foreach ($commands as $command) {
 			$this->ga_commands[] = $command;
+		}
+	}
+
+	// }}}
+	// {{{ public function pushGoogleAnalytics4Commands()
+
+	public function pushGoogleAnalytics4Commands(array $commands)
+	{
+		foreach ($commands as $command) {
+			$this->ga4_commands[] = $command;
 		}
 	}
 
@@ -314,6 +365,17 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
+	// {{{ public function prependGoogleAnalytics4Commands()
+
+	public function prependGoogleAnalytics4Commands(array $commands)
+	{
+		$comands = array_reverse($commands);
+		foreach ($commands as $command) {
+			array_unshift($this->ga4_commands, $command);
+		}
+	}
+
+	// }}}
 	// {{{ public function getGoogleAnalyticsInlineJavascript()
 
 	public function getGoogleAnalyticsInlineJavascript()
@@ -324,6 +386,27 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			$javascript = $this->getGoogleAnalyticsCommandsInlineJavascript();
 			$javascript.= "\n";
 			$javascript.= $this->getGoogleAnalyticsTrackerInlineJavascript();
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getGoogleAnalytics4InlineJavascript()
+
+	public function getGoogleAnalytics4InlineJavascript()
+	{
+		$javascript = null;
+
+		// if ($this->hasGoogleAnalytics4() && count($this->ga4_commands) > 0) {
+		if ($this->hasGoogleAnalytics4()) {
+			// Script head insert
+			$javascript.= $this->getGoogleAnalytics4TrackerInlineJavascript();
+
+			$javascript.= "\n";
+
+			// Default API config call and any commands
+			$javascript = $this->getGoogleAnalytics4CommandsInlineJavascript();
 		}
 
 		return $javascript;
@@ -368,15 +451,74 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			}
 
 			$javascript = <<<'JS'
-var _gaq = _gaq || [];
-%s
-JS;
+			var _gaq = _gaq || [];
+			%s
+			JS;
 
 			$javascript = sprintf(
 				$javascript,
 				$commands
 			);
 		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getGoogleAnalytics4CommandsInlineJavascript()
+
+	public function getGoogleAnalytics4CommandsInlineJavascript()
+	{
+		// $javascript = null;
+		$commands = '';
+
+		if ($this->hasGoogleAnalytics4() && count($this->ga4_commands) > 0) {
+			$commands = '';
+
+			// if ($this->enhanced_link_attribution) {
+			// 	// Enhanced link attribution plugin comes before _setAccount in
+			// 	// Google documentation, so put it first. Note: the plugin URI
+			// 	// doesn't load properly from https://ssl.google-analytics.com/.
+			// 	$plugin_uri = '//www.google-analytics.com/plugins/ga/'.
+			// 		'inpage_linkid.js';
+
+			// 	$commands.= $this->getGoogleAnalytics4Command(
+			// 		array(
+			// 			'_require',
+			// 			'inpage_linkid',
+			// 			$plugin_uri,
+			// 		)
+			// 	);
+			// }
+
+			// // Always set the account before any further commands.
+			// $commands.= $this->getGoogleAnalytics4Command(
+			// 	array(
+			// 		'_setAccount',
+			// 		$this->google4_account,
+			// 	)
+			// );
+
+			foreach ($this->ga4_commands as $command) {
+				$commands.= $this->getGoogleAnalytics4Command($command);
+			}
+		}
+
+		$javascript = <<<'JS'
+		console.log('getGoogleAnalytics4CommandsInlineJavascript');
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', '%s');
+		%s
+		JS;
+
+		$javascript = sprintf(
+			$javascript,
+			$this->google4_account,
+			$commands
+		);
 
 		return $javascript;
 	}
@@ -390,19 +532,49 @@ JS;
 
 		if ($this->hasGoogleAnalytics()) {
 			$javascript = <<<'JS'
-(function() {
-	var ga = document.createElement('script');
-	ga.type = 'text/javascript';
-	ga.async = true;
-	ga.src = '%s';
-	var s = document.getElementsByTagName('script')[0];
-	s.parentNode.insertBefore(ga, s);
-})();
-JS;
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = '%s';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+			JS;
 
 			$javascript = sprintf(
 				$javascript,
 				$this->getGoogleAnalyticsTrackingCodeSource()
+			);
+		}
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ public function getGoogleAnalytics4TrackerInlineJavascript()
+
+	public function getGoogleAnalytics4TrackerInlineJavascript()
+	{
+		$javascript = null;
+
+		if ($this->hasGoogleAnalytics4()) {
+			$javascript = <<<'JS'
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = '%s';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+			JS;
+
+			$javascript = sprintf(
+				$javascript,
+				$this->getGoogleAnalytics4TrackingCodeSource(
+					$this->google4_account
+				)
 			);
 		}
 
@@ -427,6 +599,23 @@ JS;
 	}
 
 	// }}}
+	// {{{ protected function initGoogleAnalytics4Commands()
+
+	protected function initGoogleAnalytics4Commands()
+	{
+		// // Default commands for all sites:
+		// // * Speed sampling 100% of the time.
+		// // * Track the page view.
+		// $this->ga4_commands = array(
+		// 	array(
+		// 		'_setSiteSpeedSampleRate',
+		// 		100
+		// 	),
+		// 	'_trackPageview',
+		// );
+	}
+
+	// }}}
 	// {{{ protected function getGoogleAnalyticsTrackingCodeSource()
 
 	protected function getGoogleAnalyticsTrackingCodeSource()
@@ -438,6 +627,14 @@ JS;
 		}
 
 		return $source;
+	}
+
+	// }}}
+	// {{{ protected function getGoogleAnalytics4TrackingCodeSource()
+
+	protected function getGoogleAnalytics4TrackingCodeSource(string $id)
+	{
+		return "https://www.googletagmanager.com/gtag/js?id=$id";
 	}
 
 	// }}}
@@ -467,6 +664,38 @@ JS;
 			SwatString::quoteJavaScriptString($method),
 			$options
 		);
+	}
+
+	// }}}
+	// {{{ protected function getGoogleAnalytics4Command()
+
+	protected function getGoogleAnalytics4Command($command)
+	{
+		// $method  = '';
+		// $options = '';
+
+		// if (is_array($command)) {
+		// 	$method = array_shift($command);
+
+		// 	foreach ($command as $part) {
+		// 		$quoted_part = (is_float($part) || is_int($part))
+		// 			? $part
+		// 			: SwatString::quoteJavaScriptString($part);
+
+		// 		$options.= ', '.$quoted_part;
+		// 	}
+		// } else {
+		// 	$method = $command;
+		// }
+
+		// // gtag('event', '<event_name>', {
+		// // 	<event_parameters>
+		// //    });
+		// return sprintf(
+		// 	"gtag(%s, %s, %s, {%s});",
+		// 	SwatString::quoteJavaScriptString($method),
+		// 	$options
+		// );
 	}
 
 	// }}}
@@ -511,8 +740,8 @@ JS;
 	{
 		// @codingStandardsIgnoreStart
 		$xhtml = <<<'XHTML'
-<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1"/></noscript>
-XHTML;
+		<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1"/></noscript>
+		XHTML;
 		// @codingStandardsIgnoreEnd
 		return sprintf(
 			$xhtml,
@@ -546,12 +775,12 @@ XHTML;
 
 		if ($this->hasFacebookPixel()) {
 			$javascript = <<<'JS'
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','//connect.facebook.net/en_US/fbevents.js');
-JS;
+			!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+			n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+			n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+			t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+			document,'script','//connect.facebook.net/en_US/fbevents.js');
+			JS;
 		}
 
 		return $javascript;
@@ -657,20 +886,20 @@ JS;
 	{
 		// @codingStandardsIgnoreStart
 		$xhtml = <<<'XHTML'
-<noscript>
-<img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
-<img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
-</noscript>
-XHTML;
+		<noscript>
+		<img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
+		<img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
+		</noscript>
+		XHTML;
 		// @codingStandardsIgnoreEnd
 		if (count($this->twitter_pixel_commands) > 0) {
 			//@codingStandardsIgnoreStart
 			$xhtml.= <<<'XHTML'
-<noscript>
-<img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
-<img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
-</noscript>
-XHTML;
+			<noscript>
+			<img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
+			<img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
+			</noscript>
+			XHTML;
 			// @codingStandardsIgnoreEnd
 		}
 
@@ -730,29 +959,29 @@ XHTML;
 		}
 
 		$javascript = <<<'JS'
-(function() {
-var twitter_script = document.createElement('script');
-twitter_script.type = 'text/javascript';
-twitter_script.src = '//platform.twitter.com/oct.js';
+		(function() {
+		var twitter_script = document.createElement('script');
+		twitter_script.type = 'text/javascript';
+		twitter_script.src = '//platform.twitter.com/oct.js';
 
-var onload = function() { %s };
+		var onload = function() { %s };
 
-if (typeof document.attachEvent === 'object') {
-	// Support IE8
-	twitter_script.onreadystatechange = function() {
-		if (['loaded', 'complete'].contains(twitter_script.readyState)) {
-			twitter_script.onreadystatechange = null;
-			onload();
+		if (typeof document.attachEvent === 'object') {
+			// Support IE8
+			twitter_script.onreadystatechange = function() {
+				if (['loaded', 'complete'].contains(twitter_script.readyState)) {
+					twitter_script.onreadystatechange = null;
+					onload();
+				}
+			};
+		} else {
+			twitter_script.onload = onload;
 		}
-	};
-} else {
-	twitter_script.onload = onload;
-}
 
-var s = document.getElementsByTagName('script')[0];
-s.parentNode.insertBefore(twitter_script, s);
-})();
-JS;
+		var s = document.getElementsByTagName('script')[0];
+		s.parentNode.insertBefore(twitter_script, s);
+		})();
+		JS;
 
 		return sprintf(
 			$javascript,
@@ -815,8 +1044,8 @@ JS;
 	{
 		// @codingStandardsIgnoreStart
 		$xhtml = <<<'XHTML'
-<noscript><img src="//bat.bing.com/action/0?ti=%s&Ver=2" height="0" width="0" style="display:none; visibility: hidden;" /></noscript>
-XHTML;
+		<noscript><img src="//bat.bing.com/action/0?ti=%s&Ver=2" height="0" width="0" style="display:none; visibility: hidden;" /></noscript>
+		XHTML;
 		// @codingStandardsIgnoreEnd
 		return sprintf(
 			$xhtml,
@@ -856,9 +1085,9 @@ XHTML;
 		if ($this->hasBingUET()) {
 			// @codingStandardsIgnoreStart
 			$javascript = <<<'JS'
-(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"%s"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
-window.uetq = window.uetq || [];
-JS;
+			(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"%s"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
+			window.uetq = window.uetq || [];
+			JS;
 			// @codingStandardsIgnoreEnd
 		}
 
