@@ -169,7 +169,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		$this->google4_account = $config->analytics->google4_account;
 		$this->enhanced_link_attribution =
-			false; //$config->analytics->google_enhanced_link_attribution;
+			$config->analytics->google_enhanced_link_attribution;
 
 		$this->display_advertising =
 			$config->analytics->google_display_advertising;
@@ -192,7 +192,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		// skip init of the commands if we're opted out.
 		if (!$this->analytics_opt_out) {
 			$this->initGoogleAnalyticsCommands();
-			$this->initGoogleAnalytics4Commands();
 			$this->initFacebookPixelCommands();
 			$this->initBingUETCommands();
 		}
@@ -398,7 +397,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$javascript = null;
 
-		// if ($this->hasGoogleAnalytics4() && count($this->ga4_commands) > 0) {
 		if ($this->hasGoogleAnalytics4()) {
 			// Script head insert
 			$javascript.= $this->getGoogleAnalytics4TrackerInlineJavascript();
@@ -406,7 +404,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			$javascript.= "\n";
 
 			// Default API config call and any commands
-			$javascript = $this->getGoogleAnalytics4CommandsInlineJavascript();
+			$javascript.= $this->getGoogleAnalytics4CommandsInlineJavascript();
 		}
 
 		return $javascript;
@@ -472,40 +470,15 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		// $javascript = null;
 		$commands = '';
 
-		if ($this->hasGoogleAnalytics4() && count($this->ga4_commands) > 0) {
-			$commands = '';
-
-			// if ($this->enhanced_link_attribution) {
-			// 	// Enhanced link attribution plugin comes before _setAccount in
-			// 	// Google documentation, so put it first. Note: the plugin URI
-			// 	// doesn't load properly from https://ssl.google-analytics.com/.
-			// 	$plugin_uri = '//www.google-analytics.com/plugins/ga/'.
-			// 		'inpage_linkid.js';
-
-			// 	$commands.= $this->getGoogleAnalytics4Command(
-			// 		array(
-			// 			'_require',
-			// 			'inpage_linkid',
-			// 			$plugin_uri,
-			// 		)
-			// 	);
-			// }
-
-			// // Always set the account before any further commands.
-			// $commands.= $this->getGoogleAnalytics4Command(
-			// 	array(
-			// 		'_setAccount',
-			// 		$this->google4_account,
-			// 	)
-			// );
-
-			foreach ($this->ga4_commands as $command) {
-				$commands.= $this->getGoogleAnalytics4Command($command);
-			}
-		}
+		// >>> Not implemented yet <<<
+		// if ($this->hasGoogleAnalytics4() && count($this->ga4_commands) > 0) {
+		// 	$commands = '';
+		// 	foreach ($this->ga4_commands as $command) {
+		// 		$commands.= $this->getGoogleAnalytics4Command($command);
+		// 	}
+		// }
 
 		$javascript = <<<'JS'
-		console.log('getGoogleAnalytics4CommandsInlineJavascript');
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
 		gtag('js', new Date());
@@ -596,23 +569,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			),
 			'_trackPageview',
 		);
-	}
-
-	// }}}
-	// {{{ protected function initGoogleAnalytics4Commands()
-
-	protected function initGoogleAnalytics4Commands()
-	{
-		// // Default commands for all sites:
-		// // * Speed sampling 100% of the time.
-		// // * Track the page view.
-		// $this->ga4_commands = array(
-		// 	array(
-		// 		'_setSiteSpeedSampleRate',
-		// 		100
-		// 	),
-		// 	'_trackPageview',
-		// );
 	}
 
 	// }}}
