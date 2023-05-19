@@ -467,16 +467,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	public function getGoogleAnalytics4CommandsInlineJavascript()
 	{
-		// $javascript = null;
 		$commands = '';
-
-		// >>> Not implemented yet <<<
-		// if ($this->hasGoogleAnalytics4() && count($this->ga4_commands) > 0) {
-		// 	$commands = '';
-		// 	foreach ($this->ga4_commands as $command) {
-		// 		$commands.= $this->getGoogleAnalytics4Command($command);
-		// 	}
-		// }
 
 		$javascript = <<<'JS'
 		window.dataLayer = window.dataLayer || [];
@@ -620,38 +611,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			SwatString::quoteJavaScriptString($method),
 			$options
 		);
-	}
-
-	// }}}
-	// {{{ protected function getGoogleAnalytics4Command()
-
-	protected function getGoogleAnalytics4Command($command)
-	{
-		// $method  = '';
-		// $options = '';
-
-		// if (is_array($command)) {
-		// 	$method = array_shift($command);
-
-		// 	foreach ($command as $part) {
-		// 		$quoted_part = (is_float($part) || is_int($part))
-		// 			? $part
-		// 			: SwatString::quoteJavaScriptString($part);
-
-		// 		$options.= ', '.$quoted_part;
-		// 	}
-		// } else {
-		// 	$method = $command;
-		// }
-
-		// // gtag('event', '<event_name>', {
-		// // 	<event_parameters>
-		// //    });
-		// return sprintf(
-		// 	"gtag(%s, %s, %s, {%s});",
-		// 	SwatString::quoteJavaScriptString($method),
-		// 	$options
-		// );
 	}
 
 	// }}}
