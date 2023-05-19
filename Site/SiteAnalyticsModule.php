@@ -614,14 +614,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	}
 
 	// }}}
-	// {{{ protected function getGoogleAnalytics4Command()
-
-	protected function getGoogleAnalytics4Command($command)
-	{
-		// Not implemented yet
-	}
-
-	// }}}
 
 	// Facebook
 	// {{{ public function hasFacebookPixel()
