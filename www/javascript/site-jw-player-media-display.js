@@ -515,8 +515,15 @@ SiteJwPlayerMediaDisplay.prototype.setupAnalytics = function()
 	var title = currentItem.file;
 	// fire a GA event
 	function fireEvent(action, value) {
-		if (_gaq) {
-			_gaq.push(['_trackEvent', 'JW Player Video', action, title, value]);
+		if (typeof _gaq !== "undefined") {
+			_gaq.push(["_trackEvent", "JW Player Video", action, title, value]);
+		}
+		if (typeof gtag !== "undefined") {
+			gtag("event", "JW Player Video", {
+				action: value,
+				label: action,
+				title: title,
+			});
 		}
 	}
 	// return the current position in milliseconds
