@@ -469,6 +469,14 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		$commands = '';
 
+		// Event commands
+		foreach ($this->ga4_commands as $command) {
+			$commands.= $this->getGoogleAnalytics4CommandEvent(
+				$command['event'],
+				$command['parameters_javascript']
+			);
+		}
+
 		$javascript = <<<'JS'
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
@@ -610,6 +618,21 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			'_gaq.push([%s%s]);',
 			SwatString::quoteJavaScriptString($method),
 			$options
+		);
+	}
+
+	// }}}
+	// {{{ protected function getGoogleAnalytics4CommandEvent()
+
+	protected function getGoogleAnalytics4CommandEvent(
+		string $event_name,
+		string $event_parameters_javascript_object_literal
+	) {
+		return sprintf(
+			'gtag(%s, %s, %s);',
+			SwatString::quoteJavaScriptString('event'),
+			SwatString::quoteJavaScriptString($event_name),
+			$event_parameters_javascript_object_literal
 		);
 	}
 
