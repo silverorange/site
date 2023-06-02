@@ -87,7 +87,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $ga_commands = array();
+	protected $ga_commands = [];
 
 	/**
 	 * Stack of commands to send to google analytics 4
@@ -97,7 +97,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $ga4_commands = array();
+	protected $ga4_commands = [];
 
 	/**
 	 * Facebook Pixel Account
@@ -114,7 +114,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $facebook_pixel_commands = array();
+	protected $facebook_pixel_commands = [];
 
 	/**
 	 * Bing UET Account
@@ -131,7 +131,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $bing_uet_commands = array();
+	protected $bing_uet_commands = [];
 
 	/**
 	 * Twitter Pixel User-Tracking Tag
@@ -154,7 +154,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $twitter_pixel_commands = array();
+	protected $twitter_pixel_commands = [];
 
 	// }}}
 	// {{{ public function init()
@@ -323,7 +323,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// Google Analytics
 	// {{{ public function hasGoogleAnalytics4()
 
-	public function hasGoogleAnalytics4()
+	public function hasGoogleAnalytics4(): bool
 	{
 		return (
 			$this->google4_account != '' &&
@@ -345,7 +345,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function pushGoogleAnalytics4Commands()
 
-	public function pushGoogleAnalytics4Commands(array $commands)
+	public function pushGoogleAnalytics4Commands(array $commands): void
 	{
 		foreach ($commands as $command) {
 			$this->ga4_commands[] = $command;
@@ -366,7 +366,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function prependGoogleAnalytics4Commands()
 
-	public function prependGoogleAnalytics4Commands(array $commands)
+	public function prependGoogleAnalytics4Commands(array $commands): void
 	{
 		$comands = array_reverse($commands);
 		foreach ($commands as $command) {
@@ -393,14 +393,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function getGoogleAnalytics4InlineJavascript()
 
-	public function getGoogleAnalytics4InlineJavascript()
+	public function getGoogleAnalytics4InlineJavascript(): string | null
 	{
 		$javascript = null;
 
 		if ($this->hasGoogleAnalytics4()) {
 			// Script head insert
-			$javascript.= $this->getGoogleAnalytics4TrackerInlineJavascript();
-
+			$javascript = $this->getGoogleAnalytics4TrackerInlineJavascript();
 			$javascript.= "\n";
 
 			// Default API config call and any commands
@@ -465,22 +464,29 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function getGoogleAnalytics4CommandsInlineJavascript()
 
-	public function getGoogleAnalytics4CommandsInlineJavascript()
+	public function getGoogleAnalytics4CommandsInlineJavascript(): string
 	{
 		$commands = '';
+
+		// Event commands
+		foreach ($this->ga4_commands as $command) {
+			$commands.= $this->getGoogleAnalytics4CommandEvent(
+				$command['event'],
+				$command['event_params']
+			);
+		}
 
 		$javascript = <<<'JS'
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
 		gtag('js', new Date());
-
-		gtag('config', '%s');
+		gtag('config', %s);
 		%s
 		JS;
 
 		$javascript = sprintf(
 			$javascript,
-			$this->google4_account,
+			SwatString::quoteJavaScriptString($this->google4_account),
 			$commands
 		);
 
@@ -518,7 +524,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function getGoogleAnalytics4TrackerInlineJavascript()
 
-	public function getGoogleAnalytics4TrackerInlineJavascript()
+	public function getGoogleAnalytics4TrackerInlineJavascript(): string | null
 	{
 		$javascript = null;
 
@@ -528,7 +534,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 				var ga = document.createElement('script');
 				ga.type = 'text/javascript';
 				ga.async = true;
-				ga.src = '%s';
+				ga.src = %s;
 				var s = document.getElementsByTagName('script')[0];
 				s.parentNode.insertBefore(ga, s);
 			})();
@@ -536,8 +542,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 			$javascript = sprintf(
 				$javascript,
-				$this->getGoogleAnalytics4TrackingCodeSource(
-					$this->google4_account
+				SwatString::quoteJavaScriptString(
+					$this->getGoogleAnalytics4TrackingCodeSource(
+						$this->google4_account
+					)
 				)
 			);
 		}
@@ -610,6 +618,20 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			'_gaq.push([%s%s]);',
 			SwatString::quoteJavaScriptString($method),
 			$options
+		);
+	}
+
+	// }}}
+	// {{{ protected function getGoogleAnalytics4CommandEvent()
+
+	protected function getGoogleAnalytics4CommandEvent(
+		string $event_name,
+		array $event_params
+	): string {
+		return sprintf(
+			'gtag(\'event\', %s, %s);',
+			SwatString::quoteJavaScriptString($event_name),
+			json_encode($event_params)
 		);
 	}
 
