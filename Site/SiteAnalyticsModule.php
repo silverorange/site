@@ -399,8 +399,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 		if ($this->hasGoogleAnalytics4()) {
 			// Script head insert
-			$javascript.= $this->getGoogleAnalytics4TrackerInlineJavascript();
-
+			$javascript = $this->getGoogleAnalytics4TrackerInlineJavascript();
 			$javascript.= "\n";
 
 			// Default API config call and any commands
