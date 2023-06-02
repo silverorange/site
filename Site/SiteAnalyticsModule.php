@@ -480,14 +480,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
 		gtag('js', new Date());
-
-		gtag('config', '%s');
+		gtag('config', %s);
 		%s
 		JS;
 
 		$javascript = sprintf(
 			$javascript,
-			$this->google4_account,
+			SwatString::quoteJavaScriptString($this->google4_account),
 			$commands
 		);
 
@@ -535,7 +534,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 				var ga = document.createElement('script');
 				ga.type = 'text/javascript';
 				ga.async = true;
-				ga.src = '%s';
+				ga.src = %s;
 				var s = document.getElementsByTagName('script')[0];
 				s.parentNode.insertBefore(ga, s);
 			})();
@@ -543,8 +542,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 			$javascript = sprintf(
 				$javascript,
-				$this->getGoogleAnalytics4TrackingCodeSource(
-					$this->google4_account
+				SwatString::quoteJavaScriptString(
+					$this->getGoogleAnalytics4TrackingCodeSource(
+						$this->google4_account
+					)
 				)
 			);
 		}
