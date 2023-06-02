@@ -472,7 +472,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		foreach ($this->ga4_commands as $command) {
 			$commands.= $this->getGoogleAnalytics4CommandEvent(
 				$command['event'],
-				$command['parameters_javascript']
+				$command['event_params']
 			);
 		}
 
@@ -626,13 +626,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
 	protected function getGoogleAnalytics4CommandEvent(
 		string $event_name,
-		string $event_parameters_javascript_object_literal
-	) {
+		array $event_params
+	): string {
 		return sprintf(
-			'gtag(%s, %s, %s);',
-			SwatString::quoteJavaScriptString('event'),
+			'gtag(\'event\', %s, %s);',
 			SwatString::quoteJavaScriptString($event_name),
-			$event_parameters_javascript_object_literal
+			json_encode($event_params)
 		);
 	}
 
