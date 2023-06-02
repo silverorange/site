@@ -87,7 +87,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $ga_commands = array();
+	protected $ga_commands = [];
 
 	/**
 	 * Stack of commands to send to google analytics 4
@@ -97,7 +97,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $ga4_commands = array();
+	protected $ga4_commands = [];
 
 	/**
 	 * Facebook Pixel Account
@@ -114,7 +114,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $facebook_pixel_commands = array();
+	protected $facebook_pixel_commands = [];
 
 	/**
 	 * Bing UET Account
@@ -131,7 +131,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $bing_uet_commands = array();
+	protected $bing_uet_commands = [];
 
 	/**
 	 * Twitter Pixel User-Tracking Tag
@@ -154,7 +154,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	protected $twitter_pixel_commands = array();
+	protected $twitter_pixel_commands = [];
 
 	// }}}
 	// {{{ public function init()
@@ -323,7 +323,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// Google Analytics
 	// {{{ public function hasGoogleAnalytics4()
 
-	public function hasGoogleAnalytics4()
+	public function hasGoogleAnalytics4(): bool
 	{
 		return (
 			$this->google4_account != '' &&
@@ -345,7 +345,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function pushGoogleAnalytics4Commands()
 
-	public function pushGoogleAnalytics4Commands(array $commands)
+	public function pushGoogleAnalytics4Commands(array $commands): void
 	{
 		foreach ($commands as $command) {
 			$this->ga4_commands[] = $command;
@@ -366,7 +366,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function prependGoogleAnalytics4Commands()
 
-	public function prependGoogleAnalytics4Commands(array $commands)
+	public function prependGoogleAnalytics4Commands(array $commands): void
 	{
 		$comands = array_reverse($commands);
 		foreach ($commands as $command) {
@@ -393,7 +393,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function getGoogleAnalytics4InlineJavascript()
 
-	public function getGoogleAnalytics4InlineJavascript()
+	public function getGoogleAnalytics4InlineJavascript(): string | null
 	{
 		$javascript = null;
 
@@ -465,7 +465,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function getGoogleAnalytics4CommandsInlineJavascript()
 
-	public function getGoogleAnalytics4CommandsInlineJavascript()
+	public function getGoogleAnalytics4CommandsInlineJavascript(): string
 	{
 		$commands = '';
 
@@ -526,7 +526,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	// }}}
 	// {{{ public function getGoogleAnalytics4TrackerInlineJavascript()
 
-	public function getGoogleAnalytics4TrackerInlineJavascript()
+	public function getGoogleAnalytics4TrackerInlineJavascript(): string | null
 	{
 		$javascript = null;
 
