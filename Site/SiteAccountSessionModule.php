@@ -505,7 +505,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 			$cookie->setCookie('login', $tag, $expiry);
 			$transaction->commit();
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			$transaction->rollback();
 			$this->unsetLoginCookie();
 			throw $e;

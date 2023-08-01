@@ -93,7 +93,7 @@ abstract class SiteCdnTask extends SwatDBDataObject
 			$transaction->rollback();
 			$e->processAndContinue();
 			$this->error();
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			$transaction->rollback();
 
 			$e = new SiteCdnException($e);

@@ -634,7 +634,7 @@ class SiteAccount extends SwatDBDataObject
 				$id_field, $this->{$id_field->name});
 
 			$transaction->commit();
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			$transaction->rollback();
 			throw $e;
 		}

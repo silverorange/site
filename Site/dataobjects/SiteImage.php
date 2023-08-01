@@ -157,7 +157,7 @@ class SiteImage extends SwatDBDataObject
 		$has_image_set = true;
 		try {
 			$this->getImageSet();
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			$has_image_set = false;
 		}
 
@@ -799,7 +799,7 @@ class SiteImage extends SwatDBDataObject
 				$this->save();
 				$transaction->commit();
 			}
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			if ($this->automatically_save) {
 				$transaction->rollback();
 			}
@@ -844,7 +844,7 @@ class SiteImage extends SwatDBDataObject
 				$this->save();
 				$transaction->commit();
 			}
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			if ($this->automatically_save) {
 				$transaction->rollback();
 			}

@@ -182,7 +182,7 @@ class SiteWebApplication extends SiteApplication
 			// display page content
 			echo $page_data['content'];
 
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 
 			$this->setP3PHeaders();
 
