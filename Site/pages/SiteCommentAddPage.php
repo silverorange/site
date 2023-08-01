@@ -90,7 +90,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 				);
 				break;
 			}
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			if (!($e instanceof SiteCommentJSONException)) {
 				$e->processAndContinue();
 			}
@@ -273,7 +273,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 	// }}}
 	// {{{ protected function handleException()
 
-	protected function handleException(Exception $e)
+	protected function handleException(Throwable $e)
 	{
 		$this->response = array(
 			'status'  => 'error',

@@ -446,7 +446,7 @@ class SiteAttachment extends SwatDBDataObject
 			}
 
 			$transaction->commit();
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			throw $e;
 			$transaction->rollback();
 		}
