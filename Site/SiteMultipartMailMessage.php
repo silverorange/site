@@ -241,14 +241,14 @@ class SiteMultipartMailMessage extends SiteObject
 			$dsn = 'smtp://';
 
 			if ($this->smtp_username != '') {
-				$dsn.= $this->smtp_username;
+				$dsn.= urlencode($this->smtp_username);
 				if ($this->smtp_password != '') {
-					$dsn.= ':'.$this->smtp_password;
+					$dsn.= ':'.urlencode($this->smtp_password);
 				}
 				$dsn.= '@';
 			}
 
-			$dsn.= $this->smtp_server;
+			$dsn.= urlencode($this->smtp_server);
 
 			if ($this->smtp_port != '') {
 				$dsn.= ':'.$this->smtp_port;
