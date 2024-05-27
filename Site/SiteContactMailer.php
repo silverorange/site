@@ -238,6 +238,9 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$message = new SiteMultipartMailMessage($this);
 
 		$message->smtp_server      = $this->config->email->smtp_server;
+		$message->smtp_port        = $this->config->email->smtp_port;
+		$message->smtp_username    = $this->config->email->smtp_username;
+		$message->smtp_password    = $this->config->email->smtp_password;
 		$message->from_address     = $this->config->email->website_address;
 		$message->from_name        = $this->getFromName($contact_message);
 		$message->reply_to_address = $contact_message->email;

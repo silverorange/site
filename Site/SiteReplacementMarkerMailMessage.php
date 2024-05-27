@@ -15,7 +15,11 @@ abstract class SiteReplacementMarkerMailMessage extends SiteMultipartMailMessage
 	{
 		parent::__construct($app);
 
-		$this->smtp_server = $app->config->email->smtp_server;
+		$this->smtp_server   = $app->config->email->smtp_server;
+		$this->smtp_port     = $app->config->email->smtp_port;
+		$this->smtp_username = $app->config->email->smtp_username;
+		$this->smtp_password = $app->config->email->smtp_password;
+
 		$this->subject     = $this->replaceMarkers($this->getSubject());
 		$this->text_body   = $this->replaceMarkers($this->getBodyText());
 	}

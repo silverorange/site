@@ -669,7 +669,11 @@ class SiteAccount extends SwatDBDataObject
 		$email = new SiteResetPasswordMailMessage(
 			$app, $this, $link, $title);
 
-		$email->smtp_server = $app->config->email->smtp_server;
+		$email->smtp_server   = $app->config->email->smtp_server;
+		$email->smtp_port     = $app->config->email->smtp_port;
+		$email->smtp_username = $app->config->email->smtp_username;
+		$email->smtp_password = $app->config->email->smtp_password;
+
 		$email->from_address = $app->config->email->service_address;
 		$email->from_name = sprintf(Site::_('%s Customer Service'), $title);
 		$email->subject = sprintf(Site::_('Reset Your %s Password'), $title);
@@ -777,7 +781,11 @@ class SiteAccount extends SwatDBDataObject
 		$email = new SiteNewPasswordMailMessage(
 			$app, $this, $password, $title);
 
-		$email->smtp_server = $app->config->email->smtp_server;
+		$email->smtp_server   = $app->config->email->smtp_server;
+		$email->smtp_port     = $app->config->email->smtp_port;
+		$email->smtp_username = $app->config->email->smtp_username;
+		$email->smtp_password = $app->config->email->smtp_password;
+
 		$email->from_address = $app->config->email->service_address;
 		$email->from_name = sprintf(Site::_('%s Customer Service'), $title);
 		$email->subject = sprintf(Site::_('Your New %s Password'), $title);
