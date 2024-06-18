@@ -47,6 +47,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected $google4_account;
 
 	/**
+	 * Google Analytics 4 Account AOA instance
+	 *
+	 * @var string
+	 */
+	protected $google4_account_aoa;
+
+	/**
 	 * Flag to tell whether analytics are enabled on this site.
 	 *
 	 * @var boolean
@@ -167,7 +174,15 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->enhanced_link_attribution =
 			$config->analytics->google_enhanced_link_attribution;
 
-		$this->google4_account = $config->analytics->google4_account;
+		$instance = $this->app->hasModule('SiteMultipleInstanceModule')
+			? $this->app->instance->getInstance()
+			: null;
+
+		$this->google4_account =
+			$instance?->shortname === 'aoa'
+				? $config->analytics->google4_account_aoa
+				: $config->analytics->google4_account;
+
 		$this->enhanced_link_attribution =
 			$config->analytics->google_enhanced_link_attribution;
 

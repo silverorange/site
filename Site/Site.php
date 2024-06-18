@@ -236,6 +236,7 @@ class Site
 			'analytics.enabled'                          => true,
 			'analytics.google_account'                   => null,
 			'analytics.google4_account'                  => null,
+			'analytics.google4_account_aoa'              => null,
 
 			// Google analytics account id (XXXXXXXX)
 			'analytics.google_account_id'                => null,
