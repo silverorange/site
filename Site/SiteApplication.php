@@ -393,6 +393,7 @@ abstract class SiteApplication extends SiteObject
 			'dsn' => $config->sentry->dsn,
 			'environment' => $config->sentry->environment,
 			'default_integrations' => false,
+			'release' => $this->getReleaseVersion(),
 			'integrations' => [
 				new \Sentry\Integration\FatalErrorListenerIntegration()
 			]
@@ -400,6 +401,20 @@ abstract class SiteApplication extends SiteObject
 
 		SwatException::addLogger(new SiteSentryExceptionLogger());
 		SwatError::addLogger(new SiteSentryErrorLogger());
+	}
+
+	// }}}
+	// {{{ protected function getReleaseVersion()
+
+	/**
+	 * Gets the release version of the site for Sentry, based on the
+	 * RELEASE_VERSION global constant.
+	 */
+	protected function getReleaseVersion(): ?string
+	{
+		return defined('RELEASE_VERSION')
+			? constant('RELEASE_VERSION')
+			: null;
 	}
 
 	// }}}
