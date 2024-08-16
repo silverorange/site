@@ -40,16 +40,18 @@
 	],
 	"require": {
 		"php": ">=8.1.0",
+		"ext-curl": "*",
 		"ext-iconv": "*",
+		"ext-json": "*",
 		"ext-mbstring": "*",
 		"ext-openssl": "*",
 		"ext-pcre": "*",
 		"aws/aws-sdk-php": "^3.0.0",
 		"codescale/ffmpeg-php": "^3.2.0",
 		"pear/text_password": "^1.1.1",
-		"sentry/sdk": "^3.2",
-		"silverorange/mdb2": "^3.0.0",
+		"sentry/sentry": "^4.9",
 		"silverorange/concentrate": "^2.0.0",
+		"silverorange/mdb2": "^3.0.0",
 		"silverorange/swat": "^7.1.0",
 		"symfony/mailer": "^5.4"
 	},
@@ -75,5 +77,8 @@
 	},
 	"autoload": {
 		"classmap": [ "Site/" ]
+	},
+	"config": {
+		"sort-packages": true
 	}
 }
