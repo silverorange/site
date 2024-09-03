@@ -384,12 +384,25 @@ abstract class SiteApplication extends SiteObject
 
 	/**
 	 * Configures sentry based error and exception handling of this application
-	 *
-	 * @param SiteConfigModule $config the config module of this application.
 	 */
-	protected function setUpSentryErrorHandling(SiteConfigModule $config)
+	protected function setUpSentryErrorHandling(SiteConfigModule $config): void
 	{
-		\Sentry\Init([
+		\Sentry\Init($this->getSentryConfiguration($config));
+
+		SwatException::addLogger(new SiteSentryExceptionLogger());
+		SwatError::addLogger(new SiteSentryErrorLogger());
+	}
+
+	// }}}
+	// {{{ protected function getSentryConfiguration()
+
+	/**
+	 * Gets the configuration array used to set up Sentry, which can be
+	 * overridden in child application classes.
+	 */
+	protected function getSentryConfiguration(SiteConfigModule $config): array
+	{
+		return [
 			'dsn' => $config->sentry->dsn,
 			'environment' => $config->sentry->environment,
 			'default_integrations' => false,
@@ -397,10 +410,7 @@ abstract class SiteApplication extends SiteObject
 			'integrations' => [
 				new \Sentry\Integration\FatalErrorListenerIntegration()
 			]
-		]);
-
-		SwatException::addLogger(new SiteSentryExceptionLogger());
-		SwatError::addLogger(new SiteSentryErrorLogger());
+		];
 	}
 
 	// }}}
