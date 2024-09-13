@@ -615,7 +615,7 @@ class SiteAccount extends SwatDBDataObject
 		$id_field = new SwatDBField($this->id_field, 'integer');
 
 		$fields = $this->getResetPasswordFields();
-		$values = $this->getResetPasswordValues($app);
+		$values = $this->getResetPasswordValues();
 
 		// Update the database with new password tag. Don't use the regular
 		// dataobject saving here in case other fields have changed.

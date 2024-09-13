@@ -65,7 +65,7 @@ class SiteAdEdit extends AdminDBEdit
 				$this->ui->getWidget('title')->value, $this->ad->id);
 
 			$this->ui->getWidget('shortname')->value = $shortname;
-		} elseif (!$this->validateShortname($shortname, $this->ad->id)) {
+		} elseif (!$this->validateShortname($shortname)) {
 			$message = new SwatMessage(
 				Site::_('Ad %s already exists and must be unique.'),
 				'error');

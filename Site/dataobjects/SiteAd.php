@@ -103,7 +103,7 @@ class SiteAd extends SwatDBDataObject
 			return false;
 
 		$this->initFromRow($row);
-		$this->generatePropertyHashes($row);
+		$this->generatePropertyHashes();
 		return true;
 	}
 

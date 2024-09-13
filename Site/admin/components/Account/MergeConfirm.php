@@ -45,10 +45,10 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		parent::initInternal();
 
 		$this->id = SiteApplication::initVar('id');
-		$this->account = $this->getAccount($this->id, $this->account);
+		$this->account = $this->getAccount($this->id);
 
 		$this->id2 = SiteApplication::initVar('id2');
-		$this->account2 = $this->getAccount($this->id2, $this->account2);
+		$this->account2 = $this->getAccount($this->id2);
 
 		$this->keep_first = SiteApplication::initVar('keep_first', false);
 	}
