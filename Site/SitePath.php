@@ -8,7 +8,7 @@
  * @copyright 2005-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SitePath implements Iterator, Countable
+class SitePath implements Iterator, Countable, \Stringable
 {
 
 
@@ -146,7 +146,7 @@ class SitePath implements Iterator, Countable
 	 *
 	 * @return string the string representation of this path.
 	 */
-	public function __toString()
+	public function __toString(): string
 	{
 		$path = '';
 		$first = true;

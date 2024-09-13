@@ -69,7 +69,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 *
 	 * @return string a string representation of this config section.
 	 */
-	public function __toString()
+	public function __toString(): string
 	{
 		ob_start();
 
@@ -94,7 +94,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 			}
 			echo "\n";
 		}
-		return ob_get_clean();
+		return (string) ob_get_clean();
 	}
 
 

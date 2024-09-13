@@ -522,13 +522,13 @@ class SiteConfigModule extends SiteApplicationModule
 	 *
 	 * @return string a string representation of this config module.
 	 */
-	public function __toString()
+	public function __toString(): string
 	{
 		ob_start();
 		foreach ($this->sections as $section) {
 			echo $section, "\n";
 		}
-		return ob_get_clean();
+		return (string) ob_get_clean();
 	}
 
 

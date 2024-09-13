@@ -48,7 +48,7 @@ abstract class SiteXMLRPCServer extends SitePage
 	/**
 	 * @xmlrpc.hidden
 	 */
-	public function __toString()
+	public function __toString(): string
 	{
 		return parent::__toString();
 	}
