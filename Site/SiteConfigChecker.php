@@ -167,9 +167,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		$class_name = ucfirst(
 			preg_replace_callback(
 				'/-(.)/',
-				function ($matches) {
-					return mb_strtoupper($matches[1]);
-				},
+				fn($matches) => mb_strtoupper($matches[1]),
 				basename(str_replace('.ini', '', $filename))
 			)
 		);
