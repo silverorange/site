@@ -1,19 +1,13 @@
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 class SiteRedisModuleTestApplication extends SiteApplication
 {
+    public function run() {}
 
-	public function run()
-	{
-	}
-
-	protected function getDefaultModuleList()
-	{
-		return ['config' => 'SiteConfigModule'];
-	}
-
+    protected function getDefaultModuleList()
+    {
+        return ['config' => 'SiteConfigModule'];
+    }
 }
-
-?>

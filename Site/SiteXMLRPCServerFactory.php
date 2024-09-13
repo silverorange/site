@@ -1,43 +1,31 @@
 <?php
 
 /**
- * @package   Site
  * @copyright 2006-2016 silverorange
  */
 class SiteXMLRPCServerFactory extends SitePageFactory
 {
+    public function resolvePage($source, ?SiteLayout $layout = null)
+    {
+        $layout ??= $this->getLayout($source);
+        $map = $this->getPageMap();
 
+        if (!isset($map[$source])) {
+            throw new SiteNotFoundException();
+        }
 
-	public function resolvePage($source, SiteLayout $layout = null)
-	{
-		$layout ??= $this->getLayout($source);
-		$map = $this->getPageMap();
+        $class = $map[$source];
 
-		if (!isset($map[$source])) {
-			throw new SiteNotFoundException();
-		}
+        return $this->instantiatePage($class, $layout);
+    }
 
-		$class = $map[$source];
-		return $this->instantiatePage($class, $layout);
-	}
+    protected function getPageMap()
+    {
+        return [];
+    }
 
-
-
-
-	protected function getPageMap()
-	{
-		return [];
-	}
-
-
-
-
-	protected function getLayout($source)
-	{
-		return new SiteXMLRPCServerLayout($this->app);
-	}
-
-
+    protected function getLayout($source)
+    {
+        return new SiteXMLRPCServerLayout($this->app);
+    }
 }
-
-?>

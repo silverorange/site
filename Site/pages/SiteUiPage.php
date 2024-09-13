@@ -1,135 +1,94 @@
 <?php
 
 /**
- * Base class for UI pages
+ * Base class for UI pages.
  *
- * @package   Site
  * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteUiPage extends SitePageDecorator
 {
+    /**
+     * @var SwatUI
+     */
+    protected $ui;
 
+    abstract protected function getUiXml();
 
-	/**
-	 * @var SwatUI
-	 */
-	protected $ui;
+    // init phase
 
+    public function init()
+    {
+        parent::init();
 
+        $this->ui = new SwatUI();
+        $this->ui->loadFromXML($this->getUiXml());
 
+        $this->initInternal();
 
-	abstract protected function getUiXml();
+        $this->ui->init();
+    }
 
+    protected function initInternal() {}
 
+    // process phase
 
-	// init phase
+    public function process()
+    {
+        parent::process();
+        $this->ui->process();
+        $this->processInternal();
+    }
 
+    protected function processInternal() {}
 
-	public function init()
-	{
-		parent::init();
+    // build phase
 
-		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->getUiXml());
+    public function build()
+    {
+        $this->page->build();
 
-		$this->initInternal();
+        $this->buildMessages();
+        $this->buildInternal();
+        $this->buildTitle();
+        $this->buildMetaDescription();
+        $this->buildNavBar();
+        $this->buildContent();
+    }
 
-		$this->ui->init();
-	}
+    protected function buildMessages()
+    {
+        $message_display =
+            $this->ui->getRoot()->getFirstDescendant('SwatMessageDisplay');
 
+        if ($message_display === null) {
+            return;
+        }
 
+        if ($this->app->hasModule('SiteMessagesModule')) {
+            $messages = $this->app->getModule('SiteMessagesModule');
+            foreach ($messages->getAll() as $message) {
+                $message_display->add($message);
+            }
+        }
+    }
 
+    protected function buildInternal() {}
 
-	protected function initInternal()
-	{
-	}
+    protected function buildContent()
+    {
+        $this->layout->startCapture('content');
+        $this->ui->display();
+        $this->layout->endCapture();
+    }
 
+    // finalize phase
 
-
-	// process phase
-
-
-	public function process()
-	{
-		parent::process();
-		$this->ui->process();
-		$this->processInternal();
-	}
-
-
-
-
-	protected function processInternal()
-	{
-	}
-
-
-
-	// build phase
-
-
-	public function build()
-	{
-		$this->page->build();
-
-		$this->buildMessages();
-		$this->buildInternal();
-		$this->buildTitle();
-		$this->buildMetaDescription();
-		$this->buildNavBar();
-		$this->buildContent();
-	}
-
-
-
-
-	protected function buildMessages()
-	{
-		$message_display =
-			$this->ui->getRoot()->getFirstDescendant('SwatMessageDisplay');
-
-		if ($message_display === null)
-			return;
-
-		if ($this->app->hasModule('SiteMessagesModule')) {
-			$messages = $this->app->getModule('SiteMessagesModule');
-			foreach ($messages->getAll() as $message) {
-				$message_display->add($message);
-			}
-		}
-	}
-
-
-
-
-	protected function buildInternal()
-	{
-	}
-
-
-
-
-	protected function buildContent()
-	{
-		$this->layout->startCapture('content');
-		$this->ui->display();
-		$this->layout->endCapture();
-	}
-
-
-
-	// finalize phase
-
-
-	public function finalize()
-	{
-		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->ui->getRoot()->getHtmlHeadEntrySet());
-	}
-
-
+    public function finalize()
+    {
+        parent::finalize();
+        $this->layout->addHtmlHeadEntrySet(
+            $this->ui->getRoot()->getHtmlHeadEntrySet()
+        );
+    }
 }
-
-?>

@@ -1,50 +1,42 @@
 <?php
 
 /**
- * @package   Site
  * @copyright 2011-2016 silverorange
  */
 class SiteAccountLoginHistory extends SwatDBDataObject
 {
+    /**
+     * Unique identifier.
+     *
+     * @var int
+     */
+    public $id;
 
+    /**
+     * @var SwatDate
+     */
+    public $login_date;
 
-	/**
-	 * Unique identifier
-	 *
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * @var string
+     */
+    public $ip_address;
 
-	/**
-	 * @var SwatDate
-	 */
-	public $login_date;
+    /**
+     * @var string
+     */
+    public $user_agent;
 
-	/**
-	 * @var string
-	 */
-	public $ip_address;
+    protected function init()
+    {
+        $this->table = 'AccountLoginHistory';
+        $this->id_field = 'integer:id';
 
-	/**
-	 * @var string
-	 */
-	public $user_agent;
+        $this->registerDateProperty('login_date');
 
-
-
-
-	protected function init()
-	{
-		$this->table = 'AccountLoginHistory';
-		$this->id_field = 'integer:id';
-
-		$this->registerDateProperty('login_date');
-
-		$this->registerInternalProperty('account',
-			SwatDBClassMap::get(SiteAccount::class));
-	}
-
-
+        $this->registerInternalProperty(
+            'account',
+            SwatDBClassMap::get(SiteAccount::class)
+        );
+    }
 }
-
-?>

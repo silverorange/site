@@ -1,32 +1,22 @@
 <?php
 
 /**
- * An image data object for video frame-grabs
+ * An image data object for video frame-grabs.
  *
- * @package   Site
  * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteVideoImage extends SiteImage
 {
+    public function getUri($shortname = '720', $prefix = null)
+    {
+        return parent::getUri($shortname, $prefix);
+    }
 
+    protected function init()
+    {
+        parent::init();
 
-	public function getUri($shortname = '720', $prefix = null)
-	{
-		return parent::getUri($shortname, $prefix);
-	}
-
-
-
-
-	protected function init()
-	{
-		parent::init();
-
-		$this->image_set_shortname = 'videos';
-	}
-
-
+        $this->image_set_shortname = 'videos';
+    }
 }
-
-?>

@@ -1,145 +1,117 @@
 <?php
 
 /**
- * Details page for accounts
+ * Details page for accounts.
  *
- * @package   Site
  * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountDetails extends AdminIndex
 {
+    /**
+     * @var int
+     */
+    protected $id;
 
+    /**
+     * @var SiteAccount
+     */
+    protected $account;
 
-	/**
-	 * @var integer
-	 */
-	protected $id;
+    // init phase
 
-	/**
-	 * @var SiteAccount
-	 */
-	protected $account;
+    protected function initInternal()
+    {
+        parent::initInternal();
 
+        $this->ui->mapClassPrefixToPath('Site', 'Site');
+        $this->ui->loadFromXML($this->getUiXml());
 
+        $this->id = SiteApplication::initVar('id');
+    }
 
-	// init phase
+    protected function getAccount()
+    {
+        if ($this->account === null) {
+            $account_class = SwatDBClassMap::get(SiteAccount::class);
 
+            $this->account = new $account_class();
+            $this->account->setDatabase($this->app->db);
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+            if (!$this->account->load($this->id)) {
+                throw new AdminNotFoundException(sprintf(
+                    Site::_('An account with an id of ‘%d’ does not exist.'),
+                    $this->id
+                ));
+            }
 
-		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->getUiXml());
+            $instance_id = $this->app->getInstanceId();
+            if ($instance_id !== null) {
+                if ($this->account->instance->id !== $instance_id) {
+                    throw new AdminNotFoundException(sprintf(Store::_(
+                        'Incorrect instance for account ‘%d’.'
+                    ), $this->id));
+                }
+            }
+        }
 
-		$this->id = SiteApplication::initVar('id');
-	}
+        return $this->account;
+    }
 
+    protected function getUiXml()
+    {
+        return __DIR__ . '/details.xml';
+    }
 
+    // build phase
 
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
-	protected function getAccount()
-	{
-		if ($this->account === null) {
-			$account_class = SwatDBClassMap::get(SiteAccount::class);
+        $this->buildAccountDetails();
 
-			$this->account = new $account_class();
-			$this->account->setDatabase($this->app->db);
+        $toolbar = $this->ui->getWidget('details_toolbar');
+        $toolbar->setToolLinkValues($this->account->id);
+    }
 
-			if (!$this->account->load($this->id)) {
-				throw new AdminNotFoundException(sprintf(
-					Site::_('An account with an id of ‘%d’ does not exist.'),
-					$this->id));
-			}
+    protected function getAccountDetailsStore()
+    {
+        $account = $this->getAccount();
+        $ds = new SwatDetailsStore($account);
+        $ds->fullname = $account->getFullname();
 
-			$instance_id = $this->app->getInstanceId();
-			if ($instance_id !== null) {
-				if ($this->account->instance->id !== $instance_id) {
-					throw new AdminNotFoundException(sprintf(Store::_(
-						'Incorrect instance for account ‘%d’.'), $this->id));
-				}
-			}
-		}
+        return $ds;
+    }
 
-		return $this->account;
-	}
+    protected function buildAccountDetails()
+    {
+        $ds = $this->getAccountDetailsStore();
 
+        $details_frame = $this->ui->getWidget('details_frame');
+        $details_frame->title = Site::_('Account');
+        $details_frame->subtitle = $ds->fullname;
 
+        $details_view = $this->ui->getWidget('details_view');
 
+        $date_field = $details_view->getField('createdate');
+        $date_renderer = $date_field->getRendererByPosition();
+        $date_renderer->display_time_zone = $this->app->default_time_zone;
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/details.xml';
-	}
+        $details_view->data = $ds;
+    }
 
+    protected function getTableModel(SwatView $view)
+    {
+        return null;
+    }
 
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
 
-	// build phase
-
-
-	protected function buildInternal()
-	{
-		parent::buildInternal();
-
-		$this->buildAccountDetails();
-
-		$toolbar = $this->ui->getWidget('details_toolbar');
-		$toolbar->setToolLinkValues($this->account->id);
-	}
-
-
-
-
-	protected function getAccountDetailsStore()
-	{
-		$account = $this->getAccount();
-		$ds = new SwatDetailsStore($account);
-		$ds->fullname = $account->getFullname();
-		return $ds;
-	}
-
-
-
-
-	protected function buildAccountDetails()
-	{
-		$ds = $this->getAccountDetailsStore();
-
-		$details_frame = $this->ui->getWidget('details_frame');
-		$details_frame->title = Site::_('Account');
-		$details_frame->subtitle = $ds->fullname;
-
-		$details_view = $this->ui->getWidget('details_view');
-
-		$date_field = $details_view->getField('createdate');
-		$date_renderer = $date_field->getRendererByPosition();
-		$date_renderer->display_time_zone = $this->app->default_time_zone;
-
-		$details_view->data = $ds;
-	}
-
-
-
-
-	protected function getTableModel(SwatView $view)
-	{
-		return null;
-	}
-
-
-
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-
-		$fullname = $this->getAccount()->getFullname();
-		$this->navbar->addEntry(new SwatNavBarEntry($fullname));
-		$this->title = $fullname;
-	}
-
-
+        $fullname = $this->getAccount()->getFullname();
+        $this->navbar->addEntry(new SwatNavBarEntry($fullname));
+        $this->title = $fullname;
+    }
 }
-
-?>

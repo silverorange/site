@@ -1,83 +1,68 @@
 <?php
 
 /**
- * Index page for Articles
+ * Index page for Articles.
  *
- * @package   Site
  * @copyright 2005-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticleIndex extends AdminIndex
 {
+    protected $id;
+    protected $parent;
 
+    /**
+     * @var SiteArticle
+     */
+    protected $article;
 
-	protected $id = null;
-	protected $parent = null;
+    // init phase
 
-	/**
-	 * @var SiteArticle
-	 */
-	protected $article;
+    protected function initInternal()
+    {
+        $this->ui->mapClassPrefixToPath('Site', 'Site');
+        $this->ui->loadFromXML($this->getUiXml());
 
+        $this->id = SiteApplication::initVar('id');
 
+        $this->initArticle();
+    }
 
-	// init phase
+    protected function initArticle()
+    {
+        $class = SwatDBClassMap::get(SiteArticle::class);
 
+        $this->article = new $class();
+        $this->article->setDatabase($this->app->db);
 
-	protected function initInternal()
-	{
-		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->getUiXml());
+        if (($this->id != '') && (!$this->article->load($this->id))) {
+            throw new AdminNotFoundException(
+                sprintf(
+                    Site::_('Article with id ‘%s’ not found.'),
+                    $this->id
+                )
+            );
+        }
+    }
 
-		$this->id = SiteApplication::initVar('id');
+    protected function getUiXml()
+    {
+        return __DIR__ . '/index.xml';
+    }
 
-		$this->initArticle();
-	}
+    // process phase
 
+    protected function processActions(SwatView $view, SwatActions $actions)
+    {
+        $processor = new SiteArticleActionsProcessor($this);
+        $processor->process($view, $actions);
+    }
 
+    // build phase
 
-
-	protected function initArticle()
-	{
-		$class = SwatDBClassMap::get(SiteArticle::class);
-
-		$this->article = new $class();
-		$this->article->setDatabase($this->app->db);
-
-		if (($this->id != '') && (!$this->article->load($this->id))) {
-			throw new AdminNotFoundException(
-				sprintf(Site::_('Article with id ‘%s’ not found.'),
-					$this->id));
-		}
-	}
-
-
-
-
-	protected function getUiXml()
-	{
-		return __DIR__.'/index.xml';
-	}
-
-
-
-	// process phase
-
-
-	protected function processActions(SwatView $view, SwatActions $actions)
-	{
-		$processor = new SiteArticleActionsProcessor($this);
-		$processor->process($view, $actions);
-	}
-
-
-
-	// build phase
-
-
-	protected function getTableModel(SwatView $view)
-	{
-		$sql = 'select Article.id,
+    protected function getTableModel(SwatView $view)
+    {
+        $sql = 'select Article.id,
 					Article.title,
 					Article.visible,
 					Article.enabled,
@@ -89,136 +74,140 @@ class SiteArticleIndex extends AdminIndex
 				where %s
 				order by %s';
 
-		$sql = sprintf($sql,
-			$this->getWhereClause($view),
-			$this->getOrderByClause($view,
-				'Article.displayorder, Article.title', 'Article'));
+        $sql = sprintf(
+            $sql,
+            $this->getWhereClause($view),
+            $this->getOrderByClause(
+                $view,
+                'Article.displayorder, Article.title',
+                'Article'
+            )
+        );
 
-		$rs = SwatDB::query($this->app->db, $sql);
+        $rs = SwatDB::query($this->app->db, $sql);
 
-		$view = $this->ui->getWidget('index_view');
+        $view = $this->ui->getWidget('index_view');
 
-		if (count($rs) < 2)
-			$this->ui->getWidget('articles_order')->sensitive = false;
+        if (count($rs) < 2) {
+            $this->ui->getWidget('articles_order')->sensitive = false;
+        }
 
-		return $rs;
-	}
+        return $rs;
+    }
 
+    protected function getWhereClause(SwatView $view)
+    {
+        return sprintf(
+            'Article.parent %s %s',
+            SwatDB::equalityOperator($this->id),
+            $this->app->db->quote($this->id, 'integer')
+        );
+    }
 
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
+        if ($this->id != 0) {
+            // show the detail frame
+            $details_frame = $this->ui->getWidget('details_frame');
+            $details_frame->visible = true;
 
-	protected function getWhereClause(SwatView $view)
-	{
-		$sql = sprintf('Article.parent %s %s',
-			SwatDB::equalityOperator($this->id),
-			$this->app->db->quote($this->id, 'integer'));
+            // move the articles frame inside of the detail frame
+            $articles_frame = $this->ui->getWidget('articles_frame');
+            $articles_frame->parent->remove($articles_frame);
+            $details_frame->add($articles_frame);
+            $articles_frame->title = Site::_('Sub-Articles');
+            $this->ui->getWidget('articles_new')->title =
+                Site::_('New Sub-Article');
 
-		return $sql;
-	}
+            $this->buildDetails();
+        }
 
+        $tool_value = ($this->id === null) ? '' : '?parent=' . $this->id;
+        $this->ui->getWidget('articles_toolbar')->setToolLinkValues(
+            $tool_value
+        );
 
+        $this->ui->getWidget('visibility')->addOptionsByArray(
+            SiteArticleActionsProcessor::getActions()
+        );
+    }
 
+    protected function buildDetails()
+    {
+        $details_block = $this->ui->getWidget('details_block');
+        $details_view = $this->ui->getWidget('details_view');
+        $details_frame = $this->ui->getWidget('details_frame');
 
-	protected function buildInternal()
-	{
-		parent::buildInternal();
+        // set default time zone
+        $createdate_field = $details_view->getField('createdate');
+        $createdate_renderer = $createdate_field->getFirstRenderer();
+        $createdate_renderer->display_time_zone =
+            $this->app->default_time_zone;
 
-		if ($this->id != 0) {
-			// show the detail frame
-			$details_frame = $this->ui->getWidget('details_frame');
-			$details_frame->visible = true;
+        $modified_date_field = $details_view->getField('modified_date');
+        $modified_date_renderer =
+            $modified_date_field->getRendererByPosition();
 
-			// move the articles frame inside of the detail frame
-			$articles_frame = $this->ui->getWidget('articles_frame');
-			$articles_frame->parent->remove($articles_frame);
-			$details_frame->add($articles_frame);
-			$articles_frame->title = Site::_('Sub-Articles');
-			$this->ui->getWidget('articles_new')->title =
-				Site::_('New Sub-Article');
+        $modified_date_renderer->display_time_zone =
+            $this->app->default_time_zone;
 
-			$this->buildDetails();
-		}
+        $details_view->getField('visibility')->getFirstRenderer()->db =
+            $this->app->db;
 
-		$tool_value = ($this->id === null) ? '' : '?parent='.$this->id;
-		$this->ui->getWidget('articles_toolbar')->setToolLinkValues(
-			$tool_value);
+        if ($this->article->bodytext !== null) {
+            $this->article->bodytext = SwatString::condense(SwatString::toXHTML(
+                $this->article->bodytext
+            ));
+        }
 
-		$this->ui->getWidget('visibility')->addOptionsByArray(
-			SiteArticleActionsProcessor::getActions());
-	}
+        if ($this->article->description !== null) {
+            $this->article->description =
+                SwatString::condense(SwatString::toXHTML(
+                    $this->article->description
+                ));
+        }
 
+        $details_frame->title = Site::_('Article');
+        $details_frame->subtitle = $this->article->title;
+        $details_view->data = $this->article;
 
+        $this->buildDetailsToolbar();
 
+        // build navbar
+        $this->navbar->popEntry();
+        $this->navbar->addEntry(new SwatNavBarEntry(
+            Site::_('Articles'),
+            'Article'
+        ));
 
-	protected function buildDetails()
-	{
-		$details_block = $this->ui->getWidget('details_block');
-		$details_view = $this->ui->getWidget('details_view');
-		$details_frame = $this->ui->getWidget('details_frame');
+        if ($this->article->parent != null) {
+            $navbar_rs = SwatDB::executeStoredProc(
+                $this->app->db,
+                'getArticleNavBar',
+                [$this->article->parent->id]
+            );
 
-		// set default time zone
-		$createdate_field = $details_view->getField('createdate');
-		$createdate_renderer = $createdate_field->getFirstRenderer();
-		$createdate_renderer->display_time_zone =
-			$this->app->default_time_zone;
+            foreach ($navbar_rs as $elem) {
+                $this->navbar->addEntry(new SwatNavBarEntry(
+                    $elem->title,
+                    'Article/Index?id=' . $elem->id
+                ));
+            }
+        }
 
-		$modified_date_field = $details_view->getField('modified_date');
-		$modified_date_renderer =
-			$modified_date_field->getRendererByPosition();
+        $this->navbar->addEntry(new SwatNavBarEntry($this->article->title));
+    }
 
-		$modified_date_renderer->display_time_zone =
-			$this->app->default_time_zone;
+    protected function buildDetailsToolbar()
+    {
+        $details_toolbar = $this->ui->getWidget('details_toolbar');
+        $details_toolbar->setToolLinkValues($this->article->id);
 
-		$details_view->getField('visibility')->getFirstRenderer()->db =
-			$this->app->db;
-
-		if ($this->article->bodytext !== null)
-			$this->article->bodytext = SwatString::condense(SwatString::toXHTML(
-				$this->article->bodytext));
-
-		if ($this->article->description !== null)
-			$this->article->description =
-				SwatString::condense(SwatString::toXHTML(
-					$this->article->description));
-
-		$details_frame->title = Site::_('Article');
-		$details_frame->subtitle = $this->article->title;
-		$details_view->data = $this->article;
-
-		$this->buildDetailsToolbar();
-
-		// build navbar
-		$this->navbar->popEntry();
-		$this->navbar->addEntry(new SwatNavBarEntry(Site::_('Articles'),
-			'Article'));
-
-		if ($this->article->parent != null) {
-			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
-				'getArticleNavBar', [$this->article->parent->id]);
-
-			foreach ($navbar_rs as $elem)
-				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,
-					'Article/Index?id='.$elem->id));
-		}
-
-		$this->navbar->addEntry(new SwatNavBarEntry($this->article->title));
-	}
-
-
-
-
-	protected function buildDetailsToolbar()
-	{
-		$details_toolbar = $this->ui->getWidget('details_toolbar');
-		$details_toolbar->setToolLinkValues($this->article->id);
-
-		// show the on site link
-		$site_link = $this->ui->getWidget('view_on_site');
-		$site_link->sensitive = $this->article->enabled;
-		$site_link->value     = $this->article->path;
-	}
-
-
+        // show the on site link
+        $site_link = $this->ui->getWidget('view_on_site');
+        $site_link->sensitive = $this->article->enabled;
+        $site_link->value = $this->article->path;
+    }
 }
-
-?>

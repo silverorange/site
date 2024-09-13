@@ -1,121 +1,109 @@
 <?php
 
 /**
- * A one-time use token used to sign on using the API
+ * A one-time use token used to sign on using the API.
  *
- * @package   Site
  * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteApiSignOnToken extends SwatDBDataObject
 {
+    /**
+     * @var int
+     */
+    public $id;
 
+    /**
+     * @var string
+     */
+    public $ident;
 
-	/**
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * @var string
+     */
+    public $token;
 
-	/**
-	 * @var string
-	 */
-	public $ident;
+    /**
+     * Create date.
+     *
+     * @var SwatDate
+     */
+    public $createdate;
 
-	/**
-	 * @var string
-	 */
-	public $token;
+    protected function init()
+    {
+        parent::init();
 
-	/**
-	 * Create date
-	 *
-	 * @var SwatDate
-	 */
-	public $createdate;
+        $this->table = 'ApiSignOnToken';
+        $this->id_field = 'integer:id';
 
+        $this->registerInternalProperty(
+            'api_credential',
+            SwatDBClassMap::get(SiteApiCredential::class)
+        );
 
+        $this->registerDateProperty('createdate');
+    }
 
+    public function loadByIdent($ident, SiteApiCredential $credential)
+    {
+        $this->checkDB();
 
-	protected function init()
-	{
-		parent::init();
+        $row = null;
 
-		$this->table = 'ApiSignOnToken';
-		$this->id_field = 'integer:id';
-
-		$this->registerInternalProperty(
-			'api_credential',
-			SwatDBClassMap::get(SiteApiCredential::class)
-		);
-
-		$this->registerDateProperty('createdate');
-	}
-
-
-
-
-	public function loadByIdent($ident, SiteApiCredential $credential)
-	{
-		$this->checkDB();
-
-		$row = null;
-
-		if ($this->table !== null) {
-			$sql = sprintf('select * from %s
+        if ($this->table !== null) {
+            $sql = sprintf(
+                'select * from %s
 				where ident = %s and api_credential = %s',
-				$this->table,
-				$this->db->quote($ident, 'text'),
-				$this->db->quote($credential->id, 'integer'));
+                $this->table,
+                $this->db->quote($ident, 'text'),
+                $this->db->quote($credential->id, 'integer')
+            );
 
-			$rs = SwatDB::query($this->db, $sql, null);
-			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
-		}
+            $rs = SwatDB::query($this->db, $sql, null);
+            $row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+        }
 
-		if ($row === null) {
-			return false;
-		}
+        if ($row === null) {
+            return false;
+        }
 
-		$this->initFromRow($row);
-		$this->generatePropertyHashes();
+        $this->initFromRow($row);
+        $this->generatePropertyHashes();
 
-		return true;
-	}
+        return true;
+    }
 
+    public function loadByIdentAndToken(
+        $ident,
+        $token,
+        SiteApiCredential $credential
+    ) {
+        $this->checkDB();
 
+        $row = null;
 
-
-	public function loadByIdentAndToken(
-		$ident,
-		$token,
-		SiteApiCredential $credential
-	) {
-		$this->checkDB();
-
-		$row = null;
-
-		if ($this->table !== null) {
-			$sql = sprintf('select * from %s
+        if ($this->table !== null) {
+            $sql = sprintf(
+                'select * from %s
 				where ident = %s and token = %s and api_credential = %s',
-				$this->table,
-				$this->db->quote($ident, 'text'),
-				$this->db->quote($token, 'text'),
-				$this->db->quote($credential->id, 'integer'));
+                $this->table,
+                $this->db->quote($ident, 'text'),
+                $this->db->quote($token, 'text'),
+                $this->db->quote($credential->id, 'integer')
+            );
 
-			$rs = SwatDB::query($this->db, $sql, null);
-			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
-		}
+            $rs = SwatDB::query($this->db, $sql, null);
+            $row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+        }
 
-		if ($row === null) {
-			return false;
-		}
+        if ($row === null) {
+            return false;
+        }
 
-		$this->initFromRow($row);
-		$this->generatePropertyHashes();
+        $this->initFromRow($row);
+        $this->generatePropertyHashes();
 
-		return true;
-	}
-
-
+        return true;
+    }
 }
-
-?>

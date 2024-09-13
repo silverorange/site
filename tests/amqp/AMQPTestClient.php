@@ -1,51 +1,42 @@
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 class AMQPTestClient extends SiteCommandLineApplication
 {
+    public function run()
+    {
+        $this->initModules();
+        $this->parseCommandLineArguments();
 
+        $strings = ['test', 'abcdefg', 'fail-test'];
 
-	public function run()
-	{
-		$this->initModules();
-		$this->parseCommandLineArguments();
+        $this->debug("Async test:\n", true);
 
-		$strings = ['test', 'abcdefg', 'fail-test'];
+        foreach ($strings as $string) {
+            $this->debug($string . "\n");
+            $this->amqp->doAsync('strrev', $string);
+        }
 
-		$this->debug("Async test:\n", true);
+        $this->debug("\n");
+        $this->debug("Sync test:\n", true);
 
-		foreach ($strings as $string) {
-			$this->debug($string."\n");
-			$this->amqp->doAsync('strrev', $string);
-		}
+        try {
+            foreach ($strings as $string) {
+                $this->debug($string . ' => ');
+                $this->debug($this->amqp->doSync('strrev', $string));
+                $this->debug("\n");
+            }
+        } catch (SiteAMQPJobFailureException $e) {
+            $this->debug("CAUGHT EXPECTED FAIL\n");
+        }
 
-		$this->debug("\n");
-		$this->debug("Sync test:\n", true);
+        $this->debug("\n");
+        $this->debug("done\n", true);
+    }
 
-		try {
-			foreach ($strings as $string) {
-				$this->debug($string.' => ');
-				$this->debug($this->amqp->doSync('strrev', $string));
-				$this->debug("\n");
-			}
-		} catch (SiteAMQPJobFailureException $e) {
-			$this->debug("CAUGHT EXPECTED FAIL\n");
-		}
-
-		$this->debug("\n");
-		$this->debug("done\n", true);
-	}
-
-
-
-
-	protected function getDefaultModuleList()
-	{
-		return ['config' => 'SiteConfigModule', 'amqp'   => 'SiteAMQPModule'];
-	}
-
-
+    protected function getDefaultModuleList()
+    {
+        return ['config' => 'SiteConfigModule', 'amqp' => 'SiteAMQPModule'];
+    }
 }
-
-?>

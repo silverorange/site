@@ -2,398 +2,371 @@
 
 /**
  * Control for creating new tags and selecting multiple tags from a array of
- * tags
+ * tags.
  *
- * @package   Site
  * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteTagEntry extends SwatInputControl implements SwatState
 {
-
-
-	/*
-	 * Whether or not to allow adding new tags
-	 *
-	 * @var boolean
-	 */
-	public $allow_adding_tags = true;
-
-	/*
-	 * Maximum number of tags
-	 *
-	 * @var integer
-	 */
-	public $maximum_tags = null;
-
-	/*
-	 * JSON server
-	 *
-	 * A JSON server that returns an array of name => title pairs based on the
-	 * 'query' GET variable. If not specified, all tag values must be specified
-	 * using the $tag_array property.
-	 */
-	public $json_server;
-
-	/*
-	 * Whether or not to display the tag shortname in brackets
-	 *
-	 * @var boolean
-	 */
-	public $show_shortname = true;
-
-
-
-
-	/**
-	 * An associative array of tags for the tag flydown in the form of
-	 * name => title
-	 *
-	 * @var array
-	 */
-	protected $tag_array;
-
-	/**
-	 * An array of tag names selected by this tag entry control
-	 *
-	 * @var array
-	 */
-	protected $selected_tag_array = [];
-
-
-
-
-	/**
-	 * Creates a new tag entry control
-	 *
-	 * @param string $id a non-visible unique id for this widget.
-	 *
-	 * @see SwatWidget::__construct()
-	 */
-	public function __construct($id = null)
-	{
-		parent::__construct($id);
-
-		$this->requires_id = true;
-
-		$yui = new SwatYUI(['autocomplete']);
-		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
-
-		$this->addJavaScript(
-			'packages/swat/javascript/swat-z-index-manager.js'
-		);
-
-		$this->addJavaScript('packages/site/javascript/site-tag-entry.js');
-		$this->addStyleSheet('packages/site/styles/site-tag-entry.css');
-	}
-
-
-
-
-	/**
-	 * Displays this tag entry control
-	 */
-	public function display()
-	{
-		if (!$this->visible)
-			return;
-
-		SwatWidget::display();
-
-		$div_tag = new SwatHtmlTag('div');
-		$div_tag->class = $this->getCSSClassString();
-		$div_tag->id = $this->id;
-		$div_tag->open();
-
-		$autocomplete_div = new SwatHtmlTag('div');
-		$autocomplete_div->class = 'site-tag-autocomplete-container';
-		$autocomplete_div->open();
-
-		$input_tag = new SwatHtmlTag('input');
-		$input_tag->name = $this->id.'_value';
-		$input_tag->class = 'swat-entry';
-		$input_tag->id = $this->id.'_value';
-
-		if (!$this->isSensitive())
-			$input_tag->disabled = 'disabled';
-
-		$input_tag->display();
-
-		$container_tag = new SwatHtmlTag('div');
-		$container_tag->class = 'site-tag-container';
-		$container_tag->id = $this->id.'_container';
-		$container_tag->setContent('');
-		$container_tag->display();
-
-		$autocomplete_div->close();
-		$div_tag->close();
-
-		Swat::displayInlineJavaScript($this->getInlineJavaScript());
-	}
-
-
-
-
-	/**
-	 * Processes this tag entry control
-	 *
-	 * If a validation error occurs, an error message is attached to this
-	 * widget.
-	 *
-	 * @throws SwatException if no database connection is set on this tag
-	 *                        entry control.
-	 */
-	public function process()
-	{
-		parent::process();
-
-		$this->selected_tag_array = [];
-
-		$data = &$this->getForm()->getFormData();
-		$new_key = $this->id.'_new';
-		if (isset($data[$new_key]) && is_array($data[$new_key])) {
-			foreach ($data[$new_key] as $index => $new_tag) {
-				$this->insertTag($new_tag, $index);
-			}
-		}
-
-		if (isset($data[$this->id]) && is_array($data[$this->id])) {
-			$tag_strings = $data[$this->id];
-
-			foreach ($tag_strings as $string) {
-				if (isset($this->tag_array[$string])) {
-					$this->selected_tag_array[$string] =
-						$this->tag_array[$string];
-				} else {
-					$this->selected_tag_array[$string] = $string;
-				}
-			}
-		}
-
-		if ($this->required && count($this->selected_tag_array) == 0) {
-			$message = Swat::_('The %s field is required.');
-			$this->addMessage(new SwatMessage($message, SwatMessage::ERROR));
-		}
-	}
-
-
-
-
-	/**
-	 * Gets the current state of this tag entry control
-	 *
-	 * @return boolean the current state of this tag entry control.
-	 *
-	 * @see SwatState::getState()
-	 */
-	public function getState()
-	{
-		return $this->getSelectedTagArray();
-	}
-
-
-
-
-	/**
-	 * Sets the current state of this tag entry control
-	 *
-	 * @param array $state the new state of this tag entry control.
-	 *
-	 * @see SwatState::setState()
-	 *
-	 * @throws SwatException if the given state is not an array
-	 */
-	public function setState($state)
-	{
-		if (is_array($state))
-			$this->selected_tag_array = $state;
-		else
-			throw new SwatException('State must be an array');
-	}
-
-
-
-
-	/**
-	 * Gets the id attribute of the XHTML element displayed by this widget
-	 * that should receive focus
-	 *
-	 * @return string the id attribute of the XHTML element displayed by this
-	 *                 widget that should receive focus or null if there is
-	 *                 no such element.
-	 *
-	 * @see SwatWidget::getFocusableHtmlId()
-	 */
-	public function getFocusableHtmlId()
-	{
-		return ($this->visible) ? $this->id.'_value' : null;
-	}
-
-
-
-
-	/**
-	 * Sets the array of tags that may be selected by this tag entry control
-	 *
-	 * @param array $tag_array the array of tags that may be selected by
-	 *                                  this tag entry control.
-	 */
-	public function setTagArray(array $tag_array)
-	{
-		$this->tag_array = $tag_array;
-	}
-
-
-
-
-	/**
-	 * Sets the array of tags that are pre-selected for this photo
-	 *
-	 * @param array $tag_array the array of tags that appear
-	 *                       pre-selected for this entry widget.
-	 */
-	public function setSelectedTagArray(array $tag_array)
-	{
-		$this->selected_tag_array = $tag_array;
-	}
-
-
-
-
-	/**
-	 * Gets the array of tags selected by this tag entry control
-	 *
-	 * Call this method after processing this control to get the tags selected
-	 * by the user.
-	 *
-	 * @return array the array of tags selected by this tag entry
-	 *                         control.
-	 */
-	public function getSelectedTagArray()
-	{
-		return $this->selected_tag_array;
-	}
-
-
-
-
-	/**
-	 * Gets the array of CSS classes that are applied to this tag entry
-	 *
-	 * @return array the array of CSS classes that are applied to this
-	 *                tag entry.
-	 */
-	protected function getCSSClassNames()
-	{
-		$classes = ['site-tag-entry'];
-		$classes = array_merge($classes, parent::getCSSClassNames());
-		return $classes;
-	}
-
-
-
-
-	/**
-	 * Gets the inline JavaScript for this tag entry control
-	 *
-	 * @return string the inline JavaScript for this tag entry control.
-	 */
-	protected function getInlineJavaScript()
-	{
-		static $shown = false;
-
-		if (!$shown) {
-			$javascript = $this->getInlineJavaScriptTranslations();
-			$shown = true;
-		} else {
-			$javascript = '';
-		}
-
-		if ($this->json_server === null) {
-			$tag_array = [];
-			foreach ($this->tag_array as $tag => $title) {
-				$tag_array[] = sprintf("\n[%s, %s]",
-					SwatString::quoteJavaScriptString(
-						SwatString::minimizeEntities($title)),
-					SwatString::quoteJavaScriptString(
-						SwatString::minimizeEntities($tag)));
-			}
-
-			$data_store = sprintf('new YAHOO.widget.DS_JSArray([%s])',
-				implode(',', $tag_array));
-		} else {
-			$data_store = sprintf('new YAHOO.widget.DS_XHR(%s,
+    /*
+     * Whether or not to allow adding new tags
+     *
+     * @var boolean
+     */
+    public $allow_adding_tags = true;
+
+    /*
+     * Maximum number of tags
+     *
+     * @var integer
+     */
+    public $maximum_tags;
+
+    /*
+     * JSON server
+     *
+     * A JSON server that returns an array of name => title pairs based on the
+     * 'query' GET variable. If not specified, all tag values must be specified
+     * using the $tag_array property.
+     */
+    public $json_server;
+
+    /*
+     * Whether or not to display the tag shortname in brackets
+     *
+     * @var boolean
+     */
+    public $show_shortname = true;
+
+    /**
+     * An associative array of tags for the tag flydown in the form of
+     * name => title.
+     *
+     * @var array
+     */
+    protected $tag_array;
+
+    /**
+     * An array of tag names selected by this tag entry control.
+     *
+     * @var array
+     */
+    protected $selected_tag_array = [];
+
+    /**
+     * Creates a new tag entry control.
+     *
+     * @param string $id a non-visible unique id for this widget
+     *
+     * @see SwatWidget::__construct()
+     */
+    public function __construct($id = null)
+    {
+        parent::__construct($id);
+
+        $this->requires_id = true;
+
+        $yui = new SwatYUI(['autocomplete']);
+        $this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
+
+        $this->addJavaScript(
+            'packages/swat/javascript/swat-z-index-manager.js'
+        );
+
+        $this->addJavaScript('packages/site/javascript/site-tag-entry.js');
+        $this->addStyleSheet('packages/site/styles/site-tag-entry.css');
+    }
+
+    /**
+     * Displays this tag entry control.
+     */
+    public function display()
+    {
+        if (!$this->visible) {
+            return;
+        }
+
+        SwatWidget::display();
+
+        $div_tag = new SwatHtmlTag('div');
+        $div_tag->class = $this->getCSSClassString();
+        $div_tag->id = $this->id;
+        $div_tag->open();
+
+        $autocomplete_div = new SwatHtmlTag('div');
+        $autocomplete_div->class = 'site-tag-autocomplete-container';
+        $autocomplete_div->open();
+
+        $input_tag = new SwatHtmlTag('input');
+        $input_tag->name = $this->id . '_value';
+        $input_tag->class = 'swat-entry';
+        $input_tag->id = $this->id . '_value';
+
+        if (!$this->isSensitive()) {
+            $input_tag->disabled = 'disabled';
+        }
+
+        $input_tag->display();
+
+        $container_tag = new SwatHtmlTag('div');
+        $container_tag->class = 'site-tag-container';
+        $container_tag->id = $this->id . '_container';
+        $container_tag->setContent('');
+        $container_tag->display();
+
+        $autocomplete_div->close();
+        $div_tag->close();
+
+        Swat::displayInlineJavaScript($this->getInlineJavaScript());
+    }
+
+    /**
+     * Processes this tag entry control.
+     *
+     * If a validation error occurs, an error message is attached to this
+     * widget.
+     *
+     * @throws SwatException if no database connection is set on this tag
+     *                       entry control
+     */
+    public function process()
+    {
+        parent::process();
+
+        $this->selected_tag_array = [];
+
+        $data = &$this->getForm()->getFormData();
+        $new_key = $this->id . '_new';
+        if (isset($data[$new_key]) && is_array($data[$new_key])) {
+            foreach ($data[$new_key] as $index => $new_tag) {
+                $this->insertTag($new_tag, $index);
+            }
+        }
+
+        if (isset($data[$this->id]) && is_array($data[$this->id])) {
+            $tag_strings = $data[$this->id];
+
+            foreach ($tag_strings as $string) {
+                if (isset($this->tag_array[$string])) {
+                    $this->selected_tag_array[$string] =
+                        $this->tag_array[$string];
+                } else {
+                    $this->selected_tag_array[$string] = $string;
+                }
+            }
+        }
+
+        if ($this->required && count($this->selected_tag_array) == 0) {
+            $message = Swat::_('The %s field is required.');
+            $this->addMessage(new SwatMessage($message, SwatMessage::ERROR));
+        }
+    }
+
+    /**
+     * Gets the current state of this tag entry control.
+     *
+     * @return bool the current state of this tag entry control
+     *
+     * @see SwatState::getState()
+     */
+    public function getState()
+    {
+        return $this->getSelectedTagArray();
+    }
+
+    /**
+     * Sets the current state of this tag entry control.
+     *
+     * @param array $state the new state of this tag entry control
+     *
+     * @see SwatState::setState()
+     *
+     * @throws SwatException if the given state is not an array
+     */
+    public function setState($state)
+    {
+        if (is_array($state)) {
+            $this->selected_tag_array = $state;
+        } else {
+            throw new SwatException('State must be an array');
+        }
+    }
+
+    /**
+     * Gets the id attribute of the XHTML element displayed by this widget
+     * that should receive focus.
+     *
+     * @return string the id attribute of the XHTML element displayed by this
+     *                widget that should receive focus or null if there is
+     *                no such element
+     *
+     * @see SwatWidget::getFocusableHtmlId()
+     */
+    public function getFocusableHtmlId()
+    {
+        return ($this->visible) ? $this->id . '_value' : null;
+    }
+
+    /**
+     * Sets the array of tags that may be selected by this tag entry control.
+     *
+     * @param array $tag_array the array of tags that may be selected by
+     *                         this tag entry control
+     */
+    public function setTagArray(array $tag_array)
+    {
+        $this->tag_array = $tag_array;
+    }
+
+    /**
+     * Sets the array of tags that are pre-selected for this photo.
+     *
+     * @param array $tag_array the array of tags that appear
+     *                         pre-selected for this entry widget
+     */
+    public function setSelectedTagArray(array $tag_array)
+    {
+        $this->selected_tag_array = $tag_array;
+    }
+
+    /**
+     * Gets the array of tags selected by this tag entry control.
+     *
+     * Call this method after processing this control to get the tags selected
+     * by the user.
+     *
+     * @return array the array of tags selected by this tag entry
+     *               control
+     */
+    public function getSelectedTagArray()
+    {
+        return $this->selected_tag_array;
+    }
+
+    /**
+     * Gets the array of CSS classes that are applied to this tag entry.
+     *
+     * @return array the array of CSS classes that are applied to this
+     *               tag entry
+     */
+    protected function getCSSClassNames()
+    {
+        $classes = ['site-tag-entry'];
+
+        return array_merge($classes, parent::getCSSClassNames());
+    }
+
+    /**
+     * Gets the inline JavaScript for this tag entry control.
+     *
+     * @return string the inline JavaScript for this tag entry control
+     */
+    protected function getInlineJavaScript()
+    {
+        static $shown = false;
+
+        if (!$shown) {
+            $javascript = $this->getInlineJavaScriptTranslations();
+            $shown = true;
+        } else {
+            $javascript = '';
+        }
+
+        if ($this->json_server === null) {
+            $tag_array = [];
+            foreach ($this->tag_array as $tag => $title) {
+                $tag_array[] = sprintf(
+                    "\n[%s, %s]",
+                    SwatString::quoteJavaScriptString(
+                        SwatString::minimizeEntities($title)
+                    ),
+                    SwatString::quoteJavaScriptString(
+                        SwatString::minimizeEntities($tag)
+                    )
+                );
+            }
+
+            $data_store = sprintf(
+                'new YAHOO.widget.DS_JSArray([%s])',
+                implode(',', $tag_array)
+            );
+        } else {
+            $data_store = sprintf(
+                'new YAHOO.widget.DS_XHR(%s,
 				 ["ResultSet.Result", "Title", "Shortname"])',
-				SwatString::quoteJavaScriptString($this->json_server));
-		}
+                SwatString::quoteJavaScriptString($this->json_server)
+            );
+        }
 
-		$selected_tag_array = [];
-		foreach ($this->selected_tag_array as $tag => $title) {
-			$selected_tag_array[] = sprintf("\n[%s, %s]",
-				SwatString::quoteJavaScriptString(
-					SwatString::minimizeEntities($title)),
-				SwatString::quoteJavaScriptString(
-					SwatString::minimizeEntities($tag)));
-		}
+        $selected_tag_array = [];
+        foreach ($this->selected_tag_array as $tag => $title) {
+            $selected_tag_array[] = sprintf(
+                "\n[%s, %s]",
+                SwatString::quoteJavaScriptString(
+                    SwatString::minimizeEntities($title)
+                ),
+                SwatString::quoteJavaScriptString(
+                    SwatString::minimizeEntities($tag)
+                )
+            );
+        }
 
-		$javascript.= sprintf("var %1\$s_obj = new %2\$s(".
-			"'%1\$s', %3\$s, [%4\$s], %5\$s);",
-			$this->id,
-			$this->getJavaScriptClassName(),
-			$data_store,
-			implode(',', $selected_tag_array),
-			$this->allow_adding_tags ? 'true' : 'false');
+        $javascript .= sprintf(
+            'var %1$s_obj = new %2$s(' .
+            "'%1\$s', %3\$s, [%4\$s], %5\$s);",
+            $this->id,
+            $this->getJavaScriptClassName(),
+            $data_store,
+            implode(',', $selected_tag_array),
+            $this->allow_adding_tags ? 'true' : 'false'
+        );
 
-		if ($this->maximum_tags !== null) {
-			$javascript.= sprintf("\n%s_obj.maximum_tags = %d;",
-				$this->id, $this->maximum_tags);
-		}
+        if ($this->maximum_tags !== null) {
+            $javascript .= sprintf(
+                "\n%s_obj.maximum_tags = %d;",
+                $this->id,
+                $this->maximum_tags
+            );
+        }
 
-		if (!$this->show_shortname) {
-			$javascript.= sprintf("\n%s_obj.show_shortname = false;",
-				$this->id);
-		}
+        if (!$this->show_shortname) {
+            $javascript .= sprintf(
+                "\n%s_obj.show_shortname = false;",
+                $this->id
+            );
+        }
 
-		return $javascript;
-	}
+        return $javascript;
+    }
 
+    /**
+     * Gets translatable string resources for the JavaScript object for
+     * this widget.
+     *
+     * @return string translatable JavaScript string resources for this widget
+     */
+    protected function getInlineJavaScriptTranslations()
+    {
+        $remove_text = SwatString::quoteJavaScriptString(Site::_('remove'));
+        $new_text = SwatString::quoteJavaScriptString(Site::_('(new)'));
+        $add_text = SwatString::quoteJavaScriptString(Site::_('Add Tag'));
 
+        return "SiteTagEntry.remove_text = {$remove_text};\n" .
+            "SiteTagEntry.new_text    = {$new_text};\n" .
+            "SiteTagEntry.add_text    = {$add_text};\n";
+    }
 
+    protected function getJavaScriptClassName()
+    {
+        return 'SiteTagEntry';
+    }
 
-	/**
-	 * Gets translatable string resources for the JavaScript object for
-	 * this widget
-	 *
-	 * @return string translatable JavaScript string resources for this widget.
-	 */
-	protected function getInlineJavaScriptTranslations()
-	{
-		$remove_text = SwatString::quoteJavaScriptString(Site::_('remove'));
-		$new_text    = SwatString::quoteJavaScriptString(Site::_('(new)'));
-		$add_text    = SwatString::quoteJavaScriptString(Site::_('Add Tag'));
-
-		return "SiteTagEntry.remove_text = {$remove_text};\n".
-			"SiteTagEntry.new_text    = {$new_text};\n".
-			"SiteTagEntry.add_text    = {$add_text};\n";
-	}
-
-
-
-
-	protected function getJavaScriptClassName()
-	{
-		return 'SiteTagEntry';
-	}
-
-
-
-
-	/**
-	 * Creates a new tag
-	 */
-	abstract protected function insertTag($title, $index);
-
-
+    /**
+     * Creates a new tag.
+     *
+     * @param mixed $title
+     * @param mixed $index
+     */
+    abstract protected function insertTag($title, $index);
 }
-
-?>

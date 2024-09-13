@@ -2,13 +2,12 @@
 #  - phpstan-baseline.neon
 
 parameters:
-  phpVersion: 80200
+  phpVersion: 80100
   level: 0
   paths:
-#    - conversion
-    - include
-#    - sql
-    - system
+    - po
+    - Site
+    - tests
     - www
   editorUrl: '%%file%%:%%line%%'
   editorUrlTitle: '%%file%%:%%line%%'

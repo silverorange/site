@@ -56,9 +56,9 @@
 		"symfony/mailer": "^5.4"
 	},
 	"require-dev": {
+		"friendsofphp/php-cs-fixer": "^3.64",
 		"phpstan/phpstan": "^1.12",
-		"rector/rector": "^1.2",
-		"silverorange/coding-standard": "^1.0.0"
+		"rector/rector": "^1.2"
 	},
 	"suggest": {
 		"ext-amqp": "Allows some operations to use a message queue system.",
@@ -73,9 +73,10 @@
 		"silverorange/xml_rpc2": "Enables XML-RPC server pages."
 	},
 	"scripts": {
-		"lint": "./vendor/bin/phpcs",
-		"post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src",
-		"post-update-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src"
+		"lint": "./vendor/bin/php-cs-fixer check -v",
+		"lint:fix": "./vendor/bin/php-cs-fixer fix -v",
+		"rector": "./vendor/bin/rector --dry-run",
+		"rector:fix": "./vendor/bin/rector"
 	},
 	"autoload": {
 		"classmap": [ "Site/" ]

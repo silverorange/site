@@ -1,83 +1,72 @@
 <?php
 
 /**
- * An attachment set
+ * An attachment set.
  *
- * @package   Site
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAttachmentSet extends SwatDBDataObject
 {
+    /**
+     * The unique identifier of this type.
+     *
+     * @var int
+     */
+    public $id;
 
+    /**
+     * The title of this type.
+     *
+     * @var string
+     */
+    public $title;
 
-	/**
-	 * The unique identifier of this type
-	 *
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * The shortname of this type.
+     *
+     * @var string
+     */
+    public $shortname;
 
-	/**
-	 * The title of this type
-	 *
-	 * @var string
-	 */
-	public $title;
+    /**
+     * @var bool
+     */
+    public $use_cdn;
 
-	/**
-	 * The shortname of this type
-	 *
-	 * @var string
-	 */
-	public $shortname;
+    /**
+     * @var bool
+     */
+    public $obfuscate_filename;
 
-	/**
-	 * @var boolean
-	 */
-	public $use_cdn;
+    public function loadByShortname($shortname)
+    {
+        $this->checkDB();
 
-	/**
-	 * @var boolean
-	 */
-	public $obfuscate_filename;
+        $found = false;
 
+        $sql = 'select * from %s where shortname = %s';
 
+        $sql = sprintf(
+            $sql,
+            $this->table,
+            $this->db->quote($shortname, 'text')
+        );
 
+        $row = SwatDB::queryRow($this->db, $sql);
 
-	public function loadByShortname($shortname)
-	{
-		$this->checkDB();
+        if ($row !== null) {
+            $this->initFromRow($row);
+            $this->generatePropertyHashes();
+            $found = true;
+        }
 
-		$found = false;
+        return $found;
+    }
 
-		$sql = 'select * from %s where shortname = %s';
-
-		$sql = sprintf($sql,
-			$this->table,
-			$this->db->quote($shortname, 'text'));
-
-		$row = SwatDB::queryRow($this->db, $sql);
-
-		if ($row !== null) {
-			$this->initFromRow($row);
-			$this->generatePropertyHashes();
-			$found = true;
-		}
-
-		return $found;
-	}
-
-
-
-
-	protected function init()
-	{
-		$this->table = 'AttachmentSet';
-		$this->id_field = 'integer:id';
-	}
-
-
+    protected function init()
+    {
+        $this->table = 'AttachmentSet';
+        $this->id_field = 'integer:id';
+    }
 }
-
-?>

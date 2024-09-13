@@ -2,154 +2,137 @@
 
 /**
  * Page to generate a new password for an account and email the new password
- * to the account holder
+ * to the account holder.
  *
- * @package   Site
  * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountEmailPassword extends AdminConfirmation
 {
+    /**
+     * @var SiteAccount
+     */
+    protected $account;
 
+    // init phase
 
-	/**
-	 * @var SiteAccount
-	 */
-	protected $account;
+    protected function initInternal()
+    {
+        $this->ui->mapClassPrefixToPath('Site', 'Site');
+        $this->ui->loadFromXML($this->getUiXml());
 
+        $this->id = SiteApplication::initVar('id');
 
+        $this->account = $this->getAccount();
+    }
 
-	// init phase
+    protected function getAccount()
+    {
+        if ($this->account === null) {
+            $account_class = SwatDBClassMap::get(SiteAccount::class);
 
+            $this->account = new $account_class();
+            $this->account->setDatabase($this->app->db);
 
-	protected function initInternal()
-	{
-		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->getUiXml());
+            if (!$this->account->load($this->id)) {
+                throw new AdminNotFoundException(sprintf(
+                    Site::_('A account with an id of ‘%d’ does not exist.'),
+                    $this->id
+                ));
+            }
 
-		$this->id = SiteApplication::initVar('id');
+            $instance_id = $this->app->getInstanceId();
+            if ($instance_id !== null) {
+                if ($this->account->instance->id !== $instance_id) {
+                    throw new AdminNotFoundException(sprintf(Store::_(
+                        'Incorrect instance for account ‘%d’.'
+                    ), $this->id));
+                }
+            }
+        }
 
-		$this->account = $this->getAccount();
-	}
+        return $this->account;
+    }
 
+    // process phase
 
+    protected function processResponse()
+    {
+        $form = $this->ui->getWidget('confirmation_form');
 
+        if ($form->button->id == 'yes_button') {
+            $this->account->generatePassword($this->app);
+            $this->account->sendGeneratePasswordMailMessage($this->app);
 
-	protected function getAccount()
-	{
-		if ($this->account === null) {
-			$account_class = SwatDBClassMap::get(SiteAccount::class);
+            $message = new SwatMessage(sprintf(
+                Site::_('%1$s’s password has been reset and has been emailed ' .
+                'to <a href="mailto:%2$s">%2$s</a>.'),
+                SwatString::minimizeEntities($this->account->getFullname()),
+                SwatString::minimizeEntities($this->account->email)
+            ));
 
-			$this->account = new $account_class();
-			$this->account->setDatabase($this->app->db);
+            $message->content_type = 'text/xml';
 
-			if (!$this->account->load($this->id)) {
-				throw new AdminNotFoundException(sprintf(
-					Site::_('A account with an id of ‘%d’ does not exist.'),
-					$this->id));
-			}
+            $this->app->messages->add($message);
+        }
+    }
 
-			$instance_id = $this->app->getInstanceId();
-			if ($instance_id !== null) {
-				if ($this->account->instance->id !== $instance_id) {
-					throw new AdminNotFoundException(sprintf(Store::_(
-						'Incorrect instance for account ‘%d’.'), $this->id));
-				}
-			}
-		}
+    // build phase
 
-		return $this->account;
-	}
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
+        $form = $this->ui->getWidget('confirmation_form');
+        $form->addHiddenField('id', $this->id);
 
+        $this->title = $this->account->getFullname();
 
-	// process phase
+        $this->navbar->createEntry(
+            $this->account->getFullname(),
+            sprintf('Account/Details?id=%s', $this->id)
+        );
 
+        $this->navbar->createEntry(
+            Site::_('Email New Password Confirmation')
+        );
 
-	protected function processResponse()
-	{
-		$form = $this->ui->getWidget('confirmation_form');
+        $message = $this->ui->getWidget('confirmation_message');
+        $message->content = $this->getConfirmationMessage();
+        $message->content_type = 'text/xml';
 
-		if ($form->button->id == 'yes_button') {
-			$this->account->generatePassword($this->app);
-			$this->account->sendGeneratePasswordMailMessage($this->app);
+        $this->ui->getWidget('yes_button')->title =
+            Site::_('Reset & Email Password');
+    }
 
-			$message = new SwatMessage(sprintf(
-				Site::_('%1$s’s password has been reset and has been emailed '.
-				'to <a href="mailto:%2$s">%2$s</a>.'),
-				SwatString::minimizeEntities($this->account->getFullname()),
-				SwatString::minimizeEntities($this->account->email)));
+    protected function getConfirmationMessage()
+    {
+        ob_start();
 
-			$message->content_type = 'text/xml';
+        $confirmation_title = new SwatHtmlTag('h3');
 
-			$this->app->messages->add($message);
-		}
-	}
+        $confirmation_title->setContent(
+            sprintf(
+                Site::_('Are you sure you want to reset the password for %s?'),
+                $this->account->getFullname()
+            )
+        );
 
+        $confirmation_title->display();
 
+        $email_anchor = new SwatHtmlTag('a');
+        $email_anchor->href = sprintf('mailto:%s', $this->account->email);
+        $email_anchor->setContent($this->account->email);
 
-	// build phase
+        ob_start();
+        $email_anchor->display();
+        $email_tag = ob_get_clean();
 
+        printf(
+            Site::_('A new password will be generated and sent to %s.'),
+            $email_tag
+        );
 
-	protected function buildInternal()
-	{
-		parent::buildInternal();
-
-		$form = $this->ui->getWidget('confirmation_form');
-		$form->addHiddenField('id', $this->id);
-
-		$this->title = $this->account->getFullname();
-
-		$this->navbar->createEntry($this->account->getFullname(),
-			sprintf('Account/Details?id=%s', $this->id));
-
-		$this->navbar->createEntry(
-			Site::_('Email New Password Confirmation')
-		);
-
-		$message = $this->ui->getWidget('confirmation_message');
-		$message->content = $this->getConfirmationMessage();
-		$message->content_type = 'text/xml';
-
-		$this->ui->getWidget('yes_button')->title =
-			Site::_('Reset & Email Password');
-	}
-
-
-
-
-	protected function getConfirmationMessage()
-	{
-		ob_start();
-
-		$confirmation_title = new SwatHtmlTag('h3');
-
-		$confirmation_title->setContent(
-			sprintf(
-				Site::_('Are you sure you want to reset the password for %s?'),
-				$this->account->getFullname()
-			)
-		);
-
-		$confirmation_title->display();
-
-		$email_anchor = new SwatHtmlTag('a');
-		$email_anchor->href = sprintf('mailto:%s', $this->account->email);
-		$email_anchor->setContent($this->account->email);
-
-		ob_start();
-		$email_anchor->display();
-		$email_tag = ob_get_clean();
-
-		printf(
-			Site::_('A new password will be generated and sent to %s.'),
-			$email_tag
-		);
-
-		return ob_get_clean();
-	}
-
-
+        return ob_get_clean();
+    }
 }
-
-?>
