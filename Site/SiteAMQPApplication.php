@@ -103,7 +103,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 	public function __invoke()
 	{
 		if (extension_loaded('pcntl')) {
-			pcntl_signal(SIGTERM, array($this, 'handleSignal'));
+			pcntl_signal(SIGTERM, [$this, 'handleSignal']);
 		}
 
 		$this->initModules();
@@ -122,10 +122,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 				try {
 					$this->logger->debug(
 						Site::_('Connecting worker to AMQP server {address}:{port} ... '),
-						array(
-							'address' => $this->cli->args['address'],
-							'port'    => $this->cli->options['port']
-						)
+						['address' => $this->cli->args['address'], 'port'    => $this->cli->options['port']]
 					);
 					$connection->connect();
 					$this->channel = new AMQPChannel($connection);
@@ -141,9 +138,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 						$this->logger->error(
 							'Could not connect to AMQP server on host '.
 							'{host}.'.PHP_EOL,
-							array(
-								'host' => $this->cli->args['address'],
-							)
+							['host' => $this->cli->args['address']]
 						);
 					} else {
 						$this->logger->error($e->getMessage().PHP_EOL);

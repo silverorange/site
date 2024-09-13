@@ -23,14 +23,14 @@ class SiteTimerModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	private $checkpoints = array();
+	private $checkpoints = [];
 
 	/**
 	 * A set of started timer checkpoints used by this module
 	 *
 	 * @var array
 	 */
-	private $started_checkpoints = array();
+	private $started_checkpoints = [];
 
 	// }}}
 	// {{{ public function init()
@@ -149,7 +149,7 @@ class SiteTimerModule extends SiteApplicationModule
 	protected function reset()
 	{
 		$this->start_time = microtime(true) * 1000;
-		$this->checkpoints = array();
+		$this->checkpoints = [];
 	}
 
 	// }}}

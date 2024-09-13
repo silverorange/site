@@ -53,18 +53,14 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 	// }}}
 	// {{{ private properties
 
-	private static $media_type_cache = array();
+	private static $media_type_cache = [];
 
 	// }}}
 	// {{{ public function getHumanFileType()
 
 	public function getHumanFileType()
 	{
-		$map = array(
-			'video/mp4'  => Site::_('MP4'),
-			'audio/mp4'  => Site::_('M4A'),
-			'audio/mpeg' => Site::_('MP3'),
-		);
+		$map = ['video/mp4'  => Site::_('MP4'), 'audio/mp4'  => Site::_('M4A'), 'audio/mpeg' => Site::_('MP3')];
 
 		if (!array_key_exists($this->media_type->mime_type, $map)) {
 			throw new SiteException(sprintf(
@@ -152,9 +148,7 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 
 	protected function getSerializablePrivateProperties()
 	{
-		return array_merge(parent::getSerializablePrivateProperties(), array(
-			'media_type',
-		));
+		return array_merge(parent::getSerializablePrivateProperties(), ['media_type']);
 	}
 
 	// }}}

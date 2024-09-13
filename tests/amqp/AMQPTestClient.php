@@ -11,11 +11,7 @@ class AMQPTestClient extends SiteCommandLineApplication
 		$this->initModules();
 		$this->parseCommandLineArguments();
 
-		$strings = array(
-			'test',
-			'abcdefg',
-			'fail-test',
-		);
+		$strings = ['test', 'abcdefg', 'fail-test'];
 
 		$this->debug("Async test:\n", true);
 
@@ -46,10 +42,7 @@ class AMQPTestClient extends SiteCommandLineApplication
 
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'config' => 'SiteConfigModule',
-			'amqp'   => 'SiteAMQPModule',
-		);
+		return ['config' => 'SiteConfigModule', 'amqp'   => 'SiteAMQPModule'];
 	}
 
 	// }}}

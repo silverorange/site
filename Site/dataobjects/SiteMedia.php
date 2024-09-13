@@ -243,7 +243,7 @@ class SiteMedia extends SwatDBDataObject
 
 	public function getMimeTypes()
 	{
-		$types = array();
+		$types = [];
 		foreach ($this->encoding_bindings as $binding) {
 			$mime_type = $binding->media_type->mime_type;
 			$types[$mime_type] = $mime_type;
@@ -258,7 +258,7 @@ class SiteMedia extends SwatDBDataObject
 	public function getValidMediaTypes()
 	{
 		$media_set = $this->getMediaSet();
-		$types = array();
+		$types = [];
 		foreach ($media_set->encodings as $encoding) {
 			$types[$encoding->default_type->id] = $encoding->default_type;
 		}
@@ -547,10 +547,7 @@ class SiteMedia extends SwatDBDataObject
 
 	protected function getSerializableSubDataObjects()
 	{
-		return array(
-			'media_set',
-			'encoding_bindings',
-		);
+		return ['media_set', 'encoding_bindings'];
 	}
 
 	// }}}
@@ -558,9 +555,7 @@ class SiteMedia extends SwatDBDataObject
 
 	protected function getSerializablePrivateProperties()
 	{
-		return array_merge(parent::getSerializablePrivateProperties(), array(
-			'media_set_shortname',
-		));
+		return array_merge(parent::getSerializablePrivateProperties(), ['media_set_shortname']);
 	}
 
 	// }}}
@@ -608,7 +603,7 @@ class SiteMedia extends SwatDBDataObject
 	 */
 	protected function getLocalFilenamesToDelete()
 	{
-		$filenames = array();
+		$filenames = [];
 
 		foreach ($this->media_set->encodings as $encoding) {
 			$binding = $this->getEncodingBinding($encoding->shortname);
@@ -663,13 +658,11 @@ class SiteMedia extends SwatDBDataObject
 			$task->media    = $this;
 			$task->encoding = $encoding;
 			$task->override_http_headers = serialize(
-				array(
-					'Content-Disposition' => sprintf(
+				['Content-Disposition' => sprintf(
 						'attachment; filename="%s"',
 						$this->getContentDispositionFilename(
 							$encoding->shortname)
-					)
-				)
+					)]
 			);
 		} else {
 			$task->file_path = $this->getUriSuffix($encoding->shortname);
@@ -758,11 +751,7 @@ class SiteMedia extends SwatDBDataObject
 
 	public function getFileDirectory($encoding_shortname)
 	{
-		$items = array(
-			$this->getFileBase(),
-			$this->media_set->shortname,
-			$encoding_shortname,
-		);
+		$items = [$this->getFileBase(), $this->media_set->shortname, $encoding_shortname];
 
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
@@ -772,10 +761,7 @@ class SiteMedia extends SwatDBDataObject
 
 	public function getFilePath($encoding_shortname)
 	{
-		$items = array(
-			$this->getFileDirectory($encoding_shortname),
-			$this->getFilename($encoding_shortname),
-		);
+		$items = [$this->getFileDirectory($encoding_shortname), $this->getFilename($encoding_shortname)];
 
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
@@ -807,8 +793,8 @@ class SiteMedia extends SwatDBDataObject
 		$filename = iconv('UTF-8', 'ASCII//TRANSLIT', $filename);
 
 		// Format the filename according to the qtext syntax in RFC 822
-		$filename = str_replace(array("\\", "\r", "\""),
-			array("\\\\", "\\\r", "\\\""), $filename);
+		$filename = str_replace(["\\", "\r", "\""],
+			["\\\\", "\\\r", "\\\""], $filename);
 
 		return $filename;
 	}
@@ -818,7 +804,7 @@ class SiteMedia extends SwatDBDataObject
 
 	public function getHttpHeaders($encoding_shortname)
 	{
-		$headers = array();
+		$headers = [];
 
 		// Set a "never-expire" policy with a far future max age (10 years)
 		// as suggested in

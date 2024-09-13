@@ -47,7 +47,7 @@ class SiteConcentrateFileFinder
 
 	protected function getComposerDataFiles()
 	{
-		$files = array();
+		$files = [];
 
 		$www_path = $this->getWwwPath();
 		$base_path = dirname($www_path).DIRECTORY_SEPARATOR.'vendor';
@@ -98,7 +98,7 @@ class SiteConcentrateFileFinder
 
 	protected function getSiteDataFiles()
 	{
-		$files = array();
+		$files = [];
 
 		$finder = new Concentrate_DataProvider_FileFinderDirectory(
 			$this->getRootPath().DIRECTORY_SEPARATOR.'dependencies'
@@ -116,7 +116,7 @@ class SiteConcentrateFileFinder
 
 	protected function getDevelopmentDataFiles($include_dir)
 	{
-		$files = array();
+		$files = [];
 
 		$dependency_dir = $include_dir.DIRECTORY_SEPARATOR.'dependencies';
 
@@ -140,7 +140,7 @@ class SiteConcentrateFileFinder
 	{
 		$key = $filename;
 
-		$matches = array();
+		$matches = [];
 		$expression = '!packages/(.*)?/.*?/dependencies/(.*)?$!';
 		if (preg_match($expression, $filename, $matches) === 1) {
 			$key = mb_strtolower($matches[1]).'/'.$matches[2];

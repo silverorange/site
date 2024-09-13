@@ -12,7 +12,7 @@ abstract class SiteJSONPage extends SitePage
 	public function __construct(
 		SiteApplication $app,
 		SiteLayout $layout = null,
-		array $arguments = array()
+		array $arguments = []
 	) {
 		parent::__construct($app, $layout, $arguments);
 
@@ -44,10 +44,7 @@ abstract class SiteJSONPage extends SitePage
 
 	protected function getStatus($code = 'ok', $message = '')
 	{
-		return array(
-			'code'    => $code,
-			'message' => $message,
-		);
+		return ['code'    => $code, 'message' => $message];
 	}
 
 	// }}}

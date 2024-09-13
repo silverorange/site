@@ -47,7 +47,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 	 *
 	 * @var array
 	 */
-	protected $tasks = array();
+	protected $tasks = [];
 
 	// }}}
 	// {{{ public function setAttachmentFileBase()

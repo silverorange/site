@@ -24,7 +24,7 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 	/**
 	 * @var array of SitePrivateDataDeleter
 	 */
-	protected $deleters = array();
+	protected $deleters = [];
 
 	/**
 	 * @var boolean
@@ -48,7 +48,7 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 	{
 		parent::__construct($id, $config_filename, $title, $documentation);
 
-		$instance = new SiteCommandLineArgument(array('-i', '--instance'),
+		$instance = new SiteCommandLineArgument(['-i', '--instance'],
 			'setInstance', 'Optional. Sets the site instance for which to '.
 			'run this application.');
 
@@ -57,11 +57,11 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 
 		$this->addCommandLineArgument($instance);
 
-		$debug = new SiteCommandLineArgument(array('-D', '--debug'),
+		$debug = new SiteCommandLineArgument(['-D', '--debug'],
 			'setDebug', Site::_('Turns on debugging mode which causes '.
 			'output for each action to be sent to stdout.'));
 
-		$dry_run = new SiteCommandLineArgument(array('--dry-run'),
+		$dry_run = new SiteCommandLineArgument(['--dry-run'],
 			'setDryRun', Site::_('No private data is actually deleted. Use '.
 			'with --debug to see what data will be deleted.'));
 

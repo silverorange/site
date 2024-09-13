@@ -20,11 +20,11 @@ class SiteImageLazyWrapper extends SiteImageWrapper
 
 	public function __construct(
 		MDB2_Reslt_Common $rs = null,
-		array $options = array()
+		array $options = []
 	) {
 		$options = array_merge(
 			$options,
-			array('lazy_load' => true)
+			['lazy_load' => true]
 		);
 
 		parent::__construct($rs, $options);

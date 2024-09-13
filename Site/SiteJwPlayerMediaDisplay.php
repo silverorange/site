@@ -36,10 +36,10 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	// {{{ protected properties
 
 	protected $media;
-	protected $sources = array();
-	protected $images = array();
+	protected $sources = [];
+	protected $images = [];
 	protected $session;
-	protected $aspect_ratio = array();
+	protected $aspect_ratio = [];
 	protected $skin;
 	protected $stretching;
 	protected $vtt_uri;
@@ -63,7 +63,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	{
 		parent::__construct();
 
-		$yui = new SwatYUI(array('swf', 'event', 'cookie'));
+		$yui = new SwatYUI(['swf', 'event', 'cookie']);
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavascript('packages/jwplayer/jwplayer.js');
@@ -115,7 +115,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function setAspectRatio($width, $height)
 	{
-		$this->aspect_ratio = array('width' => $width, 'height' => $height);
+		$this->aspect_ratio = ['width' => $width, 'height' => $height];
 	}
 
 	// }}}
@@ -123,12 +123,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function setStretching($fit)
 	{
-		$valid_fits = array(
-			'none',
-			'exactfit',
-			'uniform',
-			'fill',
-		);
+		$valid_fits = ['none', 'exactfit', 'uniform', 'fill'];
 
 		if ($fit !== null && $fit !== '' && !in_array($fit, $valid_fits)) {
 			throw new SwatException('Stretching not valid');
@@ -142,7 +137,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function addSource($uri, $width = '', $label = '')
 	{
-		$source          = array();
+		$source          = [];
 		$source['uri']   = $uri;
 		$source['width'] = $width;
 		$source['label'] = $label;
@@ -155,7 +150,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	public function addImage($uri, $width)
 	{
-		$image          = array();
+		$image          = [];
 		$image['uri']   = $uri;
 		$image['width'] = $width;
 		$this->images[] = $image;
@@ -505,7 +500,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 
 	protected function getBrowserNotSupportedMessage($mime_types)
 	{
-		$codecs = array();
+		$codecs = [];
 		foreach ($mime_types as $type) {
 			$exploded_type = explode('/', $type);
 			$codecs[] = array_pop($exploded_type);

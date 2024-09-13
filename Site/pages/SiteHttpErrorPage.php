@@ -128,21 +128,18 @@ class SiteHttpErrorPage extends SitePage
 
 	protected function getSuggestions()
 	{
-		return array(
-			'contact' => SwatString::minimizeEntities(
+		return ['contact' => SwatString::minimizeEntities(
 				Site::_(
 					'If you followed a link from our site or elsewhere, '.
 					'please contact us and let us know where you came from '.
 					'so we can do our best to fix it.'
 				)
-			),
-			'typo' => SwatString::minimizeEntities(
+			), 'typo' => SwatString::minimizeEntities(
 				Site::_(
 					'If you typed in the address, please double check the '.
 					'spelling.'
 				)
-			),
-		);
+			)];
 	}
 
 	// }}}

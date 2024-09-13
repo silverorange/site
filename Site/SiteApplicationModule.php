@@ -58,7 +58,7 @@ abstract class SiteApplicationModule extends SiteObject
 	 */
 	public function depends()
 	{
-		return array();
+		return [];
 	}
 
 	// }}}

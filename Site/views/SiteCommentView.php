@@ -120,7 +120,7 @@ abstract class SiteCommentView extends SiteView
 
 	protected function getCSSClassNames(SiteComment $comment)
 	{
-		return array('comment');
+		return ['comment'];
 	}
 
 	// }}}

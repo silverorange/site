@@ -267,7 +267,7 @@ class SiteVideoMedia extends SiteMedia
 
 	public function getMimeTypes()
 	{
-		$types = array();
+		$types = [];
 		foreach ($this->encoding_bindings as $binding) {
 			if ($binding->width !== null && $binding->width > 0) {
 				$mime_type = $binding->media_type->mime_type;
@@ -317,11 +317,7 @@ class SiteVideoMedia extends SiteMedia
 		if ($this->has_hls) {
 			$directory = implode(
 				DIRECTORY_SEPARATOR,
-				array(
-					$this->getFileBase(),
-					$this->path_key,
-					'full'
-				)
+				[$this->getFileBase(), $this->path_key, 'full']
 			);
 		}
 
@@ -355,12 +351,7 @@ class SiteVideoMedia extends SiteMedia
 
 	public function getHlsFilePath()
 	{
-		$items = array(
-			$this->getFileBase(),
-			$this->path_key,
-			'hls',
-			'index.m3u8',
-		);
+		$items = [$this->getFileBase(), $this->path_key, 'hls', 'index.m3u8'];
 
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
@@ -448,10 +439,7 @@ class SiteVideoMedia extends SiteMedia
 	protected function deleteCdnFiles()
 	{
 		if ($this->getUriBase() != '') {
-			$path = array(
-				$this->getUriBase(),
-				$this->path_key,
-			);
+			$path = [$this->getUriBase(), $this->path_key];
 
 			$class_name = SwatDBClassMap::get(SiteMediaCdnTask::class);
 			$task = new $class_name();

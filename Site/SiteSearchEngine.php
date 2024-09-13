@@ -35,7 +35,7 @@ abstract class SiteSearchEngine extends SwatObject
 	 *
 	 * @see SiteSearchEngine::addOrderByField()
 	 */
-	protected $order_by_fields = array();
+	protected $order_by_fields = [];
 
 	/**
 	 * Array of cached search result counts
@@ -46,9 +46,9 @@ abstract class SiteSearchEngine extends SwatObject
 	 *
 	 * @see SiteSearchEngine::getResultCount()
 	 */
-	protected $result_count_cache = array();
+	protected $result_count_cache = [];
 
-	protected $select_fields = array('*');
+	protected $select_fields = ['*'];
 
 	protected $memcache;
 
@@ -160,7 +160,7 @@ abstract class SiteSearchEngine extends SwatObject
 	 */
 	public function getSearchSummary()
 	{
-		$summary = array();
+		$summary = [];
 
 		if ($this->fulltext_result !== null) {
 			$keywords = implode(' ', $this->fulltext_result->getSearchedWords());
@@ -176,7 +176,7 @@ abstract class SiteSearchEngine extends SwatObject
 
 	public function clearOrderByFields()
 	{
-		$this->order_by_fields = array();
+		$this->order_by_fields = [];
 	}
 
 	// }}}
@@ -201,7 +201,7 @@ abstract class SiteSearchEngine extends SwatObject
 	// }}}
 	// {{{ public function setSelectFields()
 
-	public function setSelectFields(array $fields = array('*'))
+	public function setSelectFields(array $fields = ['*'])
 	{
 		$this->select_fields = $fields;
 	}
@@ -256,7 +256,7 @@ abstract class SiteSearchEngine extends SwatObject
 			$this->loadSubObjects($results);
 
 			if ($this->hasMemcache() && $this->memcache_enabled) {
-				$ids = array();
+				$ids = [];
 				foreach ($results as $id => $result) {
 					$result_key = $key.'.'.$id;
 						$ids[] = $result_key;
@@ -503,7 +503,7 @@ abstract class SiteSearchEngine extends SwatObject
 
 	protected function getResultIds(SwatDBRecordsetWrapper $results)
 	{
-		$result_ids = array();
+		$result_ids = [];
 		foreach ($results as $result) {
 			$result_ids[] = $result->id;
 		}

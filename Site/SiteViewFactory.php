@@ -44,14 +44,14 @@ class SiteViewFactory extends SwatObject
 	 *
 	 * @var array
 	 */
-	private static $view_class_names_by_type = array();
+	private static $view_class_names_by_type = [];
 
 	/**
 	 * Paths to search for class-definition files
 	 *
 	 * @var array
 	 */
-	private static $search_paths = array('Site/views');
+	private static $search_paths = ['Site/views'];
 
 	// }}}
 	// {{{ public static function get()

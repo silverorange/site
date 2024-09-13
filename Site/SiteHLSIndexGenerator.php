@@ -128,13 +128,10 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 
 	protected function getEncodingIndexes(SiteMedia $media)
 	{
-		$encodings = array();
-		$all_files = array();
+		$encodings = [];
+		$all_files = [];
 
-		$params = array(
-			'Bucket' => $this->config->amazon->bucket,
-			'Prefix' => $this->getHLSPath($media),
-		);
+		$params = ['Bucket' => $this->config->amazon->bucket, 'Prefix' => $this->getHLSPath($media)];
 
 		do {
 			$result = $this->s3->listObjectsV2($params);
@@ -165,11 +162,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 				$shortname = $path_parts[0];
 				$binding = $media->getEncodingBinding($shortname);
 				$bandwidth = (int)($binding->filesize / $media->duration * 8);
-				$encodings[$shortname] = array(
-					'path'       => $local_path,
-					'resolution' => $binding->width.'x'.$binding->height,
-					'bandwidth'  => $bandwidth,
-				);
+				$encodings[$shortname] = ['path'       => $local_path, 'resolution' => $binding->width.'x'.$binding->height, 'bandwidth'  => $bandwidth];
 			}
 		}
 
@@ -199,13 +192,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 			: 'public-read';
 
 		$this->s3->putObject(
-			array(
-				'ACL'         => $acl,
-				'Body'        => $file_contents,
-				'Bucket'      => $this->config->amazon->bucket,
-				'Key'         => $this->getHLSPath($media).'/index.m3u8',
-				'ContentType' => 'application/x-mpegURL',
-			)
+			['ACL'         => $acl, 'Body'        => $file_contents, 'Bucket'      => $this->config->amazon->bucket, 'Key'         => $this->getHLSPath($media).'/index.m3u8', 'ContentType' => 'application/x-mpegURL']
 		);
 	}
 
@@ -234,14 +221,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		$this->database->dsn = $config->database->dsn;
 
 		$this->s3 = new Aws\S3\S3Client(
-			array(
-				'version' => 'latest',
-				'region'  => $config->amazon->region,
-				'credentials' => array(
-					'key'    => $config->amazon->access_key_id,
-					'secret' => $config->amazon->access_key_secret,
-				),
-			)
+			['version' => 'latest', 'region'  => $config->amazon->region, 'credentials' => ['key'    => $config->amazon->access_key_id, 'secret' => $config->amazon->access_key_secret]]
 		);
 	}
 

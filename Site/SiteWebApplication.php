@@ -142,7 +142,7 @@ class SiteWebApplication extends SiteApplication
 
 		try {
 			if (!$cached) {
-				$page_data = array();
+				$page_data = [];
 
 				$this->setP3PHeaders();
 
@@ -555,7 +555,7 @@ class SiteWebApplication extends SiteApplication
 	protected function explodeSource($source)
 	{
 		if ($source == '') {
-			$path = array();
+			$path = [];
 		} else {
 			$path = explode('/', $source);
 		}

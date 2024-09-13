@@ -67,7 +67,7 @@ class SiteAccountSearch
 
 	protected function getWhereClauses()
 	{
-		$clauses = array();
+		$clauses = [];
 
 		// instance
 		$instance_id = $this->app->getInstanceId();

@@ -43,7 +43,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 	{
 		parent::__construct($id, $filename, $title, $documentation);
 
-		$instance = new SiteCommandLineArgument(array('-i', '--instance'),
+		$instance = new SiteCommandLineArgument(['-i', '--instance'],
 			'setInstance', 'Required. Sets the site instance for which to '.
 			'run this application.');
 
@@ -53,7 +53,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$this->addCommandLineArgument($instance);
 
 		$debug_domain = new SiteCommandLineArgument(
-			array('-d', '--debug-domain'),
+			['-d', '--debug-domain'],
 			'setDebugDomain',
 			Site::_('Sets this mailer to debug mode. When set, only '.
 				'messages with email addresses ending in the specified '.
@@ -280,7 +280,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 
 	protected function getCcList(SiteContactMessage $message)
 	{
-		$list = array();
+		$list = [];
 
 		if ($this->config->email->contact_cc_list != '') {
 			$list = explode(';', $this->config->email->contact_cc_list);
@@ -294,7 +294,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 
 	protected function getBccList(SiteContactMessage $message)
 	{
-		$list = array();
+		$list = [];
 
 		if ($this->config->email->contact_bcc_list != '') {
 			$list = explode(';', $this->config->email->contact_bcc_list);
@@ -311,7 +311,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 		// Dynamic static call to get subjects. This will be more straight-
 		// forward in PHP 5.3.
 		$class_name = $this->getClassName();
-		$subjects = call_user_func(array($class_name, 'getSubjects'));
+		$subjects = call_user_func([$class_name, 'getSubjects']);
 
 		if (array_key_exists($message->subject, $subjects)) {
 			$subject = sprintf('%s (%s)',

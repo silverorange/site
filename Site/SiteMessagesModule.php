@@ -51,7 +51,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 	 */
 	public function depends()
 	{
-		return array(new SiteApplicationModuleDependency('SiteSessionModule'));
+		return [new SiteApplicationModuleDependency('SiteSessionModule')];
 	}
 
 	// }}}
@@ -116,7 +116,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 	 */
 	public function getAll()
 	{
-		$messages = array();
+		$messages = [];
 
 		if ($this->app->session->isActive()) {
 			if (!$this->session_is_initialized)

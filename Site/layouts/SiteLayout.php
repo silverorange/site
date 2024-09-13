@@ -35,7 +35,7 @@ class SiteLayout extends SiteObject
 	 * @see SiteLayout::addBodyClass()
 	 * @see SiteLayout::removeBodyClass()
 	 */
-	protected $body_classes = array();
+	protected $body_classes = [];
 
 	// }}}
 	// {{{ private properties
@@ -223,7 +223,7 @@ class SiteLayout extends SiteObject
 	public function addBodyClass($class)
 	{
 		if (!is_array($class)) {
-			$class = array($class);
+			$class = [$class];
 		}
 
 		$this->body_classes = array_unique(
@@ -246,7 +246,7 @@ class SiteLayout extends SiteObject
 	public function removeBodyClass($class)
 	{
 		if (!is_array($class)) {
-			$class = array($class);
+			$class = [$class];
 		}
 
 		$this->body_classes = array_diff($this->body_classes, $class);

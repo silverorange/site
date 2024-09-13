@@ -23,7 +23,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	 *
 	 * @see SiteAMQPModule::getExchange()
 	 */
-	protected $exchanges = array();
+	protected $exchanges = [];
 
 	/**
 	 * Connection to the AMQP broker
@@ -107,14 +107,12 @@ class SiteAMQPModule extends SiteApplicationModule
 		$namespace,
 		$exchange,
 		$message,
-		array $attributes = array()
+		array $attributes = []
 	) {
 		// always persist messages
 		$attributes = array_merge(
 			$attributes,
-			array(
-				'delivery_mode' => AMQP_DURABLE,
-			)
+			['delivery_mode' => AMQP_DURABLE]
 		);
 
 		$this->connect();
@@ -143,7 +141,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	 *
 	 * @return void
 	 */
-	public function doAsync($exchange, $message, array $attributes = array())
+	public function doAsync($exchange, $message, array $attributes = [])
 	{
 		return $this->doAsyncNs(
 			$this->default_namespace,
@@ -190,7 +188,7 @@ class SiteAMQPModule extends SiteApplicationModule
 		$namespace,
 		$exchange,
 		$message,
-		array $attributes = array()
+		array $attributes = []
 	) {
 		$this->connect();
 
@@ -202,11 +200,7 @@ class SiteAMQPModule extends SiteApplicationModule
 
 		$attributes = array_merge(
 			$attributes,
-			array(
-				'correlation_id' => $correlation_id,
-				'reply_to'       => $reply_queue->getName(),
-				'delivery_mode'  => AMQP_DURABLE,
-			)
+			['correlation_id' => $correlation_id, 'reply_to'       => $reply_queue->getName(), 'delivery_mode'  => AMQP_DURABLE]
 		);
 
 		$this->getExchange($namespace, $exchange)->publish(
@@ -239,12 +233,8 @@ class SiteAMQPModule extends SiteApplicationModule
 				$response = json_decode($raw_body, true);
 				if ($response === null ||
 					!isset($response['status'])) {
-					$response = array(
-						'status'   => 'fail',
-						'raw_body' => $raw_body,
-						'body'     =>
-							'AMQP job response data is in an unknown format.',
-					);
+					$response = ['status'   => 'fail', 'raw_body' => $raw_body, 'body'     =>
+							'AMQP job response data is in an unknown format.'];
 				} else {
 					$response['raw_body'] = $raw_body;
 				}
@@ -333,7 +323,7 @@ class SiteAMQPModule extends SiteApplicationModule
 	 * @throws SiteAMQPJobFailureException if the job processor can't process
 	 *         the job.
 	 */
-	public function doSync($exchange, $message, array $attributes = array())
+	public function doSync($exchange, $message, array $attributes = [])
 	{
 		return $this->doSyncNs(
 			$this->default_namespace,
@@ -387,7 +377,7 @@ class SiteAMQPModule extends SiteApplicationModule
 
 				// Clear exchange cache. The exchanges will be reconnected
 				// on-demand using the new channel.
-				$this->exchanges = array();
+				$this->exchanges = [];
 			}
 		} elseif ($this->connection instanceof AMQPConnection) {
 			// Create initial channel.

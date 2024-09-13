@@ -63,7 +63,7 @@ abstract class SiteAbstractPage extends SiteObject
 	 * @see SiteAbstractPage::getArgumentMap()
 	 * @see SitePage::__construct()
 	 */
-	protected $arguments = array();
+	protected $arguments = [];
 
 	// }}}
 	// {{{ public function getSource()
@@ -155,7 +155,7 @@ abstract class SiteAbstractPage extends SiteObject
 	 */
 	protected function getArgumentMap()
 	{
-		return array();
+		return [];
 	}
 
 	// }}}

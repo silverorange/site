@@ -26,7 +26,7 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 
 	protected function getObjectUiValueNames()
 	{
-		return array('title');
+		return ['title'];
 	}
 
 	// }}}

@@ -81,7 +81,7 @@ class SiteMediaType extends SwatDBDataObject
 
 	public function getValidMimeTypes()
 	{
-		$mime_types = array($this->mime_type);
+		$mime_types = [$this->mime_type];
 		foreach (explode(',', $this->alternate_mime_types) as $type) {
 			$mime_types[] = trim($type);
 		}

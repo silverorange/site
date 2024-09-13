@@ -272,8 +272,8 @@ class SiteAudioMedia extends SiteMedia
 		$filename = iconv('UTF-8', 'ASCII//TRANSLIT', $this->original_filename);
 
 		// Format the filename according to the qtext syntax in RFC 822
-		$filename = str_replace(array("\\", "\r", "\""),
-			array("\\\\", "\\\r", "\\\""), $filename);
+		$filename = str_replace(["\\", "\r", "\""],
+			["\\\\", "\\\r", "\\\""], $filename);
 
 		return $filename;
 	}

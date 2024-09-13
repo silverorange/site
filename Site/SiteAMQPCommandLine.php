@@ -84,32 +84,20 @@ abstract class SiteAMQPCommandLine
 		if (!isset($parser->options['verbose'])) {
 			$parser->addOption(
 				'verbose',
-				array(
-					'short_name'  => '-v',
-					'long_name'   => '--verbose',
-					'action'      => 'Counter',
-					'default'     => 0,
-					'description' => Site::_(
+				['short_name'  => '-v', 'long_name'   => '--verbose', 'action'      => 'Counter', 'default'     => 0, 'description' => Site::_(
 						'Set verbosity level. Use multiples for more detail '.
 						'(e.g. "-vv".)'
-					)
-				)
+					)]
 			);
 		}
 
 		if (!isset($parser->options['port'])) {
 			$parser->addOption(
 				'port',
-				array(
-					'short_name'  => '-p',
-					'long_name'   => '--port',
-					'action'      => 'StoreInt',
-					'default'     => 5672,
-					'description' => Site::_(
+				['short_name'  => '-p', 'long_name'   => '--port', 'action'      => 'StoreInt', 'default'     => 5672, 'description' => Site::_(
 						'Port of AMQP server. If not specified, port '.
 						'5672 is used.'
-					)
-				)
+					)]
 			);
 		}
 	}
@@ -130,14 +118,10 @@ abstract class SiteAMQPCommandLine
 		if (!isset($parser->arguments['address'])) {
 			$parser->addArgument(
 				'address',
-				array(
-					'optional'    => true,
-					'default'     => '127.0.0.1',
-					'description' => Site::_(
+				['optional'    => true, 'default'     => '127.0.0.1', 'description' => Site::_(
 						'AMQP server address. If not specified, '.
 						'127.0.0.1 is used.'
-					)
-				)
+					)]
 			);
 		}
 	}

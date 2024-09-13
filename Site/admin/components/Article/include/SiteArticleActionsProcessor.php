@@ -140,14 +140,7 @@ class SiteArticleActionsProcessor
 
 	public static function getActions()
 	{
-		return array(
-			'enable' => Site::_('enable'),
-			'disable' => Site::_('disable'),
-			'show_in_menu' => Site::_('show in menu'),
-			'hide_from_menu' => Site::_('hide from menu'),
-			'show_in_search' => Site::_('show in search'),
-			'hide_from_search' => Site::_('hide from search'),
-		);
+		return ['enable' => Site::_('enable'), 'disable' => Site::_('disable'), 'show_in_menu' => Site::_('show in menu'), 'hide_from_menu' => Site::_('hide from menu'), 'show_in_search' => Site::_('show in search'), 'hide_from_search' => Site::_('hide from search')];
 	}
 
 	// }}}

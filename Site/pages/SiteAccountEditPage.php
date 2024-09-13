@@ -160,9 +160,9 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 	protected function updateAccount(SwatForm $form)
 	{
-		$this->assignUiValuesToObject($this->account, array('fullname'));
+		$this->assignUiValuesToObject($this->account, ['fullname']);
 		if ($this->ui->hasWidget('email')) {
-			$this->assignUiValuesToObject($this->account, array('email'));
+			$this->assignUiValuesToObject($this->account, ['email']);
 		}
 	}
 
@@ -318,7 +318,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 
 	protected function load(SwatForm $form)
 	{
-		$this->assignObjectValuesToUi($this->account, array('fullname'));
+		$this->assignObjectValuesToUi($this->account, ['fullname']);
 
 		if ($this->ui->hasWidget('confirm_email')) {
 			$this->ui->getWidget('confirm_email')->value =
@@ -326,7 +326,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 
 		if ($this->ui->hasWidget('email')) {
-			$this->assignObjectValuesToUi($this->account, array('email'));
+			$this->assignObjectValuesToUi($this->account, ['email']);
 		}
 	}
 

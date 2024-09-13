@@ -16,7 +16,7 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 	 *
 	 * @var array
 	 */
-	protected $exclude_names = array('mac', 'source', 'instance');
+	protected $exclude_names = ['mac', 'source', 'instance'];
 
 	// }}}
 	// {{{ public init()
@@ -76,7 +76,7 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 
 	protected function getVariables()
 	{
-		$vars = array();
+		$vars = [];
 
 		$exclude_names   = $this->exclude_names;
 		$exclude_names[] = $this->app->session->getSessionName();

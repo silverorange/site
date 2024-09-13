@@ -75,10 +75,7 @@ class SiteAdModule extends SiteApplicationModule
 	 *
 	 * @see SiteAdModule::trackAdNetwork()
 	 */
-	protected $ad_network_tracking_ids = array(
-		'gclid'  => self::AD_NETWORK_GOOGLE,
-		'kwid'   => self::AD_NETWORK_MICROSOFT,
-	);
+	protected $ad_network_tracking_ids = ['gclid'  => self::AD_NETWORK_GOOGLE, 'kwid'   => self::AD_NETWORK_MICROSOFT];
 
 	/**
 	 * Google analytics utm_sources used for various ad networks.
@@ -92,11 +89,7 @@ class SiteAdModule extends SiteApplicationModule
 	 *
 	 * @see SiteAdModule::trackAdNetwork()
 	 */
-	protected $ad_network_utm_sources = array(
-		'google'    => self::AD_NETWORK_GOOGLE,
-		'microsoft' => self::AD_NETWORK_MICROSOFT,
-		'bing'      => self::AD_NETWORK_MICROSOFT,
-	);
+	protected $ad_network_utm_sources = ['google'    => self::AD_NETWORK_GOOGLE, 'microsoft' => self::AD_NETWORK_MICROSOFT, 'bing'      => self::AD_NETWORK_MICROSOFT];
 
 	/**
 	 * Google analytics utm_mediums valid for ad networks.
@@ -106,9 +99,7 @@ class SiteAdModule extends SiteApplicationModule
 	 *
 	 * @see SiteAdModule::trackAdNetwork()
 	 */
-	protected $ad_network_utm_mediums = array(
-		'cpc',
-	);
+	protected $ad_network_utm_mediums = ['cpc'];
 
 	// }}}
 	// {{{ public function init()

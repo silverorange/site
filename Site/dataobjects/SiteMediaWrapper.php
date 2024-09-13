@@ -40,7 +40,7 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 	public function loadEncodingBindings()
 	{
 		if ($this->getCount() > 0) {
-			$ids = array();
+			$ids = [];
 			foreach ($this->getArray() as $media) {
 				$ids[] = $this->db->quote($media->id, 'integer');
 			}

@@ -11,7 +11,7 @@ class SiteSearchCheckboxList extends  SwatCheckboxList
 {
 	// {{{ public properties
 
-	public $highlight_values = array();
+	public $highlight_values = [];
 
 	// }}}
 	// {{{ public function process()

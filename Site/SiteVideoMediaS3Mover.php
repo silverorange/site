@@ -78,12 +78,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 		);
 
 		$this->s3->copyObject(
-			array(
-				'ACL'        => $acl,
-				'Bucket'     => $this->getBucket(),
-				'CopySource' => $copy_source,
-				'Key'        => $new_path
-			)
+			['ACL'        => $acl, 'Bucket'     => $this->getBucket(), 'CopySource' => $copy_source, 'Key'        => $new_path]
 		);
 	}
 
@@ -93,10 +88,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	protected function cleanUp($path)
 	{
 		$this->s3->deleteObject(
-			array(
-				'Bucket' => $this->getBucket(),
-				'Key'    => $path,
-			)
+			['Bucket' => $this->getBucket(), 'Key'    => $path]
 		);
 	}
 
@@ -110,14 +102,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 		parent::configure($config);
 
 		$this->s3 = new Aws\S3\S3Client(
-			array(
-				'version' => 'latest',
-				'region'  => $config->amazon->region,
-				'credentials' => array(
-					'key'    => $config->amazon->access_key_id,
-					'secret' => $config->amazon->access_key_secret,
-				),
-			)
+			['version' => 'latest', 'region'  => $config->amazon->region, 'credentials' => ['key'    => $config->amazon->access_key_id, 'secret' => $config->amazon->access_key_secret]]
 		);
 	}
 

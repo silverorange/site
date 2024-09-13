@@ -17,12 +17,12 @@ class SiteAccountSessionModule extends SiteSessionModule
 	/**
 	 * @var array
 	 */
-	protected $login_callbacks = array();
+	protected $login_callbacks = [];
 
 	/**
 	 * @var array
 	 */
-	protected $logout_callbacks = array();
+	protected $logout_callbacks = [];
 
 	// }}}
 	// {{{ public function __construct()
@@ -42,8 +42,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 	{
 		parent::__construct($app);
 
-		$this->registerLoginCallback(array($this, 'setSentryUserContext'));
-		$this->registerLogoutCallback(array($this, 'setSentryUserContext'));
+		$this->registerLoginCallback([$this, 'setSentryUserContext']);
+		$this->registerLogoutCallback([$this, 'setSentryUserContext']);
 	}
 
 	// }}}
@@ -402,7 +402,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 			$is_dirty = SwatDB::queryOne(
 				$this->app->db,
 				$sql,
-				array('boolean')
+				['boolean']
 			);
 		}
 
@@ -439,15 +439,12 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	public function registerLoginCallback(
 		$callback,
-		array $parameters = array()
+		array $parameters = []
 	) {
 		if (!is_callable($callback))
 			throw new SiteException('Cannot register invalid callback.');
 
-		$this->login_callbacks[] = array(
-			'callback' => $callback,
-			'parameters' => $parameters
-		);
+		$this->login_callbacks[] = ['callback' => $callback, 'parameters' => $parameters];
 	}
 
 	// }}}
@@ -464,15 +461,12 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	public function registerLogoutCallback(
 		$callback,
-		array $parameters = array()
+		array $parameters = []
 	) {
 		if (!is_callable($callback))
 			throw new SiteException('Cannot register invalid callback.');
 
-		$this->logout_callbacks[] = array(
-			'callback' => $callback,
-			'parameters' => $parameters
-		);
+		$this->logout_callbacks[] = ['callback' => $callback, 'parameters' => $parameters];
 	}
 
 	// }}}

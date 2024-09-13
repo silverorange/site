@@ -213,16 +213,11 @@ class SiteAMQPJob
 			$this->envelope->getCorrelationId() != '') {
 			$this->exchange->publish(
 				json_encode(
-					array(
-						'status' => $status,
-						'body'   => $message,
-					)
+					['status' => $status, 'body'   => $message]
 				),
 				$this->envelope->getReplyTo(),
 				AMQP_NOPARAM,
-				array(
-					'correlation_id' => $this->envelope->getCorrelationId(),
-				)
+				['correlation_id' => $this->envelope->getCorrelationId()]
 			);
 		}
 

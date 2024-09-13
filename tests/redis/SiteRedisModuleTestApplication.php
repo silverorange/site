@@ -11,9 +11,7 @@ class SiteRedisModuleTestApplication extends SiteApplication
 
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'config' => 'SiteConfigModule',
-		);
+		return ['config' => 'SiteConfigModule'];
 	}
 
 }

@@ -50,7 +50,7 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 	/**
 	 * @var array
 	 */
-	protected $ns_id_cache = array();
+	protected $ns_id_cache = [];
 
 	// }}}
 	// {{{ public function init()
@@ -129,7 +129,7 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 
 		if (is_array($key)) {
 
-			$prefixed_values = array();
+			$prefixed_values = [];
 			foreach ($key as $the_key => $value) {
 				$prefixed_values[$this->key_prefix.$the_key] = $value;
 			}

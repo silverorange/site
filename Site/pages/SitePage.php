@@ -28,7 +28,7 @@ class SitePage extends SiteAbstractPage
 	public function __construct(
 		SiteApplication $app,
 		SiteLayout $layout = null,
-		array $arguments = array()
+		array $arguments = []
 	) {
 		$this->app       = $app;
 		$this->layout    = ($layout === null) ? $this->createLayout() : $layout;

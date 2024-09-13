@@ -17,7 +17,7 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 	 *
 	 * @var array
 	 */
-	protected $config_pages = array();
+	protected $config_pages = [];
 
 	// }}}
 
@@ -74,7 +74,7 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		$changed_settings = array();
+		$changed_settings = [];
 
 		if ($this->ui->getWidget('submit_button')->hasBeenClicked()) {
 			foreach ($this->config_pages as $config_page) {

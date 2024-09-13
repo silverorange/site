@@ -17,7 +17,7 @@ class SiteOlarkModule extends SiteApplicationModule
 	 * @var array
 	 * @see https://www.olark.com/help/languages
 	 */
-	public $locale_strings = array();
+	public $locale_strings = [];
 
 	// }}}
 	// {{{ protected properties
@@ -47,12 +47,10 @@ class SiteOlarkModule extends SiteApplicationModule
 			throw new SiteException('Olark site-id is required');
 		}
 
-		$api_lines = array(
-			sprintf(
+		$api_lines = [sprintf(
 				'olark.identify(%s);',
 				SwatString::quoteJavaScriptString($this->site_id)
-			)
-		);
+			)];
 
 		foreach ($this->locale_strings as $id => $string) {
 			$api_lines[] = sprintf(

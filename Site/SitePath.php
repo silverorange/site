@@ -21,7 +21,7 @@ class SitePath implements Iterator, Countable
 	 *
 	 * @see SitePath::addEntry()
 	 */
-	private $path_entries = array();
+	private $path_entries = [];
 
 	/**
 	 * The current index of the iterator interface

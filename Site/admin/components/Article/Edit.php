@@ -136,8 +136,7 @@ class SiteArticleEdit extends AdminDBEdit
 
 	protected function saveArticle()
 	{
-		$values = $this->ui->getValues(array('title', 'shortname', 'bodytext',
-			'description', 'enabled', 'visible', 'searchable'));
+		$values = $this->ui->getValues(['title', 'shortname', 'bodytext', 'description', 'enabled', 'visible', 'searchable']);
 
 		$this->edit_article->title         = $values['title'];
 		$this->edit_article->shortname     = $values['shortname'];
@@ -171,7 +170,7 @@ class SiteArticleEdit extends AdminDBEdit
 	{
 		if ($this->id !== null) {
 			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
-				'getArticleNavBar', array($this->id));
+				'getArticleNavBar', [$this->id]);
 
 			foreach ($navbar_rs as $elem)
 				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,
@@ -179,7 +178,7 @@ class SiteArticleEdit extends AdminDBEdit
 
 		} elseif ($this->parent !== null) {
 			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
-				'getArticleNavBar', array($this->parent));
+				'getArticleNavBar', [$this->parent]);
 
 			foreach ($navbar_rs as $elem)
 				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,

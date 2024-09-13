@@ -59,13 +59,13 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 	public function loadDimensionBindings($dimensions = null)
 	{
 		if (is_string($dimensions)) {
-			$dimensions = array($dimensions);
+			$dimensions = [$dimensions];
 		}
 
 		if ($this->getCount() > 0 &&
 			($dimensions === null || count($dimensions) > 0)) {
 
-			$image_ids = array();
+			$image_ids = [];
 			foreach ($this->getArray() as $image)
 				$image_ids[] = $this->db->quote($image->id, 'integer');
 

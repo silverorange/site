@@ -31,36 +31,12 @@ class SiteCommentFilter
 	/**
 	 * @var array
 	 */
-	protected static $tags = array(
-		'a' => array(
-			'tag' => 'a',
-			'self_closing' => false,
-			'attributes' => array(
-				'title="[^"]+?"',
-				'href="http[^"]+?"',
-			),
-		),
-		'em' => array(
-			'tag' => 'em',
-			'self_closing' => false,
-			'attributes' => array(),
-		),
-		'strong' => array(
-			'tag' => 'strong',
-			'self_closing' => false,
-			'attributes' => array(),
-		),
-		'code' => array(
-			'tag' => 'code',
-			'self_closing' => false,
-			'attributes' => array(),
-		),
-	);
+	protected static $tags = ['a' => ['tag' => 'a', 'self_closing' => false, 'attributes' => ['title="[^"]+?"', 'href="http[^"]+?"']], 'em' => ['tag' => 'em', 'self_closing' => false, 'attributes' => []], 'strong' => ['tag' => 'strong', 'self_closing' => false, 'attributes' => []], 'code' => ['tag' => 'code', 'self_closing' => false, 'attributes' => []]];
 
 	/**
 	 * @var array
 	 */
-	protected static $tag_stack = array();
+	protected static $tag_stack = [];
 
 	// }}}
 	// {{{ public static function parse()
@@ -75,7 +51,7 @@ class SiteCommentFilter
 	 */
 	public static function parse($comment, $strip_invalid_tags = false)
 	{
-		self::$tag_stack = array();
+		self::$tag_stack = [];
 
 		ob_start();
 		self::parseInternal($comment, $strip_invalid_tags);
@@ -124,13 +100,9 @@ class SiteCommentFilter
 		array $attributes = null
 	) {
 		if ($attributes === null)
-			$attributes = array();
+			$attributes = [];
 
-		self::$tags[$tag] = array(
-			'tag' => $tag,
-			'self_closing' => $self_closing,
-			'attributes' => $attributes,
-		);
+		self::$tags[$tag] = ['tag' => $tag, 'self_closing' => $self_closing, 'attributes' => $attributes];
 	}
 
 	// }}}
@@ -180,7 +152,7 @@ class SiteCommentFilter
 
 	protected static function parseInternal($comment, $strip_invalid_tags)
 	{
-		$matches = array();
+		$matches = [];
 		// Note: PHP PCRE always returns offsets in bytes, not characters
 		preg_match_all(self::getExpression(), $comment, $matches,
 			PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
@@ -237,9 +209,9 @@ class SiteCommentFilter
 
 	protected static function getExpression()
 	{
-		$tag_tokens = array();
+		$tag_tokens = [];
 		foreach (self::$tags as $tag) {
-			$attributes = array();
+			$attributes = [];
 			foreach ($tag['attributes'] as $attribute) {
 				$attributes[] = '\s+'.$attribute;
 			}

@@ -136,7 +136,7 @@ class SiteConfigModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	private $sections = array();
+	private $sections = [];
 
 	/**
 	 * Whether or not this config module has been loaded
@@ -153,7 +153,7 @@ class SiteConfigModule extends SiteApplicationModule
 	 * @see SiteConfigModule::addDefinition()
 	 * @see SiteConfigModule::addDefinitions()
 	 */
-	private $definitions = array();
+	private $definitions = [];
 
 	/**
 	 * The path to the .ini of this config module.
@@ -179,7 +179,7 @@ class SiteConfigModule extends SiteApplicationModule
 	 *
 	 * @var array
 	 */
-	private $setting_sources = array();
+	private $setting_sources = [];
 
 	// }}}
 	// {{{ public function init()
@@ -332,7 +332,7 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 
 		if (!array_key_exists($section, $this->definitions))
-			$this->definitions[$section] = array();
+			$this->definitions[$section] = [];
 
 		$this->definitions[$section][$name] = $default_value;
 		$this->setting_sources[$section][$name] = self::SOURCE_DEFAULT;
@@ -466,13 +466,7 @@ class SiteConfigModule extends SiteApplicationModule
 				$name, $section));
 		}
 
-		$valid_sources = array(
-			self::SOURCE_DEFAULT,
-			self::SOURCE_FILE,
-			self::SOURCE_DATABASE,
-			self::SOURCE_INSTANCE,
-			self::SOURCE_RUNTIME,
-		);
+		$valid_sources = [self::SOURCE_DEFAULT, self::SOURCE_FILE, self::SOURCE_DATABASE, self::SOURCE_INSTANCE, self::SOURCE_RUNTIME];
 
 		if (!in_array($source, $valid_sources)) {
 			$source = self::SOURCE_RUNTIME;
@@ -550,7 +544,7 @@ class SiteConfigModule extends SiteApplicationModule
 			if (array_key_exists($section_name, $this->definitions)) {
 
 				// only include values that are defined
-				$defined_section_values = array();
+				$defined_section_values = [];
 				foreach ($section_values as $name => $value) {
 					if (array_key_exists($name,
 						$this->definitions[$section_name])) {

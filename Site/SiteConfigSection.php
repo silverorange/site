@@ -21,7 +21,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 	/**
 	 * Settings of this configuration section
 	 */
-	private $values = array();
+	private $values = [];
 
 	/**
 	 * The config module of this section

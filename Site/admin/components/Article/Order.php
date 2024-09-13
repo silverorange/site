@@ -47,7 +47,7 @@ class SiteArticleOrder extends AdminDBOrder
 	protected function saveIndex($id, $index)
 	{
 		SwatDB::updateColumn($this->app->db, 'Article', 'integer:displayorder',
-			$index, 'integer:id', array($id), $this->getWhereClause());
+			$index, 'integer:id', [$id], $this->getWhereClause());
 
 		if (isset($this->app->memcache))
 			$this->app->memcache->flushNs('article');
@@ -94,7 +94,7 @@ class SiteArticleOrder extends AdminDBOrder
 
 		if ($this->parent !== null) {
 			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
-				'getArticleNavBar', array($this->parent));
+				'getArticleNavBar', [$this->parent]);
 
 			foreach ($navbar_rs as $elem)
 				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,

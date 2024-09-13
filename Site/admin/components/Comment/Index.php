@@ -87,7 +87,7 @@ abstract class SiteCommentIndex extends AdminPage
 		$comments = $this->getComments($pager->page_size,
 			$pager->current_record);
 
-		$this->comments = array();
+		$this->comments = [];
 		foreach ($comments as $comment) {
 			$this->comments[$comment->id] = $comment;
 		}
@@ -262,12 +262,7 @@ abstract class SiteCommentIndex extends AdminPage
 
 	protected function getVisibilityOptions()
 	{
-		return array(
-			self::SHOW_UNAPPROVED => Site::_('Pending Comments'),
-			self::SHOW_ALL        => Site::_('All Comments'),
-			self::SHOW_ALL_SPAM   => Site::_('All Comments, Including Spam'),
-			self::SHOW_SPAM       => Site::_('Spam Only'),
-		);
+		return [self::SHOW_UNAPPROVED => Site::_('Pending Comments'), self::SHOW_ALL        => Site::_('All Comments'), self::SHOW_ALL_SPAM   => Site::_('All Comments, Including Spam'), self::SHOW_SPAM       => Site::_('Spam Only')];
 	}
 
 	// }}}

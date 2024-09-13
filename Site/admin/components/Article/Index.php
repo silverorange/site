@@ -194,7 +194,7 @@ class SiteArticleIndex extends AdminIndex
 
 		if ($this->article->parent != null) {
 			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
-				'getArticleNavBar', array($this->article->parent->id));
+				'getArticleNavBar', [$this->article->parent->id]);
 
 			foreach ($navbar_rs as $elem)
 				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,

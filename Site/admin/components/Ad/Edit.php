@@ -117,7 +117,7 @@ class SiteAdEdit extends AdminDBEdit
 
 	protected function saveAd()
 	{
-		$values = $this->ui->getValues(array('title', 'shortname'));
+		$values = $this->ui->getValues(['title', 'shortname']);
 
 		$this->ad->title = $values['title'];
 		$this->ad->shortname = $values['shortname'];

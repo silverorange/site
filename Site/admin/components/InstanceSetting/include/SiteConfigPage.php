@@ -22,15 +22,7 @@ class SiteConfigPage extends SiteAbstractConfigPage
 
 	public function getConfigSettings()
 	{
-		return array(
-			'site' => array(
-				'title',
-				'meta_description',
-			),
-			'date' => array(
-				'time_zone',
-			),
-		);
+		return ['site' => ['title', 'meta_description'], 'date' => ['time_zone']];
 	}
 
 	// }}}

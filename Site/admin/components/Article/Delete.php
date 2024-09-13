@@ -113,7 +113,7 @@ class SiteArticleDelete extends AdminDBDelete
 		$dep->addDependency($dep_subarticles);
 
 		if (count($dep_subarticles->entries)) {
-			$entries = array();
+			$entries = [];
 			foreach ($dep_subarticles->entries as $entry)
 				$entries[] = $this->app->db->quote($entry->id, 'integer');
 
@@ -134,7 +134,7 @@ class SiteArticleDelete extends AdminDBDelete
 
 		if ($this->single_delete) {
 			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
-				'getArticleNavBar', array($this->getFirstItem()));
+				'getArticleNavBar', [$this->getFirstItem()]);
 
 			foreach ($navbar_rs as $elem)
 				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,

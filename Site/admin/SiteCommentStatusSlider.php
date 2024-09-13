@@ -34,7 +34,7 @@ class SiteCommentStatusSlider extends SwatOptionControl
 	 *
 	 * @var array
 	 */
-	public $context_notes_by_option = array();
+	public $context_notes_by_option = [];
 
 	// }}}
 	// {{{ public function __construct()
@@ -51,7 +51,7 @@ class SiteCommentStatusSlider extends SwatOptionControl
 		parent::__construct($id);
 		$this->requires_id = true;
 
-		$yui = new SwatYUI(array('slider'));
+		$yui = new SwatYUI(['slider']);
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
@@ -172,7 +172,7 @@ class SiteCommentStatusSlider extends SwatOptionControl
 	protected function getInlineJavaScript()
 	{
 		$salt = $this->getForm()->getSalt();
-		$options = array();
+		$options = [];
 		foreach ($this->options as $option) {
 			if ($this->serialize_values) {
 				$value = SwatString::signedSerialize($option->value, $salt);

@@ -62,15 +62,15 @@ class SiteImage extends SwatDBDataObject
 
 	protected $image_set_shortname;
 	protected $automatically_save = true;
-	protected $imagick_instances = array();
+	protected $imagick_instances = [];
 
 	// }}}
 	// {{{ private properties
 
-	private static $image_set_cache = array();
+	private static $image_set_cache = [];
 	private $file_base;
 	private $crop_box;
-	private $crop_boxes = array();
+	private $crop_boxes = [];
 	private $original_dpi;
 
 	// }}}
@@ -180,12 +180,7 @@ class SiteImage extends SwatDBDataObject
 
 	public function getValidMimeTypes()
 	{
-		return array(
-			'image/jpeg',
-			'image/png',
-			'image/tiff',
-			'image/gif',
-		);
+		return ['image/jpeg', 'image/png', 'image/tiff', 'image/gif'];
 	}
 
 	// }}}
@@ -197,12 +192,7 @@ class SiteImage extends SwatDBDataObject
 			$mime_type = $this->mime_type;
 		}
 
-		$map = array(
-			'image/jpeg' => Site::_('JPEG Image'),
-			'image/png'  => Site::_('PNG Image'),
-			'image/tiff' => Site::_('TIFF Image'),
-			'image/gif'  => Site::_('GIF Image'),
-		);
+		$map = ['image/jpeg' => Site::_('JPEG Image'), 'image/png'  => Site::_('PNG Image'), 'image/tiff' => Site::_('TIFF Image'), 'image/gif'  => Site::_('GIF Image')];
 
 		if (!array_key_exists($mime_type, $map)) {
 			throw new SiteException(
@@ -221,7 +211,7 @@ class SiteImage extends SwatDBDataObject
 
 	public function getHumanFileTypes(array $mime_types)
 	{
-		$human_file_types = array();
+		$human_file_types = [];
 
 		foreach ($mime_types as $mime_type) {
 			$human_file_types[$mime_type] = $this->getHumanFileType($mime_type);
@@ -314,7 +304,7 @@ class SiteImage extends SwatDBDataObject
 	 */
 	protected function getLocalFilenamesToDelete()
 	{
-		$filenames = array();
+		$filenames = [];
 
 		foreach ($this->getImageSet()->dimensions as $dimension) {
 			$filenames[] = $this->getFilePath($dimension->shortname);
@@ -376,10 +366,7 @@ class SiteImage extends SwatDBDataObject
 
 	protected function getSerializableSubDataObjects()
 	{
-		return array(
-			'image_set',
-			'dimension_bindings',
-		);
+		return ['image_set', 'dimension_bindings'];
 	}
 
 	// }}}
@@ -387,9 +374,7 @@ class SiteImage extends SwatDBDataObject
 
 	protected function getSerializablePrivateProperties()
 	{
-		return array_merge(parent::getSerializablePrivateProperties(), array(
-			'image_set_shortname',
-		));
+		return array_merge(parent::getSerializablePrivateProperties(), ['image_set_shortname']);
 	}
 
 	// }}}
@@ -656,7 +641,7 @@ class SiteImage extends SwatDBDataObject
 
 	public function getHttpHeaders($dimension_shortname)
 	{
-		$headers = array();
+		$headers = [];
 
 		// Set a "never-expire" policy with a far future max age (10 years) as
 		// suggested https://developer.yahoo.com/performance/rules.html#expires.
@@ -792,7 +777,7 @@ class SiteImage extends SwatDBDataObject
 			}
 
 			// Reset the instances to an empty array.
-			$this->imagick_instances = array();
+			$this->imagick_instances = [];
 
 			// save again to record dimensions
 			if ($this->automatically_save) {
@@ -837,7 +822,7 @@ class SiteImage extends SwatDBDataObject
 			$this->processDimension($image_file, $dimension);
 
 			// Reset the instances to an empty array.
-			$this->imagick_instances = array();
+			$this->imagick_instances = [];
 
 			if ($this->automatically_save) {
 				// save again to record dimensions
@@ -948,7 +933,7 @@ class SiteImage extends SwatDBDataObject
 		$offset_y,
 		$dimension_shortname = null
 	) {
-		$crop_box = array($width, $height, $offset_x, $offset_y);
+		$crop_box = [$width, $height, $offset_x, $offset_y];
 
 		if ($dimension_shortname === null) {
 			$this->crop_box = $crop_box;
@@ -1104,7 +1089,7 @@ class SiteImage extends SwatDBDataObject
 		if ($imagick->getImageHeight() > $height)
 			$offset_y = ceil(($imagick->getImageHeight() - $height) / 2);
 
-		return array($offset_x, $offset_y);
+		return [$offset_x, $offset_y];
 	}
 
 	// }}}

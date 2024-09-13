@@ -26,7 +26,7 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 	{
 		parent::__construct($id, $filename, $title, $documentation);
 
-		$instance = new SiteCommandLineArgument(array('-i', '--instance'),
+		$instance = new SiteCommandLineArgument(['-i', '--instance'],
 			'setInstance', 'Optional. Sets the site instance for which to '.
 			'run this application.');
 
@@ -90,10 +90,8 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 		$task->media     = $media;
 		$task->encoding  = $encoding;
 		$task->operation = 'copy';
-		$task->override_http_headers = serialize(array(
-			'Content-Disposition' => sprintf('attachment; filename="%s"',
-				$media->getContentDispositionFilename($encoding->shortname)),
-			));
+		$task->override_http_headers = serialize(['Content-Disposition' => sprintf('attachment; filename="%s"',
+				$media->getContentDispositionFilename($encoding->shortname))]);
 
 		$task->save();
 	}

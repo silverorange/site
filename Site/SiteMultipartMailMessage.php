@@ -57,14 +57,14 @@ class SiteMultipartMailMessage extends SiteObject
 	 *
 	 * @var array
 	 */
-	public $cc_list = array();
+	public $cc_list = [];
 
 	/**
 	 * Addresses to which to blind-carbon-copy (BCC) this mail message
 	 *
 	 * @var array
 	 */
-	public $bcc_list = array();
+	public $bcc_list = [];
 
 	/**
 	 * Sender's reply-to address
@@ -152,7 +152,7 @@ class SiteMultipartMailMessage extends SiteObject
 	 *
 	 * @var array
 	 */
-	public $attachments = array();
+	public $attachments = [];
 
 	// }}}
 	// {{{ protected properties
@@ -178,7 +178,7 @@ class SiteMultipartMailMessage extends SiteObject
 	 *
 	 * @see SiteMultipartMailMessage::addAttachmentFromString()
 	 */
-	protected $string_attachments = array();
+	protected $string_attachments = [];
 
 	// }}}
 	// {{{ public function __construct()
@@ -336,7 +336,7 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	public function getCcList()
 	{
-		$list = array();
+		$list = [];
 		foreach ($this->cc_list as $email) {
 			if (trim($email) != '') {
 				$list[] = trim($email);
@@ -356,7 +356,7 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	public function getBccList()
 	{
-		$list = array();
+		$list = [];
 		foreach ($this->bcc_list as $email) {
 			if (trim($email) != '') {
 				$list[] = trim($email);
@@ -374,11 +374,7 @@ class SiteMultipartMailMessage extends SiteObject
 		$filename = null,
 		$content_type = null
 	) {
-		$this->string_attachments[] = array(
-			'data'         => $data,
-			'filename'     => $filename,
-			'content_type' => $content_type,
-		);
+		$this->string_attachments[] = ['data'         => $data, 'filename'     => $filename, 'content_type' => $content_type];
 	}
 
 	// }}}
@@ -400,12 +396,12 @@ class SiteMultipartMailMessage extends SiteObject
 	{
 		if ($this->app->config->email->test_address == '') {
 			$recipients = array_merge(
-				array($this->to_address),
+				[$this->to_address],
 				$this->getCcList(),
 				$this->getBccList()
 			);
 		} else {
-			$recipients = array($this->app->config->email->test_address);
+			$recipients = [$this->app->config->email->test_address];
 		}
 
 		return implode(', ', $recipients);
@@ -446,7 +442,7 @@ class SiteMultipartMailMessage extends SiteObject
 			$this->app->db->quote($attachment_size, 'integer'),
 			$this->app->db->quote($this->from_address), 'text');
 
-		$values = array();
+		$values = [];
 		$values[] = sprintf($values_sql,
 			$this->app->db->quote($this->to_address, 'text'),
 			$this->app->db->quote('to', 'text'));

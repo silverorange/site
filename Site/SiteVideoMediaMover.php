@@ -42,7 +42,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 
 		$this->addCommandLineArgument(
 			new SiteCommandLineArgument(
-				array('--clean-up'),
+				['--clean-up'],
 				'setCleanUp',
 				Site::_(
 					'This removes the old file so we are essentially renaming '.
@@ -52,7 +52,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		);
 
 		$shortname = new SiteCommandLineArgument(
-			array('-s', '--shortname'),
+			['-s', '--shortname'],
 			'setMediaSetShortname',
 			Site::_('Sets the shortname of the media set we want to move.')
 		);

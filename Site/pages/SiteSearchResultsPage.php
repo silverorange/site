@@ -41,14 +41,14 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 *
 	 * @var array
 	 */
-	protected $has_results = array();
+	protected $has_results = [];
 
 	// }}}
 	// {{{ private properties
 
-	private $search_data_fields = array();
-	private $search_data_values = array();
-	private $search_engines = array();
+	private $search_data_fields = [];
+	private $search_data_values = [];
+	private $search_engines = [];
 
 	// }}}
 
@@ -138,7 +138,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 		foreach ($this->getSearchDataValues() as $name => $value) {
 			if ($exclude !== null) {
 				if (!is_array($exclude))
-					$exclude = array($exclude);
+					$exclude = [$exclude];
 
 				if (in_array($name, $exclude))
 					continue;
@@ -220,7 +220,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 						$this->search_data_values[$field] = $value;
 					} elseif ($value != '') {
 						// got string, make into an array
-						$this->search_data_values[$field] = array($value);
+						$this->search_data_values[$field] = [$value];
 					}
 				} else {
 					if ($value != '')
@@ -413,7 +413,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected function getSearchTips()
 	{
-		$tips = array();
+		$tips = [];
 
 		if ($this->hasSearchDataValue('keywords')) {
 			$tips[] = Site::_('Try using less specific keywords');
@@ -434,7 +434,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected function getSearchSummary()
 	{
-		$summary = array();
+		$summary = [];
 
 		if ($this->hasSearchEngine('article')) {
 			$engine = $this->getSearchEngine('article');

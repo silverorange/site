@@ -61,7 +61,7 @@ abstract class SiteCommentDisplay extends SwatControl
 		$this->html_head_entry_set->addEntrySet(
 			XML_RPCAjax::getHtmlHeadEntrySet());
 
-		$yui = new SwatYUI(array('dom', 'event', 'animation'));
+		$yui = new SwatYUI(['dom', 'event', 'animation']);
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addStyleSheet(
@@ -217,7 +217,7 @@ abstract class SiteCommentDisplay extends SwatControl
 	 */
 	protected function getCSSClassNames()
 	{
-		$classes = array('site-comment-display');
+		$classes = ['site-comment-display'];
 		$classes = array_merge($classes, parent::getCSSClassNames());
 		$classes[] = $this->getVisibilityCssClassName();
 		return $classes;

@@ -24,7 +24,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 	/**
 	 * @var array
 	 */
-	protected $response = array();
+	protected $response = [];
 
 	// }}}
 	// {{{ protected function createLayout()
@@ -249,11 +249,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 	{
 		if ($this->app->hasModule('SiteCookieModule')) {
 			$cookie = $this->app->getModule('SiteCookieModule');
-			$value = array(
-				'fullname' => $this->getParameter('fullname', true),
-				'link'     => $this->getParameter('link', false),
-				'email'    => $this->getParameter('email', true),
-			);
+			$value = ['fullname' => $this->getParameter('fullname', true), 'link'     => $this->getParameter('link', false), 'email'    => $this->getParameter('email', true)];
 
 			$cookie->setCookie('comment_credentials', $value);
 		}
@@ -275,11 +271,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 
 	protected function handleException(Throwable $e)
 	{
-		$this->response = array(
-			'status'  => 'error',
-			'message' => $e->getMessage(),
-			'type'    => get_class($e),
-		);
+		$this->response = ['status'  => 'error', 'message' => $e->getMessage(), 'type'    => get_class($e)];
 	}
 
 	// }}}
@@ -311,12 +303,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$view->display($this->comment);
 		$view_content = ob_get_clean();
 
-		$this->response = array(
-			'status'         => 'success',
-			'view'           => $view_content,
-			'id'             => $this->comment->id,
-			'comment_status' => $this->comment->status,
-		);
+		$this->response = ['status'         => 'success', 'view'           => $view_content, 'id'             => $this->comment->id, 'comment_status' => $this->comment->status];
 	}
 
 	// }}}

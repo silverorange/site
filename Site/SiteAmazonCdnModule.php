@@ -104,14 +104,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		}
 
 		$sdk = new Aws\Sdk(
-			array(
-				'version' => 'latest',
-				'region'  => $this->app->config->amazon->region,
-				'credentials' => array(
-					'key'    => $this->access_key_id,
-					'secret' => $this->access_key_secret,
-				),
-			)
+			['version' => 'latest', 'region'  => $this->app->config->amazon->region, 'credentials' => ['key'    => $this->access_key_id, 'secret' => $this->access_key_secret]]
 		);
 
 		$this->s3 = $sdk->createS3();
@@ -210,7 +203,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		$old_md5 = (isset($metadata['md5'])) ? $metadata['md5'] : '';
 
 		// Convert HTTP headers into S3 options
-		$header_options = array();
+		$header_options = [];
 		if (is_array($headers)) {
 			if (isset($headers['Cache-Control'])) {
 				$header_options['CacheControl'] = $headers['Cache-Control'];
@@ -232,15 +225,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 				Aws\S3\S3Client::encodeKey($filename)
 			);
 			$options = array_merge(
-				array(
-					'ACL'               => $acl,
-					'Bucket'            => $this->bucket,
-					'CopySource'        => $copy_source,
-					'Key'               => $filename,
-					'Metadata'          => $metadata,
-					'MetadataDirective' => 'REPLACE',
-					'StorageClass'      => $this->storage_class,
-				),
+				['ACL'               => $acl, 'Bucket'            => $this->bucket, 'CopySource'        => $copy_source, 'Key'               => $filename, 'Metadata'          => $metadata, 'MetadataDirective' => 'REPLACE', 'StorageClass'      => $this->storage_class],
 				$header_options
 			);
 			try {
@@ -253,14 +238,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			// set the MD5 in the S3 object metadata.
 			$metadata['md5'] = $new_md5;
 			$options = array_merge(
-				array(
-					'ACL'          => $acl,
-					'Bucket'       => $this->bucket,
-					'Key'          => $filename,
-					'Metadata'     => $metadata,
-					'SourceFile'   => $source,
-					'StorageClass' => $this->storage_class,
-				),
+				['ACL'          => $acl, 'Bucket'       => $this->bucket, 'Key'          => $filename, 'Metadata'     => $metadata, 'SourceFile'   => $source, 'StorageClass' => $this->storage_class],
 				$header_options
 			);
 			try {
@@ -305,13 +283,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 		try {
 			$this->s3->copyObject(
-				array(
-					'ACL'          => $acl,
-					'Bucket'       => $this->bucket,
-					'CopySource'   => $copy_source,
-					'Key'          => $new_filename,
-					'StorageClass' => $this->storage_class,
-				)
+				['ACL'          => $acl, 'Bucket'       => $this->bucket, 'CopySource'   => $copy_source, 'Key'          => $new_filename, 'StorageClass' => $this->storage_class]
 			);
 		} catch (Aws\Exception\AwsException $e) {
 			throw new SiteCdnException($e);
@@ -365,10 +337,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 			} else {
 				$command = $this->s3->getCommand(
 					'GetObject',
-					array(
-						'Bucket' => $this->bucket,
-						'Key'    => $filename,
-					)
+					['Bucket' => $this->bucket, 'Key'    => $filename]
 				);
 
 				$request = $this->s3->createPresignedRequest(
@@ -404,14 +373,11 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 	public function getMetadata($filename)
 	{
-		$metadata = array();
+		$metadata = [];
 
 		try {
 			$result = $this->s3->headObject(
-				array(
-					'Bucket' => $this->bucket,
-					'Key'    => $filename
-				)
+				['Bucket' => $this->bucket, 'Key'    => $filename]
 			);
 
 			$metadata = $result['Metadata'];
@@ -502,12 +468,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 
 		if ($expires !== null) {
 			$uri = $this->cf->getSignedUrl(
-				array(
-					'url'         => $uri,
-					'expires'     => $expires,
-					'key_pair_id' => $this->distribution_key_pair_id,
-					'private_key' => $this->distribution_private_key_file,
-				)
+				['url'         => $uri, 'expires'     => $expires, 'key_pair_id' => $this->distribution_key_pair_id, 'private_key' => $this->distribution_private_key_file]
 			);
 		}
 

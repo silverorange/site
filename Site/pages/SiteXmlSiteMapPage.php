@@ -12,7 +12,7 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 {
 	// {{{ protected properties
 
-	protected $priority_paths = array();
+	protected $priority_paths = [];
 
 	// }}}
 	// {{{ public function __construct()

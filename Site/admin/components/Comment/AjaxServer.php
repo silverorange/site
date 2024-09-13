@@ -137,15 +137,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 	protected function getAkismetComment(SiteComment $comment)
 	{
 		return new Services_Akismet2_Comment(
-			array(
-				'comment_author'       => $comment->fullname,
-				'comment_author_email' => $comment->email,
-				'comment_author_url'   => $comment->link,
-				'comment_content'      => $comment->bodytext,
-				'permalink'            => $this->getPermalink($comment),
-				'user_ip'              => $comment->ip_address,
-				'user_agent'           => $comment->user_agent,
-			)
+			['comment_author'       => $comment->fullname, 'comment_author_email' => $comment->email, 'comment_author_url'   => $comment->link, 'comment_content'      => $comment->bodytext, 'permalink'            => $this->getPermalink($comment), 'user_ip'              => $comment->ip_address, 'user_agent'           => $comment->user_agent]
 		);
 	}
 

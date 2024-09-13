@@ -144,20 +144,7 @@ class SiteAttachment extends SwatDBDataObject
 	{
 		$ms_openxml_prefix = 'application/vnd.openxmlformats-officedocument';
 
-		return array(
-			'audio/mp4',
-			'video/mp4',
-			'audio/mpeg',
-			'application/zip',
-			'application/pdf',
-			'image/jpeg',
-			'image/png',
-			'text/html',
-			'application/msword',
-			'application/vnd.ms-excel',
-			$ms_openxml_prefix.'.wordprocessingml.document',
-			$ms_openxml_prefix.'.spreadsheetml.sheet',
-		);
+		return ['audio/mp4', 'video/mp4', 'audio/mpeg', 'application/zip', 'application/pdf', 'image/jpeg', 'image/png', 'text/html', 'application/msword', 'application/vnd.ms-excel', $ms_openxml_prefix.'.wordprocessingml.document', $ms_openxml_prefix.'.spreadsheetml.sheet'];
 	}
 
 	// }}}
@@ -180,20 +167,7 @@ class SiteAttachment extends SwatDBDataObject
 
 		$ms_openxml_prefix = 'application/vnd.openxmlformats-officedocument';
 
-		$map = array(
-			'audio/mp4'                => 'm4a',
-			'video/mp4'                => 'mp4',
-			'audio/mpeg'               => 'mp3',
-			'application/zip'          => 'zip',
-			'application/pdf'          => 'pdf',
-			'image/jpeg'               => 'jpg',
-			'image/png'                => 'png',
-			'text/html'                => 'html',
-			'application/msword'       => 'doc',
-			'application/vnd.ms-excel' => 'xls',
-			$ms_openxml_prefix.'.wordprocessingml.document' => 'docx',
-			$ms_openxml_prefix.'.spreadsheetml.sheet'       => 'xlsx',
-		);
+		$map = ['audio/mp4'                => 'm4a', 'video/mp4'                => 'mp4', 'audio/mpeg'               => 'mp3', 'application/zip'          => 'zip', 'application/pdf'          => 'pdf', 'image/jpeg'               => 'jpg', 'image/png'                => 'png', 'text/html'                => 'html', 'application/msword'       => 'doc', 'application/vnd.ms-excel' => 'xls', $ms_openxml_prefix.'.wordprocessingml.document' => 'docx', $ms_openxml_prefix.'.spreadsheetml.sheet'       => 'xlsx'];
 
 		if (!array_key_exists($mime_type, $map)) {
 			throw new SiteException(
@@ -218,23 +192,9 @@ class SiteAttachment extends SwatDBDataObject
 
 		$ms_openxml_prefix = 'application/vnd.openxmlformats-officedocument';
 
-		$map = array(
-			'audio/mp4'                => Site::_('M4A'),
-			'video/mp4'                => Site::_('MP4'),
-			'audio/mpeg'               => Site::_('MP3'),
-			'application/zip'          => Site::_('ZIP'),
-			'application/pdf'          => Site::_('PDF'),
-			'image/jpeg'               => Site::_('JPEG Image'),
-			'image/png'                => Site::_('PNG Image'),
-			'text/html'                => Site::_('Web Document'),
-			'application/msword'       => Site::_('Word Document'),
-			'application/vnd.ms-excel' => Site::_('Excel Document'),
-			$ms_openxml_prefix.'.wordprocessingml.document' =>
-				Site::_('Word Document'),
-
-			$ms_openxml_prefix.'.spreadsheetml.sheet' =>
-				Site::_('Excel Document'),
-		);
+		$map = ['audio/mp4'                => Site::_('M4A'), 'video/mp4'                => Site::_('MP4'), 'audio/mpeg'               => Site::_('MP3'), 'application/zip'          => Site::_('ZIP'), 'application/pdf'          => Site::_('PDF'), 'image/jpeg'               => Site::_('JPEG Image'), 'image/png'                => Site::_('PNG Image'), 'text/html'                => Site::_('Web Document'), 'application/msword'       => Site::_('Word Document'), 'application/vnd.ms-excel' => Site::_('Excel Document'), $ms_openxml_prefix.'.wordprocessingml.document' =>
+				Site::_('Word Document'), $ms_openxml_prefix.'.spreadsheetml.sheet' =>
+				Site::_('Excel Document')];
 
 		if (!array_key_exists($mime_type, $map)) {
 			throw new SiteException(
@@ -253,7 +213,7 @@ class SiteAttachment extends SwatDBDataObject
 
 	public function getHumanFileTypes(array $mime_types)
 	{
-		$human_file_types = array();
+		$human_file_types = [];
 
 		foreach ($mime_types as $mime_type) {
 			$human_file_types[$mime_type] = $this->getHumanFileType($mime_type);
@@ -328,10 +288,7 @@ class SiteAttachment extends SwatDBDataObject
 
 	public function getFileDirectory()
 	{
-		$items = array(
-			$this->getFileBase(),
-			$this->getAttachmentSet()->shortname,
-		);
+		$items = [$this->getFileBase(), $this->getAttachmentSet()->shortname];
 
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
@@ -341,7 +298,7 @@ class SiteAttachment extends SwatDBDataObject
 
 	public function getFilePath()
 	{
-		$items = array($this->getFileDirectory(), $this->getFilename());
+		$items = [$this->getFileDirectory(), $this->getFilename()];
 
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
@@ -365,7 +322,7 @@ class SiteAttachment extends SwatDBDataObject
 
 	public function getHttpHeaders()
 	{
-		$headers = array();
+		$headers = [];
 
 		// Set a "never-expire" policy with a far future max age (10 years) as
 		// suggested https://developer.yahoo.com/performance/rules.html#expires.
@@ -387,8 +344,8 @@ class SiteAttachment extends SwatDBDataObject
 		);
 
 		// Format the filename according to the qtext syntax in RFC 822
-		$filename = str_replace(array("\\", "\r", "\""),
-			array("\\\\", "\\\r", "\\\""), $filename);
+		$filename = str_replace(["\\", "\r", "\""],
+			["\\\\", "\\\r", "\\\""], $filename);
 
 		$headers['Content-Disposition'] = sprintf(
 			'attachment; filename="%s"',

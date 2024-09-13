@@ -53,7 +53,7 @@ class SiteMediaEncoding extends SwatDBDataObject
 	// }}}
 	// {{{ private properties
 
-	private static $default_type_cache = array();
+	private static $default_type_cache = [];
 
 	// }}}
 	// {{{ public function loadByShortname()
@@ -156,9 +156,7 @@ class SiteMediaEncoding extends SwatDBDataObject
 
 	protected function getSerializableSubDataObjects()
 	{
-		return array(
-			'default_type',
-		);
+		return ['default_type'];
 	}
 
 	// }}}

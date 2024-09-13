@@ -23,7 +23,7 @@ class SiteArticleVisibilityCellRenderer extends SwatCellRenderer
 
 	public function render()
 	{
-		$messages = array();
+		$messages = [];
 
 		if (!$this->enabled)
 			$messages[] = Site::_('not enabled');

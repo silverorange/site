@@ -146,11 +146,7 @@ class SiteContactMessage extends SwatDBDataObject
 
 	public static function getSubjects()
 	{
-		$subjects = array(
-			'general' => Site::_('General Question'),
-			'website' => Site::_('Website'),
-			'privacy' => Site::_('Privacy'),
-		);
+		$subjects = ['general' => Site::_('General Question'), 'website' => Site::_('Website'), 'privacy' => Site::_('Privacy')];
 
 		return $subjects;
 	}

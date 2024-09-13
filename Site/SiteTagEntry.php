@@ -58,7 +58,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 *
 	 * @var array
 	 */
-	protected $selected_tag_array = array();
+	protected $selected_tag_array = [];
 
 	// }}}
 	// {{{ public function __construct()
@@ -76,7 +76,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 
 		$this->requires_id = true;
 
-		$yui = new SwatYUI(array('autocomplete'));
+		$yui = new SwatYUI(['autocomplete']);
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
@@ -147,7 +147,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	{
 		parent::process();
 
-		$this->selected_tag_array = array();
+		$this->selected_tag_array = [];
 
 		$data = &$this->getForm()->getFormData();
 		$new_key = $this->id.'_new';
@@ -285,7 +285,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 */
 	protected function getCSSClassNames()
 	{
-		$classes = array('site-tag-entry');
+		$classes = ['site-tag-entry'];
 		$classes = array_merge($classes, parent::getCSSClassNames());
 		return $classes;
 	}
@@ -310,7 +310,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		}
 
 		if ($this->json_server === null) {
-			$tag_array = array();
+			$tag_array = [];
 			foreach ($this->tag_array as $tag => $title) {
 				$tag_array[] = sprintf("\n[%s, %s]",
 					SwatString::quoteJavaScriptString(
@@ -327,7 +327,7 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 				SwatString::quoteJavaScriptString($this->json_server));
 		}
 
-		$selected_tag_array = array();
+		$selected_tag_array = [];
 		foreach ($this->selected_tag_array as $tag => $title) {
 			$selected_tag_array[] = sprintf("\n[%s, %s]",
 				SwatString::quoteJavaScriptString(

@@ -23,7 +23,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 	 * @see SiteConfigChecker::addDefinition()
 	 * @see SiteConfigChecker::addDefinitions()
 	 */
-	private $definitions = array();
+	private $definitions = [];
 
 	/**
 	 * @var string
@@ -37,7 +37,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 	{
 		parent::__construct($id, $title, $documentation);
 
-		$quiet = new SiteCommandLineArgument(array('-q', '--quiet'),
+		$quiet = new SiteCommandLineArgument(['-q', '--quiet'],
 			'setQuiet', 'Turns on quiet mode. The return value of the process '.
 			'indicates success or failure but no output is displayed.');
 
@@ -134,7 +134,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		}
 
 		if (!array_key_exists($section, $this->definitions))
-			$this->definitions[$section] = array();
+			$this->definitions[$section] = [];
 
 		$this->definitions[$section][$name] = $default_value;
 	}

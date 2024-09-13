@@ -249,7 +249,7 @@ class SiteArticlePage extends SitePathPage
 	protected final function replaceMarkers($text)
 	{
 		$marker_pattern = '/<!-- \[(.*?)\] -->/u';
-		$callback = array($this, 'getReplacementMarkerTextByMatches');
+		$callback = [$this, 'getReplacementMarkerTextByMatches'];
 		return preg_replace_callback($marker_pattern, $callback, $text);
 	}
 
@@ -289,7 +289,7 @@ class SiteArticlePage extends SitePathPage
 
 	protected function getBodyClass()
 	{
-		$class = array();
+		$class = [];
 		foreach ($this->getPath() as $element) {
 			$class[] = $element->shortname;
 		}

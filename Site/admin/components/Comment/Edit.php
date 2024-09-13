@@ -69,13 +69,7 @@ class SiteCommentEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		$values = $this->ui->getValues(array(
-			'fullname',
-			'link',
-			'email',
-			'bodytext',
-			'status',
-		));
+		$values = $this->ui->getValues(['fullname', 'link', 'email', 'bodytext', 'status']);
 
 		if ($this->comment->id === null) {
 			$now = new SwatDate();

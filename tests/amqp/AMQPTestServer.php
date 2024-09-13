@@ -14,9 +14,7 @@ class AMQPTestServer extends SiteAMQPApplication
 		} else  {
 			$this->logger->debug(
 				' => reversing "{string}"'.PHP_EOL,
-				array(
-					'string' => $job->getBody()
-				)
+				['string' => $job->getBody()]
 			);
 			$job->sendSuccess(strrev($job->getBody()));
 		}
@@ -28,9 +26,7 @@ class AMQPTestServer extends SiteAMQPApplication
 
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'config' => 'SiteConfigModule',
-		);
+		return ['config' => 'SiteConfigModule'];
 	}
 
 	// }}}

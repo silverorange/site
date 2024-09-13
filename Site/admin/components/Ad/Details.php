@@ -47,13 +47,7 @@ class SiteAdDetails extends AdminIndex
 		$this->ui->loadFromXML($this->getUiXml());
 		$this->ui->getWidget('index_frame')->subtitle = $this->ad->title;
 
-		$this->periods = array(
-			'day'      => Site::_('Day'),
-			'week'     => Site::_('Week'),
-			'two_week' => Site::_('2 Weeks'),
-			'month'    => Site::_('Month'),
-			'total'    => Site::_('Total'),
-		);
+		$this->periods = ['day'      => Site::_('Day'), 'week'     => Site::_('Week'), 'two_week' => Site::_('2 Weeks'), 'month'    => Site::_('Month'), 'total'    => Site::_('Total')];
 	}
 
 	// }}}

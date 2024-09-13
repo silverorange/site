@@ -35,19 +35,19 @@ class SiteSessionModule extends SiteApplicationModule
 	/**
 	 * @var array
 	 */
-	protected $regenerate_id_callbacks = array();
+	protected $regenerate_id_callbacks = [];
 
 	/**
 	 * @var array
 	 */
-	protected $activate_callbacks = array();
+	protected $activate_callbacks = [];
 
 	/**
 	 * @var array
 	 *
 	 * @see SiteSessionModule::registerObject()
 	 */
-	protected $registered_objects = array();
+	protected $registered_objects = [];
 
 	// }}}
 	// {{{ public function __construct()
@@ -66,19 +66,19 @@ class SiteSessionModule extends SiteApplicationModule
 	public function __construct(SiteApplication $app)
 	{
 		$this->registerActivateCallback(
-			array($this, 'regenerateAuthenticationToken')
+			[$this, 'regenerateAuthenticationToken']
 		);
 
 		$this->registerActivateCallback(
-			array($this, 'setSentryUserContext')
+			[$this, 'setSentryUserContext']
 		);
 
 		$this->registerRegenerateIdCallback(
-			array($this, 'regenerateAuthenticationToken')
+			[$this, 'regenerateAuthenticationToken']
 		);
 
 		$this->registerRegenerateIdCallback(
-			array($this, 'setSentryUserContext')
+			[$this, 'setSentryUserContext']
 		);
 
 		parent::__construct($app);
@@ -184,15 +184,12 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	public function registerActivateCallback(
 		$callback,
-		array $parameters = array()
+		array $parameters = []
 	) {
 		if (!is_callable($callback))
 			throw new SiteException('Cannot register invalid callback.');
 
-		$this->activate_callbacks[] = array(
-			'callback' => $callback,
-			'parameters' => $parameters
-		);
+		$this->activate_callbacks[] = ['callback' => $callback, 'parameters' => $parameters];
 	}
 
 	// }}}
@@ -219,10 +216,7 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	public function registerObject($name, $class, $destroy_on_logout = true)
 	{
-		$this->registered_objects[$name] = array(
-			'class'   => $class,
-			'destroy' => ($destroy_on_logout) ? true : false,
-		);
+		$this->registered_objects[$name] = ['class'   => $class, 'destroy' => ($destroy_on_logout) ? true : false];
 	}
 
 	// }}}
@@ -280,7 +274,7 @@ class SiteSessionModule extends SiteApplicationModule
 	public function clear()
 	{
 		if (!$this->isActive())
-			$_SESSION = array();
+			$_SESSION = [];
 	}
 
 	// }}}
@@ -414,7 +408,7 @@ class SiteSessionModule extends SiteApplicationModule
 
 			// if there are no parameters, use old_id and new_id as parameters
 			if ($parameters == null) {
-				$parameters = array($old_id, $new_id);
+				$parameters = [$old_id, $new_id];
 			}
 
 			call_user_func_array($function, $parameters);
@@ -474,10 +468,7 @@ class SiteSessionModule extends SiteApplicationModule
 			throw new SiteException('Callback parameters must be specified '.
 				'in an array.');
 
-		$this->regenerate_id_callbacks[] = array(
-			'callback' => $callback,
-			'parameters' => $parameters
-		);
+		$this->regenerate_id_callbacks[] = ['callback' => $callback, 'parameters' => $parameters];
 	}
 
 	// }}}

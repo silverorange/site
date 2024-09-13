@@ -27,7 +27,7 @@ class SiteCommandLineArgument extends SiteObject
 	 *
 	 * @var array
 	 */
-	protected $names = array();
+	protected $names = [];
 
 	/**
 	 * Additional parameters of this command line argument
@@ -36,7 +36,7 @@ class SiteCommandLineArgument extends SiteObject
 	 *
 	 * @see SiteCommandLineArgument::addParameter()
 	 */
-	protected $parameters = array();
+	protected $parameters = [];
 
 	// }}}
 	// {{{ public function __construct()

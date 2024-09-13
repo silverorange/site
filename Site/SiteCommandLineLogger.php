@@ -78,7 +78,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return void
 	 */
-	public function log($level, $message, array $context = array())
+	public function log($level, $message, array $context = [])
 	{
 		switch ($level) {
 		case Psr\Log\Level::EMERGENCY:
@@ -129,7 +129,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return void
 	 */
-	public function emergency($message, array $context = array())
+	public function emergency($message, array $context = [])
 	{
 		if ($this->level >= self::LEVEL_NONE) {
 			$this->out->stderr($this->interpolate($message, $context));
@@ -149,7 +149,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return void
 	 */
-	public function alert($message, array $context = array())
+	public function alert($message, array $context = [])
 	{
 		$this->emergency($message, $context);
 	}
@@ -167,7 +167,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return void
 	 */
-	public function critical($message, array $context = array())
+	public function critical($message, array $context = [])
 	{
 		$this->emergency($message, $context);
 	}
@@ -186,7 +186,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return void
 	 */
-	public function error($message, array $context = array())
+	public function error($message, array $context = [])
 	{
 		if ($this->level >= self::LEVEL_ERRORS) {
 			$this->out->stderr($this->interpolate($message, $context));
@@ -209,7 +209,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return void
 	 */
-	public function warning($message, array $context = array())
+	public function warning($message, array $context = [])
 	{
 		$this->error($message, $context);
 	}
@@ -227,7 +227,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return void
 	 */
-	public function notice($message, array $context = array())
+	public function notice($message, array $context = [])
 	{
 		if ($this->level >= self::LEVEL_INFO) {
 			$this->out->stdout($this->interpolate($message, $context));
@@ -247,7 +247,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return void
 	 */
-	public function info($message, array $context = array())
+	public function info($message, array $context = [])
 	{
 		$this->notice($message, $context);
 	}
@@ -265,7 +265,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return void
 	 */
-	public function debug($message, array $context = array())
+	public function debug($message, array $context = [])
 	{
 		if ($this->level >= self::LEVEL_DEBUG) {
 			$this->out->stdout($this->interpolate($message, $context));
@@ -297,9 +297,9 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 *
 	 * @return string the interpolated message.
 	 */
-	protected function interpolate($message, array $context = array())
+	protected function interpolate($message, array $context = [])
 	{
-		$replace = array();
+		$replace = [];
 
 		foreach ($context as $key => $value) {
 			$replace['{'.$key.'}'] = $value;

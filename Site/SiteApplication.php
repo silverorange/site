@@ -65,7 +65,7 @@ abstract class SiteApplication extends SiteObject
 	 * @see SiteApplication::getDefaultModuleList()
 	 * @see SiteApplication::addModule()
 	 */
-	protected $modules = array();
+	protected $modules = [];
 
 	/**
 	 * Modules of this application indexed by provided features
@@ -77,7 +77,7 @@ abstract class SiteApplication extends SiteObject
 	 *
 	 * @see SiteApplicationModule::provides()
 	 */
-	protected $modules_by_provides = array();
+	protected $modules_by_provides = [];
 
 	/**
 	 * The current locale of this application
@@ -279,7 +279,7 @@ abstract class SiteApplication extends SiteObject
 	 */
 	public function getConfigSetting($setting, SiteInstance $instance = null)
 	{
-		static $config_cache = array();
+		static $config_cache = [];
 		$value = null;
 
 		if ($instance instanceof SiteInstance &&
@@ -625,11 +625,11 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected function addDefaultModules()
 	{
-		$modules = array();
-		$module_ids = array();
-		$modules_by_provides = array();
-		$dependent_stack = array();
-		$added_modules = array();
+		$modules = [];
+		$module_ids = [];
+		$modules_by_provides = [];
+		$dependent_stack = [];
+		$added_modules = [];
 
 		// instantiate default modules
 		foreach ($this->getDefaultModuleList() as $module_id => $module_class) {
@@ -822,7 +822,7 @@ abstract class SiteApplication extends SiteObject
 		$name_space = null,
 		$expiration = 0
 	) {
-		register_shutdown_function(array($this, 'cacheOnShutdown'),
+		register_shutdown_function([$this, 'cacheOnShutdown'],
 			$value, $key, $name_space, $expiration);
 	}
 
@@ -916,7 +916,7 @@ abstract class SiteApplication extends SiteObject
 		$index_property = 'id',
 		$expiration = 0
 	) {
-		$ids = array();
+		$ids = [];
 		foreach ($recordset as $object) {
 			$object_key = $key.'.'.$object->$index_property;
 			$ids[] = $object_key;

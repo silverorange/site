@@ -28,7 +28,7 @@ class SiteRedisModuleTest extends PHPUnit_Framework_TestCase
 	{
 		$this->redis->set('test', 'data');
 		$this->assertEquals(
-			array('site-redis-test:test'),
+			['site-redis-test:test'],
 			$this->redis->getKeys('*')
 		);
 	}

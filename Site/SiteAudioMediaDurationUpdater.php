@@ -54,7 +54,7 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 
 		$this->addCommandLineArgument(
 			new SiteCommandLineArgument(
-				array('--dry-run'),
+				['--dry-run'],
 				'setDryRun',
 				Site::_(
 					'Durations are only calculated but not saved. Use '.
@@ -64,7 +64,7 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		);
 
 		$shortname = new SiteCommandLineArgument(
-			array('-s', '--shortname'),
+			['-s', '--shortname'],
 			'setMediaSetShortname',
 			Site::_(
 				'Sets the shortname of the media set whose durations we want '.

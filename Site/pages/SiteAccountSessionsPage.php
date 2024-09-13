@@ -16,7 +16,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 	/**
 	 * @var array
 	 */
-	protected $logout_buttons = array();
+	protected $logout_buttons = [];
 
 	// }}}
 	// {{{ protected function getUiXml()
@@ -147,7 +147,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		session_start();
 
 		// clear all session data
-		$_SESSION = array();
+		$_SESSION = [];
 
 		// destroy session file
 		session_destroy();
@@ -248,7 +248,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 	protected function getOtherLoginSessions()
 	{
-		$sessions = array();
+		$sessions = [];
 
 		$current_session_id = $this->app->session->getSessionId();
 
@@ -289,38 +289,9 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 	protected function getBrowser($user_agent)
 	{
-		$browsers = array(
-			'blackberry'    => 'Blackberry Browser',
-			'chromium'      => 'Chromium',
-			'chrome'        => 'Chrome',
-			'android'       => 'Android Browser',
-			'mobile-safari' => 'Mobile Safari',
-			'safari'        => 'Safari',
-			'maemo'         => 'Maemo Browser',
-			'iceweasel'     => 'Iceweasel',
-			'firefox'       => 'Firefox',
-			'opera'         => 'Opera',
-			'msie'          => 'Internet Explorer',
-			's60'           => 'Series60 Browser',
-			'mozilla'       => 'Mozilla Compatible',
-			'other'         => 'Unknown Browser',
-		);
+		$browsers = ['blackberry'    => 'Blackberry Browser', 'chromium'      => 'Chromium', 'chrome'        => 'Chrome', 'android'       => 'Android Browser', 'mobile-safari' => 'Mobile Safari', 'safari'        => 'Safari', 'maemo'         => 'Maemo Browser', 'iceweasel'     => 'Iceweasel', 'firefox'       => 'Firefox', 'opera'         => 'Opera', 'msie'          => 'Internet Explorer', 's60'           => 'Series60 Browser', 'mozilla'       => 'Mozilla Compatible', 'other'         => 'Unknown Browser'];
 
-		$exps = array(
-			'blackberry'    => '#BlackBerry #',
-			'chromium'      => '#Chromium/#',
-			'chrome'        => '#Chrome/|CriOS/#',
-			'android'       => '#Android #',
-			'mobile-safari' => '#Mobile/[A-Z0-9]+ Safari/#',
-			'safari'        => '#Safari/#',
-			'maemo'         => '#Maemo Browser #',
-			'iceweasel'     => '#Iceweasel/#',
-			'firefox'       => '#Firefox/#',
-			'opera'         => '#Opera/#',
-			'msie'          => '#MSIE #',
-			's60'           => '#Series60/#',
-			'mozilla'       => '#Mozilla/#',
-		);
+		$exps = ['blackberry'    => '#BlackBerry #', 'chromium'      => '#Chromium/#', 'chrome'        => '#Chrome/|CriOS/#', 'android'       => '#Android #', 'mobile-safari' => '#Mobile/[A-Z0-9]+ Safari/#', 'safari'        => '#Safari/#', 'maemo'         => '#Maemo Browser #', 'iceweasel'     => '#Iceweasel/#', 'firefox'       => '#Firefox/#', 'opera'         => '#Opera/#', 'msie'          => '#MSIE #', 's60'           => '#Series60/#', 'mozilla'       => '#Mozilla/#'];
 
 		$found_browser = $browsers['other'];
 
@@ -339,46 +310,9 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 	protected function getOS($user_agent)
 	{
-		$oses = array(
-			'windows-8'     => 'Windows 8',
-			'windows-7'     => 'Windows 7',
-			'windows-vista' => 'Windows Vista',
-			'windows-xp'    => 'Windows XP',
-			'windows-phone' => 'Windows Phone',
-			'windows'       => 'Windows',
-			'blackberry'    => 'Blackberry OS',
-			'android'       => 'Android',
-			'ios-ipad'      => 'iPad',
-			'ios-ipod'      => 'iPod Touch',
-			'ios-iphone'    => 'iPhone',
-			'mac-osx'       => 'Mac OS X',
-			'linux-ubuntu'  => 'Ubuntu Linux',
-			'linux-fedora'  => 'Fedora Linux',
-			'linux-maemo'   => 'Maemo',
-			'linux'         => 'Linux',
-			'symbian'       => 'Symbian',
-			'other'         => 'Unknown Operating System',
-		);
+		$oses = ['windows-8'     => 'Windows 8', 'windows-7'     => 'Windows 7', 'windows-vista' => 'Windows Vista', 'windows-xp'    => 'Windows XP', 'windows-phone' => 'Windows Phone', 'windows'       => 'Windows', 'blackberry'    => 'Blackberry OS', 'android'       => 'Android', 'ios-ipad'      => 'iPad', 'ios-ipod'      => 'iPod Touch', 'ios-iphone'    => 'iPhone', 'mac-osx'       => 'Mac OS X', 'linux-ubuntu'  => 'Ubuntu Linux', 'linux-fedora'  => 'Fedora Linux', 'linux-maemo'   => 'Maemo', 'linux'         => 'Linux', 'symbian'       => 'Symbian', 'other'         => 'Unknown Operating System'];
 
-		$exps = array(
-			'windows-8'     => '#Windows NT 6.2#',
-			'windows-7'     => '#Windows NT 6.1#',
-			'windows-vista' => '#Windows NT 6.0#',
-			'windows-xp'    => '#Windows NT 5.1|Windows NT 5.2; (?:WOW64|Win64);#',
-			'windows-phone' => '#Windows (?:Phone|Mobile|CE)#',
-			'windows'       => '#Windows #',
-			'blackberry'    => '#BlackBerry#',
-			'android'       => '#Android [1-9]#',
-			'ios-ipad'      => '#iPad;#',
-			'ios-iphone'    => '#iPhone;#',
-			'ios-ipod'      => '#iPod;#',
-			'mac-osx'       => '#Mac OS X#',
-			'linux-ubuntu'  => '#Ubuntu\/[1-9]#',
-			'linux-fedora'  => '#Fedora\/[1-9]#',
-			'linux-maemo'   => '#Maemo;|Linux armv7l;#',
-			'linux'         => '#Linux #',
-			'symbian'       => '#S60;|SymbOS;|SymbianOS/[1-9]\.[0-9];#',
-		);
+		$exps = ['windows-8'     => '#Windows NT 6.2#', 'windows-7'     => '#Windows NT 6.1#', 'windows-vista' => '#Windows NT 6.0#', 'windows-xp'    => '#Windows NT 5.1|Windows NT 5.2; (?:WOW64|Win64);#', 'windows-phone' => '#Windows (?:Phone|Mobile|CE)#', 'windows'       => '#Windows #', 'blackberry'    => '#BlackBerry#', 'android'       => '#Android [1-9]#', 'ios-ipad'      => '#iPad;#', 'ios-iphone'    => '#iPhone;#', 'ios-ipod'      => '#iPod;#', 'mac-osx'       => '#Mac OS X#', 'linux-ubuntu'  => '#Ubuntu\/[1-9]#', 'linux-fedora'  => '#Fedora\/[1-9]#', 'linux-maemo'   => '#Maemo;|Linux armv7l;#', 'linux'         => '#Linux #', 'symbian'       => '#S60;|SymbOS;|SymbianOS/[1-9]\.[0-9];#'];
 
 		$found_os = $oses['other'];
 

@@ -116,7 +116,7 @@ class SiteExceptionPage extends SitePage
 
 	protected function getSuggestions()
 	{
-		return array();
+		return [];
 	}
 
 	// }}}

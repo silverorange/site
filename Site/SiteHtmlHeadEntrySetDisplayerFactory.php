@@ -17,7 +17,7 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 	 *
 	 * @var array
 	 */
-	protected $displayers = array();
+	protected $displayers = [];
 
 	/**
 	 * @var string
@@ -51,15 +51,10 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 			}
 
 			// build data provider
-			$data_provider = new Concentrate_DataProvider(array(
-				'stat' => $memcache->resource_cache_stat,
-			));
+			$data_provider = new Concentrate_DataProvider(['stat' => $memcache->resource_cache_stat]);
 
 			// build concentrator
-			$concentrator = new Concentrate_Concentrator(array(
-				'cache'         => $cache,
-				'data_provider' => $data_provider,
-			));
+			$concentrator = new Concentrate_Concentrator(['cache'         => $cache, 'data_provider' => $data_provider]);
 
 			// load data files
 			$finder = new SiteConcentrateFileFinder();

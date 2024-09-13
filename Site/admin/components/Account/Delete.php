@@ -98,7 +98,7 @@ class SiteAccountDelete extends AdminDBDelete
 
 		$class = SwatDBClassMap::get(AdminDependencyEntry::class);
 
-		$deps = array();
+		$deps = [];
 		foreach ($accounts as $account) {
 			$entry = new $class();
 			$entry->id           = $account->id;

@@ -54,7 +54,7 @@ abstract class SiteAbstractConfigPage
 
 	public function saveUI(SiteConfigModule $config)
 	{
-		$changed_settings = array();
+		$changed_settings = [];
 
 		foreach ($this->getConfigSettings() as $section => $keys) {
 			foreach ($keys as $name) {

@@ -78,7 +78,7 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	// }}}
 	// {{{ private properties
 
-	private static $image_type_cache = array();
+	private static $image_type_cache = [];
 
 	// }}}
 	// {{{ protected function init()
@@ -150,9 +150,7 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 
 	protected function getSerializablePrivateProperties()
 	{
-		return array_merge(parent::getSerializablePrivateProperties(), array(
-			'image_type',
-		));
+		return array_merge(parent::getSerializablePrivateProperties(), ['image_type']);
 	}
 
 	// }}}

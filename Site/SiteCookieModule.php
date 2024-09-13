@@ -155,7 +155,7 @@ class SiteCookieModule extends SiteApplicationModule
 		} catch (SwatInvalidSerializedDataException $e) {
 
 			// Ignore common cookie values used to remove cookies.
-			$ignored_values = array(0, '');
+			$ignored_values = [0, ''];
 
 			if (!in_array($_COOKIE[$name], $ignored_values)) {
 				// If the cookie can't be unserialized, then log it and

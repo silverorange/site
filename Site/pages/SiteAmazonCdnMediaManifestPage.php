@@ -108,7 +108,7 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 		echo '<switch>';
 
 		// TODO: memcache everything but content-signing
-		$tags = array();
+		$tags = [];
 		foreach ($this->media->media_set->encodings as $encoding) {
 			$binding = $this->media->getEncodingBinding($encoding->shortname);
 			if ($binding === null || !$binding->on_cdn || $encoding->width <= 0) {

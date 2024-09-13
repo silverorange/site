@@ -38,9 +38,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 
 	protected function getArgumentMap()
 	{
-		return array(
-			'tag' => array(0, null),
-		);
+		return ['tag' => [0, null]];
 	}
 
 	// }}}

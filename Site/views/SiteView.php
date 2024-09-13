@@ -74,7 +74,7 @@ abstract class SiteView
 	 *
 	 * @see SiteView::definePart()
 	 */
-	protected $parts = array();
+	protected $parts = [];
 
 	// }}}
 	// {{{ public function __construct()
@@ -140,7 +140,7 @@ abstract class SiteView
 
 		$mode = $this->filterMode($mode);
 		$link = $this->filterLink($link);
-		$this->parts[$part] = array('mode' => $mode, 'link' => $link);
+		$this->parts[$part] = ['mode' => $mode, 'link' => $link];
 	}
 
 	// }}}
@@ -260,11 +260,7 @@ abstract class SiteView
 	 */
 	protected function filterMode($mode)
 	{
-		$valid_modes = array(
-			self::MODE_ALL,
-			self::MODE_SUMMARY,
-			self::MODE_NONE,
-		);
+		$valid_modes = [self::MODE_ALL, self::MODE_SUMMARY, self::MODE_NONE];
 
 		if (!in_array($mode, $valid_modes)) {
 			$mode = self::MODE_ALL;
@@ -330,7 +326,7 @@ abstract class SiteView
 	{
 		$mode = $this->filterMode($mode);
 		$link = $this->filterLink($link);
-		$this->parts[$part] = array('mode' => $mode, 'link' => $link);
+		$this->parts[$part] = ['mode' => $mode, 'link' => $link];
 	}
 
 	// }}}

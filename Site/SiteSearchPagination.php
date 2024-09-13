@@ -25,7 +25,7 @@ class SiteSearchPagination extends SwatPagination
 	 *
 	 * @var array
 	 */
-	public $unset_get_vars = array();
+	public $unset_get_vars = [];
 
 	/**
 	 * @var integer

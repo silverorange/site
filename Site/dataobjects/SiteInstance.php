@@ -110,7 +110,7 @@ class SiteInstance extends SwatDBDataObject
 		$wrapper  = SwatDBClassMap::get(SiteInstanceConfigSettingWrapper::class);
 		$settings = SwatDB::query($this->db, $sql, $wrapper);
 
-		$non_default = array();
+		$non_default = [];
 
 		// Find all config settings that have non-default values
 		foreach ($settings as $setting) {

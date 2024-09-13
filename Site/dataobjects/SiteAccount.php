@@ -510,20 +510,11 @@ class SiteAccount extends SwatDBDataObject
 	{
 		$properties = parent::getProtectedPropertyList();
 
-		$properties['fullname'] = array(
-			'get' => 'getFullName',
-			'set' => 'setFullName'
-		);
+		$properties['fullname'] = ['get' => 'getFullName', 'set' => 'setFullName'];
 
-		$properties['email'] = array(
-			'get' => 'getEmail',
-			'set' => 'setEmail'
-		);
+		$properties['email'] = ['get' => 'getEmail', 'set' => 'setEmail'];
 
-		$properties['password'] = array(
-			'get' => 'getPassword',
-			'set' => 'setPassword'
-		);
+		$properties['password'] = ['get' => 'getPassword', 'set' => 'setPassword'];
 
 		return $properties;
 	}
@@ -686,9 +677,7 @@ class SiteAccount extends SwatDBDataObject
 
 	protected function getResetPasswordFields()
 	{
-		return array(
-			'text:password_tag',
-		);
+		return ['text:password_tag'];
 	}
 
 	// }}}
@@ -705,11 +694,9 @@ class SiteAccount extends SwatDBDataObject
 
 	protected function getResetPasswordValues()
 	{
-		return array(
-			'password_tag' => SwatString::hash(
+		return ['password_tag' => SwatString::hash(
 				openssl_random_pseudo_bytes(32)
-			),
-		);
+			)];
 	}
 
 	// }}}
@@ -798,10 +785,7 @@ class SiteAccount extends SwatDBDataObject
 
 	protected function getGeneratePasswordFields()
 	{
-		return array(
-			'text:password',
-			'text:password_salt',
-		);
+		return ['text:password', 'text:password_salt'];
 	}
 
 	// }}}
@@ -816,11 +800,7 @@ class SiteAccount extends SwatDBDataObject
 
 		// Note: SiteAccount now uses crypt() for password hashing. The salt
 		// is stored in the same field as the hashed password.
-		return array(
-			'password_salt'        => null,
-			'password'             => $password_hash,
-			'unencrypted_password' => $password,
-		);
+		return ['password_salt'        => null, 'password'             => $password_hash, 'unencrypted_password' => $password];
 	}
 
 	// }}}

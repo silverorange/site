@@ -65,10 +65,7 @@ class SiteRedisModule extends SiteApplicationModule
 			$this->_connect();
 
 			return call_user_func_array(
-				array(
-					$this->redis,
-					$name
-				),
+				[$this->redis, $name],
 				$arguments
 			);
 

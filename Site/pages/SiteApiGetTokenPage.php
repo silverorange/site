@@ -66,21 +66,11 @@ class SiteApiGetTokenPage extends SitePage
 		$credential->setDatabase($this->app->db);
 
 		if (!$credential->loadByApiKey($key)) {
-			return array(
-				'status' => array(
-					'code'    => 'error',
-					'message' => 'Invalid API key provided.',
-				),
-			);
+			return ['status' => ['code'    => 'error', 'message' => 'Invalid API key provided.']];
 		}
 
 		if ($ident == '') {
-			return array(
-				'status' => array(
-					'code'    => 'error',
-					'message' => 'Invalid unique identifier provided.',
-				),
-			);
+			return ['status' => ['code'    => 'error', 'message' => 'Invalid unique identifier provided.']];
 		}
 
 		$response = $this->getSignOnToken($ident, $credential);
@@ -105,13 +95,7 @@ class SiteApiGetTokenPage extends SitePage
 			$token->save();
 		}
 
-		return array(
-			'status' => array(
-				'code'    => 'ok',
-				'message' => '',
-			),
-			'token'  => $token->token,
-		);
+		return ['status' => ['code'    => 'ok', 'message' => ''], 'token'  => $token->token];
 	}
 
 	// }}}

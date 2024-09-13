@@ -427,20 +427,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
 					'inpage_linkid.js';
 
 				$commands.= $this->getGoogleAnalyticsCommand(
-					array(
-						'_require',
-						'inpage_linkid',
-						$plugin_uri,
-					)
+					['_require', 'inpage_linkid', $plugin_uri]
 				);
 			}
 
 			// Always set the account before any further commands.
 			$commands.= $this->getGoogleAnalyticsCommand(
-				array(
-					'_setAccount',
-					$this->google_account,
-				)
+				['_setAccount', $this->google_account]
 			);
 
 			foreach ($this->ga_commands as $command) {
@@ -561,13 +554,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		// Default commands for all sites:
 		// * Speed sampling 100% of the time.
 		// * Track the page view.
-		$this->ga_commands = array(
-			array(
-				'_setSiteSpeedSampleRate',
-				100
-			),
-			'_trackPageview',
-		);
+		$this->ga_commands = [['_setSiteSpeedSampleRate', 100], '_trackPageview'];
 	}
 
 	// }}}
@@ -735,10 +722,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 			// Always init with the account and track the pageview before any
 			// further commands.
 			$javascript = $this->getFacebookPixelCommand(
-				array(
-					'init',
-					$this->facebook_pixel_id,
-				)
+				['init', $this->facebook_pixel_id]
 			);
 
 			foreach ($this->facebook_pixel_commands as $command) {
@@ -756,12 +740,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	{
 		// Default commands for all sites:
 		// * Track the page view.
-		$this->facebook_pixel_commands = array(
-			array(
-				'track',
-				'PageView',
-			),
-		);
+		$this->facebook_pixel_commands = [['track', 'PageView']];
 	}
 
 	// }}}
@@ -783,7 +762,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected function getFacebookPixelCommand($command)
 	{
 		if (!is_array($command)) {
-			$command = array($command);
+			$command = [$command];
 		}
 
 		return sprintf(
@@ -843,7 +822,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$track_pixel = rawurlencode($this->twitter_track_pixel_id);
 		$purchase_pixel = rawurlencode($this->twitter_purchase_pixel_id);
 
-		$query_vars = array();
+		$query_vars = [];
 		foreach ($this->twitter_pixel_commands as $name => $value) {
 			$query_vars[$name] = sprintf(
 				'%s=%s',
@@ -1067,7 +1046,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	protected function getBingUETCommand($command)
 	{
 		if (!is_array($command)) {
-			$command = array($command);
+			$command = [$command];
 		}
 
 		return sprintf(

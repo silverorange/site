@@ -45,7 +45,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 *
 	 * @var array
 	 */
-	protected $arguments = array();
+	protected $arguments = [];
 
 	/**
 	 * The title of this application
@@ -126,14 +126,14 @@ abstract class SiteCommandLineApplication extends SiteApplication
 
 		// add help
 		$help_argument = new SiteCommandLineArgument(
-			array('-?', '-h', '--help'), 'displayUsage',
+			['-?', '-h', '--help'], 'displayUsage',
 			Site::_('Displays this usage information and exits.'));
 
 		$this->addCommandLineArgument($help_argument);
 
 		// add verbosity
 		$verbosity = new SiteCommandLineArgument(
-			array('-v', '--verbose'), 'setVerbosity',
+			['-v', '--verbose'], 'setVerbosity',
 			Site::_('Sets the level of verbosity of this application. Pass 0 '.
 				'to turn off all output.'));
 
@@ -280,7 +280,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		for ($i = 1; $i < $num_args; $i++) {
 			$found_argument = false;
 			foreach ($this->arguments as $argument) {
-				$argument_parameters = array();
+				$argument_parameters = [];
 				if (in_array($args[$i], $argument->getNames())) {
 					foreach ($argument->getParameters() as $parameter) {
 						if (isset($args[$i + 1]) && $args[$i + 1][0] !== '-') {

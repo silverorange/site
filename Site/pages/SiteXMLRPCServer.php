@@ -28,14 +28,14 @@ abstract class SiteXMLRPCServer extends SitePage
 	 */
 	public function process()
 	{
-		$server = XML_RPC2_Server::create($this, array(
-			'encoding' => 'utf-8',
-			'input' => 'XML_RPC2_Server_Input_PhpInput',
-			// Explicitly select the PHP backend. The native backend has
-			// trouble with UTF-8 encoding and with properly parsing
-			// method parameters.
-			'backend' => 'Php'
-		));
+		$server = XML_RPC2_Server::create($this, [
+      'encoding' => 'utf-8',
+      'input' => 'XML_RPC2_Server_Input_PhpInput',
+      // Explicitly select the PHP backend. The native backend has
+      // trouble with UTF-8 encoding and with properly parsing
+      // method parameters.
+      'backend' => 'Php',
+  ]);
 
 		$this->layout->startCapture('response');
 		$server->handleCall();

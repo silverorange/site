@@ -37,7 +37,7 @@ class SiteGravatarEntry extends SwatEmailEntry
 	{
 		parent::__construct($id);
 
-		$yui = new SwatYUI(array('dom', 'event'));
+		$yui = new SwatYUI(['dom', 'event']);
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavaScript('packages/site/javascript/site-gravatar-entry.js');

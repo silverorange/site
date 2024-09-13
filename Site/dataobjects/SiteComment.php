@@ -124,14 +124,9 @@ class SiteComment extends SwatDBDataObject
 
 	public static function getStatusArray()
 	{
-		return array(
-			self::STATUS_PUBLISHED =>
-				self::getStatusTitle(self::STATUS_PUBLISHED),
-
-			self::STATUS_PENDING => self::getStatusTitle(self::STATUS_PENDING),
-			self::STATUS_UNPUBLISHED =>
-				self::getStatusTitle(self::STATUS_UNPUBLISHED),
-		);
+		return [self::STATUS_PUBLISHED =>
+				self::getStatusTitle(self::STATUS_PUBLISHED), self::STATUS_PENDING => self::getStatusTitle(self::STATUS_PENDING), self::STATUS_UNPUBLISHED =>
+				self::getStatusTitle(self::STATUS_UNPUBLISHED)];
 	}
 
 	// }}}

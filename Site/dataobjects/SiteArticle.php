@@ -143,7 +143,7 @@ class SiteArticle extends SwatDBDataObject
 	public function getNavBarEntries($link_prefix = '')
 	{
 		if ($this->navbar_entries === null) {
-			$this->navbar_entries = array();
+			$this->navbar_entries = [];
 
 			$sql = sprintf('select * from getArticleNavbar(%s)',
 				$this->db->quote($this->id, 'integer'));
@@ -209,7 +209,7 @@ class SiteArticle extends SwatDBDataObject
 	 * @return boolean true if an article was successfully loaded and false if
 	 *                  no article was found at the specified path.
 	 */
-	public function loadWithPath($path, $fields = array('id', 'title'))
+	public function loadWithPath($path, $fields = ['id', 'title'])
 	{
 		$this->checkDB();
 
@@ -299,7 +299,7 @@ class SiteArticle extends SwatDBDataObject
 	protected function getSerializableSubDataObjects()
 	{
 		return array_merge(parent::getSerializableSubDataObjects(),
-			array('parent', 'path', 'sub_articles'));
+			['parent', 'path', 'sub_articles']);
 	}
 
 	// }}}

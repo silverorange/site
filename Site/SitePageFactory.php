@@ -37,7 +37,7 @@ abstract class SitePageFactory
 	 *
 	 * @var array
 	 */
-	protected $page_class_map = array('Site' => 'Site/pages');
+	protected $page_class_map = ['Site' => 'Site/pages'];
 
 	/**
 	 * Location in which to look for page class files
@@ -80,7 +80,7 @@ abstract class SitePageFactory
 	 *
 	 * @var array
 	 */
-	protected $layout_class_map = array('Site' => 'Site/layouts');
+	protected $layout_class_map = ['Site' => 'Site/layouts'];
 
 	/**
 	 * Location in which to look for layout class files
@@ -173,7 +173,7 @@ abstract class SitePageFactory
 	protected function instantiatePage(
 		$class,
 		SiteLayout $layout,
-		array $arguments = array()
+		array $arguments = []
 	) {
 		if (!$this->isPage($class)) {
 			throw new SiteClassNotFoundException(sprintf('The provided page '.

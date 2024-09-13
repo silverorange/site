@@ -159,15 +159,10 @@ class SiteArticlePageFactory extends SitePageFactory
 	 */
 	protected function getPageInfo($source)
 	{
-		$info = array(
-			'page'       => $this->default_page_class,
-			'path'       => $source,
-			'decorators' => array(),
-			'arguments'  => array(),
-		);
+		$info = ['page'       => $this->default_page_class, 'path'       => $source, 'decorators' => [], 'arguments'  => []];
 
 		foreach ($this->getPageMap() as $pattern => $class) {
-			$regs = array();
+			$regs = [];
 			$pattern = str_replace('@', '\@', $pattern); // escape delimiters
 			$regexp = '@'.$pattern.'@u';
 			if (preg_match($regexp, $source, $regs) === 1) {
@@ -247,7 +242,7 @@ class SiteArticlePageFactory extends SitePageFactory
 	 */
 	protected function getPageMap()
 	{
-		return array();
+		return [];
 	}
 
 	// }}}
@@ -369,7 +364,7 @@ class SiteArticlePageFactory extends SitePageFactory
 		}
 
 		return SwatDB::executeStoredProcOne($this->app->db,
-			'findArticle', array($this->app->db->quote($path, 'text')));
+			'findArticle', [$this->app->db->quote($path, 'text')]);
 	}
 
 	// }}}

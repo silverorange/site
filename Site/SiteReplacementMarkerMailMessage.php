@@ -65,7 +65,7 @@ abstract class SiteReplacementMarkerMailMessage extends SiteMultipartMailMessage
 	protected final function replaceMarkers($text)
 	{
 		$marker_pattern = '/\[(.*?)\]/u';
-		$callback = array($this, 'getReplacementMarkerTextByMatches');
+		$callback = [$this, 'getReplacementMarkerTextByMatches'];
 		return preg_replace_callback($marker_pattern, $callback, $text);
 	}
 

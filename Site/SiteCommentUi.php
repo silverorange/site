@@ -250,11 +250,7 @@ abstract class SiteCommentUi
 		$link     = $this->ui->getWidget('link')->value;
 		$email    = $this->ui->getWidget('email')->value;
 
-		$value = array(
-			'fullname' => $fullname,
-			'link'     => $link,
-			'email'    => $email,
-		);
+		$value = ['fullname' => $fullname, 'link'     => $link, 'email'    => $email];
 
 		$this->app->cookie->setCookie('comment_credentials', $value);
 	}

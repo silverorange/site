@@ -175,9 +175,7 @@ class SiteMediaSet extends SwatDBDataObject
 
 	protected function getSerializableSubdataobjects()
 	{
-		return array(
-			'encodings',
-		);
+		return ['encodings'];
 	}
 
 	// }}}
