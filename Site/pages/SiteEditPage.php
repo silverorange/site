@@ -307,11 +307,7 @@ abstract class SiteEditPage extends SiteUiPage
 
     protected function getRefererUri()
     {
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            return $_SERVER['HTTP_REFERER'];
-        }
-
-        return null;
+        return $_SERVER['HTTP_REFERER'] ?? null;
     }
 
     // deprecated API

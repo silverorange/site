@@ -22,8 +22,6 @@ return RectorConfig::configure()
     ->withRules([
     ])
     ->withSkip([
-        ReturnNeverTypeRector::class,
-        ReadOnlyPropertyRector::class,
         ClassPropertyAssignToConstructorPromotionRector::class,
         MixedTypeRector::class,
         NullToStrictStringFuncCallArgRector::class,
