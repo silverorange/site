@@ -55,7 +55,7 @@ class SiteAdIndex extends AdminIndex
 			$this->getOrderByClause($view, 'createdate desc'));
 
 		$ads = SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('SiteAdWrapper'));
+			SwatDBClassMap::get(SiteAdWrapper::class));
 
 		return $ads;
 	}

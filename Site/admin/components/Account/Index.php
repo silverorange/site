@@ -132,7 +132,7 @@ class SiteAccountIndex extends AdminSearch
 				$pager->getResultsMessage('result', 'results');
 		}
 
-		$class_name = SwatDBClassMap::get('SiteAccount');
+		$class_name = SwatDBClassMap::get(SiteAccount::class);
 		$store = new SwatTableStore();
 		foreach ($accounts as $row) {
 			if ($row instanceof SiteAccount) {

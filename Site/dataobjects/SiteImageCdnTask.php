@@ -45,10 +45,10 @@ class SiteImageCdnTask extends SiteCdnTask
 		parent::init();
 
 		$this->registerInternalProperty('image',
-			SwatDBClassMap::get('SiteImage'));
+			SwatDBClassMap::get(SiteImage::class));
 
 		$this->registerInternalProperty('dimension',
-			SwatDBClassMap::get('SiteImageDimension'));
+			SwatDBClassMap::get(SiteImageDimension::class));
 
 		$this->table = 'ImageCdnQueue';
 	}

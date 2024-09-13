@@ -25,7 +25,7 @@ class SiteImageDimensionBindingWrapper extends SwatDBRecordsetWrapper
 
 	protected function getImageDimensionBindingClassName()
 	{
-		return SwatDBClassMap::get('SiteImageDimensionBinding');
+		return SwatDBClassMap::get(SiteImageDimensionBinding::class);
 	}
 
 	// }}}

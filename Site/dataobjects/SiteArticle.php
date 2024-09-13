@@ -189,7 +189,7 @@ class SiteArticle extends SwatDBDataObject
 		$sql = sprintf($sql,
 			$this->db->quote($this->id, 'integer'));
 
-		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
+		$wrapper = SwatDBClassMap::get(SiteArticleWrapper::class);
 		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
@@ -284,7 +284,7 @@ class SiteArticle extends SwatDBDataObject
 	protected function init()
 	{
 		$this->registerInternalProperty('parent',
-			SwatDBClassMap::get('SiteArticle'));
+			SwatDBClassMap::get(SiteArticle::class));
 
 		$this->registerDateProperty('createdate');
 		$this->registerDateProperty('modified_date');
@@ -354,7 +354,7 @@ class SiteArticle extends SwatDBDataObject
 		$sql = sprintf($sql,
 			$this->db->quote($this->id, 'integer'));
 
-		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
+		$wrapper = SwatDBClassMap::get(SiteArticleWrapper::class);
 		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 

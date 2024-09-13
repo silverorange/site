@@ -246,7 +246,7 @@ class SiteImage extends SwatDBDataObject
 	protected function init()
 	{
 		$this->registerInternalProperty('image_set',
-			SwatDBClassMap::get('SiteImageSet'));
+			SwatDBClassMap::get(SiteImageSet::class));
 
 		$this->table = 'Image';
 		$this->id_field = 'integer:id';
@@ -360,7 +360,7 @@ class SiteImage extends SwatDBDataObject
 
 	protected function getImageDimensionBindingClassName()
 	{
-		return SwatDBClassMap::get('SiteImageDimensionBinding');
+		return SwatDBClassMap::get(SiteImageDimensionBinding::class);
 	}
 
 	// }}}
@@ -368,7 +368,7 @@ class SiteImage extends SwatDBDataObject
 
 	protected function getImageDimensionBindingWrapperClassName()
 	{
-		return SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+		return SwatDBClassMap::get(SiteImageDimensionBindingWrapper::class);
 	}
 
 	// }}}
@@ -1330,7 +1330,7 @@ class SiteImage extends SwatDBDataObject
 		SiteImageDimension $dimension
 	) {
 		if ($dimension->default_type === null) {
-			$class_name = SwatDBClassMap::get('SiteImageType');
+			$class_name = SwatDBClassMap::get(SiteImageType::class);
 			$image_type = new $class_name();
 			$image_type->setDatabase($this->db);
 			$mime_type = 'image/'.$imagick->getImageFormat();
@@ -1531,7 +1531,7 @@ class SiteImage extends SwatDBDataObject
 				'shortname must be defined in the image dataobject.');
 		}
 
-		$class_name = SwatDBClassMap::get('SiteImageSet');
+		$class_name = SwatDBClassMap::get(SiteImageSet::class);
 
 		$image_set = new $class_name();
 		$image_set->setDatabase($this->db);
@@ -1657,7 +1657,7 @@ class SiteImage extends SwatDBDataObject
 		$operation,
 		SiteImageDimension $dimension = null
 	) {
-		$class_name = SwatDBClassMap::get('SiteImageCdnTask');
+		$class_name = SwatDBClassMap::get(SiteImageCdnTask::class);
 
 		$task = new $class_name();
 		$task->setDatabase($this->db);

@@ -20,7 +20,7 @@ class SiteVideoMediaSet extends SiteMediaSet
 
 	protected function getMediaEncodingWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteVideoMediaEncodingWrapper');
+		return SwatDBClassMap::get(SiteVideoMediaEncodingWrapper::class);
 	}
 
 	// }}}

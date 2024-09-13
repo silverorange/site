@@ -45,10 +45,10 @@ class SiteMediaCdnTask extends SiteCdnTask
 		parent::init();
 
 		$this->registerInternalProperty('media',
-			SwatDBClassMap::get('SiteMedia'));
+			SwatDBClassMap::get(SiteMedia::class));
 
 		$this->registerInternalProperty('encoding',
-			SwatDBClassMap::get('SiteMediaEncoding'));
+			SwatDBClassMap::get(SiteMediaEncoding::class));
 
 		$this->table = 'MediaCdnQueue';
 	}

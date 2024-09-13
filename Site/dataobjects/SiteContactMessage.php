@@ -161,7 +161,7 @@ class SiteContactMessage extends SwatDBDataObject
 	protected function init()
 	{
 		$this->registerInternalProperty('instance',
-			SwatDBClassMap::get('SiteInstance'));
+			SwatDBClassMap::get(SiteInstance::class));
 
 		$this->registerDateProperty('createdate');
 		$this->registerDateProperty('sent_date');

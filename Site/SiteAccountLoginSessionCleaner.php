@@ -68,7 +68,7 @@ class SiteAccountLoginSessionCleaner extends SiteCommandLineApplication
 		return SwatDB::query(
 			$this->db,
 			$sql,
-			SwatDBClassMap::get('SiteAccountLoginSessionWrapper')
+			SwatDBClassMap::get(SiteAccountLoginSessionWrapper::class)
 		);
 	}
 

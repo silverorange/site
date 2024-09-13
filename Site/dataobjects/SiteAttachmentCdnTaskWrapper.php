@@ -26,7 +26,7 @@ class SiteAttachmentCdnTaskWrapper extends SiteCdnTaskWrapper
 				'attachment',
 				$this->db,
 				'select * from Attachment where id in (%s)',
-				SwatDBClassMap::get('SiteAttachmentWrapper')
+				SwatDBClassMap::get(SiteAttachmentWrapper::class)
 			);
 		}
 	}
@@ -38,7 +38,7 @@ class SiteAttachmentCdnTaskWrapper extends SiteCdnTaskWrapper
 	{
 		parent::init();
 
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteAttachmentCdnTask');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteAttachmentCdnTask::class);
 	}
 
 	// }}}

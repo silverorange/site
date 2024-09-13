@@ -15,7 +15,7 @@ class SiteInstanceWrapper extends SwatDBRecordsetWrapper
 	{
 		parent::init();
 		$this->index_field = 'id';
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteInstance');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteInstance::class);
 	}
 
 	// }}}

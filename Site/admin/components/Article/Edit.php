@@ -42,7 +42,7 @@ class SiteArticleEdit extends AdminDBEdit
 
 	protected function initArticle()
 	{
-		$class_name = SwatDBClassMap::get('SiteArticle');
+		$class_name = SwatDBClassMap::get(SiteArticle::class);
 		$this->edit_article = new $class_name();
 		$this->edit_article->setDatabase($this->app->db);
 
@@ -91,7 +91,7 @@ class SiteArticleEdit extends AdminDBEdit
 	{
 		$valid = true;
 
-		$class_name = SwatDBClassMap::get('SiteArticle');
+		$class_name = SwatDBClassMap::get(SiteArticle::class);
 		$article = new $class_name();
 		$article->setDatabase($this->app->db);
 

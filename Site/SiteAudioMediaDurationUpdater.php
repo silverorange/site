@@ -134,7 +134,7 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 			throw new SiteException('A media set shortname must be specified.');
 		}
 
-		$class_name = SwatDBClassMap::get('SiteMediaSet');
+		$class_name = SwatDBClassMap::get(SiteMediaSet::class);
 
 		$media_set = new $class_name();
 		$media_set->setDatabase($this->db);
@@ -175,7 +175,7 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 
 	protected function getAudioMediaWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteAudioMediaWrapper');
+		return SwatDBClassMap::get(SiteAudioMediaWrapper::class);
 	}
 
 	// }}}

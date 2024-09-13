@@ -13,7 +13,7 @@ class SiteArticleSearchEngine extends SiteSearchEngine
 
 	protected function getResultWrapperClass()
 	{
-		$wrapper_class = SwatDBClassMap::get('SiteArticleWrapper');
+		$wrapper_class = SwatDBClassMap::get(SiteArticleWrapper::class);
 
 		return $wrapper_class;
 	}

@@ -33,7 +33,7 @@ abstract class SiteApiSignOnPage extends SitePage
 
 	protected function getCredential($api_key)
 	{
-		$class_name = SwatDBClassMap::get('SiteApiCredential');
+		$class_name = SwatDBClassMap::get(SiteApiCredential::class);
 		$credential = new $class_name();
 		$credential->setDatabase($this->app->db);
 
@@ -57,7 +57,7 @@ abstract class SiteApiSignOnPage extends SitePage
 		$token_string,
 		SiteApiCredential $credential
 	) {
-		$class_name = SwatDBClassMap::get('SiteApiSignOnToken');
+		$class_name = SwatDBClassMap::get(SiteApiSignOnToken::class);
 		$token = new $class_name();
 		$token->setDatabase($this->app->db);
 

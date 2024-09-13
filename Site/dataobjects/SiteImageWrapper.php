@@ -106,7 +106,7 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 	protected function init()
 	{
 		parent::init();
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteImage');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteImage::class);
 		$this->index_field = 'id';
 	}
 
@@ -115,7 +115,7 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 
 	protected function getImageDimensionBindingWrapperClassName()
 	{
-		return SwatDBClassMap::get('SiteImageDimensionBindingWrapper');
+		return SwatDBClassMap::get(SiteImageDimensionBindingWrapper::class);
 	}
 
 	// }}}

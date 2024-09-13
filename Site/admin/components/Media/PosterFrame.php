@@ -33,7 +33,7 @@ class SiteMediaPosterFrame extends AdminDBEdit
 
 	protected function initMedia()
 	{
-		$class_name = SwatDBClassMap::get('SiteVideoMedia');
+		$class_name = SwatDBClassMap::get(SiteVideoMedia::class);
 		$this->media = new $class_name();
 		$this->media->setDatabase($this->app->db);
 
@@ -79,7 +79,7 @@ class SiteMediaPosterFrame extends AdminDBEdit
 	{
 		$image_entry = $this->ui->getWidget('custom_image');
 		if ($image_entry->isUploaded()) {
-			$class_name = SwatDBClassMap::get('SiteVideoImage');
+			$class_name = SwatDBClassMap::get(SiteVideoImage::class);
 			$image = new $class_name();
 
 			if ($image->hasDateProperty('modified_date')) {

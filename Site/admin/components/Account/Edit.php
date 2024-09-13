@@ -33,7 +33,7 @@ class SiteAccountEdit extends AdminDBEdit
 
 	protected function initAccount()
 	{
-		$account_class = SwatDBClassMap::get('SiteAccount');
+		$account_class = SwatDBClassMap::get(SiteAccount::class);
 
 		$this->account = new $account_class();
 		$this->account->setDatabase($this->app->db);
@@ -79,7 +79,7 @@ class SiteAccountEdit extends AdminDBEdit
 		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
 			$this->app->instance->getInstance() : null;
 
-		$class_name = SwatDBClassMap::get('SiteAccount');
+		$class_name = SwatDBClassMap::get(SiteAccount::class);
 		$account = new $class_name();
 		$account->setDatabase($this->app->db);
 		$found = $account->loadWithEmail($email->value, $instance);

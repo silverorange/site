@@ -45,7 +45,7 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 
 		if ($instance_shortname !== null) {
 			try {
-				$class_name = SwatDBClassMap::get('SiteInstance');
+				$class_name = SwatDBClassMap::get(SiteInstance::class);
 				$this->instance = new $class_name();
 				$this->instance->setDatabase($db);
 				if (!$this->instance->loadFromShortname($instance_shortname)) {

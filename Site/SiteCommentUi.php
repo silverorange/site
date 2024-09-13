@@ -70,7 +70,7 @@ abstract class SiteCommentUi
 
 	protected function getComment()
 	{
-		$class_name = SwatDBClassMap::get('SiteComment');
+		$class_name = SwatDBClassMap::get(SiteComment::class);
 		return new $class_name();
 	}
 

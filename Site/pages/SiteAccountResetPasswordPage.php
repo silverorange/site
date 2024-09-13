@@ -81,7 +81,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 	 */
 	protected function getAccount($password_tag)
 	{
-		$class = SwatDBClassMap::get('SiteAccount');
+		$class = SwatDBClassMap::get(SiteAccount::class);
 		$account = new $class();
 		$account->setDatabase($this->app->db);
 

@@ -25,7 +25,7 @@ class SiteMediaEncodingBindingWrapper extends SwatDBRecordsetWrapper
 				'media_type',
 				$this->db,
 				'select * from MediaType where id in (%s)',
-				SwatDBClassMap::get('SiteMediaTypeWrapper')
+				SwatDBClassMap::get(SiteMediaTypeWrapper::class)
 			);
 		}
 	}
@@ -38,7 +38,7 @@ class SiteMediaEncodingBindingWrapper extends SwatDBRecordsetWrapper
 		parent::init();
 
 		$this->row_wrapper_class =
-			SwatDBClassMap::get('SiteMediaEncodingBinding');
+			SwatDBClassMap::get(SiteMediaEncodingBinding::class);
 
 		$this->index_field = 'media_encoding';
 	}

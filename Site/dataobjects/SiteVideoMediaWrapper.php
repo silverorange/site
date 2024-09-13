@@ -16,7 +16,7 @@ class SiteVideoMediaWrapper extends SiteMediaWrapper
 	{
 		parent::init();
 
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteVideoMedia');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteVideoMedia::class);
 	}
 
 	// }}}
@@ -24,7 +24,7 @@ class SiteVideoMediaWrapper extends SiteMediaWrapper
 
 	protected function getMediaSetWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteVideoMediaSetWrapper');
+		return SwatDBClassMap::get(SiteVideoMediaSetWrapper::class);
 	}
 
 	// }}}
@@ -32,7 +32,7 @@ class SiteVideoMediaWrapper extends SiteMediaWrapper
 
 	protected function getMediaEncodingBindingWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteVideoMediaEncodingBindingWrapper');
+		return SwatDBClassMap::get(SiteVideoMediaEncodingBindingWrapper::class);
 	}
 
 	// }}}

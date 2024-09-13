@@ -38,7 +38,7 @@ class SiteAccountEmailPassword extends AdminConfirmation
 	protected function getAccount()
 	{
 		if ($this->account === null) {
-			$account_class = SwatDBClassMap::get('SiteAccount');
+			$account_class = SwatDBClassMap::get(SiteAccount::class);
 
 			$this->account = new $account_class();
 			$this->account->setDatabase($this->app->db);

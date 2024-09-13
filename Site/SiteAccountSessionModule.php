@@ -563,7 +563,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$now = new SwatDate();
 		$now->toUTC();
 
-		$class = SwatDBClassMap::get('SiteAccountLoginSession');
+		$class = SwatDBClassMap::get(SiteAccountLoginSession::class);
 		$login_session = new $class();
 
 		$login_session->account    = $this->account;
@@ -659,7 +659,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 
 	protected function getNewAccountObject()
 	{
-		$class_name = SwatDBClassMap::get('SiteAccount');
+		$class_name = SwatDBClassMap::get(SiteAccount::class);
 		$account = new $class_name();
 		$account->setDatabase($this->app->db);
 

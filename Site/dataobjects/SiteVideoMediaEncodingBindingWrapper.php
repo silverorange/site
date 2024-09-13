@@ -18,7 +18,7 @@ class SiteVideoMediaEncodingBindingWrapper extends
 		parent::init();
 
 		$this->row_wrapper_class =
-			SwatDBClassMap::get('SiteVideoMediaEncodingBinding');
+			SwatDBClassMap::get(SiteVideoMediaEncodingBinding::class);
 	}
 
 	// }}}

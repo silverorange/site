@@ -90,8 +90,8 @@ class SiteArticlePageFactory extends SitePageFactory
 	{
 		$this->loadPageClass($class);
 
-		if ($class !== 'SiteArticlePage' &&
-			!is_subclass_of($class, 'SiteArticlePage')) {
+		if ($class !== SiteArticlePage::class &&
+			!is_subclass_of($class, SiteArticlePage::class)) {
 			throw new SiteClassNotFoundException(sprintf('The provided page '.
 				'class ‘%s’ is not a SiteArticlePage.', $class), 0, $class);
 		}
@@ -324,7 +324,7 @@ class SiteArticlePageFactory extends SitePageFactory
 		$sql = $this->getArticleSql($article_id);
 
 		// load dataobject
-		$wrapper  = SwatDBClassMap::get('SiteArticleWrapper');
+		$wrapper  = SwatDBClassMap::get(SiteArticleWrapper::class);
 		$articles = SwatDB::query($this->app->db, $sql, $wrapper);
 		$article  = $articles->getFirst();
 

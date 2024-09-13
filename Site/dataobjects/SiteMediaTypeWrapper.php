@@ -17,7 +17,7 @@ class SiteMediaTypeWrapper extends SwatDBRecordsetWrapper
 		parent::init();
 
 		$this->row_wrapper_class =
-			SwatDBClassMap::get('SiteMediaType');
+			SwatDBClassMap::get(SiteMediaType::class);
 
 		$this->index_field = 'id';
 	}

@@ -16,7 +16,7 @@ class SiteAttachmentSetWrapper extends SwatDBRecordsetWrapper
 	{
 		parent::init();
 
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteAttachmentSet');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteAttachmentSet::class);
 		$this->index_field = 'id';
 	}
 

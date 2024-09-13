@@ -41,7 +41,7 @@ class SiteInstanceConfigSetting extends SwatDBDataObject
 		$this->table = 'InstanceConfigSetting';
 
 		$this->registerInternalProperty('instance',
-			SwatDBClassMap::get('SiteInstance'));
+			SwatDBClassMap::get(SiteInstance::class));
 	}
 
 	// }}}

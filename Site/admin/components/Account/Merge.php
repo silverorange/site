@@ -108,7 +108,7 @@ class SiteAccountMerge extends AdminSearch
 
 	protected function getAccount()
 	{
-		$account_class = SwatDBClassMap::get('SiteAccount');
+		$account_class = SwatDBClassMap::get(SiteAccount::class);
 
 		$this->account = new $account_class();
 		$this->account->setDatabase($this->app->db);
@@ -204,7 +204,7 @@ class SiteAccountMerge extends AdminSearch
 		$accounts = SwatDB::query(
 			$this->app->db,
 			$sql,
-			SwatDBClassMap::get('SiteAccountWrapper')
+			SwatDBClassMap::get(SiteAccountWrapper::class)
 		);
 
 		if (count($accounts) > 0) {
@@ -212,7 +212,7 @@ class SiteAccountMerge extends AdminSearch
 				$pager->getResultsMessage('result', 'results');
 		}
 
-		$class_name = SwatDBClassMap::get('SiteAccount');
+		$class_name = SwatDBClassMap::get(SiteAccount::class);
 		$store = new SwatTableStore();
 		foreach ($accounts as $account) {
 			$store->add($this->getDetailsStore($account));

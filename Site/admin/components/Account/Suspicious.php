@@ -105,7 +105,7 @@ class SiteAccountSuspicious extends AdminIndex
 
 		$rows = SwatDB::query($this->app->db, $sql);
 
-		$class_name = SwatDBClassMap::get('SiteAccount');
+		$class_name = SwatDBClassMap::get(SiteAccount::class);
 		$store = new SwatTableStore();
 
 		foreach ($rows as $row) {

@@ -112,7 +112,7 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 
 	protected function queryArticles()
 	{
-		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
+		$wrapper = SwatDBClassMap::get(SiteArticleWrapper::class);
 
 		$sql = 'select Article.id, shortname, modified_date
 			from Article

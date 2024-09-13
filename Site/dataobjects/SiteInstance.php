@@ -107,7 +107,7 @@ class SiteInstance extends SwatDBDataObject
 		$sql = 'select * from InstanceConfigSetting where instance = %s';
 		$sql = sprintf($sql, $this->db->quote($this->id, 'integer'));
 
-		$wrapper  = SwatDBClassMap::get('SiteInstanceConfigSettingWrapper');
+		$wrapper  = SwatDBClassMap::get(SiteInstanceConfigSettingWrapper::class);
 		$settings = SwatDB::query($this->db, $sql, $wrapper);
 
 		$non_default = array();

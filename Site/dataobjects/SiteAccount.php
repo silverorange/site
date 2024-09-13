@@ -463,7 +463,7 @@ class SiteAccount extends SwatDBDataObject
 
 		$this->registerInternalProperty(
 			'instance',
-			SwatDBClassMap::get('SiteInstance')
+			SwatDBClassMap::get(SiteInstance::class)
 		);
 	}
 
@@ -472,7 +472,7 @@ class SiteAccount extends SwatDBDataObject
 
 	protected function getNewLoginHistory(SwatDate $date, $remote_ip = null)
 	{
-		$class = SwatDBClassMap::get('SiteAccountLoginHistory');
+		$class = SwatDBClassMap::get(SiteAccountLoginHistory::class);
 
 		$history = new $class();
 		$history->setDatabase($this->db);
@@ -848,7 +848,7 @@ class SiteAccount extends SwatDBDataObject
 			$this->db->quote($this->id, 'integer'));
 
 		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteAccountLoginHistoryWrapper'));
+			SwatDBClassMap::get(SiteAccountLoginHistoryWrapper::class));
 	}
 
 	// }}}
@@ -863,7 +863,7 @@ class SiteAccount extends SwatDBDataObject
 		);
 
 		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteAccountLoginSessionWrapper'));
+			SwatDBClassMap::get(SiteAccountLoginSessionWrapper::class));
 	}
 
 	// }}}

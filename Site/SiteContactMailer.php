@@ -92,7 +92,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 	public function getBaseClassName()
 	{
 		if ($this->base_class_name === null) {
-			$this->base_class_name = 'SiteContactMessage';
+			$this->base_class_name = SiteContactMessage::class;
 		}
 
 		return $this->base_class_name;
@@ -198,7 +198,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 			$this->db->quote($instance_id, 'integer'),
 			$this->db->quote(false, 'boolean'));
 
-		if ($this->getBaseClassName() == 'SiteContactMessage') {
+		if ($this->getBaseClassName() == SiteContactMessage::class) {
 			$class_name_sql = ' and (class_name = %s or class_name is null)';
 		} else {
 			$class_name_sql = ' and class_name = %s';
@@ -225,7 +225,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 
 	protected function getWrapper()
 	{
-		return SwatDBClassMap::get('SiteContactMessageWrapper');
+		return SwatDBClassMap::get(SiteContactMessageWrapper::class);
 	}
 
 	// }}}

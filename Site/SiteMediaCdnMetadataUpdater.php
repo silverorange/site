@@ -82,7 +82,7 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 		SiteMedia $media,
 		SiteMediaEncoding $encoding
 	) {
-		$class_name = SwatDBClassMap::get('SiteMediaCdnTask');
+		$class_name = SwatDBClassMap::get(SiteMediaCdnTask::class);
 
 		$task = new $class_name();
 		$task->setDatabase($this->db);

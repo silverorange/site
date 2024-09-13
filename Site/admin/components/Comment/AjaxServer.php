@@ -154,7 +154,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 
 	protected function getComment($comment_id)
 	{
-		$comment_class = SwatDBClassMap::get('SiteComment');
+		$comment_class = SwatDBClassMap::get(SiteComment::class);
 		$comment = new $comment_class();
 		$comment->setDatabase($this->app->db);
 		if ($comment->load($comment_id, $this->app->getInstance())) {

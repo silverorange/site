@@ -16,7 +16,7 @@ class SiteImageDimensionWrapper extends SwatDBRecordsetWrapper
 	{
 		parent::init();
 
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteImageDimension');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteImageDimension::class);
 		$this->index_field = 'id';
 	}
 

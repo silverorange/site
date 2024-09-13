@@ -25,14 +25,14 @@ class SiteMediaCdnTaskWrapper extends SiteCdnTaskWrapper
 				'media',
 				$this->db,
 				'select * from Media where id in (%s)',
-				SwatDBClassMap::get('SiteMediaWrapper')
+				SwatDBClassMap::get(SiteMediaWrapper::class)
 			);
 
 			$this->loadAllSubDataObjects(
 				'encoding',
 				$this->db,
 				'select * from MediaEncoding where id in (%s)',
-				SwatDBClassMap::get('SiteMediaEncodingWrapper')
+				SwatDBClassMap::get(SiteMediaEncodingWrapper::class)
 			);
 		}
 	}
@@ -43,7 +43,7 @@ class SiteMediaCdnTaskWrapper extends SiteCdnTaskWrapper
 	protected function init()
 	{
 		parent::init();
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteMediaCdnTask');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteMediaCdnTask::class);
 	}
 
 	// }}}

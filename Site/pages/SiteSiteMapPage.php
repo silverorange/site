@@ -30,7 +30,7 @@ class SiteSiteMapPage extends SitePage
 
 	protected function queryArticles()
 	{
-		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
+		$wrapper = SwatDBClassMap::get(SiteArticleWrapper::class);
 		$sql = 'select id, title, shortname from Article
 			where parent is null and enabled = %1$s and visible = %1$s
 			order by displayorder, title';

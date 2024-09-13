@@ -134,7 +134,7 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	protected function initDimensions()
 	{
 		if ($this->isNew()) {
-			$class_name = SwatDBClassMap::get('SiteImageSet');
+			$class_name = SwatDBClassMap::get(SiteImageSet::class);
 			$image_set = new $class_name();
 			$image_set->setDatabase($this->app->db);
 			$image_set->loadByShortname(

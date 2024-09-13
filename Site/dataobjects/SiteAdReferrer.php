@@ -43,7 +43,7 @@ class SiteAdReferrer extends SwatDBDataObject
 		$this->table = 'AdReferrer';
 		$this->id_field = 'integer:id';
 		$this->registerDateProperty('createdate');
-		$this->registerInternalProperty('ad', 'SiteAd');
+		$this->registerInternalProperty('ad', SiteAd::class);
 	}
 
 	// }}}

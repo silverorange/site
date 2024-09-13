@@ -41,7 +41,7 @@ class SiteAccountLoginHistory extends SwatDBDataObject
 		$this->registerDateProperty('login_date');
 
 		$this->registerInternalProperty('account',
-			SwatDBClassMap::get('SiteAccount'));
+			SwatDBClassMap::get(SiteAccount::class));
 	}
 
 	// }}}

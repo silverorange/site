@@ -289,7 +289,7 @@ abstract class SitePageFactory
 	protected function isPage($class)
 	{
 		$this->loadPageClass($class);
-		return ($class === 'SitePage' || is_subclass_of($class, 'SitePage'));
+		return ($class === SitePage::class || is_subclass_of($class, SitePage::class));
 	}
 
 	// }}}
@@ -298,7 +298,7 @@ abstract class SitePageFactory
 	protected function isDecorator($class)
 	{
 		$this->loadPageClass($class);
-		return (is_subclass_of($class, 'SitePageDecorator'));
+		return (is_subclass_of($class, SitePageDecorator::class));
 	}
 
 	// }}}
@@ -307,8 +307,8 @@ abstract class SitePageFactory
 	protected function isLayout($class)
 	{
 		$this->loadLayoutClass($class);
-		return ($class === 'SiteLayout' ||
-			is_subclass_of($class, 'SiteLayout'));
+		return ($class === SiteLayout::class ||
+			is_subclass_of($class, SiteLayout::class));
 	}
 
 	// }}}

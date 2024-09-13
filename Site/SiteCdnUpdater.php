@@ -126,7 +126,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 			SwatDB::equalityOperator(null), $this->db->quote(null));
 
 		$tasks = SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteAttachmentCdnTaskWrapper'));
+			SwatDBClassMap::get(SiteAttachmentCdnTaskWrapper::class));
 
 		// efficiently load attachments
 		$attachment_sql = 'select * from Attachment where id in (%s)';
@@ -134,7 +134,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 			'attachment',
 			$this->db,
 			$attachment_sql,
-			SwatDBClassMap::get('SiteAttachmentWrapper'));
+			SwatDBClassMap::get(SiteAttachmentWrapper::class));
 
 		foreach ($tasks as $task) {
 			if ($task->attachment instanceof SiteAttachment) {
@@ -154,7 +154,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 			SwatDB::equalityOperator(null), $this->db->quote(null));
 
 		$tasks = SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteImageCdnTaskWrapper'));
+			SwatDBClassMap::get(SiteImageCdnTaskWrapper::class));
 
 		// efficiently load images
 		$image_sql = 'select * from Image where id in (%s)';
@@ -162,7 +162,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 			'image',
 			$this->db,
 			$image_sql,
-			SwatDBClassMap::get('SiteImageWrapper'));
+			SwatDBClassMap::get(SiteImageWrapper::class));
 
 		// efficiently load dimensions
 		$dimension_sql = 'select * from ImageDimension where id in (%s)';
@@ -170,7 +170,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 			'dimension',
 			$this->db,
 			$dimension_sql,
-			SwatDBClassMap::get('SiteImageDimensionWrapper'));
+			SwatDBClassMap::get(SiteImageDimensionWrapper::class));
 
 		foreach ($tasks as $task) {
 			if ($task->image instanceof SiteImage) {
@@ -190,7 +190,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 			SwatDB::equalityOperator(null), $this->db->quote(null));
 
 		$tasks = SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteMediaCdnTaskWrapper'));
+			SwatDBClassMap::get(SiteMediaCdnTaskWrapper::class));
 
 		// efficiently load media
 		$media_sql = 'select * from Media where id in (%s)';
@@ -198,7 +198,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 			'media',
 			$this->db,
 			$media_sql,
-			SwatDBClassMap::get('SiteMediaWrapper'));
+			SwatDBClassMap::get(SiteMediaWrapper::class));
 
 		// efficiently load encodings
 		$encoding_sql = 'select * from MediaEncoding where id in (%s)';
@@ -206,7 +206,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 			'encoding',
 			$this->db,
 			$encoding_sql,
-			SwatDBClassMap::get('SiteMediaEncodingWrapper'));
+			SwatDBClassMap::get(SiteMediaEncodingWrapper::class));
 
 		foreach ($tasks as $task) {
 			if ($task->media instanceof SiteMedia) {

@@ -90,7 +90,7 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 		parent::init();
 
 		$this->row_wrapper_class =
-			SwatDBClassMap::get('SiteMedia');
+			SwatDBClassMap::get(SiteMedia::class);
 
 		$this->index_field = 'id';
 	}
@@ -100,7 +100,7 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 
 	protected function getMediaSetWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteMediaSetWrapper');
+		return SwatDBClassMap::get(SiteMediaSetWrapper::class);
 	}
 
 	// }}}
@@ -108,7 +108,7 @@ class SiteMediaWrapper extends SwatDBRecordsetWrapper
 
 	protected function getMediaEncodingBindingWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteMediaEncodingBindingWrapper');
+		return SwatDBClassMap::get(SiteMediaEncodingBindingWrapper::class);
 	}
 
 	// }}}

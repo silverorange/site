@@ -45,7 +45,7 @@ class SiteApiSignOnToken extends SwatDBDataObject
 
 		$this->registerInternalProperty(
 			'api_credential',
-			SwatDBClassMap::get('SiteApiCredential')
+			SwatDBClassMap::get(SiteApiCredential::class)
 		);
 
 		$this->registerDateProperty('createdate');

@@ -155,7 +155,7 @@ class SiteImageSet extends SwatDBDataObject
 
 	protected function getImageDimensionWrapperClassName()
 	{
-		return SwatDBClassMap::get('SiteImageDimensionWrapper');
+		return SwatDBClassMap::get(SiteImageDimensionWrapper::class);
 	}
 
 	// }}}

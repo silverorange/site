@@ -149,7 +149,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 				$this->db->quote($this->clean_up, 'boolean'),
 				$this->db->quote($this->getMediaSet()->shortname, 'text')
 			),
-			SwatDBClassMap::get('SiteVideoMediaWrapper')
+			SwatDBClassMap::get(SiteVideoMediaWrapper::class)
 		);
 	}
 
@@ -164,7 +164,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 			);
 		}
 
-		$class_name = SwatDBClassMap::get('SiteMediaSet');
+		$class_name = SwatDBClassMap::get(SiteMediaSet::class);
 
 		$media_set = new $class_name();
 		$media_set->setDatabase($this->db);

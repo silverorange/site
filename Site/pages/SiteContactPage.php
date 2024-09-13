@@ -30,7 +30,7 @@ class SiteContactPage extends SiteDBEditPage
 
 	protected function getContactMessageClassName()
 	{
-		return SwatDBClassMap::get('SiteContactMessage');
+		return SwatDBClassMap::get(SiteContactMessage::class);
 	}
 
 	// }}}

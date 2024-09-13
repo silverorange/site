@@ -37,7 +37,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 	 */
 	protected function createNewAccount()
 	{
-		$class_name = SwatDBClassMap::get('SiteAccount');
+		$class_name = SwatDBClassMap::get(SiteAccount::class);
 		$account = new $class_name();
 
 		if ($this->app->hasModule('SiteMultipleInstanceModule'))
@@ -119,7 +119,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
 			$this->app->instance->getInstance() : null;
 
-		$class_name = SwatDBClassMap::get('SiteAccount');
+		$class_name = SwatDBClassMap::get(SiteAccount::class);
 		$account = new $class_name();
 		$account->setDatabase($this->app->db);
 		$found = $account->loadWithEmail($email->value, $instance);

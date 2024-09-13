@@ -324,7 +324,7 @@ class SiteAdModule extends SiteApplicationModule
 			null, SiteApplication::VAR_POST | SiteApplication::VAR_GET);
 
 		if ($shortname !== null) {
-			$class_name = SwatDBClassMap::get('SiteAd');
+			$class_name = SwatDBClassMap::get(SiteAd::class);
 			$ad = new $class_name();
 			$ad->setDatabase($db);
 			$loaded = $ad->loadFromShortname($shortname);
@@ -385,7 +385,7 @@ class SiteAdModule extends SiteApplicationModule
 	{
 		$db = $this->app->getModule('SiteDatabaseModule')->getConnection();
 
-		$class_name = SwatDBClassMap::get('SiteAdReferrer');
+		$class_name = SwatDBClassMap::get(SiteAdReferrer::class);
 		$ad_referrer = new $class_name();
 
 		$ad_referrer->setDatabase($db);
@@ -418,7 +418,7 @@ class SiteAdModule extends SiteApplicationModule
 	 */
 	protected function createAd($shortname)
 	{
-		$class_name = SwatDBClassMap::get('SiteAd');
+		$class_name = SwatDBClassMap::get(SiteAd::class);
 		$ad = new $class_name();
 
 		$ad->title = (string)$shortname;

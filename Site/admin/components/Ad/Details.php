@@ -66,7 +66,7 @@ class SiteAdDetails extends AdminIndex
 	 */
 	protected function initAd($id)
 	{
-		$class_name = SwatDBClassMap::get('SiteAd');
+		$class_name = SwatDBClassMap::get(SiteAd::class);
 		$this->ad = new $class_name();
 		$this->ad->setDatabase($this->app->db);
 		return $this->ad->load($id);

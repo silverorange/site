@@ -164,7 +164,7 @@ class SiteMediaSet extends SwatDBDataObject
 	protected function init()
 	{
 		$this->registerInternalProperty('instance',
-			SwatDBClassMap::get('SiteInstance'));
+			SwatDBClassMap::get(SiteInstance::class));
 
 		$this->table = 'MediaSet';
 		$this->id_field = 'integer:id';
@@ -209,7 +209,7 @@ class SiteMediaSet extends SwatDBDataObject
 
 	protected function getMediaEncodingWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteMediaEncodingWrapper');
+		return SwatDBClassMap::get(SiteMediaEncodingWrapper::class);
 	}
 
 	// }}}

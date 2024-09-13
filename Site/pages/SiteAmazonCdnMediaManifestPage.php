@@ -51,7 +51,7 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 			$this->app->db->quote($media_id, 'integer'));
 
 		$this->media = SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('SiteVideoMediaWrapper'))->getFirst();
+			SwatDBClassMap::get(SiteVideoMediaWrapper::class))->getFirst();
 
 		if ($this->media === null) {
 			throw new SiteNotFoundException('Media not found for id:'.

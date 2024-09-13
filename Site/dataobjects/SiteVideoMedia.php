@@ -396,13 +396,13 @@ class SiteVideoMedia extends SiteMedia
 		parent::init();
 
 		$this->registerInternalProperty('image',
-			SwatDBClassMap::get('SiteVideoImage'));
+			SwatDBClassMap::get(SiteVideoImage::class));
 
 		$this->registerInternalProperty('scrubber_image',
-			SwatDBClassMap::get('SiteVideoScrubberImage'));
+			SwatDBClassMap::get(SiteVideoScrubberImage::class));
 
 		$this->registerInternalProperty('media_set',
-			SwatDBClassMap::get('SiteVideoMediaSet'));
+			SwatDBClassMap::get(SiteVideoMediaSet::class));
 	}
 
 	// }}}
@@ -410,7 +410,7 @@ class SiteVideoMedia extends SiteMedia
 
 	protected function getMediaEncodingBindingWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteVideoMediaEncodingBindingWrapper');
+		return SwatDBClassMap::get(SiteVideoMediaEncodingBindingWrapper::class);
 	}
 
 	// }}}
@@ -453,7 +453,7 @@ class SiteVideoMedia extends SiteMedia
 				$this->path_key,
 			);
 
-			$class_name = SwatDBClassMap::get('SiteMediaCdnTask');
+			$class_name = SwatDBClassMap::get(SiteMediaCdnTask::class);
 			$task = new $class_name();
 			$task->setDatabase($this->db);
 			$task->operation = 'delete';

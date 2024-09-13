@@ -16,7 +16,7 @@ class SiteCdnTaskWrapper extends SwatDBRecordsetWrapper
 	{
 		parent::init();
 
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteCdnTask');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteCdnTask::class);
 		$this->index_field = 'id';
 	}
 

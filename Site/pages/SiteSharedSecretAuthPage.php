@@ -55,7 +55,7 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 			throw new SiteInvalidMacException('No API key provided.');
 		}
 
-		$class_name = SwatDBClassMap::get('SiteApiCredential');
+		$class_name = SwatDBClassMap::get(SiteApiCredential::class);
 		$credential = new $class_name();
 		$credential->setDatabase($this->app->db);
 

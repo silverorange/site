@@ -15,7 +15,7 @@ class SiteContactMessageWrapper extends SwatDBRecordsetWrapper
 	protected function init()
 	{
 		parent::init();
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteContactMessage');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteContactMessage::class);
 		$this->index_field = 'id';
 	}
 

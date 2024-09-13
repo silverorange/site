@@ -26,7 +26,7 @@ class SiteVideoMediaEncoding extends SiteMediaEncoding
 		parent::init();
 
 		$this->registerInternalProperty('media_set',
-			SwatDBClassMap::get('SiteVideoMediaSet'));
+			SwatDBClassMap::get(SiteVideoMediaSet::class));
 	}
 
 	// }}}

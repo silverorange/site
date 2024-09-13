@@ -66,7 +66,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 
 	protected function getCommentClassName()
 	{
-		return SwatDBClassMap::get('SiteComment');
+		return SwatDBClassMap::get(SiteComment::class);
 	}
 
 	// }}}

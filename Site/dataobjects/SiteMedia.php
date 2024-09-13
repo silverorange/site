@@ -106,7 +106,7 @@ class SiteMedia extends SwatDBDataObject
 		$this->registerDateProperty('createdate');
 
 		$this->registerInternalProperty('media_set',
-			SwatDBClassMap::get('SiteMediaSet'));
+			SwatDBClassMap::get(SiteMediaSet::class));
 	}
 
 	// }}}
@@ -531,7 +531,7 @@ class SiteMedia extends SwatDBDataObject
 
 	protected function getMediaEncodingBindingWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteMediaEncodingBindingWrapper');
+		return SwatDBClassMap::get(SiteMediaEncodingBindingWrapper::class);
 	}
 
 	// }}}
@@ -654,7 +654,7 @@ class SiteMedia extends SwatDBDataObject
 	) {
 		$this->checkDB();
 
-		$class_name = SwatDBClassMap::get('SiteMediaCdnTask');
+		$class_name = SwatDBClassMap::get(SiteMediaCdnTask::class);
 		$task = new $class_name();
 		$task->setDatabase($this->db);
 		$task->operation = $operation;
@@ -692,7 +692,7 @@ class SiteMedia extends SwatDBDataObject
 				'shortname must be defined in the media dataobject.');
 		}
 
-		$class_name = SwatDBClassMap::get('SiteMediaSet');
+		$class_name = SwatDBClassMap::get(SiteMediaSet::class);
 		$media_set = new $class_name();
 		$media_set->setDatabase($this->db);
 

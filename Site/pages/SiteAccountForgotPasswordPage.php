@@ -89,7 +89,7 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
 			$this->app->instance->getInstance() : null;
 
-		$class_name = SwatDBClassMap::get('SiteAccount');
+		$class_name = SwatDBClassMap::get(SiteAccount::class);
 		$account = new $class_name();
 		$account->setDatabase($this->app->db);
 		$found = $account->loadWithEmail($email, $instance);

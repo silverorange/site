@@ -88,7 +88,7 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 		$this->table = 'ImageDimensionBinding';
 
 		$this->registerInternalProperty('image_type',
-			SwatDBClassMap::get('SiteImageType'));
+			SwatDBClassMap::get(SiteImageType::class));
 	}
 
 	// }}}

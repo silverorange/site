@@ -118,7 +118,7 @@ class SiteAttachment extends SwatDBDataObject
 		$this->registerDateProperty('createdate');
 
 		$this->registerInternalProperty('attachment_set',
-			SwatDBClassMap::get('SiteAttachmentSet'));
+			SwatDBClassMap::get(SiteAttachmentSet::class));
 	}
 
 	// }}}
@@ -470,7 +470,7 @@ class SiteAttachment extends SwatDBDataObject
 				'a default value is set in the class definition.');
 		}
 
-		$class_name = SwatDBClassMap::get('SiteAttachmentSet');
+		$class_name = SwatDBClassMap::get(SiteAttachmentSet::class);
 		$attachment_set = new $class_name();
 		$attachment_set->setDatabase($this->db);
 
@@ -536,7 +536,7 @@ class SiteAttachment extends SwatDBDataObject
 	{
 		$this->checkDB();
 
-		$class_name = SwatDBClassMap::get('SiteAttachmentCdnTask');
+		$class_name = SwatDBClassMap::get(SiteAttachmentCdnTask::class);
 		$task = new $class_name();
 		$task->setDatabase($this->db);
 		$task->operation = $operation;

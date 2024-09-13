@@ -90,7 +90,7 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 		$this->table = 'MediaEncodingBinding';
 
 		$this->registerInternalProperty('media_type',
-			SwatDBClassMap::get('SiteMediaType'));
+			SwatDBClassMap::get(SiteMediaType::class));
 	}
 
 	// }}}

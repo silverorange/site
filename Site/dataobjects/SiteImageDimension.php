@@ -152,10 +152,10 @@ class SiteImageDimension extends SwatDBDataObject
 	protected function init()
 	{
 		$this->registerInternalProperty('image_set',
-			SwatDBClassMap::get('SiteImageSet'));
+			SwatDBClassMap::get(SiteImageSet::class));
 
 		$this->registerInternalProperty('default_type',
-			SwatDBClassMap::get('SiteImageType'));
+			SwatDBClassMap::get(SiteImageType::class));
 
 		$this->table = 'ImageDimension';
 		$this->id_field = 'integer:id';

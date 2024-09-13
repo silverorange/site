@@ -109,10 +109,10 @@ class SiteMediaEncoding extends SwatDBDataObject
 	protected function init()
 	{
 		$this->registerInternalProperty('media_set',
-			SwatDBClassMap::get('SiteMediaSet'));
+			SwatDBClassMap::get(SiteMediaSet::class));
 
 		$this->registerInternalProperty('default_type',
-			SwatDBClassMap::get('SiteMediaType'));
+			SwatDBClassMap::get(SiteMediaType::class));
 
 		$this->table = 'MediaEncoding';
 		$this->id_field = 'integer:id';

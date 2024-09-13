@@ -96,7 +96,7 @@ class SiteVideoScrubberImageGenerator extends
 			$this->getPendingMediaWhereClause());
 
 		$media = SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteVideoMediaWrapper'));
+			SwatDBClassMap::get(SiteVideoMediaWrapper::class));
 
 		return $media;
 	}
@@ -232,7 +232,7 @@ class SiteVideoScrubberImageGenerator extends
 
 	protected function getImageObject()
 	{
-		$class_name = SwatDBClassMap::get('SiteVideoScrubberImage');
+		$class_name = SwatDBClassMap::get(SiteVideoScrubberImage::class);
 
 		$image_object = new $class_name();
 		$image_object->setDatabase($this->db);

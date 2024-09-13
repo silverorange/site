@@ -74,7 +74,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 				$this->db->quote(false, 'boolean'),
 				$this->db->quote('mp4', 'text')
 			),
-			SwatDBClassMap::get('SiteVideoMediaWrapper')
+			SwatDBClassMap::get(SiteVideoMediaWrapper::class)
 		);
 	}
 

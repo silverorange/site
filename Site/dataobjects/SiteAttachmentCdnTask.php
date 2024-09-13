@@ -31,7 +31,7 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 		parent::init();
 
 		$this->registerInternalProperty('attachment',
-			SwatDBClassMap::get('SiteAttachment'));
+			SwatDBClassMap::get(SiteAttachment::class));
 
 		$this->table = 'AttachmentCdnQueue';
 	}

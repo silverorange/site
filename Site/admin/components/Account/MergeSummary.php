@@ -135,7 +135,7 @@ class SiteAccountMergeSummary extends AdminPage
 
 	protected function getAccount($id)
 	{
-		$account_class = SwatDBClassMap::get('SiteAccount');
+		$account_class = SwatDBClassMap::get(SiteAccount::class);
 
 		$account = new $account_class();
 		$account->setDatabase($this->app->db);

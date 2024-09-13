@@ -37,7 +37,7 @@ class SiteMediaSetWrapper extends SwatDBRecordsetWrapper
 
 	protected function getMediaEncodingWrapperClass()
 	{
-		return SwatDBClassMap::get('SiteMediaEncodingWrapper');
+		return SwatDBClassMap::get(SiteMediaEncodingWrapper::class);
 	}
 
 	// }}}
@@ -56,7 +56,7 @@ class SiteMediaSetWrapper extends SwatDBRecordsetWrapper
 		parent::init();
 
 		$this->row_wrapper_class =
-			SwatDBClassMap::get('SiteMediaSet');
+			SwatDBClassMap::get(SiteMediaSet::class);
 
 		$this->index_field = 'id';
 	}

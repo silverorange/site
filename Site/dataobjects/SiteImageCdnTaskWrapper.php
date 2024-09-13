@@ -16,7 +16,7 @@ class SiteImageCdnTaskWrapper extends SiteCdnTaskWrapper
 	{
 		parent::init();
 
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteImageCdnTask');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteImageCdnTask::class);
 	}
 
 	// }}}

@@ -16,7 +16,7 @@ class SiteApiCredentialWrapper extends SwatDBRecordsetWrapper
 	{
 		parent::init();
 
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteApiCredential');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteApiCredential::class);
 		$this->index_field = 'id';
 	}
 

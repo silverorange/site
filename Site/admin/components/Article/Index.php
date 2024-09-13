@@ -39,7 +39,7 @@ class SiteArticleIndex extends AdminIndex
 
 	protected function initArticle()
 	{
-		$class = SwatDBClassMap::get('SiteArticle');
+		$class = SwatDBClassMap::get(SiteArticle::class);
 
 		$this->article = new $class();
 		$this->article->setDatabase($this->app->db);

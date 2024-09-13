@@ -15,7 +15,7 @@ class SiteCommentWrapper extends SwatDBRecordsetWrapper
 	protected function init()
 	{
 		parent::init();
-		$this->row_wrapper_class = SwatDBClassMap::get('SiteComment');
+		$this->row_wrapper_class = SwatDBClassMap::get(SiteComment::class);
 		$this->index_field = 'id';
 	}
 
