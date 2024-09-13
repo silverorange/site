@@ -616,7 +616,7 @@ class SiteSessionModule extends SiteApplicationModule
 			$cookie_name = session_name();
 			$cookie_value = session_id();
 
-			setcookie($cookie_name, $cookie_value, 0, '/');
+			setcookie($cookie_name, $cookie_value, ['expires' => 0, 'path' => '/']);
 
 			// Also explicitly set $_COOKIE since its value is only accessible
 			// on subsequent page loads and we may need the value during the

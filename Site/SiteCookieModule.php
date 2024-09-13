@@ -72,12 +72,9 @@ class SiteCookieModule extends SiteApplicationModule
 		//if ($domain = null)
 		//	$domain =
 
-		setcookie($name, $cookie_value, $expiry, $path);
-		//setcookie($name, $cookie_value, $expiry, $path, $domain);
+		setcookie($name, $cookie_value, ['expires' => $expiry, 'path' => $path]);
+		//setcookie($name, $cookie_value, ['expires' => $expiry, 'path' => $path, 'domain' => $domain]);
 	}
-
-
-
 
 	/**
 	 * Remove a cookie
@@ -105,8 +102,8 @@ class SiteCookieModule extends SiteApplicationModule
 		//if ($domain = null)
 		//	$domain =
 
-		setcookie($name, $value, $expiry, $path);
-		//setcookie($name, $value, $expiry, $path, $domain);
+		setcookie($name, $value, ['expires' => $expiry, 'path' => $path]);
+		//setcookie($name, $value, ['expires' => $expiry, 'path' => $path, 'domain' => $domain]);
 
 		unset($_COOKIE[$name]);
 	}
