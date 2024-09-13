@@ -103,7 +103,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 	public function __invoke()
 	{
 		if (extension_loaded('pcntl')) {
-			pcntl_signal(SIGTERM, [$this, 'handleSignal']);
+			pcntl_signal(SIGTERM, $this->handleSignal(...));
 		}
 
 		$this->initModules();
