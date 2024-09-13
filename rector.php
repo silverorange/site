@@ -12,13 +12,15 @@ return RectorConfig::configure()
 		__DIR__ . '/www',
 	])
 	// uncomment to reach your current PHP version
-	->withPhpSets(php81: true)
+	->withPhpSets(php82: true)
 	->withRules([
 	])
 	->withSkip([
-		\Rector\Php54\Rector\Array_\LongArrayToShortArrayRector::class,
-		\Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector::class,
-		\Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector::class,
-		\Rector\Php74\Rector\Assign\NullCoalescingOperatorRector::class,
+		\Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector::class,
+		\Rector\Php81\Rector\Property\ReadOnlyPropertyRector::class,
+		\Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector::class,
+		\Rector\Php80\Rector\FunctionLike\MixedTypeRector::class,
+		\Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector::class,
+		\Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector::class,
 	])
 	->withTypeCoverageLevel(1);
