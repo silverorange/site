@@ -80,40 +80,16 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 */
 	public function log($level, $message, array $context = [])
 	{
-		switch ($level) {
-		case Psr\Log\Level::EMERGENCY:
-			$this->emergency($message, $context);
-			break;
-
-		case Psr\Log\Level::ALERT:
-			$this->alert($message, $context);
-			break;
-
-		case Psr\Log\Level::CRITICAL:
-			$this->critical($message, $context);
-			break;
-
-		case Psr\Log\Level::ERROR:
-			$this->error($message, $context);
-			break;
-
-		case Psr\Log\Level::WARNING:
-			$this->warning($message, $context);
-			break;
-
-		case Psr\Log\Level::NOTICE:
-			$this->notice($message, $context);
-			break;
-
-		case Psr\Log\Level::INFO:
-			$this->info($message, $context);
-			break;
-
-		case Psr\Log\Level::DEBUG:
-		default:
-			$this->debug($message, $context);
-			break;
-		}
+		match ($level) {
+			Psr\Log\Level::EMERGENCY => $this->emergency($message, $context),
+			Psr\Log\Level::ALERT => $this->alert($message, $context),
+			Psr\Log\Level::CRITICAL => $this->critical($message, $context),
+			Psr\Log\Level::ERROR => $this->error($message, $context),
+			Psr\Log\Level::WARNING => $this->warning($message, $context),
+			Psr\Log\Level::NOTICE => $this->notice($message, $context),
+			Psr\Log\Level::INFO => $this->info($message, $context),
+			default => $this->debug($message, $context),
+  		};
 	}
 
 

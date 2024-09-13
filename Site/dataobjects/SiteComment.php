@@ -98,23 +98,12 @@ class SiteComment extends SwatDBDataObject
 
 	public static function getStatusTitle($status)
 	{
-		switch ($status) {
-		case self::STATUS_PENDING :
-			$title = Site::_('Pending Approval');
-			break;
-
-		case self::STATUS_PUBLISHED :
-			$title = Site::_('Shown on Site');
-			break;
-
-		case self::STATUS_UNPUBLISHED :
-			$title = Site::_('Not Approved');
-			break;
-
-		default:
-			$title = Site::_('Unknown Status');
-			break;
-		}
+		$title = match ($status) {
+			self::STATUS_PENDING => Site::_('Pending Approval'),
+			self::STATUS_PUBLISHED => Site::_('Shown on Site'),
+			self::STATUS_UNPUBLISHED => Site::_('Not Approved'),
+			default => Site::_('Unknown Status'),
+		};
 
 		return $title;
 	}

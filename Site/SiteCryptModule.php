@@ -134,22 +134,15 @@ class SiteCryptModule extends SiteApplicationModule
 
 	protected function getCryptMethod()
 	{
-		switch ($this->method) {
-		case 'sha256':
-			return '5';
-
-		case 'sha512':
-			return '6';
-
-		case 'blowfish':
-			return '2y';
-
-		default:
-			throw new SiteException(
+		return match ($this->method) {
+			'sha256' => '5',
+			'sha512' => '6',
+			'blowfish' => '2y',
+			default => throw new SiteException(
 				'The password hashing method “%s” is not valid.',
 				$this->method
-			);
-		}
+			),
+		};
 	}
 
 
@@ -186,20 +179,14 @@ class SiteCryptModule extends SiteApplicationModule
 
 	protected function getCryptSaltLength()
 	{
-		switch ($this->method) {
-		case 'sha256':
-		case 'sha512':
-			return self::SHA_SALT_LENGTH;
-
-		case 'blowfish':
-			return self::BLOWFISH_SALT_LENGTH;
-
-		default:
-			throw new SiteException(
+		return match ($this->method) {
+			'sha256', 'sha512' => self::SHA_SALT_LENGTH,
+			'blowfish' => self::BLOWFISH_SALT_LENGTH,
+			default => throw new SiteException(
 				'The password hashing method “%s” is not valid.',
 				$this->method
-			);
-		}
+			),
+		};
 	}
 
 

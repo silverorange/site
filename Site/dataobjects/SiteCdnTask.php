@@ -206,18 +206,11 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	 */
 	protected function getAttemptDescriptionString()
 	{
-		switch ($this->operation) {
-		case 'copy':
-		case 'update':
-			$description_string = Site::_('Updating %1$s ‘%2$s’ ... ');
-			break;
-		case 'delete':
-		case 'remove':
-			$description_string = Site::_('Removing ‘%3$s’ ... ');
-			break;
-		default:
-			$description_string = Site::_('Unknown operation ‘%4$s’ ... ');
-		}
+		$description_string = match ($this->operation) {
+			'copy', 'update' => Site::_('Updating %1$s ‘%2$s’ ... '),
+			'delete', 'remove' => Site::_('Removing ‘%3$s’ ... '),
+			default => Site::_('Unknown operation ‘%4$s’ ... '),
+		};
 
 		return $description_string;
 	}

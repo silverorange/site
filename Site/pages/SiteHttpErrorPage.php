@@ -147,21 +147,12 @@ class SiteHttpErrorPage extends SitePage
 
 	protected function sendHttpStatusHeader()
 	{
-		switch($this->http_status_code) {
-		case 400:
-			header('HTTP/1.0 400 Bad Request');
-			break;
-		case 403:
-			header('HTTP/1.0 403 Forbidden');
-			break;
-		case 404:
-			header('HTTP/1.0 404 Not Found');
-			break;
-		case 500:
-		default:
-			header('HTTP/1.0 500 Internal Server Error');
-			break;
-		}
+		match ($this->http_status_code) {
+			400 => header('HTTP/1.0 400 Bad Request'),
+			403 => header('HTTP/1.0 403 Forbidden'),
+			404 => header('HTTP/1.0 404 Not Found'),
+			default => header('HTTP/1.0 500 Internal Server Error'),
+		};
 	}
 
 
@@ -169,17 +160,12 @@ class SiteHttpErrorPage extends SitePage
 
 	protected function getTitle()
 	{
-		switch($this->http_status_code) {
-		case 400:
-			return Site::_('Bad Request');
-		case 404:
-			return Site::_('Page Not Found');
-		case 403:
-			return Site::_('Forbidden');
-		case 500:
-		default:
-			return Site::_('Internal Server Error');
-		}
+		return match ($this->http_status_code) {
+			400 => Site::_('Bad Request'),
+			404 => Site::_('Page Not Found'),
+			403 => Site::_('Forbidden'),
+			default => Site::_('Internal Server Error'),
+		};
 	}
 
 
@@ -187,19 +173,11 @@ class SiteHttpErrorPage extends SitePage
 
 	protected function getSummary()
 	{
-		switch($this->http_status_code) {
-		case 404:
-			return Site::_(
-				'Sorry, we couldn’t find the page you were looking for.'
-			);
-		case 403:
-			return Site::_('Sorry, the page you requested is not accessible.');
-		case 500:
-		default:
-			return Site::_(
-				'Sorry, there was a problem loading the page you requested.'
-			);
-		}
+		return match ($this->http_status_code) {
+			404 => Site::_('Sorry, we couldn’t find the page you were looking for.'),
+			403 => Site::_('Sorry, the page you requested is not accessible.'),
+			default => Site::_('Sorry, there was a problem loading the page you requested.'),
+		};
 	}
 
 

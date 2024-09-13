@@ -14,23 +14,20 @@ class SiteImageCdnTask extends SiteCdnTask
 
 	public function getAttemptDescription()
 	{
-		switch ($this->operation) {
-		case 'copy':
-		case 'update':
-			$attempt = sprintf(
+		$attempt = match ($this->operation) {
+			'copy', 'update' => sprintf(
 				Site::_('Updating the dimension ‘%s’ of image ‘%s’ ... '),
 				$this->dimension->shortname,
-				$this->image->id);
-
-			break;
-
-		default:
-			$attempt = sprintf($this->getAttemptDescriptionString(),
+				$this->image->id
+			),
+			default => sprintf(
+				$this->getAttemptDescriptionString(),
 				Site::_('image'),
 				$this->getInternalValue('image'),
 				$this->file_path,
-				$this->operation);
-		}
+				$this->operation
+			)
+		};
 
 		return $attempt;
 	}

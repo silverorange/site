@@ -187,21 +187,11 @@ abstract class SiteCommentUi
 
 	protected function relocate()
 	{
-		switch ($this->getCommentStatus()) {
-		case SiteCommentStatus::OPEN:
-			$uri = $this->getThankYouUri().
-				'#comment'.$this->comment->id;
-
-			break;
-
-		case SiteCommentStatus::MODERATED:
-			$uri = $this->getThankYouUri().'#submit_comment';
-			break;
-
-		default:
-			$uri = $this->source;
-			break;
-		}
+		$uri = match ($this->getCommentStatus()) {
+			SiteCommentStatus::OPEN => $this->getThankYouUri().'#comment'.$this->comment->id,
+			SiteCommentStatus::MODERATED => $this->getThankYouUri().'#submit_comment',
+			default => $this->source,
+		};
 
 		$this->app->relocate($uri);
 	}
@@ -421,33 +411,18 @@ abstract class SiteCommentUi
 
 	protected function getMessage($shortname)
 	{
-		switch ($shortname) {
-		case 'preview-message' :
-			return Site::_('Your comment has not yet been published.');
-
-		case 'preview-message-subtitle' :
-			return Site::_('Review your comment and press the <em>Post</em> '.
-				'button when it’s ready to publish. %s');
-
-		case 'locked' :
-			return Site::_('Comments are locked');
-
-		case 'locked-subtitle' :
-			return Site::_('No new comments may be posted for this article.');
-
-		case 'published' :
-			return Site::_('Your comment has been published.');
-
-		case 'moderated' :
-			return Site::_('Your comment has been submitted.');
-
-		case 'moderated-subtitle' :
-			return Site::_('Your comment will be published after being '.
-				'approved by the site moderator.');
-
-		default :
-			return null;
-		}
+		return match ($shortname) {
+      'preview-message' => Site::_('Your comment has not yet been published.'),
+      'preview-message-subtitle' => Site::_('Review your comment and press the <em>Post</em> '.
+   				'button when it’s ready to publish. %s'),
+      'locked' => Site::_('Comments are locked'),
+      'locked-subtitle' => Site::_('No new comments may be posted for this article.'),
+      'published' => Site::_('Your comment has been published.'),
+      'moderated' => Site::_('Your comment has been submitted.'),
+      'moderated-subtitle' => Site::_('Your comment will be published after being '.
+   				'approved by the site moderator.'),
+      default => null,
+  };
 	}
 
 

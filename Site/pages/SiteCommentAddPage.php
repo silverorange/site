@@ -79,17 +79,12 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		parent::process();
 
 		try {
-			switch ($this->getItemCommentStatus()) {
-			case SiteCommentStatus::OPEN:
-			case SiteCommentStatus::MODERATED:
-				$this->processComment();
-				break;
-			default:
-				throw new SiteCommentJSONException(
+			match ($this->getItemCommentStatus()) {
+				SiteCommentStatus::OPEN, SiteCommentStatus::MODERATED => $this->processComment(),
+				default => throw new SiteCommentJSONException(
 					Site::_('Commenting is not allowed for this item.')
-				);
-				break;
-			}
+				),
+			};
 		} catch (Throwable $e) {
 			if (!($e instanceof SiteCommentJSONException)) {
 				$e->processAndContinue();

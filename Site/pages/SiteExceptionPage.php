@@ -45,24 +45,13 @@ class SiteExceptionPage extends SitePage
 
 	protected function initHttpStatusHeader()
 	{
-		switch ($this->getHttpStatusHeader()) {
-		case 400:
-			header('HTTP/1.0 400 Bad Request');
-			break;
-		case 401:
-			header('HTTP/1.0 401 Unauthorized');
-			break;
-		case 403:
-			header('HTTP/1.0 403 Forbidden');
-			break;
-		case 404:
-			header('HTTP/1.0 404 Not Found');
-			break;
-		case 500:
-		default:
-			header('HTTP/1.0 500 Internal Server Error');
-			break;
-		}
+		match ($this->getHttpStatusHeader()) {
+			400 => header('HTTP/1.0 400 Bad Request'),
+			401 => header('HTTP/1.0 401 Unauthorized'),
+			403 => header('HTTP/1.0 403 Forbidden'),
+			404 => header('HTTP/1.0 404 Not Found'),
+			default => header('HTTP/1.0 500 Internal Server Error'),
+		};
 	}
 
 
@@ -98,17 +87,12 @@ class SiteExceptionPage extends SitePage
 
 	protected function getSummary()
 	{
-		switch ($this->getHttpStatusHeader()) {
-		case 401:
-			return Site::_('Sorry, you must log in to view this page.');
-		case 404:
-			return Site::_('Sorry, we couldn’t find the page you were looking for.');
-		case 403:
-			return Site::_('Sorry, the page you requested is not accessible.');
-		case 500:
-		default:
-			return Site::_('Sorry, there was a problem loading the  page you requested.');
-		}
+		return match ($this->getHttpStatusHeader()) {
+      401 => Site::_('Sorry, you must log in to view this page.'),
+      404 => Site::_('Sorry, we couldn’t find the page you were looking for.'),
+      403 => Site::_('Sorry, the page you requested is not accessible.'),
+      default => Site::_('Sorry, there was a problem loading the  page you requested.'),
+  };
 	}
 
 

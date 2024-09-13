@@ -14,23 +14,20 @@ class SiteMediaCdnTask extends SiteCdnTask
 
 	public function getAttemptDescription()
 	{
-		switch ($this->operation) {
-		case 'copy':
-		case 'update':
-			$attempt = sprintf(
+		$attempt = match ($this->operation) {
+			'copy', 'update' => sprintf(
 				Site::_('Updating the ‘%s’ encoding of media ‘%s’ ... '),
 				$this->encoding->shortname,
-				$this->media->id);
-
-			break;
-
-		default:
-			$attempt = sprintf($this->getAttemptDescriptionString(),
+				$this->media->id
+			),
+			default => sprintf(
+				$this->getAttemptDescriptionString(),
 				Site::_('media'),
 				$this->getInternalValue('media'),
 				$this->file_path,
-				$this->operation);
-		}
+				$this->operation
+			),
+		};
 
 		return $attempt;
 	}

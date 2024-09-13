@@ -231,20 +231,11 @@ abstract class SiteCommentDisplay extends SwatControl
 		if ($this->comment->spam) {
 			$class = 'site-comment-red';
 		} else {
-			switch ($this->comment->status) {
-			case SiteComment::STATUS_UNPUBLISHED:
-				$class = 'site-comment-red';
-				break;
-
-			case SiteComment::STATUS_PENDING:
-				$class = 'site-comment-yellow';
-				break;
-
-			case SiteComment::STATUS_PUBLISHED:
-			default:
-				$class = 'site-comment-green';
-				break;
-			}
+			$class = match ($this->comment->status) {
+				SiteComment::STATUS_UNPUBLISHED => 'site-comment-red',
+				SiteComment::STATUS_PENDING => 'site-comment-yellow',
+				default => 'site-comment-green',
+			};
 		}
 
 		return $class;
