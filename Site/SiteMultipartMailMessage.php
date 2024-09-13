@@ -437,7 +437,7 @@ class SiteMultipartMailMessage extends SiteObject
 		$values_sql = sprintf($values_sql,
 			$this->app->db->quote($this->date, 'date'),
 			$this->app->db->quote($this->app->getInstanceId(), 'integer'),
-			$this->app->db->quote(get_class($this), 'text'),
+			$this->app->db->quote(static::class, 'text'),
 			$this->app->db->quote($attachment_count, 'integer'),
 			$this->app->db->quote($attachment_size, 'integer'),
 			$this->app->db->quote($this->from_address), 'text');

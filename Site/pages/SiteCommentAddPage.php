@@ -271,7 +271,7 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 
 	protected function handleException(Throwable $e)
 	{
-		$this->response = ['status'  => 'error', 'message' => $e->getMessage(), 'type'    => get_class($e)];
+		$this->response = ['status'  => 'error', 'message' => $e->getMessage(), 'type'    => $e::class];
 	}
 
 	// }}}

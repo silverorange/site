@@ -469,7 +469,7 @@ abstract class SiteApplication extends SiteObject
 			if (!($depend instanceof SiteApplicationModuleDependency)) {
 				throw new SiteException(sprintf(
 					'Module %s contains a dependency that is not a '.
-					'SiteApplicationModuleDependency', get_class($module)));
+					'SiteApplicationModuleDependency', $module::class));
 			}
 
 			if ($depend->isRequired() &&
@@ -477,7 +477,7 @@ abstract class SiteApplication extends SiteObject
 				throw new SiteException(sprintf(
 					"Module %s depends on feature '%s' which is not provided ".
 					"by any module in this application.",
-					get_class($module), $depend->getFeature()));
+					$module::class, $depend->getFeature()));
 			}
 		}
 
@@ -487,7 +487,7 @@ abstract class SiteApplication extends SiteObject
 				throw new SiteException(sprintf(
 					"Module feature '%s' already provided by %s.",
 					$provide,
-					get_class($this->modules_by_provides[$provide])));
+					$this->modules_by_provides[$provide]::class));
 			}
 		}
 
@@ -704,9 +704,9 @@ abstract class SiteApplication extends SiteObject
 		if (array_key_exists(spl_object_hash($module), $dependent_stack)) {
 			$circular_dependency = '';
 			foreach ($dependent_stack as $dependency)
-				$circular_dependency.= get_class($dependency).' => ';
+				$circular_dependency.= $dependency::class.' => ';
 
-			$circular_dependency.= get_class($module);
+			$circular_dependency.= $module::class;
 			throw new SiteException(sprintf(
 				"Circular module dependency detected:\n%s",
 				$circular_dependency));
@@ -720,7 +720,7 @@ abstract class SiteApplication extends SiteObject
 			if (!($depend instanceof SiteApplicationModuleDependency)) {
 				throw new SiteException(sprintf(
 					'Module %s contains a dependency that is not a '.
-					'SiteApplicationModuleDependency', get_class($module)));
+					'SiteApplicationModuleDependency', $module::class));
 			}
 
 			// if dependency is provided, add it to the application first
@@ -737,7 +737,7 @@ abstract class SiteApplication extends SiteObject
 				throw new SiteException(sprintf(
 					"Module %s depends on '%s' but no module provides this ".
 					"feature.",
-					get_class($module), $depend->getFeature()));
+					$module::class, $depend->getFeature()));
 			}
 		}
 

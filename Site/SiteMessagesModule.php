@@ -157,7 +157,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 	{
 		if (!$this->session_is_initialized &&
 			(!isset($this->app->session->messages) ||
-			get_class($this->app->session->messages) !== 'ArrayObject')) {
+			$this->app->session->messages::class !== 'ArrayObject')) {
 			$this->app->session->messages = new ArrayObject();
 			$this->session_is_initialized = true;
 		}

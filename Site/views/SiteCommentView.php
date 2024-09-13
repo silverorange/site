@@ -61,7 +61,7 @@ abstract class SiteCommentView extends SiteView
 		if (!($comment instanceof SiteComment)) {
 			throw new InvalidArgumentException(sprintf('The view "%s" can '.
 				'only display SiteComment objects.',
-				get_class($this)));
+				static::class));
 		}
 
 		$div_tag = new SwatHtmlTag('div');

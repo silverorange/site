@@ -173,7 +173,7 @@ abstract class SiteEditPage extends SiteUiPage
 		} else {
 			throw new SwatInvalidPropertyException(sprintf(
 				'Specified “%s” object does not have a property “%s”.',
-				get_class($object), $name));
+				$object::class, $name));
 		}
 	}
 
@@ -363,7 +363,7 @@ abstract class SiteEditPage extends SiteUiPage
 		} else {
 			throw new SwatInvalidPropertyException(sprintf(
 				'Specified “%s” record does not have a property “%s”.',
-				get_class($object), $name));
+				$object::class, $name));
 		}
 
 		$widget = $this->ui->getWidget($name);

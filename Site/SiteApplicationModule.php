@@ -75,12 +75,12 @@ abstract class SiteApplicationModule extends SiteObject
 	 */
 	public function provides()
 	{
-		$module = get_called_class();
+		$module = static::class;
 
 		if (!array_key_exists($module, self::$provides_by_module)) {
 			self::$provides_by_module[$module] = [];
 			$reflector = new ReflectionObject($this);
-			while ($reflector->getName() != __CLASS__) {
+			while ($reflector->getName() != self::class) {
 				self::$provides_by_module[$module][] = $reflector->getName();
 				$reflector = $reflector->getParentClass();
 			}

@@ -273,7 +273,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 */
 	protected function parseCommandLineArguments()
 	{
-		$reflector = new ReflectionClass(get_class($this));
+		$reflector = new ReflectionClass(static::class);
 
 		$args = $_SERVER['argv'];
 		$num_args = count($args);

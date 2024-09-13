@@ -135,7 +135,7 @@ abstract class SiteView
 		if (!array_key_exists($part, $this->parts)) {
 			throw new InvalidArgumentException(sprintf(
 				'Specified part name “%s” is not valid for the %s view.',
-				$part, get_class($this)));
+				$part, static::class));
 		}
 
 		$mode = $this->filterMode($mode);
@@ -163,7 +163,7 @@ abstract class SiteView
 		if (!array_key_exists($part, $this->parts)) {
 			throw new InvalidArgumentException(sprintf(
 				'Specified part name “%s” is not valid for the %s view.',
-				$part, get_class($this)));
+				$part, static::class));
 		}
 
 		$link = $this->filterLink($link);
@@ -211,7 +211,7 @@ abstract class SiteView
 		if (!array_key_exists($part, $this->parts)) {
 			throw new InvalidArgumentException(sprintf(
 				'Specified part name “%s” is not valid for the %s view.',
-				$part, get_class($this)));
+				$part, static::class));
 		}
 
 		return $this->parts[$part]['mode'];
@@ -238,7 +238,7 @@ abstract class SiteView
 		if (!array_key_exists($part, $this->parts)) {
 			throw new InvalidArgumentException(sprintf(
 				'Specified part name “%s” is not valid for the %s view.',
-				$part, get_class($this)));
+				$part, static::class));
 		}
 
 		return $this->parts[$part]['link'];
