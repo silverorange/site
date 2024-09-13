@@ -62,7 +62,7 @@ class SiteAudioMedia extends SiteMedia
 			$transaction = new SwatDBTransaction($this->db);
 
 			$this->filename = ($this->getMediaSet()->obfuscate_filename)
-				? sha1(uniqid(rand(), true))
+				? sha1(uniqid(random_int(0, mt_getrandmax()), true))
 				: null;
 
 			$this->createdate = new SwatDate();
