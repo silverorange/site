@@ -273,18 +273,13 @@ class SiteArticlePageFactory extends SitePageFactory
 	}
 
 
-
-
-	/**
-	 * @return SiteAbstractPage
-	 */
 	protected function getNotVisiblePage(
 		SiteArticle $article,
 		SiteLayout $layout
-	) {
-		// sub-classes can return a custom page here
+	): SiteAbstractPage {
+		// subclasses can return a custom page here
 
-		// by default, throw an excpetion
+		// by default, throw an exception
 		throw new SiteNotFoundException('Article not visible');
 	}
 
