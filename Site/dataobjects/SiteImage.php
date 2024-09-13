@@ -1050,7 +1050,7 @@ class SiteImage extends SwatDBDataObject
 		if ($imagick->getImageWidth() != $width ||
 			$imagick->getImageHeight() != $height) {
 
-			list($offset_x, $offset_y) =
+			[$offset_x, $offset_y] =
 				$this->calculateCropToDimensionOffset($imagick, $dimension);
 
 			$imagick->cropImage($width, $height, $offset_x, $offset_y);
@@ -1103,7 +1103,7 @@ class SiteImage extends SwatDBDataObject
 	 */
 	protected function cropToBox(Imagick $imagick, array $bounding_box)
 	{
-		list($width, $height, $offset_x, $offset_y) = $bounding_box;
+		[$width, $height, $offset_x, $offset_y] = $bounding_box;
 
 		$imagick->cropImage($width, $height, $offset_x, $offset_y);
 

@@ -91,7 +91,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 					"of the form section.name.", $qualified_name));
 			}
 
-			list($section, $name) = explode('.', $qualified_name, 2);
+			[$section, $name] = explode('.', $qualified_name, 2);
 			$this->addDefinition($section, $name, $default_value);
 		}
 	}

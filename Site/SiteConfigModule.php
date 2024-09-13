@@ -289,7 +289,7 @@ class SiteConfigModule extends SiteApplicationModule
 					"of the form section.name.", $qualified_name));
 			}
 
-			list($section, $name) = explode('.', $qualified_name, 2);
+			[$section, $name] = explode('.', $qualified_name, 2);
 			$this->addDefinition($section, $name, $default_value);
 		}
 	}
@@ -598,7 +598,7 @@ class SiteConfigModule extends SiteApplicationModule
 							$qualified_name));
 					}
 
-					list($section, $name) = explode('.', $qualified_name, 2);
+					[$section, $name] = explode('.', $qualified_name, 2);
 
 					// skip settings that are not defined
 					if (array_key_exists($section, $this->definitions) &&
@@ -640,7 +640,7 @@ class SiteConfigModule extends SiteApplicationModule
 						$qualified_name));
 				}
 
-				list($section, $name) = explode('.', $qualified_name, 2);
+				[$section, $name] = explode('.', $qualified_name, 2);
 
 				// skip settings that are not defined
 				if (array_key_exists($section, $this->definitions) &&
@@ -682,7 +682,7 @@ class SiteConfigModule extends SiteApplicationModule
 
 				SwatDB::exec($db, $sql);
 
-				list($section, $name) = explode('.', $setting, 2);
+				[$section, $name] = explode('.', $setting, 2);
 				if ($this->$section->$name != '') {
 					$sql = sprintf('insert into ConfigSetting
 						(name, value) values (%s, %s)',
@@ -728,7 +728,7 @@ class SiteConfigModule extends SiteApplicationModule
 
 				SwatDB::exec($db, $sql);
 
-				list($section, $name) = explode('.', $setting, 2);
+				[$section, $name] = explode('.', $setting, 2);
 				if ($this->$section->$name != '') {
 					$sql = sprintf('insert into InstanceConfigSetting
 						(name, value, instance) values (%s, %s, %s)',

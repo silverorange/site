@@ -299,7 +299,7 @@ abstract class SiteApplication extends SiteObject
 		}
 
 		if ($value === null) {
-			list($section, $variable) = explode('.', $setting);
+			[$section, $variable] = explode('.', $setting);
 			$value = $this->config->$section->$variable;
 		}
 
