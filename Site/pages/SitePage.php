@@ -31,7 +31,7 @@ class SitePage extends SiteAbstractPage
 		array $arguments = []
 	) {
 		$this->app       = $app;
-		$this->layout    = ($layout === null) ? $this->createLayout() : $layout;
+		$this->layout    = $layout ?? $this->createLayout();
 		$this->arguments = $arguments;
 	}
 

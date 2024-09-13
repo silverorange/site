@@ -115,10 +115,7 @@ class SitePath implements Iterator, Countable
 	 */
 	public function getFirst()
 	{
-		if (isset($this->path_entries[0]))
-			return $this->path_entries[0];
-
-		return null;
+		return $this->path_entries[0] ?? null;
 	}
 
 	// }}}
@@ -238,10 +235,7 @@ class SitePath implements Iterator, Countable
 	 */
 	public function get($key = 0)
 	{
-		if (isset($this->path_entries[$key]))
-			return $this->path_entries[$key];
-
-		return null;
+		return $this->path_entries[$key] ?? null;
 	}
 
 	// }}}

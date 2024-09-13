@@ -110,9 +110,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 	protected function deleteLoginSession($id)
 	{
-		$session = (isset($this->app->session->account->login_sessions[$id]))
-			? $this->app->session->account->login_sessions[$id]
-			: null;
+		$session = $this->app->session->account->login_sessions[$id] ?? null;
 
 		if ($session instanceof SiteAccountLoginSession) {
 			$this->endSession($session);
@@ -413,9 +411,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 
 	protected function displayLoginSession(SiteAccountLoginSession $session)
 	{
-		$button = (isset($this->logout_buttons[$session->id]))
-			? $this->logout_buttons[$session->id]
-			: null;
+		$button = $this->logout_buttons[$session->id] ?? null;
 
 		$this->displayLoginInformation(
 			$session->user_agent,

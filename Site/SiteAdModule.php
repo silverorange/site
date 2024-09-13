@@ -139,7 +139,7 @@ class SiteAdModule extends SiteApplicationModule
 	public function getAd()
 	{
 		$session = $this->app->getModule('SiteSessionModule');
-		return (isset($session->ad)) ? $session->ad : null;
+		return $session->ad ?? null;
 	}
 
 	// }}}

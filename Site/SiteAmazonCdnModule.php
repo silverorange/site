@@ -200,7 +200,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		// Get MD5 from S3 and from local file.
 		$metadata = $this->getMetadata($filename);
 		$new_md5 = md5_file($source);
-		$old_md5 = (isset($metadata['md5'])) ? $metadata['md5'] : '';
+		$old_md5 = $metadata['md5'] ?? '';
 
 		// Convert HTTP headers into S3 options
 		$header_options = [];

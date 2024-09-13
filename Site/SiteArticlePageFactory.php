@@ -34,7 +34,7 @@ class SiteArticlePageFactory extends SitePageFactory
 	 */
 	public function resolvePage($source, SiteLayout $layout = null)
 	{
-		$layout = ($layout === null) ? $this->resolveLayout($source) : $layout;
+		$layout ??= $this->resolveLayout($source);
 
 		$page_info = $this->getPageInfo($source);
 

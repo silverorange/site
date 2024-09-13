@@ -28,7 +28,7 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 			$message = $this->getHashMessage($this->getVariables());
 
 			$expected = $this->getHashMac($message, $key);
-			$provided = (isset($_GET['mac'])) ? $_GET['mac'] : '';
+			$provided = $_GET['mac'] ?? '';
 
 			throw new SiteInvalidMacException(
 				sprintf(
@@ -49,7 +49,7 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 
 	protected function getHashKey()
 	{
-		$api_key = (isset($_GET['key'])) ? $_GET['key'] : '';
+		$api_key = $_GET['key'] ?? '';
 
 		if ($api_key == '') {
 			throw new SiteInvalidMacException('No API key provided.');

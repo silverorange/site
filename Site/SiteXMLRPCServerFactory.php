@@ -10,7 +10,7 @@ class SiteXMLRPCServerFactory extends SitePageFactory
 
 	public function resolvePage($source, SiteLayout $layout = null)
 	{
-		$layout = ($layout === null) ? $this->getLayout($source) : $layout;
+		$layout ??= $this->getLayout($source);
 		$map = $this->getPageMap();
 
 		if (!isset($map[$source])) {

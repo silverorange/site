@@ -399,8 +399,7 @@ class SiteWebApplication extends SiteApplication
 		$config = $this->app->config->memcache;
 
 		// default to 15 minutes in the future
-		$timeout = ($config->page_cache_timeout === null) ?
-			900 : $config->page_cache_timeout;
+		$timeout = $config->page_cache_timeout ?? 900;
 
 		return time() + $timeout;
 	}
