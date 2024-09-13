@@ -9,17 +9,17 @@
  */
 class SiteAccountForgotPassword extends AdminConfirmation
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteAccount
 	 */
 	protected $account;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -31,8 +31,8 @@ class SiteAccountForgotPassword extends AdminConfirmation
 		$this->account = $this->getAccount();
 	}
 
-	// }}}
-	// {{{ protected function getAccount()
+
+
 
 	protected function getAccount()
 	{
@@ -67,10 +67,10 @@ class SiteAccountForgotPassword extends AdminConfirmation
 		return $this->account;
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processResponse()
+
 
 	protected function processResponse()
 	{
@@ -95,10 +95,10 @@ class SiteAccountForgotPassword extends AdminConfirmation
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -134,8 +134,8 @@ class SiteAccountForgotPassword extends AdminConfirmation
 
 	}
 
-	// }}}
-	// {{{ protected function getConfirmationMessage()
+
+
 
 	protected function getConfirmationMessage()
 	{
@@ -171,7 +171,7 @@ class SiteAccountForgotPassword extends AdminConfirmation
 		return ob_get_clean();
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -16,7 +16,7 @@
  */
 class SiteImageLazyWrapper extends SiteImageWrapper
 {
-	// {{{ public function __construct()
+
 
 	public function __construct(
 		MDB2_Reslt_Common $rs = null,
@@ -30,7 +30,7 @@ class SiteImageLazyWrapper extends SiteImageWrapper
 		parent::__construct($rs, $options);
 	}
 
-	// }}}
+
 }
 
 ?>

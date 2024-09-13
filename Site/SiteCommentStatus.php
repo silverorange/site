@@ -9,7 +9,7 @@
  */
 interface SiteCommentStatus
 {
-	// {{{ class constants
+
 
 	/**
 	 * New comments are allowed, and are automatically show on the site as long
@@ -33,12 +33,12 @@ interface SiteCommentStatus
 	 */
 	const CLOSED    = 3;
 
-	// }}}
-	// {{{ public function getCommentStatus()
+
+
 
 	public function getCommentStatus();
 
-	// }}}
+
 }
 
 ?>

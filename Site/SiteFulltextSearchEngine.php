@@ -8,7 +8,7 @@
  */
 interface SiteFulltextSearchEngine
 {
-	// {{{ public function search()
+
 
 	/**
 	 * Perform a fulltext search and return the result
@@ -19,7 +19,7 @@ interface SiteFulltextSearchEngine
 	 */
 	public function search($keywords);
 
-	// }}}
+
 }
 
 ?>

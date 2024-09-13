@@ -7,22 +7,22 @@
  */
 class SiteVideoTextTracksPage extends SitePage
 {
-	// {{{ protected properties
+
 
 	protected $media = null;
 
-	// }}}
-	// {{{ protected function createLayout()
+
+
 
 	protected function createLayout()
 	{
 		return new SiteLayout($this->app, SiteVTTTemplate::class);
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -46,8 +46,8 @@ class SiteVideoTextTracksPage extends SitePage
 		}
 	}
 
-	// }}}
-	// {{{ public function setMediaKey()
+
+
 
 	public function setMediaKey($media_id)
 	{
@@ -63,10 +63,10 @@ class SiteVideoTextTracksPage extends SitePage
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -75,8 +75,8 @@ class SiteVideoTextTracksPage extends SitePage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function display()
+
+
 
 	protected function display()
 	{
@@ -120,8 +120,8 @@ class SiteVideoTextTracksPage extends SitePage
 		}
 	}
 
-	// }}}
-	// {{{ public function getFormattedTime()
+
+
 
 	public function getFormattedTime($seconds)
 	{
@@ -152,7 +152,7 @@ class SiteVideoTextTracksPage extends SitePage
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

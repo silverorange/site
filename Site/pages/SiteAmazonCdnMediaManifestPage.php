@@ -6,22 +6,22 @@
  */
 class SiteAmazonCdnMediaManifestPage extends SitePage
 {
-	// {{{ protected properties
+
 
 	protected $media = null;
 
-	// }}}
-	// {{{ protected function createLayout()
+
+
 
 	protected function createLayout()
 	{
 		return new SiteLayout($this->app, SiteSMILTemplate::class);
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -42,8 +42,8 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 		}
 	}
 
-	// }}}
-	// {{{ public function setMediaKey()
+
+
 
 	public function setMediaKey($media_id)
 	{
@@ -61,10 +61,10 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 		$this->media->setFileBase('media');
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -73,8 +73,8 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function display()
+
+
 
 	protected function display()
 	{
@@ -144,7 +144,7 @@ class SiteAmazonCdnMediaManifestPage extends SitePage
 		echo '</smil>';
 	}
 
-	// }}}
+
 }
 
 ?>

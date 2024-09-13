@@ -11,7 +11,7 @@
 class SiteVideoMediaEncodingBindingWrapper extends
 	SiteMediaEncodingBindingWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -21,7 +21,7 @@ class SiteVideoMediaEncodingBindingWrapper extends
 			SwatDBClassMap::get(SiteVideoMediaEncodingBinding::class);
 	}
 
-	// }}}
+
 }
 
 ?>

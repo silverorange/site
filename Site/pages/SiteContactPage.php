@@ -8,15 +8,15 @@
  */
 class SiteContactPage extends SiteDBEditPage
 {
-	// {{{ protected function getUiXml()
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/contact.xml';
 	}
 
-	// }}}
-	// {{{ protected function isNew()
+
+
 
 	protected function isNew(SwatForm $form)
 	{
@@ -25,24 +25,24 @@ class SiteContactPage extends SiteDBEditPage
 		return false;
 	}
 
-	// }}}
-	// {{{ protected function getContactMessageClassName()
+
+
 
 	protected function getContactMessageClassName()
 	{
 		return SwatDBClassMap::get(SiteContactMessage::class);
 	}
 
-	// }}}
-	// {{{ protected function getContactAddress()
+
+
 
 	protected function getContactAddress()
 	{
 		return $this->app->config->email->contact_address;
 	}
 
-	// }}}
-	// {{{ protected function getContactAddressLink()
+
+
 
 	protected function getContactAddressLink()
 	{
@@ -57,10 +57,10 @@ class SiteContactPage extends SiteDBEditPage
 		return $contact_address_link;
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -75,8 +75,8 @@ class SiteContactPage extends SiteDBEditPage
 		$this->initSubject();
 	}
 
-	// }}}
-	// {{{ protected function initSubject()
+
+
 
 	protected function initSubject()
 	{
@@ -94,10 +94,10 @@ class SiteContactPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function saveData()
+
 
 	protected function saveData(SwatForm $form)
 	{
@@ -112,8 +112,8 @@ class SiteContactPage extends SiteDBEditPage
 		$contact_message->save();
 	}
 
-	// }}}
-	// {{{ protected function processMessage()
+
+
 
 	protected function processMessage(SiteContactMessage $message)
 	{
@@ -144,16 +144,16 @@ class SiteContactPage extends SiteDBEditPage
 		$message->createdate->toUTC();
 	}
 
-	// }}}
-	// {{{ protected function isMessageSpam()
+
+
 
 	protected function isMessageSpam(SiteContactMessage $message)
 	{
 		return false;
 	}
 
-	// }}}
-	// {{{ protected function getRollbackMessage()
+
+
 
 	protected function getRollbackMessage(SwatForm $form)
 	{
@@ -175,8 +175,8 @@ class SiteContactPage extends SiteDBEditPage
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function validate()
+
+
 
 	protected function validate(SwatForm $form)
 	{
@@ -198,8 +198,8 @@ class SiteContactPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate(SwatForm $form)
 	{
@@ -209,10 +209,10 @@ class SiteContactPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildContent()
+
 
 	protected function buildContent()
 	{
@@ -221,8 +221,8 @@ class SiteContactPage extends SiteDBEditPage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function buildInternal()
+
+
 
 	protected function buildInternal()
 	{
@@ -237,8 +237,8 @@ class SiteContactPage extends SiteDBEditPage
 		$subject_flydown->addOptionsByArray($class_name::getSubjects());
 	}
 
-	// }}}
-	// {{{ protected function shouldPrependUi()
+
+
 
 	protected function shouldPrependUi()
 	{
@@ -246,8 +246,8 @@ class SiteContactPage extends SiteDBEditPage
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function load()
+
+
 
 	protected function load(SwatForm $form)
 	{
@@ -255,8 +255,8 @@ class SiteContactPage extends SiteDBEditPage
 		$this->loadDefaultEmailAddress();
 	}
 
-	// }}}
-	// {{{ protected function loadDefaultEmailAddress()
+
+
 
 	protected function loadDefaultEmailAddress()
 	{
@@ -268,10 +268,10 @@ class SiteContactPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -283,7 +283,7 @@ class SiteContactPage extends SiteDBEditPage
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

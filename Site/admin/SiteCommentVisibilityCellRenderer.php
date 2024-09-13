@@ -9,13 +9,13 @@
  */
 class SiteCommentVisibilityCellRenderer extends SwatCellRenderer
 {
-	// {{{ public properties
+
 
 	public $status;
 	public $spam;
 
-	// }}}
-	// {{{ public function render
+
+
 
 	public function render()
 	{
@@ -46,7 +46,7 @@ class SiteCommentVisibilityCellRenderer extends SwatCellRenderer
 		echo $title;
 	}
 
-	// }}}
+
 }
 
 ?>

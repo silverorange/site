@@ -9,7 +9,7 @@
  */
 class SiteArticleDelete extends AdminDBDelete
 {
-	// {{{ protected properties
+
 
 	/**
 	 * Used for custom relocate
@@ -18,10 +18,10 @@ class SiteArticleDelete extends AdminDBDelete
 	 */
 	protected $parent_id;
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processDBData()
+
 
 	protected function processDBData()
 	{
@@ -49,8 +49,8 @@ class SiteArticleDelete extends AdminDBDelete
 			$this->app->memcache->flushNs('article');
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	/**
 	 * Relocate after process
@@ -69,10 +69,10 @@ class SiteArticleDelete extends AdminDBDelete
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -96,8 +96,8 @@ class SiteArticleDelete extends AdminDBDelete
 			$this->switchToCancelButton();
 	}
 
-	// }}}
-	// {{{ protected function getDependencies()
+
+
 
 	protected function getDependencies($dep, $item_list)
 	{
@@ -123,8 +123,8 @@ class SiteArticleDelete extends AdminDBDelete
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -144,7 +144,7 @@ class SiteArticleDelete extends AdminDBDelete
 		$this->navbar->addEntry(new SwatNavBarEntry(Site::_('Delete')));
 	}
 
-	// }}}
+
 }
 
 ?>

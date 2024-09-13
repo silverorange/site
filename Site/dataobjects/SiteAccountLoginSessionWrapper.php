@@ -9,7 +9,7 @@
  */
 class SiteAccountLoginSessionWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -22,7 +22,7 @@ class SiteAccountLoginSessionWrapper extends SwatDBRecordsetWrapper
 		$this->index_field = 'id';
 	}
 
-	// }}}
+
 }
 
 ?>

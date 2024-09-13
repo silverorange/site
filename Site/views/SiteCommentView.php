@@ -23,7 +23,7 @@
  */
 abstract class SiteCommentView extends SiteView
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var integer
@@ -32,16 +32,16 @@ abstract class SiteCommentView extends SiteView
 	 */
 	protected $bodytext_summary_length = 400;
 
-	// }}}
-	// {{{ public function setBodytextSummaryLength()
+
+
 
 	public function setBodytextSummaryLength($length)
 	{
 		$this->bodytext_summary_length = (integer)$length;
 	}
 
-	// }}}
-	// {{{ protected function define()
+
+
 
 	protected function define()
 	{
@@ -51,10 +51,10 @@ abstract class SiteCommentView extends SiteView
 		$this->definePart('bodytext');
 	}
 
-	// }}}
+
 
 	// general display methods
-	// {{{ public function display()
+
 
 	public function display($comment)
 	{
@@ -74,8 +74,8 @@ abstract class SiteCommentView extends SiteView
 		$div_tag->close();
 	}
 
-	// }}}
-	// {{{ protected function displayHeader()
+
+
 
 	protected function displayHeader(SiteComment $comment)
 	{
@@ -107,31 +107,31 @@ abstract class SiteCommentView extends SiteView
 		$this->displayLink($comment);
 	}
 
-	// }}}
-	// {{{ protected function displayBody()
+
+
 
 	protected function displayBody(SiteComment $comment)
 	{
 		$this->displayBodytext($comment);
 	}
 
-	// }}}
-	// {{{ protected function getCSSClassNames()
+
+
 
 	protected function getCSSClassNames(SiteComment $comment)
 	{
 		return ['comment'];
 	}
 
-	// }}}
+
 
 	// part display methods
-	// {{{ abstract protected function getRelativeUri()
+
 
 	abstract protected function getRelativeUri(SiteComment $comment);
 
-	// }}}
-	// {{{ protected function displayAuthor()
+
+
 
 	protected function displayAuthor(SiteComment $comment)
 	{
@@ -145,8 +145,8 @@ abstract class SiteCommentView extends SiteView
 		}
 	}
 
-	// }}}
-	// {{{ protected function displayLink()
+
+
 
 	protected function displayLink(SiteComment $comment)
 	{
@@ -180,8 +180,8 @@ abstract class SiteCommentView extends SiteView
 		}
 	}
 
-	// }}}
-	// {{{ protected function displayPermalink()
+
+
 
 	protected function displayPermalink(SiteComment $comment)
 	{
@@ -217,8 +217,8 @@ abstract class SiteCommentView extends SiteView
 		}
 	}
 
-	// }}}
-	// {{{ protected function displayBodytext()
+
+
 
 	protected function displayBodytext(SiteComment $comment)
 	{
@@ -250,7 +250,7 @@ abstract class SiteCommentView extends SiteView
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

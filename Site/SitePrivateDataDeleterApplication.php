@@ -9,7 +9,7 @@
  */
 class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 {
-	// {{{ public properties
+
 
 	/**
 	 * A convenience reference to the database object
@@ -18,8 +18,8 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 	 */
 	public $db;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var array of SitePrivateDataDeleter
@@ -31,8 +31,8 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 	 */
 	protected $dry_run = false;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new private data deleter application
@@ -69,8 +69,8 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 		$this->addCommandLineArgument($dry_run);
 	}
 
-	// }}}
-	// {{{ public function setInstance()
+
+
 
 	public function setInstance($shortname)
 	{
@@ -79,8 +79,8 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 		$this->config->init();
 	}
 
-	// }}}
-	// {{{ public function setDebug()
+
+
 
 	public function setDebug($debug)
 	{
@@ -91,24 +91,24 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 		$this->setVerbosity($verbosity);
 	}
 
-	// }}}
-	// {{{ public function setDryRun()
+
+
 
 	public function setDryRun($dry_run)
 	{
 		$this->dry_run = (boolean)$dry_run;
 	}
 
-	// }}}
-	// {{{ public function isDryRun()
+
+
 
 	public function isDryRun()
 	{
 		return $this->dry_run;
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	public function run()
 	{
@@ -130,8 +130,8 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
-	// {{{ public function addDeleter()
+
+
 
 	public function addDeleter(SitePrivateDataDeleter $deleter)
 	{
@@ -139,8 +139,8 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 		$this->deleters[] = $deleter;
 	}
 
-	// }}}
-	// {{{ public function debug()
+
+
 
 	/**
 	 * Displays debug output
@@ -157,10 +157,10 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 		parent::debug($string, $bold);
 	}
 
-	// }}}
+
 
 	// boilerplate
-	// {{{ protected function getDefaultModuleList()
+
 
 	/**
 	 * Gets the list of modules to load for this search indexer
@@ -181,8 +181,8 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	/**
 	 * Configures modules of this application before they are initialized
@@ -196,8 +196,8 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 		$this->database->dsn = $config->database->dsn;
 	}
 
-	// }}}
-	// {{{ public function initModules()
+
+
 
 	/**
 	 * Initializes the modules of this application and sets up the database
@@ -209,7 +209,7 @@ class SitePrivateDataDeleterApplication extends SiteCommandLineApplication
 		$this->db->loadModule('Datatype', null, true);
 	}
 
-	// }}}
+
 }
 
 ?>

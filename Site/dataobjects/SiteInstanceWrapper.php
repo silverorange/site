@@ -9,7 +9,7 @@
  */
 class SiteInstanceWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -18,7 +18,7 @@ class SiteInstanceWrapper extends SwatDBRecordsetWrapper
 		$this->row_wrapper_class = SwatDBClassMap::get(SiteInstance::class);
 	}
 
-	// }}}
+
 }
 
 ?>

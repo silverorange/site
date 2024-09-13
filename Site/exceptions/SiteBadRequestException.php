@@ -9,7 +9,7 @@
  */
 class SiteBadRequestException extends SiteException
 {
-	// {{{ public function __construct()
+
 
 	/**
 	 * Creates a new bad request exception
@@ -24,7 +24,7 @@ class SiteBadRequestException extends SiteException
 		$this->http_status_code = 400;
 	}
 
-	// }}}
+
 }
 
 ?>

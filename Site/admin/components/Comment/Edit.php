@@ -9,17 +9,17 @@
  */
 class SiteCommentEdit extends AdminDBEdit
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteComment
 	 */
 	protected $comment;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -29,16 +29,16 @@ class SiteCommentEdit extends AdminDBEdit
 		$this->initComment();
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/edit.xml';
 	}
 
-	// }}}
-	// {{{ protected function initComment()
+
+
 
 	protected function initComment()
 	{
@@ -53,8 +53,8 @@ class SiteCommentEdit extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getComment()
+
+
 
 	protected function getComment()
 	{
@@ -62,10 +62,10 @@ class SiteCommentEdit extends AdminDBEdit
 		return new $class_name();
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function saveDBData()
+
 
 	protected function saveDBData()
 	{
@@ -98,10 +98,10 @@ class SiteCommentEdit extends AdminDBEdit
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -111,15 +111,15 @@ class SiteCommentEdit extends AdminDBEdit
 		$this->ui->getWidget('status')->addOptionsByArray($statuses);
 	}
 
-	// }}}
-	// {{{ protected function loadDBData()
+
+
 
 	protected function loadDBData()
 	{
 		$this->ui->setValues($this->comment->getAttributes());
 	}
 
-	// }}}
+
 }
 
 ?>

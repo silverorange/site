@@ -10,7 +10,7 @@
  */
 class SiteAccountLoginPage extends SiteUiPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var string
@@ -19,18 +19,18 @@ class SiteAccountLoginPage extends SiteUiPage
 	 */
 	protected $relocate_uri = null;
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/account-login.xml';
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -40,8 +40,8 @@ class SiteAccountLoginPage extends SiteUiPage
 		$this->loggedInRelocate();
 	}
 
-	// }}}
-	// {{{ protected function initRelocateURI()
+
+
 
 	protected function initRelocateURI(SwatForm $form)
 	{
@@ -71,8 +71,8 @@ class SiteAccountLoginPage extends SiteUiPage
 		$form->addHiddenField('relocate_uri', $this->relocate_uri);
 	}
 
-	// }}}
-	// {{{ protected function loggedInRelocate()
+
+
 
 	protected function loggedInRelocate()
 	{
@@ -81,18 +81,18 @@ class SiteAccountLoginPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getDefaultRelocateURI()
+
+
 
 	protected function getDefaultRelocateURI()
 	{
 		return 'account';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processInternal()
+
 
 	protected function processInternal()
 	{
@@ -113,8 +113,8 @@ class SiteAccountLoginPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function postLoginProcess()
+
+
 
 	protected function postLoginProcess()
 	{
@@ -124,8 +124,8 @@ class SiteAccountLoginPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function handleLoginFailure()
+
+
 
 	protected function handleLoginFailure()
 	{
@@ -154,10 +154,10 @@ class SiteAccountLoginPage extends SiteUiPage
 		$this->ui->getWidget('message_display')->add($message);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -170,8 +170,8 @@ class SiteAccountLoginPage extends SiteUiPage
 		$this->buildNewCustomersFrame();
 	}
 
-	// }}}
-	// {{{ protected function buildNewCustomersFrame()
+
+
 
 	protected function buildNewCustomersFrame()
 	{
@@ -179,8 +179,8 @@ class SiteAccountLoginPage extends SiteUiPage
 		$create_form->action = 'account/edit';
 	}
 
-	// }}}
-	// {{{ protected function buildForgotPasswordLink()
+
+
 
 	protected function buildForgotPasswordLink()
 	{
@@ -188,8 +188,8 @@ class SiteAccountLoginPage extends SiteUiPage
 			$this->getForgotPasswordLink();
 	}
 
-	// }}}
-	// {{{ protected function getForgotPasswordLink()
+
+
 
 	protected function getForgotPasswordLink()
 	{
@@ -208,10 +208,10 @@ class SiteAccountLoginPage extends SiteUiPage
 		return $link;
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -224,7 +224,7 @@ class SiteAccountLoginPage extends SiteUiPage
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

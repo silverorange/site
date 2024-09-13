@@ -10,7 +10,7 @@
 class SiteAccountIndex extends AdminSearch
 {
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -35,26 +35,26 @@ class SiteAccountIndex extends AdminSearch
 		}
 	}
 
-	// }}}
-	// {{{ protected function getSearchXml()
+
+
 
 	protected function getSearchXml()
 	{
 		return __DIR__.'/search.xml';
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/index.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processActions()
+
 
 	protected function processActions(SwatView $view, SwatActions $actions)
 	{
@@ -68,8 +68,8 @@ class SiteAccountIndex extends AdminSearch
 		}
 	}
 
-	// }}}
-	// {{{ protected function processInternal()
+
+
 
 	protected function processInternal()
 	{
@@ -79,10 +79,10 @@ class SiteAccountIndex extends AdminSearch
 		$pager->process();
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -99,8 +99,8 @@ class SiteAccountIndex extends AdminSearch
 		}
 	}
 
-	// }}}
-	// {{{ protected function getTableModel()
+
+
 
 	protected function getTableModel(SwatView $view)
 	{
@@ -147,8 +147,8 @@ class SiteAccountIndex extends AdminSearch
 		return $store;
 	}
 
-	// }}}
-	// {{{ protected function getDetailsStore()
+
+
 
 	protected function getDetailsStore(SiteAccount $account, $row)
 	{
@@ -158,8 +158,8 @@ class SiteAccountIndex extends AdminSearch
 		return $ds;
 	}
 
-	// }}}
-	// {{{ protected function getSQL()
+
+
 
 	protected function getSQL()
 	{
@@ -171,8 +171,8 @@ class SiteAccountIndex extends AdminSearch
 			order by %s';
 	}
 
-	// }}}
-	// {{{ protected function getWhereClause()
+
+
 
 	protected function getWhereClause()
 	{
@@ -186,8 +186,8 @@ class SiteAccountIndex extends AdminSearch
 		);
 	}
 
-	// }}}
-	// {{{ protected function getAccountSearch()
+
+
 
 	protected function getAccountSearch()
 	{
@@ -200,7 +200,7 @@ class SiteAccountIndex extends AdminSearch
 		return $search;
 	}
 
-	// }}}
+
 }
 
 ?>

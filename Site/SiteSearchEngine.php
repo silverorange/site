@@ -8,7 +8,7 @@
  */
 abstract class SiteSearchEngine extends SwatObject
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The application object
@@ -54,8 +54,8 @@ abstract class SiteSearchEngine extends SwatObject
 
 	protected $memcache_enabled = true;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new search engine
@@ -71,8 +71,8 @@ abstract class SiteSearchEngine extends SwatObject
 		}
 	}
 
-	// }}}
-	// {{{ public function enableMemcache()
+
+
 
 	/**
 	 * Turns on memcaching of search results when the call app has a memcache
@@ -83,8 +83,8 @@ abstract class SiteSearchEngine extends SwatObject
 		$this->memcache_enabled = true;
 	}
 
-	// }}}
-	// {{{ public function disableMemcache()
+
+
 
 	/**
 	 * Turns off memcaching of search results when the call app has a memcache
@@ -95,8 +95,8 @@ abstract class SiteSearchEngine extends SwatObject
 		$this->memcache_enabled = false;
 	}
 
-	// }}}
-	// {{{ public function setFulltextResult()
+
+
 
 	/**
 	 * Sets a fulltext result object to use when searching
@@ -108,8 +108,8 @@ abstract class SiteSearchEngine extends SwatObject
 		$this->fulltext_result = $result;
 	}
 
-	// }}}
-	// {{{ public function search()
+
+
 
 	/**
 	 * Performs a search and returns the results
@@ -134,8 +134,8 @@ abstract class SiteSearchEngine extends SwatObject
 		return $results;
 	}
 
-	// }}}
-	// {{{ public function getResultCount()
+
+
 
 	/**
 	 * Gets the total number of results available
@@ -150,8 +150,8 @@ abstract class SiteSearchEngine extends SwatObject
 		return $count;
 	}
 
-	// }}}
-	// {{{ public function getSearchSummary()
+
+
 
 	/**
 	 * Get a summary of the criteria that was used to perform the search
@@ -171,16 +171,16 @@ abstract class SiteSearchEngine extends SwatObject
 		return $summary;
 	}
 
-	// }}}
-	// {{{ public function clearOrderByFields()
+
+
 
 	public function clearOrderByFields()
 	{
 		$this->order_by_fields = [];
 	}
 
-	// }}}
-	// {{{ public function addOrderByField()
+
+
 
 	/**
 	 * Adds an order by field to the order by clause
@@ -198,16 +198,16 @@ abstract class SiteSearchEngine extends SwatObject
 		array_unshift($this->order_by_fields, $field);
 	}
 
-	// }}}
-	// {{{ public function setSelectFields()
+
+
 
 	public function setSelectFields(array $fields = ['*'])
 	{
 		$this->select_fields = $fields;
 	}
 
-	// }}}
-	// {{{ protected function queryResults()
+
+
 
 	/**
 	 * Performs a query for search results
@@ -270,8 +270,8 @@ abstract class SiteSearchEngine extends SwatObject
 		return $results;
 	}
 
-	// }}}
-	// {{{ protected function getCachedResults()
+
+
 
 	protected function getCachedResults($ids, $key, $ns)
 	{
@@ -296,8 +296,8 @@ abstract class SiteSearchEngine extends SwatObject
 		return $results;
 	}
 
-	// }}}
-	// {{{ protected function performResultsQuery()
+
+
 
 	/**
 	 * Performs a query for search results
@@ -312,15 +312,15 @@ abstract class SiteSearchEngine extends SwatObject
 			$this->getResultWrapperClass());
 	}
 
-	// }}}
-	// {{{ protected function loadSubObjects()
+
+
 
 	protected function loadSubObjects(SwatDBRecordsetWrapper $results)
 	{
 	}
 
-	// }}}
-	// {{{ protected function queryResultCount()
+
+
 
 	/**
 	 * Performs a query for the total number of search results
@@ -361,8 +361,8 @@ abstract class SiteSearchEngine extends SwatObject
 		return $count;
 	}
 
-	// }}}
-	// {{{ abstract protected function getResultWrapperClass()
+
+
 
 	/**
 	 * Retrieve the name of the wrapper class to use for results
@@ -371,8 +371,8 @@ abstract class SiteSearchEngine extends SwatObject
 	 */
 	abstract protected function getResultWrapperClass();
 
-	// }}}
-	// {{{ abstract protected function getSelectClause()
+
+
 
 	/**
 	 * Retrieve the SQL SELECT clause to query results with
@@ -381,8 +381,8 @@ abstract class SiteSearchEngine extends SwatObject
 	 */
 	abstract protected function getSelectClause();
 
-	// }}}
-	// {{{ abstract protected function getFromClause()
+
+
 
 	/**
 	 * Retrieve the SQL FROM clause to query results with
@@ -391,16 +391,16 @@ abstract class SiteSearchEngine extends SwatObject
 	 */
 	abstract protected function getFromClause();
 
-	// }}}
-	// {{{ protected function getMemcacheNs()
+
+
 
 	protected function getMemcacheNs()
 	{
 		return null;
 	}
 
-	// }}}
-	// {{{ protected function hasMemcache()
+
+
 
 	protected function hasMemcache()
 	{
@@ -408,8 +408,8 @@ abstract class SiteSearchEngine extends SwatObject
 			$this->getMemcacheNs() !== null);
 	}
 
-	// }}}
-	// {{{ protected function getOrderByClause()
+
+
 
 	/**
 	 * Gets the SQL order by clause to query results with
@@ -429,8 +429,8 @@ abstract class SiteSearchEngine extends SwatObject
 		return $clause;
 	}
 
-	// }}}
-	// {{{ protected function getWhereClause()
+
+
 
 	/**
 	 * Retrieve the SQL WHERE clause to query results with
@@ -444,8 +444,8 @@ abstract class SiteSearchEngine extends SwatObject
 		return $clause;
 	}
 
-	// }}}
-	// {{{ protected function getOffsetClause()
+
+
 
 	/**
 	 * Retrieve the SQL OFFSET clause to query results with
@@ -463,8 +463,8 @@ abstract class SiteSearchEngine extends SwatObject
 		return $clause;
 	}
 
-	// }}}
-	// {{{ protected function getLimitClause()
+
+
 
 	/**
 	 * Retrieve the SQL LIMIT clause to query results with
@@ -482,24 +482,24 @@ abstract class SiteSearchEngine extends SwatObject
 		return $clause;
 	}
 
-	// }}}
-	// {{{ protected function getResultsCacheKey()
+
+
 
 	protected function getResultsCacheKey($sql)
 	{
 		return md5($sql);
 	}
 
-	// }}}
-	// {{{ protected function getResultCountCacheKey()
+
+
 
 	protected function getResultCountCacheKey($sql)
 	{
 		return md5($sql);
 	}
 
-	// }}}
-	// {{{ protected function getResultIds()
+
+
 
 	protected function getResultIds(SwatDBRecordsetWrapper $results)
 	{
@@ -510,7 +510,7 @@ abstract class SiteSearchEngine extends SwatObject
 		return $result_ids;
 	}
 
-	// }}}
+
 }
 
 ?>

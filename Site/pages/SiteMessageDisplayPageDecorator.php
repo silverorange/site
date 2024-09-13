@@ -10,14 +10,14 @@
  */
 class SiteMessageDisplayPageDecorator extends SitePageDecorator
 {
-	// {{{ protected properties
+
 
 	protected $message_display;
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -26,10 +26,10 @@ class SiteMessageDisplayPageDecorator extends SitePageDecorator
 		$this->message_display = new SwatMessageDisplay();
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -45,10 +45,10 @@ class SiteMessageDisplayPageDecorator extends SitePageDecorator
 		}
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -60,7 +60,7 @@ class SiteMessageDisplayPageDecorator extends SitePageDecorator
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

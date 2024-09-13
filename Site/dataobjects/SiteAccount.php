@@ -73,7 +73,7 @@
  */
 class SiteAccount extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * The database id of this account
@@ -123,8 +123,8 @@ class SiteAccount extends SwatDBDataObject
 	 */
 	public $delete_date;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * The password for this account
@@ -166,8 +166,8 @@ class SiteAccount extends SwatDBDataObject
 	 */
 	protected $password;
 
-	// }}}
-	// {{{ public function loadWithEmail()
+
+
 
 	/**
 	 * Loads an account from the database with just an email address
@@ -212,8 +212,8 @@ class SiteAccount extends SwatDBDataObject
 		return $this->load($id);
 	}
 
-	// }}}
-	// {{{ public function loadByLoginTag()
+
+
 
 	/**
 	 * Loads this account from the database by one of its login tags
@@ -257,8 +257,8 @@ class SiteAccount extends SwatDBDataObject
 		return $this->load($id);
 	}
 
-	// }}}
-	// {{{ public function loadByPasswordTag()
+
+
 
 	/**
 	 * Loads this account from the database by it's reset password tag.
@@ -303,8 +303,8 @@ class SiteAccount extends SwatDBDataObject
 		return $this->load($id);
 	}
 
-	// }}}
-	// {{{ public function updateLastLoginDate()
+
+
 
 	/**
 	 * Sets the last login date of this account in the database to the
@@ -338,8 +338,8 @@ class SiteAccount extends SwatDBDataObject
 		$history->save();
 	}
 
-	// }}}
-	// {{{ public function getSuspiciousActivity()
+
+
 
 	public function getSuspiciousActivity()
 	{
@@ -358,8 +358,8 @@ class SiteAccount extends SwatDBDataObject
 		return $this->suspicious_activity;
 	}
 
-	// }}}
-	// {{{ public function setDirty()
+
+
 
 	/**
 	 * Flags this account as needing to be reloaded in all sessions
@@ -377,8 +377,8 @@ class SiteAccount extends SwatDBDataObject
 		SwatDB::exec($this->db, $sql);
 	}
 
-	// }}}
-	// {{{ public static function getSuspiciousActivitySummary()
+
+
 
 	public static function getSuspiciousActivitySummary($activity)
 	{
@@ -394,8 +394,8 @@ class SiteAccount extends SwatDBDataObject
 		return $summary;
 	}
 
-	// }}}
-	// {{{ protected function loadInternal()
+
+
 
 	protected function loadInternal($id)
 	{
@@ -419,8 +419,8 @@ class SiteAccount extends SwatDBDataObject
 		return null;
 	}
 
-	// }}}
-	// {{{ protected function deleteInternal()
+
+
 
 	protected function deleteInternal()
 	{
@@ -449,8 +449,8 @@ class SiteAccount extends SwatDBDataObject
 		SwatDB::exec($this->db, $sql);
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -467,8 +467,8 @@ class SiteAccount extends SwatDBDataObject
 		);
 	}
 
-	// }}}
-	// {{{ protected function getNewLoginHistory()
+
+
 
 	protected function getNewLoginHistory(SwatDate $date, $remote_ip = null)
 	{
@@ -503,8 +503,8 @@ class SiteAccount extends SwatDBDataObject
 		return $history;
 	}
 
-	// }}}
-	// {{{ protected function getProtectedPropertyList()
+
+
 
 	protected function getProtectedPropertyList()
 	{
@@ -519,10 +519,10 @@ class SiteAccount extends SwatDBDataObject
 		return $properties;
 	}
 
-	// }}}
+
 
 	// getters
-	// {{{ public function getFullName()
+
 
 	/**
 	 * Gets the full name of the person who owns this account
@@ -537,52 +537,52 @@ class SiteAccount extends SwatDBDataObject
 		return $this->fullname;
 	}
 
-	// }}}
-	// {{{ public function getEmail()
+
+
 
 	public function getEmail()
 	{
 		return $this->email;
 	}
 
-	// }}}
-	// {{{ public function getPassword()
+
+
 
 	public function getPassword()
 	{
 		return $this->password;
 	}
 
-	// }}}
+
 
 	// setters
-	// {{{ public function setFullName()
+
 
 	public function setFullName($fullname)
 	{
 		$this->fullname = $fullname;
 	}
 
-	// }}}
-	// {{{ public function setEmail()
+
+
 
 	public function setEmail($email)
 	{
 		$this->email = $email;
 	}
 
-	// }}}
-	// {{{ public function setPassword()
+
+
 
 	public function setPassword($password)
 	{
 		$this->password = $password;
 	}
 
-	// }}}
+
 
 	// password methods
-	// {{{ public function setPasswordHash()
+
 
 	/**
 	 * Sets this account's password hash
@@ -598,10 +598,10 @@ class SiteAccount extends SwatDBDataObject
 		$this->password_salt = null;
 	}
 
-	// }}}
+
 
 	// reset password methods
-	// {{{ public function resetPassword()
+
 
 	/**
 	 * Creates a unique tag that can be used to reset this account's password
@@ -634,8 +634,8 @@ class SiteAccount extends SwatDBDataObject
 		$this->updateResetPasswordValues($values);
 	}
 
-	// }}}
-	// {{{ public function sendResetPasswordMailMessage()
+
+
 
 	/**
 	 * Emails this account's holder with instructions on how to finish
@@ -672,16 +672,16 @@ class SiteAccount extends SwatDBDataObject
 		$email->send();
 	}
 
-	// }}}
-	// {{{ protected function getResetPasswordFields()
+
+
 
 	protected function getResetPasswordFields()
 	{
 		return ['text:password_tag'];
 	}
 
-	// }}}
-	// {{{ protected function getResetPasswordUri()
+
+
 
 	protected function getResetPasswordUri(SiteApplication $app)
 	{
@@ -689,8 +689,8 @@ class SiteAccount extends SwatDBDataObject
 			$this->password_tag;
 	}
 
-	// }}}
-	// {{{ protected function getResetPasswordValues()
+
+
 
 	protected function getResetPasswordValues()
 	{
@@ -699,18 +699,18 @@ class SiteAccount extends SwatDBDataObject
 			)];
 	}
 
-	// }}}
-	// {{{ protected function updateResetPasswordValues()
+
+
 
 	protected function updateResetPasswordValues($values)
 	{
 		$this->password_tag = $values['password_tag'];
 	}
 
-	// }}}
+
 
 	// generate password methods
-	// {{{ public function generatePassword()
+
 
 	/**
 	 * Generates a password for this account, and saves it to the database
@@ -743,8 +743,8 @@ class SiteAccount extends SwatDBDataObject
 		$this->updateGeneratePasswordValues($values);
 	}
 
-	// }}}
-	// {{{ public function sendGeneratePasswordMailMessage()
+
+
 
 	/**
 	 * Emails this account's holder with his or her new generated password
@@ -780,16 +780,16 @@ class SiteAccount extends SwatDBDataObject
 		$email->send();
 	}
 
-	// }}}
-	// {{{ protected function getGeneratePasswordFields()
+
+
 
 	protected function getGeneratePasswordFields()
 	{
 		return ['text:password', 'text:password_salt'];
 	}
 
-	// }}}
-	// {{{ protected function getGeneratePasswordValues()
+
+
 
 	protected function getGeneratePasswordValues(SiteApplication $app)
 	{
@@ -803,8 +803,8 @@ class SiteAccount extends SwatDBDataObject
 		return ['password_salt'        => null, 'password'             => $password_hash, 'unencrypted_password' => $password];
 	}
 
-	// }}}
-	// {{{ protected function updateGeneratePasswordValues()
+
+
 
 	protected function updateGeneratePasswordValues($values)
 	{
@@ -816,10 +816,10 @@ class SiteAccount extends SwatDBDataObject
 		$this->setPassword($values['password']);
 	}
 
-	// }}}
+
 
 	// loader methods
-	// {{{ protected function loadLoginHistory()
+
 
 	protected function loadLoginHistory()
 	{
@@ -831,8 +831,8 @@ class SiteAccount extends SwatDBDataObject
 			SwatDBClassMap::get(SiteAccountLoginHistoryWrapper::class));
 	}
 
-	// }}}
-	// {{{ protected function loadLoginSessions()
+
+
 
 	protected function loadLoginSessions()
 	{
@@ -846,7 +846,7 @@ class SiteAccount extends SwatDBDataObject
 			SwatDBClassMap::get(SiteAccountLoginSessionWrapper::class));
 	}
 
-	// }}}
+
 }
 
 ?>

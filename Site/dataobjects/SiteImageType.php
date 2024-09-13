@@ -8,7 +8,7 @@
  */
 class SiteImageType extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier
@@ -31,8 +31,8 @@ class SiteImageType extends SwatDBDataObject
 	 */
 	public $mime_type;
 
-	// }}}
-	// {{{ public function loadByMimeType()
+
+
 
 	/**
 	 * Loads a image-type from the database with a mime-type
@@ -65,8 +65,8 @@ class SiteImageType extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -74,7 +74,7 @@ class SiteImageType extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
+
 }
 
 ?>

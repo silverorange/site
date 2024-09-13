@@ -10,17 +10,17 @@
  */
 class SiteAccountEmailPassword extends AdminConfirmation
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteAccount
 	 */
 	protected $account;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -32,8 +32,8 @@ class SiteAccountEmailPassword extends AdminConfirmation
 		$this->account = $this->getAccount();
 	}
 
-	// }}}
-	// {{{ protected function getAccount()
+
+
 
 	protected function getAccount()
 	{
@@ -61,10 +61,10 @@ class SiteAccountEmailPassword extends AdminConfirmation
 		return $this->account;
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processDBData()
+
 
 	protected function processResponse()
 	{
@@ -86,10 +86,10 @@ class SiteAccountEmailPassword extends AdminConfirmation
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -115,8 +115,8 @@ class SiteAccountEmailPassword extends AdminConfirmation
 			Site::_('Reset & Email Password');
 	}
 
-	// }}}
-	// {{{ protected function getConfirmationMessage()
+
+
 
 	protected function getConfirmationMessage()
 	{
@@ -149,7 +149,7 @@ class SiteAccountEmailPassword extends AdminConfirmation
 		return ob_get_clean();
 	}
 
-	// }}}
+
 }
 
 ?>

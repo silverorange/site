@@ -6,7 +6,7 @@
  */
 class SiteSiteMapPage extends SitePage
 {
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -17,16 +17,16 @@ class SiteSiteMapPage extends SitePage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function display()
+
+
 
 	protected function display()
 	{
 		$this->displaySubArticles($this->queryArticles());
 	}
 
-	// }}}
-	// {{{ protected function queryArticles()
+
+
 
 	protected function queryArticles()
 	{
@@ -42,8 +42,8 @@ class SiteSiteMapPage extends SitePage
 		return $articles;
 	}
 
-	// }}}
-	// {{{ protected function displaySubArticles()
+
+
 
 	protected function displaySubArticles(
 		SiteArticleWrapper $articles,
@@ -60,8 +60,8 @@ class SiteSiteMapPage extends SitePage
 		echo '</ul>';
 	}
 
-	// }}}
-	// {{{ protected function displaySubArticle()
+
+
 
 	protected function displaySubArticle($article, $path = null)
 	{
@@ -85,23 +85,23 @@ class SiteSiteMapPage extends SitePage
 		}
 	}
 
-	// }}}
-	// {{{ protected function showArticle()
+
+
 
 	protected function showArticle($path)
 	{
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function showSubArticles()
+
+
 
 	protected function showSubArticles($path)
 	{
 		return true;
 	}
 
-	// }}}
+
 }
 
 ?>

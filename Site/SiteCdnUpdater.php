@@ -9,7 +9,7 @@
  */
 abstract class SiteCdnUpdater extends SiteCommandLineApplication
 {
-	// {{{ public properties
+
 
 	/**
 	 * A convenience reference to the database object
@@ -18,8 +18,8 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 	 */
 	public $db;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * The directory containing the attachment hierarchy
@@ -49,32 +49,32 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 	 */
 	protected $tasks = [];
 
-	// }}}
-	// {{{ public function setAttachmentFileBase()
+
+
 
 	public function setAttachmentFileBase($attachment_file_base)
 	{
 		$this->attachment_file_base = $attachment_file_base;
 	}
 
-	// }}}
-	// {{{ public function setImageFileBase()
+
+
 
 	public function setImageFileBase($image_file_base)
 	{
 		$this->image_file_base = $image_file_base;
 	}
 
-	// }}}
-	// {{{ public function setMediaFileBase()
+
+
 
 	public function setMediaFileBase($media_file_base)
 	{
 		$this->media_file_base = $media_file_base;
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	/**
 	 * Runs this application
@@ -89,10 +89,10 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 		$this->unlock();
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	/**
 	 * Initializes this application
@@ -103,8 +103,8 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 		$this->parseCommandLineArguments();
 	}
 
-	// }}}
-	// {{{ protected function initTasks()
+
+
 
 	/**
 	 * Initializes all tasks that we want run
@@ -116,8 +116,8 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 		$this->initMediaTasks();
 	}
 
-	// }}}
-	// {{{ protected function initAttachmentTasks()
+
+
 
 	protected function initAttachmentTasks()
 	{
@@ -145,8 +145,8 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function initImageTasks()
+
+
 
 	protected function initImageTasks()
 	{
@@ -181,8 +181,8 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function initMediaTasks()
+
+
 
 	protected function initMediaTasks()
 	{
@@ -217,10 +217,10 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
+
 
 	// run phase
-	// {{{ protected function runInternal()
+
 
 	protected function runInternal()
 	{
@@ -238,10 +238,10 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 		$this->debug(Site::_('All Done.')."\n", true);
 	}
 
-	// }}}
+
 
 	// boilerplate code
-	// {{{ protected function configure()
+
 
 	protected function configure(SiteConfigModule $config)
 	{
@@ -250,8 +250,8 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 		$this->database->dsn = $config->database->dsn;
 	}
 
-	// }}}
-	// {{{ protected function getDefaultModuleList()
+
+
 
 	protected function getDefaultModuleList()
 	{
@@ -264,7 +264,7 @@ abstract class SiteCdnUpdater extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

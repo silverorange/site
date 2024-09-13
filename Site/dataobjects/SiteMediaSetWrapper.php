@@ -14,7 +14,7 @@
  */
 class SiteMediaSetWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ public function initializeFromResultSet()
+
 
 	public function initializeFromResultSet(MDB2_Result_Common $rs)
 	{
@@ -32,24 +32,24 @@ class SiteMediaSetWrapper extends SwatDBRecordsetWrapper
 		}
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingWrapperClass()
+
+
 
 	protected function getMediaEncodingWrapperClass()
 	{
 		return SwatDBClassMap::get(SiteMediaEncodingWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingOrderBy()
+
+
 
 	protected function getMediaEncodingOrderBy()
 	{
 		return 'media_set';
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -61,7 +61,7 @@ class SiteMediaSetWrapper extends SwatDBRecordsetWrapper
 		$this->index_field = 'id';
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -9,12 +9,12 @@
  */
 class SiteSearchCheckboxList extends  SwatCheckboxList
 {
-	// {{{ public properties
+
 
 	public $highlight_values = [];
 
-	// }}}
-	// {{{ public function process()
+
+
 
 	/**
 	 * Processes this checkbox list widget
@@ -32,8 +32,8 @@ class SiteSearchCheckboxList extends  SwatCheckboxList
 		$this->processValues();
 	}
 
-	// }}}
-	// {{{ protected function getLiTag()
+
+
 
 	protected function getLiTag($option)
 	{
@@ -45,7 +45,7 @@ class SiteSearchCheckboxList extends  SwatCheckboxList
 		return $tag;
 	}
 
-	// }}}
+
 }
 
 ?>

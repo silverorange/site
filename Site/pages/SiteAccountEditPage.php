@@ -7,7 +7,7 @@
  */
 class SiteAccountEditPage extends SiteDBEditPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteAccount
@@ -19,16 +19,16 @@ class SiteAccountEditPage extends SiteDBEditPage
 	 */
 	protected $is_new = true;
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/account-edit.xml';
 	}
 
-	// }}}
-	// {{{ protected function createNewAccount()
+
+
 
 	/**
 	 * Creates a new account object when a new account is created
@@ -46,18 +46,18 @@ class SiteAccountEditPage extends SiteDBEditPage
 		return $account;
 	}
 
-	// }}}
-	// {{{ protected function isNew()
+
+
 
 	protected function isNew(SwatForm $form)
 	{
 		return $this->is_new;
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -79,8 +79,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function initAccount()
+
+
 
 	protected function initAccount()
 	{
@@ -91,10 +91,10 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function validate()
+
 
 	protected function validate(SwatForm $form)
 	{
@@ -102,8 +102,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 			$this->validateEmail($form);
 	}
 
-	// }}}
-	// {{{ protected function validateEmail()
+
+
 
 	protected function validateEmail(SwatForm $form)
 	{
@@ -132,8 +132,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getInvalidEmailMessage()
+
+
 
 	protected function getInvalidEmailMessage()
 	{
@@ -155,8 +155,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function updateAccount()
+
+
 
 	protected function updateAccount(SwatForm $form)
 	{
@@ -166,8 +166,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function updateAccountPassword()
+
+
 
 	protected function updateAccountPassword(SwatForm $form)
 	{
@@ -181,8 +181,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function saveData()
+
+
 
 	protected function saveData(SwatForm $form)
 	{
@@ -214,24 +214,24 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function loginAccount()
+
+
 
 	protected function loginAccount()
 	{
 		$this->app->session->loginById($this->account->id);
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate(SwatForm $form)
 	{
 		$this->relocateToRefererUrl($form, 'account');
 	}
 
-	// }}}
-	// {{{ protected function getSavedMessage()
+
+
 
 	protected function getSavedMessage(SwatForm $form)
 	{
@@ -246,8 +246,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		return new SwatMessage($message);
 	}
 
-	// }}}
-	// {{{ protected function handleDBException()
+
+
 
 	protected function handleDBException(SwatDBException $e)
 	{
@@ -262,10 +262,10 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -280,8 +280,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -298,8 +298,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildTitle()
+
+
 
 	protected function buildTitle()
 	{
@@ -313,8 +313,8 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function load()
+
+
 
 	protected function load(SwatForm $form)
 	{
@@ -330,7 +330,7 @@ class SiteAccountEditPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

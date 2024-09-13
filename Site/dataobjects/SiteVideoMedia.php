@@ -9,7 +9,7 @@
  */
 class SiteVideoMedia extends SiteMedia
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique string key
@@ -32,8 +32,8 @@ class SiteVideoMedia extends SiteMedia
 	 */
 	public $has_hls;
 
-	// }}}
-	// {{{ public function getHumanFileType()
+
+
 
 	public function getHumanFileType($encoding_shortname = null)
 	{
@@ -54,8 +54,8 @@ class SiteVideoMedia extends SiteMedia
 		return $file_type;
 	}
 
-	// }}}
-	// {{{ public function getFormattedFileSize()
+
+
 
 	public function getFormattedFileSize($encoding_shortname = null)
 	{
@@ -76,8 +76,8 @@ class SiteVideoMedia extends SiteMedia
 		return $file_size;
 	}
 
-	// }}}
-	// {{{ public function getLargestVideoEncodingBinding()
+
+
 
 	public function getLargestVideoEncodingBinding()
 	{
@@ -96,8 +96,8 @@ class SiteVideoMedia extends SiteMedia
 		return $largest;
 	}
 
-	// }}}
-	// {{{ public function getSmallestVideoEncodingBinding()
+
+
 
 	public function getSmallestVideoEncodingBinding()
 	{
@@ -119,8 +119,8 @@ class SiteVideoMedia extends SiteMedia
 		return $smallest;
 	}
 
-	// }}}
-	// {{{ public function getDefaultAudioEncoding()
+
+
 
 	public function getDefaultAudioEncoding()
 	{
@@ -138,8 +138,8 @@ class SiteVideoMedia extends SiteMedia
 		return $audio;
 	}
 
-	// }}}
-	// {{{ public function getMediaPlayer()
+
+
 
 	public function getMediaPlayer(SiteApplication $app)
 	{
@@ -197,16 +197,16 @@ class SiteVideoMedia extends SiteMedia
 		return $jwplayer;
 	}
 
-	// }}}
-	// {{{ public function getMediaPlayerDisplay()
+
+
 
 	public function getMediaPlayerDisplay()
 	{
 		return new SiteJwPlayerMediaDisplay('video'.$this->id);
 	}
 
-	// }}}
-	// {{{ public function getMediaPlayerByKey()
+
+
 
 	/**
 	 * Loads a media object from its key
@@ -235,8 +235,8 @@ class SiteVideoMedia extends SiteMedia
 		return $this->getMediaPlayer($app);
 	}
 
-	// }}}
-	// {{{ public function getMediaPlayerByPathKey()
+
+
 
 	/**
 	 * Loads a media object from its path key
@@ -262,8 +262,8 @@ class SiteVideoMedia extends SiteMedia
 		return $this->getMediaPlayer($app);
 	}
 
-	// }}}
-	// {{{ public function getMimeTypes()
+
+
 
 	public function getMimeTypes()
 	{
@@ -278,8 +278,8 @@ class SiteVideoMedia extends SiteMedia
 		return $types;
 	}
 
-	// }}}
-	// {{{ public function getScrubberImageInterval()
+
+
 
 	public function getScrubberImageInterval()
 	{
@@ -289,8 +289,8 @@ class SiteVideoMedia extends SiteMedia
 		return ($this->duration / $count);
 	}
 
-	// }}}
-	// {{{ public function getDefaultScrubberImageCount()
+
+
 
 	public function getDefaultScrubberImageCount()
 	{
@@ -299,16 +299,16 @@ class SiteVideoMedia extends SiteMedia
 		return 100;
 	}
 
-	// }}}
-	// {{{ public function getScrubberImageWidth()
+
+
 
 	public function getScrubberImageWidth()
 	{
 		return 130;
 	}
 
-	// }}}
-	// {{{ public function getFileDirectory()
+
+
 
 	public function getFileDirectory($encoding_shortname)
 	{
@@ -325,8 +325,8 @@ class SiteVideoMedia extends SiteMedia
 
 	}
 
-	// }}}
-	// {{{ public function getFilename()
+
+
 
 	public function getFilename($encoding_shortname)
 	{
@@ -346,8 +346,8 @@ class SiteVideoMedia extends SiteMedia
 		);
 	}
 
-	// }}}
-	// {{{ public function getHlsFilePath()
+
+
 
 	public function getHlsFilePath()
 	{
@@ -356,8 +356,8 @@ class SiteVideoMedia extends SiteMedia
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
 
-	// }}}
-	// {{{ public function getUriSuffix()
+
+
 
 	public function getUriSuffix($encoding_shortname)
 	{
@@ -379,8 +379,8 @@ class SiteVideoMedia extends SiteMedia
 		return $suffix;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -396,16 +396,16 @@ class SiteVideoMedia extends SiteMedia
 			SwatDBClassMap::get(SiteVideoMediaSet::class));
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingBindingWrapperClass()
+
+
 
 	protected function getMediaEncodingBindingWrapperClass()
 	{
 		return SwatDBClassMap::get(SiteVideoMediaEncodingBindingWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingBindingsOrderBy()
+
+
 
 	protected function getMediaEncodingBindingsOrderBy()
 	{
@@ -414,8 +414,8 @@ class SiteVideoMedia extends SiteMedia
 		return 'order by width asc nulls first';
 	}
 
-	// }}}
-	// {{{ protected function loadVideoEncodingBindings()
+
+
 
 	protected function loadVideoEncodingBindings()
 	{
@@ -433,8 +433,8 @@ class SiteVideoMedia extends SiteMedia
 		);
 	}
 
-	// }}}
-	// {{{ protected function deleteCdnFiles()
+
+
 
 	protected function deleteCdnFiles()
 	{
@@ -450,7 +450,7 @@ class SiteVideoMedia extends SiteMedia
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

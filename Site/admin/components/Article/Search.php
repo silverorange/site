@@ -9,16 +9,16 @@
  */
 class SiteArticleSearch extends AdminSearch
 {
-	// {{{ protected properties
+
 
 	protected $join_clause;
 	protected $where_clause;
 	protected $order_by_clause;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -30,18 +30,18 @@ class SiteArticleSearch extends AdminSearch
 		$this->navbar->createEntry(Site::_('Search'));
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/search.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processInternal()
+
 
 	protected function processInternal()
 	{
@@ -56,8 +56,8 @@ class SiteArticleSearch extends AdminSearch
 		}
 	}
 
-	// }}}
-	// {{{ protected function processActions()
+
+
 
 	protected function processActions(SwatView $view, SwatActions $actions)
 	{
@@ -65,10 +65,10 @@ class SiteArticleSearch extends AdminSearch
 		$processor->process($view, $actions);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -78,8 +78,8 @@ class SiteArticleSearch extends AdminSearch
 			SiteArticleActionsProcessor::getActions());
 	}
 
-	// }}}
-	// {{{ protected function getTableModel()
+
+
 
 	protected function getTableModel(SwatView $view)
 	{
@@ -123,16 +123,16 @@ class SiteArticleSearch extends AdminSearch
 		return $rs;
 	}
 
-	// }}}
-	// {{{ protected function searchArticles()
+
+
 
 	protected function searchArticles()
 	{
 		$this->fulltext_result = null;
 	}
 
-	// }}}
-	// {{{ protected function getSearchType()
+
+
 
 	/**
 	 * Gets the search type for articles for this web-application
@@ -146,8 +146,8 @@ class SiteArticleSearch extends AdminSearch
 		return 'article';
 	}
 
-	// }}}
-	// {{{ protected function getJoinClause()
+
+
 
 	protected function getJoinClause()
 	{
@@ -163,8 +163,8 @@ class SiteArticleSearch extends AdminSearch
 		return $this->join_clause;
 	}
 
-	// }}}
-	// {{{ protected function getWhereClause()
+
+
 
 	protected function getWhereClause()
 	{
@@ -210,8 +210,8 @@ class SiteArticleSearch extends AdminSearch
 		return $this->where_clause;
 	}
 
-	// }}}
-	// {{{ protected function getOrderByClause()
+
+
 
 	protected function getOrderByClause($view, $default_orderby)
 	{
@@ -231,7 +231,7 @@ class SiteArticleSearch extends AdminSearch
 		return $this->order_by_clause;
 	}
 
-	// }}}
+
 }
 
 ?>

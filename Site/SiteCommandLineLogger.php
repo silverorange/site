@@ -10,7 +10,7 @@
  */
 class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 {
-	// {{{ class constants
+
 
 	/**
 	 * Show levels emergency, alert, critical.
@@ -32,8 +32,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 */
 	const LEVEL_DEBUG = 3;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * Current logging level.
@@ -51,8 +51,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 	 */
 	protected $out;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new command-line logger
@@ -65,8 +65,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		$this->out = $parser->outputter;
 	}
 
-	// }}}
-	// {{{ public function log()
+
+
 
 	/**
 	 * @param string $level   the log level. One of the
@@ -116,8 +116,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		}
 	}
 
-	// }}}
-	// {{{ public function emergency()
+
+
 
 	/**
 	 * Logs a system-is-unusable message
@@ -136,8 +136,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		}
 	}
 
-	// }}}
-	// {{{ public function alert()
+
+
 
 	/**
 	 * Logs a message when action must be taken immediately
@@ -154,8 +154,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		$this->emergency($message, $context);
 	}
 
-	// }}}
-	// {{{ public function critical()
+
+
 
 	/**
 	 * Logs a message when a critical conditiona has occurred
@@ -172,8 +172,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		$this->emergency($message, $context);
 	}
 
-	// }}}
-	// {{{ public function error()
+
+
 
 	/**
 	 * Logs a message when a runtime error occurs that does not require
@@ -193,8 +193,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		}
 	}
 
-	// }}}
-	// {{{ public function warning()
+
+
 
 	/**
 	 * Logs a message when an exceptional occurrance that is not an error
@@ -214,8 +214,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		$this->error($message, $context);
 	}
 
-	// }}}
-	// {{{ public function notice()
+
+
 
 	/**
 	 * Logs normal, but significant events
@@ -234,8 +234,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		}
 	}
 
-	// }}}
-	// {{{ public function info()
+
+
 
 	/**
 	 * Logs informative, interesting events
@@ -252,8 +252,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		$this->notice($message, $context);
 	}
 
-	// }}}
-	// {{{ public function debug()
+
+
 
 	/**
 	 * Logs detailed debugging information
@@ -272,8 +272,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		}
 	}
 
-	// }}}
-	// {{{ protected function setLevel()
+
+
 
 	/**
 	 * Sets the current logging level for this logger
@@ -286,8 +286,8 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		return $this;
 	}
 
-	// }}}
-	// {{{ protected function interpolate()
+
+
 
 	/**
 	 * Interpolates context values into message placeholders
@@ -308,7 +308,7 @@ class SiteCommandLineLogger implements Psr\Log\LoggerInterface
 		return strtr($message, $replace);
 	}
 
-	// }}}
+
 }
 
 ?>

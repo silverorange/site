@@ -10,7 +10,7 @@
  */
 class SiteAdReferrer extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier for this ad referrer
@@ -35,8 +35,8 @@ class SiteAdReferrer extends SwatDBDataObject
 	 */
 	public $http_referer;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -46,7 +46,7 @@ class SiteAdReferrer extends SwatDBDataObject
 		$this->registerInternalProperty('ad', SiteAd::class);
 	}
 
-	// }}}
+
 }
 
 ?>

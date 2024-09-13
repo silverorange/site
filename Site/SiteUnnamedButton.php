@@ -11,7 +11,7 @@
  */
 class SiteUnnamedButton extends SwatButton
 {
-	// {{{ public function display()
+
 
 	public function display()
 	{
@@ -34,7 +34,7 @@ class SiteUnnamedButton extends SwatButton
 		$input_tag->display();
 	}
 
-	// }}}
+
 }
 
 ?>

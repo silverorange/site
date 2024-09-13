@@ -10,7 +10,7 @@
 class SiteAdDelete extends AdminDBDelete
 {
 	// process phase
-	// {{{ protected function processDBData()
+
 
 	protected function processDBData()
 	{
@@ -25,8 +25,8 @@ class SiteAdDelete extends AdminDBDelete
 		$this->app->messages->add($message);
 	}
 
-	// }}}
-	// {{{ protected function getDeleteSql()
+
+
 
 	protected function getDeleteSql()
 	{
@@ -35,10 +35,10 @@ class SiteAdDelete extends AdminDBDelete
 			$item_list);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -54,8 +54,8 @@ class SiteAdDelete extends AdminDBDelete
 			$this->switchToCancelButton();
 	}
 
-	// }}}
-	// {{{ protected function getDependencies()
+
+
 
 	protected function getDependencies()
 	{
@@ -70,7 +70,7 @@ class SiteAdDelete extends AdminDBDelete
 		return $dep;
 	}
 
-	// }}}
+
 }
 
 ?>

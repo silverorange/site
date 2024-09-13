@@ -9,7 +9,7 @@
  */
 class SiteAMQPJobFailureException extends SiteAMQPJobException
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The raw AMQP response body
@@ -18,8 +18,8 @@ class SiteAMQPJobFailureException extends SiteAMQPJobException
 	 */
 	protected $raw_body = '';
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new exception
@@ -34,8 +34,8 @@ class SiteAMQPJobFailureException extends SiteAMQPJobException
 		$this->raw_body = (string)$raw_body;
 	}
 
-	// }}}
-	// {{{ public function getRawBody()
+
+
 
 	/**
 	 * Gets the raw AMQP response body of this exception
@@ -47,7 +47,7 @@ class SiteAMQPJobFailureException extends SiteAMQPJobException
 		return $this->raw_body;
 	}
 
-	// }}}
+
 }
 
 ?>

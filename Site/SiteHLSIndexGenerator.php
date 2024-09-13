@@ -9,7 +9,7 @@
  */
 class SiteHLSIndexGenerator extends SiteCommandLineApplication
 {
-	// {{{ public properties
+
 
 	/**
 	 * S3 SDK
@@ -25,8 +25,8 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 	 */
 	public $db;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($id, $filename, $title, $documentation)
 	{
@@ -36,8 +36,8 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		$this->parseCommandLineArguments();
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	/**
 	 * Runs this application
@@ -53,8 +53,8 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		$this->unlock();
 	}
 
-	// }}}
-	// {{{ protected function getMedia()
+
+
 
 	protected function getMedia()
 	{
@@ -78,8 +78,8 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function indexMedia()
+
+
 
 	protected function indexMedia(SiteMedia $media)
 	{
@@ -115,16 +115,16 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function getHLSPath()
+
+
 
 	protected function getHLSPath(SiteMedia $media)
 	{
 		return sprintf('media/%s/hls', $media->id);
 	}
 
-	// }}}
-	// {{{ protected function getEncodingIndexes()
+
+
 
 	protected function getEncodingIndexes(SiteMedia $media)
 	{
@@ -169,8 +169,8 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		return $encodings;
 	}
 
-	// }}}
-	// {{{ protected function writeIndex()
+
+
 
 	protected function writeIndex(SiteMedia $media, array $encodings)
 	{
@@ -196,10 +196,10 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
+
 
 	// boilerplate code
-	// {{{ protected function getDefaultModuleList()
+
 
 	protected function getDefaultModuleList()
 	{
@@ -211,8 +211,8 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	protected function configure(SiteConfigModule $config)
 	{
@@ -225,7 +225,7 @@ class SiteHLSIndexGenerator extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

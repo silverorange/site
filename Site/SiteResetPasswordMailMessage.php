@@ -24,7 +24,7 @@
  */
 class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The account this reset password mail message is intended for
@@ -50,8 +50,8 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 	 */
 	protected $application_title;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new reset password email
@@ -73,8 +73,8 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 		$this->application_title = $application_title;
 	}
 
-	// }}}
-	// {{{ public function send()
+
+
 
 	/**
 	 * Sends this mail message
@@ -95,8 +95,8 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 		parent::send();
 	}
 
-	// }}}
-	// {{{ protected function getTextBody()
+
+
 
 	/**
 	 * Gets the plain-text content of this mail message
@@ -110,8 +110,8 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 			$this->password_link);
 	}
 
-	// }}}
-	// {{{ protected function getHtmlBody()
+
+
 
 	/**
 	 * Gets the HTML content of this mail message
@@ -125,8 +125,8 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 			sprintf('<a href="%1$s">%1$s</a>', $this->password_link));
 	}
 
-	// }}}
-	// {{{ protected function getFormattedBody()
+
+
 
 	protected function getFormattedBody($format_string, $formatted_link)
 	{
@@ -162,8 +162,8 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 				$this->application_title));
 	}
 
-	// }}}
-	// {{{ protected function getFullname()
+
+
 
 	protected function getFullname()
 	{
@@ -177,7 +177,7 @@ class SiteResetPasswordMailMessage extends SiteMultipartMailMessage
 		return $fullname;
 	}
 
-	// }}}
+
 }
 
 ?>

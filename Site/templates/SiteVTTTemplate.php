@@ -7,7 +7,7 @@
  */
 class SiteVTTTemplate extends SiteAbstractTemplate
 {
-	// {{{ public function display()
+
 
 	public function display(SiteLayoutData $data)
 	{
@@ -16,7 +16,7 @@ class SiteVTTTemplate extends SiteAbstractTemplate
 		echo $data->content;
 	}
 
-	// }}}
+
 }
 
 ?>

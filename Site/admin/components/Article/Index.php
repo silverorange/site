@@ -9,7 +9,7 @@
  */
 class SiteArticleIndex extends AdminIndex
 {
-	// {{{ protected properties
+
 
 	protected $id = null;
 	protected $parent = null;
@@ -19,10 +19,10 @@ class SiteArticleIndex extends AdminIndex
 	 */
 	protected $article;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -34,8 +34,8 @@ class SiteArticleIndex extends AdminIndex
 		$this->initArticle();
 	}
 
-	// }}}
-	// {{{ protected function initArticle()
+
+
 
 	protected function initArticle()
 	{
@@ -51,18 +51,18 @@ class SiteArticleIndex extends AdminIndex
 		}
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/index.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processActions()
+
 
 	protected function processActions(SwatView $view, SwatActions $actions)
 	{
@@ -70,10 +70,10 @@ class SiteArticleIndex extends AdminIndex
 		$processor->process($view, $actions);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function getTableModel()
+
 
 	protected function getTableModel(SwatView $view)
 	{
@@ -104,8 +104,8 @@ class SiteArticleIndex extends AdminIndex
 		return $rs;
 	}
 
-	// }}}
-	// {{{ protected function getWhereClause()
+
+
 
 	protected function getWhereClause(SwatView $view)
 	{
@@ -116,8 +116,8 @@ class SiteArticleIndex extends AdminIndex
 		return $sql;
 	}
 
-	// }}}
-	// {{{ protected function buildInternal()
+
+
 
 	protected function buildInternal()
 	{
@@ -147,8 +147,8 @@ class SiteArticleIndex extends AdminIndex
 			SiteArticleActionsProcessor::getActions());
 	}
 
-	// }}}
-	// {{{ protected function buildDetails()
+
+
 
 	protected function buildDetails()
 	{
@@ -204,8 +204,8 @@ class SiteArticleIndex extends AdminIndex
 		$this->navbar->addEntry(new SwatNavBarEntry($this->article->title));
 	}
 
-	// }}}
-	// {{{ protected function buildDetailsToolbar()
+
+
 
 	protected function buildDetailsToolbar()
 	{
@@ -218,7 +218,7 @@ class SiteArticleIndex extends AdminIndex
 		$site_link->value     = $this->article->path;
 	}
 
-	// }}}
+
 }
 
 ?>

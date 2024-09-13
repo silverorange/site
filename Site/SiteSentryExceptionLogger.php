@@ -9,7 +9,7 @@
  */
 class SiteSentryExceptionLogger extends SiteExceptionLogger
 {
-	// {{{ public function __construct()
+
 
 	/**
 	 * Creates a new sentry exception loggger
@@ -19,8 +19,8 @@ class SiteSentryExceptionLogger extends SiteExceptionLogger
 	{
 	}
 
-	// }}}
-	// {{{ public function log()
+
+
 
 	/**
 	 * Logs an exception

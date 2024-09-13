@@ -13,7 +13,7 @@
  */
 class SiteSimpleMediaWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -25,7 +25,7 @@ class SiteSimpleMediaWrapper extends SwatDBRecordsetWrapper
 		$this->index_field = 'id';
 	}
 
-	// }}}
+
 }
 
 ?>

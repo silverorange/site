@@ -6,7 +6,7 @@
  */
 class SiteAccountLoginHistory extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier
@@ -30,8 +30,8 @@ class SiteAccountLoginHistory extends SwatDBDataObject
 	 */
 	public $user_agent;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -44,7 +44,7 @@ class SiteAccountLoginHistory extends SwatDBDataObject
 			SwatDBClassMap::get(SiteAccount::class));
 	}
 
-	// }}}
+
 }
 
 ?>

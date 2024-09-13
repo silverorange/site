@@ -14,7 +14,7 @@
  */
 class SiteAttachmentCdnTaskWrapper extends SiteCdnTaskWrapper
 {
-	// {{{ public function initializeFromResultSet()
+
 
 	public function initializeFromResultSet(MDB2_Result_Common $rs)
 	{
@@ -31,8 +31,8 @@ class SiteAttachmentCdnTaskWrapper extends SiteCdnTaskWrapper
 		}
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -41,7 +41,7 @@ class SiteAttachmentCdnTaskWrapper extends SiteCdnTaskWrapper
 		$this->row_wrapper_class = SwatDBClassMap::get(SiteAttachmentCdnTask::class);
 	}
 
-	// }}}
+
 }
 
 ?>

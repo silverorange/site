@@ -13,15 +13,15 @@
  */
 class SiteConnectionClosePage extends SitePage
 {
-	// {{{ protected function createLayout()
+
 
 	protected function createLayout()
 	{
 		return new SiteLayout($this->app, SiteBlankTemplate::class);
 	}
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	public function init()
 	{
@@ -29,7 +29,7 @@ class SiteConnectionClosePage extends SitePage
 		header('Connection: close');
 	}
 
-	// }}}
+
 }
 
 ?>

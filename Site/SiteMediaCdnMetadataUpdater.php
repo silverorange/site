@@ -10,7 +10,7 @@
  */
 abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 {
-	// {{{ public properties
+
 
 	/**
 	 * A convenience reference to the database object
@@ -19,8 +19,8 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 	 */
 	public $db;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($id, $filename, $title, $documentation)
 	{
@@ -41,8 +41,8 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 		$this->locale = SwatI18NLocale::get();
 	}
 
-	// }}}
-	// {{{ public function setInstance()
+
+
 
 	public function setInstance($shortname)
 	{
@@ -51,8 +51,8 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 		$this->config->init();
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	/**
 	 * Runs this application
@@ -70,13 +70,13 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 		$this->unlock();
 	}
 
-	// }}}
-	// {{{ abstract protected function queueUpdates()
+
+
 
 	abstract protected function queueUpdates();
 
-	// }}}
-	// {{{ protected function queueCdnTask()
+
+
 
 	protected function queueCdnTask(
 		SiteMedia $media,
@@ -96,10 +96,10 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 		$task->save();
 	}
 
-	// }}}
+
 
 	// boilerplate code
-	// {{{ protected function getDefaultModuleList()
+
 
 	protected function getDefaultModuleList()
 	{
@@ -112,8 +112,8 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	protected function configure(SiteConfigModule $config)
 	{
@@ -122,7 +122,7 @@ abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 		$this->database->dsn = $config->database->dsn;
 	}
 
-	// }}}
+
 }
 
 ?>

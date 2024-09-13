@@ -9,15 +9,15 @@
  */
 class SiteArticleEdit extends AdminDBEdit
 {
-	// {{{ protected properties
+
 
 	protected $parent;
 	protected $edit_article;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -37,8 +37,8 @@ class SiteArticleEdit extends AdminDBEdit
 			$this->ui->getWidget('shortname_field')->visible = false;
 	}
 
-	// }}}
-	// {{{ protected function initArticle()
+
+
 
 	protected function initArticle()
 	{
@@ -54,18 +54,18 @@ class SiteArticleEdit extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/edit.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function validate()
+
 
 	protected function validate()
 	{
@@ -84,8 +84,8 @@ class SiteArticleEdit extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function validateShortname()
+
+
 
 	protected function validateShortname($shortname)
 	{
@@ -105,8 +105,8 @@ class SiteArticleEdit extends AdminDBEdit
 		return $valid;
 	}
 
-	// }}}
-	// {{{ protected function saveDBData()
+
+
 
 	protected function saveDBData()
 	{
@@ -131,8 +131,8 @@ class SiteArticleEdit extends AdminDBEdit
 		$this->app->messages->add($message);
 	}
 
-	// }}}
-	// {{{ protected function saveArticle()
+
+
 
 	protected function saveArticle()
 	{
@@ -149,10 +149,10 @@ class SiteArticleEdit extends AdminDBEdit
 		$this->edit_article->save();
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function loadDBData()
+
 
 	protected function loadDBData()
 	{
@@ -163,8 +163,8 @@ class SiteArticleEdit extends AdminDBEdit
 		$form->addHiddenField('parent', $this->parent);
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -188,7 +188,7 @@ class SiteArticleEdit extends AdminDBEdit
 		parent::buildNavBar();
 	}
 
-	// }}}
+
 }
 
 ?>

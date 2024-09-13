@@ -10,12 +10,12 @@
  */
 class SiteXmlSiteMapPage extends SitePageDecorator
 {
-	// {{{ protected properties
+
 
 	protected $priority_paths = [];
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(SiteAbstractPage $page)
 	{
@@ -23,8 +23,8 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 		$this->setLayout(new SiteXmlSiteMapLayout($this->app));
 	}
 
-	// }}}
-	// {{{ public function build()
+
+
 
 	public function build()
 	{
@@ -37,8 +37,8 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function displayPath()
+
+
 
 	protected function displayPath(
 		$path,
@@ -69,16 +69,16 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 		echo "</url>\n";
 	}
 
-	// }}}
-	// {{{ protected function addPriorityPath()
+
+
 
 	protected function addPriorityPath($path, $priority = 1)
 	{
 		$this->priority_paths[$path] = $priority;
 	}
 
-	// }}}
-	// {{{ protected function displaySiteMap()
+
+
 
 	protected function displaySiteMap()
 	{
@@ -88,8 +88,8 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 		$this->displayArticles($articles);
 	}
 
-	// }}}
-	// {{{ protected function displayArticles()
+
+
 
 	protected function displayArticles($articles, $path = null)
 	{
@@ -107,8 +107,8 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 		}
 	}
 
-	// }}}
-	// {{{ protected function queryArticles()
+
+
 
 	protected function queryArticles()
 	{
@@ -128,7 +128,7 @@ class SiteXmlSiteMapPage extends SitePageDecorator
 		return $articles;
 	}
 
-	// }}}
+
 }
 
 ?>

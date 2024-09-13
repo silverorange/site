@@ -9,14 +9,14 @@
  */
 class SiteXmlSiteMapLayout extends SiteLayout
 {
-	// {{{ public function __construct()
+
 
 	public function __construct($app, $template_class = null)
 	{
 		parent::__construct($app, SiteXMLSiteMapTemplate::class);
 	}
 
-	// }}}
+
 }
 
 ?>

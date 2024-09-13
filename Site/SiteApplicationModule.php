@@ -16,7 +16,7 @@
  */
 abstract class SiteApplicationModule extends SiteObject
 {
-	// {{{ protected properties
+
 
 	/**
 	 * Reference to the application object that contains this module
@@ -25,16 +25,16 @@ abstract class SiteApplicationModule extends SiteObject
 	 */
 	protected $app;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(SiteApplication $app)
 	{
 		$this->app = $app;
 	}
 
-	// }}}
-	// {{{ private properties
+
+
 
 	/**
 	 * A cache of the provides list for each module used in the application
@@ -44,8 +44,8 @@ abstract class SiteApplicationModule extends SiteObject
 	 */
 	private static $provides_by_module = [];
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -61,8 +61,8 @@ abstract class SiteApplicationModule extends SiteObject
 		return [];
 	}
 
-	// }}}
-	// {{{ public function provides()
+
+
 
 	/**
 	 * Gets the features this module provides
@@ -89,15 +89,15 @@ abstract class SiteApplicationModule extends SiteObject
 		return self::$provides_by_module[$module];
 	}
 
-	// }}}
-	// {{{ abstract public function init()
+
+
 
 	/**
 	 *
 	 */
 	abstract public function init();
 
-	// }}}
+
 }
 
 ?>

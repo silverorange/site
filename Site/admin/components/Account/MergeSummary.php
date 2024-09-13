@@ -9,7 +9,7 @@
  */
 class SiteAccountMergeSummary extends AdminPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var integer
@@ -31,10 +31,10 @@ class SiteAccountMergeSummary extends AdminPage
 	 */
 	protected $account2;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -50,18 +50,18 @@ class SiteAccountMergeSummary extends AdminPage
 		$this->account2 = $this->getAccount($this->id2);
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/merge-summary.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processInternal()
+
 
 	protected function processInternal()
 	{
@@ -91,10 +91,10 @@ class SiteAccountMergeSummary extends AdminPage
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -120,8 +120,8 @@ class SiteAccountMergeSummary extends AdminPage
 		$this->buildAccountDetailsFrame();
 	}
 
-	// }}}
-	// {{{ protected function getAccountDetailsStore()
+
+
 
 	protected function getAccountDetailsStore(SiteAccount $account)
 	{
@@ -130,8 +130,8 @@ class SiteAccountMergeSummary extends AdminPage
 		return $ds;
 	}
 
-	// }}}
-	// {{{ protected function getAccount()
+
+
 
 	protected function getAccount($id)
 	{
@@ -160,8 +160,8 @@ class SiteAccountMergeSummary extends AdminPage
 		return $account;
 	}
 
-	// }}}
-	// {{{ protected function buildAccountDetails()
+
+
 
 	protected function buildAccountDetailsFrame()
 	{
@@ -187,8 +187,8 @@ class SiteAccountMergeSummary extends AdminPage
 		);
 	}
 
-	// }}}
-	// {{{ protected function buildAccountDetails()
+
+
 
 	protected function buildAccountDetails(
 		SwatDetailsStore $ds,
@@ -201,8 +201,8 @@ class SiteAccountMergeSummary extends AdminPage
 		$details_view->data = $ds;
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -222,10 +222,10 @@ class SiteAccountMergeSummary extends AdminPage
 		));
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -236,7 +236,7 @@ class SiteAccountMergeSummary extends AdminPage
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

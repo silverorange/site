@@ -9,14 +9,14 @@
  */
 class SiteComment extends SwatDBDataObject
 {
-	// {{{ constants
+
 
 	const STATUS_PENDING     = 0;
 	const STATUS_PUBLISHED   = 1;
 	const STATUS_UNPUBLISHED = 2;
 
-	// }}}
-	// {{{ public properties
+
+
 
 	/**
 	 * Unique Identifier
@@ -93,8 +93,8 @@ class SiteComment extends SwatDBDataObject
 	 */
 	public $createdate;
 
-	// }}}
-	// {{{ public static function getStatusTitle()
+
+
 
 	public static function getStatusTitle($status)
 	{
@@ -119,8 +119,8 @@ class SiteComment extends SwatDBDataObject
 		return $title;
 	}
 
-	// }}}
-	// {{{ public static function getStatusArray()
+
+
 
 	public static function getStatusArray()
 	{
@@ -129,8 +129,8 @@ class SiteComment extends SwatDBDataObject
 				self::getStatusTitle(self::STATUS_UNPUBLISHED)];
 	}
 
-	// }}}
-	// {{{ public function load()
+
+
 
 	/**
 	 * Loads this comment
@@ -178,8 +178,8 @@ class SiteComment extends SwatDBDataObject
 		return $loaded;
 	}
 
-	// }}}
-	// {{{ public function postSave()
+
+
 
 	/**
 	 * Run post-save methods for the comment
@@ -191,15 +191,15 @@ class SiteComment extends SwatDBDataObject
 		$this->clearCache($app);
 	}
 
-	// }}}
-	// {{{ public function clearCache()
+
+
 
 	public function clearCache(SiteApplication $app)
 	{
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -212,7 +212,7 @@ class SiteComment extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -8,7 +8,7 @@
  */
 class SiteImageDimension extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier
@@ -104,13 +104,13 @@ class SiteImageDimension extends SwatDBDataObject
 	 */
 	public $upscale;
 
-	// }}}
-	// {{{ private properties
+
+
 
 	private static $default_type_cache = [];
 
-	// }}}
-	// {{{ public function loadByShortname()
+
+
 
 	/**
 	 * Loads a dimension from the database with a shortname
@@ -146,8 +146,8 @@ class SiteImageDimension extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -161,8 +161,8 @@ class SiteImageDimension extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
-	// {{{ protected function hasSubDataObject()
+
+
 
 	protected function hasSubDataObject($key)
 	{
@@ -183,8 +183,8 @@ class SiteImageDimension extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function setSubDataObject()
+
+
 
 	protected function setSubDataObject($name, $value)
 	{
@@ -194,15 +194,15 @@ class SiteImageDimension extends SwatDBDataObject
 		parent::setSubDataObject($name, $value);
 	}
 
-	// }}}
-	// {{{ protected function getSerializableSubDataObjects()
+
+
 
 	protected function getSerializableSubDataObjects()
 	{
 		return ['default_type'];
 	}
 
-	// }}}
+
 }
 
 ?>

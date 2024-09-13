@@ -9,7 +9,7 @@
  */
 abstract class SiteReplacementMarkerMailMessage extends SiteMultipartMailMessage
 {
-	// {{{ public function __construct()
+
 
 	public function __construct(SiteApplication $app)
 	{
@@ -24,18 +24,18 @@ abstract class SiteReplacementMarkerMailMessage extends SiteMultipartMailMessage
 		$this->text_body   = $this->replaceMarkers($this->getBodyText());
 	}
 
-	// }}}
-	// {{{ abstract protected function getSubject()
+
+
 
 	abstract protected function getSubject();
 
-	// }}}
-	// {{{ abstract protected function getBodyText()
+
+
 
 	abstract protected function getBodyText();
 
-	// }}}
-	// {{{ protected function getReplacementMarkerText()
+
+
 
 	/**
 	 * Gets replacement text for a specfied replacement marker identifier
@@ -50,8 +50,8 @@ abstract class SiteReplacementMarkerMailMessage extends SiteMultipartMailMessage
 		return '';
 	}
 
-	// }}}
-	// {{{ protected final function replaceMarkers()
+
+
 
 	/**
 	 * Replaces markers in text with dynamic content
@@ -69,8 +69,8 @@ abstract class SiteReplacementMarkerMailMessage extends SiteMultipartMailMessage
 		return preg_replace_callback($marker_pattern, $callback, $text);
 	}
 
-	// }}}
-	// {{{ private function getReplacementMarkerTextByMatches()
+
+
 
 	/**
 	 * Gets replacement text for a replacement marker from within a matches
@@ -89,7 +89,7 @@ abstract class SiteReplacementMarkerMailMessage extends SiteMultipartMailMessage
 		return '';
 	}
 
-	// }}}
+
 }
 
 ?>

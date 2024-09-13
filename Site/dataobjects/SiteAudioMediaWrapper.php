@@ -10,7 +10,7 @@
  */
 class SiteAudioMediaWrapper extends SiteMediaWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -19,7 +19,7 @@ class SiteAudioMediaWrapper extends SiteMediaWrapper
 		$this->row_wrapper_class = SwatDBClassMap::get(SiteAudioMedia::class);
 	}
 
-	// }}}
+
 }
 
 ?>

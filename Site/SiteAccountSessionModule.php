@@ -12,7 +12,7 @@
  */
 class SiteAccountSessionModule extends SiteSessionModule
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var array
@@ -24,8 +24,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 	 */
 	protected $logout_callbacks = [];
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a site account session module
@@ -46,8 +46,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$this->registerLogoutCallback([$this, 'setSentryUserContext']);
 	}
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this session module
@@ -68,8 +68,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		}
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -89,8 +89,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return $depends;
 	}
 
-	// }}}
-	// {{{ public function login()
+
+
 
 	/**
 	 * Logs the current session into a {@link SiteAccount}
@@ -158,8 +158,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return $this->isLoggedIn();
 	}
 
-	// }}}
-	// {{{ public function loginById()
+
+
 
 	/**
 	 * Logs the current session into a {@link SiteAccount} using an id
@@ -207,8 +207,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return $this->isLoggedIn();
 	}
 
-	// }}}
-	// {{{ public function loginByAccount()
+
+
 
 	/**
 	 * Logs the current session into the specified {@link SiteAccount}
@@ -258,8 +258,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return true;
 	}
 
-	// }}}
-	// {{{ public function loginByTag()
+
+
 
 	/**
 	 * Logs the current session into a {@link SiteAccount} using a persistent
@@ -323,8 +323,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return $logged_in;
 	}
 
-	// }}}
-	// {{{ public function logout()
+
+
 
 	/**
 	 * Logs the current user out
@@ -346,8 +346,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$this->removeAccountCookie();
 	}
 
-	// }}}
-	// {{{ public function isLoggedIn()
+
+
 
 	/**
 	 * Checks the current user's logged-in status
@@ -376,8 +376,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return true;
 	}
 
-	// }}}
-	// {{{ public function isAccountDirty()
+
+
 
 	/**
 	 * Gets whether or not the logged in account in this session needs to be
@@ -409,8 +409,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return $is_dirty;
 	}
 
-	// }}}
-	// {{{ public function getAccountId()
+
+
 
 	/**
 	 * Retrieves the current account Id
@@ -425,8 +425,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return $this->account->id;
 	}
 
-	// }}}
-	// {{{ public function registerLoginCallback()
+
+
 
 	/**
 	 * Registers a callback function that is executed when a successful session
@@ -447,8 +447,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$this->login_callbacks[] = ['callback' => $callback, 'parameters' => $parameters];
 	}
 
-	// }}}
-	// {{{ public function registerLogoutCallback()
+
+
 
 	/**
 	 * Registers a callback function that is executed after a logout is
@@ -469,8 +469,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$this->logout_callbacks[] = ['callback' => $callback, 'parameters' => $parameters];
 	}
 
-	// }}}
-	// {{{ public function setLoginCookie()
+
+
 
 	/**
 	 * Sets the cookie used for persistent logins
@@ -508,8 +508,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return true;
 	}
 
-	// }}}
-	// {{{ public function generateLoginTag()
+
+
 
 	public function generateLoginTag()
 	{
@@ -529,8 +529,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return $tag;
 	}
 
-	// }}}
-	// {{{ public function unsetLoginCookie()
+
+
 
 	public function unsetLoginCookie()
 	{
@@ -538,8 +538,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$cookie->removeCookie('login');
 	}
 
-	// }}}
-	// {{{ public function setLoginSession()
+
+
 
 	/**
 	 * Sets the cookie used for persistent logins
@@ -592,8 +592,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return true;
 	}
 
-	// }}}
-	// {{{ public function unsetLoginSession()
+
+
 
 	public function unsetLoginSession()
 	{
@@ -609,8 +609,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		}
 	}
 
-	// }}}
-	// {{{ public function reloadAccount()
+
+
 
 	/**
 	 * Reloads the logged in account in this session from the database
@@ -633,8 +633,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function startSession()
+
+
 
 	/**
 	 * Starts a session
@@ -648,8 +648,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function getNewAccountObject()
+
+
 
 	protected function getNewAccountObject()
 	{
@@ -660,8 +660,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return $account;
 	}
 
-	// }}}
-	// {{{ protected function runLoginCallbacks()
+
+
 
 	protected function runLoginCallbacks()
 	{
@@ -672,8 +672,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function runLogoutCallbacks()
+
+
 
 	protected function runLogoutCallbacks()
 	{
@@ -684,8 +684,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function setAccountCookie()
+
+
 
 	protected function setAccountCookie()
 	{
@@ -701,8 +701,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function removeAccountCookie()
+
+
 
 	protected function removeAccountCookie()
 	{
@@ -714,8 +714,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		$cookie->removeCookie('account_id');
 	}
 
-	// }}}
-	// {{{ protected function getErrorUserContext()
+
+
 
 	/**
 	 * Gets the user-context array for error reporting
@@ -740,10 +740,10 @@ class SiteAccountSessionModule extends SiteSessionModule
 		return $data;
 	}
 
-	// }}}
+
 
 	// deprecated
-	// {{{ public function registerDataObject()
+
 
 	/**
 	 * Registers an object class for a session variable
@@ -763,8 +763,8 @@ class SiteAccountSessionModule extends SiteSessionModule
 		parent::registerObject($name, $class, $destroy_on_logout);
 	}
 
-	// }}}
-	// {{{ public function unsetRegisteredDataObjects()
+
+
 
 	/**
 	 * Unsets objects registered in the session and marked as
@@ -778,7 +778,7 @@ class SiteAccountSessionModule extends SiteSessionModule
 		parent::unsetRegisteredObjects();
 	}
 
-	// }}}
+
 }
 
 ?>

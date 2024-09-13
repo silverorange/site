@@ -14,7 +14,7 @@
  */
 class SiteMediaEncoding extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * The unique identifier of this media encoding
@@ -50,13 +50,13 @@ class SiteMediaEncoding extends SwatDBDataObject
 	 */
 	public $default_encoding = true;
 
-	// }}}
-	// {{{ private properties
+
+
 
 	private static $default_type_cache = [];
 
-	// }}}
-	// {{{ public function loadByShortname()
+
+
 
 	/**
 	 * Loads an encoding from the database with a shortname
@@ -103,8 +103,8 @@ class SiteMediaEncoding extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -118,8 +118,8 @@ class SiteMediaEncoding extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
-	// {{{ protected function hasSubDataObject()
+
+
 
 	protected function hasSubDataObject($key)
 	{
@@ -140,8 +140,8 @@ class SiteMediaEncoding extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function setSubDataObject()
+
+
 
 	protected function setSubDataObject($name, $value)
 	{
@@ -151,15 +151,15 @@ class SiteMediaEncoding extends SwatDBDataObject
 		parent::setSubDataObject($name, $value);
 	}
 
-	// }}}
-	// {{{ protected function getSerializableSubDataObjects()
+
+
 
 	protected function getSerializableSubDataObjects()
 	{
 		return ['default_type'];
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -15,7 +15,7 @@
  */
 class SiteArticle extends SwatDBDataObject
 {
-	// {{{ class constants
+
 
 	/**
 	 * The maximum depth of articles in the article tree
@@ -27,8 +27,8 @@ class SiteArticle extends SwatDBDataObject
 	 */
 	const MAX_DEPTH = 8;
 
-	// }}}
-	// {{{ public properties
+
+
 
 	/**
 	 * Unique identifier
@@ -120,8 +120,8 @@ class SiteArticle extends SwatDBDataObject
 	 */
 	public $shortname;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var array
@@ -130,8 +130,8 @@ class SiteArticle extends SwatDBDataObject
 	 */
 	protected $navbar_entries;
 
-	// }}}
-	// {{{ public function getNavBarEntries()
+
+
 
 	/**
 	 * Gets the set of {@link SwatNavBarEntry} objects for this article
@@ -167,8 +167,8 @@ class SiteArticle extends SwatDBDataObject
 		return $this->navbar_entries;
 	}
 
-	// }}}
-	// {{{ public function getVisibileSubArticles()
+
+
 
 	/**
 	 * Get the sub-articles of this article that are both shown and enabled
@@ -193,8 +193,8 @@ class SiteArticle extends SwatDBDataObject
 		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
-	// }}}
-	// {{{ public function loadWithPath()
+
+
 
 	/**
 	 * Loads an article from the database with a path
@@ -242,8 +242,8 @@ class SiteArticle extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ public function loadByShortname()
+
+
 
 	/**
 	 * Loads an article from its shortname
@@ -278,8 +278,8 @@ class SiteArticle extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -293,8 +293,8 @@ class SiteArticle extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
-	// {{{ protected function getSerializableSubDataObjects()
+
+
 
 	protected function getSerializableSubDataObjects()
 	{
@@ -302,10 +302,10 @@ class SiteArticle extends SwatDBDataObject
 			['parent', 'path', 'sub_articles']);
 	}
 
-	// }}}
+
 
 	// loader methods
-	// {{{ protected function loadPath()
+
 
 	/**
 	 * Loads the URL fragment of this article
@@ -333,8 +333,8 @@ class SiteArticle extends SwatDBDataObject
 		return $path;
 	}
 
-	// }}}
-	// {{{ protected function loadSubArticles()
+
+
 
 	/**
 	 * Loads the sub-articles of this article
@@ -358,7 +358,7 @@ class SiteArticle extends SwatDBDataObject
 		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
-	// }}}
+
 }
 
 ?>

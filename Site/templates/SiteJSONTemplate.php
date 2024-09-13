@@ -7,7 +7,7 @@
  */
 class SiteJSONTemplate extends SiteAbstractTemplate
 {
-	// {{{ public function display()
+
 
 	public function display(SiteLayoutData $data)
 	{
@@ -20,7 +20,7 @@ class SiteJSONTemplate extends SiteAbstractTemplate
 		echo $data->content;
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -14,7 +14,7 @@
  */
 class SiteImageWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var string
@@ -26,8 +26,8 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 	 */
 	protected $binding_table_image_field = 'image';
 
-	// }}}
-	// {{{ public function initializeFromResultSet()
+
+
 
 	public function initializeFromResultSet(MDB2_Result_Common $rs)
 	{
@@ -39,8 +39,8 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 		}
 	}
 
-	// }}}
-	// {{{ public function loadDimensionBindings()
+
+
 
 	/**
 	 * Efficiently loads image dimension bindings for the images in this
@@ -100,8 +100,8 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 		}
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -110,16 +110,16 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 		$this->index_field = 'id';
 	}
 
-	// }}}
-	// {{{ protected function getImageDimensionBindingWrapperClassName()
+
+
 
 	protected function getImageDimensionBindingWrapperClassName()
 	{
 		return SwatDBClassMap::get(SiteImageDimensionBindingWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getDimensionQuery()
+
+
 
 	protected function getDimensionQuery($image_ids, array $dimensions = null)
 	{
@@ -148,10 +148,10 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 		return $sql;
 	}
 
-	// }}}
+
 
 	// deprecated
-	// {{{ public function loadDimensions()
+
 
 	/**
 	 * @deprecated Use {@link SiteImageWrapper::loadDimensionBindings()}.
@@ -161,7 +161,7 @@ class SiteImageWrapper extends SwatDBRecordsetWrapper
 		$this->loadDimensionBindings($dimensions);
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -12,7 +12,7 @@
  */
 class SiteMediaEncodingBinding extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * File size in bytes.
@@ -50,13 +50,13 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 	 */
 	public $media;
 
-	// }}}
-	// {{{ private properties
+
+
 
 	private static $media_type_cache = [];
 
-	// }}}
-	// {{{ public function getHumanFileType()
+
+
 
 	public function getHumanFileType()
 	{
@@ -70,16 +70,16 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 		return $map[$this->media_type->mime_type];
 	}
 
-	// }}}
-	// {{{ public function getFormattedFileSize()
+
+
 
 	public function getFormattedFileSize()
 	{
 		return SwatString::byteFormat($this->filesize, -1, false, 1);
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -89,8 +89,8 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 			SwatDBClassMap::get(SiteMediaType::class));
 	}
 
-	// }}}
-	// {{{ protected function hasSubDataObject()
+
+
 
 	protected function hasSubDataObject($key)
 	{
@@ -111,8 +111,8 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function setSubDataObject()
+
+
 
 	protected function setSubDataObject($name, $value)
 	{
@@ -122,8 +122,8 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 		parent::setSubDataObject($name, $value);
 	}
 
-	// }}}
-	// {{{ protected function saveInternal()
+
+
 
 	/**
 	 * Saves this object to the database
@@ -143,15 +143,15 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 		parent::saveInternal();
 	}
 
-	// }}}
-	// {{{ protected function getSerializablePrivateProperties()
+
+
 
 	protected function getSerializablePrivateProperties()
 	{
 		return array_merge(parent::getSerializablePrivateProperties(), ['media_type']);
 	}
 
-	// }}}
+
 }
 
 ?>

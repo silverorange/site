@@ -16,7 +16,7 @@
  */
 class SiteApplicationModuleDependency extends SwatObject
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The dependent feature of this dependency
@@ -32,8 +32,8 @@ class SiteApplicationModuleDependency extends SwatObject
 	 */
 	protected $required = true;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new module dependency
@@ -50,8 +50,8 @@ class SiteApplicationModuleDependency extends SwatObject
 		$this->required = (boolean)$required;
 	}
 
-	// }}}
-	// {{{ public function getFeature()
+
+
 
 	/**
 	 * Gets the dependent feature of this dependency
@@ -63,8 +63,8 @@ class SiteApplicationModuleDependency extends SwatObject
 		return $this->feature;
 	}
 
-	// }}}
-	// {{{ public function isRequired()
+
+
 
 	/**
 	 * Gets whether or not the dependent feature of this dependency is required
@@ -80,7 +80,7 @@ class SiteApplicationModuleDependency extends SwatObject
 		return $this->required;
 	}
 
-	// }}}
+
 }
 
 ?>

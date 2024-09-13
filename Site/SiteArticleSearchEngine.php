@@ -9,7 +9,7 @@
  */
 class SiteArticleSearchEngine extends SiteSearchEngine
 {
-	// {{{ protected function getResultWrapperClass()
+
 
 	protected function getResultWrapperClass()
 	{
@@ -18,8 +18,8 @@ class SiteArticleSearchEngine extends SiteSearchEngine
 		return $wrapper_class;
 	}
 
-	// }}}
-	// {{{ protected function getSelectClause()
+
+
 
 	protected function getSelectClause()
 	{
@@ -28,8 +28,8 @@ class SiteArticleSearchEngine extends SiteSearchEngine
 		return $clause;
 	}
 
-	// }}}
-	// {{{ protected function getFromClause()
+
+
 
 	protected function getFromClause()
 	{
@@ -43,8 +43,8 @@ class SiteArticleSearchEngine extends SiteSearchEngine
 		return $clause;
 	}
 
-	// }}}
-	// {{{ protected function getWhereClause()
+
+
 
 	protected function getWhereClause()
 	{
@@ -54,8 +54,8 @@ class SiteArticleSearchEngine extends SiteSearchEngine
 		return $clause;
 	}
 
-	// }}}
-	// {{{ protected function getOrderByClause()
+
+
 
 	protected function getOrderByClause()
 	{
@@ -69,15 +69,15 @@ class SiteArticleSearchEngine extends SiteSearchEngine
 		return $clause;
 	}
 
-	// }}}
-	// {{{ protected function getMemcacheNs()
+
+
 
 	protected function getMemcacheNs()
 	{
 		return 'article';
 	}
 
-	// }}}
+
 }
 
 ?>

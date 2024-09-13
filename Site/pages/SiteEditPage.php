@@ -9,20 +9,20 @@
  */
 abstract class SiteEditPage extends SiteUiPage
 {
-	// {{{ class constants
+
 
 	const RELOCATE_URI_FIELD = '_relocate_uri';
 
-	// }}}
-	// {{{ protected function isNew()
+
+
 
 	protected function isNew(SwatForm $form)
 	{
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function getForms()
+
+
 
 	protected function getForms()
 	{
@@ -31,10 +31,10 @@ abstract class SiteEditPage extends SiteUiPage
 		return $forms;
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	public function process()
 	{
@@ -43,8 +43,8 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function processForm()
+
+
 
 	protected function processForm(SwatForm $form)
 	{
@@ -62,8 +62,8 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function authenticate()
+
+
 
 	/**
 	 * Authenticate a form on the page
@@ -93,15 +93,15 @@ abstract class SiteEditPage extends SiteUiPage
 		return $authenticated;
 	}
 
-	// }}}
-	// {{{ protected function validate()
+
+
 
 	protected function validate(SwatForm $form)
 	{
 	}
 
-	// }}}
-	// {{{ protected function isValid()
+
+
 
 	protected function isValid(SwatForm $form)
 	{
@@ -121,26 +121,26 @@ abstract class SiteEditPage extends SiteUiPage
 		return $valid;
 	}
 
-	// }}}
-	// {{{ abstract protected function save()
+
+
 
 	abstract protected function save(SwatForm $form);
 
-	// }}}
-	// {{{ abstract protected function relocate()
+
+
 
 	abstract protected function relocate(SwatForm $form);
 
-	// }}}
-	// {{{ protected function relocateToRefererUri()
+
+
 
 	protected function relocateToRefererUri(SwatForm $form, $default_relocate)
 	{
 		$this->app->relocate($this->getRelocateUri($form, $default_relocate));
 	}
 
-	// }}}
-	// {{{ protected function assignUiValuesToObject()
+
+
 
 	protected function assignUiValuesToObject(
 		SwatDBDataObject $object,
@@ -151,8 +151,8 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function assignUiValueToObject()
+
+
 
 	protected function assignUiValueToObject(SwatDBDataObject $object, $name)
 	{
@@ -177,8 +177,8 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function generateShortname()
+
+
 
 	/**
 	 * Generates a shortname
@@ -211,8 +211,8 @@ abstract class SiteEditPage extends SiteUiPage
 		return $shortname;
 	}
 
-	// }}}
-	// {{{ protected function validateShortname()
+
+
 
 	/**
 	 * Validates a shortname
@@ -233,8 +233,8 @@ abstract class SiteEditPage extends SiteUiPage
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function getRelocateUri()
+
+
 
 	protected function getRelocateUri(SwatForm $form, $default_relocate)
 	{
@@ -252,10 +252,10 @@ abstract class SiteEditPage extends SiteUiPage
 		return $uri;
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildMessages()
+
 
 	protected function buildMessages()
 	{
@@ -276,16 +276,16 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getMessageDisplay()
+
+
 
 	protected function getMessageDisplay(SwatForm $form = null)
 	{
 		return $form->getFirstDescendant('SwatMessageDisplay');
 	}
 
-	// }}}
-	// {{{ protected function getInvalidMessage()
+
+
 
 	protected function getInvalidMessage(SwatForm $form)
 	{
@@ -298,8 +298,8 @@ abstract class SiteEditPage extends SiteUiPage
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function buildInternal()
+
+
 
 	protected function buildInternal()
 	{
@@ -309,8 +309,8 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildForm()
+
+
 
 	protected function buildForm(SwatForm $form)
 	{
@@ -332,15 +332,15 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function load()
+
+
 
 	protected function load(SwatForm $form)
 	{
 	}
 
-	// }}}
-	// {{{ protected function assignObjectValuesToUi()
+
+
 
 	protected function assignObjectValuesToUi(
 		SwatDBDataObject $object,
@@ -351,8 +351,8 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function assignObjectValueToUi()
+
+
 
 	protected function assignObjectValueToUi(SwatDBDataObject $object, $name)
 	{
@@ -376,8 +376,8 @@ abstract class SiteEditPage extends SiteUiPage
 		$widget->value = $value;
 	}
 
-	// }}}
-	// {{{ protected function getRefererUri()
+
+
 
 	protected function getRefererUri()
 	{
@@ -388,10 +388,10 @@ abstract class SiteEditPage extends SiteUiPage
 		}
 	}
 
-	// }}}
+
 
 	// deprecated API
-	// {{{ protected function relocateToRefererUrl()
+
 
 	/**
 	 * @deprecated Use {@link SiteEditForm::relocateToRefererUri()} instead.
@@ -401,8 +401,8 @@ abstract class SiteEditPage extends SiteUiPage
 		$this->relocateToRefererUri($form, $default_relocate);
 	}
 
-	// }}}
-	// {{{ protected function getRefererUrl()
+
+
 
 	/**
 	 * @deprecated Use {@link SiteEditPage::getRefererUri()} instead.
@@ -412,7 +412,7 @@ abstract class SiteEditPage extends SiteUiPage
 		return $this->getRefererUri();
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -11,7 +11,7 @@ use Char0n\FFMpegPHP\Movie;
 class SiteVideoScrubberImageGenerator extends
 	SiteCommandLineApplication
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The directory containing the media hierarchy
@@ -27,25 +27,24 @@ class SiteVideoScrubberImageGenerator extends
 	 */
 	protected $image_file_base;
 
-	// }}}
 
-	// {{{ public function setMediaFileBase()
+
 
 	public function setMediaFileBase($media_file_base)
 	{
 		$this->media_file_base = $media_file_base;
 	}
 
-	// }}}
-	// {{{ public function setImageFileBase()
+
+
 
 	public function setImageFileBase($image_file_base)
 	{
 		$this->image_file_base = $image_file_base;
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	public function run()
 	{
@@ -83,8 +82,8 @@ class SiteVideoScrubberImageGenerator extends
 		$this->debug("done\n");
 	}
 
-	// }}}
-	// {{{ protected function getPendingMedia()
+
+
 
 	protected function getPendingMedia()
 	{
@@ -101,8 +100,8 @@ class SiteVideoScrubberImageGenerator extends
 		return $media;
 	}
 
-	// }}}
-	// {{{ protected function getPendingMediaWhereClause()
+
+
 
 	protected function getPendingMediaWhereClause()
 	{
@@ -112,8 +111,8 @@ class SiteVideoScrubberImageGenerator extends
 					where width is not null)';
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingShortname()
+
+
 
 	protected function getMediaEncodingShortname(SiteMediaWrapper $media)
 	{
@@ -137,8 +136,8 @@ class SiteVideoScrubberImageGenerator extends
 		return $encoding_shortname;
 	}
 
-	// }}}
-	// {{{ protected function getMediaPath()
+
+
 
 	protected function getMediaPath(SiteMedia $media, $encoding_shortname)
 	{
@@ -166,8 +165,8 @@ class SiteVideoScrubberImageGenerator extends
 		return $path;
 	}
 
-	// }}}
-	// {{{ protected function processMedia()
+
+
 
 	protected function processMedia(SiteMedia $media, $path)
 	{
@@ -227,8 +226,8 @@ class SiteVideoScrubberImageGenerator extends
 		$this->debug("\nComposite Saved!\n\n");
 	}
 
-	// }}}
-	// {{{ protected function getImageObject()
+
+
 
 	protected function getImageObject()
 	{
@@ -241,10 +240,10 @@ class SiteVideoScrubberImageGenerator extends
 		return $image_object;
 	}
 
-	// }}}
+
 
 	// boilerplate
-	// {{{ protected function getDefaultModuleList()
+
 
 	/**
 	 * Gets the list of modules to load for this search indexer
@@ -264,8 +263,8 @@ class SiteVideoScrubberImageGenerator extends
 		);
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	protected function configure(SiteConfigModule $config)
 	{
@@ -273,7 +272,7 @@ class SiteVideoScrubberImageGenerator extends
 		$this->database->dsn = $config->database->dsn;
 	}
 
-	// }}}
+
 }
 
 ?>

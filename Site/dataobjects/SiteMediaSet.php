@@ -9,7 +9,7 @@
  */
 class SiteMediaSet extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier
@@ -48,8 +48,8 @@ class SiteMediaSet extends SwatDBDataObject
 	 */
 	public $private;
 
-	// }}}
-	// {{{ public function loadByShortname()
+
+
 
 	/**
 	 * Loads a set from the database with a shortname
@@ -88,8 +88,8 @@ class SiteMediaSet extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ public function hasEncoding()
+
+
 
 	/**
 	 * Checks existance of an encoding by its shortname
@@ -112,8 +112,8 @@ class SiteMediaSet extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ public function getEncodingByShortname()
+
+
 
 	/**
 	 * Gets an encoding of this set based on its shortname
@@ -136,8 +136,8 @@ class SiteMediaSet extends SwatDBDataObject
 			$shortname));
 	}
 
-	// }}}
-	// {{{ public function getEncodingShortnameById()
+
+
 
 	/**
 	 * Gets the shortname of an encoding of this set based on its id
@@ -158,8 +158,8 @@ class SiteMediaSet extends SwatDBDataObject
 			$id));
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -170,18 +170,18 @@ class SiteMediaSet extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
-	// {{{ protected function getSerializableSubdataobjects()
+
+
 
 	protected function getSerializableSubdataobjects()
 	{
 		return ['encodings'];
 	}
 
-	// }}}
+
 
 	// loader methods
-	// {{{ protected function loadEncodings()
+
 
 	/**
 	 * Loads the encodings belonging to this set
@@ -202,23 +202,23 @@ class SiteMediaSet extends SwatDBDataObject
 			$this->getMediaEncodingWrapperClass());
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingWrapperClass()
+
+
 
 	protected function getMediaEncodingWrapperClass()
 	{
 		return SwatDBClassMap::get(SiteMediaEncodingWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingOrderBy()
+
+
 
 	protected function getMediaEncodingOrderBy()
 	{
 		return 'id';
 	}
 
-	// }}}
+
 }
 
 ?>

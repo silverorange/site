@@ -15,7 +15,7 @@
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
-	// {{{ class constants
+
 
 	/**
 	 * Total number of available slots for custom variables.
@@ -29,8 +29,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	const CUSTOM_VARIABLE_SCOPE_SESSION = 2;
 	const CUSTOM_VARIABLE_SCOPE_PAGE    = 3;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * Google Analytics Account
@@ -156,8 +156,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 	 */
 	protected $twitter_pixel_commands = [];
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	public function init()
 	{
@@ -197,8 +197,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function hasAnalytics()
+
+
 
 	public function hasAnalytics()
 	{
@@ -211,8 +211,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function displayNoScriptContent()
+
+
 
 	public function displayNoScriptContent()
 	{
@@ -221,8 +221,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->displayBingUETImage();
 	}
 
-	// }}}
-	// {{{ public function displayScriptContent()
+
+
 
 	public function displayScriptContent()
 	{
@@ -253,8 +253,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function initOptOut()
+
+
 
 	protected function initOptOut()
 	{
@@ -304,10 +304,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
+
 
 	// Google Analytics
-	// {{{ public function hasGoogleAnalytics()
+
 
 	public function hasGoogleAnalytics()
 	{
@@ -318,10 +318,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
+
 
 	// Google Analytics
-	// {{{ public function hasGoogleAnalytics4()
+
 
 	public function hasGoogleAnalytics4(): bool
 	{
@@ -332,8 +332,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function pushGoogleAnalyticsCommands()
+
+
 
 	public function pushGoogleAnalyticsCommands(array $commands)
 	{
@@ -342,8 +342,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function pushGoogleAnalytics4Commands()
+
+
 
 	public function pushGoogleAnalytics4Commands(array $commands): void
 	{
@@ -352,8 +352,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function prependGoogleAnalyticsCommands()
+
+
 
 	public function prependGoogleAnalyticsCommands(array $commands)
 	{
@@ -363,8 +363,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function prependGoogleAnalytics4Commands()
+
+
 
 	public function prependGoogleAnalytics4Commands(array $commands): void
 	{
@@ -374,8 +374,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function getGoogleAnalyticsInlineJavascript()
+
+
 
 	public function getGoogleAnalyticsInlineJavascript()
 	{
@@ -390,8 +390,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ public function getGoogleAnalytics4InlineJavascript()
+
+
 
 	public function getGoogleAnalytics4InlineJavascript(): string | null
 	{
@@ -409,8 +409,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ public function getGoogleAnalyticsCommandsInlineJavascript()
+
+
 
 	public function getGoogleAnalyticsCommandsInlineJavascript()
 	{
@@ -454,8 +454,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ public function getGoogleAnalytics4CommandsInlineJavascript()
+
+
 
 	public function getGoogleAnalytics4CommandsInlineJavascript(): string
 	{
@@ -486,8 +486,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ public function getGoogleAnalyticsTrackerInlineJavascript()
+
+
 
 	public function getGoogleAnalyticsTrackerInlineJavascript()
 	{
@@ -514,8 +514,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ public function getGoogleAnalytics4TrackerInlineJavascript()
+
+
 
 	public function getGoogleAnalytics4TrackerInlineJavascript(): string | null
 	{
@@ -546,8 +546,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function initGoogleAnalyticsCommands()
+
+
 
 	protected function initGoogleAnalyticsCommands()
 	{
@@ -557,8 +557,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->ga_commands = [['_setSiteSpeedSampleRate', 100], '_trackPageview'];
 	}
 
-	// }}}
-	// {{{ protected function getGoogleAnalyticsTrackingCodeSource()
+
+
 
 	protected function getGoogleAnalyticsTrackingCodeSource()
 	{
@@ -571,16 +571,16 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $source;
 	}
 
-	// }}}
-	// {{{ protected function getGoogleAnalytics4TrackingCodeSource()
+
+
 
 	protected function getGoogleAnalytics4TrackingCodeSource(string $id)
 	{
 		return "https://www.googletagmanager.com/gtag/js?id=$id";
 	}
 
-	// }}}
-	// {{{ protected function getGoogleAnalyticsCommand()
+
+
 
 	protected function getGoogleAnalyticsCommand($command)
 	{
@@ -608,8 +608,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ protected function getGoogleAnalytics4CommandEvent()
+
+
 
 	protected function getGoogleAnalytics4CommandEvent(
 		string $event_name,
@@ -622,10 +622,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
+
 
 	// Facebook
-	// {{{ public function hasFacebookPixel()
+
 
 	public function hasFacebookPixel()
 	{
@@ -636,8 +636,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function pushFacebookPixelCommands()
+
+
 
 	public function pushFacebookPixelCommands(array $commands)
 	{
@@ -646,8 +646,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function prependFacebookPixelCommands()
+
+
 
 	public function prependFacebookPixelCommands(array $commands)
 	{
@@ -657,8 +657,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function getFacebookPixelImage()
+
+
 
 	public function getFacebookPixelImage()
 	{
@@ -673,8 +673,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function getFacebookPixelInlineJavascript()
+
+
 
 	public function getFacebookPixelInlineJavascript()
 	{
@@ -690,8 +690,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ public function getFacebookPixelTrackerInlineJavascript()
+
+
 
 	public function getFacebookPixelTrackerInlineJavascript()
 	{
@@ -710,8 +710,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ public function getFacebookPixelCommandsInlineJavascript()
+
+
 
 	public function getFacebookPixelCommandsInlineJavascript()
 	{
@@ -733,8 +733,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function initFacebookPixelCommands()
+
+
 
 	protected function initFacebookPixelCommands()
 	{
@@ -743,8 +743,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		$this->facebook_pixel_commands = [['track', 'PageView']];
 	}
 
-	// }}}
-	// {{{ protected function displayFacebookPixelImage()
+
+
 
 	protected function displayFacebookPixelImage()
 	{
@@ -756,8 +756,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function getFacebookPixelCommand()
+
+
 
 	protected function getFacebookPixelCommand($command)
 	{
@@ -771,10 +771,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
+
 
 	// Twitter
-	// {{{ public function hasTwitterPixel()
+
 
 	public function hasTwitterPixel()
 	{
@@ -785,8 +785,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function pushTwitterPixelCommands()
+
+
 
 	public function pushTwitterPixelCommands(array $commands)
 	{
@@ -795,8 +795,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function getTwitterPixelImages()
+
+
 
 	public function getTwitterPixelImages()
 	{
@@ -839,8 +839,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function getTwitterPixelInlineJavascript()
+
+
 
 	public function getTwitterPixelInlineJavascript()
 	{
@@ -853,8 +853,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ public function getTwitterPixelTrackerInlineJavascript()
+
+
 
 	public function getTwitterPixelTrackerInlineJavascript()
 	{
@@ -905,8 +905,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ protected function displayTwitterPixelImages()
+
+
 
 	protected function displayTwitterPixelImages()
 	{
@@ -918,10 +918,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
+
 
 	// Bing
-	// {{{ public function hasBingUET()
+
 
 	public function hasBingUET()
 	{
@@ -932,8 +932,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function pushBingUETCommands()
+
+
 
 	public function pushBingUETCommands(array $commands)
 	{
@@ -942,8 +942,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function prependBingUETCommands()
+
+
 
 	public function prependBingUETCommands(array $commands)
 	{
@@ -953,8 +953,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function getBingUETImage()
+
+
 
 	public function getBingUETImage()
 	{
@@ -969,8 +969,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function getBingUETInlineJavascript()
+
+
 
 	public function getBingUETInlineJavascript()
 	{
@@ -991,8 +991,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ public function getBingUETTrackerInlineJavascript()
+
+
 
 	public function getBingUETTrackerInlineJavascript()
 	{
@@ -1013,8 +1013,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function getBingUETCommandsInlineJavascript()
+
+
 
 	public function getBingUETCommandsInlineJavascript()
 	{
@@ -1030,8 +1030,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function initBingUETCommands()
+
+
 
 	protected function initBingUETCommands()
 	{
@@ -1040,8 +1040,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		// SiteAnalyticsModule::getBingUETTrackerInlineJavascript().
 	}
 
-	// }}}
-	// {{{ protected function getBingUETCommand()
+
+
 
 	protected function getBingUETCommand($command)
 	{
@@ -1055,8 +1055,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ protected function displayBingUETImage()
+
+
 
 	protected function displayBingUETImage()
 	{
@@ -1068,7 +1068,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

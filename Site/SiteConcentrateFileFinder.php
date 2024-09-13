@@ -8,7 +8,7 @@
 class SiteConcentrateFileFinder
 	implements Concentrate_DataProvider_FileFinderInterface
 {
-	// {{{ public function getDataFiles()
+
 
 	public function getDataFiles()
 	{
@@ -20,8 +20,8 @@ class SiteConcentrateFileFinder
 		);
 	}
 
-	// }}}
-	// {{{ protected function getWwwPath()
+
+
 
 	protected function getWwwPath()
 	{
@@ -34,16 +34,16 @@ class SiteConcentrateFileFinder
 		return $www_path;
 	}
 
-	// }}}
-	// {{{ protected function getRootPath()
+
+
 
 	protected function getRootPath()
 	{
 		return dirname($this->getWwwPath());
 	}
 
-	// }}}
-	// {{{ protected function getComposerDataFiles()
+
+
 
 	protected function getComposerDataFiles()
 	{
@@ -93,8 +93,8 @@ class SiteConcentrateFileFinder
 		return $files;
 	}
 
-	// }}}
-	// {{{ protected function getSiteDataFiles()
+
+
 
 	protected function getSiteDataFiles()
 	{
@@ -111,8 +111,8 @@ class SiteConcentrateFileFinder
 		return $files;
 	}
 
-	// }}}
-	// {{{ protected function getDevelopmentDataFiles()
+
+
 
 	protected function getDevelopmentDataFiles($include_dir)
 	{
@@ -133,8 +133,8 @@ class SiteConcentrateFileFinder
 		return $files;
 	}
 
-	// }}}
-	// {{{ protected function getDevelopmentKey()
+
+
 
 	protected function getDevelopmentKey($filename)
 	{
@@ -149,8 +149,8 @@ class SiteConcentrateFileFinder
 		return $key;
 	}
 
-	// }}}
-	// {{{ protected function getIncludeDirs()
+
+
 
 	protected function getIncludeDirs()
 	{
@@ -162,7 +162,7 @@ class SiteConcentrateFileFinder
 		return $dirs;
 	}
 
-	// }}}
+
 }
 
 ?>

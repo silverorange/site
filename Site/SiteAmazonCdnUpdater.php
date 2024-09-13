@@ -10,7 +10,7 @@
 class SiteAmazonCdnUpdater extends SiteCdnUpdater
 {
 	// boilerplate code
-	// {{{ protected function configure()
+
 
 	protected function configure(SiteConfigModule $config)
 	{
@@ -25,8 +25,8 @@ class SiteAmazonCdnUpdater extends SiteCdnUpdater
 		}
 	}
 
-	// }}}
-	// {{{ protected function getDefaultModuleList()
+
+
 
 	protected function getDefaultModuleList()
 	{
@@ -38,7 +38,7 @@ class SiteAmazonCdnUpdater extends SiteCdnUpdater
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

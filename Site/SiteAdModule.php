@@ -10,7 +10,7 @@
  */
 class SiteAdModule extends SiteApplicationModule
 {
-	// {{{ class constants
+
 
 	/**
 	 * Value was not loaded and the default value is used.
@@ -18,8 +18,8 @@ class SiteAdModule extends SiteApplicationModule
 	const AD_NETWORK_GOOGLE    = 1;
 	const AD_NETWORK_MICROSOFT = 3;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * The name of the inbound ad tracking URI parameter
@@ -101,8 +101,8 @@ class SiteAdModule extends SiteApplicationModule
 	 */
 	protected $ad_network_utm_mediums = ['cpc'];
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this module
@@ -126,8 +126,8 @@ class SiteAdModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function getAd()
+
+
 
 	/**
 	 * Gets the tracked inbound ad for the current session
@@ -142,8 +142,8 @@ class SiteAdModule extends SiteApplicationModule
 		return $session->ad ?? null;
 	}
 
-	// }}}
-	// {{{ public function clearAd()
+
+
 
 	/**
 	 * Clears the tracked inbound ad from the current session
@@ -154,8 +154,8 @@ class SiteAdModule extends SiteApplicationModule
 		unset($session->ad);
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -181,8 +181,8 @@ class SiteAdModule extends SiteApplicationModule
 		return $depends;
 	}
 
-	// }}}
-	// {{{ public function cleanInboundTrackingUri()
+
+
 
 	/**
 	 * Removes inbound ad tracking id from the URI and relocates to a clean
@@ -202,8 +202,8 @@ class SiteAdModule extends SiteApplicationModule
 		$this->app->relocate($uri);
 	}
 
-	// }}}
-	// {{{ public function setInboundTrackingId()
+
+
 
 	/**
 	 * Sets the name of the URI parameter used for tracking inbound ads
@@ -216,8 +216,8 @@ class SiteAdModule extends SiteApplicationModule
 		$this->inbound_tracking_id = (string)$id;
 	}
 
-	// }}}
-	// {{{ public function setAutocleanUri()
+
+
 
 	/**
 	 * Sets whether or not inbound tracking ids should be automatically cleaned
@@ -233,8 +233,8 @@ class SiteAdModule extends SiteApplicationModule
 		$this->autoclean_uri = (boolean)$clean;
 	}
 
-	// }}}
-	// {{{ public function setAutocreateAd()
+
+
 
 	/**
 	 * Sets whether or not inbound ad tracking ids should automatically create
@@ -249,8 +249,8 @@ class SiteAdModule extends SiteApplicationModule
 		$this->autocreate_ad = (boolean)$create;
 	}
 
-	// }}}
-	// {{{ public function setTrackAdNetwork()
+
+
 
 	/**
 	 * Sets whether or not to track referring ad network
@@ -266,8 +266,8 @@ class SiteAdModule extends SiteApplicationModule
 		$this->track_ad_network = (boolean)$track;
 	}
 
-	// }}}
-	// {{{ public function getAdNetwork()
+
+
 
 	/**
 	 * Returns any saved Ad Network
@@ -297,8 +297,8 @@ class SiteAdModule extends SiteApplicationModule
 		return $ad_network;
 	}
 
-	// }}}
-	// {{{ protected function initAd()
+
+
 
 	/**
 	 * Reads inbound tracking ids from the request URI and saves a new ad
@@ -361,8 +361,8 @@ class SiteAdModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function insertInboundTrackingReferrer()
+
+
 
 	/**
 	 * Inserts a referrer for an inbound tracking id
@@ -396,8 +396,8 @@ class SiteAdModule extends SiteApplicationModule
 		$ad_referrer->save();
 	}
 
-	// }}}
-	// {{{ protected function createAd()
+
+
 
 	/**
 	 * Creates a new ad object with the given inbound tracking id
@@ -420,8 +420,8 @@ class SiteAdModule extends SiteApplicationModule
 		return $ad;
 	}
 
-	// }}}
-	// {{{ protected function trackAdNetwork()
+
+
 
 	/**
 	 * Saves the ad network for later use.
@@ -484,7 +484,7 @@ class SiteAdModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

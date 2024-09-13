@@ -11,7 +11,7 @@
  */
 class SiteContactMessageDeleter extends SitePrivateDataDeleter
 {
-	// {{{ public function run()
+
 
 	public function run()
 	{
@@ -40,8 +40,8 @@ class SiteContactMessageDeleter extends SitePrivateDataDeleter
 		}
 	}
 
-	// }}}
-	// {{{ protected function deleteContactMessages()
+
+
 
 	/**
 	 * Deletes all expired contact messages
@@ -54,8 +54,8 @@ class SiteContactMessageDeleter extends SitePrivateDataDeleter
 		return SwatDB::exec($this->app->db, $sql);
 	}
 
-	// }}}
-	// {{{ protected function getTotal()
+
+
 
 	protected function getTotal()
 	{
@@ -65,8 +65,8 @@ class SiteContactMessageDeleter extends SitePrivateDataDeleter
 		return SwatDB::queryOne($this->app->db, $sql);
 	}
 
-	// }}}
-	// {{{ protected function getExpiryDate()
+
+
 
 	protected function getExpiryDate()
 	{
@@ -80,8 +80,8 @@ class SiteContactMessageDeleter extends SitePrivateDataDeleter
 		return $expiry_date;
 	}
 
-	// }}}
-	// {{{ protected function getWhereClause()
+
+
 
 	protected function getWhereClause()
 	{
@@ -101,7 +101,7 @@ class SiteContactMessageDeleter extends SitePrivateDataDeleter
 		return $sql;
 	}
 
-	// }}}
+
 }
 
 ?>

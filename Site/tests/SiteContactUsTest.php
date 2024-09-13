@@ -9,27 +9,27 @@
  */
 abstract class SiteContactUsTest extends TuringSeleniumTest
 {
-	// {{{ abstract protected function getPageUri()
+
 
 	abstract protected function getPageUri();
 
-	// }}}
-	// {{{ abstract protected function getSubjectCount()
+
+
 
 	abstract protected function getSubjectCount();
 
-	// }}}
-	// {{{ protected function getThankYouMessageContent()
+
+
 
 	protected function getThankYouMessageContent()
 	{
 		return 'Thank You For Your Message';
 	}
 
-	// }}}
+
 
 	// tests
-	// {{{ public function testPageLoad()
+
 
 	public function testPageLoad()
 	{
@@ -43,8 +43,8 @@ abstract class SiteContactUsTest extends TuringSeleniumTest
 		);
 	}
 
-	// }}}
-	// {{{ public function testSubjectList()
+
+
 
 	public function testSubjectList()
 	{
@@ -59,8 +59,8 @@ abstract class SiteContactUsTest extends TuringSeleniumTest
 		);
 	}
 
-	// }}}
-	// {{{ public function testEmptyForm()
+
+
 
 	public function testEmptyForm()
 	{
@@ -82,8 +82,8 @@ abstract class SiteContactUsTest extends TuringSeleniumTest
 		);
 	}
 
-	// }}}
-	// {{{ public function testBadEmail()
+
+
 
 	public function testBadEmail()
 	{
@@ -103,8 +103,8 @@ abstract class SiteContactUsTest extends TuringSeleniumTest
 		);
 	}
 
-	// }}}
-	// {{{ public function testFormProcessing()
+
+
 
 	public function testFormProcessing()
 	{
@@ -123,7 +123,7 @@ abstract class SiteContactUsTest extends TuringSeleniumTest
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

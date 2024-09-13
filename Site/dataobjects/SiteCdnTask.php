@@ -9,7 +9,7 @@
  */
 abstract class SiteCdnTask extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var integer
@@ -45,8 +45,8 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	 */
 	public $error_date;
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	/**
 	 * Runs a CDN Task Operation
@@ -102,16 +102,16 @@ abstract class SiteCdnTask extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ abstract public function getAttemptDescription()
+
+
 
 	/**
 	 * Gets a string describing the what this task is attempting to achieve
 	 */
 	abstract public function getAttemptDescription();
 
-	// }}}
-	// {{{ public function getResultDescription()
+
+
 
 	/**
 	 * Gets a string describing the what this task did achieve
@@ -123,8 +123,8 @@ abstract class SiteCdnTask extends SwatDBDataObject
 			Site::_('done.'))."\n";
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -133,8 +133,8 @@ abstract class SiteCdnTask extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
-	// {{{ protected function checkLocalFile()
+
+
 
 	/**
 	 * Checks to make sure the local file exists and is readable.
@@ -155,16 +155,16 @@ abstract class SiteCdnTask extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
-	// {{{ abstract protected function getLocalFilePath()
+
+
 
 	/**
 	 * Gets the file path to the local file being referenced by the CDN task.
 	 */
 	abstract protected function getLocalFilePath();
 
-	// }}}
-	// {{{ abstract protected function copy()
+
+
 
 	/**
 	 * Updates the CDN with the file contained in this task
@@ -173,8 +173,8 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	 */
 	abstract protected function copy(SiteCdnModule $cdn);
 
-	// }}}
-	// {{{ abstract protected function remove()
+
+
 
 	/**
 	 * Removes the file contained in this task from the CDN
@@ -183,8 +183,8 @@ abstract class SiteCdnTask extends SwatDBDataObject
 	 */
 	abstract protected function remove(SiteCdnModule $cdn);
 
-	// }}}
-	// {{{ protected function error()
+
+
 
 	protected function error()
 	{
@@ -193,8 +193,8 @@ abstract class SiteCdnTask extends SwatDBDataObject
 		$this->save();
 	}
 
-	// }}}
-	// {{{ protected function getAttemptDescriptionString()
+
+
 
 	/**
 	 * Gets a string to pass into sprintf() in getAttemptDescription(), which
@@ -222,15 +222,15 @@ abstract class SiteCdnTask extends SwatDBDataObject
 		return $description_string;
 	}
 
-	// }}}
-	// {{{ protected function getAccessType()
+
+
 
 	protected function getAccessType()
 	{
 		return 'private';
 	}
 
-	// }}}
+
 }
 
 ?>

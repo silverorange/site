@@ -8,7 +8,7 @@
  */
 interface SiteFulltextSearchResult
 {
-	// {{{ public function getJoinClause()
+
 
 	/**
 	 * Get an SQL JOIN clause to use to query with this fulltext result
@@ -20,8 +20,8 @@ interface SiteFulltextSearchResult
 	 */
 	public function getJoinClause($id_field_name, $type);
 
-	// }}}
-	// {{{ public function getOrderByClause()
+
+
 
 	/**
 	 * Get an SQL ORDER BY clause to use to query with this fulltext result
@@ -33,8 +33,8 @@ interface SiteFulltextSearchResult
 	 */
 	public function getOrderByClause($default_clause);
 
-	// }}}
-	// {{{ public function getMisspellings()
+
+
 
 	/**
 	 * Retrieve possible misspellings of keywords
@@ -43,8 +43,8 @@ interface SiteFulltextSearchResult
 	 */
 	public function getMisspellings();
 
-	// }}}
-	// {{{ public function &getSearchedWords()
+
+
 
 	/**
 	 * Gets words that were entered and were searched for
@@ -53,15 +53,15 @@ interface SiteFulltextSearchResult
 	 */
 	public function &getSearchedWords();
 
-	// }}}
-	// {{{ public function saveHistory()
+
+
 
 	/**
 	 * Saves this search result for search statistics and tracking
 	 */
 	public function saveHistory();
 
-	// }}}
+
 }
 
 ?>

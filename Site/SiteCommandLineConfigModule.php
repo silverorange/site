@@ -22,7 +22,7 @@
  */
 class SiteCommandLineConfigModule extends SiteConfigModule
 {
-	// {{{ protected function configure()
+
 
 	/**
 	 * Configures modules of the application before they are initialized
@@ -43,7 +43,7 @@ class SiteCommandLineConfigModule extends SiteConfigModule
 		setlocale(LC_ALL, $this->i18n->locale.'.UTF-8');
 	}
 
-	// }}}
+
 }
 
 ?>

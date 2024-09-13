@@ -10,15 +10,15 @@
 class SiteXhtmlExceptionPage extends SiteExceptionPage
 {
 	// build phase
-	// {{{ protected function buildTitle()
+
 
 	protected function buildTitle()
 	{
 		$this->layout->data->title = $this->getTitle();
 	}
 
-	// }}}
-	// {{{ protected function buildContent()
+
+
 
 	protected function buildContent()
 	{
@@ -27,8 +27,8 @@ class SiteXhtmlExceptionPage extends SiteExceptionPage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -37,8 +37,8 @@ class SiteXhtmlExceptionPage extends SiteExceptionPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function display()
+
+
 
 	protected function display()
 	{
@@ -52,8 +52,8 @@ class SiteXhtmlExceptionPage extends SiteExceptionPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function displaySuggestions()
+
+
 
 	protected function displaySuggestions()
 	{
@@ -73,10 +73,10 @@ class SiteXhtmlExceptionPage extends SiteExceptionPage
 		echo '</ul>';
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -84,7 +84,7 @@ class SiteXhtmlExceptionPage extends SiteExceptionPage
 		$this->layout->addBodyClass('exception-page');
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -10,7 +10,7 @@
  */
 class SiteArticleWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ public function getByShortname()
+
 
 	/**
 	 * Gets a single article from this recordset by the article's shortname
@@ -35,8 +35,8 @@ class SiteArticleWrapper extends SwatDBRecordsetWrapper
 		return $returned_article;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -45,7 +45,7 @@ class SiteArticleWrapper extends SwatDBRecordsetWrapper
 		$this->index_field = 'id';
 	}
 
-	// }}}
+
 }
 
 ?>

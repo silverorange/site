@@ -8,7 +8,7 @@
  */
 abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var integer
@@ -35,10 +35,10 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 	 */
 	protected $keep_first;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -53,8 +53,8 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		$this->keep_first = SiteApplication::initVar('keep_first', false);
 	}
 
-	// }}}
-	// {{{ protected function getAccount()
+
+
 
 	protected function getAccount($id)
 	{
@@ -83,8 +83,8 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		return $account;
 	}
 
-	// }}}
-	// {{{ protected function getSourceAccount()
+
+
 
 	protected function getSourceAccount()
 	{
@@ -94,8 +94,8 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		return $this->account2;
 	}
 
-	// }}}
-	// {{{ protected function getTargetAccount()
+
+
 
 	protected function getTargetAccount()
 	{
@@ -105,10 +105,10 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		return $this->account2;
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processDBData()
+
 
 	protected function processDBData()
 	{
@@ -148,16 +148,16 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		$this->app->messages->add($message);
 	}
 
-	// }}}
-	// {{{ abstract protected function mergeAccounts()
+
+
 
 	abstract protected function mergeAccounts(
 		SiteAccount $source_account,
 		SiteAccount $target_account
 	);
 
-	// }}}
-	// {{{ protected function addNote()
+
+
 
 	protected function addNote(
 		SiteAccount $this_account,
@@ -172,8 +172,8 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		$this_account->save();
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate()
 	{
@@ -181,10 +181,10 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		$this->app->relocate(sprintf('Account/Details?id=%s', $id));
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -221,8 +221,8 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 			Site::_('Merge Accounts');
 	}
 
-	// }}}
-	// {{{ protected function buildForm()
+
+
 
 	protected function buildForm()
 	{
@@ -234,8 +234,8 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		$form->addHiddenField('keep_first', $this->keep_first);
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -261,7 +261,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 		$this->navbar->createEntry(Site::_('Confirm'));
 	}
 
-	// }}}
+
 }
 
 ?>

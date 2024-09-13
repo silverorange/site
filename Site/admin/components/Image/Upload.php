@@ -9,7 +9,7 @@
  */
 abstract class SiteImageUpload extends AdminObjectEdit
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The available dimensions of the SiteImage being uploaded.
@@ -26,13 +26,13 @@ abstract class SiteImageUpload extends AdminObjectEdit
 	 */
 	protected $dimension_upload_widgets;
 
-	// }}}
-	// {{{ abstract protected function getFileBase()
+
+
 
 	abstract protected function getFileBase();
 
-	// }}}
-	// {{{ protected function shouldReplaceObject()
+
+
 
 	protected function shouldReplaceObject()
 	{
@@ -49,24 +49,24 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		return ($this->ui->getWidget('upload_widget')->isUploaded());
 	}
 
-	// }}}
-	// {{{ protected function allowDimensionUploads()
+
+
 
 	protected function allowDimensionUploads()
 	{
 		return false;
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/upload.xml';
 	}
 
-	// }}}
-	// {{{ protected function getDimensionUploadWidget()
+
+
 
 	protected function getDimensionUploadWidget(SiteImageDimension $dimension)
 	{
@@ -82,10 +82,10 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		return $this->dimension_upload_widgets[$dimension->shortname];
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -100,8 +100,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function checkImageClass()
+
+
 
 	protected function checkImageClass()
 	{
@@ -112,8 +112,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function initUploadWidget()
+
+
 
 	protected function initUploadWidget()
 	{
@@ -128,8 +128,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		);
 	}
 
-	// }}}
-	// {{{ protected function initDimensions()
+
+
 
 	protected function initDimensions()
 	{
@@ -147,8 +147,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function initDimensionUploadWidgets()
+
+
 
 	protected function initDimensionUploadWidgets()
 	{
@@ -183,18 +183,18 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getDimensionsWidgetContainerId()
+
+
 
 	protected function getDimensionsWidgetContainerId()
 	{
 		return 'manual_fieldset';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function validate()
+
 
 	protected function validate()
 	{
@@ -223,8 +223,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		return $valid;
 	}
 
-	// }}}
-	// {{{ protected function validateAllDimensionsAreUploaded()
+
+
 
 	protected function validateAllDimensionsAreUploaded()
 	{
@@ -243,8 +243,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		return $valid;
 	}
 
-	// }}}
-	// {{{ protected function updateObject()
+
+
 
 	protected function updateObject()
 	{
@@ -278,8 +278,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function deleteOldObject()
+
+
 
 	protected function deleteOldObject()
 	{
@@ -290,8 +290,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		parent::deleteOldObject();
 	}
 
-	// }}}
-	// {{{ protected function addSavedMessage()
+
+
 
 	protected function addSavedMessage()
 	{
@@ -302,16 +302,16 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getSavedMessagePrimaryContent()
+
+
 
 	protected function getSavedMessagePrimaryContent()
 	{
 		return Site::_('Image has been saved.');
 	}
 
-	// }}}
-	// {{{ protected function fileIsUploaded()
+
+
 
 	protected function fileIsUploaded()
 	{
@@ -331,10 +331,10 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		return $file_uploaded;
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -343,8 +343,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		$this->buildDimensionNotes();
 	}
 
-	// }}}
-	// {{{ protected function buildDimensionNotes()
+
+
 
 	protected function buildDimensionNotes()
 	{
@@ -395,8 +395,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildFrame()
+
+
 
 	protected function buildFrame()
 	{
@@ -405,16 +405,16 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		$this->ui->getWidget('edit_frame')->title = $this->getTitle();
 	}
 
-	// }}}
-	// {{{ protected function buildButton()
+
+
 
 	protected function buildButton()
 	{
 		$this->ui->getWidget('submit_button')->title = Site::_('Upload');
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -424,8 +424,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		$this->navbar->createEntry($this->getTitle());
 	}
 
-	// }}}
-	// {{{ protected function loadObject()
+
+
 
 	protected function loadObject()
 	{
@@ -444,24 +444,24 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getDisplayedImageDimension()
+
+
 
 	protected function getDisplayedImageDimension()
 	{
 		return 'thumb';
 	}
 
-	// }}}
-	// {{{ protected function getImagePath()
+
+
 
 	protected function getImagePath()
 	{
 		return '../';
 	}
 
-	// }}}
-	// {{{ protected function getTitle()
+
+
 
 	protected function getTitle()
 	{
@@ -470,8 +470,8 @@ abstract class SiteImageUpload extends AdminObjectEdit
 			: Site::_('Replace Image');
 	}
 
-	// }}}
-	// {{{ protected function getDimensionFieldNote()
+
+
 
 	protected function getDimensionFieldNote(SiteImageDimension $dimension)
 	{
@@ -499,10 +499,10 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		return $dimension_note;
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -513,7 +513,7 @@ abstract class SiteImageUpload extends AdminObjectEdit
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

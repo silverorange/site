@@ -9,14 +9,14 @@
  */
 class SiteAccountEdit extends AdminDBEdit
 {
-	// {{{ protected properties
+
 
 	protected $account;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -28,8 +28,8 @@ class SiteAccountEdit extends AdminDBEdit
 		$this->ui->loadFromXML($this->getUiXml());
 	}
 
-	// }}}
-	// {{{ protected function initAccount()
+
+
 
 	protected function initAccount()
 	{
@@ -57,18 +57,18 @@ class SiteAccountEdit extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/edit.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function validate()
+
 
 	protected function validate()
 	{
@@ -94,8 +94,8 @@ class SiteAccountEdit extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function saveDBData()
+
+
 
 	protected function saveDBData()
 	{
@@ -118,8 +118,8 @@ class SiteAccountEdit extends AdminDBEdit
 		$this->app->messages->add($this->getUpdateMessage());
 	}
 
-	// }}}
-	// {{{ protected function updateAccount()
+
+
 
 	protected function updateAccount()
 	{
@@ -127,15 +127,15 @@ class SiteAccountEdit extends AdminDBEdit
 		$this->account->fullname = $this->ui->getWidget('fullname')->value;
 	}
 
-	// }}}
-	// {{{ protected function updateBindings()
+
+
 
 	protected function updateBindings()
 	{
 	}
 
-	// }}}
-	// {{{ protected function getUpdateMessage()
+
+
 
 	protected function getUpdateMessage()
 	{
@@ -144,26 +144,26 @@ class SiteAccountEdit extends AdminDBEdit
 				$this->account->getFullname()));
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate()
 	{
 		$this->app->relocate('Account/Details?id='.$this->account->id);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function loadDBData()
+
 
 	protected function loadDBData()
 	{
 		$this->ui->setValues($this->account->getAttributes());
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -179,7 +179,7 @@ class SiteAccountEdit extends AdminDBEdit
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

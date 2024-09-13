@@ -13,7 +13,7 @@
 
 class SiteAccountLoginSessionCleaner extends SiteCommandLineApplication
 {
-	// {{{ public function run()
+
 
 	public function run()
 	{
@@ -53,8 +53,8 @@ class SiteAccountLoginSessionCleaner extends SiteCommandLineApplication
 		$this->debug("All Done.\n\n", true);
 	}
 
-	// }}}
-	// {{{ protected function getSessions()
+
+
 
 	protected function getSessions()
 	{
@@ -72,10 +72,10 @@ class SiteAccountLoginSessionCleaner extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
+
 
 	// boilerplate
-	// {{{ protected function getDefaultModuleList()
+
 
 	/**
 	 * Gets the list of modules to load for this search indexer
@@ -96,8 +96,8 @@ class SiteAccountLoginSessionCleaner extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function addConfigDefinitions()
+
+
 
 	/**
 	 * Adds configuration definitions to the config module of this application
@@ -110,8 +110,8 @@ class SiteAccountLoginSessionCleaner extends SiteCommandLineApplication
 		parent::addConfigDefinitions($config);
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	protected function configure(SiteConfigModule $config)
 	{

@@ -11,7 +11,7 @@
  */
 class SiteKeywordEntry extends SwatEntry
 {
-	// {{{ public properties
+
 
 	/**
 	 * The name of this keyword entry widget
@@ -23,8 +23,8 @@ class SiteKeywordEntry extends SwatEntry
 	 */
 	public $name;
 
-	// }}}
-	// {{{ protected function getInputTag()
+
+
 
 	protected function getInputTag()
 	{
@@ -35,7 +35,7 @@ class SiteKeywordEntry extends SwatEntry
 		return $tag;
 	}
 
-	// }}}
+
 }
 
 ?>

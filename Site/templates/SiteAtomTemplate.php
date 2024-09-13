@@ -7,7 +7,7 @@
  */
 class SiteAtomTemplate extends SiteAbstractTemplate
 {
-	// {{{ public function display()
+
 
 	public function display(SiteLayoutData $data)
 	{
@@ -17,7 +17,7 @@ class SiteAtomTemplate extends SiteAbstractTemplate
 		echo $data->content;
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -9,7 +9,7 @@
  */
 class SiteApiSignOnToken extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var integer
@@ -33,8 +33,8 @@ class SiteApiSignOnToken extends SwatDBDataObject
 	 */
 	public $createdate;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -51,8 +51,8 @@ class SiteApiSignOnToken extends SwatDBDataObject
 		$this->registerDateProperty('createdate');
 	}
 
-	// }}}
-	// {{{ public function loadByIdent()
+
+
 
 	public function loadByIdent($ident, SiteApiCredential $credential)
 	{
@@ -81,8 +81,8 @@ class SiteApiSignOnToken extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
-	// {{{ public function loadByIdentAndToken()
+
+
 
 	public function loadByIdentAndToken(
 		$ident,
@@ -115,7 +115,7 @@ class SiteApiSignOnToken extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
+
 }
 
 ?>

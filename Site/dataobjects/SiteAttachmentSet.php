@@ -9,7 +9,7 @@
  */
 class SiteAttachmentSet extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * The unique identifier of this type
@@ -42,8 +42,8 @@ class SiteAttachmentSet extends SwatDBDataObject
 	 */
 	public $obfuscate_filename;
 
-	// }}}
-	// {{{ public function loadByShortname()
+
+
 
 	public function loadByShortname($shortname)
 	{
@@ -68,8 +68,8 @@ class SiteAttachmentSet extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -77,7 +77,7 @@ class SiteAttachmentSet extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
+
 }
 
 ?>

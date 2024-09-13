@@ -9,10 +9,10 @@
  */
 class SiteSentryErrorLogger extends SiteErrorLogger
 {
-	// {{{ protected properties
 
-	// }}}
-	// {{{ public function __construct()
+
+
+
 
 	/**
 	 * Creates a new sentry error loggger
@@ -22,8 +22,8 @@ class SiteSentryErrorLogger extends SiteErrorLogger
 	{
 	}
 
-	// }}}
-	// {{{ public function log()
+
+
 
 	/**
 	 * Logs an error
@@ -45,7 +45,7 @@ class SiteSentryErrorLogger extends SiteErrorLogger
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

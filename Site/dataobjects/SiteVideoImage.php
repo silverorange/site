@@ -9,15 +9,15 @@
  */
 class SiteVideoImage extends SiteImage
 {
-	// {{{ public function getUri()
+
 
 	public function getUri($shortname = '720', $prefix = null)
 	{
 		return parent::getUri($shortname, $prefix);
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -26,7 +26,7 @@ class SiteVideoImage extends SiteImage
 		$this->image_set_shortname = 'videos';
 	}
 
-	// }}}
+
 }
 
 ?>

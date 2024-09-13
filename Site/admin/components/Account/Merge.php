@@ -9,7 +9,7 @@
  */
 class SiteAccountMerge extends AdminSearch
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var integer
@@ -21,10 +21,10 @@ class SiteAccountMerge extends AdminSearch
 	 */
 	protected $account;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -37,18 +37,18 @@ class SiteAccountMerge extends AdminSearch
 		$this->getAccount();
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/merge.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processInternal()
+
 
 	protected function processInternal()
 	{
@@ -58,10 +58,10 @@ class SiteAccountMerge extends AdminSearch
 		$pager->process();
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -92,8 +92,8 @@ class SiteAccountMerge extends AdminSearch
 		$this->buildAccountDetails();
 	}
 
-	// }}}
-	// {{{ protected function getAccountDetailsStore()
+
+
 
 	protected function getAccountDetailsStore()
 	{
@@ -103,8 +103,8 @@ class SiteAccountMerge extends AdminSearch
 		return $ds;
 	}
 
-	// }}}
-	// {{{ protected function getAccount()
+
+
 
 	protected function getAccount()
 	{
@@ -134,8 +134,8 @@ class SiteAccountMerge extends AdminSearch
 		return $this->account;
 	}
 
-	// }}}
-	// {{{ protected function buildAccountDetails()
+
+
 
 	protected function buildAccountDetails()
 	{
@@ -154,16 +154,16 @@ class SiteAccountMerge extends AdminSearch
 		$details_view->data = $ds;
 	}
 
-	// }}}
-	// {{{ protected function getDetailsStore()
+
+
 
 	protected function getDetailsStore(SiteAccount $account)
 	{
 		return new SwatDetailsStore($account);
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -175,8 +175,8 @@ class SiteAccountMerge extends AdminSearch
 		$this->title = Site::_('Merge');
 	}
 
-	// }}}
-	// {{{ protected function getTableModel()
+
+
 
 	protected function getTableModel(SwatView $view)
 	{
@@ -221,8 +221,8 @@ class SiteAccountMerge extends AdminSearch
 		return $store;
 	}
 
-	// }}}
-	// {{{ protected function getSQL()
+
+
 
 	protected function getSQL()
 	{
@@ -234,8 +234,8 @@ class SiteAccountMerge extends AdminSearch
 			order by %s';
 	}
 
-	// }}}
-	// {{{ protected function getWhereClause()
+
+
 
 	protected function getWhereClause()
 	{
@@ -250,8 +250,8 @@ class SiteAccountMerge extends AdminSearch
 		);
 	}
 
-	// }}}
-	// {{{ protected function getAccountSearch()
+
+
 
 	protected function getAccountSearch()
 	{
@@ -264,7 +264,7 @@ class SiteAccountMerge extends AdminSearch
 		return $search;
 	}
 
-	// }}}
+
 }
 
 ?>

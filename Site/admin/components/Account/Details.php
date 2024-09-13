@@ -9,7 +9,7 @@
  */
 class SiteAccountDetails extends AdminIndex
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var integer
@@ -21,10 +21,10 @@ class SiteAccountDetails extends AdminIndex
 	 */
 	protected $account;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -36,8 +36,8 @@ class SiteAccountDetails extends AdminIndex
 		$this->id = SiteApplication::initVar('id');
 	}
 
-	// }}}
-	// {{{ protected function getAccount()
+
+
 
 	protected function getAccount()
 	{
@@ -65,18 +65,18 @@ class SiteAccountDetails extends AdminIndex
 		return $this->account;
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/details.xml';
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -88,8 +88,8 @@ class SiteAccountDetails extends AdminIndex
 		$toolbar->setToolLinkValues($this->account->id);
 	}
 
-	// }}}
-	// {{{ protected function getAccountDetailsStore()
+
+
 
 	protected function getAccountDetailsStore()
 	{
@@ -99,8 +99,8 @@ class SiteAccountDetails extends AdminIndex
 		return $ds;
 	}
 
-	// }}}
-	// {{{ protected function buildAccountDetails()
+
+
 
 	protected function buildAccountDetails()
 	{
@@ -119,16 +119,16 @@ class SiteAccountDetails extends AdminIndex
 		$details_view->data = $ds;
 	}
 
-	// }}}
-	// {{{ protected function getTableModel()
+
+
 
 	protected function getTableModel(SwatView $view)
 	{
 		return null;
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -139,7 +139,7 @@ class SiteAccountDetails extends AdminIndex
 		$this->title = $fullname;
 	}
 
-	// }}}
+
 }
 
 ?>

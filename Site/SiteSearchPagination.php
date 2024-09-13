@@ -18,7 +18,7 @@
  */
 class SiteSearchPagination extends SwatPagination
 {
-	// {{{ public properties
+
 
 	/**
 	 * HTTP GET varables that are not to be preserved
@@ -40,8 +40,8 @@ class SiteSearchPagination extends SwatPagination
 	 */
 	public $type;
 
-	// }}}
-	// {{{ public function process()
+
+
 
 	/**
 	 * Processes this pagination widget
@@ -61,8 +61,8 @@ class SiteSearchPagination extends SwatPagination
 		}
 	}
 
-	// }}}
-	// {{{ protected function getLink()
+
+
 
 	/**
 	 * Gets the base link for all page links
@@ -114,8 +114,8 @@ class SiteSearchPagination extends SwatPagination
 		return $link;
 	}
 
-	// }}}
-	// {{{ protected function displayPages()
+
+
 
 	/**
 	 * Displays a smart list of pages
@@ -206,8 +206,8 @@ class SiteSearchPagination extends SwatPagination
 		}
 	}
 
-	// }}}
-	// {{{ protected function calculatePages()
+
+
 
 	/**
 	 * Calculates page totals
@@ -240,7 +240,7 @@ class SiteSearchPagination extends SwatPagination
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

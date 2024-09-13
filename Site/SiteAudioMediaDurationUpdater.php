@@ -8,7 +8,7 @@
  */
 class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 {
-	// {{{ public properties
+
 
 	/**
 	 * A convenience reference to the database object
@@ -17,8 +17,8 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 	 */
 	public $db;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var boolean
@@ -35,8 +35,8 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 	 */
 	protected $media_file_base;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new private data deleter application
@@ -80,8 +80,8 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		$this->addCommandLineArgument($shortname);
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	public function run()
 	{
@@ -101,32 +101,32 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		$this->debug(Site::_('done')."\n");
 	}
 
-	// }}}
-	// {{{ public function setDryRun()
+
+
 
 	public function setDryRun($dry_run)
 	{
 		$this->dry_run = (boolean)$dry_run;
 	}
 
-	// }}}
-	// {{{ public function setMediaSetShortname()
+
+
 
 	public function setMediaSetShortname($shortname)
 	{
 		$this->media_set_shortname = $shortname;
 	}
 
-	// }}}
-	// {{{ public function setMediaFileBase()
+
+
 
 	public function setMediaFileBase($media_file_base)
 	{
 		$this->media_file_base = $media_file_base;
 	}
 
-	// }}}
-	// {{{ protected function getMediaSet()
+
+
 
 	protected function getMediaSet()
 	{
@@ -151,8 +151,8 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		return $media_set;
 	}
 
-	// }}}
-	// {{{ protected function getMedia()
+
+
 
 	protected function getMedia()
 	{
@@ -170,16 +170,16 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		return $audio;
 	}
 
-	// }}}
-	// {{{ protected function getAudioMediaWrapperClass()
+
+
 
 	protected function getAudioMediaWrapperClass()
 	{
 		return SwatDBClassMap::get(SiteAudioMediaWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function updateDuration()
+
+
 
 	protected function updateDuration(SiteAudioMedia $media)
 	{
@@ -234,8 +234,8 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function saveMedia()
+
+
 
 	protected function saveMedia(SiteMedia $media, $duration)
 	{
@@ -243,10 +243,10 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		$media->save();
 	}
 
-	// }}}
+
 
 	// boilerplate
-	// {{{ protected function getDefaultModuleList()
+
 
 	/**
 	 * Gets the list of modules to load for this search indexer
@@ -267,8 +267,8 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	protected function configure(SiteConfigModule $config)
 	{
@@ -276,7 +276,7 @@ class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 		$this->database->dsn = $config->database->dsn;
 	}
 
-	// }}}
+
 }
 
 ?>

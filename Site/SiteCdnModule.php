@@ -9,7 +9,7 @@
  */
 abstract class SiteCdnModule extends SiteApplicationModule
 {
-	// {{{ abstract public function copyFile()
+
 
 	/**
 	 * Copies a file to the CDN
@@ -26,8 +26,8 @@ abstract class SiteCdnModule extends SiteApplicationModule
 		$access_type
 	);
 
-	// }}}
-	// {{{ abstract public function removeFile()
+
+
 
 	/**
 	 * Removes a file from the CDN
@@ -36,8 +36,8 @@ abstract class SiteCdnModule extends SiteApplicationModule
 	 */
 	abstract public function removeFile($filename);
 
-	// }}}
-	// {{{ abstract public function getUri()
+
+
 
 	/**
 	 * Gets a URI for a file on the CDN
@@ -49,8 +49,8 @@ abstract class SiteCdnModule extends SiteApplicationModule
 	 */
 	abstract public function getUri($filename, $expires = null);
 
-	// }}}
-	// {{{ abstract public function getStreamingUri()
+
+
 
 	/**
 	 * Gets a uri for a file on the CDN
@@ -62,7 +62,7 @@ abstract class SiteCdnModule extends SiteApplicationModule
 	 */
 	abstract public function getStreamingUri($filename, $expires = null);
 
-	// }}}
+
 }
 
 ?>

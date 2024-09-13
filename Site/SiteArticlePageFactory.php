@@ -9,7 +9,7 @@
  */
 class SiteArticlePageFactory extends SitePageFactory
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The default article page decorator class to use if no article page
@@ -21,8 +21,8 @@ class SiteArticlePageFactory extends SitePageFactory
 	 */
 	protected $default_article_page = 'SiteArticlePage';
 
-	// }}}
-	// {{{ public function resolvePage()
+
+
 
 	/**
 	 * Resolves a page object from a source string
@@ -69,8 +69,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		return $page;
 	}
 
-	// }}}
-	// {{{ public function setDefaultArticlePage()
+
+
 
 	/**
 	 * Sets the default article page decorator class to use if no article
@@ -99,8 +99,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		$this->default_article_page = $class;
 	}
 
-	// }}}
-	// {{{ protected function applyDecorators()
+
+
 
 	/**
 	 * Applies all decorators to a page
@@ -146,8 +146,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		return $page;
 	}
 
-	// }}}
-	// {{{ protected function getPageInfo()
+
+
 
 	/**
 	 * Gets page info for the passed source string
@@ -203,8 +203,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		return $info;
 	}
 
-	// }}}
-	// {{{ protected function getPageMap()
+
+
 
 	/**
 	 * Gets an array of page mappings used to get page info
@@ -245,8 +245,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		return [];
 	}
 
-	// }}}
-	// {{{ protected function isVisible()
+
+
 
 	/**
 	 * @param string $source
@@ -272,8 +272,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		return ($count !== 0);
 	}
 
-	// }}}
-	// {{{ protected function getNotVisiblePage()
+
+
 
 	/**
 	 * @return SiteAbstractPage
@@ -288,8 +288,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		throw new SiteNotFoundException('Article not visible');
 	}
 
-	// }}}
-	// {{{ protected function getArticle()
+
+
 
 	/**
 	 * Gets an article object from the database
@@ -332,8 +332,8 @@ class SiteArticlePageFactory extends SitePageFactory
 		return $article;
 	}
 
-	// }}}
-	// {{{ protected function getArticleId()
+
+
 
 	/**
 	 * Gets an article id from the given article path
@@ -367,8 +367,8 @@ class SiteArticlePageFactory extends SitePageFactory
 			'findArticle', [$this->app->db->quote($path, 'text')]);
 	}
 
-	// }}}
-	// {{{ protected function getArticleSql()
+
+
 
 	protected function getArticleSql($article_id)
 	{
@@ -376,15 +376,15 @@ class SiteArticlePageFactory extends SitePageFactory
 			$this->app->db->quote($article_id, 'integer'));
 	}
 
-	// }}}
-	// {{{ protected function getArticlePath()
+
+
 
 	protected function getArticlePath(SiteArticle $article)
 	{
 		return new SiteArticlePath($this->app, $article->id);
 	}
 
-	// }}}
+
 }
 
 ?>

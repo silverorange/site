@@ -9,7 +9,7 @@
  */
 abstract class SiteCommentApprovalPage extends AdminApproval
 {
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -17,9 +17,8 @@ abstract class SiteCommentApprovalPage extends AdminApproval
 		$this->ui->getWidget('delete_button')->title = Site::_('Deny');
 	}
 
-	// }}}
 
-	// {{{ protected function approve()
+
 
 	protected function approve()
 	{
@@ -28,8 +27,8 @@ abstract class SiteCommentApprovalPage extends AdminApproval
 		$this->data_object->postSave($this->app);
 	}
 
-	// }}}
-	// {{{ protected function delete()
+
+
 
 	protected function delete()
 	{
@@ -37,7 +36,7 @@ abstract class SiteCommentApprovalPage extends AdminApproval
 		$this->data_object->clearCache($this->app);
 	}
 
-	// }}}
+
 }
 
 ?>

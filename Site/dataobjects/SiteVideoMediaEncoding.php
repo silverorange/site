@@ -9,7 +9,7 @@
  */
 class SiteVideoMediaEncoding extends SiteMediaEncoding
 {
-	// {{{ public properties
+
 
 	/**
 	 * Width in pixels
@@ -18,8 +18,8 @@ class SiteVideoMediaEncoding extends SiteMediaEncoding
 	 */
 	public $width;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -29,7 +29,7 @@ class SiteVideoMediaEncoding extends SiteMediaEncoding
 			SwatDBClassMap::get(SiteVideoMediaSet::class));
 	}
 
-	// }}}
+
 }
 
 ?>

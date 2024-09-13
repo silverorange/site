@@ -9,7 +9,7 @@
  */
 class SiteArticleVisibilityCellRenderer extends SwatCellRenderer
 {
-	// {{{ public properties
+
 
 	public $enabled = false;
 	public $searchable = false;
@@ -18,8 +18,8 @@ class SiteArticleVisibilityCellRenderer extends SwatCellRenderer
 	public $display_positive_states = false;
 	public $separator = ', ';
 
-	// }}}
-	// {{{ public function render()
+
+
 
 	public function render()
 	{
@@ -43,7 +43,7 @@ class SiteArticleVisibilityCellRenderer extends SwatCellRenderer
 		echo implode($this->separator, $messages);
 	}
 
-	// }}}
+
 }
 
 ?>

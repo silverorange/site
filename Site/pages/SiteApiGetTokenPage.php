@@ -9,17 +9,17 @@
  */
 class SiteApiGetTokenPage extends SitePage
 {
-	// {{{ protected function createLayout()
+
 
 	protected function createLayout()
 	{
 		return new SiteLayout($this->app, SiteJSONTemplate::class);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -36,8 +36,8 @@ class SiteApiGetTokenPage extends SitePage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function getVar()
+
+
 
 	protected function getVar($name)
 	{
@@ -48,16 +48,16 @@ class SiteApiGetTokenPage extends SitePage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getIdent()
+
+
 
 	protected function getIdent()
 	{
 		return $this->getVar('id');
 	}
 
-	// }}}
-	// {{{ protected function getJsonResponse()
+
+
 
 	protected function getJsonResponse($ident, $key)
 	{
@@ -77,8 +77,8 @@ class SiteApiGetTokenPage extends SitePage
 		return $response;
 	}
 
-	// }}}
-	// {{{ protected function getSignOnToken()
+
+
 
 	protected function getSignOnToken($ident, SiteApiCredential $credential)
 	{
@@ -98,7 +98,7 @@ class SiteApiGetTokenPage extends SitePage
 		return ['status' => ['code'    => 'ok', 'message' => ''], 'token'  => $token->token];
 	}
 
-	// }}}
+
 }
 
 ?>

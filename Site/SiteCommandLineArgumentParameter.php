@@ -10,7 +10,7 @@
  */
 class SiteCommandLineArgumentParameter extends SiteObject
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var string
@@ -35,8 +35,8 @@ class SiteCommandLineArgumentParameter extends SiteObject
 	 */
 	protected $default;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new command line argument parameter
@@ -57,8 +57,8 @@ class SiteCommandLineArgumentParameter extends SiteObject
 		$this->default = $default;
 	}
 
-	// }}}
-	// {{{ public function getErrorMessage()
+
+
 
 	/**
 	 * Gets the error message text of this parameter
@@ -72,8 +72,8 @@ class SiteCommandLineArgumentParameter extends SiteObject
 		return $this->error_message;
 	}
 
-	// }}}
-	// {{{ public function hasDefault()
+
+
 
 	/**
 	 * Whether or not a default value is specified for this parameter
@@ -86,8 +86,8 @@ class SiteCommandLineArgumentParameter extends SiteObject
 		return ($this->default !== null);
 	}
 
-	// }}}
-	// {{{ public function getDefault()
+
+
 
 	/**
 	 * Gets the default value of this parameter
@@ -99,8 +99,8 @@ class SiteCommandLineArgumentParameter extends SiteObject
 		return $this->default;
 	}
 
-	// }}}
-	// {{{ public function validate()
+
+
 
 	/**
 	 * Checks a value to see if it is the correct type for this parameter
@@ -136,7 +136,7 @@ class SiteCommandLineArgumentParameter extends SiteObject
 		return $valid;
 	}
 
-	// }}}
+
 }
 
 ?>

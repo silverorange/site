@@ -9,38 +9,38 @@
  */
 abstract class SiteAttachmentDownload extends AdminPage
 {
-	// {{{ protected function getObjectClass()
+
 
 	protected function getObjectClass()
 	{
 		return 'SiteAttachment';
 	}
 
-	// }}}
-	// {{{ protected function getResolvedObjectClass()
+
+
 
 	protected function getResolvedObjectClass()
 	{
 		return SwatDBClassMap::get($this->getObjectClass());
 	}
 
-	// }}}
-	// {{{ abstract protected function getFileBase()
+
+
 
 	abstract protected function getFileBase();
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function createLayout()
+
 
 	protected function createLayout()
 	{
 		return new SiteLayout($this->app, SiteFileLoaderLayout::class);
 	}
 
-	// }}}
-	// {{{ protected function initInternal()
+
+
 
 	protected function initInternal()
 	{
@@ -49,8 +49,8 @@ abstract class SiteAttachmentDownload extends AdminPage
 		$this->initAttachment();
 	}
 
-	// }}}
-	// {{{ protected function initAttachment()
+
+
 
 	protected function initAttachment()
 	{
@@ -88,10 +88,10 @@ abstract class SiteAttachmentDownload extends AdminPage
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -135,7 +135,7 @@ abstract class SiteAttachmentDownload extends AdminPage
 		exit();
 	}
 
-	// }}}
+
 }
 
 ?>

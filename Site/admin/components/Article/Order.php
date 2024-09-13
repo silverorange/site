@@ -9,12 +9,12 @@
  */
 class SiteArticleOrder extends AdminDBOrder
 {
-	// {{{ protected properties
+
 
 	protected $parent;
 
-	// }}}
-	// {{{ protected function getWhereClause()
+
+
 
 	protected function getWhereClause()
 	{
@@ -25,10 +25,10 @@ class SiteArticleOrder extends AdminDBOrder
 		return $where_clause;
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -39,10 +39,10 @@ class SiteArticleOrder extends AdminDBOrder
 		$form->addHiddenField('parent', $this->parent);
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function saveIndex()
+
 
 	protected function saveIndex($id, $index)
 	{
@@ -53,10 +53,10 @@ class SiteArticleOrder extends AdminDBOrder
 			$this->app->memcache->flushNs('article');
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 	protected function buildInternal()
 	{
 		parent::buildInternal();
@@ -65,8 +65,8 @@ class SiteArticleOrder extends AdminDBOrder
 		$frame->title = Site::_('Order Articles');
 	}
 
-	// }}}
-	// {{{ protected function loadData()
+
+
 
 	protected function loadData()
 	{
@@ -83,8 +83,8 @@ class SiteArticleOrder extends AdminDBOrder
 		$options_list->value = ($sum == 0) ? 'auto' : 'custom';
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -104,7 +104,7 @@ class SiteArticleOrder extends AdminDBOrder
 		parent::buildNavBar();
 	}
 
-	// }}}
+
 }
 
 ?>

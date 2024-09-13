@@ -15,14 +15,14 @@
  */
 class SiteMobileModule extends SiteApplicationModule
 {
-	// {{{ protected properties
+
 
 	protected $prefix = 'm';
 	protected $get_var = 'mobile';
 	protected $switch_get_var = 'mobile-version';
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this cookie module
@@ -33,8 +33,8 @@ class SiteMobileModule extends SiteApplicationModule
 	{
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -55,8 +55,8 @@ class SiteMobileModule extends SiteApplicationModule
 		return $depends;
 	}
 
-	// }}}
-	// {{{ public function getPrefix()
+
+
 
 	/**
 	 * Get the URL prefix for a mobile URL
@@ -70,8 +70,8 @@ class SiteMobileModule extends SiteApplicationModule
 		return $this->prefix;
 	}
 
-	// }}}
-	// {{{ public function displayMobileMetaTags()
+
+
 
 	/**
 	 * Display mobile meta tags for mobile-layouts.
@@ -88,8 +88,8 @@ class SiteMobileModule extends SiteApplicationModule
 		$meta_tag->display();
 	}
 
-	// }}}
-	// {{{ public function getSwitchGetVar()
+
+
 
 	/**
 	 * Get the variable to append to the URL when switching to the mobile
@@ -105,8 +105,8 @@ class SiteMobileModule extends SiteApplicationModule
 		return $this->switch_get_var;
 	}
 
-	// }}}
-	// {{{ public function isMobileUrl()
+
+
 
 	/**
 	 * Detect whether or not we're on the mobile version of the site
@@ -121,8 +121,8 @@ class SiteMobileModule extends SiteApplicationModule
 		return (isset($_GET[$this->get_var]));
 	}
 
-	// }}}
-	// {{{ public function autoRelocateMobile()
+
+
 
 	/**
 	 * Check whether the user should be redirected to the mobile version
@@ -174,8 +174,8 @@ class SiteMobileModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function isMobileBrowser()
+
+
 
 	public function isMobileBrowser()
 	{
@@ -418,8 +418,8 @@ class SiteMobileModule extends SiteApplicationModule
 		return $match;
 	}
 
-	// }}}
-	// {{{ public function isHandheld()
+
+
 
 	/**
 	 * Gets whether or not the browser is a handheld device
@@ -445,8 +445,8 @@ class SiteMobileModule extends SiteApplicationModule
 			preg_match($exp, $_SERVER['HTTP_USER_AGENT']) === 1);
 	}
 
-	// }}}
-	// {{{ public function isIOS()
+
+
 
 	/**
 	 * Gets whether or not the browser is Safari running on iOS
@@ -471,8 +471,8 @@ class SiteMobileModule extends SiteApplicationModule
 			preg_match($exp, $_SERVER['HTTP_USER_AGENT']) === 1);
 	}
 
-	// }}}
-	// {{{ public function isAndroid()
+
+
 
 	public function isAndroid()
 	{
@@ -482,8 +482,8 @@ class SiteMobileModule extends SiteApplicationModule
 			preg_match($exp, $_SERVER['HTTP_USER_AGENT']) === 1);
 	}
 
-	// }}}
-	// {{{ public function getPlatformMajorVersion()
+
+
 
 	public function getPlatformMajorVersion()
 	{
@@ -507,8 +507,8 @@ class SiteMobileModule extends SiteApplicationModule
 		return $version;
 	}
 
-	// }}}
-	// {{{ public function getViewport()
+
+
 
 	/**
 	 * Gets a meta tag containing the default viewport parameters
@@ -541,8 +541,8 @@ class SiteMobileModule extends SiteApplicationModule
 		return $meta;
 	}
 
-	// }}}
-	// {{{ protected function attemptMobileRelocate()
+
+
 
 	/**
 	 * Whether or not to try redirecting a user to the mobile site
@@ -557,7 +557,7 @@ class SiteMobileModule extends SiteApplicationModule
 		return (boolean)$this->app->config->mobile->auto_relocate;
 	}
 
-	// }}}
+
 }
 
 ?>

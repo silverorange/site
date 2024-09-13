@@ -10,7 +10,7 @@
  */
 class SiteArticlePage extends SitePathPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteArticle
@@ -19,8 +19,8 @@ class SiteArticlePage extends SitePathPage
 	 */
 	protected $article;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(SiteAbstractPage $page)
 	{
@@ -29,8 +29,8 @@ class SiteArticlePage extends SitePathPage
 		$this->article->setDatabase($this->app->db);
 	}
 
-	// }}}
-	// {{{ public function setArticle()
+
+
 
 	/**
 	 * Sets the article for this page to display
@@ -45,10 +45,10 @@ class SiteArticlePage extends SitePathPage
 		$this->article = $article;
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -56,8 +56,8 @@ class SiteArticlePage extends SitePathPage
 		$this->initArticle();
 	}
 
-	// }}}
-	// {{{ protected function initArticle()
+
+
 
 	protected function initArticle()
 	{
@@ -68,10 +68,10 @@ class SiteArticlePage extends SitePathPage
 		$this->layout->selected_article_id = $this->article->id;
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -83,8 +83,8 @@ class SiteArticlePage extends SitePathPage
 		$this->page->build();
 	}
 
-	// }}}
-	// {{{ protected function buildTitle()
+
+
 
 	protected function buildTitle()
 	{
@@ -99,8 +99,8 @@ class SiteArticlePage extends SitePathPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildMetaDescription()
+
+
 
 	protected function buildMetaDescription()
 	{
@@ -116,8 +116,8 @@ class SiteArticlePage extends SitePathPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildContent()
+
+
 
 	protected function buildContent()
 	{
@@ -129,8 +129,8 @@ class SiteArticlePage extends SitePathPage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function displayArticle()
+
+
 
 	/**
 	 * Displays an article on this page
@@ -156,8 +156,8 @@ class SiteArticlePage extends SitePathPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function displaySubArticles()
+
+
 
 	/**
 	 * Displays a set of articles as sub-articles
@@ -184,8 +184,8 @@ class SiteArticlePage extends SitePathPage
 		echo '</dl>';
 	}
 
-	// }}}
-	// {{{ protected function displaySubArticle()
+
+
 
 	/**
 	 * Displays an article as a sub-article
@@ -216,8 +216,8 @@ class SiteArticlePage extends SitePathPage
 			echo '<dd>', $article->description, '</dd>';
 	}
 
-	// }}}
-	// {{{ protected function getReplacementMarkerText()
+
+
 
 	/**
 	 * Gets replacement text for a specfied replacement marker identifier
@@ -233,8 +233,8 @@ class SiteArticlePage extends SitePathPage
 		return '';
 	}
 
-	// }}}
-	// {{{ protected final function replaceMarkers()
+
+
 
 	/**
 	 * Replaces markers in article with dynamic content
@@ -253,8 +253,8 @@ class SiteArticlePage extends SitePathPage
 		return preg_replace_callback($marker_pattern, $callback, $text);
 	}
 
-	// }}}
-	// {{{ private function getReplacementMarkerTextByMatches()
+
+
 
 	/**
 	 * Gets replacement text for a replacement marker from within a matches
@@ -273,10 +273,10 @@ class SiteArticlePage extends SitePathPage
 		return '';
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -284,8 +284,8 @@ class SiteArticlePage extends SitePathPage
 		$this->layout->addBodyClass($this->getBodyClass());
 	}
 
-	// }}}
-	// {{{ protected function getBodyClass()
+
+
 
 	protected function getBodyClass()
 	{
@@ -297,7 +297,7 @@ class SiteArticlePage extends SitePathPage
 		return 'article-'.$class;
 	}
 
-	// }}}
+
 }
 
 ?>

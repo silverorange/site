@@ -9,15 +9,15 @@
  */
 abstract class SitePageDecorator extends SiteAbstractPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SitePage
 	 */
 	protected $page;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(SiteAbstractPage $page)
 	{
@@ -27,8 +27,8 @@ abstract class SitePageDecorator extends SiteAbstractPage
 		$this->arguments = $page->arguments;
 	}
 
-	// }}}
-	// {{{ public function setSource()
+
+
 
 	/**
 	 * Sets the source string of this page
@@ -49,8 +49,8 @@ abstract class SitePageDecorator extends SiteAbstractPage
 		$this->page->setSource($source);
 	}
 
-	// }}}
-	// {{{ protected function setLayout()
+
+
 
 	/**
 	 * @param SiteLayout $layout
@@ -61,10 +61,10 @@ abstract class SitePageDecorator extends SiteAbstractPage
 		$this->page->setLayout($layout);
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -72,10 +72,10 @@ abstract class SitePageDecorator extends SiteAbstractPage
 		parent::init();
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	public function process()
 	{
@@ -83,10 +83,10 @@ abstract class SitePageDecorator extends SiteAbstractPage
 		parent::process();
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -100,38 +100,38 @@ abstract class SitePageDecorator extends SiteAbstractPage
 		parent::build();
 	}
 
-	// }}}
-	// {{{ protected function buildTitle()
+
+
 
 	protected function buildTitle()
 	{
 	}
 
-	// }}}
-	// {{{ protected function buildMetaDescription()
+
+
 
 	protected function buildMetaDescription()
 	{
 	}
 
-	// }}}
-	// {{{ protected function buildContent()
+
+
 
 	protected function buildContent()
 	{
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -139,7 +139,7 @@ abstract class SitePageDecorator extends SiteAbstractPage
 		parent::finalize();
 	}
 
-	// }}}
+
 }
 
 ?>

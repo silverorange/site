@@ -10,7 +10,7 @@
  */
 class SitePath implements Iterator, Countable
 {
-	// {{{ private properties
+
 
 	/**
 	 * The entries in this path
@@ -30,8 +30,8 @@ class SitePath implements Iterator, Countable
 	 */
 	private $current_index = 0;
 
-	// }}}
-	// {{{ public final function addEntry()
+
+
 
 	/**
 	 * Adds an entry to this path
@@ -47,8 +47,8 @@ class SitePath implements Iterator, Countable
 		array_unshift($this->path_entries, $entry);
 	}
 
-	// }}}
-	// {{{ public final function appendEntry()
+
+
 
 	/**
 	 * Appends an entry to the end of this path
@@ -60,8 +60,8 @@ class SitePath implements Iterator, Countable
 		$this->path_entries[] = $entry;
 	}
 
-	// }}}
-	// {{{ public function addEntriesToNavBar()
+
+
 
 	/**
 	 * Convenience method to add path entries to a navbar
@@ -80,8 +80,8 @@ class SitePath implements Iterator, Countable
 		}
 	}
 
-	// }}}
-	// {{{ public function hasId()
+
+
 
 	/**
 	 * Whether or not this path contains the given id
@@ -104,8 +104,8 @@ class SitePath implements Iterator, Countable
 		return $found;
 	}
 
-	// }}}
-	// {{{ public function getFirst()
+
+
 
 	/**
 	 * Retrieves the first entry in this path
@@ -118,8 +118,8 @@ class SitePath implements Iterator, Countable
 		return $this->path_entries[0] ?? null;
 	}
 
-	// }}}
-	// {{{ public function getLast()
+
+
 
 	/**
 	 * Retrieves the last entry in this path
@@ -135,8 +135,8 @@ class SitePath implements Iterator, Countable
 		return null;
 	}
 
-	// }}}
-	// {{{ public function __toString()
+
+
 
 	/**
 	 * Gets a string representation of this path
@@ -163,8 +163,8 @@ class SitePath implements Iterator, Countable
 		return $path;
 	}
 
-	// }}}
-	// {{{ public function current()
+
+
 
 	/**
 	 * Returns the current element
@@ -176,8 +176,8 @@ class SitePath implements Iterator, Countable
 		return $this->path_entries[$this->current_index];
 	}
 
-	// }}}
-	// {{{ public function key()
+
+
 
 	/**
 	 * Returns the key of the current element
@@ -189,8 +189,8 @@ class SitePath implements Iterator, Countable
 		return $this->current_index;
 	}
 
-	// }}}
-	// {{{ public function next()
+
+
 
 	/**
 	 * Moves forward to the next element
@@ -200,8 +200,8 @@ class SitePath implements Iterator, Countable
 		$this->current_index++;
 	}
 
-	// }}}
-	// {{{ public function rewind()
+
+
 
 	/**
 	 * Rewinds this iterator to the first element
@@ -211,8 +211,8 @@ class SitePath implements Iterator, Countable
 		$this->current_index = 0;
 	}
 
-	// }}}
-	// {{{ public function valid()
+
+
 
 	/**
 	 * Checks is there is a current element after calls to rewind() and next()
@@ -225,8 +225,8 @@ class SitePath implements Iterator, Countable
 		return isset($this->path_entries[$this->current_index]);
 	}
 
-	// }}}
-	// {{{ public function get()
+
+
 
 	/**
 	 * Retrieves the an object
@@ -238,8 +238,8 @@ class SitePath implements Iterator, Countable
 		return $this->path_entries[$key] ?? null;
 	}
 
-	// }}}
-	// {{{ public function count()
+
+
 
 	/**
 	 * Gets the number of entries in this path
@@ -253,7 +253,7 @@ class SitePath implements Iterator, Countable
 		return count($this->path_entries);
 	}
 
-	// }}}
+
 }
 
 ?>

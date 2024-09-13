@@ -10,7 +10,7 @@
  */
 class SiteVideoMediaWrapper extends SiteMediaWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -19,24 +19,24 @@ class SiteVideoMediaWrapper extends SiteMediaWrapper
 		$this->row_wrapper_class = SwatDBClassMap::get(SiteVideoMedia::class);
 	}
 
-	// }}}
-	// {{{ protected function getMediaSetWrapperClass()
+
+
 
 	protected function getMediaSetWrapperClass()
 	{
 		return SwatDBClassMap::get(SiteVideoMediaSetWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingBindingWrapperClass()
+
+
 
 	protected function getMediaEncodingBindingWrapperClass()
 	{
 		return SwatDBClassMap::get(SiteVideoMediaEncodingBindingWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingBindingOrderBy()
+
+
 
 	protected function getMediaEncodingBindingOrderBy()
 	{
@@ -45,7 +45,7 @@ class SiteVideoMediaWrapper extends SiteMediaWrapper
 		return 'media, width asc nulls first';
 	}
 
-	// }}}
+
 }
 
 ?>

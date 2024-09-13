@@ -9,7 +9,7 @@
  */
 class SitePathPage extends SitePageDecorator
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SitePath
@@ -19,8 +19,8 @@ class SitePathPage extends SitePageDecorator
 	 */
 	protected $path;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(SiteAbstractPage $page)
 	{
@@ -28,8 +28,8 @@ class SitePathPage extends SitePageDecorator
 		$this->path = new SitePath();
 	}
 
-	// }}}
-	// {{{ public function setPath()
+
+
 
 	/**
 	 * Sets the path of this page
@@ -45,8 +45,8 @@ class SitePathPage extends SitePageDecorator
 		$this->path = $path;
 	}
 
-	// }}}
-	// {{{ public function getPath()
+
+
 
 	/**
 	 * Gets the path of this page
@@ -58,8 +58,8 @@ class SitePathPage extends SitePageDecorator
 		return $this->path;
 	}
 
-	// }}}
-	// {{{ public function hasParentInPath()
+
+
 
 	/**
 	 * Whether or not this page has the parent id in its path
@@ -74,10 +74,10 @@ class SitePathPage extends SitePageDecorator
 		return $this->path->hasId($id);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
@@ -101,7 +101,7 @@ class SitePathPage extends SitePageDecorator
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

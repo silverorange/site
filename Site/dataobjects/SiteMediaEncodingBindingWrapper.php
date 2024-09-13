@@ -14,7 +14,7 @@
  */
 class SiteMediaEncodingBindingWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ public function initializeFromResultSet()
+
 
 	public function initializeFromResultSet(MDB2_Result_Common $rs)
 	{
@@ -30,8 +30,8 @@ class SiteMediaEncodingBindingWrapper extends SwatDBRecordsetWrapper
 		}
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -43,7 +43,7 @@ class SiteMediaEncodingBindingWrapper extends SwatDBRecordsetWrapper
 		$this->index_field = 'media_encoding';
 	}
 
-	// }}}
+
 }
 
 ?>

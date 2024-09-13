@@ -12,7 +12,7 @@
  */
 class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 {
-	// {{{ protected properties
+
 
 	/**
 	 * S3 SDK
@@ -21,16 +21,16 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 	 */
 	protected $s3;
 
-	// }}}
-	// {{{ public function getBucket()
+
+
 
 	public function getBucket()
 	{
 		return $this->config->amazon->bucket;
 	}
 
-	// }}}
-	// {{{ protected function getOldPath()
+
+
 
 	protected function getOldPath(SiteVideoMedia $media, $shortname)
 	{
@@ -42,8 +42,8 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 		);
 	}
 
-	// }}}
-	// {{{ protected function getNewPath()
+
+
 
 	protected function getNewPath(SiteVideoMedia $media, $shortname)
 	{
@@ -54,16 +54,16 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 		);
 	}
 
-	// }}}
-	// {{{ protected function hasFile()
+
+
 
 	protected function hasFile($path)
 	{
 		return $this->s3->doesObjectExist($this->getBucket(), $path);
 	}
 
-	// }}}
-	// {{{ protected function moveFile()
+
+
 
 	protected function moveFile(SiteVideoMedia $media, $old_path, $new_path)
 	{
@@ -82,8 +82,8 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 		);
 	}
 
-	// }}}
-	// {{{ protected function cleanUp()
+
+
 
 	protected function cleanUp($path)
 	{
@@ -92,10 +92,10 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 		);
 	}
 
-	// }}}
+
 
 	// boilerplate code
-	// {{{ protected function configure()
+
 
 	protected function configure(SiteConfigModule $config)
 	{
@@ -106,7 +106,7 @@ class SiteVideoMediaS3Mover extends SiteVideoMediaMover
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

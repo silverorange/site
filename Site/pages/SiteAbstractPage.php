@@ -9,7 +9,7 @@
  */
 abstract class SiteAbstractPage extends SiteObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * The application to which this page belongs
@@ -37,8 +37,8 @@ abstract class SiteAbstractPage extends SiteObject
 	 */
 	public $layout;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * The source string of this page
@@ -65,8 +65,8 @@ abstract class SiteAbstractPage extends SiteObject
 	 */
 	protected $arguments = [];
 
-	// }}}
-	// {{{ public function getSource()
+
+
 
 	/**
 	 * Gets the source string of this page
@@ -84,8 +84,8 @@ abstract class SiteAbstractPage extends SiteObject
 		return $this->source;
 	}
 
-	// }}}
-	// {{{ public function setSource()
+
+
 
 	/**
 	 * Sets the source string of this page
@@ -107,8 +107,8 @@ abstract class SiteAbstractPage extends SiteObject
 		$this->source = $source;
 	}
 
-	// }}}
-	// {{{ protected function setLayout()
+
+
 
 	/**
 	 * @param SiteLayout $layout
@@ -118,8 +118,8 @@ abstract class SiteAbstractPage extends SiteObject
 		$this->layout = $layout;
 	}
 
-	// }}}
-	// {{{ protected function getArgument()
+
+
 
 	protected function getArgument($name)
 	{
@@ -139,8 +139,8 @@ abstract class SiteAbstractPage extends SiteObject
 		return $value;
 	}
 
-	// }}}
-	// {{{ protected function getArgumentMap()
+
+
 
 	/**
 	 * Returns an array of the form:
@@ -158,10 +158,10 @@ abstract class SiteAbstractPage extends SiteObject
 		return [];
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	/**
 	 * This is the first page-level method that is called by a
@@ -176,10 +176,10 @@ abstract class SiteAbstractPage extends SiteObject
 	{
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	/**
 	 * Runs after {@link SiteAbstractPage::init()} and
@@ -193,10 +193,10 @@ abstract class SiteAbstractPage extends SiteObject
 	{
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	/**
 	 * Runs after {@link SiteAbstractPage::process()} and
@@ -210,10 +210,10 @@ abstract class SiteAbstractPage extends SiteObject
 	{
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	/**
 	 * Runs after {@link SiteAbstractPage::build()} and
@@ -228,10 +228,10 @@ abstract class SiteAbstractPage extends SiteObject
 	{
 	}
 
-	// }}}
+
 
 	// deprecated
-	// {{{ protected function addCacheValue()
+
 
 	/**
 	 * Set a value to be cached
@@ -252,8 +252,8 @@ abstract class SiteAbstractPage extends SiteObject
 		$this->app->addCacheValue($value, $key, $name_space);
 	}
 
-	// }}}
-	// {{{ protected function getCacheValue()
+
+
 
 	/**
 	 * Get a cached value
@@ -270,7 +270,7 @@ abstract class SiteAbstractPage extends SiteObject
 		return $this->app->getCacheValue($key, $name_space);
 	}
 
-	// }}}
+
 }
 
 ?>

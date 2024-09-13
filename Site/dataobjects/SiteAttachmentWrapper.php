@@ -10,7 +10,7 @@
  */
 class SiteAttachmentWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -20,8 +20,8 @@ class SiteAttachmentWrapper extends SwatDBRecordsetWrapper
 		$this->index_field = 'id';
 	}
 
-	// }}}
-	// {{{ public function getBySet()
+
+
 
 	public function getBySet($shortname)
 	{
@@ -37,7 +37,7 @@ class SiteAttachmentWrapper extends SwatDBRecordsetWrapper
 		return $attachments;
 	}
 
-	// }}}
+
 }
 
 ?>

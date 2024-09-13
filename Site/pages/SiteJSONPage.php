@@ -7,7 +7,7 @@
  */
 abstract class SiteJSONPage extends SitePage
 {
-	// {{{ public function __construct()
+
 
 	public function __construct(
 		SiteApplication $app,
@@ -24,30 +24,30 @@ abstract class SiteJSONPage extends SitePage
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
 		$this->layout->data->content = json_encode($this->getResponse());
 	}
 
-	// }}}
-	// {{{ abstract protected function getResponse()
+
+
 
 	abstract protected function getResponse();
 
-	// }}}
-	// {{{ protected function getStatus()
+
+
 
 	protected function getStatus($code = 'ok', $message = '')
 	{
 		return ['code'    => $code, 'message' => $message];
 	}
 
-	// }}}
+
 }
 
 ?>

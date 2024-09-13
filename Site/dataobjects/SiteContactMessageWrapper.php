@@ -10,7 +10,7 @@
  */
 class SiteContactMessageWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -19,7 +19,7 @@ class SiteContactMessageWrapper extends SwatDBRecordsetWrapper
 		$this->index_field = 'id';
 	}
 
-	// }}}
+
 }
 
 ?>

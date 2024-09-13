@@ -9,7 +9,7 @@
  */
 abstract class SiteCommentAddPage extends SitePageDecorator
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteCommentable
@@ -26,18 +26,18 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 	 */
 	protected $response = [];
 
-	// }}}
-	// {{{ protected function createLayout()
+
+
 
 	protected function createLayout()
 	{
 		return new SiteLayout($this->app, SiteJSONTemplate::class);
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -46,13 +46,13 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->initComment();
 	}
 
-	// }}}
-	// {{{ abstract protected function initItem()
+
+
 
 	abstract protected function initItem();
 
-	// }}}
-	// {{{ protected function initComment()
+
+
 
 	protected function initComment()
 	{
@@ -61,18 +61,18 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->comment->setDatabase($this->app->db);
 	}
 
-	// }}}
-	// {{{ protected function getCommentClassName()
+
+
 
 	protected function getCommentClassName()
 	{
 		return SwatDBClassMap::get(SiteComment::class);
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	public function process()
 	{
@@ -98,8 +98,8 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		}
 	}
 
-	// }}}
-	// {{{ protected function processComment()
+
+
 
 	protected function processComment()
 	{
@@ -107,8 +107,8 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->saveComment();
 	}
 
-	// }}}
-	// {{{ protected function updateComment()
+
+
 
 	protected function updateComment()
 	{
@@ -135,8 +135,8 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->comment->status     = $status;
 	}
 
-	// }}}
-	// {{{ protected function saveComment()
+
+
 
 	protected function saveComment()
 	{
@@ -152,8 +152,8 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->comment->postSave($this->app);
 	}
 
-	// }}}
-	// {{{ protected function getParameter()
+
+
 
 	protected function getParameter($name, $required = true)
 	{
@@ -172,48 +172,48 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		return $value;
 	}
 
-	// }}}
-	// {{{ protected function getFullname()
+
+
 
 	protected function getFullname()
 	{
 		return $this->getParameter('fullname', true);
 	}
 
-	// }}}
-	// {{{ protected function getLink()
+
+
 
 	protected function getLink()
 	{
 		return $this->getParameter('link', false);
 	}
 
-	// }}}
-	// {{{ protected function getEmail()
+
+
 
 	protected function getEmail()
 	{
 		return $this->getParameter('email', true);
 	}
 
-	// }}}
-	// {{{ protected function getBodytext()
+
+
 
 	protected function getBodytext()
 	{
 		return $this->getParameter('bodytext', true);
 	}
 
-	// }}}
-	// {{{ protected function getIPAddress()
+
+
 
 	protected function getIPAddress()
 	{
 		$ip_address = $this->app->getRemoteIP(255);
 	}
 
-	// }}}
-	// {{{ protected function getUserAgent()
+
+
 
 	protected function getUserAgent()
 	{
@@ -226,24 +226,24 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		return $user_agent;
 	}
 
-	// }}}
-	// {{{ protected function isSpam()
+
+
 
 	protected function isSpam()
 	{
 		return false;
 	}
 
-	// }}}
-	// {{{ protected function getItemCommentStatus()
+
+
 
 	protected function getItemCommentStatus()
 	{
 		return $this->item->getCommentStatus();
 	}
 
-	// }}}
-	// {{{ protected function saveCookie()
+
+
 
 	protected function saveCookie()
 	{
@@ -255,8 +255,8 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		}
 	}
 
-	// }}}
-	// {{{ protected function deleteCookie()
+
+
 
 	protected function deleteCookie()
 	{
@@ -266,18 +266,18 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		}
 	}
 
-	// }}}
-	// {{{ protected function handleException()
+
+
 
 	protected function handleException(Throwable $e)
 	{
 		$this->response = ['status'  => 'error', 'message' => $e->getMessage(), 'type'    => $e::class];
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -293,8 +293,8 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function buildResponse()
+
+
 
 	protected function buildResponse()
 	{
@@ -306,15 +306,15 @@ abstract class SiteCommentAddPage extends SitePageDecorator
 		$this->response = ['status'         => 'success', 'view'           => $view_content, 'id'             => $this->comment->id, 'comment_status' => $this->comment->status];
 	}
 
-	// }}}
-	// {{{ protected function getView()
+
+
 
 	protected function getView()
 	{
 		return SiteViewFactory::get($this->app, 'comment');
 	}
 
-	// }}}
+
 }
 
 ?>

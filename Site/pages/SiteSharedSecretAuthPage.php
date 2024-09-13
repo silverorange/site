@@ -9,7 +9,7 @@
  */
 class SiteSharedSecretAuthPage extends SitePageDecorator
 {
-	// {{{ protected properties
+
 
 	/**
 	 * List of GET variables we exclude from the MAC check.
@@ -18,8 +18,8 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 	 */
 	protected $exclude_names = ['mac', 'source', 'instance'];
 
-	// }}}
-	// {{{ public init()
+
+
 
 	public function init()
 	{
@@ -44,8 +44,8 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 		parent::init();
 	}
 
-	// }}}
-	// {{{ protected function getHashKey()
+
+
 
 	protected function getHashKey()
 	{
@@ -71,8 +71,8 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 		return $credential->api_shared_secret;
 	}
 
-	// }}}
-	// {{{ protected function getVariables()
+
+
 
 	protected function getVariables()
 	{
@@ -90,8 +90,8 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 		return $vars;
 	}
 
-	// }}}
-	// {{{ protected function isRequestAuthentic()
+
+
 
 	protected function isRequestAuthentic($vars)
 	{
@@ -102,8 +102,8 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 			($this->getHashMac($message, $key) === $_GET['mac']));
 	}
 
-	// }}}
-	// {{{ protected function getHashMessage()
+
+
 
 	protected function getHashMessage($vars)
 	{
@@ -119,15 +119,15 @@ class SiteSharedSecretAuthPage extends SitePageDecorator
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function getHashMac()
+
+
 
 	protected function getHashMac($message, $key)
 	{
 		return hash_hmac('sha256', $message, $key);
 	}
 
-	// }}}
+
 }
 
 ?>

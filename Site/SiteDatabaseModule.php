@@ -13,7 +13,7 @@
  */
 class SiteDatabaseModule extends SiteApplicationModule
 {
-	// {{{ public properties
+
 
 	/**
 	 * DSN of database
@@ -26,8 +26,8 @@ class SiteDatabaseModule extends SiteApplicationModule
 	 */
 	public $dsn;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * The database connection object
@@ -38,8 +38,8 @@ class SiteDatabaseModule extends SiteApplicationModule
 	 */
 	protected $connection = null;
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	public function init()
 	{
@@ -56,8 +56,8 @@ class SiteDatabaseModule extends SiteApplicationModule
 		$this->app->db = $this->getConnection();
 	}
 
-	// }}}
-	// {{{ public function getConnection()
+
+
 
 	/**
 	 * Retrieves the MDB2 connection object
@@ -69,7 +69,7 @@ class SiteDatabaseModule extends SiteApplicationModule
 		return $this->connection;
 	}
 
-	// }}}
+
 }
 
 ?>

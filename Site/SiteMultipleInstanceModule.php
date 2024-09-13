@@ -15,7 +15,7 @@
  */
 class SiteMultipleInstanceModule extends SiteApplicationModule
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The current instance of this site
@@ -24,8 +24,8 @@ class SiteMultipleInstanceModule extends SiteApplicationModule
 	 */
 	protected $instance = null;
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this module
@@ -75,8 +75,8 @@ EOD;
 		}
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -95,8 +95,8 @@ EOD;
 		return $depends;
 	}
 
-	// }}}
-	// {{{ public function getInstance()
+
+
 
 	/**
 	 * Gets the current instance of this site
@@ -108,8 +108,8 @@ EOD;
 		return $this->instance;
 	}
 
-	// }}}
-	// {{{ public function getId()
+
+
 
 	/**
 	 * Helper method to get the id of the current instance
@@ -125,7 +125,7 @@ EOD;
 		return $id;
 	}
 
-	// }}}
+
 }
 
 ?>

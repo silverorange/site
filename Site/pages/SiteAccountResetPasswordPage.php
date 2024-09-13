@@ -13,38 +13,38 @@
  */
 class SiteAccountResetPasswordPage extends SiteEditPage
 {
-	// {{{ protected properties
+
 
 	protected $account;
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/account-reset-password.xml';
 	}
 
-	// }}}
-	// {{{ protected function isNew()
+
+
 
 	protected function isNew(SwatForm $form)
 	{
 		return false;
 	}
 
-	// }}}
-	// {{{ protected function getArgumentMap()
+
+
 
 	protected function getArgumentMap()
 	{
 		return ['tag' => [0, null]];
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -66,8 +66,8 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getAccount()
+
+
 
 	/**
 	 * Gets the account associated with the password tag
@@ -88,26 +88,26 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 			null;
 	}
 
-	// }}}
-	// {{{ protected function getChangePasswordSource()
+
+
 
 	protected function getChangePasswordSource()
 	{
 		return 'account/changepassword';
 	}
 
-	// }}}
-	// {{{ protected function getForgotPasswordSource()
+
+
 
 	protected function getForgotPasswordSource()
 	{
 		return 'account/forgotpassword';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	public function process()
 	{
@@ -117,8 +117,8 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		parent::process();
 	}
 
-	// }}}
-	// {{{ protected function save()
+
+
 
 	protected function save(SwatForm $form)
 	{
@@ -134,24 +134,24 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getSavedMessage()
+
+
 
 	protected function getSavedMessage()
 	{
 		return new SwatMessage(Site::_('Account password has been updated.'));
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate(SwatForm $form)
 	{
 		$this->app->relocate('account');
 	}
 
-	// }}}
-	// {{{ protected function updatePassword()
+
+
 
 	protected function updatePassword()
 	{
@@ -163,10 +163,10 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		$account->password_tag = null;
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildForm()
+
 
 	protected function buildForm(SwatForm $form)
 	{
@@ -211,17 +211,17 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function load()
+
+
 
 	protected function load(SwatForm $form)
 	{
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -234,7 +234,7 @@ class SiteAccountResetPasswordPage extends SiteEditPage
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

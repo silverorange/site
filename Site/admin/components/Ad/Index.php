@@ -10,7 +10,7 @@
 class SiteAdIndex extends AdminIndex
 {
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -18,18 +18,18 @@ class SiteAdIndex extends AdminIndex
 		$this->ui->loadFromXML($this->getUiXml());
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/index.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processActions()
+
 
 	protected function processActions(SwatView $view, SwatActions $actions)
 	{
@@ -43,10 +43,10 @@ class SiteAdIndex extends AdminIndex
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function getTableModel()
+
 
 	protected function getTableModel(SwatView $view)
 	{
@@ -60,7 +60,7 @@ class SiteAdIndex extends AdminIndex
 		return $ads;
 	}
 
-	// }}}
+
 }
 
 ?>

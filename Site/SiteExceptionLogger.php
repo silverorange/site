@@ -10,7 +10,7 @@
  */
 class SiteExceptionLogger extends SwatExceptionLogger
 {
-	// {{{ protected properties
+
 
 	/**
 	 * Location in which to store detailed error logs
@@ -39,8 +39,8 @@ class SiteExceptionLogger extends SwatExceptionLogger
 	 */
 	protected $unix_group;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new exception loggger
@@ -60,8 +60,8 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		$this->unix_group   = $unix_group;
 	}
 
-	// }}}
-	// {{{ public function log()
+
+
 
 	/**
 	 * Logs an exception
@@ -98,40 +98,40 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		$this->logSummary($this->getSummary($e, $directory, $id));
 	}
 
-	// }}}
-	// {{{ protected function logSummary()
+
+
 
 	protected function logSummary($summary)
 	{
 		error_log($summary, 0);
 	}
 
-	// }}}
-	// {{{ protected function getLogPath()
+
+
 
 	protected function getLogPath($directory)
 	{
 		return $this->log_location.'/'.$directory;
 	}
 
-	// }}}
-	// {{{ protected function getLogFilename()
+
+
 
 	protected function getLogFilename($id)
 	{
 		return 'exception-'.$id.'.html';
 	}
 
-	// }}}
-	// {{{ protected function getLogFilePath()
+
+
 
 	protected function getLogFilePath($directory, $id)
 	{
 		return $this->getLogPath($directory).'/'.$this->getLogFilename($id);
 	}
 
-	// }}}
-	// {{{ protected function getSummary()
+
+
 
 	protected function getSummary(SwatException $e, $directory, $id)
 	{
@@ -146,8 +146,8 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		return $summary;
 	}
 
-	// }}}
-	// {{{ protected function getBody()
+
+
 
 	protected function getBody(SwatException $e)
 	{
@@ -215,7 +215,7 @@ class SiteExceptionLogger extends SwatExceptionLogger
 		return ob_get_clean();
 	}
 
-	// }}}
+
 }
 
 ?>

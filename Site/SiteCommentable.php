@@ -9,7 +9,7 @@
  */
 interface SiteCommentable extends SiteCommentStatus, SwatDBRecordable
 {
-	// {{{ public function addComment()
+
 
 	/**
 	 * Adds a new comment to this object
@@ -18,8 +18,8 @@ interface SiteCommentable extends SiteCommentStatus, SwatDBRecordable
 	 */
 	public function addComment(SiteComment $comment);
 
-	// }}}
-	// {{{ public function getTitle()
+
+
 
 	/**
 	 * Gets the title of this object
@@ -28,7 +28,7 @@ interface SiteCommentable extends SiteCommentStatus, SwatDBRecordable
 	 */
 	public function getTitle();
 
-	// }}}
+
 }
 
 ?>

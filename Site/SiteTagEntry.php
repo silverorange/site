@@ -10,7 +10,7 @@
  */
 abstract class SiteTagEntry extends SwatInputControl implements SwatState
 {
-	// {{{ public properties
+
 
 	/*
 	 * Whether or not to allow adding new tags
@@ -42,8 +42,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 */
 	public $show_shortname = true;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * An associative array of tags for the tag flydown in the form of
@@ -60,8 +60,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 	 */
 	protected $selected_tag_array = [];
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new tag entry control
@@ -87,8 +87,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		$this->addStyleSheet('packages/site/styles/site-tag-entry.css');
 	}
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	/**
 	 * Displays this tag entry control
@@ -131,8 +131,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 	}
 
-	// }}}
-	// {{{ public function process()
+
+
 
 	/**
 	 * Processes this tag entry control
@@ -176,8 +176,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		}
 	}
 
-	// }}}
-	// {{{ public function getState()
+
+
 
 	/**
 	 * Gets the current state of this tag entry control
@@ -191,8 +191,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		return $this->getSelectedTagArray();
 	}
 
-	// }}}
-	// {{{ public function setState()
+
+
 
 	/**
 	 * Sets the current state of this tag entry control
@@ -211,8 +211,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 			throw new SwatException('State must be an array');
 	}
 
-	// }}}
-	// {{{ public function getFocusableHtmlId()
+
+
 
 	/**
 	 * Gets the id attribute of the XHTML element displayed by this widget
@@ -229,8 +229,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		return ($this->visible) ? $this->id.'_value' : null;
 	}
 
-	// }}}
-	// {{{ public function setTagArray()
+
+
 
 	/**
 	 * Sets the array of tags that may be selected by this tag entry control
@@ -243,8 +243,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		$this->tag_array = $tag_array;
 	}
 
-	// }}}
-	// {{{ public function setSelectedTagArray()
+
+
 
 	/**
 	 * Sets the array of tags that are pre-selected for this photo
@@ -257,8 +257,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		$this->selected_tag_array = $tag_array;
 	}
 
-	// }}}
-	// {{{ public function getSelectedTagArray()
+
+
 
 	/**
 	 * Gets the array of tags selected by this tag entry control
@@ -274,8 +274,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		return $this->selected_tag_array;
 	}
 
-	// }}}
-	// {{{ protected function getCSSClassNames()
+
+
 
 	/**
 	 * Gets the array of CSS classes that are applied to this tag entry
@@ -290,8 +290,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		return $classes;
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScript()
+
+
 
 	/**
 	 * Gets the inline JavaScript for this tag entry control
@@ -357,8 +357,8 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScriptTranslations()
+
+
 
 	/**
 	 * Gets translatable string resources for the JavaScript object for
@@ -377,23 +377,23 @@ abstract class SiteTagEntry extends SwatInputControl implements SwatState
 			"SiteTagEntry.add_text    = {$add_text};\n";
 	}
 
-	// }}}
-	// {{{ protected function getJavaScriptClassName()
+
+
 
 	protected function getJavaScriptClassName()
 	{
 		return 'SiteTagEntry';
 	}
 
-	// }}}
-	// {{{ abstract protected function insertTag()
+
+
 
 	/**
 	 * Creates a new tag
 	 */
 	abstract protected function insertTag($title, $index);
 
-	// }}}
+
 }
 
 ?>

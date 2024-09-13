@@ -9,15 +9,15 @@
  */
 class SiteAdDetails extends AdminIndex
 {
-	// {{{ class constants
+
 
 	/**
 	 * Maximum number of top http referers to display
 	 */
 	const NUM_HTTP_REFERERS = 20;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var SiteAd
@@ -29,10 +29,10 @@ class SiteAdDetails extends AdminIndex
 	 */
 	protected $periods;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -50,8 +50,8 @@ class SiteAdDetails extends AdminIndex
 		$this->periods = ['day'      => Site::_('Day'), 'week'     => Site::_('Week'), 'two_week' => Site::_('2 Weeks'), 'month'    => Site::_('Month'), 'total'    => Site::_('Total')];
 	}
 
-	// }}}
-	// {{{ protected function initAd()
+
+
 
 	/**
 	 * @var integer $id
@@ -66,18 +66,18 @@ class SiteAdDetails extends AdminIndex
 		return $this->ad->load($id);
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/details.xml';
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -89,8 +89,8 @@ class SiteAdDetails extends AdminIndex
 		$this->buildHelp();
 	}
 
-	// }}}
-	// {{{ protected function buildHelp()
+
+
 
 	protected function buildHelp()
 	{
@@ -119,8 +119,8 @@ class SiteAdDetails extends AdminIndex
 		$help_note->content_type = 'text/xml';
 	}
 
-	// }}}
-	// {{{ protected function getTableModel()
+
+
 
 	protected function getTableModel(SwatView $view)
 	{
@@ -132,8 +132,8 @@ class SiteAdDetails extends AdminIndex
 		}
 	}
 
-	// }}}
-	// {{{ protected function getRefererPeriodTableModel()
+
+
 
 	protected function getReferrerPeriodTableModel()
 	{
@@ -154,8 +154,8 @@ class SiteAdDetails extends AdminIndex
 		return $store;
 	}
 
-	// }}}
-	// {{{ protected function getHttpReferersTableModel()
+
+
 
 	protected function getHttpReferersTableModel()
 	{
@@ -170,8 +170,8 @@ class SiteAdDetails extends AdminIndex
 		return SwatDB::query($this->app->db, $sql);
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -179,7 +179,7 @@ class SiteAdDetails extends AdminIndex
 		$this->navbar->addEntry(new SwatNavBarEntry($this->ad->title));
 	}
 
-	// }}}
+
 }
 
 ?>

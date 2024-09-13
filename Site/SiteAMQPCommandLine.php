@@ -21,7 +21,7 @@
  */
 abstract class SiteAMQPCommandLine
 {
-	// {{{ public static function fromXMLFile()
+
 
 	/**
 	 * Creates a command-line instance from the provided XML definition
@@ -44,8 +44,8 @@ abstract class SiteAMQPCommandLine
 		return $parser;
 	}
 
-	// }}}
-	// {{{ public static function fromXMLString()
+
+
 
 	/**
 	 * Creates a command-line instance from the provided XML definition
@@ -68,8 +68,8 @@ abstract class SiteAMQPCommandLine
 		return $parser;
 	}
 
-	// }}}
-	// {{{ protected static function addDefaultOptions()
+
+
 
 	/**
 	 * Adds required default options to a command-line parser if they do not
@@ -102,8 +102,8 @@ abstract class SiteAMQPCommandLine
 		}
 	}
 
-	// }}}
-	// {{{ protected static function addDefaultArguments()
+
+
 
 	/**
 	 * Adds required default arguments to a command-line parser if they do not
@@ -126,7 +126,7 @@ abstract class SiteAMQPCommandLine
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

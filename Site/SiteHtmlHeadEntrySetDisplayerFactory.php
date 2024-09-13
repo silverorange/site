@@ -10,7 +10,7 @@
  */
 class SiteHtmlHeadEntrySetDisplayerFactory
 {
-	// {{{ protected properties
+
 
 	/**
 	 * Indexed by application id
@@ -26,8 +26,8 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 	 */
 	protected $displayer_class = 'SwatHtmlHeadEntrySetDisplayer';
 
-	// }}}
-	// {{{ public function build()
+
+
 
 	public function build(SiteApplication $app)
 	{
@@ -67,23 +67,23 @@ class SiteHtmlHeadEntrySetDisplayerFactory
 		return $this->displayers[$app->id];
 	}
 
-	// }}}
-	// {{{ public function setDisplayerClass()
+
+
 
 	public function setDisplayerClass($class_name)
 	{
 		$this->displayer_class = $class_name;
 	}
 
-	// }}}
-	// {{{ public function getDisplayerClass()
+
+
 
 	public function getDisplayerClass()
 	{
 		return $this->displayer_class;
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -10,7 +10,7 @@
  */
 abstract class SiteCommentDisplay extends SwatControl
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var boolean
@@ -27,8 +27,8 @@ abstract class SiteCommentDisplay extends SwatControl
 	 */
 	public $comment_component = null;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var SiteComment
@@ -51,8 +51,8 @@ abstract class SiteCommentDisplay extends SwatControl
 	 */
 	protected $view;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($id = null)
 	{
@@ -73,24 +73,24 @@ abstract class SiteCommentDisplay extends SwatControl
 		);
 	}
 
-	// }}}
-	// {{{ public function setComment()
+
+
 
 	public function setComment(SiteComment $comment)
 	{
 		$this->comment = $comment;
 	}
 
-	// }}}
-	// {{{ public function setApplication()
+
+
 
 	public function setApplication(SiteApplication $app)
 	{
 		$this->app = $app;
 	}
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	public function display()
 	{
@@ -112,21 +112,21 @@ abstract class SiteCommentDisplay extends SwatControl
 		}
 	}
 
-	// }}}
-	// {{{ public function setView()
+
+
 
 	public function setView(SiteCommentView $view)
 	{
 		$this->view = $view;
 	}
 
-	// }}}
-	// {{{ abstract protected function displayHeader()
+
+
 
 	abstract protected function displayHeader();
 
-	// }}}
-	// {{{ protected function displayRow()
+
+
 
 	protected function displayRow()
 	{
@@ -149,8 +149,8 @@ abstract class SiteCommentDisplay extends SwatControl
 		$container_div->close();
 	}
 
-	// }}}
-	// {{{ protected function displayControls()
+
+
 
 	protected function displayControls()
 	{
@@ -163,8 +163,8 @@ abstract class SiteCommentDisplay extends SwatControl
 		}
 	}
 
-	// }}}
-	// {{{ protected function displayStatusSpan()
+
+
 
 	protected function displayStatusSpan()
 	{
@@ -190,8 +190,8 @@ abstract class SiteCommentDisplay extends SwatControl
 		$status_span->close();
 	}
 
-	// }}}
-	// {{{ protected function getView()
+
+
 
 	protected function getView()
 	{
@@ -206,8 +206,8 @@ abstract class SiteCommentDisplay extends SwatControl
 		return $this->view;
 	}
 
-	// }}}
-	// {{{ protected function getCSSClassNames()
+
+
 
 	/**
 	 * Gets the array of CSS classes that are applied to this comment display
@@ -223,8 +223,8 @@ abstract class SiteCommentDisplay extends SwatControl
 		return $classes;
 	}
 
-	// }}}
-	// {{{ protected function getVisibilityCssClassName()
+
+
 
 	protected function getVisibilityCssClassName()
 	{
@@ -250,8 +250,8 @@ abstract class SiteCommentDisplay extends SwatControl
 		return $class;
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScript()
+
+
 
 	/**
 	 * Gets the inline JavaScript required by this control
@@ -295,16 +295,16 @@ abstract class SiteCommentDisplay extends SwatControl
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function getJavaScriptClassName()
+
+
 
 	protected function getJavaScriptClassName()
 	{
 		return 'SiteCommentDisplay';
 	}
 
-	// }}}
-	// {{{ protected function getEditUri()
+
+
 
 	protected function getEditUri()
 	{
@@ -313,8 +313,8 @@ abstract class SiteCommentDisplay extends SwatControl
 			$this->comment->id);
 	}
 
-	// }}}
-	// {{{ protected function getCommentComponent()
+
+
 
 	protected function getCommentComponent()
 	{
@@ -324,8 +324,8 @@ abstract class SiteCommentDisplay extends SwatControl
 			return $this->comment_component;
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScriptTranslations()
+
+
 
 	/**
 	 * Gets translatable string resources for the JavaScript object for
@@ -380,7 +380,7 @@ abstract class SiteCommentDisplay extends SwatControl
 				"{$delete_confirmation_text};\n\n";
 	}
 
-	// }}}
+
 }
 
 ?>

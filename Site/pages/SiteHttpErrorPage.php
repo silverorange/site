@@ -6,15 +6,15 @@
  */
 class SiteHttpErrorPage extends SitePage
 {
-	// {{{ protected properties
+
 
 	protected $http_status_code = null;
 	protected $uri = null;
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -43,8 +43,8 @@ class SiteHttpErrorPage extends SitePage
 		}
 	}
 
-	// }}}
-	// {{{ public function setStatus()
+
+
 
 	/**
 	 * Sets the HTTP status code for this error page
@@ -56,10 +56,10 @@ class SiteHttpErrorPage extends SitePage
 		$this->http_status_code = (integer)$status;
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -74,8 +74,8 @@ class SiteHttpErrorPage extends SitePage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function display()
+
+
 
 	protected function display()
 	{
@@ -101,8 +101,8 @@ class SiteHttpErrorPage extends SitePage
 		echo '</p>';
 	}
 
-	// }}}
-	// {{{ protected function displaySuggestions()
+
+
 
 	protected function displaySuggestions()
 	{
@@ -123,8 +123,8 @@ class SiteHttpErrorPage extends SitePage
 		echo '</ul>';
 	}
 
-	// }}}
-	// {{{ protected function getSuggestions()
+
+
 
 	protected function getSuggestions()
 	{
@@ -142,8 +142,8 @@ class SiteHttpErrorPage extends SitePage
 			)];
 	}
 
-	// }}}
-	// {{{ protected function sendHttpStatusHeader()
+
+
 
 	protected function sendHttpStatusHeader()
 	{
@@ -164,8 +164,8 @@ class SiteHttpErrorPage extends SitePage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getTitle()
+
+
 
 	protected function getTitle()
 	{
@@ -182,8 +182,8 @@ class SiteHttpErrorPage extends SitePage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getSummary()
+
+
 
 	protected function getSummary()
 	{
@@ -202,10 +202,10 @@ class SiteHttpErrorPage extends SitePage
 		}
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -213,7 +213,7 @@ class SiteHttpErrorPage extends SitePage
 		$this->layout->addBodyClass('http-error-page');
 	}
 
-	// }}}
+
 }
 
 ?>

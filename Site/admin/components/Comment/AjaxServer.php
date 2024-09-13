@@ -9,7 +9,7 @@
  */
 abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 {
-	// {{{ public function spam()
+
 
 	/**
 	 * Marks a comment as spam
@@ -33,8 +33,8 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		return true;
 	}
 
-	// }}}
-	// {{{ public function notSpam()
+
+
 
 	/**
 	 * Marks a comment as not spam
@@ -57,8 +57,8 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		return true;
 	}
 
-	// }}}
-	// {{{ public function publish()
+
+
 
 	/**
 	 * Publishes a comment
@@ -81,8 +81,8 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		return true;
 	}
 
-	// }}}
-	// {{{ public function unpublish()
+
+
 
 	/**
 	 * Unpublishes a comment
@@ -105,8 +105,8 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		return true;
 	}
 
-	// }}}
-	// {{{ public function delete()
+
+
 
 	/**
 	 * Deletes a comment
@@ -126,13 +126,13 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		return true;
 	}
 
-	// }}}
-	// {{{ abstract protected function getPermalink()
+
+
 
 	abstract protected function getPermalink(SiteComment $comment);
 
-	// }}}
-	// {{{ protected function getAkismetComment()
+
+
 
 	protected function getAkismetComment(SiteComment $comment)
 	{
@@ -141,8 +141,8 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		);
 	}
 
-	// }}}
-	// {{{ protected function getComment()
+
+
 
 	protected function getComment($comment_id)
 	{
@@ -156,7 +156,7 @@ abstract class SiteCommentAjaxServer extends SiteXMLRPCServer
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

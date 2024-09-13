@@ -9,7 +9,7 @@
  */
 interface SiteTemplateInterface
 {
-	// {{{ public function display()
+
 
 	/**
 	 * Displays this template
@@ -18,8 +18,8 @@ interface SiteTemplateInterface
 	 */
 	public function display(SiteLayoutData $data);
 
-	// }}}
-	// {{{ public function asString()
+
+
 
 	/**
 	 * Gets this template rendered as a string
@@ -30,7 +30,7 @@ interface SiteTemplateInterface
 	 */
 	public function asString(SiteLayoutData $data);
 
-	// }}}
+
 }
 
 ?>

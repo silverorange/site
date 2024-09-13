@@ -7,7 +7,7 @@
  */
 abstract class SiteAbstractTemplate implements SiteTemplateInterface
 {
-	// {{{ public function asString()
+
 
 	public function asString(SiteLayoutData $data)
 	{
@@ -16,7 +16,6 @@ abstract class SiteAbstractTemplate implements SiteTemplateInterface
 		return ob_get_clean();
 	}
 
-	// {{{ public function getBaseUri()
 
 	public function getBaseUri()
 	{
@@ -29,7 +28,7 @@ abstract class SiteAbstractTemplate implements SiteTemplateInterface
 			: 'https://www.emrap.org';
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -9,15 +9,15 @@
  */
 class SitePathInvalidUtf8Exception extends SiteException
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var string
 	 */
 	protected $path = '';
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($message, $code = 0, $raw_path = '')
 	{
@@ -25,23 +25,23 @@ class SitePathInvalidUtf8Exception extends SiteException
 		$this->path = $raw_path;
 	}
 
-	// }}}
-	// {{{ public function getRawPath()
+
+
 
 	public function getRawPath()
 	{
 		return $this->path;
 	}
 
-	// }}}
-	// {{{ public function getEscapedPath()
+
+
 
 	public function getEscapedPath()
 	{
 		return SwatString::escapeBinary($this->getRawPath());
 	}
 
-	// }}}
+
 }
 
 ?>

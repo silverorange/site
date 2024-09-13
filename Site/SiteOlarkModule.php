@@ -9,7 +9,7 @@
  */
 class SiteOlarkModule extends SiteApplicationModule
 {
-	// {{{ public properties
+
 
 	/**
 	 * Locale strings
@@ -19,8 +19,8 @@ class SiteOlarkModule extends SiteApplicationModule
 	 */
 	public $locale_strings = [];
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * Olark site ID
@@ -29,8 +29,8 @@ class SiteOlarkModule extends SiteApplicationModule
 	 */
 	protected $site_id;
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	public function init()
 	{
@@ -38,8 +38,8 @@ class SiteOlarkModule extends SiteApplicationModule
 		$this->site_id = $config->olark->site_id;
 	}
 
-	// }}}
-	// {{{ public function displayScriptTag()
+
+
 
 	public function displayScriptTag()
 	{
@@ -84,7 +84,7 @@ class SiteOlarkModule extends SiteApplicationModule
 		// @codingStandardsIgnoreEnd
 	}
 
-	// }}}
+
 }
 
 ?>

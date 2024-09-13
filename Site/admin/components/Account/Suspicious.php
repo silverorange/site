@@ -10,7 +10,7 @@
 class SiteAccountSuspicious extends AdminIndex
 {
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -20,18 +20,18 @@ class SiteAccountSuspicious extends AdminIndex
 		$this->ui->loadFromXML($this->getUiXml());
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/suspicious.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processInternal()
+
 
 	protected function processInternal()
 	{
@@ -41,10 +41,10 @@ class SiteAccountSuspicious extends AdminIndex
 		$pager->process();
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -58,8 +58,8 @@ class SiteAccountSuspicious extends AdminIndex
 		}
 	}
 
-	// }}}
-	// {{{ protected function getTableModel()
+
+
 
 	protected function getTableModel(SwatView $view)
 	{
@@ -122,7 +122,7 @@ class SiteAccountSuspicious extends AdminIndex
 		return $store;
 	}
 
-	// }}}
+
 }
 
 ?>

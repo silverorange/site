@@ -9,7 +9,7 @@
  */
 class SiteAttachment extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * The unique identifier of this attachment
@@ -85,8 +85,8 @@ class SiteAttachment extends SwatDBDataObject
 	 */
 	public $createdate;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var string
@@ -107,8 +107,8 @@ class SiteAttachment extends SwatDBDataObject
 	 */
 	protected $file_base;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -121,24 +121,24 @@ class SiteAttachment extends SwatDBDataObject
 			SwatDBClassMap::get(SiteAttachmentSet::class));
 	}
 
-	// }}}
-	// {{{ public static function setCDNBase()
+
+
 
 	public static function setCDNBase($base)
 	{
 		self::$cdn_base = $base;
 	}
 
-	// }}}
-	// {{{ public function getFormattedFileSize()
+
+
 
 	public function getFormattedFileSize()
 	{
 		return SwatString::byteFormat($this->file_size, -1, false, 1);
 	}
 
-	// }}}
-	// {{{ public function getValidMimeTypes()
+
+
 
 	public function getValidMimeTypes()
 	{
@@ -147,8 +147,8 @@ class SiteAttachment extends SwatDBDataObject
 		return ['audio/mp4', 'video/mp4', 'audio/mpeg', 'application/zip', 'application/pdf', 'image/jpeg', 'image/png', 'text/html', 'application/msword', 'application/vnd.ms-excel', $ms_openxml_prefix.'.wordprocessingml.document', $ms_openxml_prefix.'.spreadsheetml.sheet'];
 	}
 
-	// }}}
-	// {{{ public function getExtension()
+
+
 
 	/**
 	 * Returns the extension of the attachment based on  mime type.
@@ -181,8 +181,8 @@ class SiteAttachment extends SwatDBDataObject
 		return $map[$mime_type];
 	}
 
-	// }}}
-	// {{{ public function getHumanFileType()
+
+
 
 	public function getHumanFileType($mime_type = null)
 	{
@@ -208,8 +208,8 @@ class SiteAttachment extends SwatDBDataObject
 		return $map[$mime_type];
 	}
 
-	// }}}
-	// {{{ public function getHumanFileTypes()
+
+
 
 	public function getHumanFileTypes(array $mime_types)
 	{
@@ -222,8 +222,8 @@ class SiteAttachment extends SwatDBDataObject
 		return $human_file_types;
 	}
 
-	// }}}
-	// {{{ public function getValidHumanFileTypes()
+
+
 
 	public function getValidHumanFileTypes()
 	{
@@ -232,8 +232,8 @@ class SiteAttachment extends SwatDBDataObject
 		);
 	}
 
-	// }}}
-	// {{{ public function getDownloadUri()
+
+
 
 	public function getDownloadUri($prefix = '')
 	{
@@ -243,8 +243,8 @@ class SiteAttachment extends SwatDBDataObject
 		return sprintf('%sattachment%s', $prefix, $this->id);
 	}
 
-	// }}}
-	// {{{ public function getUri()
+
+
 
 	public function getUri($prefix = '')
 	{
@@ -259,8 +259,8 @@ class SiteAttachment extends SwatDBDataObject
 		return $uri;
 	}
 
-	// }}}
-	// {{{ public function getUriSuffix()
+
+
 
 	public function getUriSuffix()
 	{
@@ -275,16 +275,16 @@ class SiteAttachment extends SwatDBDataObject
 		return $suffix;
 	}
 
-	// }}}
-	// {{{ public function setFileBase()
+
+
 
 	public function setFileBase($file_base)
 	{
 		$this->file_base = $file_base;
 	}
 
-	// }}}
-	// {{{ public function getFileDirectory()
+
+
 
 	public function getFileDirectory()
 	{
@@ -293,8 +293,8 @@ class SiteAttachment extends SwatDBDataObject
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
 
-	// }}}
-	// {{{ public function getFilePath()
+
+
 
 	public function getFilePath()
 	{
@@ -303,8 +303,8 @@ class SiteAttachment extends SwatDBDataObject
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
 
-	// }}}
-	// {{{ public function getFilename()
+
+
 
 	public function getFilename()
 	{
@@ -317,8 +317,8 @@ class SiteAttachment extends SwatDBDataObject
 		return sprintf('%s.%s', $prefix, $this->getExtension());
 	}
 
-	// }}}
-	// {{{ public function getHttpHeaders()
+
+
 
 	public function getHttpHeaders()
 	{
@@ -355,8 +355,8 @@ class SiteAttachment extends SwatDBDataObject
 		return $headers;
 	}
 
-	// }}}
-	// {{{ public function load()
+
+
 
 	public function load($id)
 	{
@@ -373,8 +373,8 @@ class SiteAttachment extends SwatDBDataObject
 		return $loaded;
 	}
 
-	// }}}
-	// {{{ public function process()
+
+
 
 	public function process($file_path)
 	{
@@ -409,8 +409,8 @@ class SiteAttachment extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function getAttachmentSet()
+
+
 
 	protected function getAttachmentSet()
 	{
@@ -443,16 +443,16 @@ class SiteAttachment extends SwatDBDataObject
 		return $this->attachment_set;
 	}
 
-	// }}}
-	// {{{ protected function getUriBase()
+
+
 
 	protected function getUriBase()
 	{
 		return 'attachments';
 	}
 
-	// }}}
-	// {{{ protected function getFileBase()
+
+
 
 	protected function getFileBase()
 	{
@@ -463,8 +463,8 @@ class SiteAttachment extends SwatDBDataObject
 		return $this->file_base;
 	}
 
-	// }}}
-	// {{{ protected function deleteInternal()
+
+
 
 	protected function deleteInternal()
 	{
@@ -481,8 +481,8 @@ class SiteAttachment extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function queueCdnTask()
+
+
 
 	/**
 	 * Queues a CDN task to be preformed later
@@ -507,7 +507,7 @@ class SiteAttachment extends SwatDBDataObject
 		$task->save();
 	}
 
-	// }}}
+
 }
 
 ?>

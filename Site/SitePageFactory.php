@@ -9,7 +9,7 @@
  */
 abstract class SitePageFactory
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteWebApplication
@@ -104,8 +104,8 @@ abstract class SitePageFactory
 	 */
 	protected $default_layout_class = 'SiteLayout';
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * @param SiteWebApplication $app
@@ -115,8 +115,8 @@ abstract class SitePageFactory
 		$this->app = $app;
 	}
 
-	// }}}
-	// {{{ abstract public function resolvePage()
+
+
 
 	/**
 	 * Resolves a page object from a source string
@@ -131,8 +131,8 @@ abstract class SitePageFactory
 	 */
 	abstract public function resolvePage($source, SiteLayout $layout = null);
 
-	// }}}
-	// {{{ protected function resolveLayout()
+
+
 
 	/**
 	 * Resolves the layout object to use for the instantiated page
@@ -148,8 +148,8 @@ abstract class SitePageFactory
 		return $this->instantiateLayout($this->default_layout_class);
 	}
 
-	// }}}
-	// {{{ protected function instantiatePage()
+
+
 
 	/**
 	 * Instantiates and returns a page object for the specified page class
@@ -183,8 +183,8 @@ abstract class SitePageFactory
 		return new $class($this->app, $layout, $arguments);
 	}
 
-	// }}}
-	// {{{ protected function instantiateLayout()
+
+
 
 	/**
 	 * Instantiates and returns a layout object for the specified layout class
@@ -214,8 +214,8 @@ abstract class SitePageFactory
 		return new $class($this->app, $filename);
 	}
 
-	// }}}
-	// {{{ protected function loadPageClass()
+
+
 
 	/**
 	 * This method handles automagically requiring the correct class definition
@@ -235,8 +235,8 @@ abstract class SitePageFactory
 			$this->page_class_map);
 	}
 
-	// }}}
-	// {{{ protected function loadLayoutClass()
+
+
 
 	/**
 	 * This method handles automagically requiring the correct class definition
@@ -256,8 +256,8 @@ abstract class SitePageFactory
 			$this->layout_class_map);
 	}
 
-	// }}}
-	// {{{ protected function loadClass()
+
+
 
 	/**
 	 * This method handles automagically requiring a class definition file
@@ -283,8 +283,8 @@ abstract class SitePageFactory
 		}
 	}
 
-	// }}}
-	// {{{ protected function isPage()
+
+
 
 	protected function isPage($class)
 	{
@@ -292,8 +292,8 @@ abstract class SitePageFactory
 		return ($class === SitePage::class || is_subclass_of($class, SitePage::class));
 	}
 
-	// }}}
-	// {{{ protected function isDecorator()
+
+
 
 	protected function isDecorator($class)
 	{
@@ -301,8 +301,8 @@ abstract class SitePageFactory
 		return (is_subclass_of($class, SitePageDecorator::class));
 	}
 
-	// }}}
-	// {{{ protected function isLayout()
+
+
 
 	protected function isLayout($class)
 	{
@@ -311,8 +311,8 @@ abstract class SitePageFactory
 			is_subclass_of($class, SiteLayout::class));
 	}
 
-	// }}}
-	// {{{ protected function decorate()
+
+
 
 	/**
 	 * Creates and returns a page decorator for the specified decorator class
@@ -340,7 +340,7 @@ abstract class SitePageFactory
 		return new $class($page);
 	}
 
-	// }}}
+
 }
 
 ?>

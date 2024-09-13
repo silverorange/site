@@ -9,15 +9,15 @@
  */
 abstract class SiteCommentIndex extends AdminPage
 {
-	// {{{ class constants
+
 
 	const SHOW_UNAPPROVED = 1;
 	const SHOW_ALL        = 2;
 	const SHOW_ALL_SPAM   = 3;
 	const SHOW_SPAM       = 4;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var SiteCommentDisplay
@@ -34,10 +34,10 @@ abstract class SiteCommentIndex extends AdminPage
 	 */
 	protected $comments;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -60,24 +60,24 @@ abstract class SiteCommentIndex extends AdminPage
 		$this->initCommentReplicator();
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/index.xml';
 	}
 
-	// }}}
-	// {{{ protected function getTable()
+
+
 
 	protected function getTable()
 	{
 		return 'Comment';
 	}
 
-	// }}}
-	// {{{ protected function initComments()
+
+
 
 	protected function initComments()
 	{
@@ -129,23 +129,23 @@ abstract class SiteCommentIndex extends AdminPage
 		}
 	}
 
-	// }}}
-	// {{{ abstract protected function getCommentDisplayWidget()
+
+
 
 	abstract protected function getCommentDisplayWidget();
 
-	// }}}
-	// {{{ abstract protected function getCommentCount()
+
+
 
 	abstract protected function getCommentCount();
 
-	// }}}
-	// {{{ abstract protected function getComments()
+
+
 
 	abstract protected function getComments($limit = null, $offset = null);
 
-	// }}}
-	// {{{ protected function initCommentReplicator()
+
+
 
 	protected function initCommentReplicator()
 	{
@@ -155,8 +155,8 @@ abstract class SiteCommentIndex extends AdminPage
 		$replicator->replication_ids = array_keys($this->comments);
 	}
 
-	// }}}
-	// {{{ protected function processSearchUi()
+
+
 
 	protected function processSearchUi()
 	{
@@ -177,8 +177,8 @@ abstract class SiteCommentIndex extends AdminPage
 		$this->ui->getWidget('pager')->process();
 	}
 
-	// }}}
-	// {{{ protected function getWhereClause()
+
+
 
 	protected function getWhereClause()
 	{
@@ -230,8 +230,8 @@ abstract class SiteCommentIndex extends AdminPage
 		return $this->where_clause;
 	}
 
-	// }}}
-	// {{{ protected function getAuthorWhereClause()
+
+
 
 	protected function getAuthorWhereClause()
 	{
@@ -249,26 +249,26 @@ abstract class SiteCommentIndex extends AdminPage
 		return $where;
 	}
 
-	// }}}
-	// {{{ protected function getDefaultVisibilityValue()
+
+
 
 	protected function getDefaultVisibilityValue()
 	{
 		return self::SHOW_ALL;
 	}
 
-	// }}}
-	// {{{ protected function getVisibilityOptions()
+
+
 
 	protected function getVisibilityOptions()
 	{
 		return [self::SHOW_UNAPPROVED => Site::_('Pending Comments'), self::SHOW_ALL        => Site::_('All Comments'), self::SHOW_ALL_SPAM   => Site::_('All Comments, Including Spam'), self::SHOW_SPAM       => Site::_('Spam Only')];
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function clearState()
+
 
 	/**
 	 * Clears a saved search state
@@ -280,8 +280,8 @@ abstract class SiteCommentIndex extends AdminPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function saveState()
+
+
 
 	protected function saveState()
 	{
@@ -290,8 +290,8 @@ abstract class SiteCommentIndex extends AdminPage
 		$this->app->session->{$this->getKey()} = $search_state;
 	}
 
-	// }}}
-	// {{{ protected function loadState()
+
+
 
 	/**
 	 * Loads a saved search state for this page
@@ -317,8 +317,8 @@ abstract class SiteCommentIndex extends AdminPage
 		return $return;
 	}
 
-	// }}}
-	// {{{ protected function hasState()
+
+
 
 	/**
 	 * Checks if this search page has stored search information
@@ -331,18 +331,18 @@ abstract class SiteCommentIndex extends AdminPage
 		return isset($this->app->session->{$this->getKey()});
 	}
 
-	// }}}
-	// {{{ protected function getKey()
+
+
 
 	protected function getKey()
 	{
 		return $this->source.'_search_state';
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -352,8 +352,8 @@ abstract class SiteCommentIndex extends AdminPage
 		$this->buildCommentReplicator();
 	}
 
-	// }}}
-	// {{{ protected function buildCommentReplicator()
+
+
 
 	protected function buildCommentReplicator()
 	{
@@ -364,8 +364,8 @@ abstract class SiteCommentIndex extends AdminPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildSearchForm()
+
+
 
 	protected function buildSearchForm()
 	{
@@ -373,7 +373,7 @@ abstract class SiteCommentIndex extends AdminPage
 		$form->action = $this->source;
 	}
 
-	// }}}
+
 }
 
 ?>

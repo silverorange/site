@@ -10,7 +10,7 @@
  */
 class SiteErrorLogger extends SwatErrorLogger
 {
-	// {{{ protected properties
+
 
 	/**
 	 * Location in which to store detailed error logs
@@ -57,8 +57,8 @@ class SiteErrorLogger extends SwatErrorLogger
 	 */
 	protected $directory;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new error logger
@@ -80,8 +80,8 @@ class SiteErrorLogger extends SwatErrorLogger
 		$this->directory    = date('Y-m-d');
 	}
 
-	// }}}
-	// {{{ public function log()
+
+
 
 	/**
 	 * Logs an error
@@ -117,8 +117,8 @@ class SiteErrorLogger extends SwatErrorLogger
 		$this->logSummary($this->getSummary($e));
 	}
 
-	// }}}
-	// {{{ protected function filter()
+
+
 
 	protected function filter(SwatError $e)
 	{
@@ -131,40 +131,40 @@ class SiteErrorLogger extends SwatErrorLogger
 		return false;
 	}
 
-	// }}}
-	// {{{ protected function logSummary()
+
+
 
 	protected function logSummary($summary)
 	{
 		error_log($summary, 0);
 	}
 
-	// }}}
-	// {{{ protected function getLogPath()
+
+
 
 	protected function getLogPath()
 	{
 		return $this->log_location.'/'.$this->directory;
 	}
 
-	// }}}
-	// {{{ protected function getLogFilename()
+
+
 
 	protected function getLogFilename()
 	{
 		return 'error-'.$this->id.'.html';
 	}
 
-	// }}}
-	// {{{ protected function getLogFilePath()
+
+
 
 	protected function getLogFilePath()
 	{
 		return $this->getLogPath().'/'.$this->getLogFilename();
 	}
 
-	// }}}
-	// {{{ protected function getSummary()
+
+
 
 	protected function getSummary(SwatError $e)
 	{
@@ -178,8 +178,8 @@ class SiteErrorLogger extends SwatErrorLogger
 		return $summary;
 	}
 
-	// }}}
-	// {{{ protected function getBody()
+
+
 
 	protected function getBody(SwatError $e)
 	{
@@ -235,7 +235,7 @@ class SiteErrorLogger extends SwatErrorLogger
 		return ob_get_clean();
 	}
 
-	// }}}
+
 }
 
 ?>

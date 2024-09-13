@@ -4,7 +4,7 @@ require_once __DIR__.'/vendor/autoload.php';
 
 class AMQPTestClient extends SiteCommandLineApplication
 {
-	// {{{ public function run()
+
 
 	public function run()
 	{
@@ -37,15 +37,15 @@ class AMQPTestClient extends SiteCommandLineApplication
 		$this->debug("done\n", true);
 	}
 
-	// }}}
-	// {{{ protected function getDefaultModuleList()
+
+
 
 	protected function getDefaultModuleList()
 	{
 		return ['config' => 'SiteConfigModule', 'amqp'   => 'SiteAMQPModule'];
 	}
 
-	// }}}
+
 }
 
 ?>

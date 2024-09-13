@@ -10,7 +10,7 @@
  */
 class SiteAdWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -19,7 +19,7 @@ class SiteAdWrapper extends SwatDBRecordsetWrapper
 		$this->row_wrapper_class = SwatDBClassMap::get(SiteAd::class);
 	}
 
-	// }}}
+
 }
 
 ?>

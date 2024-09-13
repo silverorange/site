@@ -10,30 +10,30 @@
  */
 class SiteConfigPage extends SiteAbstractConfigPage
 {
-	// {{{ public function getPageTitle()
+
 
 	public function getPageTitle()
 	{
 		return 'Site Settings';
 	}
 
-	// }}}
-	// {{{ public function getConfigSettings()
+
+
 
 	public function getConfigSettings()
 	{
 		return ['site' => ['title', 'meta_description'], 'date' => ['time_zone']];
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/config-page.xml';
 	}
 
-	// }}}
+
 }
 
 ?>

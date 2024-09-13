@@ -22,7 +22,7 @@
  */
 abstract class SiteAMQPApplication extends SiteApplication
 {
-	// {{{ class constants
+
 
 	/**
 	 * How long to wait when the queue is empty before checking again
@@ -31,8 +31,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 	 */
 	const WORK_LOOP_TIMEOUT = 100;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * The AMQP queue name of this application
@@ -65,8 +65,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 	 */
 	protected $channel = null;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new AMQP application
@@ -92,8 +92,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 		$this->parser = $parser;
 	}
 
-	// }}}
-	// {{{ public function __invoke()
+
+
 
 	/**
 	 * Runs this application
@@ -154,8 +154,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	/**
 	 * Runs this application
@@ -169,8 +169,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 		$this();
 	}
 
-	// }}}
-	// {{{ public function handleSignal()
+
+
 
 	/**
 	 * Handles signals sent to this process
@@ -188,8 +188,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ abstract protected function doWork()
+
+
 
 	/**
 	 * Completes a job
@@ -200,8 +200,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 	 */
 	abstract protected function doWork(SiteAMQPJob $job);
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	/**
 	 * Performs any initilization of this application
@@ -215,8 +215,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 	{
 	}
 
-	// }}}
-	// {{{ protected function work()
+
+
 
 	/**
 	 * Enters this application into the work-listen loop
@@ -269,8 +269,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function canWork()
+
+
 
 	/**
 	 * Provides a place for subclasses to add application-specific timeouts
@@ -289,8 +289,8 @@ abstract class SiteAMQPApplication extends SiteApplication
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function handleSigTerm()
+
+
 
 	/**
 	 * Provides a safe shutdown function
@@ -309,7 +309,7 @@ abstract class SiteAMQPApplication extends SiteApplication
 		exit();
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -8,7 +8,7 @@
  */
 class SiteImageSet extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier
@@ -40,8 +40,8 @@ class SiteImageSet extends SwatDBDataObject
 	 */
 	public $use_cdn;
 
-	// }}}
-	// {{{ public function loadByShortname()
+
+
 
 	/**
 	 * Loads a set from the database with a shortname
@@ -74,8 +74,8 @@ class SiteImageSet extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ public function hasDimension()
+
+
 
 	/**
 	 * Checks existance of a dimension by its shortname
@@ -98,8 +98,8 @@ class SiteImageSet extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ public function getDimensionByShortname()
+
+
 
 	/**
 	 * Gets a dimension of this set based on its shortname
@@ -118,8 +118,8 @@ class SiteImageSet extends SwatDBDataObject
 			$shortname));
 	}
 
-	// }}}
-	// {{{ public function getPlaceholderImage()
+
+
 
 	/**
 	 * Gets a placeholder image tag for a specific dimension
@@ -141,8 +141,8 @@ class SiteImageSet extends SwatDBDataObject
 		return $img_tag;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -150,26 +150,26 @@ class SiteImageSet extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
-	// {{{ protected function getImageDimensionClassName()
+
+
 
 	protected function getImageDimensionWrapperClassName()
 	{
 		return SwatDBClassMap::get(SiteImageDimensionWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getSerializableSubdataobjects()
+
+
 
 	protected function getSerializableSubdataobjects()
 	{
 		return ['dimensions'];
 	}
 
-	// }}}
+
 
 	// loader methods
-	// {{{ protected function loadDimensions()
+
 
 	/**
 	 * Loads the dimensions belonging to this set
@@ -189,7 +189,7 @@ class SiteImageSet extends SwatDBDataObject
 		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -8,7 +8,7 @@
  */
 class SiteAudioMedia extends SiteMedia
 {
-	// {{{ class constants
+
 
 	/**
 	 * Starting offset in seconds to look for pts_time packets with ffprobe
@@ -18,8 +18,8 @@ class SiteAudioMedia extends SiteMedia
 	 */
 	const FFPROBE_DEFAULT_OFFSET = 432000; // 12 hours
 
-	// }}}
-	// {{{ public function getFormattedDuration()
+
+
 
 	/**
 	 * Returns the duration of the media in a human readable format.
@@ -49,10 +49,10 @@ class SiteAudioMedia extends SiteMedia
 			$seconds);
 	}
 
-	// }}}
+
 
 	// Processing methods
-	// {{{ public function process()
+
 
 	public function process(SiteApplication $app, $file_path)
 	{
@@ -91,8 +91,8 @@ class SiteAudioMedia extends SiteMedia
 		}
 	}
 
-	// }}}
-	// {{{ public function parseDuration()
+
+
 
 	public function parseDuration(SiteApplication $app, $file_path)
 	{
@@ -177,8 +177,8 @@ class SiteAudioMedia extends SiteMedia
 		return $duration;
 	}
 
-	// }}}
-	// {{{ protected function processEncoding()
+
+
 
 	protected function processEncoding($file_path, SiteMediaEncoding $encoding)
 	{
@@ -207,8 +207,8 @@ class SiteAudioMedia extends SiteMedia
 		$this->encoding_bindings->add($binding);
 	}
 
-	// }}}
-	// {{{ protected function parseMp3Duration()
+
+
 
 	protected function parseMp3Duration($file_path, $offset)
 	{
@@ -261,10 +261,10 @@ class SiteAudioMedia extends SiteMedia
 		return $duration;
 	}
 
-	// }}}
+
 
 	// File and URI methods
-	// {{{ public function getContentDispositionFilename()
+
 
 	public function getContentDispositionFilename($encoding_shortname)
 	{
@@ -278,7 +278,7 @@ class SiteAudioMedia extends SiteMedia
 		return $filename;
 	}
 
-	// }}}
+
 }
 
 ?>

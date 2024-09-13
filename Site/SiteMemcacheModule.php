@@ -22,7 +22,7 @@
  */
 class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsFlushable
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var string
@@ -34,8 +34,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 	 */
 	public $app_ns = '';
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var Memcache
@@ -52,8 +52,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 	 */
 	protected $ns_id_cache = [];
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	public function init()
 	{
@@ -83,8 +83,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		}
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -105,10 +105,10 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $depends;
 	}
 
-	// }}}
+
 
 	// storage and retrieval
-	// {{{ public function add()
+
 
 	public function add($key, $value, $expiration = 0)
 	{
@@ -119,8 +119,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->memcached->add($key, $value, $expiration);
 	}
 
-	// }}}
-	// {{{ public function set()
+
+
 
 	public function set($key, $value = null, $expiration = 0)
 	{
@@ -144,8 +144,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $return;
 	}
 
-	// }}}
-	// {{{ public function replace()
+
+
 
 	public function replace($key, $value, $expiration = 0)
 	{
@@ -156,8 +156,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->memcached->replace($key, $value, $expiration);
 	}
 
-	// }}}
-	// {{{ public function get()
+
+
 
 	public function get($key, $cache_cb = null, &$cas_token = null)
 	{
@@ -181,8 +181,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $value;
 	}
 
-	// }}}
-	// {{{ public function delete()
+
+
 
 	public function delete($key, $time = 0)
 	{
@@ -193,8 +193,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->memcached->delete($key, $time);
 	}
 
-	// }}}
-	// {{{ public function increment()
+
+
 
 	public function increment($key, $offset = 1)
 	{
@@ -205,8 +205,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->memcached->increment($key, $offset);
 	}
 
-	// }}}
-	// {{{ public function decrement()
+
+
 
 	public function decrement($key, $offset = 1)
 	{
@@ -217,10 +217,10 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->memcached->decrement($key, $offset);
 	}
 
-	// }}}
+
 
 	// namespaces
-	// {{{ public function addNs()
+
 
 	public function addNs($ns, $key, $value, $expiration = 0)
 	{
@@ -228,8 +228,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->add($key, $value, $expiration);
 	}
 
-	// }}}
-	// {{{ public function setNs()
+
+
 
 	public function setNs($ns, $key, $value, $expiration = 0)
 	{
@@ -237,8 +237,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->set($key, $value, $expiration);
 	}
 
-	// }}}
-	// {{{ public function replaceNs()
+
+
 
 	public function replaceNs($ns, $key, $value, $expiration = 0)
 	{
@@ -246,8 +246,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->replace($key, $value, $expiration);
 	}
 
-	// }}}
-	// {{{ public function getNs()
+
+
 
 	public function getNs($ns, $key, $cache_cb = null, &$cas_token = null)
 	{
@@ -262,8 +262,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->get($key, $cache_cb, $cas_token);
 	}
 
-	// }}}
-	// {{{ public function deleteNs()
+
+
 
 	public function deleteNs($ns, $key, $time = 0)
 	{
@@ -271,8 +271,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->delete($key, $time);
 	}
 
-	// }}}
-	// {{{ public function flushNs()
+
+
 
 	/**
 	 * Flushes the cache for a single namespace
@@ -288,8 +288,8 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		}
 	}
 
-	// }}}
-	// {{{ protected function getNsKey()
+
+
 
 	protected function getNsKey($ns, $key)
 	{
@@ -306,10 +306,10 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $ns.'_'.$id.'_'.$key;
 	}
 
-	// }}}
+
 
 	// general
-	// {{{ public function setInstance()
+
 
 	/**
 	 * Manually specify the instance for the memcache module
@@ -337,24 +337,24 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		$this->key_prefix.= $shortname.'_';
 	}
 
-	// }}}
-	// {{{ public function flush()
+
+
 
 	public function flush($delay = 0)
 	{
 		return $this->memcached->flush($delay);
 	}
 
-	// }}}
-	// {{{ public function getStats()
+
+
 
 	public function getStats()
 	{
 		return $this->memcached->getStats();
 	}
 
-	// }}}
-	// {{{ protected function enabled()
+
+
 
 	/**
 	 * Whether memcache is currently enabled on the site
@@ -366,7 +366,7 @@ class SiteMemcacheModule extends SiteApplicationModule implements SwatDBCacheNsF
 		return $this->app->config->memcache->enabled;
 	}
 
-	// }}}
+
 }
 
 ?>

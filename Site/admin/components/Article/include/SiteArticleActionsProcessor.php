@@ -12,7 +12,7 @@
  */
 class SiteArticleActionsProcessor
 {
-	// {{{ protected properties
+
 
 	/**
 	 * A reference to the page that is using this action processor
@@ -21,8 +21,8 @@ class SiteArticleActionsProcessor
 	 */
 	protected $page;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new article action processor
@@ -34,8 +34,8 @@ class SiteArticleActionsProcessor
 		$this->page = $page;
 	}
 
-	// }}}
-	// {{{ public function process()
+
+
 
 	/**
 	 * Processes actions on articles
@@ -135,15 +135,15 @@ class SiteArticleActionsProcessor
 		}
 	}
 
-	// }}}
-	// {{{ public static function getActions()
+
+
 
 	public static function getActions()
 	{
 		return ['enable' => Site::_('enable'), 'disable' => Site::_('disable'), 'show_in_menu' => Site::_('show in menu'), 'hide_from_menu' => Site::_('hide from menu'), 'show_in_search' => Site::_('show in search'), 'hide_from_search' => Site::_('hide from search')];
 	}
 
-	// }}}
+
 }
 
 ?>

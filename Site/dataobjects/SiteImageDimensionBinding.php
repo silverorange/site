@@ -8,7 +8,7 @@
  */
 class SiteImageDimensionBinding extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Width
@@ -65,8 +65,8 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	 */
 	public $image;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * Image field name
@@ -75,13 +75,13 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 	 */
 	protected $image_field = 'image';
 
-	// }}}
-	// {{{ private properties
+
+
 
 	private static $image_type_cache = [];
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -91,8 +91,8 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 			SwatDBClassMap::get(SiteImageType::class));
 	}
 
-	// }}}
-	// {{{ protected function hasSubDataObject()
+
+
 
 	protected function hasSubDataObject($key)
 	{
@@ -113,8 +113,8 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function setSubDataObject()
+
+
 
 	protected function setSubDataObject($name, $value)
 	{
@@ -124,8 +124,8 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 		parent::setSubDataObject($name, $value);
 	}
 
-	// }}}
-	// {{{ protected function saveInternal()
+
+
 
 	/**
 	 * Saves this object to the database
@@ -145,15 +145,15 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 		parent::saveInternal();
 	}
 
-	// }}}
-	// {{{ protected function getSerializablePrivateProperties()
+
+
 
 	protected function getSerializablePrivateProperties()
 	{
 		return array_merge(parent::getSerializablePrivateProperties(), ['image_type']);
 	}
 
-	// }}}
+
 }
 
 ?>

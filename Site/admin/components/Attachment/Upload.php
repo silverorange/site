@@ -9,30 +9,30 @@
  */
 abstract class SiteAttachmentUpload extends AdminObjectEdit
 {
-	// {{{ abstract protected function getFileBase()
+
 
 	abstract protected function getFileBase();
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/upload.xml';
 	}
 
-	// }}}
-	// {{{ protected function getObjectUiValueNames()
+
+
 
 	protected function getObjectUiValueNames()
 	{
 		return ['title'];
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -42,8 +42,8 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 		$this->initUploadWidget();
 	}
 
-	// }}}
-	// {{{ protected function checkAttachmentClass()
+
+
 
 	protected function checkAttachmentClass()
 	{
@@ -54,8 +54,8 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function initUploadWidget()
+
+
 
 	protected function initUploadWidget()
 	{
@@ -68,10 +68,10 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function updateObject()
+
 
 	protected function updateObject()
 	{
@@ -90,8 +90,8 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 		$attachment->process($upload_widget->getTempFileName());
 	}
 
-	// }}}
-	// {{{ protected function getSavedMessagePrimaryContent()
+
+
 
 	protected function getSavedMessagePrimaryContent()
 	{
@@ -112,18 +112,18 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 		return $content;
 	}
 
-	// }}}
-	// {{{ protected function getHumanFilename()
+
+
 
 	protected function getHumanFilename()
 	{
 		return '';
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildFrame()
+
 
 	protected function buildFrame()
 	{
@@ -133,8 +133,8 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 			Site::_('Upload Attachment');
 	}
 
-	// }}}
-	// {{{ protected function buildButton()
+
+
 
 	protected function buildButton()
 	{
@@ -142,8 +142,8 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 			Site::_('Upload Attachment');
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -153,7 +153,7 @@ abstract class SiteAttachmentUpload extends AdminObjectEdit
 		$this->navbar->createEntry(Site::_('Upload Attachment'));
 	}
 
-	// }}}
+
 }
 
 ?>

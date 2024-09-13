@@ -7,7 +7,7 @@
  */
 class SiteXMLRPCServerTemplate extends SiteAbstractTemplate
 {
-	// {{{ public function display()
+
 
 	public function display(SiteLayoutData $data)
 	{
@@ -28,7 +28,7 @@ class SiteXMLRPCServerTemplate extends SiteAbstractTemplate
 		echo $data->response;
 	}
 
-	// }}}
+
 }
 
 ?>

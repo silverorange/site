@@ -10,7 +10,7 @@
  */
 class SiteMedia extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * The base uri for CDN hosted media
@@ -82,8 +82,8 @@ class SiteMedia extends SwatDBDataObject
 	 */
 	public $createdate;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var string
@@ -95,8 +95,8 @@ class SiteMedia extends SwatDBDataObject
 	 */
 	protected $media_set_shortname;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -109,8 +109,8 @@ class SiteMedia extends SwatDBDataObject
 			SwatDBClassMap::get(SiteMediaSet::class));
 	}
 
-	// }}}
-	// {{{ public function getTitle()
+
+
 
 	/**
 	 * Returns the title of the media object.
@@ -122,8 +122,8 @@ class SiteMedia extends SwatDBDataObject
 		return $this->title;
 	}
 
-	// }}}
-	// {{{ public function getFormattedDuration()
+
+
 
 	/**
 	 * Returns the duration of the media in a human readable format.
@@ -187,16 +187,16 @@ class SiteMedia extends SwatDBDataObject
 		);
 	}
 
-	// }}}
-	// {{{ public function isDownloadable()
+
+
 
 	public function isDownloadable()
 	{
 		return $this->downloadable;
 	}
 
-	// }}}
-	// {{{ public function encodingExists()
+
+
 
 	public function encodingExists($encoding_shortname)
 	{
@@ -205,8 +205,8 @@ class SiteMedia extends SwatDBDataObject
 		return ($binding instanceof SiteMediaEncodingBinding);
 	}
 
-	// }}}
-	// {{{ public function getDownloadUri()
+
+
 
 	public function getDownloadUri($encoding_shortname = null, $prefix = null)
 	{
@@ -222,8 +222,8 @@ class SiteMedia extends SwatDBDataObject
 		return sprintf('%smedia%s', $prefix, $id);
 	}
 
-	// }}}
-	// {{{ public function getMimeType()
+
+
 
 	public function getMimeType($encoding_shortname)
 	{
@@ -238,8 +238,8 @@ class SiteMedia extends SwatDBDataObject
 		return $binding->media_type->mime_type;
 	}
 
-	// }}}
-	// {{{ public function getMimeTypes()
+
+
 
 	public function getMimeTypes()
 	{
@@ -252,8 +252,8 @@ class SiteMedia extends SwatDBDataObject
 		return $types;
 	}
 
-	// }}}
-	// {{{ public function getValidMediaTypes()
+
+
 
 	public function getValidMediaTypes()
 	{
@@ -266,8 +266,8 @@ class SiteMedia extends SwatDBDataObject
 		return $types;
 	}
 
-	// }}}
-	// {{{ public function getHumanFileType()
+
+
 
 	public function getHumanFileType($encoding_shortname = null)
 	{
@@ -286,8 +286,8 @@ class SiteMedia extends SwatDBDataObject
 		return $binding->getHumanFileType();
 	}
 
-	// }}}
-	// {{{ public function getFileSize()
+
+
 
 	public function getFileSize($encoding_shortname = null)
 	{
@@ -306,8 +306,8 @@ class SiteMedia extends SwatDBDataObject
 		return $binding->filesize;
 	}
 
-	// }}}
-	// {{{ public function getFormattedFileSize()
+
+
 
 	public function getFormattedFileSize($encoding_shortname = null)
 	{
@@ -326,8 +326,8 @@ class SiteMedia extends SwatDBDataObject
 		return $binding->getFormattedFileSize();
 	}
 
-	// }}}
-	// {{{ public function getLargestEncodingBinding()
+
+
 
 	public function getLargestEncodingBinding()
 	{
@@ -346,8 +346,8 @@ class SiteMedia extends SwatDBDataObject
 		return $largest;
 	}
 
-	// }}}
-	// {{{ public function getEncodingBinding()
+
+
 
 	public function getEncodingBinding($encoding_shortname)
 	{
@@ -366,8 +366,8 @@ class SiteMedia extends SwatDBDataObject
 		return null;
 	}
 
-	// }}}
-	// {{{ public function setOnCdn()
+
+
 
 	/**
 	 * Sets the on_cdn column on the media encoding binding
@@ -392,8 +392,8 @@ class SiteMedia extends SwatDBDataObject
 		SwatDB::exec($this->db, $sql);
 	}
 
-	// }}}
-	// {{{ public function encodingOnCdn()
+
+
 
 	/**
 	 * Checks whether a media encoding binding exists on the cdn
@@ -415,8 +415,8 @@ class SiteMedia extends SwatDBDataObject
 		return $on_cdn;
 	}
 
-	// }}}
-	// {{{ public function load()
+
+
 
 	public function load($id)
 	{
@@ -433,8 +433,8 @@ class SiteMedia extends SwatDBDataObject
 		return $loaded;
 	}
 
-	// }}}
-	// {{{ public function loadByKey()
+
+
 
 	/**
 	 * Loads a media object from its key
@@ -474,8 +474,8 @@ class SiteMedia extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
-	// {{{ public function loadByPathKey()
+
+
 
 	/**
 	 * Loads a media object from its path key
@@ -512,8 +512,8 @@ class SiteMedia extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function loadEncodingBindings()
+
+
 
 	protected function loadEncodingBindings()
 	{
@@ -526,42 +526,42 @@ class SiteMedia extends SwatDBDataObject
 			$this->getMediaEncodingBindingWrapperClass());
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingBindingWrapperClass()
+
+
 
 	protected function getMediaEncodingBindingWrapperClass()
 	{
 		return SwatDBClassMap::get(SiteMediaEncodingBindingWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingBindingsOrderBy()
+
+
 
 	protected function getMediaEncodingBindingsOrderBy()
 	{
 		return '';
 	}
 
-	// }}}
-	// {{{ protected function getSerializableSubDataObjects()
+
+
 
 	protected function getSerializableSubDataObjects()
 	{
 		return ['media_set', 'encoding_bindings'];
 	}
 
-	// }}}
-	// {{{ protected function getSerializablePrivateProperties()
+
+
 
 	protected function getSerializablePrivateProperties()
 	{
 		return array_merge(parent::getSerializablePrivateProperties(), ['media_set_shortname']);
 	}
 
-	// }}}
+
 
 	// Processing methods
-	// {{{ protected function deleteInternal()
+
 
 	/**
 	 * Deletes this object from the database and any media files
@@ -578,8 +578,8 @@ class SiteMedia extends SwatDBDataObject
 		$this->deleteLocalFiles($local_files);
 	}
 
-	// }}}
-	// {{{ protected function deleteCdnFiles()
+
+
 
 	protected function deleteCdnFiles()
 	{
@@ -593,8 +593,8 @@ class SiteMedia extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function getLocalFilenamesToDelete()
+
+
 
 	/**
 	 * Gets an array of files names to delete when deleting this object
@@ -616,8 +616,8 @@ class SiteMedia extends SwatDBDataObject
 		return $filenames;
 	}
 
-	// }}}
-	// {{{ protected function deleteLocalFiles()
+
+
 
 	/**
 	 * Deletes each file in a given set of filenames
@@ -633,8 +633,8 @@ class SiteMedia extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function queueCdnTask()
+
+
 
 	/**
 	 * Queues a CDN task to be preformed later
@@ -671,8 +671,8 @@ class SiteMedia extends SwatDBDataObject
 		$task->save();
 	}
 
-	// }}}
-	// {{{ protected function getMediaSet()
+
+
 
 	protected function getMediaSet()
 	{
@@ -699,10 +699,10 @@ class SiteMedia extends SwatDBDataObject
 		return $this->media_set;
 	}
 
-	// }}}
+
 
 	// File and URI methods
-	// {{{ public function getUri()
+
 
 	public function getUri($shortname, $prefix = '')
 	{
@@ -721,8 +721,8 @@ class SiteMedia extends SwatDBDataObject
 		return $uri;
 	}
 
-	// }}}
-	// {{{ public function getUriSuffix()
+
+
 
 	public function getUriSuffix($encoding_shortname)
 	{
@@ -738,16 +738,16 @@ class SiteMedia extends SwatDBDataObject
 		return $suffix;
 	}
 
-	// }}}
-	// {{{ public function setFileBase()
+
+
 
 	public function setFileBase($file_base)
 	{
 		$this->file_base = $file_base;
 	}
 
-	// }}}
-	// {{{ public function getFileDirectory()
+
+
 
 	public function getFileDirectory($encoding_shortname)
 	{
@@ -756,8 +756,8 @@ class SiteMedia extends SwatDBDataObject
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
 
-	// }}}
-	// {{{ public function getFilePath()
+
+
 
 	public function getFilePath($encoding_shortname)
 	{
@@ -766,8 +766,8 @@ class SiteMedia extends SwatDBDataObject
 		return implode(DIRECTORY_SEPARATOR, $items);
 	}
 
-	// }}}
-	// {{{ public function getFilename()
+
+
 
 	public function getFilename($encoding_shortname)
 	{
@@ -782,8 +782,8 @@ class SiteMedia extends SwatDBDataObject
 		return sprintf('%s.%s', $filename, $binding->media_type->extension);
 	}
 
-	// }}}
-	// {{{ public function getContentDispositionFilename()
+
+
 
 	public function getContentDispositionFilename($encoding_shortname)
 	{
@@ -799,8 +799,8 @@ class SiteMedia extends SwatDBDataObject
 		return $filename;
 	}
 
-	// }}}
-	// {{{ public function getHttpHeaders()
+
+
 
 	public function getHttpHeaders($encoding_shortname)
 	{
@@ -831,16 +831,16 @@ class SiteMedia extends SwatDBDataObject
 		return $headers;
 	}
 
-	// }}}
-	// {{{ protected function getUriBase()
+
+
 
 	protected function getUriBase()
 	{
 		return 'media';
 	}
 
-	// }}}
-	// {{{ protected function getFileBase()
+
+
 
 	protected function getFileBase()
 	{
@@ -851,7 +851,7 @@ class SiteMedia extends SwatDBDataObject
 		return $this->file_base;
 	}
 
-	// }}}
+
 }
 
 ?>

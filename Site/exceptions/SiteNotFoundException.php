@@ -9,7 +9,7 @@
  */
 class SiteNotFoundException extends SiteException
 {
-	// {{{ public function __construct()
+
 
 	/**
 	 * Creates a new not found exception
@@ -24,7 +24,7 @@ class SiteNotFoundException extends SiteException
 		$this->http_status_code = 404;
 	}
 
-	// }}}
+
 }
 
 ?>

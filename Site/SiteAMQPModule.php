@@ -12,7 +12,7 @@
  */
 class SiteAMQPModule extends SiteApplicationModule
 {
-	// {{{ protected properties
+
 
 	/**
 	 * List of exchanges to which messages are published
@@ -43,8 +43,8 @@ class SiteAMQPModule extends SiteApplicationModule
 	 */
 	protected $channel = null;
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this module, pulling values from the application
@@ -66,8 +66,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		$this->default_namespace = $config->amqp->default_namespace;
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -85,8 +85,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		return $depends;
 	}
 
-	// }}}
-	// {{{ public function doAsyncNs()
+
+
 
 	/**
 	 * Does an asynchronous job
@@ -124,8 +124,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function doAsync()
+
+
 
 	/**
 	 * Does an asynchronous job in the default application namespace
@@ -151,8 +151,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function doSyncNs()
+
+
 
 	/**
 	 * Does a synchronous job and returns the result data
@@ -290,8 +290,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		return $response;
 	}
 
-	// }}}
-	// {{{ public function doSync()
+
+
 
 	/**
 	 * Does a synchronous job in the default application namespace and returns
@@ -333,8 +333,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ protected function connect()
+
+
 
 	/**
 	 * Lazily creates an AMQP connection and opens a channel on the connection
@@ -357,8 +357,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function getChannel()
+
+
 
 	/**
 	 * Gets the current connected channel
@@ -387,8 +387,8 @@ class SiteAMQPModule extends SiteApplicationModule
 		return $this->channel;
 	}
 
-	// }}}
-	// {{{ protected function getExchange()
+
+
 
 	/**
 	 * Gets an exchange given a namespace and exchange name
@@ -422,7 +422,7 @@ class SiteAMQPModule extends SiteApplicationModule
 		return $this->exchanges[$key];
 	}
 
-	// }}}
+
 }
 
 ?>

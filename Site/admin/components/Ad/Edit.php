@@ -9,17 +9,17 @@
  */
 class SiteAdEdit extends AdminDBEdit
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteAd
 	 */
 	protected $ad;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -28,8 +28,8 @@ class SiteAdEdit extends AdminDBEdit
 		$this->ui->loadFromXML($this->getUiXml());
 	}
 
-	// }}}
-	// {{{ protected function initAd()
+
+
 
 	protected function initAd()
 	{
@@ -43,18 +43,18 @@ class SiteAdEdit extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/edit.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function validate()
+
 
 	protected function validate()
 	{
@@ -74,8 +74,8 @@ class SiteAdEdit extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function validateShortname()
+
+
 
 	protected function validateShortname($shortname)
 	{
@@ -92,8 +92,8 @@ class SiteAdEdit extends AdminDBEdit
 		return (count($query) == 0);
 	}
 
-	// }}}
-	// {{{ protected function saveDBData()
+
+
 
 	protected function saveDBData()
 	{
@@ -112,8 +112,8 @@ class SiteAdEdit extends AdminDBEdit
 		$this->app->messages->add($message);
 	}
 
-	// }}}
-	// {{{ protected function saveAd()
+
+
 
 	protected function saveAd()
 	{
@@ -124,17 +124,17 @@ class SiteAdEdit extends AdminDBEdit
 		$this->ad->save();
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function loadDBData()
+
 
 	protected function loadDBData()
 	{
 		// ads cannot be edited
 	}
 
-	// }}}
+
 }
 
 ?>

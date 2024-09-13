@@ -10,23 +10,23 @@
  */
 abstract class SiteAbstractConfigPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SwatUI
 	 */
 	protected $ui;
 
-	// }}}
-	// {{{ public function getUI()
+
+
 
 	public function getUI()
 	{
 		return $this->ui;
 	}
 
-	// }}}
-	// {{{ public function initUI()
+
+
 
 	public function initUI()
 	{
@@ -49,8 +49,8 @@ abstract class SiteAbstractConfigPage
 		$this->ui->init();
 	}
 
-	// }}}
-	// {{{ public function saveUI()
+
+
 
 	public function saveUI(SiteConfigModule $config)
 	{
@@ -77,8 +77,8 @@ abstract class SiteAbstractConfigPage
 		return $changed_settings;
 	}
 
-	// }}}
-	// {{{ public function loadUI()
+
+
 
 	public function loadUI(SiteConfigModule $config)
 	{
@@ -98,22 +98,22 @@ abstract class SiteAbstractConfigPage
 		}
 	}
 
-	// }}}
-	// {{{ abstract public function getPageTitle()
+
+
 
 	abstract public function getPageTitle();
 
-	// }}}
-	// {{{ abstract public function getConfigSettings()
+
+
 
 	abstract public function getConfigSettings();
 
-	// }}}
-	// {{{ abstract protected function getUiXml()
+
+
 
 	abstract protected function getUiXml();
 
-	// }}}
+
 }
 
 ?>

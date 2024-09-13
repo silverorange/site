@@ -11,7 +11,7 @@
  */
 class SiteSearchResultsPage extends SiteArticlePage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The user-interface to display results in
@@ -43,16 +43,15 @@ class SiteSearchResultsPage extends SiteArticlePage
 	 */
 	protected $has_results = [];
 
-	// }}}
-	// {{{ private properties
+
+
 
 	private $search_data_fields = [];
 	private $search_data_values = [];
 	private $search_engines = [];
 
-	// }}}
 
-	// {{{ protected function addSearchDataField()
+
 
 	/**
 	 * Registers a search data field
@@ -69,8 +68,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		$this->search_data_fields[$name] = $is_array;
 	}
 
-	// }}}
-	// {{{ protected function hasSearchDataValue()
+
+
 
 	/**
 	 * Whether a search data field has a value
@@ -85,8 +84,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return isset($this->search_data_values[$name]);
 	}
 
-	// }}}
-	// {{{ protected function getSearchDataValue()
+
+
 
 	/**
 	 * Retrieve the value of a search data field
@@ -106,8 +105,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return $value;
 	}
 
-	// }}}
-	// {{{ protected function getSearchDataValues()
+
+
 
 	/**
 	 * Retrieve the values of all search data fields
@@ -119,8 +118,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return $this->search_data_values;
 	}
 
-	// }}}
-	// {{{ protected function getQueryString()
+
+
 
 	/**
 	 * Retrieve a query string containing all search data fields
@@ -161,24 +160,24 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return $string;
 	}
 
-	// }}}
-	// {{{ protected function setSearchEngine()
+
+
 
 	protected function setSearchEngine($name, $engine)
 	{
 		$this->search_engines[$name] = $engine;
 	}
 
-	// }}}
-	// {{{ protected function hasSearchEngine()
+
+
 
 	protected function hasSearchEngine($name)
 	{
 		return isset($this->search_engines[$name]);
 	}
 
-	// }}}
-	// {{{ protected function getSearchEngine()
+
+
 
 	protected function getSearchEngine($name)
 	{
@@ -188,10 +187,10 @@ class SiteSearchResultsPage extends SiteArticlePage
 			throw new SiteException('Search engine does not exist.');
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -205,8 +204,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		$this->ui->init();
 	}
 
-	// }}}
-	// {{{ private function initSearchData()
+
+
 
 	private function initSearchData()
 	{
@@ -230,10 +229,10 @@ class SiteSearchResultsPage extends SiteArticlePage
 		}
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	public function process()
 	{
@@ -242,10 +241,10 @@ class SiteSearchResultsPage extends SiteArticlePage
 		$this->ui->process();
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -259,8 +258,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function buildResults()
+
+
 
 	protected function buildResults()
 	{
@@ -281,8 +280,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return $searched;
 	}
 
-	// }}}
-	// {{{ protected function buildMisspellings()
+
+
 
 	/**
 	 * Build suggested spelling message
@@ -337,24 +336,24 @@ class SiteSearchResultsPage extends SiteArticlePage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getSearchUri()
+
+
 
 	protected function getSearchUri()
 	{
 		return $this->source;
 	}
 
-	// }}}
-	// {{{ protected function getMisspellings()
+
+
 
 	protected function getMisspellings($fulltext_result)
 	{
 		return $fulltext_result->getMisspellings();
 	}
 
-	// }}}
-	// {{{ protected function buildMessages()
+
+
 
 	protected function buildMessages()
 	{
@@ -365,8 +364,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getNoResultsMessage()
+
+
 
 	/**
 	 * Get the no-results message for this search page
@@ -403,8 +402,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function getSearchTips()
+
+
 
 	/**
 	 * Get array of search tips to display when there are no results
@@ -424,8 +423,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return $tips;
 	}
 
-	// }}}
-	// {{{ protected function getSearchSummary()
+
+
 
 	/**
 	 * Get a summary of the criteria that was used to perform the search
@@ -444,8 +443,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return $summary;
 	}
 
-	// }}}
-	// {{{ protected function searchFulltext()
+
+
 
 	/**
 	 * Perform a fulltext search and return the results
@@ -458,8 +457,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return null;
 	}
 
-	// }}}
-	// {{{ protected function buildArticles()
+
+
 
 	/**
 	 * Build article search results
@@ -491,8 +490,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		}
 	}
 
-	// }}}
-	// {{{ protected function instantiateArticleSearchEngine()
+
+
 
 	/**
 	 * Retrieve a new article search engine
@@ -507,8 +506,8 @@ class SiteSearchResultsPage extends SiteArticlePage
 		return $engine;
 	}
 
-	// }}}
-	// {{{ protected function displayArticles()
+
+
 
 	/**
 	 * Display search results for a collection of articles
@@ -550,18 +549,18 @@ class SiteSearchResultsPage extends SiteArticlePage
 		echo '</ul>';
 	}
 
-	// }}}
-	// {{{ protected function getArticlePathPrefix()
+
+
 
 	protected function getArticlePathPrefix()
 	{
 		return '';
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -575,7 +574,7 @@ class SiteSearchResultsPage extends SiteArticlePage
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

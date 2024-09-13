@@ -10,7 +10,7 @@
 class SiteAttachmentCdnTask extends SiteCdnTask
 {
 	// public methods
-	// {{{ public function getAttemptDescription()
+
 
 	public function getAttemptDescription()
 	{
@@ -21,10 +21,10 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 			$this->operation);
 	}
 
-	// }}}
+
 
 	// protected methods
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -36,8 +36,8 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 		$this->table = 'AttachmentCdnQueue';
 	}
 
-	// }}}
-	// {{{ protected function getLocalFilePath()
+
+
 
 	protected function getLocalFilePath()
 	{
@@ -46,8 +46,8 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 			null;
 	}
 
-	// }}}
-	// {{{ protected function copy()
+
+
 
 	protected function copy(SiteCdnModule $cdn)
 	{
@@ -74,8 +74,8 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 		}
 	}
 
-	// }}}
-	// {{{ protected function remove()
+
+
 
 	protected function remove(SiteCdnModule $cdn)
 	{
@@ -91,17 +91,17 @@ class SiteAttachmentCdnTask extends SiteCdnTask
 		);
 	}
 
-	// }}}
+
 
 	// helper methods
-	// {{{ protected function hasAttachment()
+
 
 	protected function hasAttachment()
 	{
 		return ($this->attachment instanceof SiteAttachment);
 	}
 
-	// }}}
+
 }
 
 ?>

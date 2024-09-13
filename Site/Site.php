@@ -9,7 +9,7 @@
  */
 class Site
 {
-	// {{{ constants
+
 
 	/**
 	 * The gettext domain for Site
@@ -18,8 +18,8 @@ class Site
 	 */
 	const GETTEXT_DOMAIN = 'site';
 
-	// }}}
-	// {{{ private properties
+
+
 
 	/**
 	 * Whether or not this package is initialized
@@ -28,8 +28,8 @@ class Site
 	 */
 	private static $is_initialized = false;
 
-	// }}}
-	// {{{ public static function _()
+
+
 
 	/**
 	 * Translates a phrase
@@ -45,8 +45,8 @@ class Site
 		return self::gettext($message);
 	}
 
-	// }}}
-	// {{{ public static function gettext()
+
+
 
 	/**
 	 * Translates a phrase
@@ -63,8 +63,8 @@ class Site
 		return dgettext(self::GETTEXT_DOMAIN, $message);
 	}
 
-	// }}}
-	// {{{ public static function ngettext()
+
+
 
 	/**
 	 * Translates a plural phrase
@@ -92,8 +92,8 @@ class Site
 			$singular_message, $plural_message, $number);
 	}
 
-	// }}}
-	// {{{ public static function setupGettext()
+
+
 
 	public static function setupGettext()
 	{
@@ -105,8 +105,8 @@ class Site
 		bind_textdomain_codeset(self::GETTEXT_DOMAIN, 'UTF-8');
 	}
 
-	// }}}
-	// {{{ public static function displayMethods()
+
+
 
 	/**
 	 * Displays the methods of an object
@@ -126,8 +126,8 @@ class Site
 		echo '</ul>';
 	}
 
-	// }}}
-	// {{{ public static function displayProperties()
+
+
 
 	/**
 	 * Displays the properties of an object
@@ -151,8 +151,8 @@ class Site
 		echo '</ul>';
 	}
 
-	// }}}
-	// {{{ public static function getConfigDefinitions()
+
+
 
 	/**
 	 * Gets configuration definitions used by the Site package
@@ -327,8 +327,8 @@ class Site
   ];
 	}
 
-	// }}}
-	// {{{ public static function init()
+
+
 
 	public static function init()
 	{
@@ -349,8 +349,8 @@ class Site
 		self::$is_initialized = true;
 	}
 
-	// }}}
-	// {{{ private function __construct()
+
+
 
 	/**
 	 * Prevent instantiation of this static class
@@ -359,7 +359,7 @@ class Site
 	{
 	}
 
-	// }}}
+
 }
 
 ?>

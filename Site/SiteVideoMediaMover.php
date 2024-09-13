@@ -11,7 +11,7 @@
  */
 abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 {
-	// {{{ public properties
+
 
 	/**
 	 * A convenience reference to the database object
@@ -20,8 +20,8 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	 */
 	public $db;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var boolean
@@ -33,8 +33,8 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 	 */
 	protected $media_set_shortname;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($id, $filename, $title, $documentation)
 	{
@@ -65,8 +65,8 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		$this->addCommandLineArgument($shortname);
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	/**
 	 * Runs this application
@@ -85,39 +85,39 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		$this->unlock();
 	}
 
-	// }}}
-	// {{{ public function setCleanUp()
+
+
 
 	public function setCleanUp($clean_up)
 	{
 		$this->clean_up = (boolean)$clean_up;
 	}
 
-	// }}}
-	// {{{ public function setMediaSetShortname()
+
+
 
 	public function setMediaSetShortname($shortname)
 	{
 		$this->media_set_shortname = $shortname;
 	}
 
-	// }}}
-	// {{{ abstract protected function hasOldPath()
+
+
 
 	abstract protected function getOldPath(SiteVideoMedia $media, $shortname);
 
-	// }}}
-	// {{{ abstract protected function hasNewPath()
+
+
 
 	abstract protected function getNewPath(SiteVideoMedia $media, $shortname);
 
-	// }}}
-	// {{{ abstract protected function hasFile()
+
+
 
 	abstract protected function hasFile($path);
 
-	// }}}
-	// {{{ abstract protected function moveFile()
+
+
 
 	abstract protected function moveFile(
 		SiteVideoMedia $media,
@@ -125,13 +125,13 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		$new_path
 	);
 
-	// }}}
-	// {{{ abstract protected function cleanUp()
+
+
 
 	abstract protected function cleanUp($path);
 
-	// }}}
-	// {{{ protected function getMedia()
+
+
 
 	protected function getMedia()
 	{
@@ -153,8 +153,8 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function getMediaSet()
+
+
 
 	protected function getMediaSet()
 	{
@@ -181,8 +181,8 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		return $media_set;
 	}
 
-	// }}}
-	// {{{ protected function moveMedia()
+
+
 
 	protected function moveMedia(SiteVideoMedia $media)
 	{
@@ -238,8 +238,8 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function getOldFilename()
+
+
 
 	protected function getOldFilename(SiteVideoMedia $media, $shortname)
 	{
@@ -254,8 +254,8 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		return sprintf('%s.%s', $filename, $binding->media_type->extension);
 	}
 
-	// }}}
-	// {{{ protected function getNewFilename()
+
+
 
 	protected function getNewFilename(SiteVideoMedia $media, $shortname)
 	{
@@ -270,10 +270,10 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		return sprintf('%s.%s', $filename, $binding->media_type->extension);
 	}
 
-	// }}}
+
 
 	// boilerplate code
-	// {{{ protected function getDefaultModuleList()
+
 
 	protected function getDefaultModuleList()
 	{
@@ -285,8 +285,8 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	protected function configure(SiteConfigModule $config)
 	{
@@ -295,7 +295,7 @@ abstract class SiteVideoMediaMover extends SiteCommandLineApplication
 		$this->database->dsn = $config->database->dsn;
 	}
 
-	// }}}
+
 }
 
 ?>

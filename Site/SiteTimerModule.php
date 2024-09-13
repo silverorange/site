@@ -9,7 +9,7 @@
  */
 class SiteTimerModule extends SiteApplicationModule
 {
-	// {{{ private properties
+
 
 	/**
 	 * The execution start time of this application
@@ -32,8 +32,8 @@ class SiteTimerModule extends SiteApplicationModule
 	 */
 	private $started_checkpoints = [];
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this timer module
@@ -43,8 +43,8 @@ class SiteTimerModule extends SiteApplicationModule
 		$this->reset();
 	}
 
-	// }}}
-	// {{{ public function getTime()
+
+
 
 	/**
 	 * Gets the current execution time of this application in milliseconds
@@ -57,8 +57,8 @@ class SiteTimerModule extends SiteApplicationModule
 		return (microtime(true) * 1000) - $this->start_time;
 	}
 
-	// }}}
-	// {{{ public function startCheckpoint()
+
+
 
 	/**
 	 * Sets a timer checkpoint
@@ -71,8 +71,8 @@ class SiteTimerModule extends SiteApplicationModule
 			$this->getTime(), memory_get_usage());
 	}
 
-	// }}}
-	// {{{ public function endCheckpoint()
+
+
 
 	/**
 	 * Ends a timer checkpoint
@@ -92,8 +92,8 @@ class SiteTimerModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	/**
 	 * Displays a summary of all checkpoints and the total time of this timer
@@ -138,8 +138,8 @@ class SiteTimerModule extends SiteApplicationModule
 		echo '</dl>';
 	}
 
-	// }}}
-	// {{{ protected function reset()
+
+
 
 	/**
 	 * Resets this timer
@@ -152,7 +152,7 @@ class SiteTimerModule extends SiteApplicationModule
 		$this->checkpoints = [];
 	}
 
-	// }}}
+
 }
 
 ?>

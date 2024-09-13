@@ -11,25 +11,25 @@
  */
 class SiteAccountForgotPasswordPage extends SiteUiPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteAccount
 	 */
 	protected $account;
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/account-forgot-password.xml';
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -42,10 +42,10 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		}
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	public function process()
 	{
@@ -66,16 +66,16 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate()
 	{
 		$this->app->relocate('account/forgotpassword/sent');
 	}
 
-	// }}}
-	// {{{ protected function getAccount()
+
+
 
 	/**
 	 * Gets the account to which to sent the forgot password email
@@ -100,8 +100,8 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		return $account;
 	}
 
-	// }}}
-	// {{{ protected function generatePassword()
+
+
 
 	protected function generatePassword()
 	{
@@ -118,8 +118,8 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getAccountNotFoundMessage()
+
+
 
 	protected function getAccountNotFoundMessage()
 	{
@@ -136,18 +136,18 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function sendResetPasswordMailMessage()
+
+
 
 	protected function sendResetPasswordMailMessage(SiteAccount $account)
 	{
 		$account->sendResetPasswordMailMessage($this->app);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -161,7 +161,7 @@ class SiteAccountForgotPasswordPage extends SiteUiPage
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

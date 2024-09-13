@@ -9,7 +9,7 @@
  */
 abstract class SiteApiSignOnPage extends SitePage
 {
-	// {{{ protected function getVar()
+
 
 	protected function getVar($name)
 	{
@@ -20,16 +20,16 @@ abstract class SiteApiSignOnPage extends SitePage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getIdent()
+
+
 
 	protected function getIdent()
 	{
 		return $this->getVar('id');
 	}
 
-	// }}}
-	// {{{ protected function getCredential()
+
+
 
 	protected function getCredential($api_key)
 	{
@@ -49,8 +49,8 @@ abstract class SiteApiSignOnPage extends SitePage
 		return $credential;
 	}
 
-	// }}}
-	// {{{ protected function getToken()
+
+
 
 	protected function getToken(
 		$ident,
@@ -84,7 +84,7 @@ abstract class SiteApiSignOnPage extends SitePage
 		return $token;
 	}
 
-	// }}}
+
 }
 
 ?>

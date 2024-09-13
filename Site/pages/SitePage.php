@@ -9,7 +9,7 @@
  */
 class SitePage extends SiteAbstractPage
 {
-	// {{{ public function __construct()
+
 
 	/**
 	 * Creates a concrete page object which may optionally be decorated
@@ -35,18 +35,18 @@ class SitePage extends SiteAbstractPage
 		$this->arguments = $arguments;
 	}
 
-	// }}}
-	// {{{ protected function createLayout()
+
+
 
 	protected function createLayout()
 	{
 		return new SiteLayout($this->app, SiteDefaultTemplate::class);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -59,35 +59,35 @@ class SitePage extends SiteAbstractPage
 		$this->buildContent();
 	}
 
-	// }}}
-	// {{{ protected function buildTitle()
+
+
 
 	protected function buildTitle()
 	{
 	}
 
-	// }}}
-	// {{{ protected function buildMetaDescription()
+
+
 
 	protected function buildMetaDescription()
 	{
 	}
 
-	// }}}
-	// {{{ protected function buildContent()
+
+
 
 	protected function buildContent()
 	{
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
 	}
 
-	// }}}
+
 }
 
 ?>

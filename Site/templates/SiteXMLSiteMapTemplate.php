@@ -7,7 +7,7 @@
  */
 class SiteXMLSiteMapTemplate extends SiteAbstractTemplate
 {
-	// {{{ public function display()
+
 
 	public function display(SiteLayoutData $data)
 	{
@@ -30,7 +30,7 @@ class SiteXMLSiteMapTemplate extends SiteAbstractTemplate
 		echo $data->site_map;
 	}
 
-	// }}}
+
 }
 
 ?>

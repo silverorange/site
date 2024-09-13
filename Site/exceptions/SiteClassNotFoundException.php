@@ -9,7 +9,7 @@
  */
 class SiteClassNotFoundException extends SiteException
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The name of the class that is not found
@@ -18,8 +18,8 @@ class SiteClassNotFoundException extends SiteException
 	 */
 	protected $class_name = null;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new class not found exception
@@ -34,8 +34,8 @@ class SiteClassNotFoundException extends SiteException
 		$this->class_name = $class_name;
 	}
 
-	// }}}
-	// {{{ public function getClassName()
+
+
 
 	/**
 	 * Gets the name of the class that is not found
@@ -47,7 +47,7 @@ class SiteClassNotFoundException extends SiteException
 		return $this->class_name;
 	}
 
-	// }}}
+
 }
 
 ?>

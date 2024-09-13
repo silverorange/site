@@ -17,7 +17,7 @@
  */
 class SitePathEntry
 {
-	// {{{ public properties
+
 
 	/**
 	 * The database id of this entry
@@ -48,8 +48,8 @@ class SitePathEntry
 	 */
 	public $title;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new path entry
@@ -68,7 +68,7 @@ class SitePathEntry
 		$this->title = $title;
 	}
 
-	// }}}
+
 }
 
 ?>

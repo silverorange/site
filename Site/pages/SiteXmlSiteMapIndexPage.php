@@ -10,7 +10,7 @@
  */
 abstract class SiteXmlSiteMapIndexPage extends SitePageDecorator
 {
-	// {{{ public function __construct()
+
 
 	public function __construct(SiteAbstractPage $page)
 	{
@@ -18,8 +18,8 @@ abstract class SiteXmlSiteMapIndexPage extends SitePageDecorator
 		$this->setLayout(new SiteXmlSiteMapLayout($this->app));
 	}
 
-	// }}}
-	// {{{ public function build()
+
+
 
 	public function build()
 	{
@@ -32,8 +32,8 @@ abstract class SiteXmlSiteMapIndexPage extends SitePageDecorator
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function displayIndex()
+
+
 
 	protected function displayIndex($path, SwatDate $last_modified = null)
 	{
@@ -49,12 +49,12 @@ abstract class SiteXmlSiteMapIndexPage extends SitePageDecorator
 		echo "</sitemap>\n";
 	}
 
-	// }}}
-	// {{{ abstract protected function displaySiteMapIndex()
+
+
 
 	abstract protected function displaySiteMapIndex();
 
-	// }}}
+
 }
 
 ?>

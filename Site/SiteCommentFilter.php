@@ -26,7 +26,7 @@
  */
 class SiteCommentFilter
 {
-	// {{{ protected static properties
+
 
 	/**
 	 * @var array
@@ -38,8 +38,8 @@ class SiteCommentFilter
 	 */
 	protected static $tag_stack = [];
 
-	// }}}
-	// {{{ public static function parse()
+
+
 
 	/**
 	 * @param string $comment
@@ -58,8 +58,8 @@ class SiteCommentFilter
 		return ob_get_clean();
 	}
 
-	// }}}
-	// {{{ public static function toXhtml()
+
+
 
 	/**
 	 * @param string $comment
@@ -86,8 +86,8 @@ class SiteCommentFilter
 		return $comment;
 	}
 
-	// }}}
-	// {{{ public static function addTag()
+
+
 
 	/**
 	 * @param string $tag
@@ -105,8 +105,8 @@ class SiteCommentFilter
 		self::$tags[$tag] = ['tag' => $tag, 'self_closing' => $self_closing, 'attributes' => $attributes];
 	}
 
-	// }}}
-	// {{{ protected static function startTag()
+
+
 
 	protected static function startTag($data, $tag_name)
 	{
@@ -114,8 +114,8 @@ class SiteCommentFilter
 		echo $data;
 	}
 
-	// }}}
-	// {{{ protected static function endTag()
+
+
 
 	protected static function endTag($data, $tag_name)
 	{
@@ -127,16 +127,16 @@ class SiteCommentFilter
 		}
 	}
 
-	// }}}
-	// {{{ protected static function selfClosingTag()
+
+
 
 	protected static function selfClosingTag($data, $tag_name)
 	{
 		echo $data;
 	}
 
-	// }}}
-	// {{{ protected static function characterData()
+
+
 
 	protected static function characterData($data, $strip_invalid_tags)
 	{
@@ -147,8 +147,8 @@ class SiteCommentFilter
 		echo SwatString::minimizeEntities($data);
 	}
 
-	// }}}
-	// {{{ protected static function parseInternal()
+
+
 
 	protected static function parseInternal($comment, $strip_invalid_tags)
 	{
@@ -204,8 +204,8 @@ class SiteCommentFilter
 		}
 	}
 
-	// }}}
-	// {{{ protected static function getExpression()
+
+
 
 	protected static function getExpression()
 	{
@@ -241,8 +241,8 @@ class SiteCommentFilter
 		return $tokens;
 	}
 
-	// }}}
-	// {{{ protected static function getByteSubstring()
+
+
 
 	protected static function getByteSubstring($string, $from, $to)
 	{
@@ -252,16 +252,16 @@ class SiteCommentFilter
 		return mb_substr($string, $start, $length, '8bit');
 	}
 
-	// }}}
-	// {{{ protected static function getByteLength()
+
+
 
 	protected static function getByteLength($string)
 	{
 		return mb_strlen($string, '8bit');
 	}
 
-	// }}}
-	// {{{ private function __construct()
+
+
 
 	/**
 	 * Prevent instantiation of static class
@@ -270,7 +270,7 @@ class SiteCommentFilter
 	{
 	}
 
-	// }}}
+
 }
 
 ?>

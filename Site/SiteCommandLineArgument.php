@@ -10,7 +10,7 @@
  */
 class SiteCommandLineArgument extends SiteObject
 {
-	// {{{ protected properties
+
 
 	/**
 	 * Text explaining how to use this argument
@@ -38,8 +38,8 @@ class SiteCommandLineArgument extends SiteObject
 	 */
 	protected $parameters = [];
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new command line argument parameter
@@ -57,8 +57,8 @@ class SiteCommandLineArgument extends SiteObject
 		$this->documentation = $documentation;
 	}
 
-	// }}}
-	// {{{ public function getNames()
+
+
 
 	/**
 	 * Gets the argument names of this command line argument
@@ -73,8 +73,8 @@ class SiteCommandLineArgument extends SiteObject
 		return $this->names;
 	}
 
-	// }}}
-	// {{{ public function getParameters()
+
+
 
 	/**
 	 * Gets all additional parameters of this command line argument
@@ -86,8 +86,8 @@ class SiteCommandLineArgument extends SiteObject
 		return $this->parameters;
 	}
 
-	// }}}
-	// {{{ public function hasParameter()
+
+
 
 	/**
 	 * Whether or not this argument has one or more additional parameters
@@ -100,8 +100,8 @@ class SiteCommandLineArgument extends SiteObject
 		return (count($this->parameters) > 0);
 	}
 
-	// }}}
-	// {{{ public function addParameter()
+
+
 
 	/**
 	 * Adds an additional parameter to this command line argument
@@ -127,8 +127,8 @@ class SiteCommandLineArgument extends SiteObject
 			$error_message, $default);
 	}
 
-	// }}}
-	// {{{ public function getMethod()
+
+
 
 	/**
 	 * Gets the name of the method this argument calls on its application
@@ -141,8 +141,8 @@ class SiteCommandLineArgument extends SiteObject
 		return $this->method;
 	}
 
-	// }}}
-	// {{{ public function getDocumentation()
+
+
 
 	/**
 	 * Gets text explaining how to use this argument
@@ -154,7 +154,7 @@ class SiteCommandLineArgument extends SiteObject
 		return $this->documentation;
 	}
 
-	// }}}
+
 }
 
 ?>

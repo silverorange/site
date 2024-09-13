@@ -8,7 +8,7 @@
  */
 class SiteSearchPage extends SiteSearchResultsPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The user-interface of the search form
@@ -24,10 +24,10 @@ class SiteSearchPage extends SiteSearchResultsPage
 	 */
 	protected $form_ui_xml = __DIR__.'/search-form.xml';
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init
+
 
 	public function init()
 	{
@@ -42,10 +42,10 @@ class SiteSearchPage extends SiteSearchResultsPage
 		$this->form_ui->init();
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process
+
 
 	public function process()
 	{
@@ -60,10 +60,10 @@ class SiteSearchPage extends SiteSearchResultsPage
 		 */
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -74,10 +74,10 @@ class SiteSearchPage extends SiteSearchResultsPage
 		parent::build();
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -86,7 +86,7 @@ class SiteSearchPage extends SiteSearchResultsPage
 			$this->form_ui->getRoot()->getHtmlHeadEntrySet());
 	}
 
-	// }}}
+
 }
 
 ?>

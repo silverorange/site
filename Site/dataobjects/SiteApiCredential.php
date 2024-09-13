@@ -9,7 +9,7 @@
  */
 class SiteApiCredential extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * The unique identifier of this credential
@@ -42,8 +42,8 @@ class SiteApiCredential extends SwatDBDataObject
 	 */
 	public $createdate;
 
-	// }}}
-	// {{{ public function loadByApiKey()
+
+
 
 	public function loadByApiKey($key, SiteInstance $instance =  null)
 	{
@@ -79,8 +79,8 @@ class SiteApiCredential extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -94,10 +94,10 @@ class SiteApiCredential extends SwatDBDataObject
 		);
 	}
 
-	// }}}
+
 
 	// saver methods
-	// {{{ protected function saveInternal()
+
 
 	protected function saveInternal()
 	{
@@ -109,7 +109,7 @@ class SiteApiCredential extends SwatDBDataObject
 		parent::saveInternal();
 	}
 
-	// }}}
+
 }
 
 ?>

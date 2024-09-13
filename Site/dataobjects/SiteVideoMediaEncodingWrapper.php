@@ -10,7 +10,7 @@
  */
 class SiteVideoMediaEncodingWrapper extends SiteMediaEncodingWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -20,7 +20,7 @@ class SiteVideoMediaEncodingWrapper extends SiteMediaEncodingWrapper
 			SwatDBClassMap::get(SiteVideoMediaEncoding::class);
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -9,12 +9,12 @@
  */
 class SiteLayoutData extends SiteObject
 {
-	// {{{ private properties
+
 
 	private $_properties = [];
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	public function display($template_class)
 	{
@@ -22,8 +22,8 @@ class SiteLayoutData extends SiteObject
 		$template->display($this);
 	}
 
-	// }}}
-	// {{{ public function exists()
+
+
 
 	/**
 	 * @deprecated use the isset() function on this class instead.
@@ -33,16 +33,16 @@ class SiteLayoutData extends SiteObject
 		return isset($this->$name);
 	}
 
-	// }}}
-	// {{{ public function __isset()
+
+
 
 	public function __isset($name)
 	{
 		return isset($this->_properties[$name]);
 	}
 
-	// }}}
-	// {{{ public function __get()
+
+
 
 	/**
 	 * @throws SiteInvalidPropertyException
@@ -57,15 +57,15 @@ class SiteLayoutData extends SiteObject
 		return $this->_properties[$name];
 	}
 
-	// }}}
-	// {{{ public function __set()
+
+
 
 	public function __set($name, $content)
 	{
 		$this->_properties[$name] = $content;
 	}
 
-	// }}}
+
 }
 
 ?>

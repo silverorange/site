@@ -10,7 +10,7 @@
  */
 class SiteInstanceConfigSetting extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * The qualified name of the config setting
@@ -33,8 +33,8 @@ class SiteInstanceConfigSetting extends SwatDBDataObject
 	 */
 	public $is_default;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -44,7 +44,7 @@ class SiteInstanceConfigSetting extends SwatDBDataObject
 			SwatDBClassMap::get(SiteInstance::class));
 	}
 
-	// }}}
+
 }
 
 ?>

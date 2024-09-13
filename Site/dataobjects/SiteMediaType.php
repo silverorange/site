@@ -9,7 +9,7 @@
  */
 class SiteMediaType extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier
@@ -42,8 +42,8 @@ class SiteMediaType extends SwatDBDataObject
 	 */
 	public $alternate_mime_types;
 
-	// }}}
-	// {{{ public function loadByMimeType()
+
+
 
 	/**
 	 * Loads a media type from the database with a mime-type
@@ -76,8 +76,8 @@ class SiteMediaType extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ public function getValidMimeTypes()
+
+
 
 	public function getValidMimeTypes()
 	{
@@ -89,8 +89,8 @@ class SiteMediaType extends SwatDBDataObject
 		return array_unique($mime_types);
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -98,7 +98,7 @@ class SiteMediaType extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
+
 }
 
 ?>

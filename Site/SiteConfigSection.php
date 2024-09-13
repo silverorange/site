@@ -9,7 +9,7 @@
  */
 class SiteConfigSection extends SwatObject implements Iterator
 {
-	// {{{ private properties
+
 
 	/**
 	 * The name of this configuration section
@@ -30,8 +30,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 	 */
 	private $config = null;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new configuration section
@@ -58,8 +58,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 		}
 	}
 
-	// }}}
-	// {{{ public function __toString()
+
+
 
 	/**
 	 * Gets a string representation of this config section
@@ -97,8 +97,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 		return ob_get_clean();
 	}
 
-	// }}}
-	// {{{ public function current()
+
+
 
 	/**
 	 * Returns the current value
@@ -110,8 +110,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 		return current($this->values);
 	}
 
-	// }}}
-	// {{{ public function key()
+
+
 
 	/**
 	 * Returns the key of the current value
@@ -123,8 +123,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 		return key($this->values);
 	}
 
-	// }}}
-	// {{{ public function next()
+
+
 
 	/**
 	 * Moves forward to the next value
@@ -134,8 +134,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 		next($this->values);
 	}
 
-	// }}}
-	// {{{ public function rewind()
+
+
 
 	/**
 	 * Rewinds this iterator to the first value
@@ -145,8 +145,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 		reset($this->values);
 	}
 
-	// }}}
-	// {{{ public function valid()
+
+
 
 	/**
 	 * Checks is there is a current value after calls to rewind() and next()
@@ -159,8 +159,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 		return (key($this->values) !== null);
 	}
 
-	// }}}
-	// {{{ public function __set()
+
+
 
 	/**
 	 * Sets a setting of this configuration section
@@ -186,8 +186,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 			SiteConfigModule::SOURCE_RUNTIME);
 	}
 
-	// }}}
-	// {{{ public function __get()
+
+
 
 	/**
 	 * Gets a setting of this configuration section
@@ -210,8 +210,8 @@ class SiteConfigSection extends SwatObject implements Iterator
 		return $this->values[$name];
 	}
 
-	// }}}
-	// {{{ public function __isset()
+
+
 
 	/**
 	 * Checks for existence of a configuration setting in this section
@@ -226,7 +226,7 @@ class SiteConfigSection extends SwatObject implements Iterator
 		return (isset($this->values[$name]));
 	}
 
-	// }}}
+
 }
 
 ?>

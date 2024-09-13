@@ -9,7 +9,7 @@
  */
 class SiteInstanceSettingIndex extends AdminDBEdit
 {
-	// {{{ protected properties
+
 
 	/**
 	 * An array containing each config page that will be linked into the main
@@ -19,10 +19,10 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 	 */
 	protected $config_pages = [];
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -51,26 +51,26 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function initConfigPages()
+
+
 
 	protected function initConfigPages()
 	{
 		$this->config_pages[] = new SiteConfigPage();
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/index.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function saveDBData()
+
 
 	protected function saveDBData()
 	{
@@ -102,8 +102,8 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getSavedMessage()
+
+
 
 	protected function getSavedMessage()
 	{
@@ -114,8 +114,8 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 		);
 	}
 
-	// }}}
-	// {{{ protected function getRestoredMessage()
+
+
 
 	protected function getRestoredMessage()
 	{
@@ -133,34 +133,34 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate()
 	{
 		// We want to stay on the instance config page after processing
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
 		// We don't want to add any extra entries to the nav-bar
 	}
 
-	// }}}
-	// {{{ protected function buildFrame()
+
+
 
 	protected function buildFrame()
 	{
 		// We don't want to alter the frames title.
 	}
 
-	// }}}
-	// {{{ protected function loadDBData()
+
+
 
 	protected function loadDBData()
 	{
@@ -169,7 +169,7 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

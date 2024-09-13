@@ -9,29 +9,29 @@
  */
 class SiteVideoMediaSet extends SiteMediaSet
 {
-	// {{{ public properties
+
 
 	public $skin = null;
 
-	// }}}
+
 
 	// loader methods
-	// {{{ protected function getMediaEncodingWrapperClass()
+
 
 	protected function getMediaEncodingWrapperClass()
 	{
 		return SwatDBClassMap::get(SiteVideoMediaEncodingWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingOrderBy()
+
+
 
 	protected function getMediaEncodingOrderBy()
 	{
 		return 'width desc';
 	}
 
-	// }}}
+
 }
 
 ?>

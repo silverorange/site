@@ -97,7 +97,7 @@
  */
 class SiteConfigModule extends SiteApplicationModule
 {
-	// {{{ class constants
+
 
 	/**
 	 * Value was not loaded and the default value is used.
@@ -125,8 +125,8 @@ class SiteConfigModule extends SiteApplicationModule
 	 */
 	const SOURCE_RUNTIME  = 5;
 
-	// }}}
-	// {{{ private properties
+
+
 
 	/**
 	 * The sections of this configuration
@@ -181,8 +181,8 @@ class SiteConfigModule extends SiteApplicationModule
 	 */
 	private $setting_sources = [];
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this module
@@ -199,8 +199,8 @@ class SiteConfigModule extends SiteApplicationModule
 		$this->loadInstanceValues();
 	}
 
-	// }}}
-	// {{{ public function load()
+
+
 
 	/**
 	 * Loads configuration from ini file
@@ -226,8 +226,8 @@ class SiteConfigModule extends SiteApplicationModule
 		$this->loaded = true;
 	}
 
-	// }}}
-	// {{{ public function save()
+
+
 
 	/**
 	 * Save the information contained in this module to the appropriate
@@ -255,8 +255,8 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function addDefinitions()
+
+
 
 	/**
 	 * Adds multiple configuration setting definitions to this config module
@@ -294,8 +294,8 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function addDefinition()
+
+
 
 	/**
 	 * Adds a configuration setting definition to this config module
@@ -338,8 +338,8 @@ class SiteConfigModule extends SiteApplicationModule
 		$this->setting_sources[$section][$name] = self::SOURCE_DEFAULT;
 	}
 
-	// }}}
-	// {{{ public function postInitConfigure()
+
+
 
 	/**
 	 * Configures the application
@@ -354,8 +354,8 @@ class SiteConfigModule extends SiteApplicationModule
 	{
 	}
 
-	// }}}
-	// {{{ public function configure()
+
+
 
 	/**
 	 * Configures other modules of the application
@@ -370,8 +370,8 @@ class SiteConfigModule extends SiteApplicationModule
 	{
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -396,8 +396,8 @@ class SiteConfigModule extends SiteApplicationModule
 		return $depends;
 	}
 
-	// }}}
-	// {{{ public function getSource()
+
+
 
 	/**
 	 * Gets the source of a config setting value
@@ -433,8 +433,8 @@ class SiteConfigModule extends SiteApplicationModule
 		return $setting_names[$name];
 	}
 
-	// }}}
-	// {{{ public function setSource()
+
+
 
 	/**
 	 * Sets the source of a config setting value
@@ -475,8 +475,8 @@ class SiteConfigModule extends SiteApplicationModule
 		$this->setting_sources[$section][$name] = $source;
 	}
 
-	// }}}
-	// {{{ public function __get()
+
+
 
 	/**
 	 * Gets a section of this config module
@@ -496,8 +496,8 @@ class SiteConfigModule extends SiteApplicationModule
 		return $this->sections[$name];
 	}
 
-	// }}}
-	// {{{ public function __isset()
+
+
 
 	/**
 	 * Checks for existence of a section within this config module
@@ -512,8 +512,8 @@ class SiteConfigModule extends SiteApplicationModule
 		return array_key_exists($name, $this->sections);
 	}
 
-	// }}}
-	// {{{ public function __toString()
+
+
 
 	/**
 	 * Gets a string representation of this config module
@@ -531,8 +531,8 @@ class SiteConfigModule extends SiteApplicationModule
 		return ob_get_clean();
 	}
 
-	// }}}
-	// {{{ protected function loadFileValues()
+
+
 
 	/**
 	 * Loads config setting values from the ini file
@@ -565,8 +565,8 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function loadDatabaseValues()
+
+
 
 	/**
 	 * Loads config setting values from the database
@@ -613,8 +613,8 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function loadInstanceValues()
+
+
 
 	/**
 	 * Loads instance config setting values from the database
@@ -654,8 +654,8 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function saveDatabaseValues()
+
+
 
 	/**
 	 * Saves all configuration values in this config module to the database
@@ -699,8 +699,8 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function saveInstanceValues()
+
+
 
 	/**
 	 * Saves all configuration values in this config module to the database
@@ -747,8 +747,8 @@ class SiteConfigModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ private function isValidKey()
+
+
 
 	/**
 	 * Checks whether or not a name is a valid section name or setting name
@@ -763,7 +763,7 @@ class SiteConfigModule extends SiteApplicationModule
 		return (preg_match($regexp, $name) == 1);
 	}
 
-	// }}}
+
 }
 
 ?>

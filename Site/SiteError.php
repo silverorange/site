@@ -9,7 +9,7 @@
  */
 class SiteError extends SwatError
 {
-	// {{{ public static function setupHandler()
+
 
 	/**
 	 * Set the PHP error handler to use SiteError
@@ -24,7 +24,7 @@ class SiteError extends SwatError
 			E_USER_ERROR | E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE);
 	}
 
-	// }}}
+
 }
 
 ?>

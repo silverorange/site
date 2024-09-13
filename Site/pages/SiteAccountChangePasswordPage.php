@@ -10,25 +10,25 @@
  */
 class SiteAccountChangePasswordPage extends SiteEditPage
 {
-	// {{{ protected function getUiXml()
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/account-change-password.xml';
 	}
 
-	// }}}
-	// {{{ protected function isNew()
+
+
 
 	protected function isNew(SwatForm $form)
 	{
 		return false;
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -39,8 +39,8 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		parent::init();
 	}
 
-	// }}}
-	// {{{ protected function initInternal()
+
+
 
 	protected function initInternal()
 	{
@@ -50,10 +50,10 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		$confirm->password_widget = $this->ui->getWidget('password');
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function save()
+
 
 	protected function save(SwatForm $form)
 	{
@@ -68,8 +68,8 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		$this->app->messages->add($message);
 	}
 
-	// }}}
-	// {{{ protected function validate()
+
+
 
 	protected function validate(SwatForm $form)
 	{
@@ -100,16 +100,16 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate(SwatForm $form)
 	{
 		$this->app->relocate('account');
 	}
 
-	// }}}
-	// {{{ protected function updatePassword()
+
+
 
 	protected function updatePassword()
 	{
@@ -120,10 +120,10 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		$account->setPasswordHash($crypt->generateHash($password));
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildTitle()
+
 
 	protected function buildTitle()
 	{
@@ -131,8 +131,8 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		$this->layout->data->title = Site::_('Choose a New Password');
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -145,17 +145,17 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		$this->layout->navbar->createEntry(Site::_('New Password'));
 	}
 
-	// }}}
-	// {{{ protected function load()
+
+
 
 	protected function load(SwatForm $form)
 	{
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -163,7 +163,7 @@ class SiteAccountChangePasswordPage extends SiteEditPage
 		$this->layout->addBodyClass('account-change-password');
 	}
 
-	// }}}
+
 }
 
 ?>

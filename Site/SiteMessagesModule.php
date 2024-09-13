@@ -12,7 +12,7 @@
  */
 class SiteMessagesModule extends SiteApplicationModule implements Countable
 {
-	// {{{ protected properties
+
 
 	/**
 	 * Whether or not this messages module has been initialized with an active
@@ -22,8 +22,8 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 	 */
 	protected $session_is_initialized = false;
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this messages module
@@ -37,8 +37,8 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 			$this->initSession();
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -54,8 +54,8 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 		return [new SiteApplicationModuleDependency('SiteSessionModule')];
 	}
 
-	// }}}
-	// {{{ public function registerMessageClass()
+
+
 
 	/**
 	 * Registers a custom message class with this module
@@ -85,8 +85,8 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 				'module.', $class), 0, null);
 	}
 
-	// }}}
-	// {{{ public function add()
+
+
 
 	/**
 	 * Adds a message to this module
@@ -104,8 +104,8 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 		$this->app->session->messages[] = $message;
 	}
 
-	// }}}
-	// {{{ public function getAll()
+
+
 
 	/**
 	 * Gets all messages from this module
@@ -129,8 +129,8 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 		return $messages;
 	}
 
-	// }}}
-	// {{{ public function count()
+
+
 
 	/**
 	 * Gets the number of messages in this module
@@ -147,8 +147,8 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 			0;
 	}
 
-	// }}}
-	// {{{ protected function initSession()
+
+
 
 	/**
 	 * Initializes session variables used by this module
@@ -163,7 +163,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -9,7 +9,7 @@
  */
 class SiteJwPlayerMediaDisplay extends SwatControl
 {
-	// {{{ public properties
+
 
 	public $key;
 	public $valid_mime_types;
@@ -32,8 +32,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	 */
 	public $display_on_complete_message_on_load = false;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	protected $media;
 	protected $sources = [];
@@ -51,8 +51,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 	protected $player_id;
 	protected $javascript_variable_name;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new widget
@@ -76,8 +76,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		);
 	}
 
-	// }}}
-	// {{{ public function setMedia()
+
+
 
 	public function setMedia(SiteVideoMedia $media)
 	{
@@ -102,24 +102,24 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		}
 	}
 
-	// }}}
-	// {{{ public function setSkin()
+
+
 
 	public function setSkin($skin)
 	{
 		$this->skin = $skin;
 	}
 
-	// }}}
-	// {{{ public function setAspectRatio()
+
+
 
 	public function setAspectRatio($width, $height)
 	{
 		$this->aspect_ratio = ['width' => $width, 'height' => $height];
 	}
 
-	// }}}
-	// {{{ public function setStretching()
+
+
 
 	public function setStretching($fit)
 	{
@@ -132,8 +132,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		$this->stretching = $fit;
 	}
 
-	// }}}
-	// {{{ public function addSource()
+
+
 
 	public function addSource($uri, $width = '', $label = '')
 	{
@@ -145,8 +145,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		$this->sources[] = $source;
 	}
 
-	// }}}
-	// {{{ public function addImage()
+
+
 
 	public function addImage($uri, $width)
 	{
@@ -156,56 +156,56 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		$this->images[] = $image;
 	}
 
-	// }}}
-	// {{{ public function setSession()
+
+
 
 	public function setSession(SiteSessionModule $session)
 	{
 		$this->session = $session;
 	}
 
-	// }}}
-	// {{{ public function setVttUri()
+
+
 
 	public function setVttUri($uri)
 	{
 		$this->vtt_uri = $uri;
 	}
 
-	// }}}
-	// {{{ public function setMute()
+
+
 
 	public function setMute($mute)
 	{
 		$this->mute = (bool)$mute;
 	}
 
-	// }}}
-	// {{{ public function setAutoStart()
+
+
 
 	public function setAutoStart($auto_start)
 	{
 		$this->auto_start = (bool)$auto_start;
 	}
 
-	// }}}
-	// {{{ public function setControls()
+
+
 
 	public function setControls($controls)
 	{
 		$this->controls = (bool)$controls;
 	}
 
-	// }}}
-	// {{{ public function setRepeat()
+
+
 
 	public function setRepeat($repeat)
 	{
 		$this->repeat = (bool)$repeat;
 	}
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	public function display()
 	{
@@ -271,8 +271,8 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		Swat::displayInlineJavaScript($this->getJavascript());
 	}
 
-	// }}}
-	// {{{ public function getJavascriptVariableName()
+
+
 
 	public function getJavascriptVariableName()
 	{
@@ -285,16 +285,16 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		return $this->javascript_variable_name;
 	}
 
-	// }}}
-	// {{{ public function setJavascriptVariableName()
+
+
 
 	public function setJavascriptVariableName($javascript_variable_name)
 	{
 		$this->javascript_variable_name = $javascript_variable_name;
 	}
 
-	// }}}
-	// {{{ publuc function getContainerId()
+
+
 
 	public function getContainerId()
 	{
@@ -305,16 +305,16 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		return $this->container_id;
 	}
 
-	// }}}
-	// {{{ publuc function setContainerId()
+
+
 
 	public function setContainerId($container_id)
 	{
 		$this->container_id = $container_id;
 	}
 
-	// }}}
-	// {{{ publuc function getPlayerId()
+
+
 
 	public function getPlayerId()
 	{
@@ -325,16 +325,16 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		return $this->player_id;
 	}
 
-	// }}}
-	// {{{ publuc function setPlayerId()
+
+
 
 	public function setPlayerId($player_id)
 	{
 		$this->player_id = $player_id;
 	}
 
-	// }}}
-	// {{{ protected function getJavascript()
+
+
 
 	protected function getJavascript()
 	{
@@ -479,24 +479,24 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function getJavascriptClassName()
+
+
 
 	protected function getJavascriptClassName()
 	{
 		return 'SiteJwPlayerMediaDisplay';
 	}
 
-	// }}}
-	// {{{ protected function getVttUri()
+
+
 
 	protected function getVttUri()
 	{
 		return $this->vtt_uri;
 	}
 
-	// }}}
-	// {{{ protected function getBrowserNotSupportedMessage()
+
+
 
 	protected function getBrowserNotSupportedMessage($mime_types)
 	{
@@ -516,7 +516,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
 			ngettext('codec', 'codecs', count($codecs)));
 	}
 
-	// }}}
+
 }
 
 ?>

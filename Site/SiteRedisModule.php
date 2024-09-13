@@ -9,7 +9,7 @@
  */
 class SiteRedisModule extends SiteApplicationModule
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The proxied Redis object of this module
@@ -25,8 +25,8 @@ class SiteRedisModule extends SiteApplicationModule
 	 */
 	protected $connected = false;
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this module
@@ -46,8 +46,8 @@ class SiteRedisModule extends SiteApplicationModule
 		$this->redis = new Redis();
 	}
 
-	// }}}
-	// {{{ public function __call()
+
+
 
 	/**
 	 * Passes proxied calls to the redis object
@@ -79,8 +79,8 @@ class SiteRedisModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function _connect()
+
+
 
 	/**
 	 * Connects to the Redis server if not already connected
@@ -140,7 +140,7 @@ class SiteRedisModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

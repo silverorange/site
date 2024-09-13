@@ -9,12 +9,12 @@
  */
 abstract class SiteCommentUi
 {
-	// {{{ class constants
+
 
 	const THANK_YOU_ID = 'thank-you';
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var SiteApplication
@@ -41,10 +41,10 @@ abstract class SiteCommentUi
 	 */
 	protected $ui;
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function __construct()
+
 
 	public function __construct(
 		SiteApplication $app,
@@ -56,8 +56,8 @@ abstract class SiteCommentUi
 		$this->source = $source;
 	}
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	public function init()
 	{
@@ -65,8 +65,8 @@ abstract class SiteCommentUi
 		$this->ui->loadFromXml($this->getUiXml());
 	}
 
-	// }}}
-	// {{{ protected function getComment()
+
+
 
 	protected function getComment()
 	{
@@ -74,18 +74,18 @@ abstract class SiteCommentUi
 		return new $class_name();
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/comment-edit.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	public function process()
 	{
@@ -114,21 +114,21 @@ abstract class SiteCommentUi
 
 	}
 
-	// }}}
-	// {{{ abstract protected function setCommentPost()
+
+
 
 	abstract protected function setCommentPost(
 		SiteComment $comment,
 		SiteCommentStatus $post
 	);
 
-	// }}}
-	// {{{ abstract protected function getPermalink()
+
+
 
 	abstract protected function getPermalink(SiteComment $comment);
 
-	// }}}
-	// {{{ protected function updateComment()
+
+
 
 	protected function updateComment()
 	{
@@ -169,8 +169,8 @@ abstract class SiteCommentUi
 		$this->setCommentPost($this->comment, $this->post);
 	}
 
-	// }}}
-	// {{{ protected function processComment()
+
+
 
 	protected function processComment()
 	{
@@ -182,8 +182,8 @@ abstract class SiteCommentUi
 		}
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate()
 	{
@@ -206,16 +206,16 @@ abstract class SiteCommentUi
 		$this->app->relocate($uri);
 	}
 
-	// }}}
-	// {{{ protected function getThankYouUri()
+
+
 
 	protected function getThankYouUri()
 	{
 		return $this->source.'?'.self::THANK_YOU_ID;
 	}
 
-	// }}}
-	// {{{ protected function saveComment()
+
+
 
 	protected function saveComment()
 	{
@@ -231,8 +231,8 @@ abstract class SiteCommentUi
 		$this->comment->postSave($this->app);
 	}
 
-	// }}}
-	// {{{ protected function addCommentToPost()
+
+
 
 	protected function addCommentToPost(
 		SiteCommentStatus $post,
@@ -241,8 +241,8 @@ abstract class SiteCommentUi
 		$post->addComment($comment);
 	}
 
-	// }}}
-	// {{{ protected function saveCommentCookie()
+
+
 
 	protected function saveCommentCookie()
 	{
@@ -255,34 +255,34 @@ abstract class SiteCommentUi
 		$this->app->cookie->setCookie('comment_credentials', $value);
 	}
 
-	// }}}
-	// {{{ protected function deleteCommentCookie()
+
+
 
 	protected function deleteCommentCookie()
 	{
 		$this->app->cookie->removeCookie('comment_credentials');
 	}
 
-	// }}}
-	// {{{ protected function isCommentSpam()
+
+
 
 	protected function isCommentSpam(SiteComment $comment)
 	{
 		return false;
 	}
 
-	// }}}
-	// {{{ protected function hasPublishBeenClicked()
+
+
 
 	protected function hasPublishBeenClicked()
 	{
 		return ($this->ui->getWidget('post_button')->hasBeenClicked());
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function display()
+
 
 	public function display()
 	{
@@ -292,8 +292,8 @@ abstract class SiteCommentUi
 		$this->displayCommentUi();
 	}
 
-	// }}}
-	// {{{ protected function build()
+
+
 
 	protected function build()
 	{
@@ -358,8 +358,8 @@ abstract class SiteCommentUi
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildCommentPreview()
+
+
 
 	protected function buildCommentPreview()
 	{
@@ -393,8 +393,8 @@ abstract class SiteCommentUi
 		}
 	}
 
-	// }}}
-	// {{{ protected function getCommentPreviewPostInputTag()
+
+
 
 	protected function getCommentPreviewPostInputTag()
 	{
@@ -408,16 +408,16 @@ abstract class SiteCommentUi
 		return $tag;
 	}
 
-	// }}}
-	// {{{ protected function getView()
+
+
 
 	protected function getView()
 	{
 		return SiteViewFactory::get($this->app, 'comment');
 	}
 
-	// }}}
-	// {{{ protected function getMessage()
+
+
 
 	protected function getMessage($shortname)
 	{
@@ -450,8 +450,8 @@ abstract class SiteCommentUi
 		}
 	}
 
-	// }}}
-	// {{{ protected function displayCommentUi()
+
+
 
 	protected function displayCommentUi()
 	{
@@ -469,33 +469,33 @@ abstract class SiteCommentUi
 		$this->ui->display();
 	}
 
-	// }}}
-	// {{{ protected function displaySubmitComment()
+
+
 
 	protected function displaySubmitComment()
 	{
 		echo '<div id="submit_comment"></div>';
 	}
 
-	// }}}
-	// {{{ protected function getCommentStatus()
+
+
 
 	protected function getCommentStatus()
 	{
 		return $this->post->getCommentStatus();
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function getHtmlHeadEntrySet()
+
 
 	public function getHtmlHeadEntrySet()
 	{
 		return $this->ui->getRoot()->getHtmlHeadEntrySet();
 	}
 
-	// }}}
+
 }
 
 ?>

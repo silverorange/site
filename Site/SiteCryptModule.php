@@ -9,7 +9,7 @@
  */
 class SiteCryptModule extends SiteApplicationModule
 {
-	// {{{ class constants
+
 
 	const SHA_MIN_ROUNDS = 1000;
 	const SHA_MAX_ROUNDS = 999999999;
@@ -19,8 +19,8 @@ class SiteCryptModule extends SiteApplicationModule
 	const BLOWFISH_MAX_ROUNDS = 31;
 	const BLOWFISH_SALT_LENGTH = 22;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var string
@@ -32,8 +32,8 @@ class SiteCryptModule extends SiteApplicationModule
 	 */
 	protected $rounds;
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this module
@@ -62,8 +62,8 @@ class SiteCryptModule extends SiteApplicationModule
 		$this->rounds = (int)$rounds;
 	}
 
-	// }}}
-	// {{{ public function verifyHash()
+
+
 
 	/**
 	 * Checks if the given password matches the given password hash
@@ -90,8 +90,8 @@ class SiteCryptModule extends SiteApplicationModule
 		return ($password_hash === $hash);
 	}
 
-	// }}}
-	// {{{ public function shouldUpdateHash()
+
+
 
 	/**
 	 * Checks if the given password hash should be re-hashed
@@ -116,8 +116,8 @@ class SiteCryptModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ public function generateHash()
+
+
 
 	/**
 	 * Generates a password hash for the given password
@@ -129,8 +129,8 @@ class SiteCryptModule extends SiteApplicationModule
 		return crypt($password, $this->generateSalt());
 	}
 
-	// }}}
-	// {{{ protected function getCryptMethod()
+
+
 
 	protected function getCryptMethod()
 	{
@@ -152,8 +152,8 @@ class SiteCryptModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function getCryptRounds()
+
+
 
 	protected function getCryptRounds()
 	{
@@ -181,8 +181,8 @@ class SiteCryptModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function getCryptSaltLength()
+
+
 
 	protected function getCryptSaltLength()
 	{
@@ -202,8 +202,8 @@ class SiteCryptModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function generateSalt()
+
+
 
 	protected function generateSalt()
 	{
@@ -215,8 +215,8 @@ class SiteCryptModule extends SiteApplicationModule
 		);
 	}
 
-	// }}}
-	// {{{ protected function generateCryptSalt()
+
+
 
 	/**
 	 * Gets a salt value for crypt(3)
@@ -250,7 +250,7 @@ class SiteCryptModule extends SiteApplicationModule
 		return $salt;
 	}
 
-	// }}}
+
 }
 
 ?>

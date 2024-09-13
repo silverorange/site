@@ -9,7 +9,7 @@
  */
 class SiteSessionModule extends SiteApplicationModule
 {
-	// {{{ class constants
+
 
 	/**
 	 * Class constant indicating session id should be regenerated
@@ -29,8 +29,8 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	const NO_REGENERATE_ID = false;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var array
@@ -49,8 +49,8 @@ class SiteSessionModule extends SiteApplicationModule
 	 */
 	protected $registered_objects = [];
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a site session module
@@ -84,8 +84,8 @@ class SiteSessionModule extends SiteApplicationModule
 		parent::__construct($app);
 	}
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this session module
@@ -104,8 +104,8 @@ class SiteSessionModule extends SiteApplicationModule
 			$this->autoActivate();
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -127,8 +127,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return $depends;
 	}
 
-	// }}}
-	// {{{ public function activate()
+
+
 
 	/**
 	 * Activates the current user's session
@@ -156,8 +156,8 @@ class SiteSessionModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function isActive()
+
+
 
 	/**
 	 * Checks if there is an active session
@@ -170,8 +170,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return (session_id() != '');
 	}
 
-	// }}}
-	// {{{ public function registerActivateCallback()
+
+
 
 	/**
 	 * Registers a callback function that is executed when the session is
@@ -192,8 +192,8 @@ class SiteSessionModule extends SiteApplicationModule
 		$this->activate_callbacks[] = ['callback' => $callback, 'parameters' => $parameters];
 	}
 
-	// }}}
-	// {{{ public function registerObject()
+
+
 
 	/**
 	 * Registers an object class for a session variable
@@ -219,8 +219,8 @@ class SiteSessionModule extends SiteApplicationModule
 		$this->registered_objects[$name] = ['class'   => $class, 'destroy' => ($destroy_on_logout) ? true : false];
 	}
 
-	// }}}
-	// {{{ public function unsetRegisteredObjects()
+
+
 
 	/**
 	 * Unsets variables registered in the session and marked as
@@ -235,8 +235,8 @@ class SiteSessionModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function getSessionId()
+
+
 
 	/**
 	 * Retrieves the current session ID
@@ -251,8 +251,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return session_id();
 	}
 
-	// }}}
-	// {{{ public function getSessionName()
+
+
 
 	/**
 	 * Retrieves the session name
@@ -265,8 +265,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return $name;
 	}
 
-	// }}}
-	// {{{ public function clear()
+
+
 
 	/**
 	 * Clears all session variables while maintaining the current session
@@ -277,8 +277,8 @@ class SiteSessionModule extends SiteApplicationModule
 			$_SESSION = [];
 	}
 
-	// }}}
-	// {{{ public function appendSessionId()
+
+
 
 	/**
 	 * Appends the session ID to a URI
@@ -325,8 +325,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return $uri;
 	}
 
-	// }}}
-	// {{{ public function setSavePath()
+
+
 
 	/**
 	 * Set the session save path
@@ -336,8 +336,8 @@ class SiteSessionModule extends SiteApplicationModule
 		session_save_path($path);
 	}
 
-	// }}}
-	// {{{ public function getSavePath()
+
+
 
 	/**
 	 * Get the session save path
@@ -347,8 +347,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return session_save_path();
 	}
 
-	// }}}
-	// {{{ public function autoActivate()
+
+
 
 	/**
 	 * Activates the current user's session
@@ -390,8 +390,8 @@ class SiteSessionModule extends SiteApplicationModule
 		$this->setSentryUserContext();
 	}
 
-	// }}}
-	// {{{ public function regenerateId()
+
+
 
 	public function regenerateId()
 	{
@@ -415,8 +415,8 @@ class SiteSessionModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ public function sessionFileExists()
+
+
 
 	/**
 	 * Checks to see if a session file exists for a specific session_id
@@ -442,8 +442,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return $exists;
 	}
 
-	// }}}
-	// {{{ public function registerRegenerateIdCallback()
+
+
 
 	/**
 	 * Registers a callback function that is executed when the session ID
@@ -471,8 +471,8 @@ class SiteSessionModule extends SiteApplicationModule
 		$this->regenerate_id_callbacks[] = ['callback' => $callback, 'parameters' => $parameters];
 	}
 
-	// }}}
-	// {{{ public function __set()
+
+
 
 	/**
 	 * Sets a session variable
@@ -488,8 +488,8 @@ class SiteSessionModule extends SiteApplicationModule
 		$_SESSION[$name] = $value;
 	}
 
-	// }}}
-	// {{{ public function __isset()
+
+
 
 	/**
 	 * Checks the existence of a session variable
@@ -503,8 +503,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return ($this->isActive() && isset($_SESSION[$name]));
 	}
 
-	// }}}
-	// {{{ public function __unset()
+
+
 
 	/**
 	 * Removes a session variable
@@ -520,8 +520,8 @@ class SiteSessionModule extends SiteApplicationModule
 			unset($_SESSION[$name]);
 	}
 
-	// }}}
-	// {{{ public function __get()
+
+
 
 	/**
 	 * Gets a session variable
@@ -542,8 +542,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return $_SESSION[$name];
 	}
 
-	// }}}
-	// {{{ protected function regenerateAuthenticationToken()
+
+
 
 	protected function regenerateAuthenticationToken()
 	{
@@ -551,8 +551,8 @@ class SiteSessionModule extends SiteApplicationModule
 		SwatForm::setAuthenticationToken($this->_authentication_token);
 	}
 
-	// }}}
-	// {{{ protected function shouldAutoActivateSession()
+
+
 
 	/**
 	 * Whether to auto activate a session during module init
@@ -595,8 +595,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function startSession()
+
+
 
 	/**
 	 * Starts a session
@@ -635,8 +635,8 @@ class SiteSessionModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function restoreRegisteredObjectDBConnections()
+
+
 
 	/**
 	 * Restores the database connection resource for objects registered in
@@ -673,8 +673,8 @@ class SiteSessionModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function checkRegisteredObjectClasses()
+
+
 
 	/**
 	 * Checks to make sure class definitions exist for objects registered in the
@@ -696,8 +696,8 @@ class SiteSessionModule extends SiteApplicationModule
 		}
 	}
 
-	// }}}
-	// {{{ protected function getErrorUserContext()
+
+
 
 	/**
 	 * Gets the user-context array for error reporting
@@ -722,8 +722,8 @@ class SiteSessionModule extends SiteApplicationModule
 		return $data;
 	}
 
-	// }}}
-	// {{{ protected function setSentryUserContext()
+
+
 
 	/**
 	 * Sets the user-context for the sentry module if the application has a
@@ -736,8 +736,8 @@ class SiteSessionModule extends SiteApplicationModule
 		});
 	}
 
-	// }}}
-	// {{{ private function isValidSessionId()
+
+
 
 	private function isValidSessionId($id)
 	{
@@ -749,7 +749,7 @@ class SiteSessionModule extends SiteApplicationModule
 		return $valid;
 	}
 
-	// }}}
+
 }
 
 ?>

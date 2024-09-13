@@ -11,25 +11,25 @@
  */
 class SiteAccountSessionsPage extends SiteDBEditPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var array
 	 */
 	protected $logout_buttons = [];
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/account-sessions.xml';
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -47,8 +47,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		parent::init();
 	}
 
-	// }}}
-	// {{{ protected function initInternal()
+
+
 
 	protected function initInternal()
 	{
@@ -56,8 +56,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$this->initLogoutButtons();
 	}
 
-	// }}}
-	// {{{ protected function initLogoutButtons()
+
+
 
 	protected function initLogoutButtons()
 	{
@@ -70,8 +70,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function createLogoutButton()
+
+
 
 	protected function createLogoutButton(SiteAccountLoginSession $session)
 	{
@@ -82,10 +82,10 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		return $button;
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function saveData()
+
 
 	protected function saveData(SwatForm $form)
 	{
@@ -97,16 +97,16 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate(SwatForm $form)
 	{
 		$this->relocateToRefererUri($form, 'account');
 	}
 
-	// }}}
-	// {{{ protected function deleteLoginSession()
+
+
 
 	protected function deleteLoginSession($id)
 	{
@@ -123,8 +123,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$this->app->messages->add($message);
 	}
 
-	// }}}
-	// {{{ protected function endSession()
+
+
 
 	protected function endSession(SiteAccountLoginSession $session)
 	{
@@ -155,8 +155,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		session_start();
 	}
 
-	// }}}
-	// {{{ protected function getLogoutMessage()
+
+
 
 	protected function getLogoutMessage(SiteAccountLoginSession $login_session)
 	{
@@ -182,10 +182,10 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		return $message;
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -241,8 +241,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$this->ui->getWidget('sessions_content')->content_type = 'text/xml';
 	}
 
-	// }}}
-	// {{{ protected function getOtherLoginSessions()
+
+
 
 	protected function getOtherLoginSessions()
 	{
@@ -259,8 +259,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		return $sessions;
 	}
 
-	// }}}
-	// {{{ protected function buildTitle()
+
+
 
 	protected function buildTitle()
 	{
@@ -268,8 +268,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$this->layout->data->title = Site::_('Active Sessions');
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -282,8 +282,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$this->layout->navbar->createEntry(Site::_('Active Sessions'));
 	}
 
-	// }}}
-	// {{{ protected function getBrowser()
+
+
 
 	protected function getBrowser($user_agent)
 	{
@@ -303,8 +303,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		return $found_browser;
 	}
 
-	// }}}
-	// {{{ protected function getOS()
+
+
 
 	protected function getOS($user_agent)
 	{
@@ -324,8 +324,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		return $found_os;
 	}
 
-	// }}}
-	// {{{ protected function displaySessionsNote()
+
+
 
 	protected function displaySessionsNote()
 	{
@@ -343,8 +343,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$div->display();
 	}
 
-	// }}}
-	// {{{ protected function displayOtherSessionsNote()
+
+
 
 	protected function displayOtherSessionsNote()
 	{
@@ -363,8 +363,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$div->display();
 	}
 
-	// }}}
-	// {{{ protected function displayCurrentSession()
+
+
 
 	protected function displayCurrentSession()
 	{
@@ -406,8 +406,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$this->displayLoginInformation($user_agent, $login_date);
 	}
 
-	// }}}
-	// {{{ protected function displayLoginSession()
+
+
 
 	protected function displayLoginSession(SiteAccountLoginSession $session)
 	{
@@ -420,8 +420,8 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		);
 	}
 
-	// }}}
-	// {{{ protected function displayLoginInformation()
+
+
 
 	protected function displayLoginInformation(
 		$user_agent,
@@ -490,10 +490,10 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		echo '</li>';
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -501,7 +501,7 @@ class SiteAccountSessionsPage extends SiteDBEditPage
 		$this->layout->addBodyClass('account-sessions-page');
 	}
 
-	// }}}
+
 }
 
 ?>

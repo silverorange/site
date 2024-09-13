@@ -9,7 +9,7 @@
  */
 class SiteTimerCheckpoint extends SwatObject
 {
-	// {{{ private properties
+
 
 	/**
 	 * The time when this checkpoint was created in milliseconds
@@ -32,8 +32,8 @@ class SiteTimerCheckpoint extends SwatObject
 	 */
 	private $memory_usage;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new timer checkpoint
@@ -50,8 +50,8 @@ class SiteTimerCheckpoint extends SwatObject
 		$this->memory_usage = $memory_usage;
 	}
 
-	// }}}
-	// {{{ public function getTime()
+
+
 
 	/**
 	 * Gets the time when this checkpoint was created
@@ -63,8 +63,8 @@ class SiteTimerCheckpoint extends SwatObject
 		return $this->time;
 	}
 
-	// }}}
-	// {{{ public function getName()
+
+
 
 	/**
 	 * Gets the name of this checkpoint
@@ -76,8 +76,8 @@ class SiteTimerCheckpoint extends SwatObject
 		return $this->name;
 	}
 
-	// }}}
-	// {{{ public function getMemoryUsage()
+
+
 
 	/**
 	 * Gets the memory use of this checkpoint
@@ -89,7 +89,7 @@ class SiteTimerCheckpoint extends SwatObject
 		return $this->memory_usage;
 	}
 
-	// }}}
+
 }
 
 ?>

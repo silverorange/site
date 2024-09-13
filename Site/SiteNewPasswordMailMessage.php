@@ -24,7 +24,7 @@
  */
 class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The account this new password mail message is intended for
@@ -49,8 +49,8 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 	 */
 	protected $application_title;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new password email
@@ -75,8 +75,8 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 		$this->application_title = $application_title;
 	}
 
-	// }}}
-	// {{{ public function send()
+
+
 
 	/**
 	 * Sends this mail message
@@ -97,8 +97,8 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 		parent::send();
 	}
 
-	// }}}
-	// {{{ protected function getTextBody()
+
+
 
 	/**
 	 * Gets the plain-text content of this mail message
@@ -112,8 +112,8 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 			$this->new_password);
 	}
 
-	// }}}
-	// {{{ protected function getHtmlBody()
+
+
 
 	/**
 	 * Gets the HTML content of this mail message
@@ -127,8 +127,8 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 			sprintf('<strong>%s</strong>', $this->new_password));
 	}
 
-	// }}}
-	// {{{ protected function getFormattedBody()
+
+
 
 	protected function getFormattedBody($format_string, $formatted_password)
 	{
@@ -144,8 +144,8 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 			'account page.'));
 	}
 
-	// }}}
-	// {{{ protected function getFullname()
+
+
 
 	protected function getFullname()
 	{
@@ -159,7 +159,7 @@ class SiteNewPasswordMailMessage extends SiteMultipartMailMessage
 		return $fullname;
 	}
 
-	// }}}
+
 }
 
 ?>

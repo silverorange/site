@@ -14,7 +14,7 @@
  */
 class SiteMediaCdnTaskWrapper extends SiteCdnTaskWrapper
 {
-	// {{{ public function initializeFromResultSet()
+
 
 	public function initializeFromResultSet(MDB2_Result_Common $rs)
 	{
@@ -37,8 +37,8 @@ class SiteMediaCdnTaskWrapper extends SiteCdnTaskWrapper
 		}
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -46,7 +46,7 @@ class SiteMediaCdnTaskWrapper extends SiteCdnTaskWrapper
 		$this->row_wrapper_class = SwatDBClassMap::get(SiteMediaCdnTask::class);
 	}
 
-	// }}}
+
 }
 
 ?>

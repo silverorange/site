@@ -13,7 +13,7 @@
  */
 class SiteAd extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier for this advertisement
@@ -64,8 +64,8 @@ class SiteAd extends SwatDBDataObject
 	 */
 	public $emails_sent = 0;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -74,8 +74,8 @@ class SiteAd extends SwatDBDataObject
 		$this->registerDateProperty('createdate');
 	}
 
-	// }}}
-	// {{{ public function loadFromShortname()
+
+
 
 	/**
 	 * Loads an ad from the database using the ad shortname
@@ -107,7 +107,7 @@ class SiteAd extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
+
 }
 
 ?>

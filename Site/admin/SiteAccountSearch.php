@@ -6,7 +6,7 @@
  */
 class SiteAccountSearch
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteApplication
@@ -18,8 +18,8 @@ class SiteAccountSearch
 	 */
 	protected $ui;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(SiteApplication $app, SwatUI $ui)
 	{
@@ -27,15 +27,15 @@ class SiteAccountSearch
 		$this->ui = $ui;
 	}
 
-	// }}}
-	// {{{ public function getJoinClause()
+
+
 
 	public function getJoinClause()
 	{
 	}
 
-	// }}}
-	// {{{ public function getWhereClause()
+
+
 
 	public function getWhereClause()
 	{
@@ -54,16 +54,16 @@ class SiteAccountSearch
 		return $where;
 	}
 
-	// }}}
-	// {{{ public function getOrderByClause()
+
+
 
 	public function getOrderByClause()
 	{
 		return 'fullname, email';
 	}
 
-	// }}}
-	// {{{ protected function getWhereClauses()
+
+
 
 	protected function getWhereClauses()
 	{
@@ -99,8 +99,8 @@ class SiteAccountSearch
 		return $clauses;
 	}
 
-	// }}}
-	// {{{ protected function getCleanedAccountClause()
+
+
 
 	protected function getCleanedAccountClause()
 	{
@@ -116,7 +116,7 @@ class SiteAccountSearch
 		return $clause;
 	}
 
-	// }}}
+
 }
 
 ?>

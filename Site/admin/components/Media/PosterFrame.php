@@ -8,17 +8,17 @@
  */
 class SiteMediaPosterFrame extends AdminDBEdit
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteVideoMedia
 	 */
 	protected $media;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -28,8 +28,8 @@ class SiteMediaPosterFrame extends AdminDBEdit
 		$this->initMedia();
 	}
 
-	// }}}
-	// {{{ protected function initMedia()
+
+
 
 	protected function initMedia()
 	{
@@ -62,18 +62,18 @@ class SiteMediaPosterFrame extends AdminDBEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/poster-frame.xml';
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function saveDBData()
+
 
 	protected function saveDBData()
 	{
@@ -103,10 +103,10 @@ class SiteMediaPosterFrame extends AdminDBEdit
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -120,24 +120,24 @@ class SiteMediaPosterFrame extends AdminDBEdit
 		$this->layout->addHtmlHeadEntrySet($player->getHtmlHeadEntrySet());
 	}
 
-	// }}}
-	// {{{ protected function loadDBData()
+
+
 
 	protected function loadDBData()
 	{
 		$this->ui->setValues($this->media->getAttributes());
 	}
 
-	// }}}
-	// {{{ protected function getMediaInstance()
+
+
 
 	protected function getMediaInstance()
 	{
 		return $this->media->media_set->instance;
 	}
 
-	// }}}
-	// {{{ protected function getMediaInstanceId()
+
+
 
 	protected function getMediaInstanceId()
 	{
@@ -146,8 +146,8 @@ class SiteMediaPosterFrame extends AdminDBEdit
 			: null;
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -167,7 +167,7 @@ class SiteMediaPosterFrame extends AdminDBEdit
 		$this->navbar->createEntry(Site::_('Edit Poster Frame'));
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -17,7 +17,7 @@
  */
 class SiteCommentStatusSlider extends SwatOptionControl
 {
-	// {{{ public properties
+
 
 	/**
 	 * Slider value
@@ -36,8 +36,8 @@ class SiteCommentStatusSlider extends SwatOptionControl
 	 */
 	public $context_notes_by_option = [];
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new comment status slider
@@ -63,8 +63,8 @@ class SiteCommentStatusSlider extends SwatOptionControl
 		);
 	}
 
-	// }}}
-	// {{{ public function process()
+
+
 
 	/**
 	 * Processes this comment status slider
@@ -88,8 +88,8 @@ class SiteCommentStatusSlider extends SwatOptionControl
 		}
 	}
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	/**
 	 * Displays this comment status slider
@@ -136,8 +136,8 @@ class SiteCommentStatusSlider extends SwatOptionControl
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 	}
 
-	// }}}
-	// {{{ public function addContextNote()
+
+
 
 	/**
 	 * Adds a context note to an option in this slider
@@ -161,8 +161,8 @@ class SiteCommentStatusSlider extends SwatOptionControl
 		$this->context_notes_by_option[spl_object_hash($option)] = $note;
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScript()
+
+
 
 	/**
 	 * Gets the inline JavaScript required by this control
@@ -201,7 +201,7 @@ class SiteCommentStatusSlider extends SwatOptionControl
 			$options);
 	}
 
-	// }}}
+
 }
 
 ?>

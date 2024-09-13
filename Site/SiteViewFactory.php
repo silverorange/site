@@ -37,7 +37,7 @@
  */
 class SiteViewFactory extends SwatObject
 {
-	// {{{ private static properties
+
 
 	/**
 	 * List of registered view classes indexed by the view type
@@ -53,8 +53,8 @@ class SiteViewFactory extends SwatObject
 	 */
 	private static $search_paths = ['Site/views'];
 
-	// }}}
-	// {{{ public static function get()
+
+
 
 	/**
 	 * Gets a view of the specified type
@@ -85,8 +85,8 @@ class SiteViewFactory extends SwatObject
 		return new $view_class_name($app);
 	}
 
-	// }}}
-	// {{{ public static function registerView()
+
+
 
 	/**
 	 * Registers a view class with the factory
@@ -106,8 +106,8 @@ class SiteViewFactory extends SwatObject
 		self::$view_class_names_by_type[$type] = $view_class_name;
 	}
 
-	// }}}
-	// {{{ public static function addPath()
+
+
 
 	/**
 	 * Adds a search path for class-definition files
@@ -132,8 +132,8 @@ class SiteViewFactory extends SwatObject
 		}
 	}
 
-	// }}}
-	// {{{ public static function removePath()
+
+
 
 	/**
 	 * Removes a search path for view class-definition files
@@ -150,8 +150,8 @@ class SiteViewFactory extends SwatObject
 		}
 	}
 
-	// }}}
-	// {{{ private static function loadViewClass()
+
+
 
 	/**
 	 * Loads a view class-definition if it is not defined
@@ -174,8 +174,8 @@ class SiteViewFactory extends SwatObject
 		}
 	}
 
-	// }}}
-	// {{{ private function __construct()
+
+
 
 	/**
 	 * This class contains only static methods and should not be instantiated
@@ -184,7 +184,7 @@ class SiteViewFactory extends SwatObject
 	{
 	}
 
-	// }}}
+
 }
 
 ?>

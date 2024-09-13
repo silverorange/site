@@ -9,7 +9,7 @@
  */
 class SiteNotAuthorizedException extends SiteException
 {
-	// {{{ public function __construct()
+
 
 	/**
 	 * Creates a new not authorized exception
@@ -24,7 +24,7 @@ class SiteNotAuthorizedException extends SiteException
 		$this->http_status_code = 401;
 	}
 
-	// }}}
+
 }
 
 ?>

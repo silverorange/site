@@ -10,7 +10,7 @@
  */
 class SiteImageDimensionBindingWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -20,15 +20,15 @@ class SiteImageDimensionBindingWrapper extends SwatDBRecordsetWrapper
 		$this->row_wrapper_class = $this->getImageDimensionBindingClassName();
 	}
 
-	// }}}
-	// {{{ protected function getImageDimensionBindingClassName()
+
+
 
 	protected function getImageDimensionBindingClassName()
 	{
 		return SwatDBClassMap::get(SiteImageDimensionBinding::class);
 	}
 
-	// }}}
+
 }
 
 ?>

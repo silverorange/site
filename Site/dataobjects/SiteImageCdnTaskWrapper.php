@@ -10,7 +10,7 @@
  */
 class SiteImageCdnTaskWrapper extends SiteCdnTaskWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -19,7 +19,7 @@ class SiteImageCdnTaskWrapper extends SiteCdnTaskWrapper
 		$this->row_wrapper_class = SwatDBClassMap::get(SiteImageCdnTask::class);
 	}
 
-	// }}}
+
 }
 
 ?>

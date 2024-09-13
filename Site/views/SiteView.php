@@ -25,7 +25,7 @@
  */
 abstract class SiteView
 {
-	// {{{ class constants
+
 
 	/**
 	 * Do not show the part. All parts should support this mode.
@@ -44,8 +44,8 @@ abstract class SiteView
 	 */
 	const MODE_ALL     = 3;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * The application to which this view belongs
@@ -76,8 +76,8 @@ abstract class SiteView
 	 */
 	protected $parts = [];
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new Site object view
@@ -90,8 +90,8 @@ abstract class SiteView
 		$this->define();
 	}
 
-	// }}}
-	// {{{ public function setPathPrefix()
+
+
 
 	/**
 	 * Sets the prefix to use for relatively referenced paths such as file
@@ -105,8 +105,8 @@ abstract class SiteView
 		$this->path_prefix = $path_prefix;
 	}
 
-	// }}}
-	// {{{ public function setPartMode()
+
+
 
 	/**
 	 * Sets the display mode and optionally the link value of a part in this
@@ -143,8 +143,8 @@ abstract class SiteView
 		$this->parts[$part] = ['mode' => $mode, 'link' => $link];
 	}
 
-	// }}}
-	// {{{ public function setPartLink()
+
+
 
 	/**
 	 * Sets the link value of a part in this view
@@ -170,8 +170,8 @@ abstract class SiteView
 		$this->parts[$part]['link'] = $link;
 	}
 
-	// }}}
-	// {{{ public function getParts()
+
+
 
 	/**
 	 * Gets a list of the available parts of this view
@@ -183,13 +183,13 @@ abstract class SiteView
 		return array_keys($this->parts);
 	}
 
-	// }}}
-	// {{{ abstract public function display()
+
+
 
 	abstract public function display($object);
 
-	// }}}
-	// {{{ protected function getMode()
+
+
 
 	/**
 	 * Gets the display mode of a part in this view
@@ -217,8 +217,8 @@ abstract class SiteView
 		return $this->parts[$part]['mode'];
 	}
 
-	// }}}
-	// {{{ protected function getLink()
+
+
 
 	/**
 	 * Gets the link value of a part in this view
@@ -244,8 +244,8 @@ abstract class SiteView
 		return $this->parts[$part]['link'];
 	}
 
-	// }}}
-	// {{{ protected function filterMode()
+
+
 
 	/**
 	 * Ensures the specified mode is a valid mode and makes it valid if
@@ -269,8 +269,8 @@ abstract class SiteView
 		return $mode;
 	}
 
-	// }}}
-	// {{{ protected function filterLink()
+
+
 
 	/**
 	 * Ensures the specified link is valid for a view part and makes the link
@@ -291,8 +291,8 @@ abstract class SiteView
 		return $link;
 	}
 
-	// }}}
-	// {{{ protected function define()
+
+
 
 	/**
 	 * Provides a location for view subclasses to define parts
@@ -303,8 +303,8 @@ abstract class SiteView
 	{
 	}
 
-	// }}}
-	// {{{ protected function definePart()
+
+
 
 	/**
 	 * Defines a part in this view
@@ -329,7 +329,7 @@ abstract class SiteView
 		$this->parts[$part] = ['mode' => $mode, 'link' => $link];
 	}
 
-	// }}}
+
 }
 
 ?>

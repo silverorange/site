@@ -12,12 +12,12 @@
  */
 class SiteCookieModule extends SiteApplicationModule
 {
-	// {{{ private properties
+
 
 	private $salt = '';
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this cookie module
@@ -28,8 +28,8 @@ class SiteCookieModule extends SiteApplicationModule
 	{
 	}
 
-	// }}}
-	// {{{ public function setSalt()
+
+
 
 	/**
 	 * Set salt
@@ -39,8 +39,8 @@ class SiteCookieModule extends SiteApplicationModule
 		$this->salt = $salt;
 	}
 
-	// }}}
-	// {{{ public function setCookie()
+
+
 
 	/**
 	 * Sets a cookie
@@ -76,8 +76,8 @@ class SiteCookieModule extends SiteApplicationModule
 		//setcookie($name, $cookie_value, $expiry, $path, $domain);
 	}
 
-	// }}}
-	// {{{ public function removeCookie()
+
+
 
 	/**
 	 * Remove a cookie
@@ -111,8 +111,8 @@ class SiteCookieModule extends SiteApplicationModule
 		unset($_COOKIE[$name]);
 	}
 
-	// }}}
-	// {{{ public function depends()
+
+
 
 	/**
 	 * Gets the module features this module depends on
@@ -131,8 +131,8 @@ class SiteCookieModule extends SiteApplicationModule
 		return $depends;
 	}
 
-	// }}}
-	// {{{ public function __get()
+
+
 
 	/**
 	 * Gets a cookie value
@@ -172,8 +172,8 @@ class SiteCookieModule extends SiteApplicationModule
 		return $value;
 	}
 
-	// }}}
-	// {{{ public function __isset()
+
+
 
 	/**
 	 * Checks the existence of a cookie
@@ -186,8 +186,8 @@ class SiteCookieModule extends SiteApplicationModule
 		return isset($_COOKIE[$name]);
 	}
 
-	// }}}
-	// {{{ protected function getPrefix()
+
+
 
 	/**
 	 * Gets the prefix for the cookie name
@@ -208,8 +208,8 @@ class SiteCookieModule extends SiteApplicationModule
 		return $prefix;
 	}
 
-	// }}}
-	// {{{ private function getHash()
+
+
 
 	/**
 	 * Gets the hash value for a cookie value
@@ -223,7 +223,7 @@ class SiteCookieModule extends SiteApplicationModule
 		return md5($this->salt.serialize($value));
 	}
 
-	// }}}
+
 }
 
 ?>

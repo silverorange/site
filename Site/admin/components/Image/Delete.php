@@ -9,22 +9,22 @@
  */
 abstract class SiteImageDelete extends AdminObjectDelete
 {
-	// {{{ abstract protected function getFileBase()
+
 
 	abstract protected function getFileBase();
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/delete.xml';
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function getObjectsSql()
+
 
 	protected function getObjectsSql()
 	{
@@ -34,10 +34,10 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		);
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function deleteObject()
+
 
 	protected function deleteObject(SwatDBDataObject $object)
 	{
@@ -45,8 +45,8 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		$object->delete();
 	}
 
-	// }}}
-	// {{{ protected function getSavedMessagePrimaryContent()
+
+
 
 	protected function getSavedMessagePrimaryContent($delete_count)
 	{
@@ -60,10 +60,10 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -73,8 +73,8 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		$this->buildButtons();
 	}
 
-	// }}}
-	// {{{ protected function buildDeleteView()
+
+
 
 	protected function buildDeleteView()
 	{
@@ -82,16 +82,16 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		$delete_view->model = $this->getImageStore();
 	}
 
-	// }}}
-	// {{{ protected function buildButtons()
+
+
 
 	protected function buildButtons()
 	{
 		$this->ui->getWidget('yes_button')->title = $this->getTitle();
 	}
 
-	// }}}
-	// {{{ protected function buildNavbar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -102,8 +102,8 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		$this->navbar->createEntry($this->getTitle());
 	}
 
-	// }}}
-	// {{{ protected function getConfirmationMessageHeader()
+
+
 
 	protected function getConfirmationMessageHeader()
 	{
@@ -114,8 +114,8 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		);
 	}
 
-	// }}}
-	// {{{ protected function getTitle()
+
+
 
 	protected function getTitle()
 	{
@@ -126,8 +126,8 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		);
 	}
 
-	// }}}
-	// {{{ protected function getImageStore()
+
+
 
 	protected function getImageStore()
 	{
@@ -143,7 +143,7 @@ abstract class SiteImageDelete extends AdminObjectDelete
 		return $store;
 	}
 
-	// }}}
+
 }
 
 ?>

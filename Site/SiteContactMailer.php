@@ -12,7 +12,7 @@
  */
 class SiteContactMailer extends SiteCommandLineApplication
 {
-	// {{{ public properties
+
 
 	/**
 	 * A convenience reference to the database object
@@ -21,8 +21,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 	 */
 	public $db;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var string
@@ -36,8 +36,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 	 */
 	protected $base_class_name = null;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($id, $filename, $title, $documentation)
 	{
@@ -68,8 +68,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 
 	}
 
-	// }}}
-	// {{{ public function setInstance()
+
+
 
 	public function setInstance($shortname)
 	{
@@ -78,16 +78,16 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$this->config->init();
 	}
 
-	// }}}
-	// {{{ public function setBaseClassName()
+
+
 
 	public function setBaseClassName($base_class_name)
 	{
 		$this->base_class_name = $base_class_name;
 	}
 
-	// }}}
-	// {{{ public function getBaseClassName()
+
+
 
 	public function getBaseClassName()
 	{
@@ -98,16 +98,16 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return $this->base_class_name;
 	}
 
-	// }}}
-	// {{{ public function getClassName()
+
+
 
 	public function getClassName()
 	{
 		return SwatDBClassMap::get($this->getBaseClassName());
 	}
 
-	// }}}
-	// {{{ public function setDebugDomain()
+
+
 
 	/**
 	 * Sets the debug domain for this mailer
@@ -123,8 +123,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$this->debug_domain = $domain;
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	public function run()
 	{
@@ -132,8 +132,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$this->sendMessages();
 	}
 
-	// }}}
-	// {{{ protected function sendMessages()
+
+
 
 	protected function sendMessages()
 	{
@@ -183,8 +183,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$this->debug(Site::_("\nAll done.\n"), true);
 	}
 
-	// }}}
-	// {{{ protected function getPendingMessages()
+
+
 
 	protected function getPendingMessages()
 	{
@@ -220,18 +220,18 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return SwatDB::query($this->db, $sql, $this->getWrapper());
 	}
 
-	// }}}
-	// {{{ protected function getWrapper()
+
+
 
 	protected function getWrapper()
 	{
 		return SwatDBClassMap::get(SiteContactMessageWrapper::class);
 	}
 
-	// }}}
+
 
 	// building mail message
-	// {{{ protected function getMailMessage()
+
 
 	protected function getMailMessage(SiteContactMessage $contact_message)
 	{
@@ -255,8 +255,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function getFromName()
+
+
 
 	protected function getFromName(SiteContactMessage $contact_message)
 	{
@@ -267,16 +267,16 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return $from_name;
 	}
 
-	// }}}
-	// {{{ protected function getToAddress()
+
+
 
 	protected function getToAddress(SiteContactMessage $message)
 	{
 		return $this->config->email->contact_address;
 	}
 
-	// }}}
-	// {{{ protected function getCcList()
+
+
 
 	protected function getCcList(SiteContactMessage $message)
 	{
@@ -289,8 +289,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return $list;
 	}
 
-	// }}}
-	// {{{ protected function getBccList()
+
+
 
 	protected function getBccList(SiteContactMessage $message)
 	{
@@ -303,8 +303,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return $list;
 	}
 
-	// }}}
-	// {{{ protected function getSubject()
+
+
 
 	protected function getSubject(SiteContactMessage $message)
 	{
@@ -326,8 +326,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return $subject;
 	}
 
-	// }}}
-	// {{{ protected function getTextBrowserInfo()
+
+
 
 	protected function getTextBrowserInfo(SiteContactMessage $contact_message)
 	{
@@ -343,8 +343,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return $info;
 	}
 
-	// }}}
-	// {{{ protected function getTextBody()
+
+
 
 	protected function getTextBody(SiteContactMessage $contact_message)
 	{
@@ -365,18 +365,18 @@ class SiteContactMailer extends SiteCommandLineApplication
 		return $text_body;
 	}
 
-	// }}}
-	// {{{ protected function getSiteTitle()
+
+
 
 	protected function getSiteTitle()
 	{
 		return $this->config->site->title;
 	}
 
-	// }}}
+
 
 	// boilerplate
-	// {{{ protected function getDefaultModuleList()
+
 
 	/**
 	 * Gets the list of modules to load for this search indexer
@@ -397,8 +397,8 @@ class SiteContactMailer extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	/**
 	 * Configures modules of this application before they are initialized
@@ -412,7 +412,7 @@ class SiteContactMailer extends SiteCommandLineApplication
 		$this->database->dsn = $config->database->dsn;
 	}
 
-	// }}}
+
 }
 
 ?>

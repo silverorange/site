@@ -9,7 +9,7 @@
  */
 class SiteVideoMediaEncodingBinding extends SiteMediaEncodingBinding
 {
-	// {{{ public properties
+
 
 	/**
 	 * Width
@@ -25,7 +25,7 @@ class SiteVideoMediaEncodingBinding extends SiteMediaEncodingBinding
 	 */
 	public $height;
 
-	// }}}
+
 }
 
 ?>

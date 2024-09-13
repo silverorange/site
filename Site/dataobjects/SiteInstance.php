@@ -10,7 +10,7 @@
  */
 class SiteInstance extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier
@@ -33,8 +33,8 @@ class SiteInstance extends SwatDBDataObject
 	 */
 	public $title;
 
-	// }}}
-	// {{{ public function loadFromShortname()
+
+
 
 	/**
 	 * Loads a instance by its shortname
@@ -51,8 +51,8 @@ class SiteInstance extends SwatDBDataObject
 		return $this->loadByShortname($shortname);
 	}
 
-	// }}}
-	// {{{ public function loadByShortname()
+
+
 
 	/**
 	 * Loads a instance by its shortname
@@ -83,8 +83,8 @@ class SiteInstance extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -92,10 +92,10 @@ class SiteInstance extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
+
 
 	// loader methods
-	// {{{ protected function loadConfigSettings()
+
 
 	/**
 	 * Loads the config settings for this instance
@@ -130,7 +130,7 @@ class SiteInstance extends SwatDBDataObject
 		return $settings;
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -6,7 +6,7 @@
  */
 class SiteArticlePath extends SitePath
 {
-	// {{{ public function __construct()
+
 
 	/**
 	 * Creates a new article path object
@@ -22,8 +22,8 @@ class SiteArticlePath extends SitePath
 			$this->loadFromId($app, $id);
 	}
 
-	// }}}
-	// {{{ protected function loadFromId()
+
+
 
 	/**
 	 * Creates a new path object
@@ -37,8 +37,8 @@ class SiteArticlePath extends SitePath
 				$row->id, $row->parent, $row->shortname, $row->title));
 	}
 
-	// }}}
-	// {{{ protected function queryPath()
+
+
 
 	protected function queryPath($app, $article_id)
 	{
@@ -46,7 +46,7 @@ class SiteArticlePath extends SitePath
 			$article_id);
 	}
 
-	// }}}
+
 }
 
 ?>

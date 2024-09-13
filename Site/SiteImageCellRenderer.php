@@ -9,15 +9,15 @@
  */
 class SiteImageCellRenderer extends SwatCellRenderer
 {
-	// {{{ class constants
+
 
 	/**
 	 * Title length in characters before it gets truncated.
 	 */
 	const MAX_TITLE_LENGTH = 30;
 
-	// }}}
-	// {{{ public properties
+
+
 
 	/**
 	 * The image to display
@@ -85,16 +85,16 @@ class SiteImageCellRenderer extends SwatCellRenderer
 	 */
 	public $square = true;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var SwatImageCellRenderer
 	 */
 	protected $image_cell_renderer;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct()
 	{
@@ -104,8 +104,8 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		$this->image_cell_renderer->parent = $this;
 	}
 
-	// }}}
-	// {{{ public function getHtmlHeadEntrySet()
+
+
 
 	public function getHtmlHeadEntrySet()
 	{
@@ -119,8 +119,8 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		return $set;
 	}
 
-	// }}}
-	// {{{ public function render()
+
+
 
 	public function render()
 	{
@@ -178,8 +178,8 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildImageCellRenderer()
+
+
 
 	protected function buildImageCellRenderer(SwatImageCellRenderer $renderer)
 	{
@@ -199,7 +199,7 @@ class SiteImageCellRenderer extends SwatCellRenderer
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

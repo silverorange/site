@@ -7,7 +7,7 @@
  */
 class SiteGravatarEntry extends SwatEmailEntry
 {
-	// {{{ public properties
+
 
 	/**
 	 * Preview image width
@@ -30,8 +30,8 @@ class SiteGravatarEntry extends SwatEmailEntry
 	 */
 	public $default_image = '';
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($id = null)
 	{
@@ -45,8 +45,8 @@ class SiteGravatarEntry extends SwatEmailEntry
 		$this->requires_id = true;
 	}
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	public function display()
 	{
@@ -77,8 +77,8 @@ class SiteGravatarEntry extends SwatEmailEntry
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 	}
 
-	// }}}
-	// {{{ protected function displayEditLink()
+
+
 
 	protected function displayEditLink()
 	{
@@ -103,8 +103,8 @@ class SiteGravatarEntry extends SwatEmailEntry
 		$div->display();
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScript()
+
+
 
 	protected function getInlineJavaScript()
 	{
@@ -119,7 +119,7 @@ class SiteGravatarEntry extends SwatEmailEntry
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

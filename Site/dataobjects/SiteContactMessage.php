@@ -9,7 +9,7 @@
  */
 class SiteContactMessage extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique Identifier
@@ -92,8 +92,8 @@ class SiteContactMessage extends SwatDBDataObject
 	 */
 	public $error_date;
 
-	// }}}
-	// {{{ public function load()
+
+
 
 	/**
 	 * Loads this comment
@@ -141,8 +141,8 @@ class SiteContactMessage extends SwatDBDataObject
 		return $loaded;
 	}
 
-	// }}}
-	// {{{ public static function getSubjects()
+
+
 
 	public static function getSubjects()
 	{
@@ -151,8 +151,8 @@ class SiteContactMessage extends SwatDBDataObject
 		return $subjects;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -167,7 +167,7 @@ class SiteContactMessage extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
+
 }
 
 ?>

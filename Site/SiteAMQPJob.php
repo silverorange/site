@@ -11,7 +11,7 @@
  */
 class SiteAMQPJob
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The exchange where responses to this job can be published
@@ -48,8 +48,8 @@ class SiteAMQPJob
 	 */
 	protected $requeued = false;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new job
@@ -70,8 +70,8 @@ class SiteAMQPJob
 		$this->queue = $queue;
 	}
 
-	// }}}
-	// {{{ public function sendSuccess()
+
+
 
 	/**
 	 * Sends result data and successful status back to the AMQP exchange
@@ -99,8 +99,8 @@ class SiteAMQPJob
 		$this->sendResponse($response_message, 'success');
 	}
 
-	// }}}
-	// {{{ public function sendFail()
+
+
 
 	/**
 	 * Sends result data and known failure status back to the AMQP exchange
@@ -129,8 +129,8 @@ class SiteAMQPJob
 		$this->sendResponse($response_message, 'fail');
 	}
 
-	// }}}
-	// {{{ public function getBody()
+
+
 
 	/**
 	 * Gets the message body of this job
@@ -142,8 +142,8 @@ class SiteAMQPJob
 		return $this->envelope->getBody();
 	}
 
-	// }}}
-	// {{{ public function requeue()
+
+
 
 	/**
 	 * Requeues this job
@@ -175,8 +175,8 @@ class SiteAMQPJob
 		}
 	}
 
-	// }}}
-	// {{{ protected function sendResponse()
+
+
 
 	/**
 	 * Sends result data and status back to the AMQP exchange for this job
@@ -224,7 +224,7 @@ class SiteAMQPJob
 		$this->response_sent = true;
 	}
 
-	// }}}
+
 }
 
 ?>

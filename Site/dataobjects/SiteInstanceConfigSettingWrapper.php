@@ -9,7 +9,7 @@
  */
 class SiteInstanceConfigSettingWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -18,7 +18,7 @@ class SiteInstanceConfigSettingWrapper extends SwatDBRecordsetWrapper
 			SwatDBClassMap::get(SiteInstanceConfigSetting::class);
 	}
 
-	// }}}
+
 }
 
 ?>

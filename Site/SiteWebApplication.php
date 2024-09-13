@@ -11,7 +11,7 @@
  */
 class SiteWebApplication extends SiteApplication
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The base value for all of this application's anchor hrefs
@@ -59,8 +59,8 @@ class SiteWebApplication extends SiteApplication
 	 */
 	protected $p3p_compact_policy = '';
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($id, $config_filename = null)
 	{
@@ -71,8 +71,8 @@ class SiteWebApplication extends SiteApplication
 		parent::__construct($id, $config_filename);
 	}
 
-	// }}}
-	// {{{ public static function cleanUriGetVar()
+
+
 
 	/**
 	 * Removes a get var from the uri, and returns the cleaned version.
@@ -105,8 +105,8 @@ class SiteWebApplication extends SiteApplication
 		return $uri;
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	/**
 	 * Runs this web application
@@ -205,8 +205,8 @@ class SiteWebApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ public function setP3PPolicyURI()
+
+
 
 	/**
 	 * Sets the URI for the full P3P policy for this application
@@ -224,8 +224,8 @@ class SiteWebApplication extends SiteApplication
 		$this->p3p_policy_uri = $uri;
 	}
 
-	// }}}
-	// {{{ public function setP3PCompactPolicy()
+
+
 
 	/**
 	 * Sets the P3P compact policy value for this application
@@ -240,8 +240,8 @@ class SiteWebApplication extends SiteApplication
 		$this->p3p_compact_policy = $policy;
 	}
 
-	// }}}
-	// {{{ protected function setP3PHeaders()
+
+
 
 	protected function setP3PHeaders()
 	{
@@ -257,8 +257,8 @@ class SiteWebApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function parseUri()
+
+
 
 	/**
 	 * Initializes the base href and URI from the request URI
@@ -310,8 +310,8 @@ class SiteWebApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function getCdnBase()
+
+
 
 	/**
 	 * Gets the base cdn
@@ -323,8 +323,8 @@ class SiteWebApplication extends SiteApplication
 		return $this->config->uri->cdn_base;
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	/**
 	 * Configures modules of this application before they are initialized
@@ -340,10 +340,10 @@ class SiteWebApplication extends SiteApplication
 		$this->setP3PCompactPolicy($config->p3p->compact_policy);
 	}
 
-	// }}}
+
 
 	// static caching methods
-	// {{{ protected function isRequestPageCacheable()
+
 
 	/**
 	 * Gets whether or not this entire page request can be cached in the page
@@ -367,8 +367,8 @@ class SiteWebApplication extends SiteApplication
 			!$this->isPageCacheUserActive());
 	}
 
-	// }}}
-	// {{{ protected function isPageCacheUserActive()
+
+
 
 	protected function isPageCacheUserActive()
 	{
@@ -383,8 +383,8 @@ class SiteWebApplication extends SiteApplication
 		return $active;
 	}
 
-	// }}}
-	// {{{ protected function getPageCacheExpirationTime()
+
+
 
 	/**
 	 * Gets the expiration time for the page cache
@@ -404,8 +404,8 @@ class SiteWebApplication extends SiteApplication
 		return time() + $timeout;
 	}
 
-	// }}}
-	// {{{ protected function getPageCacheKey()
+
+
 
 	/**
 	 * Gets the cache key used for the page cache
@@ -420,8 +420,8 @@ class SiteWebApplication extends SiteApplication
 		return $this->id.'-page-'.$this->getUri();
 	}
 
-	// }}}
-	// {{{ protected function getPageCacheUserIdentifier()
+
+
 
 	protected function getPageCacheUserIdentifier()
 	{
@@ -429,10 +429,10 @@ class SiteWebApplication extends SiteApplication
 		return 'user-'.$hash;
 	}
 
-	// }}}
+
 
 	// page methods
-	// {{{ public function getPage()
+
 
 	/**
 	 * Gets the currently loaded page of this application
@@ -442,8 +442,8 @@ class SiteWebApplication extends SiteApplication
 		return $this->page;
 	}
 
-	// }}}
-	// {{{ public function replacePage()
+
+
 
 	/**
 	 * Replaces the current page with another page given a source
@@ -467,8 +467,8 @@ class SiteWebApplication extends SiteApplication
 		return $new_page;
 	}
 
-	// }}}
-	// {{{ public function getReplacementPage()
+
+
 
 	/**
 	 * Gets a page object to replaces the current page given a source
@@ -496,8 +496,8 @@ class SiteWebApplication extends SiteApplication
 		return $new_page;
 	}
 
-	// }}}
-	// {{{ public function setPage()
+
+
 
 	/**
 	 * Sets the current page
@@ -522,8 +522,8 @@ class SiteWebApplication extends SiteApplication
 		$this->page->init();
 	}
 
-	// }}}
-	// {{{ protected function normalizeSource()
+
+
 
 	/**
 	 * Normalizes a source string
@@ -548,8 +548,8 @@ class SiteWebApplication extends SiteApplication
 		return $source;
 	}
 
-	// }}}
-	// {{{ protected function explodeSource()
+
+
 
 	protected function explodeSource($source)
 	{
@@ -562,8 +562,8 @@ class SiteWebApplication extends SiteApplication
 		return $path;
 	}
 
-	// }}}
-	// {{{ protected function loadPage()
+
+
 
 	/**
 	 * Loads the page for the current request into this application
@@ -576,8 +576,8 @@ class SiteWebApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function loadExceptionPage()
+
+
 
 	protected function loadExceptionPage()
 	{
@@ -585,8 +585,8 @@ class SiteWebApplication extends SiteApplication
 		$this->page = $this->resolveExceptionPage($source);
 	}
 
-	// }}}
-	// {{{ protected function resolvePage()
+
+
 
 	/**
 	 * Resolves a page for a particular source
@@ -604,8 +604,8 @@ class SiteWebApplication extends SiteApplication
 		return new SitePage($this, $layout);
 	}
 
-	// }}}
-	// {{{ protected function resolveExceptionPage()
+
+
 
 	/**
 	 * Resolves an exception page for a particular source
@@ -623,8 +623,8 @@ class SiteWebApplication extends SiteApplication
 		return new SiteXhtmlExceptionPage($this, $layout);
 	}
 
-	// }}}
-	// {{{ protected function resolveLayout()
+
+
 
 	/**
 	 * Resolves a layout for a particular source
@@ -645,10 +645,10 @@ class SiteWebApplication extends SiteApplication
 		return null;
 	}
 
-	// }}}
+
 
 	// URI methods
-	// {{{ public function setBaseUri()
+
 
 	/**
 	 * Sets the base URI
@@ -658,8 +658,8 @@ class SiteWebApplication extends SiteApplication
 		$this->base_uri = $uri;
 	}
 
-	// }}}
-	// {{{ public function relocate()
+
+
 
 	/**
 	 * Relocates to another URI
@@ -701,8 +701,8 @@ class SiteWebApplication extends SiteApplication
 		exit();
 	}
 
-	// }}}
-	// {{{ public function relocateWithQueryString()
+
+
 
 	/**
 	 * Relocates to another URI while maintaining the current query string.
@@ -739,8 +739,8 @@ class SiteWebApplication extends SiteApplication
 		$this->relocate($uri, $append_sid, $permanent);
 	}
 
-	// }}}
-	// {{{ public function getUri()
+
+
 
 	/**
 	 * Gets the URI of the current page request
@@ -752,8 +752,8 @@ class SiteWebApplication extends SiteApplication
 		return $this->uri;
 	}
 
-	// }}}
-	// {{{ public function getRemoteIP()
+
+
 
 	/**
 	 * Returns the remote IP of the current page request.
@@ -783,8 +783,8 @@ class SiteWebApplication extends SiteApplication
 		return $remote_ip;
 	}
 
-	// }}}
-	// {{{ public function getBaseHref()
+
+
 
 	/**
 	 * Gets the base value for all application anchor hrefs
@@ -806,8 +806,8 @@ class SiteWebApplication extends SiteApplication
 		return $base_href;
 	}
 
-	// }}}
-	// {{{ public function getAdminBaseHref()
+
+
 
 	/**
 	 * Gets the base value for any application admin hrefs
@@ -837,8 +837,8 @@ class SiteWebApplication extends SiteApplication
 		return $admin_base_href;
 	}
 
-	// }}}
-	// {{{ public function getBaseCdnHref()
+
+
 
 	/**
 	 * Gets the base value for all application cdn anchor hrefs
@@ -860,8 +860,8 @@ class SiteWebApplication extends SiteApplication
 		return $base_cdn_href;
 	}
 
-	// }}}
-	// {{{ public function getBaseHrefRelativeUri()
+
+
 
 	/**
 	 * Gets the URI relative to the base href
@@ -899,8 +899,8 @@ class SiteWebApplication extends SiteApplication
 		return $uri;
 	}
 
-	// }}}
-	// {{{ public function getSwitchMobileLink()
+
+
 
 	/**
 	 * Gets the link to switch to the mobile, or non-mobile url
@@ -936,8 +936,8 @@ class SiteWebApplication extends SiteApplication
 		return $link;
 	}
 
-	// }}}
-	// {{{ protected function getRootBaseHref()
+
+
 
 	/**
 	 * Gets the root part of the base-href (usually the protocol and domain)
@@ -957,8 +957,8 @@ class SiteWebApplication extends SiteApplication
 		return $base_href;
 	}
 
-	// }}}
-	// {{{ protected function getAbsoluteUri()
+
+
 
 	protected function getAbsoluteUri()
 	{
@@ -969,8 +969,8 @@ class SiteWebApplication extends SiteApplication
 		return $uri;
 	}
 
-	// }}}
-	// {{{ protected function getQueryString()
+
+
 
 	/**
 	 * Gets the query string of the request
@@ -987,8 +987,8 @@ class SiteWebApplication extends SiteApplication
 		return $query_string;
 	}
 
-	// }}}
-	// {{{ protected function getServerName()
+
+
 
 	/**
 	 * Gets the servername
@@ -1000,8 +1000,8 @@ class SiteWebApplication extends SiteApplication
 		return $_SERVER['HTTP_HOST'];
 	}
 
-	// }}}
-	// {{{ protected function getProtocol()
+
+
 
 	/**
 	 * Gets the protocol
@@ -1019,8 +1019,8 @@ class SiteWebApplication extends SiteApplication
 		return $protocol;
 	}
 
-	// }}}
-	// {{{ private function hasSession()
+
+
 
 	private function hasSession()
 	{
@@ -1030,7 +1030,7 @@ class SiteWebApplication extends SiteApplication
 			$this->session->isActive());
 	}
 
-	// }}}
+
 }
 
 ?>

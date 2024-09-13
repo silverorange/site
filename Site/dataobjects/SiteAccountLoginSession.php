@@ -9,7 +9,7 @@
  */
 class SiteAccountLoginSession extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Unique identifier
@@ -55,8 +55,8 @@ class SiteAccountLoginSession extends SwatDBDataObject
 	 */
 	public $dirty = false;
 
-	// }}}
-	// {{{ public function setDirty()
+
+
 
 	/**
 	 * Flags this session as needing to be reloaded
@@ -74,8 +74,8 @@ class SiteAccountLoginSession extends SwatDBDataObject
 		SwatDB::exec($this->db, $sql);
 	}
 
-	// }}}
-	// {{{ public function setClean()
+
+
 
 	/**
 	 * Flags this session as NOT needing to be reloaded
@@ -93,8 +93,8 @@ class SiteAccountLoginSession extends SwatDBDataObject
 		SwatDB::exec($this->db, $sql);
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -108,7 +108,7 @@ class SiteAccountLoginSession extends SwatDBDataObject
 			SwatDBClassMap::get(SiteAccount::class));
 	}
 
-	// }}}
+
 }
 
 ?>

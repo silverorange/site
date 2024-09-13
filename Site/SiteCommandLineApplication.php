@@ -15,7 +15,7 @@
  */
 abstract class SiteCommandLineApplication extends SiteApplication
 {
-	// {{{ class constants
+
 
 	/**
 	 * Verbosity level for showing nothing.
@@ -36,8 +36,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 */
 	const VERBOSITY_ALL = 2;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * An array of {@link SiteCommandLineArgument} objects used by this
@@ -86,8 +86,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 	 */
 	protected $lock_file;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new command line application
@@ -144,8 +144,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		$this->addCommandLineArgument($verbosity);
 	}
 
-	// }}}
-	// {{{ public function addCommandLineArgument()
+
+
 
 	/**
 	 * Adds a command line argument to this application
@@ -171,8 +171,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		$this->arguments[] = $argument;
 	}
 
-	// }}}
-	// {{{ public function setVerbosity()
+
+
 
 	/**
 	 * Sets the level of verbosity to use for this application
@@ -184,8 +184,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		$this->verbosity = (integer)$verbosity;
 	}
 
-	// }}}
-	// {{{ public function setApplicationDirectory()
+
+
 
 	/**
 	 * Sets the application directory
@@ -197,8 +197,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		chdir($directory);
 	}
 
-	// }}}
-	// {{{ public function displayUsage()
+
+
 
 	/**
 	 * Displays usage information for this command line application
@@ -218,8 +218,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		exit(0);
 	}
 
-	// }}}
-	// {{{ public function displayArgumentUsage()
+
+
 
 	/**
 	 * Displays usage information for a single command line argument
@@ -234,8 +234,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 			"   ", $argument->getDocumentation(), "\n\n";
 	}
 
-	// }}}
-	// {{{ public function getScriptDirectory()
+
+
 
 	/**
 	 * Gets an absolute path to the directory in which the currently running
@@ -249,8 +249,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		return dirname(realpath($_SERVER['SCRIPT_FILENAME']));
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	/**
 	 * Run the application. Includes boilerplate init of modules and command
@@ -262,8 +262,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		$this->parseCommandLineArguments();
 	}
 
-	// }}}
-	// {{{ protected function parseCommandLineArguments()
+
+
 
 	/**
 	 * Automatically parses and interprets command line arguments of this
@@ -335,8 +335,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function output()
+
+
 
 	/**
 	 * Displays a string based on the verbosity level of this application
@@ -367,8 +367,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function debug()
+
+
 
 	/**
 	 * Displays output at the verbosity level
@@ -384,8 +384,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		$this->output($string, self::VERBOSITY_ALL, $bold);
 	}
 
-	// }}}
-	// {{{ protected function error()
+
+
 
 	/**
 	 * Displays output at the verbosity level
@@ -401,8 +401,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		$this->output($string, self::VERBOSITY_ERRORS, $bold);
 	}
 
-	// }}}
-	// {{{ protected function terminate()
+
+
 
 	/**
 	 * Terminates this application and displays the specified error message
@@ -428,8 +428,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		exit((int)$error_code);
 	}
 
-	// }}}
-	// {{{ protected function lock()
+
+
 
 	/**
 	 * Locks this application, preventing more than one instance from running
@@ -467,8 +467,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function unlock()
+
+
 
 	/**
 	 * Unlocks this application, allowing more than one instance to run
@@ -488,8 +488,8 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function getLockFilename()
+
+
 
 	protected function getLockFilename()
 	{
@@ -498,7 +498,7 @@ abstract class SiteCommandLineApplication extends SiteApplication
 		return $directory.DIRECTORY_SEPARATOR.$filename;
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -4,7 +4,7 @@ require_once __DIR__.'/vendor/autoload.php';
 
 class AMQPTestServer extends SiteAMQPApplication
 {
-	// {{{ protected function doWork()
+
 
 	protected function doWork(SiteAMQPJob $job)
 	{
@@ -21,15 +21,15 @@ class AMQPTestServer extends SiteAMQPApplication
 		sleep(1);
 	}
 
-	// }}}
-	// {{{ protected function getDefaultModuleList()
+
+
 
 	protected function getDefaultModuleList()
 	{
 		return ['config' => 'SiteConfigModule'];
 	}
 
-	// }}}
+
 }
 
 ?>

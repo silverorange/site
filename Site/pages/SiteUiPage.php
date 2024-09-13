@@ -9,22 +9,22 @@
  */
 abstract class SiteUiPage extends SitePageDecorator
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SwatUI
 	 */
 	protected $ui;
 
-	// }}}
-	// {{{ abstract protected function getUiXml()
+
+
 
 	abstract protected function getUiXml();
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -38,17 +38,17 @@ abstract class SiteUiPage extends SitePageDecorator
 		$this->ui->init();
 	}
 
-	// }}}
-	// {{{ protected function initInternal()
+
+
 
 	protected function initInternal()
 	{
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	public function process()
 	{
@@ -57,17 +57,17 @@ abstract class SiteUiPage extends SitePageDecorator
 		$this->processInternal();
 	}
 
-	// }}}
-	// {{{ protected function processInternal()
+
+
 
 	protected function processInternal()
 	{
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -81,8 +81,8 @@ abstract class SiteUiPage extends SitePageDecorator
 		$this->buildContent();
 	}
 
-	// }}}
-	// {{{ protected function buildMessages()
+
+
 
 	protected function buildMessages()
 	{
@@ -100,15 +100,15 @@ abstract class SiteUiPage extends SitePageDecorator
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildInternal()
+
+
 
 	protected function buildInternal()
 	{
 	}
 
-	// }}}
-	// {{{ protected function buildContent()
+
+
 
 	protected function buildContent()
 	{
@@ -117,10 +117,10 @@ abstract class SiteUiPage extends SitePageDecorator
 		$this->layout->endCapture();
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -129,7 +129,7 @@ abstract class SiteUiPage extends SitePageDecorator
 			$this->ui->getRoot()->getHtmlHeadEntrySet());
 	}
 
-	// }}}
+
 }
 
 ?>

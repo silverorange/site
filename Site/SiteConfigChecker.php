@@ -13,7 +13,7 @@
  */
 class SiteConfigChecker extends SiteCommandLineApplication
 {
-	// {{{ private properties
+
 
 	/**
 	 * Configuration setting definitions of this config checker
@@ -30,8 +30,8 @@ class SiteConfigChecker extends SiteCommandLineApplication
 	 */
 	private $filename = '';
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($id, $title, $documentation)
 	{
@@ -44,8 +44,8 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		$this->addCommandLineArgument($quiet);
 	}
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	public function run()
 	{
@@ -57,8 +57,8 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
-	// {{{ public function addDefinitions()
+
+
 
 	/**
 	 * Adds multiple configuration setting definitions to this config module
@@ -96,8 +96,8 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
-	// {{{ public function addDefinition()
+
+
 
 	/**
 	 * Adds a configuration setting definition to this config module
@@ -139,8 +139,8 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		$this->definitions[$section][$name] = $default_value;
 	}
 
-	// }}}
-	// {{{ public function setQuiet()
+
+
 
 	/**
 	 * Sets whether or not this application is quiet
@@ -157,8 +157,8 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		$this->setVerbosity($verbosity);
 	}
 
-	// }}}
-	// {{{ public function setFilename()
+
+
 
 	public function setFilename($filename)
 	{
@@ -173,8 +173,8 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ private function check()
+
+
 
 	/**
 	 * Checks an in file to ensure all the fields are defined
@@ -214,8 +214,8 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		return $passed;
 	}
 
-	// }}}
-	// {{{ private function isValidKey()
+
+
 
 	/**
 	 * Checks whether or not a name is a valid section name or setting name
@@ -230,7 +230,7 @@ class SiteConfigChecker extends SiteCommandLineApplication
 		return (preg_match($regexp, $name) == 1);
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -10,7 +10,7 @@
 abstract class SiteDBEditPage extends SiteEditPage
 {
 	// process phase
-	// {{{ protected function save()
+
 
 	protected function save(SwatForm $form)
 	{
@@ -30,13 +30,13 @@ abstract class SiteDBEditPage extends SiteEditPage
 		}
 	}
 
-	// }}}
-	// {{{ abstract protected function saveData()
+
+
 
 	abstract protected function saveData(SwatForm $form);
 
-	// }}}
-	// {{{ protected function getRollbackMessage()
+
+
 
 	protected function getRollbackMessage(SwatForm $form)
 	{
@@ -47,16 +47,16 @@ abstract class SiteDBEditPage extends SiteEditPage
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function handleDBException()
+
+
 
 	protected function handleDBException(SwatDBException $e)
 	{
 		$e->processAndContinue();
 	}
 
-	// }}}
-	// {{{ protected function handleException()
+
+
 
 	protected function handleException(
 		SwatDBTransaction $transaction,
@@ -65,7 +65,7 @@ abstract class SiteDBEditPage extends SiteEditPage
 		throw $e;
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -7,7 +7,7 @@
  */
 class SiteDefaultTemplate extends SiteAbstractTemplate
 {
-	// {{{ public function display()
+
 
 	public function display(SiteLayoutData $data)
 	{
@@ -41,7 +41,7 @@ class SiteDefaultTemplate extends SiteAbstractTemplate
 HTML;
 	}
 
-	// }}}
+
 }
 
 ?>

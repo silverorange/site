@@ -8,7 +8,7 @@
  */
 abstract class SitePrivateDataDeleter extends SwatObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * A reference to the application
@@ -17,12 +17,12 @@ abstract class SitePrivateDataDeleter extends SwatObject
 	 */
 	public $app;
 
-	// }}}
-	// {{{ abstract public function run()
+
+
 
 	abstract public function run();
 
-	// }}}
+
 }
 
 ?>

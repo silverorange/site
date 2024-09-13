@@ -13,7 +13,7 @@
  */
 class SiteSearchForm extends SwatForm
 {
-	// {{{ public function __construct()
+
 
 	public function __construct()
 	{
@@ -23,8 +23,8 @@ class SiteSearchForm extends SwatForm
 		$this->requires_id = false;
 	}
 
-	// }}}
-	// {{{ public function isSubmitted()
+
+
 
 	public function isSubmitted()
 	{
@@ -36,8 +36,8 @@ class SiteSearchForm extends SwatForm
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function displayHiddenFields()
+
+
 
 	protected function displayHiddenFields()
 	{
@@ -47,7 +47,7 @@ class SiteSearchForm extends SwatForm
 		 */
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -6,7 +6,7 @@
  */
 class SiteXMLRPCServerFactory extends SitePageFactory
 {
-	// {{{ public function resolvePage()
+
 
 	public function resolvePage($source, SiteLayout $layout = null)
 	{
@@ -21,23 +21,23 @@ class SiteXMLRPCServerFactory extends SitePageFactory
 		return $this->instantiatePage($class, $layout);
 	}
 
-	// }}}
-	// {{{ protected function getPageMap()
+
+
 
 	protected function getPageMap()
 	{
 		return [];
 	}
 
-	// }}}
-	// {{{ protected function getLayout()
+
+
 
 	protected function getLayout($source)
 	{
 		return new SiteXMLRPCServerLayout($this->app);
 	}
 
-	// }}}
+
 }
 
 ?>

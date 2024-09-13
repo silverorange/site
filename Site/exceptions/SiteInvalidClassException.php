@@ -9,7 +9,7 @@
  */
 class SiteInvalidClassException extends SiteException
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The object that is of the wrong class
@@ -18,8 +18,8 @@ class SiteInvalidClassException extends SiteException
 	 */
 	protected $object = null;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new invalid class exception
@@ -34,8 +34,8 @@ class SiteInvalidClassException extends SiteException
 		$this->object = $object;
 	}
 
-	// }}}
-	// {{{ public function getObject()
+
+
 
 	/**
 	 * Gets the object that is of the wrong class
@@ -47,7 +47,7 @@ class SiteInvalidClassException extends SiteException
 		return $this->object;
 	}
 
-	// }}}
+
 }
 
 ?>

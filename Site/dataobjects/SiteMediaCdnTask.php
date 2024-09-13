@@ -10,7 +10,7 @@
 class SiteMediaCdnTask extends SiteCdnTask
 {
 	// public methods
-	// {{{ public function getAttemptDescription()
+
 
 	public function getAttemptDescription()
 	{
@@ -35,10 +35,10 @@ class SiteMediaCdnTask extends SiteCdnTask
 		return $attempt;
 	}
 
-	// }}}
+
 
 	// protected methods
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -53,8 +53,8 @@ class SiteMediaCdnTask extends SiteCdnTask
 		$this->table = 'MediaCdnQueue';
 	}
 
-	// }}}
-	// {{{ protected function getLocalFilePath()
+
+
 
 	protected function getLocalFilePath()
 	{
@@ -63,8 +63,8 @@ class SiteMediaCdnTask extends SiteCdnTask
 			null;
 	}
 
-	// }}}
-	// {{{ protected function copy()
+
+
 
 	protected function copy(SiteCdnModule $cdn)
 	{
@@ -92,8 +92,8 @@ class SiteMediaCdnTask extends SiteCdnTask
 		}
 	}
 
-	// }}}
-	// {{{ protected function remove()
+
+
 
 	protected function remove(SiteCdnModule $cdn)
 	{
@@ -108,10 +108,10 @@ class SiteMediaCdnTask extends SiteCdnTask
 		);
 	}
 
-	// }}}
+
 
 	// helper methods
-	// {{{ protected function hasMediaAndEncoding()
+
 
 	protected function hasMediaAndEncoding()
 	{
@@ -119,8 +119,8 @@ class SiteMediaCdnTask extends SiteCdnTask
 			($this->encoding instanceof SiteMediaEncoding));
 	}
 
-	// }}}
-	// {{{ protected function getAccessType()
+
+
 
 	protected function getAccessType()
 	{
@@ -129,7 +129,7 @@ class SiteMediaCdnTask extends SiteCdnTask
 			: 'public';
 	}
 
-	// }}}
+
 }
 
 ?>

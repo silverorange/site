@@ -12,20 +12,20 @@
  */
 class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 {
-	// {{{ protected properties
+
 
 	protected $file_base;
 
-	// }}}
-	// {{{ public function setFileBase()
+
+
 
 	public function setFileBase($file_base)
 	{
 		$this->file_base = $file_base;
 	}
 
-	// }}}
-	// {{{ public function getFileBase()
+
+
 
 	public function getFileBase()
 	{
@@ -36,8 +36,8 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 		return $this->file_base;
 	}
 
-	// }}}
-	// {{{ protected function hasOldPath()
+
+
 
 	protected function getOldPath(SiteVideoMedia $media, $shortname)
 	{
@@ -50,8 +50,8 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 		);
 	}
 
-	// }}}
-	// {{{ protected function hasNewPath()
+
+
 
 	protected function getNewPath(SiteVideoMedia $media, $shortname)
 	{
@@ -63,16 +63,16 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 		);
 	}
 
-	// }}}
-	// {{{ protected function hasFile()
+
+
 
 	protected function hasFile($path)
 	{
 		return is_file($path);
 	}
 
-	// }}}
-	// {{{ protected function moveFile()
+
+
 
 	protected function moveFile(SiteVideoMedia $media, $old_path, $new_path)
 	{
@@ -86,8 +86,8 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 		copy($old_path, $new_path);
 	}
 
-	// }}}
-	// {{{ protected function cleanUp()
+
+
 
 	protected function cleanUp($path)
 	{
@@ -96,7 +96,7 @@ class SiteVideoMediaLocalMover extends SiteVideoMediaMover
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

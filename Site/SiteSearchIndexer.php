@@ -9,7 +9,7 @@
  */
 abstract class SiteSearchIndexer extends SiteCommandLineApplication
 {
-	// {{{ public properties
+
 
 	/**
 	 * A convenience reference to the database object
@@ -18,8 +18,8 @@ abstract class SiteSearchIndexer extends SiteCommandLineApplication
 	 */
 	public $db;
 
-	// }}}
-	// {{{ protected function getDefaultModuleList()
+
+
 
 	/**
 	 * Gets the list of modules to load for this search indexer
@@ -39,8 +39,8 @@ abstract class SiteSearchIndexer extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	/**
 	 * Configures modules of this application before they are initialized
@@ -54,7 +54,7 @@ abstract class SiteSearchIndexer extends SiteCommandLineApplication
 		$this->database->dsn = $config->database->dsn;
 	}
 
-	// }}}
+
 }
 
 ?>

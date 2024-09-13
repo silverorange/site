@@ -9,7 +9,7 @@
  */
 abstract class SiteApplication extends SiteObject
 {
-	// {{{ class constants
+
 
 	const VAR_POST    = 1;
 	const VAR_GET     = 2;
@@ -20,8 +20,8 @@ abstract class SiteApplication extends SiteObject
 	const VAR_FILES   = 64;
 	const VAR_ENV     = 128;
 
-	// }}}
-	// {{{ public properties
+
+
 
 	/**
 	 * A unique identifier for this application
@@ -47,8 +47,8 @@ abstract class SiteApplication extends SiteObject
 	 */
 	public $default_time_zone = null;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * Modules of this application
@@ -104,8 +104,8 @@ abstract class SiteApplication extends SiteObject
 	 */
 	protected $locale;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new application
@@ -147,16 +147,16 @@ abstract class SiteApplication extends SiteObject
 		}
 	}
 
-	// }}}
-	// {{{ abstract public function run()
+
+
 
 	/**
 	 * Run the application.
 	 */
 	abstract public function run();
 
-	// }}}
-	// {{{ public function getLocale()
+
+
 
 	/**
 	 * Gets the current locale of this application
@@ -172,8 +172,8 @@ abstract class SiteApplication extends SiteObject
 		return $this->locale;
 	}
 
-	// }}}
-	// {{{ public function getCountry()
+
+
 
 	/**
 	 * Gets the country of this application
@@ -197,8 +197,8 @@ abstract class SiteApplication extends SiteObject
 		return $country;
 	}
 
-	// }}}
-	// {{{ public function getInstance()
+
+
 
 	/**
 	 * Helper method to get the current instance
@@ -218,8 +218,8 @@ abstract class SiteApplication extends SiteObject
 		return $instance;
 	}
 
-	// }}}
-	// {{{ public function getInstanceId()
+
+
 
 	/**
 	 * Helper method to get the id of the current instance
@@ -239,8 +239,8 @@ abstract class SiteApplication extends SiteObject
 		return $id;
 	}
 
-	// }}}
-	// {{{ public function getInstanceShortname()
+
+
 
 	/**
 	 * Helper method to get the shortname of the current instance
@@ -262,8 +262,8 @@ abstract class SiteApplication extends SiteObject
 		return $shortname;
 	}
 
-	// }}}
-	// {{{ public function getConfigSetting()
+
+
 
 	/**
 	 * Helper method to get an instance-specifig config setting
@@ -306,8 +306,8 @@ abstract class SiteApplication extends SiteObject
 		return $value;
 	}
 
-	// }}}
-	// {{{ protected function configure()
+
+
 
 	/**
 	 * Configures modules of this application
@@ -328,8 +328,8 @@ abstract class SiteApplication extends SiteObject
 		$config->configure();
 	}
 
-	// }}}
-	// {{{ protected function setUpErrorHandling()
+
+
 
 	/**
 	 * Configures error and exception handling of this application
@@ -344,8 +344,8 @@ abstract class SiteApplication extends SiteObject
 		$this->setUpSentryErrorHandling($config);
 	}
 
-	// }}}
-	// {{{ protected function setUpFileErrorHandling()
+
+
 
 	/**
 	 * Configures file based error and exception handling of this application
@@ -379,8 +379,8 @@ abstract class SiteApplication extends SiteObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function setUpSentryErrorHandling()
+
+
 
 	/**
 	 * Configures sentry based error and exception handling of this application
@@ -393,8 +393,8 @@ abstract class SiteApplication extends SiteObject
 		SwatError::addLogger(new SiteSentryErrorLogger());
 	}
 
-	// }}}
-	// {{{ protected function getSentryConfiguration()
+
+
 
 	/**
 	 * Gets the configuration array used to set up Sentry, which can be
@@ -413,8 +413,8 @@ abstract class SiteApplication extends SiteObject
 		];
 	}
 
-	// }}}
-	// {{{ protected function getReleaseVersion()
+
+
 
 	/**
 	 * Gets the release version of the site for Sentry, based on the
@@ -427,10 +427,10 @@ abstract class SiteApplication extends SiteObject
 			: null;
 	}
 
-	// }}}
+
 
 	// module methods
-	// {{{ public function addModule()
+
 
 	/**
 	 * Adds a module to this application
@@ -499,8 +499,8 @@ abstract class SiteApplication extends SiteObject
 		$this->modules[$id] = $module;
 	}
 
-	// }}}
-	// {{{ public function getModule()
+
+
 
 	/**
 	 * Gets a module of this application by a provided feature
@@ -535,8 +535,8 @@ abstract class SiteApplication extends SiteObject
 		return $this->modules_by_provides[$feature];
 	}
 
-	// }}}
-	// {{{ public function hasModule()
+
+
 
 	/**
 	 * Checks if this application has a module that provides the specified
@@ -561,8 +561,8 @@ abstract class SiteApplication extends SiteObject
 		return array_key_exists($feature, $this->modules_by_provides);
 	}
 
-	// }}}
-	// {{{ public function __get()
+
+
 
 	public function __get($name)
 	{
@@ -574,8 +574,8 @@ abstract class SiteApplication extends SiteObject
 			"identifier '{$name}' is loaded.");
 	}
 
-	// }}}
-	// {{{ public function __isset()
+
+
 
 	public function __isset($name)
 	{
@@ -586,8 +586,8 @@ abstract class SiteApplication extends SiteObject
 		return $isset;
 	}
 
-	// }}}
-	// {{{ protected function initModules()
+
+
 
 	/**
 	 * Initializes all modules in this application
@@ -602,8 +602,8 @@ abstract class SiteApplication extends SiteObject
 		$this->postInitConfigure($config);
 	}
 
-	// }}}
-	// {{{ protected function addDefaultModules()
+
+
 
 	/**
 	 * Adds the default modules used by this application to this application
@@ -658,8 +658,8 @@ abstract class SiteApplication extends SiteObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function addDefaultModule()
+
+
 
 	/**
 	 * Adds a default module to this application
@@ -749,8 +749,8 @@ abstract class SiteApplication extends SiteObject
 		$this->addModule($module, $module_ids[spl_object_hash($module)]);
 	}
 
-	// }}}
-	// {{{ protected function getDefaultModuleList()
+
+
 
 	/**
 	 * Gets the list of modules to load for this application
@@ -768,8 +768,8 @@ abstract class SiteApplication extends SiteObject
 		return [];
 	}
 
-	// }}}
-	// {{{ protected function postInitConfigure()
+
+
 
 	/**
 	 * Configures this application
@@ -782,8 +782,8 @@ abstract class SiteApplication extends SiteObject
 		$config->postInitConfigure();
 	}
 
-	// }}}
-	// {{{ protected function addConfigDefinitions()
+
+
 
 	/**
 	 * Adds configuration definitions to the config module of this application
@@ -803,10 +803,10 @@ abstract class SiteApplication extends SiteObject
 		$config->addDefinitions(Site::getConfigDefinitions());
 	}
 
-	// }}}
+
 
 	// caching convenience methods
-	// {{{ public function addCacheValue()
+
 
 	/**
 	 * Set a value to be cached
@@ -826,8 +826,8 @@ abstract class SiteApplication extends SiteObject
 			$value, $key, $name_space, $expiration);
 	}
 
-	// }}}
-	// {{{ public function getCacheValue()
+
+
 
 	/**
 	 * Get a cached value
@@ -855,8 +855,8 @@ abstract class SiteApplication extends SiteObject
 		return $value;
 	}
 
-	// }}}
-	// {{{ public function deleteCacheValue()
+
+
 
 	/**
 	 * Deletes a value from the cache by key
@@ -883,8 +883,8 @@ abstract class SiteApplication extends SiteObject
 		return $success;
 	}
 
-	// }}}
-	// {{{ public function flushCacheNs()
+
+
 
 	/**
 	 * Flushes an entire namespace
@@ -906,8 +906,8 @@ abstract class SiteApplication extends SiteObject
 		return $success;
 	}
 
-	// }}}
-	// {{{ public function addCacheRecordset()
+
+
 
 	public function addCacheRecordset(
 		SwatDBRecordsetWrapper $recordset,
@@ -927,8 +927,8 @@ abstract class SiteApplication extends SiteObject
 		$this->addCacheValue($ids, $key, $name_space, $expiration);
 	}
 
-	// }}}
-	// {{{ public function getCacheRecordset()
+
+
 
 	public function getCacheRecordset($key, $wrapper_class, $name_space = null)
 	{
@@ -958,8 +958,8 @@ abstract class SiteApplication extends SiteObject
 		return $wrapper;
 	}
 
-	// }}}
-	// {{{ public function cacheOnShutdown()
+
+
 
 	/**
 	 * Callback method used by addCacheValue(). Must be public, but should not
@@ -982,10 +982,10 @@ abstract class SiteApplication extends SiteObject
 		}
 	}
 
-	// }}}
+
 
 	// static convenience methods
-	// {{{ public static function initVar()
+
 
 	/**
 	 * Initializes a variable
@@ -1049,7 +1049,7 @@ abstract class SiteApplication extends SiteObject
 		return $var;
 	}
 
-	// }}}
+
 }
 
 ?>

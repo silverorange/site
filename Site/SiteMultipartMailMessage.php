@@ -15,7 +15,7 @@ use Symfony\Component\Mime\Email;
  */
 class SiteMultipartMailMessage extends SiteObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * Email subject
@@ -154,8 +154,8 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	public $attachments = [];
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * The application sending mail
@@ -180,8 +180,8 @@ class SiteMultipartMailMessage extends SiteObject
 	 */
 	protected $string_attachments = [];
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * Creates a new multipart mail message
@@ -196,8 +196,8 @@ class SiteMultipartMailMessage extends SiteObject
 		$this->date->toUTC();
 	}
 
-	// }}}
-	// {{{ public function send()
+
+
 
 	/**
 	 * Sends a multi-part email
@@ -300,8 +300,8 @@ class SiteMultipartMailMessage extends SiteObject
 		}
 	}
 
-	// }}}
-	// {{{ public function addCc()
+
+
 
 	/**
 	 * Adds an email address to the bcc list
@@ -313,8 +313,8 @@ class SiteMultipartMailMessage extends SiteObject
 		$this->cc_list[] = $email;
 	}
 
-	// }}}
-	// {{{ public function addBcc()
+
+
 
 	/**
 	 * Adds an email address to the bcc list
@@ -326,8 +326,8 @@ class SiteMultipartMailMessage extends SiteObject
 		$this->bcc_list[] = $email;
 	}
 
-	// }}}
-	// {{{ public function getCcList()
+
+
 
 	/**
 	 * Gets an array of email addresses for CC
@@ -346,8 +346,8 @@ class SiteMultipartMailMessage extends SiteObject
 		return $list;
 	}
 
-	// }}}
-	// {{{ public function getBccList()
+
+
 
 	/**
 	 * Gets an array of email addresses for BCC
@@ -366,8 +366,8 @@ class SiteMultipartMailMessage extends SiteObject
 		return $list;
 	}
 
-	// }}}
-	// {{{ public function addAttachmentFromString()
+
+
 
 	public function addAttachmentFromString(
 		$data,
@@ -377,8 +377,8 @@ class SiteMultipartMailMessage extends SiteObject
 		$this->string_attachments[] = ['data'         => $data, 'filename'     => $filename, 'content_type' => $content_type];
 	}
 
-	// }}}
-	// {{{ protected function getAddressHeader()
+
+
 
 	protected function getAddressHeader($address, $name = '')
 	{
@@ -389,8 +389,8 @@ class SiteMultipartMailMessage extends SiteObject
 		return sprintf($header, $address, $name);
 	}
 
-	// }}}
-	// {{{ protected function getRecipients()
+
+
 
 	protected function getRecipients()
 	{
@@ -407,8 +407,8 @@ class SiteMultipartMailMessage extends SiteObject
 		return implode(', ', $recipients);
 	}
 
-	// }}}
-	// {{{ protected function logMessage()
+
+
 
 	protected function logMessage()
 	{
@@ -464,8 +464,8 @@ class SiteMultipartMailMessage extends SiteObject
 		SwatDB::exec($this->app->db, $sql);
 	}
 
-	// }}}
-	// {{{ protected function convertCssToInlineStyles()
+
+
 
 	/**
 	 * Attempt to convert css to inline styles
@@ -493,8 +493,8 @@ class SiteMultipartMailMessage extends SiteObject
 		return $inlined;
 	}
 
-	// }}}
-	// {{{ protected function logLibXmlErrors()
+
+
 
 	/**
 	 * Attempt to convert css to inline styles
@@ -519,7 +519,7 @@ class SiteMultipartMailMessage extends SiteObject
 		$exception->processAndContinue();
 	}
 
-	// }}}
+
 }
 
 ?>

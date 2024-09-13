@@ -9,7 +9,7 @@
  */
 class SiteAmazonCdnModule extends SiteCdnModule
 {
-	// {{{ public properties
+
 
 	/**
 	 * The name of the S3 bucket to use
@@ -60,8 +60,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	public $distribution_private_key_file;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * The Amazon S3 accessor
@@ -87,8 +87,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 	 */
 	protected $storage_class = 'STANDARD';
 
-	// }}}
-	// {{{ public function init()
+
+
 
 	/**
 	 * Initializes this module
@@ -114,8 +114,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		}
 	}
 
-	// }}}
-	// {{{ public function setDistributionPrivateKey()
+
+
 
 	public function setDistributionPrivateKey(
 		$distribution_private_key_file,
@@ -138,24 +138,24 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		}
 	}
 
-	// }}}
-	// {{{ public function setStandardRedundancy()
+
+
 
 	public function setStandardRedundancy()
 	{
 		$this->storage_class = 'STANDARD';
 	}
 
-	// }}}
-	// {{{ public function setReducedRedundancy()
+
+
 
 	public function setReducedRedundancy()
 	{
 		$this->storage_class = 'REDUCED_REDUNDANCY';
 	}
 
-	// }}}
-	// {{{ public function copyFile()
+
+
 
 	/**
 	 * Copies a file to the Amazon S3 bucket
@@ -249,8 +249,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		}
 	}
 
-	// }}}
-	// {{{ public function moveFile()
+
+
 
 	/**
 	 * Moves a file around in the S3 bucket.
@@ -294,8 +294,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		$this->removeFile($old_filename);
 	}
 
-	// }}}
-	// {{{ public function removeFile()
+
+
 
 	/**
 	 * Removes a file from the Amazon S3 bucket
@@ -313,8 +313,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		}
 	}
 
-	// }}}
-	// {{{ public function getUri()
+
+
 
 	/**
 	 * Gets a URI for a file on the CDN
@@ -352,8 +352,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		return $uri;
 	}
 
-	// }}}
-	// {{{ public function getStreamingUri()
+
+
 
 	/**
 	 * Gets a streaming URI for a file on the CDN
@@ -368,8 +368,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		return $this->getCloudFrontUri($filename, $expires, true);
 	}
 
-	// }}}
-	// {{{ public function getMetadata()
+
+
 
 	public function getMetadata($filename)
 	{
@@ -390,8 +390,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		return $metadata;
 	}
 
-	// }}}
-	// {{{ public function hasStreamingDistribution()
+
+
 
 	public function hasStreamingDistribution()
 	{
@@ -401,8 +401,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		);
 	}
 
-	// }}}
-	// {{{ protected function getCloudFrontUri()
+
+
 
 	protected function getCloudFrontUri(
 		$filename,
@@ -475,7 +475,7 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		return $uri;
 	}
 
-	// }}}
+
 }
 
 ?>

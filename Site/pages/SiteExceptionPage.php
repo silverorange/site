@@ -9,15 +9,15 @@
  */
 class SiteExceptionPage extends SitePage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteException
 	 */
 	protected $exception;
 
-	// }}}
-	// {{{ public function setException()
+
+
 
 	public function setException($exception)
 	{
@@ -28,10 +28,10 @@ class SiteExceptionPage extends SitePage
 		}
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -40,8 +40,8 @@ class SiteExceptionPage extends SitePage
 		$this->initHttpStatusHeader();
 	}
 
-	// }}}
-	// {{{ protected function initHttpStatusHeader()
+
+
 
 	protected function initHttpStatusHeader()
 	{
@@ -65,8 +65,8 @@ class SiteExceptionPage extends SitePage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getHttpStatusHeader()
+
+
 
 	protected function getHttpStatusHeader()
 	{
@@ -74,10 +74,10 @@ class SiteExceptionPage extends SitePage
 			$this->exception->http_status_code : 500;
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function getTitle()
+
 
 	protected function getTitle()
 	{
@@ -93,8 +93,8 @@ class SiteExceptionPage extends SitePage
 		return $title;
 	}
 
-	// }}}
-	// {{{ protected function getSummary()
+
+
 
 	protected function getSummary()
 	{
@@ -111,15 +111,15 @@ class SiteExceptionPage extends SitePage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getSuggestions()
+
+
 
 	protected function getSuggestions()
 	{
 		return [];
 	}
 
-	// }}}
+
 }
 
 ?>

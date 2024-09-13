@@ -9,7 +9,7 @@
  */
 class SiteImage extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * The base uri for CDN hosted images
@@ -57,15 +57,15 @@ class SiteImage extends SwatDBDataObject
 	 */
 	public $description;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	protected $image_set_shortname;
 	protected $automatically_save = true;
 	protected $imagick_instances = [];
 
-	// }}}
-	// {{{ private properties
+
+
 
 	private static $image_set_cache = [];
 	private $file_base;
@@ -73,10 +73,10 @@ class SiteImage extends SwatDBDataObject
 	private $crop_boxes = [];
 	private $original_dpi;
 
-	// }}}
+
 
 	// dataobject methods
-	// {{{ public function load()
+
 
 	/**
 	 * Loads this object's properties from the database given an id
@@ -107,8 +107,8 @@ class SiteImage extends SwatDBDataObject
 		return $loaded;
 	}
 
-	// }}}
-	// {{{ public function getTitle()
+
+
 
 	/**
 	 * Gets the title of this image
@@ -120,8 +120,8 @@ class SiteImage extends SwatDBDataObject
 		return $this->title;
 	}
 
-	// }}}
-	// {{{ public function setOnCdn()
+
+
 
 	/**
 	 * Sets the on_cdn column on the image dimension binding
@@ -144,8 +144,8 @@ class SiteImage extends SwatDBDataObject
 		SwatDB::exec($this->db, $sql);
 	}
 
-	// }}}
-	// {{{ public function hasImageSet()
+
+
 
 	/**
 	 * Whether or not the image classes image set exists.
@@ -164,8 +164,8 @@ class SiteImage extends SwatDBDataObject
 		return $has_image_set;
 	}
 
-	// }}}
-	// {{{ public function getImageSetShortname()
+
+
 
 	/**
 	 * @return string the image set shortname
@@ -175,16 +175,16 @@ class SiteImage extends SwatDBDataObject
 		return $this->image_set_shortname;
 	}
 
-	// }}}
-	// {{{ public function getValidMimeTypes()
+
+
 
 	public function getValidMimeTypes()
 	{
 		return ['image/jpeg', 'image/png', 'image/tiff', 'image/gif'];
 	}
 
-	// }}}
-	// {{{ public function getHumanFileType()
+
+
 
 	public function getHumanFileType($mime_type = null)
 	{
@@ -206,8 +206,8 @@ class SiteImage extends SwatDBDataObject
 		return $map[$mime_type];
 	}
 
-	// }}}
-	// {{{ public function getHumanFileTypes()
+
+
 
 	public function getHumanFileTypes(array $mime_types)
 	{
@@ -220,8 +220,8 @@ class SiteImage extends SwatDBDataObject
 		return $human_file_types;
 	}
 
-	// }}}
-	// {{{ public function getValidHumanFileTypes()
+
+
 
 	public function getValidHumanFileTypes()
 	{
@@ -230,8 +230,8 @@ class SiteImage extends SwatDBDataObject
 		);
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -242,8 +242,8 @@ class SiteImage extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
-	// {{{ protected function hasSubDataObject()
+
+
 
 	protected function hasSubDataObject($key)
 	{
@@ -265,8 +265,8 @@ class SiteImage extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ protected function setSubDataObject()
+
+
 
 	protected function setSubDataObject($name, $value)
 	{
@@ -276,8 +276,8 @@ class SiteImage extends SwatDBDataObject
 		parent::setSubDataObject($name, $value);
 	}
 
-	// }}}
-	// {{{ protected function deleteInternal()
+
+
 
 	/**
 	 * Deletes this object from the database and any images files
@@ -294,8 +294,8 @@ class SiteImage extends SwatDBDataObject
 		$this->deleteLocalFiles($local_files);
 	}
 
-	// }}}
-	// {{{ protected function getLocalFilenamesToDelete()
+
+
 
 	/**
 	 * Gets an array of files names to delete when deleting this object
@@ -313,8 +313,8 @@ class SiteImage extends SwatDBDataObject
 		return $filenames;
 	}
 
-	// }}}
-	// {{{ protected function deleteCdnFiles()
+
+
 
 	protected function deleteCdnFiles()
 	{
@@ -329,8 +329,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function deleteLocalFiles()
+
+
 
 	/**
 	 * Deletes each file in a given set of filenames
@@ -345,42 +345,42 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function getImageDimensionBindingClassName()
+
+
 
 	protected function getImageDimensionBindingClassName()
 	{
 		return SwatDBClassMap::get(SiteImageDimensionBinding::class);
 	}
 
-	// }}}
-	// {{{ protected function getImageDimensionBindingWrapperClassName()
+
+
 
 	protected function getImageDimensionBindingWrapperClassName()
 	{
 		return SwatDBClassMap::get(SiteImageDimensionBindingWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getSerializableSubDataObjects()
+
+
 
 	protected function getSerializableSubDataObjects()
 	{
 		return ['image_set', 'dimension_bindings'];
 	}
 
-	// }}}
-	// {{{ protected function getSerializablePrivateProperties()
+
+
 
 	protected function getSerializablePrivateProperties()
 	{
 		return array_merge(parent::getSerializablePrivateProperties(), ['image_set_shortname']);
 	}
 
-	// }}}
+
 
 	// image methods
-	// {{{ public function hasDimension()
+
 
 	public function hasDimension($dimension_shortname)
 	{
@@ -394,8 +394,8 @@ class SiteImage extends SwatDBDataObject
 		return $found;
 	}
 
-	// }}}
-	// {{{ public function getWidth()
+
+
 
 	public function getWidth($dimension_shortname)
 	{
@@ -414,8 +414,8 @@ class SiteImage extends SwatDBDataObject
 		return $binding->width;
 	}
 
-	// }}}
-	// {{{ public function getHeight()
+
+
 
 	public function getHeight($dimension_shortname)
 	{
@@ -434,8 +434,8 @@ class SiteImage extends SwatDBDataObject
 		return $binding->height;
 	}
 
-	// }}}
-	// {{{ public function getFilesize()
+
+
 
 	public function getFilesize($dimension_shortname)
 	{
@@ -443,8 +443,8 @@ class SiteImage extends SwatDBDataObject
 		return $binding->filesize;
 	}
 
-	// }}}
-	// {{{ public function getFilename()
+
+
 
 	public function getFilename($shortname)
 	{
@@ -459,8 +459,8 @@ class SiteImage extends SwatDBDataObject
 		return sprintf('%s.%s', $filename, $extension);
 	}
 
-	// }}}
-	// {{{ public function getExtension()
+
+
 
 	public function getExtension($shortname)
 	{
@@ -476,8 +476,8 @@ class SiteImage extends SwatDBDataObject
 		return $extension;
 	}
 
-	// }}}
-	// {{{ public function getDpi()
+
+
 
 	public function getDpi($dimension_shortname)
 	{
@@ -485,8 +485,8 @@ class SiteImage extends SwatDBDataObject
 		return $binding->dpi;
 	}
 
-	// }}}
-	// {{{ public function getMimeType()
+
+
 
 	public function getMimeType($dimension_shortname)
 	{
@@ -494,8 +494,8 @@ class SiteImage extends SwatDBDataObject
 		return $binding->image_type->mime_type;
 	}
 
-	// }}}
-	// {{{ public function getUri()
+
+
 
 	public function getUri($shortname, $prefix = null)
 	{
@@ -514,8 +514,8 @@ class SiteImage extends SwatDBDataObject
 		return $uri;
 	}
 
-	// }}}
-	// {{{ public function getUriSuffix()
+
+
 
 	public function getUriSuffix($shortname)
 	{
@@ -533,8 +533,8 @@ class SiteImage extends SwatDBDataObject
 		return $suffix;
 	}
 
-	// }}}
-	// {{{ public function getFilePath()
+
+
 
 	/**
 	 * Gets the full file path of a dimension
@@ -550,8 +550,8 @@ class SiteImage extends SwatDBDataObject
 		return $directory.DIRECTORY_SEPARATOR.$filename;
 	}
 
-	// }}}
-	// {{{ public function getFileDirectory()
+
+
 
 	/**
 	 * Gets the directory of a dimension
@@ -568,8 +568,8 @@ class SiteImage extends SwatDBDataObject
 			$dimension->shortname;
 	}
 
-	// }}}
-	// {{{ public function getImgTag()
+
+
 
 	public function getImgTag($shortname, $prefix = null)
 	{
@@ -595,8 +595,8 @@ class SiteImage extends SwatDBDataObject
 		return $img_tag;
 	}
 
-	// }}}
-	// {{{ public function getHalfSizeImgTag()
+
+
 
 	/**
 	 * Returns an image with its height and width set to half its actual
@@ -628,16 +628,16 @@ class SiteImage extends SwatDBDataObject
 		return $img_tag;
 	}
 
-	// }}}
-	// {{{ public function setFileBase()
+
+
 
 	public function setFileBase($path)
 	{
 		$this->file_base = $path;
 	}
 
-	// }}}
-	// {{{ public function getHttpHeaders()
+
+
 
 	public function getHttpHeaders($dimension_shortname)
 	{
@@ -656,8 +656,8 @@ class SiteImage extends SwatDBDataObject
 		return $headers;
 	}
 
-	// }}}
-	// {{{ public function getLargestDimension()
+
+
 
 	public function getLargestDimension()
 	{
@@ -680,16 +680,16 @@ class SiteImage extends SwatDBDataObject
 		return $largest_dimension;
 	}
 
-	// }}}
-	// {{{ protected function getUriBase()
+
+
 
 	protected function getUriBase()
 	{
 		return 'images';
 	}
 
-	// }}}
-	// {{{ protected function getFileBase()
+
+
 
 	protected function getFileBase()
 	{
@@ -701,8 +701,8 @@ class SiteImage extends SwatDBDataObject
 		return $this->file_base;
 	}
 
-	// }}}
-	// {{{ protected function getDimensionBinding()
+
+
 
 	protected function getDimensionBinding($dimension_shortname)
 	{
@@ -720,10 +720,10 @@ class SiteImage extends SwatDBDataObject
 		return null;
 	}
 
-	// }}}
+
 
 	// loader methods
-	// {{{ protected function loadDimensionBindings()
+
 
 	/**
 	 * Loads the dimension bindings for this image
@@ -742,10 +742,10 @@ class SiteImage extends SwatDBDataObject
 		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
-	// }}}
+
 
 	// processing methods
-	// {{{ public function process()
+
 
 	/**
 	 * Does resizing for images
@@ -793,8 +793,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ public function processManual()
+
+
 
 	/**
 	 * Manually process one dimension of an image
@@ -838,8 +838,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ public function processMissingDimensions()
+
+
 
 	public function processMissingDimensions($image_file)
 	{
@@ -856,8 +856,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ public function processMissingDimensionsFromDimension()
+
+
 
 	public function processMissingDimensionsFromDimension($shortname)
 	{
@@ -876,8 +876,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ public function processMissingDimensionsFromLargestDimension()
+
+
 
 	public function processMissingDimensionsFromLargestDimension()
 	{
@@ -893,8 +893,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ public function setDpi()
+
+
 
 	/**
 	 * Specify the DPI of the image being processed
@@ -906,8 +906,8 @@ class SiteImage extends SwatDBDataObject
 		$this->original_dpi = $dpi;
 	}
 
-	// }}}
-	// {{{ public function setCropBox()
+
+
 
 	/**
 	 * Specify a crop bounding-box
@@ -942,8 +942,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function processDimension()
+
+
 
 	/**
 	 * Resizes an image for the given dimension
@@ -983,8 +983,8 @@ class SiteImage extends SwatDBDataObject
 		unset($imagick);
 	}
 
-	// }}}
-	// {{{ protected function processDimensionInternal()
+
+
 
 	protected function processDimensionInternal(
 		Imagick $imagick,
@@ -1003,8 +1003,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function cropToDimension()
+
+
 
 	/**
 	 * Resizes and crops an image to a given dimension
@@ -1062,8 +1062,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function calculateCropToDimensionOffset()
+
+
 
 	/**
 	 * Calculate the offsets when cropping to a dimension
@@ -1092,8 +1092,8 @@ class SiteImage extends SwatDBDataObject
 		return [$offset_x, $offset_y];
 	}
 
-	// }}}
-	// {{{ protected function cropToBox()
+
+
 
 	/**
 	 * Resizes and crops an image to a given crop bounding box
@@ -1113,8 +1113,8 @@ class SiteImage extends SwatDBDataObject
 		$imagick->setImagePage($width, $height, $offset_x, $offset_y);
 	}
 
-	// }}}
-	// {{{ protected function fitToDimension()
+
+
 
 	/**
 	 * Resizes an image to fit in a given dimension
@@ -1210,8 +1210,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function setDimensionDpi()
+
+
 
 	protected function setDimensionDpi(
 		Imagick $imagick,
@@ -1233,8 +1233,8 @@ class SiteImage extends SwatDBDataObject
 		$imagick->setImageResolution($dpi, $dpi);
 	}
 
-	// }}}
-	// {{{ protected function saveDimensionBinding()
+
+
 
 	/**
 	 * Saves an image dimension binding
@@ -1268,8 +1268,8 @@ class SiteImage extends SwatDBDataObject
 		$this->dimension_bindings->add($binding);
 	}
 
-	// }}}
-	// {{{ protected function saveDimensionBindingFileSize()
+
+
 
 	/**
 	 * Saves a dimension binding's filesize.
@@ -1297,8 +1297,8 @@ class SiteImage extends SwatDBDataObject
 
 	}
 
-	// }}}
-	// {{{ protected function getDimensionImageType()
+
+
 
 	/**
 	 * Gets the image type for a dimension. If default image type is specified,
@@ -1335,8 +1335,8 @@ class SiteImage extends SwatDBDataObject
 		return $type;
 	}
 
-	// }}}
-	// {{{ protected function getDimensionBindingFileSize()
+
+
 
 	/**
 	 * Gets the file size of a processed image dimension.
@@ -1370,8 +1370,8 @@ class SiteImage extends SwatDBDataObject
 		return filesize($file);
 	}
 
-	// }}}
-	// {{{ protected function saveFile()
+
+
 
 	/**
 	 * Saves the current image
@@ -1401,8 +1401,8 @@ class SiteImage extends SwatDBDataObject
 		$imagick->writeImage($filename);
 	}
 
-	// }}}
-	// {{{ protected function copyFile()
+
+
 
 	/**
 	 * Copies the image
@@ -1422,8 +1422,8 @@ class SiteImage extends SwatDBDataObject
 		copy($image_file, $filename);
 	}
 
-	// }}}
-	// {{{ protected function getImagick()
+
+
 
 	/**
 	 * Gets the Imagick object to process
@@ -1458,8 +1458,8 @@ class SiteImage extends SwatDBDataObject
 			$imagick->clone();
 	}
 
-	// }}}
-	// {{{ protected function getNewImagick()
+
+
 
 	/**
 	 * Gets a new Imagick instance from a file
@@ -1491,8 +1491,8 @@ class SiteImage extends SwatDBDataObject
 		return $imagick;
 	}
 
-	// }}}
-	// {{{ protected function getOriginalImagick()
+
+
 
 	/**
 	 * Gets a the Imagick instance for the original file
@@ -1502,8 +1502,8 @@ class SiteImage extends SwatDBDataObject
 		return reset($this->imagick_instances);
 	}
 
-	// }}}
-	// {{{ protected function getImageSet()
+
+
 
 	protected function getImageSet()
 	{
@@ -1531,8 +1531,8 @@ class SiteImage extends SwatDBDataObject
 		return $this->image_set;
 	}
 
-	// }}}
-	// {{{ protected function getResizeFilter()
+
+
 
 	protected function getResizeFilter(SiteImageDimension $dimension)
 	{
@@ -1559,8 +1559,8 @@ class SiteImage extends SwatDBDataObject
 		return $filter;
 	}
 
-	// }}}
-	// {{{ protected function getBoxFilterThreshold()
+
+
 
 	/**
 	 * Get the threshold for using the BOX filter
@@ -1577,8 +1577,8 @@ class SiteImage extends SwatDBDataObject
 		return 350;
 	}
 
-	// }}}
-	// {{{ protected function getCropBox()
+
+
 
 	/**
 	 * Get an optional crop box to use on imput image before processing
@@ -1600,8 +1600,8 @@ class SiteImage extends SwatDBDataObject
 		return $crop_box;
 	}
 
-	// }}}
-	// {{{ protected function prepareForProcessing()
+
+
 
 	protected function prepareForProcessing($image_file)
 	{
@@ -1628,8 +1628,8 @@ class SiteImage extends SwatDBDataObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function queueCdnTask()
+
+
 
 	/**
 	 * Queues a CDN task to be preformed later
@@ -1657,7 +1657,7 @@ class SiteImage extends SwatDBDataObject
 		$task->save();
 	}
 
-	// }}}
+
 }
 
 ?>

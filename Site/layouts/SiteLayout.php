@@ -9,7 +9,7 @@
  */
 class SiteLayout extends SiteObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var SiteWebApplication
@@ -21,8 +21,8 @@ class SiteLayout extends SiteObject
 	 */
 	public $data = null;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var SwatHtmlHeadEntrySet
@@ -37,15 +37,15 @@ class SiteLayout extends SiteObject
 	 */
 	protected $body_classes = [];
 
-	// }}}
-	// {{{ private properties
+
+
 
 	private $template_class = null;
 	private $current_capture = null;
 	private $capture_prepend = false;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(SiteApplication $app, $template_class = null)
 	{
@@ -60,24 +60,24 @@ class SiteLayout extends SiteObject
 		$this->data = new SiteLayoutData();
 	}
 
-	// }}}
-	// {{{ public function setTemplateClass()
+
+
 
 	public function setTemplateClass($template_class)
 	{
 		$this->template_class = $template_class;
 	}
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	public function display()
 	{
 		$this->data->display($this->template_class);
 	}
 
-	// }}}
-	// {{{ public function startCapture()
+
+
 
 	public function startCapture($name, $prepend = false)
 	{
@@ -89,8 +89,8 @@ class SiteLayout extends SiteObject
 		ob_start();
 	}
 
-	// }}}
-	// {{{ public function endCapture()
+
+
 
 	public function endCapture()
 	{
@@ -112,8 +112,8 @@ class SiteLayout extends SiteObject
 		$this->current_capture = null;
 	}
 
-	// }}}
-	// {{{ public function clear()
+
+
 
 	public function clear($name)
 	{
@@ -125,10 +125,10 @@ class SiteLayout extends SiteObject
 		$this->data->{$name} = '';
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -161,35 +161,35 @@ class SiteLayout extends SiteObject
 		}
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function process()
+
 
 	public function process()
 	{
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
 	}
 
-	// }}}
-	// {{{ public function addHtmlHeadEntry()
+
+
 
 	/**
 	 * @param SwatHtmlHeadEntry|string $entry
@@ -199,16 +199,16 @@ class SiteLayout extends SiteObject
 		$this->html_head_entries->addEntry($entry);
 	}
 
-	// }}}
-	// {{{ public function addHtmlHeadEntrySet()
+
+
 
 	public function addHtmlHeadEntrySet(SwatHtmlHeadEntrySet $set)
 	{
 		$this->html_head_entries->addEntrySet($set);
 	}
 
-	// }}}
-	// {{{ public function addBodyClass()
+
+
 
 	/**
 	 * Adds a body class to this layout
@@ -230,8 +230,8 @@ class SiteLayout extends SiteObject
 			array_merge($this->body_classes, $class));
 	}
 
-	// }}}
-	// {{{ public function removeBodyClass()
+
+
 
 	/**
 	 * Removes a body class from this layout
@@ -252,10 +252,10 @@ class SiteLayout extends SiteObject
 		$this->body_classes = array_diff($this->body_classes, $class);
 	}
 
-	// }}}
+
 
 	// complete phase
-	// {{{ public function complete()
+
 
 	public function complete()
 	{
@@ -263,8 +263,8 @@ class SiteLayout extends SiteObject
 		$this->completeBodyClasses();
 	}
 
-	// }}}
-	// {{{ protected function completeBodyClasses()
+
+
 
 	protected function completeBodyClasses()
 	{
@@ -279,8 +279,8 @@ class SiteLayout extends SiteObject
 		}
 	}
 
-	// }}}
-	// {{{ protected function completeHtmlHeadEntries()
+
+
 
 	protected function completeHtmlHeadEntries()
 	{
@@ -320,8 +320,8 @@ class SiteLayout extends SiteObject
 		$this->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function getCombineEnabledByFlagFile()
+
+
 
 	/**
 	 * Gets whether or not the flag file generated during the concentrate build
@@ -338,8 +338,8 @@ class SiteLayout extends SiteObject
 		return file_exists($filename);
 	}
 
-	// }}}
-	// {{{ protected function getCompileEnabledByFlagFile()
+
+
 
 	/**
 	 * Gets whether or not the flag file generated during the concentrate build
@@ -356,8 +356,8 @@ class SiteLayout extends SiteObject
 		return file_exists($filename);
 	}
 
-	// }}}
-	// {{{ protected function getMinifyEnabledByFlagFile()
+
+
 
 	/**
 	 * Gets whether or not the flag file generated during the concentrate build
@@ -374,8 +374,8 @@ class SiteLayout extends SiteObject
 		return file_exists($filename);
 	}
 
-	// }}}
-	// {{{ protected function getTagByFlagFile()
+
+
 
 	/**
 	 * Gets the resource tag from a flag file that can be generated during
@@ -400,15 +400,15 @@ class SiteLayout extends SiteObject
 		return $tag;
 	}
 
-	// }}}
-	// {{{ protected function getHtmlHeadEntrySetDisplayerFactory()
+
+
 
 	protected function getHtmlHeadEntrySetDisplayerFactory()
 	{
 		return new SiteHtmlHeadEntrySetDisplayerFactory();
 	}
 
-	// }}}
+
 }
 
 ?>

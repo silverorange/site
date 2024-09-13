@@ -9,14 +9,14 @@
  */
 abstract class SiteAccountTest extends TuringSeleniumTest
 {
-	// {{{ protected properties
+
 
 	protected static $account_name     = 'Selenium Tester';
 	protected static $account_email    = null;
 	protected static $account_password = 'test';
 
-	// }}}
-	// {{{ public function setUp()
+
+
 
 	public function setUp()
 	{
@@ -27,20 +27,20 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		parent::setUp();
 	}
 
-	// }}}
-	// {{{ abstract protected function getLoginPageUri()
+
+
 
 	abstract protected function getLoginPageUri();
 
-	// }}}
-	// {{{ abstract protected function getNewAccountPageUri()
+
+
 
 	abstract protected function getNewAccountPageUri();
 
-	// }}}
+
 
 	// tests
-	// {{{ public function testBadLogin()
+
 
 	public function testBadLogin()
 	{
@@ -52,8 +52,8 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		);
 	}
 
-	// }}}
-	// {{{ public function testNewAccount()
+
+
 
 	public function testNewAccount()
 	{
@@ -74,8 +74,8 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		$this->assertAccountDetails();
 	}
 
-	// }}}
-	// {{{ public function testLogin()
+
+
 
 	public function testLogin()
 	{
@@ -83,8 +83,8 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		$this->assertAccountDetails();
 	}
 
-	// }}}
-	// {{{ public function testChangePassword()
+
+
 
 	public function testChangePassword()
 	{
@@ -143,10 +143,10 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		$this->logout();
 	}
 
-	// }}}
+
 
 	// helper methods
-	// {{{ protected function assertAccountDetails()
+
 
 	protected function assertAccountDetails()
 	{
@@ -161,8 +161,8 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		);
 	}
 
-	// }}}
-	// {{{ protected function enterAccountFields()
+
+
 
 	protected function enterNewAccountFields()
 	{
@@ -173,11 +173,11 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		$this->type('confirm_password', self::$account_password);
 	}
 
-	// }}}
+
 
 	// think about moving these to a helper class
 	// also think aboout clearCart() and addItemToCart()
-	// {{{ protected function login()
+
 
 	protected function login($email, $password)
 	{
@@ -193,8 +193,8 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		$this->assertNoErrors();
 	}
 
-	// }}}
-	// {{{ protected function logout()
+
+
 
 	protected function logout()
 	{
@@ -206,7 +206,7 @@ abstract class SiteAccountTest extends TuringSeleniumTest
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

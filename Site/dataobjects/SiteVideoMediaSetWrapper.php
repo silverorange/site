@@ -10,23 +10,23 @@
  */
 class SiteVideoMediaSetWrapper extends SiteMediaSetWrapper
 {
-	// {{{ protected function getMediaEncodingWrapperClass()
+
 
 	protected function getMediaEncodingWrapperClass()
 	{
 		return SwatDBClassMap::get(SiteVideoMediaEncodingWrapper::class);
 	}
 
-	// }}}
-	// {{{ protected function getMediaEncodingOrderBy()
+
+
 
 	protected function getMediaEncodingOrderBy()
 	{
 		return 'media_set, width desc';
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -35,7 +35,7 @@ class SiteVideoMediaSetWrapper extends SiteMediaSetWrapper
 		$this->row_wrapper_class = SwatDBClassMap::get(SiteVideoMediaSet::class);
 	}
 
-	// }}}
+
 }
 
 ?>

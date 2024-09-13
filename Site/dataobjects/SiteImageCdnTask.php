@@ -10,7 +10,7 @@
 class SiteImageCdnTask extends SiteCdnTask
 {
 	// public methods
-	// {{{ public function getAttemptDescription()
+
 
 	public function getAttemptDescription()
 	{
@@ -35,10 +35,10 @@ class SiteImageCdnTask extends SiteCdnTask
 		return $attempt;
 	}
 
-	// }}}
+
 
 	// protected methods
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -53,8 +53,8 @@ class SiteImageCdnTask extends SiteCdnTask
 		$this->table = 'ImageCdnQueue';
 	}
 
-	// }}}
-	// {{{ protected function getLocalFilePath()
+
+
 
 	protected function getLocalFilePath()
 	{
@@ -63,8 +63,8 @@ class SiteImageCdnTask extends SiteCdnTask
 			null;
 	}
 
-	// }}}
-	// {{{ protected function copy()
+
+
 
 	protected function copy(SiteCdnModule $cdn)
 	{
@@ -92,8 +92,8 @@ class SiteImageCdnTask extends SiteCdnTask
 		}
 	}
 
-	// }}}
-	// {{{ protected function remove()
+
+
 
 	protected function remove(SiteCdnModule $cdn)
 	{
@@ -108,10 +108,10 @@ class SiteImageCdnTask extends SiteCdnTask
 		);
 	}
 
-	// }}}
+
 
 	// helper methods
-	// {{{ protected function hasImageAndDimension()
+
 
 	protected function hasImageAndDimension()
 	{
@@ -119,15 +119,15 @@ class SiteImageCdnTask extends SiteCdnTask
 			($this->dimension instanceof SiteImageDimension));
 	}
 
-	// }}}
-	// {{{ protected function getAccessType()
+
+
 
 	protected function getAccessType()
 	{
 		return 'public';
 	}
 
-	// }}}
+
 }
 
 ?>

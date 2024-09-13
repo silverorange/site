@@ -15,7 +15,7 @@
  */
 abstract class SiteXMLRPCServer extends SitePage
 {
-	// {{{ public function process()
+
 
 	/**
 	 * Process the request
@@ -42,8 +42,8 @@ abstract class SiteXMLRPCServer extends SitePage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ public function __toString()
+
+
 
 	/**
 	 * @xmlrpc.hidden
@@ -53,8 +53,8 @@ abstract class SiteXMLRPCServer extends SitePage
 		return parent::__toString();
 	}
 
-	// }}}
-	// {{{ protected function createLayout()
+
+
 
 	/**
 	 * @xmlrpc.hidden
@@ -64,7 +64,7 @@ abstract class SiteXMLRPCServer extends SitePage
 		return new SiteXMLRPCServerLayout($this->app);
 	}
 
-	// }}}
+
 }
 
 ?>

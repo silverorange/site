@@ -10,7 +10,7 @@
 class SiteAccountDelete extends AdminDBDelete
 {
 	// process phase
-	// {{{ protected function processDBData()
+
 
 	protected function processDBData()
 	{
@@ -36,8 +36,8 @@ class SiteAccountDelete extends AdminDBDelete
 		$this->app->messages->add($message);
 	}
 
-	// }}}
-	// {{{ protected function getDeleteSql()
+
+
 
 	protected function getDeleteSql()
 	{
@@ -53,10 +53,10 @@ class SiteAccountDelete extends AdminDBDelete
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -72,8 +72,8 @@ class SiteAccountDelete extends AdminDBDelete
 			$this->switchToCancelButton();
 	}
 
-	// }}}
-	// {{{ protected function getDependencies()
+
+
 
 	protected function getDependencies()
 	{
@@ -113,7 +113,7 @@ class SiteAccountDelete extends AdminDBDelete
 		return $dep;
 	}
 
-	// }}}
+
 }
 
 ?>
