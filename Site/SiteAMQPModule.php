@@ -40,6 +40,13 @@ class SiteAMQPModule extends SiteApplicationModule
      */
     protected $channel;
 
+	/**
+	 * Default AMQP namespace.
+	 *
+	 * @var string
+	 */
+	protected $default_namespace;
+
     /**
      * Initializes this module, pulling values from the application
      * configuration.
