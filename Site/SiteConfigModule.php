@@ -184,7 +184,7 @@ class SiteConfigModule extends SiteApplicationModule
     public function init()
     {
         if (!$this->loaded) {
-            $this->load();
+			throw new SiteException('Config module can not be initialized before it is loaded.');
         }
 
         $this->loadDatabaseValues();
