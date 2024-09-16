@@ -1,6 +1,6 @@
 <?php
 
-use Psr\Log\Level;
+use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -70,14 +70,14 @@ class SiteCommandLineLogger implements LoggerInterface
     public function log($level, $message, array $context = []): void
     {
         match ($level) {
-            Level::EMERGENCY => $this->emergency($message, $context),
-            Level::ALERT     => $this->alert($message, $context),
-            Level::CRITICAL  => $this->critical($message, $context),
-            Level::ERROR     => $this->error($message, $context),
-            Level::WARNING   => $this->warning($message, $context),
-            Level::NOTICE    => $this->notice($message, $context),
-            Level::INFO      => $this->info($message, $context),
-            default          => $this->debug($message, $context),
+            LogLevel::EMERGENCY => $this->emergency($message, $context),
+			LogLevel::ALERT     => $this->alert($message, $context),
+			LogLevel::CRITICAL  => $this->critical($message, $context),
+			LogLevel::ERROR     => $this->error($message, $context),
+			LogLevel::WARNING   => $this->warning($message, $context),
+			LogLevel::NOTICE    => $this->notice($message, $context),
+			LogLevel::INFO      => $this->info($message, $context),
+            default             => $this->debug($message, $context),
         };
     }
 
