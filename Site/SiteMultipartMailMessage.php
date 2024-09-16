@@ -405,8 +405,7 @@ class SiteMultipartMailMessage extends SiteObject
             $this->app->db->quote(static::class, 'text'),
             $this->app->db->quote($attachment_count, 'integer'),
             $this->app->db->quote($attachment_size, 'integer'),
-            $this->app->db->quote($this->from_address),
-            'text'
+			$this->app->db->quote($this->from_address, 'text'),
         );
 
         $values = [];
