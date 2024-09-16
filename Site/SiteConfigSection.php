@@ -95,7 +95,7 @@ class SiteConfigSection extends SwatObject implements Iterator
      *
      * @return mixed the current value
      */
-    public function current()
+    public function current(): mixed
     {
         return current($this->values);
     }
@@ -105,7 +105,7 @@ class SiteConfigSection extends SwatObject implements Iterator
      *
      * @return int the key of the current value
      */
-    public function key()
+    public function key(): int
     {
         return key($this->values);
     }
@@ -113,7 +113,7 @@ class SiteConfigSection extends SwatObject implements Iterator
     /**
      * Moves forward to the next value.
      */
-    public function next()
+    public function next(): void
     {
         next($this->values);
     }
@@ -121,7 +121,7 @@ class SiteConfigSection extends SwatObject implements Iterator
     /**
      * Rewinds this iterator to the first value.
      */
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->values);
     }
@@ -132,7 +132,7 @@ class SiteConfigSection extends SwatObject implements Iterator
      * @return bool true if there is a current value and false if there
      *              is not
      */
-    public function valid()
+    public function valid(): bool
     {
         return key($this->values) !== null;
     }

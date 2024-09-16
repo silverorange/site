@@ -126,7 +126,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
      *
      * @return int the number of messages in this module
      */
-    public function count()
+    public function count(): int
     {
         return ($this->app->session->isActive()
             && $this->session_is_initialized) ?

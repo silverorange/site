@@ -67,7 +67,7 @@ class SiteCommandLineLogger implements LoggerInterface
      *                        Can contain placeholder values for the logged
      *                        message.
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         match ($level) {
             Level::EMERGENCY => $this->emergency($message, $context),
@@ -89,7 +89,7 @@ class SiteCommandLineLogger implements LoggerInterface
      *                        Can contain placeholder values for the logged
      *                        message.
      */
-    public function emergency($message, array $context = [])
+    public function emergency($message, array $context = []): void
     {
         if ($this->level >= self::LEVEL_NONE) {
             $this->out->stderr($this->interpolate($message, $context));
@@ -104,7 +104,7 @@ class SiteCommandLineLogger implements LoggerInterface
      *                        Can contain placeholder values for the logged
      *                        message.
      */
-    public function alert($message, array $context = [])
+    public function alert($message, array $context = []): void
     {
         $this->emergency($message, $context);
     }
@@ -117,7 +117,7 @@ class SiteCommandLineLogger implements LoggerInterface
      *                        Can contain placeholder values for the logged
      *                        message.
      */
-    public function critical($message, array $context = [])
+    public function critical($message, array $context = []): void
     {
         $this->emergency($message, $context);
     }
@@ -131,7 +131,7 @@ class SiteCommandLineLogger implements LoggerInterface
      *                        Can contain placeholder values for the logged
      *                        message.
      */
-    public function error($message, array $context = [])
+    public function error($message, array $context = []): void
     {
         if ($this->level >= self::LEVEL_ERRORS) {
             $this->out->stderr($this->interpolate($message, $context));
@@ -149,7 +149,7 @@ class SiteCommandLineLogger implements LoggerInterface
      *                        Can contain placeholder values for the logged
      *                        message.
      */
-    public function warning($message, array $context = [])
+    public function warning($message, array $context = []): void
     {
         $this->error($message, $context);
     }
@@ -162,7 +162,7 @@ class SiteCommandLineLogger implements LoggerInterface
      *                        Can contain placeholder values for the logged
      *                        message.
      */
-    public function notice($message, array $context = [])
+    public function notice($message, array $context = []): void
     {
         if ($this->level >= self::LEVEL_INFO) {
             $this->out->stdout($this->interpolate($message, $context));
@@ -177,7 +177,7 @@ class SiteCommandLineLogger implements LoggerInterface
      *                        Can contain placeholder values for the logged
      *                        message.
      */
-    public function info($message, array $context = [])
+    public function info($message, array $context = []): void
     {
         $this->notice($message, $context);
     }
@@ -190,7 +190,7 @@ class SiteCommandLineLogger implements LoggerInterface
      *                        Can contain placeholder values for the logged
      *                        message.
      */
-    public function debug($message, array $context = [])
+    public function debug($message, array $context = []): void
     {
         if ($this->level >= self::LEVEL_DEBUG) {
             $this->out->stdout($this->interpolate($message, $context));

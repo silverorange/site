@@ -149,7 +149,7 @@ class SitePath implements Iterator, Countable, Stringable
      *
      * @return mixed the current element
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->path_entries[$this->current_index];
     }
@@ -159,7 +159,7 @@ class SitePath implements Iterator, Countable, Stringable
      *
      * @return int the key of the current element
      */
-    public function key()
+    public function key(): int
     {
         return $this->current_index;
     }
@@ -167,7 +167,7 @@ class SitePath implements Iterator, Countable, Stringable
     /**
      * Moves forward to the next element.
      */
-    public function next()
+    public function next(): void
     {
         $this->current_index++;
     }
@@ -175,7 +175,7 @@ class SitePath implements Iterator, Countable, Stringable
     /**
      * Rewinds this iterator to the first element.
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->current_index = 0;
     }
@@ -186,19 +186,17 @@ class SitePath implements Iterator, Countable, Stringable
      * @return bool true if there is a current element and false if there
      *              is not
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->path_entries[$this->current_index]);
     }
 
     /**
-     * Retrieves the an object.
-     *
-     * @param mixed $key
+     * Retrieves an object.
      *
      * @return mixed the object or null if it does not exist
      */
-    public function get($key = 0)
+    public function get(int $key = 0): mixed
     {
         return $this->path_entries[$key] ?? null;
     }
@@ -210,7 +208,7 @@ class SitePath implements Iterator, Countable, Stringable
      *
      * @return int the number of entries in this path
      */
-    public function count()
+    public function count(): int
     {
         return count($this->path_entries);
     }
