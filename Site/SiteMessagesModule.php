@@ -66,15 +66,15 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
             throw new SiteClassNotFoundException(sprintf(
                 'Class ‘%s’ is not ' .
                 'defined and cannot be registered in this message module.',
-                $class
-            ), 0, $class);
+				$class_name
+            ), 0, $class_name);
         }
 
         if ($class_name !== 'SwatMessage'
             && !is_subclass_of($class_name, 'SwatMessage')) {
             throw new SiteInvalidClassException(sprintf('Class ‘%s’ is not ' .
                 'a SwatMessage and cannot be registered in this message ' .
-                'module.', $class), 0, null);
+                'module.', $class_name), 0, null);
         }
     }
 

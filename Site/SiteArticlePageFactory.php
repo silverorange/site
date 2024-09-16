@@ -46,7 +46,7 @@ class SiteArticlePageFactory extends SitePageFactory
             throw new SiteNotFoundException(
                 sprintf(
                     'Article not found for path ‘%s’',
-                    $path
+                    $page_info['path']
                 )
             );
         }

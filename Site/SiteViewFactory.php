@@ -131,9 +131,9 @@ class SiteViewFactory extends SwatObject
      */
     public static function removePath($path)
     {
-        $index = array_search($path, self::$paths);
+        $index = array_search($path, self::$search_paths);
         if ($index !== false) {
-            array_splice(self::$paths, $index, 1);
+            array_splice(self::$search_paths, $index, 1);
         }
     }
 

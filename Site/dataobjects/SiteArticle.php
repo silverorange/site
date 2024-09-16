@@ -305,7 +305,7 @@ class SiteArticle extends SwatDBDataObject
         $path = '';
 
         if ($this->hasInternalValue('path')
-            && $this->getInternameValue('path') !== null) {
+            && $this->getInternalValue('path') !== null) {
             $path = $this->getInternalValue('path');
         } else {
             $sql = sprintf(
