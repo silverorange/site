@@ -66,7 +66,7 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
             throw new SiteClassNotFoundException(sprintf(
                 'Class ‘%s’ is not ' .
                 'defined and cannot be registered in this message module.',
-				$class_name
+                $class_name
             ), 0, $class_name);
         }
 

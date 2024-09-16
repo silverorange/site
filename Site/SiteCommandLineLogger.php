@@ -1,7 +1,7 @@
 <?php
 
-use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  * PSR-3 compliant logger that sends messages to STDOUT and STDERR through
@@ -71,12 +71,12 @@ class SiteCommandLineLogger implements LoggerInterface
     {
         match ($level) {
             LogLevel::EMERGENCY => $this->emergency($message, $context),
-			LogLevel::ALERT     => $this->alert($message, $context),
-			LogLevel::CRITICAL  => $this->critical($message, $context),
-			LogLevel::ERROR     => $this->error($message, $context),
-			LogLevel::WARNING   => $this->warning($message, $context),
-			LogLevel::NOTICE    => $this->notice($message, $context),
-			LogLevel::INFO      => $this->info($message, $context),
+            LogLevel::ALERT     => $this->alert($message, $context),
+            LogLevel::CRITICAL  => $this->critical($message, $context),
+            LogLevel::ERROR     => $this->error($message, $context),
+            LogLevel::WARNING   => $this->warning($message, $context),
+            LogLevel::NOTICE    => $this->notice($message, $context),
+            LogLevel::INFO      => $this->info($message, $context),
             default             => $this->debug($message, $context),
         };
     }

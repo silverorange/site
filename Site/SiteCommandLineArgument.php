@@ -27,12 +27,12 @@ class SiteCommandLineArgument extends SiteObject
      */
     protected $names = [];
 
-	/**
-	 * The name of the method this argument calls on its application.
-	 *
-	 * @var string
-	 */
-	protected $method = '';
+    /**
+     * The name of the method this argument calls on its application.
+     *
+     * @var string
+     */
+    protected $method = '';
 
     /**
      * Additional parameters of this command line argument.
