@@ -58,7 +58,8 @@
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.64",
 		"phpstan/phpstan": "^1.12",
-		"rector/rector": "^1.2"
+		"rector/rector": "^1.2",
+		"silverorange/xml_rpc_ajax": "^3.1"
 	},
 	"suggest": {
 		"ext-amqp": "Allows some operations to use a message queue system.",
@@ -75,6 +76,7 @@
 	"scripts": {
 		"lint": "./vendor/bin/php-cs-fixer check -v",
 		"lint:fix": "./vendor/bin/php-cs-fixer fix -v",
+		"phpstan": "./vendor/bin/phpstan",
 		"rector": "./vendor/bin/rector --dry-run",
 		"rector:fix": "./vendor/bin/rector"
 	},
