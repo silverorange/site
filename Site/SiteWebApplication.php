@@ -118,7 +118,7 @@ class SiteWebApplication extends SiteApplication
                     'page-cache',
                     $key,
                     true,
-                    $this->getPageCacheTimeout()
+                    $this->getPageCacheExpirationTime()
                 );
             }
 
@@ -161,7 +161,7 @@ class SiteWebApplication extends SiteApplication
                         'static-content',
                         $cache_key,
                         $page_data,
-                        $this->getPageCacheTimeout()
+                        $this->getPageCacheExpirationTime()
                     );
                 }
             }
@@ -355,7 +355,7 @@ class SiteWebApplication extends SiteApplication
      * Gets the expiration time for the page cache.
      *
      * The timeout is specified in the application config. By default, the
-     * exipration time is 15 minutes in the future.
+     * expiration time is 15 minutes in the future.
      *
      * @return int the expiration time for the page cache
      */
