@@ -2,8 +2,9 @@
 
 use PhpCsFixer\Finder;
 use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
+use Silverorange\PhpCodingTools\Standards\PhpCsFixer\Php82;
 
-$config = new \Silverorange\PhpCodingTools\Standards\PhpCsFixer\Php82();
+$config = new Php82();
 
 $finder = (new Finder())
     ->in(__DIR__);
