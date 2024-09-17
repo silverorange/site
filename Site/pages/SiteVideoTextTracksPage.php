@@ -1,158 +1,141 @@
 <?php
 
 /**
- * @package   Site
  * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteVideoTextTracksPage extends SitePage
 {
-	// {{{ protected properties
+    protected $media;
 
-	protected $media = null;
+    protected function createLayout()
+    {
+        return new SiteLayout($this->app, SiteVTTTemplate::class);
+    }
 
-	// }}}
-	// {{{ protected function createLayout()
+    // init phase
 
-	protected function createLayout()
-	{
-		return new SiteLayout($this->app, SiteVTTTemplate::class);
-	}
+    public function init()
+    {
+        parent::init();
 
-	// }}}
+        if ($this->media === null) {
+            throw new SiteNotFoundException('Media not specified');
+        }
+        if ($this->media->scrubber_image === null) {
+            throw new SiteNotFoundException('Media doesn’t have a ' .
+                'scrubber image');
+        }
 
-	// init phase
-	// {{{ public function init()
+        // for private videos, check if the user has access
+        if ($this->media->media_set->private && (
+            !$this->app->session->isActive()
+            || !isset($this->app->session->media_access)
+            || !$this->app->session->media_access->offsetExists($this->media->id)
+        )) {
+            throw new SiteNotAuthorizedException('No access to private video.');
+        }
+    }
 
-	public function init()
-	{
-		parent::init();
+    public function setMediaKey($media_id)
+    {
+        $sql = sprintf(
+            'select * from Media where id = %s',
+            $this->app->db->quote($media_id, 'integer')
+        );
 
-		if ($this->media === null) {
-			throw new SiteNotFoundException('Media not specified');
-		} elseif ($this->media->scrubber_image === null) {
-			throw new SiteNotFoundException('Media doesn’t have a '.
-				'scrubber image');
-		}
+        $this->media = SwatDB::query(
+            $this->app->db,
+            $sql,
+            SwatDBClassMap::get(SiteVideoMediaWrapper::class)
+        )->getFirst();
 
-		// for private videos, check if the user has access
-		if ($this->media->media_set->private && (
-			!$this->app->session->isActive() ||
-			!isset($this->app->session->media_access) ||
-			!$this->app->session->media_access->offsetExists
-				($this->media->id))) {
+        if ($this->media === null) {
+            throw new SiteNotFoundException('Media not found for id:' .
+                $media_id);
+        }
+    }
 
-			throw new SiteNotAuthorizedException('No access to private video.');
-		}
-	}
+    // build phase
 
-	// }}}
-	// {{{ public function setMediaKey()
+    public function build()
+    {
+        $this->layout->startCapture('content');
+        $this->display();
+        $this->layout->endCapture();
+    }
 
-	public function setMediaKey($media_id)
-	{
-		$sql = sprintf('select * from Media where id = %s',
-			$this->app->db->quote($media_id, 'integer'));
+    protected function display()
+    {
+        $interval = $this->media->getScrubberImageInterval();
+        $uri = $this->media->scrubber_image->getUri(
+            'original',
+            $this->app->getBaseHref()
+        );
 
-		$this->media = SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('SiteVideoMediaWrapper'))->getFirst();
+        $image_width = $this->media->scrubber_image->getWidth('original');
 
-		if ($this->media === null) {
-			throw new SiteNotFoundException('Media not found for id:'.
-				$media_id);
-		}
-	}
+        echo "WEBVTT\n\n";
 
-	// }}}
+        $seconds = 0;
+        $image_offset = 0;
+        while ($seconds < $this->media->duration) {
+            $image_offset += $this->media->getScrubberImageWidth();
 
-	// build phase
-	// {{{ public function build()
+            echo $this->getFormattedTime($seconds);
+            echo ' --> ';
 
-	public function build()
-	{
-		$this->layout->startCapture('content');
-		$this->display();
-		$this->layout->endCapture();
-	}
+            // Make the last frame stretch to the end - this is because
+            // we offset frames forward so that you always see the frame in
+            // the image when you seek. The last frame therefore has to be
+            // longer.
+            if ($image_offset + $this->media->getScrubberImageWidth()
+                >= $image_width) {
+                $seconds = $this->media->duration;
+            } else {
+                $seconds += $interval;
+            }
 
-	// }}}
-	// {{{ protected function display()
+            echo $this->getFormattedTime($seconds);
+            echo "\n";
+            printf(
+                '%s#xywh=%d,0,%d,%d',
+                $uri,
+                $image_offset,
+                $this->media->getScrubberImageWidth(),
+                $this->media->scrubber_image->getHeight('original')
+            );
 
-	protected function display()
-	{
-		$interval = $this->media->getScrubberImageInterval();
-		$uri = $this->media->scrubber_image->getUri('original',
-			$this->app->getBaseHref());
+            echo "\n\n";
+        }
+    }
 
-		$image_width = $this->media->scrubber_image->getWidth('original');
+    public function getFormattedTime($seconds)
+    {
+        // don't care about micro-seconds.
+        $seconds = floor($seconds);
 
-		echo "WEBVTT\n\n";
+        $hours = 0;
+        $minutes = 0;
 
-		$seconds = 0;
-		$image_offset = 0;
-		while ($seconds < $this->media->duration) {
-			$image_offset += $this->media->getScrubberImageWidth();
+        $minute = 60;
+        $hour = $minute * 60;
 
-			echo $this->getFormattedTime($seconds);
-			echo ' --> ';
+        if ($seconds > $hour) {
+            $hours = floor($seconds / $hour);
+            $seconds -= $hour * $hours;
+        }
 
-			// Make the last frame stretch to the end - this is because
-			// we offset frames forward so that you always see the frame in
-			// the image when you seek. The last frame therefore has to be
-			// longer.
-			if ($image_offset + $this->media->getScrubberImageWidth()
-				>= $image_width) {
+        if ($seconds > $minute) {
+            $minutes = floor($seconds / $minute);
+            $seconds -= $minute * $minutes;
+        }
 
-				$seconds = $this->media->duration;
-			} else {
-				$seconds += $interval;
-			}
-
-			echo $this->getFormattedTime($seconds);
-			echo "\n";
-			printf('%s#xywh=%d,0,%d,%d',
-				$uri,
-				$image_offset,
-				$this->media->getScrubberImageWidth(),
-				$this->media->scrubber_image->getHeight('original'));
-
-			echo "\n\n";
-		}
-	}
-
-	// }}}
-	// {{{ public function getFormattedTime()
-
-	public function getFormattedTime($seconds)
-	{
-		// don't care about micro-seconds.
-		$seconds = floor($seconds);
-
-		$hours = 0;
-		$minutes = 0;
-
-		$minute = 60;
-		$hour = $minute * 60;
-
-		if ($seconds > $hour) {
-			$hours = floor($seconds / $hour);
-			$seconds -= $hour * $hours;
-		}
-
-		if ($seconds > $minute) {
-			$minutes = floor($seconds / $minute);
-			$seconds -= $minute * $minutes;
-		}
-
-		return sprintf(
-			'%02d:%02d:%02d.000',
-			$hours,
-			$minutes,
-			$seconds
-		);
-	}
-
-	// }}}
+        return sprintf(
+            '%02d:%02d:%02d.000',
+            $hours,
+            $minutes,
+            $seconds
+        );
+    }
 }
-
-?>

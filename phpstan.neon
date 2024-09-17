@@ -1,0 +1,17 @@
+#includes:
+#  - phpstan-baseline.neon
+
+parameters:
+  phpVersion: 80100
+  level: 0
+  paths:
+    - po
+    - Site
+    - tests
+    - www
+  excludePaths:
+    # all of these components require silverorange/admin,
+    # but it can't be installed in composer due to circular reference
+    - Site/admin/*
+  editorUrl: '%%file%%:%%line%%'
+  editorUrlTitle: '%%file%%:%%line%%'

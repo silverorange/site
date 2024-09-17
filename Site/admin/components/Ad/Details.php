@@ -1,191 +1,161 @@
 <?php
 
 /**
- * Report page for Ads
+ * Report page for Ads.
  *
- * @package   Site
  * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAdDetails extends AdminIndex
 {
-	// {{{ class constants
+    /**
+     * Maximum number of top http referers to display.
+     */
+    public const NUM_HTTP_REFERERS = 20;
 
-	/**
-	 * Maximum number of top http referers to display
-	 */
-	const NUM_HTTP_REFERERS = 20;
+    /**
+     * @var SiteAd
+     */
+    protected $ad;
 
-	// }}}
-	// {{{ protected properties
+    /**
+     * @var array
+     */
+    protected $periods;
 
-	/**
-	 * @var SiteAd
-	 */
-	protected $ad;
+    // init phase
 
-	/**
-	 * @var array
-	 */
-	protected $periods;
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// }}}
+        $id = SiteApplication::initVar('id');
+        if (!$this->initAd($id)) {
+            throw new AdminNotFoundException(
+                sprintf('Ad with an id of ‘%s’ not found.', $id)
+            );
+        }
 
-	// init phase
-	// {{{ protected function initInternal()
+        $this->ui->loadFromXML($this->getUiXml());
+        $this->ui->getWidget('index_frame')->subtitle = $this->ad->title;
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+        $this->periods = ['day' => Site::_('Day'), 'week' => Site::_('Week'), 'two_week' => Site::_('2 Weeks'), 'month' => Site::_('Month'), 'total' => Site::_('Total')];
+    }
 
-		$id = SiteApplication::initVar('id');
-		if (!$this->initAd($id)) {
-			throw new AdminNotFoundException(
-				sprintf('Ad with an id of ‘%s’ not found.', $id));
-		}
+    /**
+     * @var int
+     *
+     * @param mixed $id
+     *
+     * @return bool
+     */
+    protected function initAd($id)
+    {
+        $class_name = SwatDBClassMap::get(SiteAd::class);
+        $this->ad = new $class_name();
+        $this->ad->setDatabase($this->app->db);
 
-		$this->ui->loadFromXML($this->getUiXml());
-		$this->ui->getWidget('index_frame')->subtitle = $this->ad->title;
+        return $this->ad->load($id);
+    }
 
-		$this->periods = array(
-			'day'      => Site::_('Day'),
-			'week'     => Site::_('Week'),
-			'two_week' => Site::_('2 Weeks'),
-			'month'    => Site::_('Month'),
-			'total'    => Site::_('Total'),
-		);
-	}
+    protected function getUiXml()
+    {
+        return __DIR__ . '/details.xml';
+    }
 
-	// }}}
-	// {{{ protected function initAd()
+    // build phase
 
-	/**
-	 * @var integer $id
-	 *
-	 * @return boolean
-	 */
-	protected function initAd($id)
-	{
-		$class_name = SwatDBClassMap::get('SiteAd');
-		$this->ad = new $class_name();
-		$this->ad->setDatabase($this->app->db);
-		return $this->ad->load($id);
-	}
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
-	// }}}
-	// {{{ protected function getUiXml()
+        $toolbar = $this->ui->getWidget('details_toolbar');
+        $toolbar->setToolLinkValues($this->ad->id);
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/details.xml';
-	}
+        $this->buildHelp();
+    }
 
-	// }}}
+    protected function buildHelp()
+    {
+        $inbound_tracking_id = $this->app->config->ads->tracking_id;
 
-	// build phase
-	// {{{ protected function buildInternal()
+        $help_note = $this->ui->getWidget('ad_tag_help');
+        $help_note->title = sprintf(
+            Site::_(
+                'To track this ad, append the variable “%s=%s” to incoming links.'
+            ),
+            SwatString::minimizeEntities($inbound_tracking_id),
+            SwatString::minimizeEntities($this->ad->shortname)
+        );
 
-	protected function buildInternal()
-	{
-		parent::buildInternal();
+        ob_start();
+        echo Site::_('Examples:'), '<ul>';
 
-		$toolbar = $this->ui->getWidget('details_toolbar');
-		$toolbar->setToolLinkValues($this->ad->id);
+        $base_href = $this->app->getFrontendBaseHref();
+        printf(
+            '<li>%1$s<strong>?%2$s=%3$s</strong></li>' .
+            '<li>%1$s?othervar=otherval<strong>&%2$s=%3$s</strong></li>' .
+            '<li>%1$sus/en/category/product<strong>?%2$s=%3$s</strong></li>',
+            SwatString::minimizeEntities($base_href),
+            SwatString::minimizeEntities($inbound_tracking_id),
+            SwatString::minimizeEntities($this->ad->shortname)
+        );
 
-		$this->buildHelp();
-	}
+        echo '</ul>';
+        $help_note->content = ob_get_clean();
+        $help_note->content_type = 'text/xml';
+    }
 
-	// }}}
-	// {{{ protected function buildHelp()
+    protected function getTableModel(SwatView $view)
+    {
+        switch ($view->id) {
+            case 'referrer_period_view':
+                return $this->getReferrerPeriodTableModel();
 
-	protected function buildHelp()
-	{
-		$inbound_tracking_id = $this->app->config->ads->tracking_id;
+            case 'http_referers_view':
+                return $this->getHttpReferersTableModel();
+        }
+    }
 
-		$help_note = $this->ui->getWidget('ad_tag_help');
-		$help_note->title = sprintf(Site::_(
-			'To track this ad, append the variable “%s=%s” to incoming links.'),
-			SwatString::minimizeEntities($inbound_tracking_id),
-			SwatString::minimizeEntities($this->ad->shortname));
+    protected function getReferrerPeriodTableModel()
+    {
+        $sql = sprintf(
+            'select * from AdReferrerByPeriodView where ad = %s',
+            $this->app->db->quote($this->ad->id, 'integer')
+        );
 
-		ob_start();
-		echo Site::_('Examples:'), '<ul>';
+        $row = SwatDB::queryRow($this->app->db, $sql);
 
-		$base_href = $this->app->getFrontendBaseHref();
-		printf(
-			'<li>%1$s<strong>?%2$s=%3$s</strong></li>'.
-			'<li>%1$s?othervar=otherval<strong>&%2$s=%3$s</strong></li>'.
-			'<li>%1$sus/en/category/product<strong>?%2$s=%3$s</strong></li>',
-			SwatString::minimizeEntities($base_href),
-			SwatString::minimizeEntities($inbound_tracking_id),
-			SwatString::minimizeEntities($this->ad->shortname));
+        $store = new SwatTableStore();
 
-		echo '</ul>';
-		$help_note->content = ob_get_clean();
-		$help_note->content_type = 'text/xml';
-	}
+        foreach ($this->periods as $key => $val) {
+            $myvar->period = $val;
+            $myvar->referrers = intval($row->{$key});
 
-	// }}}
-	// {{{ protected function getTableModel()
+            $store->add(clone $myvar);
+        }
 
-	protected function getTableModel(SwatView $view)
-	{
-		switch ($view->id) {
-		case 'referrer_period_view':
-			return $this->getReferrerPeriodTableModel();
-		case 'http_referers_view':
-			return $this->getHttpReferersTableModel();
-		}
-	}
+        return $store;
+    }
 
-	// }}}
-	// {{{ protected function getRefererPeriodTableModel()
-
-	protected function getReferrerPeriodTableModel()
-	{
-		$sql = sprintf('select * from AdReferrerByPeriodView where ad = %s',
-			$this->app->db->quote($this->ad->id, 'integer'));
-
-		$row = SwatDB::queryRow($this->app->db, $sql);
-
-		$store = new SwatTableStore();
-
-		foreach ($this->periods as $key => $val) {
-			$myvar->period = $val;
-			$myvar->referrers = intval($row->$key);
-
-			$store->add(clone $myvar);
-		}
-
-		return $store;
-	}
-
-	// }}}
-	// {{{ protected function getHttpReferersTableModel()
-
-	protected function getHttpReferersTableModel()
-	{
-		$sql = sprintf('select http_referer as uri, count(id) as referer_count
+    protected function getHttpReferersTableModel()
+    {
+        $sql = sprintf(
+            'select http_referer as uri, count(id) as referer_count
 				from AdReferrer
 			where ad = %s and http_referer is not null
 			group by ad, uri
 			order by referer_count limit %s',
-			$this->app->db->quote($this->ad->id, 'integer'),
-			$this->app->db->quote(self::NUM_HTTP_REFERERS, 'integer'));
+            $this->app->db->quote($this->ad->id, 'integer'),
+            $this->app->db->quote(self::NUM_HTTP_REFERERS, 'integer')
+        );
 
-		return SwatDB::query($this->app->db, $sql);
-	}
+        return SwatDB::query($this->app->db, $sql);
+    }
 
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-		$this->navbar->addEntry(new SwatNavBarEntry($this->ad->title));
-	}
-
-	// }}}
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
+        $this->navbar->addEntry(new SwatNavBarEntry($this->ad->title));
+    }
 }
-
-?>

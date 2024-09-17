@@ -1,83 +1,72 @@
 <?php
 
 /**
- * An attachment set
+ * An attachment set.
  *
- * @package   Site
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAttachmentSet extends SwatDBDataObject
 {
-	// {{{ public properties
+    /**
+     * The unique identifier of this type.
+     *
+     * @var int
+     */
+    public $id;
 
-	/**
-	 * The unique identifier of this type
-	 *
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * The title of this type.
+     *
+     * @var string
+     */
+    public $title;
 
-	/**
-	 * The title of this type
-	 *
-	 * @var string
-	 */
-	public $title;
+    /**
+     * The shortname of this type.
+     *
+     * @var string
+     */
+    public $shortname;
 
-	/**
-	 * The shortname of this type
-	 *
-	 * @var string
-	 */
-	public $shortname;
+    /**
+     * @var bool
+     */
+    public $use_cdn;
 
-	/**
-	 * @var boolean
-	 */
-	public $use_cdn;
+    /**
+     * @var bool
+     */
+    public $obfuscate_filename;
 
-	/**
-	 * @var boolean
-	 */
-	public $obfuscate_filename;
+    public function loadByShortname($shortname)
+    {
+        $this->checkDB();
 
-	// }}}
-	// {{{ public function loadByShortname()
+        $found = false;
 
-	public function loadByShortname($shortname)
-	{
-		$this->checkDB();
+        $sql = 'select * from %s where shortname = %s';
 
-		$found = false;
+        $sql = sprintf(
+            $sql,
+            $this->table,
+            $this->db->quote($shortname, 'text')
+        );
 
-		$sql = 'select * from %s where shortname = %s';
+        $row = SwatDB::queryRow($this->db, $sql);
 
-		$sql = sprintf($sql,
-			$this->table,
-			$this->db->quote($shortname, 'text'));
+        if ($row !== null) {
+            $this->initFromRow($row);
+            $this->generatePropertyHashes();
+            $found = true;
+        }
 
-		$row = SwatDB::queryRow($this->db, $sql);
+        return $found;
+    }
 
-		if ($row !== null) {
-			$this->initFromRow($row);
-			$this->generatePropertyHashes();
-			$found = true;
-		}
-
-		return $found;
-	}
-
-	// }}}
-	// {{{ protected function init()
-
-	protected function init()
-	{
-		$this->table = 'AttachmentSet';
-		$this->id_field = 'integer:id';
-	}
-
-	// }}}
+    protected function init()
+    {
+        $this->table = 'AttachmentSet';
+        $this->id_field = 'integer:id';
+    }
 }
-
-?>

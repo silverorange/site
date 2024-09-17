@@ -1,128 +1,110 @@
 <?php
 
 /**
- * Index page for Suspicious Accounts
+ * Index page for Suspicious Accounts.
  *
- * @package   Site
  * @copyright 2012-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteAccountSuspicious extends AdminIndex
 {
-	// init phase
-	// {{{ protected function initInternal()
+    // init phase
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->getUiXml());
-	}
+        $this->ui->mapClassPrefixToPath('Site', 'Site');
+        $this->ui->loadFromXML($this->getUiXml());
+    }
 
-	// }}}
-	// {{{ protected function getUiXml()
+    protected function getUiXml()
+    {
+        return __DIR__ . '/suspicious.xml';
+    }
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/suspicious.xml';
-	}
+    // process phase
 
-	// }}}
+    protected function processInternal()
+    {
+        parent::processInternal();
 
-	// process phase
-	// {{{ protected function processInternal()
+        $pager = $this->ui->getWidget('pager');
+        $pager->process();
+    }
 
-	protected function processInternal()
-	{
-		parent::processInternal();
+    // build phase
 
-		$pager = $this->ui->getWidget('pager');
-		$pager->process();
-	}
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
-	// }}}
+        $view = $this->ui->getWidget('index_view');
 
-	// build phase
-	// {{{ protected function buildInternal()
+        if ($view->hasColumn('instance')) {
+            $view->getColumn('instance')->visible =
+                $this->app->isMultipleInstanceAdmin();
+        }
+    }
 
-	protected function buildInternal()
-	{
-		parent::buildInternal();
+    protected function getTableModel(SwatView $view)
+    {
+        $where_clause = sprintf(
+            'Account.delete_date %s %s',
+            SwatDB::equalityOperator(null),
+            $this->app->db->quote(null, 'date')
+        );
 
-		$view = $this->ui->getWidget('index_view');
+        if ($this->app->getInstance() !== null) {
+            $where_clause .= sprintf(
+                ' and Account.instance = %s',
+                $this->app->db->quote(
+                    $this->app->getInstanceId(),
+                    'integer'
+                )
+            );
+        }
 
-		if ($view->hasColumn('instance')) {
-			$view->getColumn('instance')->visible =
-				$this->app->isMultipleInstanceAdmin();
-		}
-	}
-
-	// }}}
-	// {{{ protected function getTableModel()
-
-	protected function getTableModel(SwatView $view)
-	{
-		$where_clause = sprintf(
-			'Account.delete_date %s %s',
-			SwatDB::equalityOperator(null),
-			$this->app->db->quote(null, 'date')
-		);
-
-		if ($this->app->getInstance() !== null) {
-			$where_clause.= sprintf(
-				' and Account.instance = %s',
-				$this->app->db->quote(
-					$this->app->getInstanceId(),
-					'integer'
-				)
-			);
-		}
-
-		$pager = $this->ui->getWidget('pager');
-		$pager->total_records = SwatDB::queryOne(
-			$this->app->db,
-			sprintf(
-				'select count(id) from Account
+        $pager = $this->ui->getWidget('pager');
+        $pager->total_records = SwatDB::queryOne(
+            $this->app->db,
+            sprintf(
+                'select count(id) from Account
 				inner join SuspiciousAccountView on
 					SuspiciousAccountView.account = Account.id
 				where %s',
-				$where_clause
-			)
-		);
+                $where_clause
+            )
+        );
 
-		$sql = sprintf(
-			'select * from Account
+        $sql = sprintf(
+            'select * from Account
 			inner join SuspiciousAccountView on
 				SuspiciousAccountView.account = Account.id
 			where %s
 			order by %s',
-			$where_clause,
-			$this->getOrderByClause($view, 'Account.id')
-		);
+            $where_clause,
+            $this->getOrderByClause($view, 'Account.id')
+        );
 
-		$this->app->db->setLimit($pager->page_size, $pager->current_record);
+        $this->app->db->setLimit($pager->page_size, $pager->current_record);
 
-		$rows = SwatDB::query($this->app->db, $sql);
+        $rows = SwatDB::query($this->app->db, $sql);
 
-		$class_name = SwatDBClassMap::get('SiteAccount');
-		$store = new SwatTableStore();
+        $class_name = SwatDBClassMap::get(SiteAccount::class);
+        $store = new SwatTableStore();
 
-		foreach ($rows as $row) {
-			$account = new $class_name($row);
-			$account->setDatabase($this->app->db);
+        foreach ($rows as $row) {
+            $account = new $class_name($row);
+            $account->setDatabase($this->app->db);
 
-			$ds = new SwatDetailsStore($account);
-			$ds->fullname = $account->getFullName();
-			$ds->details  = SiteAccount::getSuspiciousActivitySummary($row);
+            $ds = new SwatDetailsStore($account);
+            $ds->fullname = $account->getFullName();
+            $ds->details = SiteAccount::getSuspiciousActivitySummary($row);
 
-			$store->add($ds);
-		}
+            $store->add($ds);
+        }
 
-		return $store;
-	}
-
-	// }}}
+        return $store;
+    }
 }
-
-?>

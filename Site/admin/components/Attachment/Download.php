@@ -1,141 +1,116 @@
 <?php
 
 /**
- * Download page for attachments
+ * Download page for attachments.
  *
- * @package   Site
  * @copyright 2014-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteAttachmentDownload extends AdminPage
 {
-	// {{{ protected function getObjectClass()
+    protected function getObjectClass()
+    {
+        return 'SiteAttachment';
+    }
 
-	protected function getObjectClass()
-	{
-		return 'SiteAttachment';
-	}
+    protected function getResolvedObjectClass()
+    {
+        return SwatDBClassMap::get($this->getObjectClass());
+    }
 
-	// }}}
-	// {{{ protected function getResolvedObjectClass()
+    abstract protected function getFileBase();
 
-	protected function getResolvedObjectClass()
-	{
-		return SwatDBClassMap::get($this->getObjectClass());
-	}
+    // init phase
 
-	// }}}
-	// {{{ abstract protected function getFileBase()
+    protected function createLayout()
+    {
+        return new SiteLayout($this->app, SiteFileLoaderLayout::class);
+    }
 
-	abstract protected function getFileBase();
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// }}}
+        $this->initAttachment();
+    }
 
-	// init phase
-	// {{{ protected function createLayout()
+    protected function initAttachment()
+    {
+        $id = SiteApplication::initVar(
+            'id',
+            null,
+            SiteApplication::VAR_GET
+        );
 
-	protected function createLayout()
-	{
-		return new SiteLayout($this->app, SiteFileLoaderLayout::class);
-	}
+        if ($id == '') {
+            throw new AdminNotFoundException(
+                'Attachment id must be specified.'
+            );
+        }
 
-	// }}}
-	// {{{ protected function initInternal()
+        $class_name = $this->getResolvedObjectClass();
+        $attachment = new $class_name();
+        $attachment->setDatabase($this->app->db);
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+        if (!$attachment instanceof SiteAttachment) {
+            throw new AdminNotFoundException(
+                'Attachment class must be an instance of SiteAttachment.'
+            );
+        }
 
-		$this->initAttachment();
-	}
+        if ($attachment->load($id)) {
+            $this->attachment = $attachment;
+        } else {
+            throw new AdminNotFoundException(
+                sprintf(
+                    'Attachment with id ‘%s’ not found.',
+                    $id
+                )
+            );
+        }
+    }
 
-	// }}}
-	// {{{ protected function initAttachment()
+    // build phase
 
-	protected function initAttachment()
-	{
-		$id = SiteApplication::initVar(
-			'id',
-			null,
-			SiteApplication::VAR_GET
-		);
+    protected function buildInternal()
+    {
+        set_time_limit(0);
 
-		if ($id == '') {
-			throw new AdminNotFoundException(
-				'Attachment id must be specified.'
-			);
-		}
+        $this->attachment->setFileBase($this->getFileBase());
+        $file_path = $this->attachment->getFilePath();
 
-		$class_name = $this->getResolvedObjectClass();
-		$attachment = new $class_name();
-		$attachment->setDatabase($this->app->db);
+        if (!is_readable($file_path)) {
+            throw new AdminNotFoundException(
+                sprintf(
+                    'Could not read attachment ‘%s’',
+                    $file_path
+                )
+            );
+        }
 
-		if (!$attachment instanceof SiteAttachment) {
-			throw new AdminNotFoundException(
-				'Attachment class must be an instance of SiteAttachment.'
-			);
-		}
+        // flush all and end buffering
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
 
-		if ($attachment->load($id)) {
-			$this->attachment = $attachment;
-		} else {
-			throw new AdminNotFoundException(
-				sprintf(
-					'Attachment with id ‘%s’ not found.',
-					$id
-				)
-			);
-		}
-	}
+        // display headers
+        foreach ($this->attachment->getHttpHeaders() as $key => $value) {
+            header(
+                sprintf(
+                    '%s: %s',
+                    $key,
+                    $value
+                )
+            );
+        }
 
-	// }}}
+        // send headers first
+        flush();
 
-	// build phase
-	// {{{ protected function buildInternal()
+        // dump file contents
+        readfile($file_path);
+        flush();
 
-	protected function buildInternal()
-	{
-		set_time_limit(0);
-
-		$this->attachment->setFileBase($this->getFileBase());
-		$file_path = $this->attachment->getFilePath();
-
-		if (!is_readable($file_path)) {
-			throw new AdminNotFoundException(
-				sprintf(
-					'Could not read attachment ‘%s’',
-					$file_path
-				)
-			);
-		}
-
-		// flush all and end buffering
-		while (ob_get_level() > 0) {
-			ob_end_clean();
-		}
-
-		// display headers
-		foreach ($this->attachment->getHttpHeaders() as $key => $value) {
-			header(
-				sprintf(
-					'%s: %s',
-					$key,
-					$value
-				)
-			);
-		}
-
-		// send headers first
-		flush();
-
-		// dump file contents
-		readfile($file_path);
-		flush();
-
-		exit();
-	}
-
-	// }}}
+        exit;
+    }
 }
-
-?>

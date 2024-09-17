@@ -1,284 +1,262 @@
 <?php
 
 /**
- * An audio specific media object
+ * An audio specific media object.
  *
- * @package   Site
  * @copyright 2011-2016 silverorange
  */
 class SiteAudioMedia extends SiteMedia
 {
-	// {{{ class constants
+    /**
+     * Starting offset in seconds to look for pts_time packets with ffprobe.
+     *
+     * If this is greater than the duration of the stream ffprobe just seeks to
+     * the end of the stream.
+     */
+    public const FFPROBE_DEFAULT_OFFSET = 432000; // 12 hours
 
-	/**
-	 * Starting offset in seconds to look for pts_time packets with ffprobe
-	 *
-	 * If this is greater than the duration of the stream ffprobe just seeks to
-	 * the end of the stream.
-	 */
-	const FFPROBE_DEFAULT_OFFSET = 432000; // 12 hours
+    /**
+     * Returns the duration of the media in a human readable format.
+     *
+     * DateIntervals were dismissed because creating 10-20 SwatDate's per page
+     * seemed slow and excessive. This is a slightly simplified version of
+     * SwatString::toHumanReadableTimePeriod() to allow for custom formatting.
+     * It always returns the two largest time parts.
+     *
+     * @returns string
+     */
+    public function getFormattedDuration()
+    {
+        // don't care about micro-seconds.
+        $seconds = floor($this->duration);
+        $minutes = 0;
 
-	// }}}
-	// {{{ public function getFormattedDuration()
+        if ($seconds > 60) {
+            $minutes = floor($seconds / 60);
+            $seconds -= 60 * $minutes;
+        }
 
-	/**
-	 * Returns the duration of the media in a human readable format.
-	 *
-	 * DateIntervals were dismissed because creating 10-20 SwatDate's per page
-	 * seemed slow and excessive. This is a slightly simplified version of
-	 * SwatString::toHumanReadableTimePeriod() to allow for custom formatting.
-	 * It always returns the two largest time parts.
-	 *
-	 * @returns string
-	 */
-	public function getFormattedDuration()
-	{
-		// don't care about micro-seconds.
-		$seconds = floor($this->duration);
-		$minutes = 0;
+        // use sprintf for padding, because I read somewhere on the internet it
+        // was faster than str_pad.
+        return sprintf(
+            '%1$s:%2$02s min',
+            $minutes,
+            $seconds
+        );
+    }
 
-		if ($seconds > 60) {
-			$minutes = floor($seconds / 60);
-			$seconds -= 60 * $minutes;
-		}
+    // Processing methods
 
-		// use sprintf for padding, because I read somewhere on the internet it
-		// was faster than str_pad.
-		return sprintf('%1$s:%2$02s min',
-			$minutes,
-			$seconds);
-	}
+    public function process(SiteApplication $app, $file_path)
+    {
+        $this->checkDB();
 
-	// }}}
+        try {
+            $transaction = new SwatDBTransaction($this->db);
 
-	// Processing methods
-	// {{{ public function process()
+            $this->filename = ($this->getMediaSet()->obfuscate_filename)
+                ? Site::generateRandomHash()
+                : null;
 
-	public function process(SiteApplication $app, $file_path)
-	{
-		$this->checkDB();
+            $this->createdate = new SwatDate();
+            $this->createdate->toUTC();
 
-		try {
-			$transaction = new SwatDBTransaction($this->db);
+            $this->save();
 
-			$this->filename = ($this->getMediaSet()->obfuscate_filename)
-				? sha1(uniqid(rand(), true))
-				: null;
+            foreach ($this->getMediaSet()->encodings as $encoding) {
+                $this->processEncoding($file_path, $encoding);
+            }
 
-			$this->createdate = new SwatDate();
-			$this->createdate->toUTC();
+            // Parse the duration from the first encoding
+            foreach ($this->getMediaSet()->encodings as $encoding) {
+                $path = realpath($this->getFilePath($encoding->shortname));
+                $this->duration = $this->parseDuration($app, $path);
+                $this->save();
 
-			$this->save();
+                break;
+            }
 
-			foreach ($this->getMediaSet()->encodings as $encoding) {
-				$this->processEncoding($file_path, $encoding);
-			}
+            $transaction->commit();
+        } catch (Throwable $e) {
+            // TODO: Specialize this.
+            $transaction->rollback();
 
-			// Parse the duration from the first encoding
-			foreach ($this->getMediaSet()->encodings as $encoding) {
-				$path = realpath($this->getFilePath($encoding->shortname));
-				$this->duration = $this->parseDuration($app, $path);
-				$this->save();
+            throw $e;
+        }
+    }
 
-				break;
-			}
+    public function parseDuration(SiteApplication $app, $file_path)
+    {
+        $duration = null;
 
-			$transaction->commit();
-		} catch (Throwable $e) {
-			// TODO: Specialize this.
-			$transaction->rollback();
-			throw $e;
-		}
-	}
+        $bin = trim(shell_exec('which ffprobe'));
 
-	// }}}
-	// {{{ public function parseDuration()
+        // Run just the ffprobe first, so we can check its return code.
+        $command = sprintf(
+            '%s ' .
+                '-print_format json ' .
+                '-select_streams a ' .
+                '-show_entries format=format_name:format=duration ' .
+                '-v quiet ' .
+                '%s ',
+            $bin,
+            escapeshellarg($file_path)
+        );
 
-	public function parseDuration(SiteApplication $app, $file_path)
-	{
-		$duration = null;
+        $returned_value = 0;
+        $command_output = '';
+        exec($command, $command_output, $returned_value);
 
-		$bin = trim(`which ffprobe`);
+        // If ffprobe has worked, get the format and time from its output,
+        // otherwise throw an exception.
+        if ($returned_value === 0) {
+            $result = implode('', $command_output);
+            $result = json_decode($result, true);
 
-		// Run just the ffprobe first, so we can check its return code.
-		$command = sprintf(
-			'%s '.
-				'-print_format json '.
-				'-select_streams a '.
-				'-show_entries format=format_name:format=duration '.
-				'-v quiet '.
-				'%s ',
-			$bin,
-			escapeshellarg($file_path)
-		);
+            if ($result !== null
+                && isset($result['format'])
+                && is_array($result['format'])
+                && isset($result['format']['format_name'], $result['format']['duration'])
+            ) {
+                $format = $result['format']['format_name'];
+                $duration = (int) round($result['format']['duration']);
+            }
 
-		$returned_value = 0;
-		$command_output = '';
-		exec($command, $command_output, $returned_value);
+            if ($duration === null) {
+                throw new SiteException(
+                    'Audio media duration lookup with ffprobe failed. ' .
+                    'Unable to parse format or duration from output.'
+                );
+            }
+        } else {
+            throw new SiteException(
+                sprintf(
+                    "Audio media duration lookup with ffprobe failed.\n\n" .
+                    "Ran command:\n%s\n\n" .
+                    "With return code:\n%s",
+                    $command,
+                    $returned_value
+                )
+            );
+        }
 
-		// If ffprobe has worked, get the format and time from its output,
-		// otherwise throw an exception.
-		if ($returned_value === 0) {
-			$result = implode('', $command_output);
-			$result = json_decode($result, true);
+        // If the file is an MP3 file, ignore the metadata duration and
+        // calculate duration based on raw packets.
+        if (in_array('mp3', explode(',', mb_strtolower($format)))) {
+            $duration = $this->parseMp3Duration(
+                $file_path,
+                self::FFPROBE_DEFAULT_OFFSET
+            );
 
-			if ($result !== null &&
-				isset($result['format']) &&
-				is_array($result['format']) &&
-				isset($result['format']['format_name']) &&
-				isset($result['format']['duration'])) {
+            if ($duration === null) {
+                // Depending on the encoding, some MP3s will return no
+                // packets when read_intervals goes past the end of the
+                // file. If no packets are returned, run again and read all
+                // packets. It's slower, but it works.
+                $duration = $this->parseMp3Duration($file_path, 0);
+            }
 
-				$format = $result['format']['format_name'];
-				$duration = (integer)round($result['format']['duration']);
-			}
+            if ($duration === null) {
+                throw new SiteException(
+                    'Audio media duration lookup with ffprobe failed. ' .
+                    'Unable to parse duration from output.'
+                );
+            }
+        }
 
-			if ($duration === null) {
-				throw new SiteException(
-					'Audio media duration lookup with ffprobe failed. '.
-					'Unable to parse format or duration from output.'
-				);
-			}
-		} else {
-			throw new SiteException(
-				sprintf(
-					"Audio media duration lookup with ffprobe failed.\n\n".
-					"Ran command:\n%s\n\n".
-					"With return code:\n%s",
-					$command,
-					$returned_value
-				)
-			);
-		}
+        return $duration;
+    }
 
-		// If the file is an MP3 file, ignore the metadata duration and
-		// calculate duration based on raw packets.
-		if (in_array('mp3', explode(',', mb_strtolower($format)))) {
-			$duration = $this->parseMp3Duration(
-				$file_path,
-				self::FFPROBE_DEFAULT_OFFSET
-			);
+    protected function processEncoding($file_path, SiteMediaEncoding $encoding)
+    {
+        $binding = new SiteMediaEncodingBinding();
+        $binding->setDatabase($this->db);
+        $binding->media = $this->id;
+        $binding->media_encoding = $encoding->id;
+        $binding->media_type = $encoding->getInternalValue('default_type');
+        $binding->filesize = filesize($file_path);
+        $binding->save();
 
-			if ($duration === null) {
-				// Depending on the encoding, some MP3s will return no
-				// packets when read_intervals goes past the end of the
-				// file. If no packets are returned, run again and read all
-				// packets. It's slower, but it works.
-				$duration = $this->parseMp3Duration($file_path, 0);
-			}
+        if ($this->getMediaSet()->use_cdn) {
+            $this->queueCdnTask('copy', $encoding);
+        }
 
-			if ($duration === null) {
-				throw new SiteException(
-					'Audio media duration lookup with ffprobe failed. '.
-					'Unable to parse duration from output.'
-				);
-			}
-		}
+        $directory = $this->getFileDirectory($encoding->shortname);
+        if (!file_exists($directory) && !mkdir($directory, 0o777, true)) {
+            throw new SiteException('Unable to create media directory.');
+        }
 
-		return $duration;
-	}
+        $filename = $this->getFilePath($encoding->shortname);
+        if (!copy($file_path, $filename)) {
+            throw new SiteException('Unable to copy media file.');
+        }
 
-	// }}}
-	// {{{ protected function processEncoding()
+        $this->encoding_bindings->add($binding);
+    }
 
-	protected function processEncoding($file_path, SiteMediaEncoding $encoding)
-	{
-		$binding = new SiteMediaEncodingBinding();
-		$binding->setDatabase($this->db);
-		$binding->media = $this->id;
-		$binding->media_encoding = $encoding->id;
-		$binding->media_type = $encoding->getInternalValue('default_type');
-		$binding->filesize = filesize($file_path);
-		$binding->save();
+    protected function parseMp3Duration($file_path, $offset)
+    {
+        $bin = trim(shell_exec('which ffprobe'));
 
-		if ($this->getMediaSet()->use_cdn) {
-			$this->queueCdnTask('copy', $encoding);
-		}
+        $duration = null;
 
-		$directory = $this->getFileDirectory($encoding->shortname);
-		if (!file_exists($directory) && !mkdir($directory, 0777, true)) {
-			throw new SiteException('Unable to create media directory.');
-		}
+        $command = sprintf(
+            '%s ' .
+                '-print_format json ' .
+                '-read_intervals %s%% ' .
+                '-select_streams a ' .
+                '-show_entries packet=pts_time ' .
+                '-v quiet ' .
+                '%s ',
+            $bin,
+            escapeshellarg($offset),
+            escapeshellarg($file_path)
+        );
 
-		$filename = $this->getFilePath($encoding->shortname);
-		if (!copy($file_path, $filename)) {
-			throw new SiteException('Unable to copy media file.');
-		}
+        $returned_value = 0;
+        $command_output = '';
+        exec($command, $command_output, $returned_value);
 
-		$this->encoding_bindings->add($binding);
-	}
+        // If ffprobe has worked, get the time from it's output,
+        // otherwise throw an exception.
+        if ($returned_value === 0) {
+            $result = implode('', $command_output);
+            $result = json_decode($result, true);
 
-	// }}}
-	// {{{ protected function parseMp3Duration()
+            if ($result !== null
+                && is_array($result['packets'])
+                && count($result['packets']) > 0) {
+                $packet = end($result['packets']);
+                $duration = (int) round($packet['pts_time']);
+            }
+        } else {
+            throw new SiteException(
+                sprintf(
+                    'Audio media duration lookup with ffprobe ' .
+                    "failed.\n\n" .
+                    "Ran command:\n%s\n\n" .
+                    "With return code:\n%s",
+                    $command,
+                    $returned_value
+                )
+            );
+        }
 
-	protected function parseMp3Duration($file_path, $offset)
-	{
-		$bin = trim(`which ffprobe`);
+        return $duration;
+    }
 
-		$duration = null;
+    // File and URI methods
 
-		$command = sprintf(
-			'%s '.
-				'-print_format json '.
-				'-read_intervals %s%% '.
-				'-select_streams a '.
-				'-show_entries packet=pts_time '.
-				'-v quiet '.
-				'%s ',
-			$bin,
-			escapeshellarg($offset),
-			escapeshellarg($file_path)
-		);
+    public function getContentDispositionFilename($encoding_shortname)
+    {
+        // Convert to an ASCII string. Approximate non ACSII characters.
+        $filename = iconv('UTF-8', 'ASCII//TRANSLIT', $this->original_filename);
 
-		$returned_value = 0;
-		$command_output = '';
-		exec($command, $command_output, $returned_value);
-
-		// If ffprobe has worked, get the time from it's output,
-		// otherwise throw an exception.
-		if ($returned_value === 0) {
-			$result = implode('', $command_output);
-			$result = json_decode($result, true);
-
-			if ($result !== null &&
-				is_array($result['packets']) &&
-				count($result['packets']) > 0) {
-				$packet = end($result['packets']);
-				$duration = (integer)round($packet['pts_time']);
-			}
-		} else {
-			throw new SiteException(
-				sprintf(
-					"Audio media duration lookup with ffprobe ".
-					"failed.\n\n".
-					"Ran command:\n%s\n\n".
-					"With return code:\n%s",
-					$command,
-					$returned_value
-				)
-			);
-		}
-
-		return $duration;
-	}
-
-	// }}}
-
-	// File and URI methods
-	// {{{ public function getContentDispositionFilename()
-
-	public function getContentDispositionFilename($encoding_shortname)
-	{
-		// Convert to an ASCII string. Approximate non ACSII characters.
-		$filename = iconv('UTF-8', 'ASCII//TRANSLIT', $this->original_filename);
-
-		// Format the filename according to the qtext syntax in RFC 822
-		$filename = str_replace(array("\\", "\r", "\""),
-			array("\\\\", "\\\r", "\\\""), $filename);
-
-		return $filename;
-	}
-
-	// }}}
+        // Format the filename according to the qtext syntax in RFC 822
+        return str_replace(
+            ['\\', "\r", '"'],
+            ['\\\\', "\\\r", '\"'],
+            $filename
+        );
+    }
 }
-
-?>

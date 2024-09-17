@@ -1,145 +1,94 @@
 <?php
 
 /**
- * Base class for a page decorator
+ * Base class for a page decorator.
  *
- * @package   Site
  * @copyright 2004-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SitePageDecorator extends SiteAbstractPage
 {
-	// {{{ protected properties
+    /**
+     * @var SitePage
+     */
+    protected $page;
 
-	/**
-	 * @var SitePage
-	 */
-	protected $page;
+    public function __construct(SiteAbstractPage $page)
+    {
+        $this->page = $page;
+        $this->app = $page->app;
+        $this->layout = $page->layout;
+        $this->arguments = $page->arguments;
+    }
 
-	// }}}
-	// {{{ public function __construct()
+    /**
+     * Sets the source string of this page.
+     *
+     * This is the Apache rewritten query string passed to the page factory. It
+     * is the visible part of the URL after the base href and excluding
+     * additional query parameters.
+     *
+     * Note: Ideally, the source string would be set in the constructor of
+     * this class and would only have a public accessor method. A setter
+     * method exists here for backwards compatibility.
+     *
+     * @param string $source
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
+        $this->page->setSource($source);
+    }
 
-	public function __construct(SiteAbstractPage $page)
-	{
-		$this->page      = $page;
-		$this->app       = $page->app;
-		$this->layout    = $page->layout;
-		$this->arguments = $page->arguments;
-	}
+    protected function setLayout(SiteLayout $layout)
+    {
+        $this->layout = $layout;
+        $this->page->setLayout($layout);
+    }
 
-	// }}}
-	// {{{ public function setSource()
+    // init phase
 
-	/**
-	 * Sets the source string of this page
-	 *
-	 * This is the Apache rewritten query string passed to the page factory. It
-	 * is the visible part of the URL after the base href and excluding
-	 * additional query parameters.
-	 *
-	 * Note: Ideally, the source string would be set in the constructor of
-	 * this class and would only have a public accessor method. A setter
-	 * method exists here for backwards compatibility.
-	 *
-	 * @param string $source
-	 */
-	public function setSource($source)
-	{
-		$this->source = $source;
-		$this->page->setSource($source);
-	}
+    public function init()
+    {
+        $this->page->init();
+        parent::init();
+    }
 
-	// }}}
-	// {{{ protected function setLayout()
+    // process phase
 
-	/**
-	 * @param SiteLayout $layout
-	 */
-	protected function setLayout(SiteLayout $layout)
-	{
-		$this->layout = $layout;
-		$this->page->setLayout($layout);
-	}
+    public function process()
+    {
+        $this->page->process();
+        parent::process();
+    }
 
-	// }}}
+    // build phase
 
-	// init phase
-	// {{{ public function init()
+    public function build()
+    {
+        $this->page->build();
 
-	public function init()
-	{
-		$this->page->init();
-		parent::init();
-	}
+        $this->buildTitle();
+        $this->buildMetaDescription();
+        $this->buildNavBar();
+        $this->buildContent();
 
-	// }}}
+        parent::build();
+    }
 
-	// process phase
-	// {{{ public function process()
+    protected function buildTitle() {}
 
-	public function process()
-	{
-		$this->page->process();
-		parent::process();
-	}
+    protected function buildMetaDescription() {}
 
-	// }}}
+    protected function buildContent() {}
 
-	// build phase
-	// {{{ public function build()
+    protected function buildNavBar() {}
 
-	public function build()
-	{
-		$this->page->build();
+    // finalize phase
 
-		$this->buildTitle();
-		$this->buildMetaDescription();
-		$this->buildNavBar();
-		$this->buildContent();
-
-		parent::build();
-	}
-
-	// }}}
-	// {{{ protected function buildTitle()
-
-	protected function buildTitle()
-	{
-	}
-
-	// }}}
-	// {{{ protected function buildMetaDescription()
-
-	protected function buildMetaDescription()
-	{
-	}
-
-	// }}}
-	// {{{ protected function buildContent()
-
-	protected function buildContent()
-	{
-	}
-
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		$this->page->finalize();
-		parent::finalize();
-	}
-
-	// }}}
+    public function finalize()
+    {
+        $this->page->finalize();
+        parent::finalize();
+    }
 }
-
-?>

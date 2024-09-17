@@ -1,159 +1,118 @@
 <?php
 
 /**
- * Upload page for attachments
+ * Upload page for attachments.
  *
- * @package   Site
  * @copyright 2014-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteAttachmentUpload extends AdminObjectEdit
 {
-	// {{{ abstract protected function getFileBase()
+    abstract protected function getFileBase();
 
-	abstract protected function getFileBase();
+    protected function getUiXml()
+    {
+        return __DIR__ . '/upload.xml';
+    }
 
-	// }}}
-	// {{{ protected function getUiXml()
+    protected function getObjectUiValueNames()
+    {
+        return ['title'];
+    }
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/upload.xml';
-	}
+    // init phase
 
-	// }}}
-	// {{{ protected function getObjectUiValueNames()
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	protected function getObjectUiValueNames()
-	{
-		return array('title');
-	}
+        $this->checkAttachmentClass();
+        $this->initUploadWidget();
+    }
 
-	// }}}
+    protected function checkAttachmentClass()
+    {
+        if (!$this->getObject() instanceof SiteAttachment) {
+            throw new AdminNotFoundException(
+                'Attachment upload requires a SiteAttachment dataobject.'
+            );
+        }
+    }
 
-	// init phase
-	// {{{ protected function initInternal()
+    protected function initUploadWidget()
+    {
+        $upload_widget = $this->ui->getWidget('upload_widget');
+        $upload_widget->accept_mime_types =
+            $this->getObject()->getValidMimeTypes();
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+        $upload_widget->human_file_types =
+            $this->getObject()->getValidHumanFileTypes();
+    }
 
-		$this->checkAttachmentClass();
-		$this->initUploadWidget();
-	}
+    // process phase
 
-	// }}}
-	// {{{ protected function checkAttachmentClass()
+    protected function updateObject()
+    {
+        parent::updateObject();
 
-	protected function checkAttachmentClass()
-	{
-		if (!$this->getObject() instanceof SiteAttachment) {
-			throw new AdminNotFoundException(
-				'Attachment upload requires a SiteAttachment dataobject.'
-			);
-		}
-	}
+        $upload_widget = $this->ui->getWidget('upload_widget');
 
-	// }}}
-	// {{{ protected function initUploadWidget()
+        $attachment = $this->getObject();
 
-	protected function initUploadWidget()
-	{
-		$upload_widget = $this->ui->getWidget('upload_widget');
-		$upload_widget->accept_mime_types =
-			$this->getObject()->getValidMimeTypes();
+        $attachment->file_size = $upload_widget->getSize();
+        $attachment->mime_type = $upload_widget->getMimeType();
+        $attachment->original_filename = $upload_widget->getFileName();
+        $attachment->human_filename = $this->getHumanFileName();
 
-		$upload_widget->human_file_types =
-			$this->getObject()->getValidHumanFileTypes();
+        $attachment->setFileBase($this->getFileBase());
+        $attachment->process($upload_widget->getTempFileName());
+    }
 
-	}
+    protected function getSavedMessagePrimaryContent()
+    {
+        $attachment = $this->getObject();
+        if ($attachment->human_filename != '') {
+            $content = sprintf(
+                Site::_('“%s” has been uploaded as “%s”.'),
+                $attachment->original_filename,
+                $attachment->human_filename
+            );
+        } else {
+            $content = sprintf(
+                Site::_('“%s” has been uploaded.'),
+                $attachment->original_filename
+            );
+        }
 
-	// }}}
+        return $content;
+    }
 
-	// process phase
-	// {{{ protected function updateObject()
+    protected function getHumanFilename()
+    {
+        return '';
+    }
 
-	protected function updateObject()
-	{
-		parent::updateObject();
+    // build phase
 
-		$upload_widget = $this->ui->getWidget('upload_widget');
+    protected function buildFrame()
+    {
+        parent::buildFrame();
 
-		$attachment = $this->getObject();
+        $this->ui->getWidget('edit_frame')->title =
+            Site::_('Upload Attachment');
+    }
 
-		$attachment->file_size         = $upload_widget->getSize();
-		$attachment->mime_type         = $upload_widget->getMimeType();
-		$attachment->original_filename = $upload_widget->getFileName();
-		$attachment->human_filename    = $this->getHumanFileName();
+    protected function buildButton()
+    {
+        $this->ui->getWidget('submit_button')->title =
+            Site::_('Upload Attachment');
+    }
 
-		$attachment->setFileBase($this->getFileBase());
-		$attachment->process($upload_widget->getTempFileName());
-	}
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
 
-	// }}}
-	// {{{ protected function getSavedMessagePrimaryContent()
-
-	protected function getSavedMessagePrimaryContent()
-	{
-		$attachment = $this->getObject();
-		if ($attachment->human_filename != '') {
-			$content = sprintf(
-				Site::_('“%s” has been uploaded as “%s”.'),
-				$attachment->original_filename,
-				$attachment->human_filename
-			);
-		} else {
-			$content = sprintf(
-				Site::_('“%s” has been uploaded.'),
-				$attachment->original_filename
-			);
-		}
-
-		return $content;
-	}
-
-	// }}}
-	// {{{ protected function getHumanFilename()
-
-	protected function getHumanFilename()
-	{
-		return '';
-	}
-
-	// }}}
-
-	// build phase
-	// {{{ protected function buildFrame()
-
-	protected function buildFrame()
-	{
-		parent::buildFrame();
-
-		$this->ui->getWidget('edit_frame')->title =
-			Site::_('Upload Attachment');
-	}
-
-	// }}}
-	// {{{ protected function buildButton()
-
-	protected function buildButton()
-	{
-		$this->ui->getWidget('submit_button')->title =
-			Site::_('Upload Attachment');
-	}
-
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-
-		$this->navbar->popEntries(2);
-		$this->navbar->createEntry(Site::_('Upload Attachment'));
-	}
-
-	// }}}
+        $this->navbar->popEntries(2);
+        $this->navbar->createEntry(Site::_('Upload Attachment'));
+    }
 }
-
-?>

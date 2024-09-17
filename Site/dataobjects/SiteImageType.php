@@ -1,80 +1,69 @@
 <?php
 
 /**
- * An image type data object
+ * An image type data object.
  *
- * @package   Site
  * @copyright 2008-2016 silverorange
  */
 class SiteImageType extends SwatDBDataObject
 {
-	// {{{ public properties
+    /**
+     * Unique identifier.
+     *
+     * @var int
+     */
+    public $id;
 
-	/**
-	 * Unique identifier
-	 *
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * Extension.
+     *
+     * @var string
+     */
+    public $extension;
 
-	/**
-	 * Extension
-	 *
-	 * @var string
-	 */
-	public $extension;
+    /**
+     * Mime type.
+     *
+     * @var string
+     */
+    public $mime_type;
 
-	/**
-	 * Mime type
-	 *
-	 * @var string
-	 */
-	public $mime_type;
+    /**
+     * Loads a image-type from the database with a mime-type.
+     *
+     * @param string $mime_type The mime-type of the image-type
+     *
+     * @return bool true if a set was successfully loaded and false if
+     *              no set was found with the specified mime-type
+     */
+    public function loadByMimeType($mime_type)
+    {
+        $this->checkDB();
 
-	// }}}
-	// {{{ public function loadByMimeType()
+        $found = false;
 
-	/**
-	 * Loads a image-type from the database with a mime-type
-	 *
-	 * @param string $mime_type The mime-type of the image-type
-	 *
-	 * @return boolean true if a set was successfully loaded and false if
-	 *                  no set was found with the specified mime-type.
-	 */
-	public function loadByMimeType($mime_type)
-	{
-		$this->checkDB();
+        $sql = 'select * from %s where lower(mime_type) = lower(%s)';
 
-		$found = false;
+        $sql = sprintf(
+            $sql,
+            $this->table,
+            $this->db->quote($mime_type, 'text')
+        );
 
-		$sql = 'select * from %s where lower(mime_type) = lower(%s)';
+        $row = SwatDB::queryRow($this->db, $sql);
 
-		$sql = sprintf($sql,
-			$this->table,
-			$this->db->quote($mime_type, 'text'));
+        if ($row !== null) {
+            $this->initFromRow($row);
+            $this->generatePropertyHashes();
+            $found = true;
+        }
 
-		$row = SwatDB::queryRow($this->db, $sql);
+        return $found;
+    }
 
-		if ($row !== null) {
-			$this->initFromRow($row);
-			$this->generatePropertyHashes();
-			$found = true;
-		}
-
-		return $found;
-	}
-
-	// }}}
-	// {{{ protected function init()
-
-	protected function init()
-	{
-		$this->table = 'ImageType';
-		$this->id_field = 'integer:id';
-	}
-
-	// }}}
+    protected function init()
+    {
+        $this->table = 'ImageType';
+        $this->id_field = 'integer:id';
+    }
 }
-
-?>

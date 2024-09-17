@@ -1,130 +1,108 @@
 <?php
 
 /**
- * Abstract application to queue metadata updates for SiteMedia on a CDN
+ * Abstract application to queue metadata updates for SiteMedia on a CDN.
  *
- * @package   Site
  * @copyright 2012-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
  * @todo      Make this a more generic base class for updating CDN based files?
  */
 abstract class SiteMediaCdnMetadataUpdater extends SiteCommandLineApplication
 {
-	// {{{ public properties
+    /**
+     * A convenience reference to the database object.
+     *
+     * @var MDB2_Driver
+     */
+    public $db;
 
-	/**
-	 * A convenience reference to the database object
-	 *
-	 * @var MDB2_Driver
-	 */
-	public $db;
+    public function __construct($id, $filename, $title, $documentation)
+    {
+        parent::__construct($id, $filename, $title, $documentation);
 
-	// }}}
-	// {{{ public function __construct()
+        $instance = new SiteCommandLineArgument(
+            ['-i', '--instance'],
+            'setInstance',
+            'Optional. Sets the site instance for which to ' .
+            'run this application.'
+        );
 
-	public function __construct($id, $filename, $title, $documentation)
-	{
-		parent::__construct($id, $filename, $title, $documentation);
+        $instance->addParameter(
+            'string',
+            'instance name must be specified.'
+        );
 
-		$instance = new SiteCommandLineArgument(array('-i', '--instance'),
-			'setInstance', 'Optional. Sets the site instance for which to '.
-			'run this application.');
+        $this->addCommandLineArgument($instance);
 
-		$instance->addParameter('string',
-			'instance name must be specified.');
+        $this->initModules();
+        $this->parseCommandLineArguments();
 
-		$this->addCommandLineArgument($instance);
+        $this->locale = SwatI18NLocale::get();
+    }
 
-		$this->initModules();
-		$this->parseCommandLineArguments();
+    public function setInstance($shortname)
+    {
+        putenv(sprintf('instance=%s', $shortname));
+        $this->instance->init();
+        $this->config->init();
+    }
 
-		$this->locale = SwatI18NLocale::get();
-	}
+    /**
+     * Runs this application.
+     */
+    public function run()
+    {
+        $this->lock();
 
-	// }}}
-	// {{{ public function setInstance()
+        $this->debug("Queuing metadata updates for Media on CDN.\n", true);
 
-	public function setInstance($shortname)
-	{
-		putenv(sprintf('instance=%s', $shortname));
-		$this->instance->init();
-		$this->config->init();
-	}
+        $this->queueUpdates();
 
-	// }}}
-	// {{{ public function run()
+        $this->debug("All done.\n", true);
 
-	/**
-	 * Runs this application
-	 */
-	public function run()
-	{
-		$this->lock();
+        $this->unlock();
+    }
 
-		$this->debug("Queuing metadata updates for Media on CDN.\n", true);
+    abstract protected function queueUpdates();
 
-		$this->queueUpdates();
+    protected function queueCdnTask(
+        SiteMedia $media,
+        SiteMediaEncoding $encoding
+    ) {
+        $class_name = SwatDBClassMap::get(SiteMediaCdnTask::class);
 
-		$this->debug("All done.\n", true);
+        $task = new $class_name();
+        $task->setDatabase($this->db);
 
-		$this->unlock();
-	}
+        $task->media = $media;
+        $task->encoding = $encoding;
+        $task->operation = 'copy';
+        $task->override_http_headers = serialize(['Content-Disposition' => sprintf(
+            'attachment; filename="%s"',
+            $media->getContentDispositionFilename($encoding->shortname)
+        )]);
 
-	// }}}
-	// {{{ abstract protected function queueUpdates()
+        $task->save();
+    }
 
-	abstract protected function queueUpdates();
+    // boilerplate code
 
-	// }}}
-	// {{{ protected function queueCdnTask()
+    protected function getDefaultModuleList()
+    {
+        return array_merge(
+            parent::getDefaultModuleList(),
+            [
+                'database' => SiteDatabaseModule::class,
+                'instance' => SiteMultipleInstanceModule::class,
+            ]
+        );
+    }
 
-	protected function queueCdnTask(
-		SiteMedia $media,
-		SiteMediaEncoding $encoding
-	) {
-		$class_name = SwatDBClassMap::get('SiteMediaCdnTask');
+    protected function configure(SiteConfigModule $config)
+    {
+        parent::configure($config);
 
-		$task = new $class_name();
-		$task->setDatabase($this->db);
-
-		$task->media     = $media;
-		$task->encoding  = $encoding;
-		$task->operation = 'copy';
-		$task->override_http_headers = serialize(array(
-			'Content-Disposition' => sprintf('attachment; filename="%s"',
-				$media->getContentDispositionFilename($encoding->shortname)),
-			));
-
-		$task->save();
-	}
-
-	// }}}
-
-	// boilerplate code
-	// {{{ protected function getDefaultModuleList()
-
-	protected function getDefaultModuleList()
-	{
-		return array_merge(
-			parent::getDefaultModuleList(),
-			[
-				'database' => SiteDatabaseModule::class,
-				'instance' => SiteMultipleInstanceModule::class,
-			]
-		);
-	}
-
-	// }}}
-	// {{{ protected function configure()
-
-	protected function configure(SiteConfigModule $config)
-	{
-		parent::configure($config);
-
-		$this->database->dsn = $config->database->dsn;
-	}
-
-	// }}}
+        $this->database->dsn = $config->database->dsn;
+    }
 }
-
-?>

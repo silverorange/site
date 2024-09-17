@@ -1,135 +1,94 @@
 <?php
 
 /**
- * Base class for UI pages
+ * Base class for UI pages.
  *
- * @package   Site
  * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteUiPage extends SitePageDecorator
 {
-	// {{{ protected properties
+    /**
+     * @var SwatUI
+     */
+    protected $ui;
 
-	/**
-	 * @var SwatUI
-	 */
-	protected $ui;
+    abstract protected function getUiXml();
 
-	// }}}
-	// {{{ abstract protected function getUiXml()
+    // init phase
 
-	abstract protected function getUiXml();
+    public function init()
+    {
+        parent::init();
 
-	// }}}
+        $this->ui = new SwatUI();
+        $this->ui->loadFromXML($this->getUiXml());
 
-	// init phase
-	// {{{ public function init()
+        $this->initInternal();
 
-	public function init()
-	{
-		parent::init();
+        $this->ui->init();
+    }
 
-		$this->ui = new SwatUI();
-		$this->ui->loadFromXML($this->getUiXml());
+    protected function initInternal() {}
 
-		$this->initInternal();
+    // process phase
 
-		$this->ui->init();
-	}
+    public function process()
+    {
+        parent::process();
+        $this->ui->process();
+        $this->processInternal();
+    }
 
-	// }}}
-	// {{{ protected function initInternal()
+    protected function processInternal() {}
 
-	protected function initInternal()
-	{
-	}
+    // build phase
 
-	// }}}
+    public function build()
+    {
+        $this->page->build();
 
-	// process phase
-	// {{{ public function process()
+        $this->buildMessages();
+        $this->buildInternal();
+        $this->buildTitle();
+        $this->buildMetaDescription();
+        $this->buildNavBar();
+        $this->buildContent();
+    }
 
-	public function process()
-	{
-		parent::process();
-		$this->ui->process();
-		$this->processInternal();
-	}
+    protected function buildMessages()
+    {
+        $message_display =
+            $this->ui->getRoot()->getFirstDescendant('SwatMessageDisplay');
 
-	// }}}
-	// {{{ protected function processInternal()
+        if ($message_display === null) {
+            return;
+        }
 
-	protected function processInternal()
-	{
-	}
+        if ($this->app->hasModule('SiteMessagesModule')) {
+            $messages = $this->app->getModule('SiteMessagesModule');
+            foreach ($messages->getAll() as $message) {
+                $message_display->add($message);
+            }
+        }
+    }
 
-	// }}}
+    protected function buildInternal() {}
 
-	// build phase
-	// {{{ public function build()
+    protected function buildContent()
+    {
+        $this->layout->startCapture('content');
+        $this->ui->display();
+        $this->layout->endCapture();
+    }
 
-	public function build()
-	{
-		$this->page->build();
+    // finalize phase
 
-		$this->buildMessages();
-		$this->buildInternal();
-		$this->buildTitle();
-		$this->buildMetaDescription();
-		$this->buildNavBar();
-		$this->buildContent();
-	}
-
-	// }}}
-	// {{{ protected function buildMessages()
-
-	protected function buildMessages()
-	{
-		$message_display =
-			$this->ui->getRoot()->getFirstDescendant('SwatMessageDisplay');
-
-		if ($message_display === null)
-			return;
-
-		if ($this->app->hasModule('SiteMessagesModule')) {
-			$messages = $this->app->getModule('SiteMessagesModule');
-			foreach ($messages->getAll() as $message) {
-				$message_display->add($message);
-			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function buildInternal()
-
-	protected function buildInternal()
-	{
-	}
-
-	// }}}
-	// {{{ protected function buildContent()
-
-	protected function buildContent()
-	{
-		$this->layout->startCapture('content');
-		$this->ui->display();
-		$this->layout->endCapture();
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->ui->getRoot()->getHtmlHeadEntrySet());
-	}
-
-	// }}}
+    public function finalize()
+    {
+        parent::finalize();
+        $this->layout->addHtmlHeadEntrySet(
+            $this->ui->getRoot()->getHtmlHeadEntrySet()
+        );
+    }
 }
-
-?>

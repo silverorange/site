@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Web application module for site configuration
+ * Web application module for site configuration.
  *
  * Settings are stored in section-name-value triples. Sections and names are
  * are treated as sub-objects of this config module. Because of the way the
@@ -91,685 +91,659 @@
  * Setting values are only saved if they are set during runtime and are
  * different than the loaded value.
  *
- * @package   Site
  * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteConfigModule extends SiteApplicationModule
 {
-	// {{{ class constants
-
-	/**
-	 * Value was not loaded and the default value is used.
-	 */
-	const SOURCE_DEFAULT  = 1;
-
-	/**
-	 * Value was loaded from the ini file.
-	 */
-	const SOURCE_FILE     = 2;
-
-	/**
-	 * Value was loaded from the <code>ConfigSetting</code> database table.
-	 */
-	const SOURCE_DATABASE = 3;
-
-	/**
-	 * Value was loaded from the <code>InstanceConfigSetting</code> database
-	 * table.
-	 */
-	const SOURCE_INSTANCE = 4;
-
-	/**
-	 * Value was set during runtime.
-	 */
-	const SOURCE_RUNTIME  = 5;
-
-	// }}}
-	// {{{ private properties
-
-	/**
-	 * The sections of this configuration
-	 *
-	 * This array is indexed by section names and contains SiteConfigSection
-	 * objects as parsed from the ini file.
-	 *
-	 * @var array
-	 */
-	private $sections = array();
-
-	/**
-	 * Whether or not this config module has been loaded
-	 *
-	 * @var boolean
-	 */
-	private $loaded = false;
-
-	/**
-	 * Configuration setting definitions of this config module
-	 *
-	 * @var array
-	 *
-	 * @see SiteConfigModule::addDefinition()
-	 * @see SiteConfigModule::addDefinitions()
-	 */
-	private $definitions = array();
-
-	/**
-	 * The path to the .ini of this config module.
-	 *
-	 * @var string
-	 */
-	private $config_filename;
-
-	/**
-	 * Data sources for current config settings
-	 *
-	 * The array is of the form:
-	 * <code>
-	 * <?php
-	 * array(
-	 *    'mysection' => array(
-	 *        'mysetting' => 1,
-	 *        'mysetting' => 2,
-	 *    ),
-	 * );
-	 * ?>
-	 * </code>
-	 *
-	 * @var array
-	 */
-	private $setting_sources = array();
-
-	// }}}
-	// {{{ public function init()
-
-	/**
-	 * Initializes this module
-	 *
-	 * If this configuration module is not already loaded it is loaded here.
-	 * Database and instance database setting values are loaded here.
-	 */
-	public function init()
-	{
-		if (!$this->loaded)
-			$this->load();
-
-		$this->loadDatabaseValues();
-		$this->loadInstanceValues();
-	}
-
-	// }}}
-	// {{{ public function load()
-
-	/**
-	 * Loads configuration from ini file
-	 *
-	 * Only defined settings are loaded.
-	 *
-	 * @param string $filename the filename of the ini file to load.
-	 */
-	public function load($filename)
-	{
-		$this->config_filename = $filename;
-		$this->loadFileValues();
-
-		// create default sections with default values
-		foreach ($this->definitions as $section_name => $default_values) {
-			if (!array_key_exists($section_name, $this->sections)) {
-				$this->sections[$section_name] = new SiteConfigSection(
-					$section_name, $default_values, $this,
-						self::SOURCE_DEFAULT);
-			}
-		}
-
-		$this->loaded = true;
-	}
-
-	// }}}
-	// {{{ public function save()
-
-	/**
-	 * Save the information contained in this module to the appropriate
-	 * database table
-	 *
-	 * If the application uses site instances, the setting values are saved in
-	 * the <em>InstanceConfigSetting</em> table. Otherwise, they are saved in
-	 * the <em>ConfigSetting</em>.
-	 *
-	 * If there is no database module, the settings values of this config
-	 * module can not be saved.
-	 *
-	 * @param array $settings An array of config settings to save.
-	 */
-	public function save(array $settings)
-	{
-		// if there is no database module, do nothing
-		if (!$this->app->hasModule('SiteDatabaseModule'))
-			return;
-
-		if ($this->app->getInstance() === null) {
-			$this->saveDatabaseValues($settings);
-		} else {
-			$this->saveInstanceValues($settings);
-		}
-	}
-
-	// }}}
-	// {{{ public function addDefinitions()
-
-	/**
-	 * Adds multiple configuration setting definitions to this config module
-	 *
-	 * Only defined settings are be loaded from an ini file. Other settings in
-	 * ini files are ignored.
-	 *
-	 * @param array $definitions an associative array of setting definitions.
-	 *                            The array is of the form:
-	 *                            qualified_name => default_value where
-	 *                            qualified_name is a string containing the
-	 *                            section name and the setting name separated
-	 *                            by a '.'. For example, a setting for 'dsn' in
-	 *                            the 'database' section would have a qualified
-	 *                            name of 'database.dsn'. The default value is
-	 *                            a string containing the value to use for the
-	 *                            setting if the setting does not exist in the
-	 *                            loaded configuration file. Use null to
-	 *                            specify no default.
-	 *
-	 * @throws SiteException if the qualified name does not contain a section
-	 *                       and a setting name.
-	 */
-	public function addDefinitions(array $definitions)
-	{
-		foreach ($definitions as $qualified_name => $default_value) {
-			if (mb_strpos($qualified_name, '.') === false) {
-				throw new SiteException(sprintf(
-					"Qualified name of configuration definition '%s' must be ".
-					"of the form section.name.", $qualified_name));
-			}
-
-			list($section, $name) = explode('.', $qualified_name, 2);
-			$this->addDefinition($section, $name, $default_value);
-		}
-	}
-
-	// }}}
-	// {{{ public function addDefinition()
-
-	/**
-	 * Adds a configuration setting definition to this config module
-	 *
-	 * Only defined settings are be loaded from an ini file. Other settings in
-	 * ini files are ignored.
-	 *
-	 * @param string $section the section the setting belongs to.
-	 * @param string $name the name of the setting.
-	 * @param string $default_value optional. The default value of the setting.
-	 *                               Used if the setting does exist in the
-	 *                               loaded ini file.
-	 *
-	 * @throws SiteException if the section is not a valid section name. Valid
-	 *                       section names follow the rules for PHP identifiers.
-	 * @throws SiteException if the name is not a valid name. Valid names follow
-	 *                       the rules for PHP identifiers.
-	 */
-	public function addDefinition($section, $name, $default_value = null)
-	{
-		$section = (string)$section;
-		$name = (string)$name;
-
-		if (!$this->isValidKey($section)) {
-			throw new SiteException(sprintf(
-				"Section '%s' in configuration definition is not a valid name.",
-				$section));
-		}
-
-		if (!$this->isValidKey($name)) {
-			throw new SiteException(sprintf(
-				"Name '%s' in configuration definition is not a valid name.",
-				$name));
-		}
-
-		if (!array_key_exists($section, $this->definitions))
-			$this->definitions[$section] = array();
-
-		$this->definitions[$section][$name] = $default_value;
-		$this->setting_sources[$section][$name] = self::SOURCE_DEFAULT;
-	}
-
-	// }}}
-	// {{{ public function postInitConfigure()
-
-	/**
-	 * Configures the application
-	 *
-	 * This method is run after modules have all been initialized. All
-	 * overridden config settings from the database are loaded when this method
-	 * runs. Developers may add application configuration here. Alternatively,
-	 * configuration may be added to the
-	 * {@link SiteApplication::postInitConfigure()} method().
-	 */
-	public function postInitConfigure()
-	{
-	}
-
-	// }}}
-	// {{{ public function configure()
-
-	/**
-	 * Configures other modules of the application
-	 *
-	 * This method is run by the application immediately after the
-	 * configuration has been loaded from the config file. Developers may add
-	 * module-specific configuration here. Alternatively, module-specific
-	 * configuration may be added to the {@link SiteApplication::configure()}
-	 * method.
-	 */
-	public function configure()
-	{
-	}
-
-	// }}}
-	// {{{ public function depends()
-
-	/**
-	 * Gets the module features this module depends on
-	 *
-	 * The config module optionally depends on the SiteDatabaseModule and
-	 * SiteInstanceModule features.
-	 *
-	 * @return array an array of {@link SiteApplicationModuleDependency}
-	 *                        objects defining the features this module
-	 *                        depends on.
-	 */
-	public function depends()
-	{
-		$depends = parent::depends();
-
-		$depends[] = new SiteApplicationModuleDependency(
-			'SiteDatabaseModule', false);
-
-		$depends[] = new SiteApplicationModuleDependency(
-			'SiteMultipleInstanceModule', false);
-
-		return $depends;
-	}
-
-	// }}}
-	// {{{ public function getSource()
-
-	/**
-	 * Gets the source of a config setting value
-	 *
-	 * @param string $section the config setting section.
-	 * @param string $section the config setting name.
-	 *
-	 * @return integer either {@link SiteConfigModule::SOURCE_DEFAULT},
-	 *                 {@link SiteConfigModule::SOURCE_FILE},
-	 *                 {@link SiteConfigModule::SOURCE_DATABASE},
-	 *                 {@link SiteConfigModule::SOURCE_INSTANCE} or
-	 *                 {@link SiteConfigModule::SOURCE_RUNTIME}.
-	 *
-	 * @throws SiteException if there is no config setting defined for the
-	 *                       given section and name.
-	 */
-	public function getSource($section, $name)
-	{
-		if (!array_key_exists($section, $this->setting_sources)) {
-			throw new SiteException(sprintf(
-				"Section '%s' does not exist in this config module.",
-				$name));
-		}
-
-		$setting_names = $this->setting_sources[$section];
-
-		if (!array_key_exists($name, $setting_names)) {
-			throw new SiteException(sprintf(
-				"Setting '%s' does not exist in the section '%s'.",
-				$name, $section));
-		}
-
-		return $setting_names[$name];
-	}
-
-	// }}}
-	// {{{ public function setSource()
-
-	/**
-	 * Sets the source of a config setting value
-	 *
-	 * @param string $section the config setting section.
-	 * @param string $section the config setting name.
-	 * @param integer $source either {@link SiteConfigModule::SOURCE_DEFAULT},
-	 *                         {@link SiteConfigModule::SOURCE_FILE},
-	 *                         {@link SiteConfigModule::SOURCE_DATABASE},
-	 *                         {@link SiteConfigModule::SOURCE_INSTANCE} or
-	 *                         {@link SiteConfigModule::SOURCE_RUNTIME}.
-	 *
-	 * @throws SiteException if there is no config setting defined for the
-	 *                       given section and name.
-	 */
-	public function setSource($section, $name, $source)
-	{
-		if (!array_key_exists($section, $this->setting_sources)) {
-			throw new SiteException(sprintf(
-				"Section '%s' does not exist in this config module.",
-				$name));
-		}
-
-		$setting_names = $this->setting_sources[$section];
-
-		if (!array_key_exists($name, $this->setting_sources[$section])) {
-			throw new SiteException(sprintf(
-				"Setting '%s' does not exist in the section '%s'.",
-				$name, $section));
-		}
-
-		$valid_sources = array(
-			self::SOURCE_DEFAULT,
-			self::SOURCE_FILE,
-			self::SOURCE_DATABASE,
-			self::SOURCE_INSTANCE,
-			self::SOURCE_RUNTIME,
-		);
-
-		if (!in_array($source, $valid_sources)) {
-			$source = self::SOURCE_RUNTIME;
-		}
-
-		$this->setting_sources[$section][$name] = $source;
-	}
-
-	// }}}
-	// {{{ public function __get()
-
-	/**
-	 * Gets a section of this config module
-	 *
-	 * @param string $name the name of the config section to get.
-	 *
-	 * @return SiteConfigSection the config section.
-	 */
-	public function __get($name)
-	{
-		if (!array_key_exists($name, $this->sections)) {
-			throw new SiteException(sprintf(
-				"Section '%s' does not exist in this config module.",
-				$name));
-		}
-
-		return $this->sections[$name];
-	}
-
-	// }}}
-	// {{{ public function __isset()
-
-	/**
-	 * Checks for existence of a section within this config module
-	 *
-	 * @param string $name the name of the section value to check.
-	 *
-	 * @return boolean true if the section exists in this config module and
-	 *                  false if it does not.
-	 */
-	public function __isset($name)
-	{
-		return array_key_exists($name, $this->sections);
-	}
-
-	// }}}
-	// {{{ public function __toString()
-
-	/**
-	 * Gets a string representation of this config module
-	 *
-	 * This gets the loaded config values split into the loaded sections.
-	 *
-	 * @return string a string representation of this config module.
-	 */
-	public function __toString()
-	{
-		ob_start();
-		foreach ($this->sections as $section) {
-			echo $section, "\n";
-		}
-		return ob_get_clean();
-	}
-
-	// }}}
-	// {{{ protected function loadFileValues()
-
-	/**
-	 * Loads config setting values from the ini file
-	 */
-	protected function loadFileValues()
-	{
-		$ini_array = parse_ini_file($this->config_filename, true);
-		foreach ($ini_array as $section_name => $section_values) {
-			if (array_key_exists($section_name, $this->definitions)) {
-
-				// only include values that are defined
-				$defined_section_values = array();
-				foreach ($section_values as $name => $value) {
-					if (array_key_exists($name,
-						$this->definitions[$section_name])) {
-
-						$defined_section_values[$name] = $value;
-					}
-				}
-
-				// merge default fields and values with loaded values
-				$defined_section_values = array_merge(
-					$this->definitions[$section_name], $defined_section_values);
-
-				$section = new SiteConfigSection($section_name,
-					$defined_section_values, $this);
-
-				$this->sections[$section_name] = $section;
-			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function loadDatabaseValues()
-
-	/**
-	 * Loads config setting values from the database
-	 *
-	 * Setting values are loaded from the <em>ConfigSetting</em> table.
-	 */
-	protected function loadDatabaseValues()
-	{
-		// if there is no database module, do nothing
-		if (!$this->app->hasModule('SiteDatabaseModule'))
-			return;
-
-		$database = $this->app->getModule('SiteDatabaseModule');
-		$db = $database->getConnection();
-
-		$db->loadModule('Manager');
-		$tables = $db->manager->listTables();
-		if (in_array('configsetting', $tables)) {
-			$sql = 'select * from ConfigSetting';
-			$rows = SwatDB::query($db, $sql);
-			foreach ($rows as $row) {
-				if ($row->value !== null) {
-					$qualified_name = $row->name;
-
-					if (mb_strpos($qualified_name, '.') === false) {
-						throw new SiteException(sprintf(
-							"Name of configuration setting '%s' must be ".
-							"fully qualifed and of the form section.name.",
-							$qualified_name));
-					}
-
-					list($section, $name) = explode('.', $qualified_name, 2);
-
-					// skip settings that are not defined
-					if (array_key_exists($section, $this->definitions) &&
-						array_key_exists($name, $this->definitions[$section])) {
-
-						$this->$section->{$name} = $row->value;
-						$this->setSource(
-							$section, $name, self::SOURCE_DATABASE);
-					}
-				}
-			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function loadInstanceValues()
-
-	/**
-	 * Loads instance config setting values from the database
-	 *
-	 * Setting values are loaded from the <em>InstanceConfigSetting</em> table.
-	 */
-	protected function loadInstanceValues()
-	{
-		$instance = $this->app->getInstance();
-
-		// if there is no instance, do nothing
-		if ($instance === null)
-			return;
-
-		foreach ($instance->config_settings as $setting) {
-			if ($setting->value !== null) {
-				$qualified_name = $setting->name;
-
-				if (mb_strpos($qualified_name, '.') === false) {
-					throw new SiteException(sprintf(
-						"Name of configuration setting '%s' must be ".
-						"fully qualifed and of the form section.name.",
-						$qualified_name));
-				}
-
-				list($section, $name) = explode('.', $qualified_name, 2);
-
-				// skip settings that are not defined
-				if (array_key_exists($section, $this->definitions) &&
-					array_key_exists($name, $this->definitions[$section])) {
-
-					$this->$section->{$name} = $setting->value;
-					$this->setSource(
-						$section, $name, self::SOURCE_DATABASE);
-				}
-			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function saveDatabaseValues()
-
-	/**
-	 * Saves all configuration values in this config module to the database
-	 *
-	 * Values are saved in the <em>ConfigSetting</em> table.
-	 *
-	 * @param array $settings An array of config settings to save.
-	 */
-	protected function saveDatabaseValues(array $settings)
-	{
-		// if there is no database module, do nothing
-		if (!$this->app->hasModule('SiteDatabaseModule'))
-			return;
-
-		$database = $this->app->getModule('SiteDatabaseModule');
-		$db = $database->getConnection();
-
-		$transaction = new SwatDBTransaction($db);
-		try {
-			foreach ($settings as $setting) {
-				$sql = sprintf('delete from ConfigSetting
+    /**
+     * Value was not loaded and the default value is used.
+     */
+    public const SOURCE_DEFAULT = 1;
+
+    /**
+     * Value was loaded from the ini file.
+     */
+    public const SOURCE_FILE = 2;
+
+    /**
+     * Value was loaded from the <code>ConfigSetting</code> database table.
+     */
+    public const SOURCE_DATABASE = 3;
+
+    /**
+     * Value was loaded from the <code>InstanceConfigSetting</code> database
+     * table.
+     */
+    public const SOURCE_INSTANCE = 4;
+
+    /**
+     * Value was set during runtime.
+     */
+    public const SOURCE_RUNTIME = 5;
+
+    /**
+     * The sections of this configuration.
+     *
+     * This array is indexed by section names and contains SiteConfigSection
+     * objects as parsed from the ini file.
+     *
+     * @var array
+     */
+    private $sections = [];
+
+    /**
+     * Whether or not this config module has been loaded.
+     *
+     * @var bool
+     */
+    private $loaded = false;
+
+    /**
+     * Configuration setting definitions of this config module.
+     *
+     * @var array
+     *
+     * @see SiteConfigModule::addDefinition()
+     * @see SiteConfigModule::addDefinitions()
+     */
+    private $definitions = [];
+
+    /**
+     * The path to the .ini of this config module.
+     *
+     * @var string
+     */
+    private $config_filename;
+
+    /**
+     * Data sources for current config settings.
+     *
+     * The array is of the form:
+     * <code>
+     * <?php
+     * array(
+     *    'mysection' => array(
+     *        'mysetting' => 1,
+     *        'mysetting' => 2,
+     *    ),
+     * );
+     * ?>
+     * </code>
+     *
+     * @var array
+     */
+    private $setting_sources = [];
+
+    /**
+     * Initializes this module.
+     *
+     * If this configuration module is not already loaded it is loaded here.
+     * Database and instance database setting values are loaded here.
+     */
+    public function init()
+    {
+        if (!$this->loaded) {
+            throw new SiteException('Config module can not be initialized before it is loaded.');
+        }
+
+        $this->loadDatabaseValues();
+        $this->loadInstanceValues();
+    }
+
+    /**
+     * Loads configuration from ini file.
+     *
+     * Only defined settings are loaded.
+     *
+     * @param string $filename the filename of the ini file to load
+     */
+    public function load($filename)
+    {
+        $this->config_filename = $filename;
+        $this->loadFileValues();
+
+        // create default sections with default values
+        foreach ($this->definitions as $section_name => $default_values) {
+            if (!array_key_exists($section_name, $this->sections)) {
+                $this->sections[$section_name] = new SiteConfigSection(
+                    $section_name,
+                    $default_values,
+                    $this,
+                    self::SOURCE_DEFAULT
+                );
+            }
+        }
+
+        $this->loaded = true;
+    }
+
+    /**
+     * Save the information contained in this module to the appropriate
+     * database table.
+     *
+     * If the application uses site instances, the setting values are saved in
+     * the <em>InstanceConfigSetting</em> table. Otherwise, they are saved in
+     * the <em>ConfigSetting</em>.
+     *
+     * If there is no database module, the settings values of this config
+     * module can not be saved.
+     *
+     * @param array $settings an array of config settings to save
+     */
+    public function save(array $settings)
+    {
+        // if there is no database module, do nothing
+        if (!$this->app->hasModule('SiteDatabaseModule')) {
+            return;
+        }
+
+        if ($this->app->getInstance() === null) {
+            $this->saveDatabaseValues($settings);
+        } else {
+            $this->saveInstanceValues($settings);
+        }
+    }
+
+    /**
+     * Adds multiple configuration setting definitions to this config module.
+     *
+     * Only defined settings are be loaded from an ini file. Other settings in
+     * ini files are ignored.
+     *
+     * @param array $definitions an associative array of setting definitions.
+     *                           The array is of the form:
+     *                           qualified_name => default_value where
+     *                           qualified_name is a string containing the
+     *                           section name and the setting name separated
+     *                           by a '.'. For example, a setting for 'dsn' in
+     *                           the 'database' section would have a qualified
+     *                           name of 'database.dsn'. The default value is
+     *                           a string containing the value to use for the
+     *                           setting if the setting does not exist in the
+     *                           loaded configuration file. Use null to
+     *                           specify no default.
+     *
+     * @throws SiteException if the qualified name does not contain a section
+     *                       and a setting name
+     */
+    public function addDefinitions(array $definitions)
+    {
+        foreach ($definitions as $qualified_name => $default_value) {
+            if (mb_strpos($qualified_name, '.') === false) {
+                throw new SiteException(sprintf(
+                    "Qualified name of configuration definition '%s' must be " .
+                    'of the form section.name.',
+                    $qualified_name
+                ));
+            }
+
+            [$section, $name] = explode('.', $qualified_name, 2);
+            $this->addDefinition($section, $name, $default_value);
+        }
+    }
+
+    /**
+     * Adds a configuration setting definition to this config module.
+     *
+     * Only defined settings are be loaded from an ini file. Other settings in
+     * ini files are ignored.
+     *
+     * @param string $section       the section the setting belongs to
+     * @param string $name          the name of the setting
+     * @param string $default_value optional. The default value of the setting.
+     *                              Used if the setting does exist in the
+     *                              loaded ini file.
+     *
+     * @throws SiteException if the section is not a valid section name. Valid
+     *                       section names follow the rules for PHP identifiers.
+     * @throws SiteException if the name is not a valid name. Valid names follow
+     *                       the rules for PHP identifiers.
+     */
+    public function addDefinition($section, $name, $default_value = null)
+    {
+        $section = (string) $section;
+        $name = (string) $name;
+
+        if (!$this->isValidKey($section)) {
+            throw new SiteException(sprintf(
+                "Section '%s' in configuration definition is not a valid name.",
+                $section
+            ));
+        }
+
+        if (!$this->isValidKey($name)) {
+            throw new SiteException(sprintf(
+                "Name '%s' in configuration definition is not a valid name.",
+                $name
+            ));
+        }
+
+        if (!array_key_exists($section, $this->definitions)) {
+            $this->definitions[$section] = [];
+        }
+
+        $this->definitions[$section][$name] = $default_value;
+        $this->setting_sources[$section][$name] = self::SOURCE_DEFAULT;
+    }
+
+    /**
+     * Configures the application.
+     *
+     * This method is run after modules have all been initialized. All
+     * overridden config settings from the database are loaded when this method
+     * runs. Developers may add application configuration here. Alternatively,
+     * configuration may be added to the
+     * {@link SiteApplication::postInitConfigure()} method().
+     */
+    public function postInitConfigure() {}
+
+    /**
+     * Configures other modules of the application.
+     *
+     * This method is run by the application immediately after the
+     * configuration has been loaded from the config file. Developers may add
+     * module-specific configuration here. Alternatively, module-specific
+     * configuration may be added to the {@link SiteApplication::configure()}
+     * method.
+     */
+    public function configure() {}
+
+    /**
+     * Gets the module features this module depends on.
+     *
+     * The config module optionally depends on the SiteDatabaseModule and
+     * SiteInstanceModule features.
+     *
+     * @return array an array of {@link SiteApplicationModuleDependency}
+     *               objects defining the features this module
+     *               depends on
+     */
+    public function depends()
+    {
+        $depends = parent::depends();
+
+        $depends[] = new SiteApplicationModuleDependency(
+            'SiteDatabaseModule',
+            false
+        );
+
+        $depends[] = new SiteApplicationModuleDependency(
+            'SiteMultipleInstanceModule',
+            false
+        );
+
+        return $depends;
+    }
+
+    /**
+     * Gets the source of a config setting value.
+     *
+     * @param string $section the config setting section
+     * @param string $section the config setting name
+     * @param mixed  $name
+     *
+     * @return int either {@link SiteConfigModule::SOURCE_DEFAULT},
+     *             {@link SiteConfigModule::SOURCE_FILE},
+     *             {@link SiteConfigModule::SOURCE_DATABASE},
+     *             {@link SiteConfigModule::SOURCE_INSTANCE} or
+     *             {@link SiteConfigModule::SOURCE_RUNTIME}
+     *
+     * @throws SiteException if there is no config setting defined for the
+     *                       given section and name
+     */
+    public function getSource($section, $name)
+    {
+        if (!array_key_exists($section, $this->setting_sources)) {
+            throw new SiteException(sprintf(
+                "Section '%s' does not exist in this config module.",
+                $name
+            ));
+        }
+
+        $setting_names = $this->setting_sources[$section];
+
+        if (!array_key_exists($name, $setting_names)) {
+            throw new SiteException(sprintf(
+                "Setting '%s' does not exist in the section '%s'.",
+                $name,
+                $section
+            ));
+        }
+
+        return $setting_names[$name];
+    }
+
+    /**
+     * Sets the source of a config setting value.
+     *
+     * @param string $section the config setting section
+     * @param string $section the config setting name
+     * @param int    $source  either {@link SiteConfigModule::SOURCE_DEFAULT},
+     *                        {@link SiteConfigModule::SOURCE_FILE},
+     *                        {@link SiteConfigModule::SOURCE_DATABASE},
+     *                        {@link SiteConfigModule::SOURCE_INSTANCE} or
+     *                        {@link SiteConfigModule::SOURCE_RUNTIME}
+     * @param mixed  $name
+     *
+     * @throws SiteException if there is no config setting defined for the
+     *                       given section and name
+     */
+    public function setSource($section, $name, $source)
+    {
+        if (!array_key_exists($section, $this->setting_sources)) {
+            throw new SiteException(sprintf(
+                "Section '%s' does not exist in this config module.",
+                $name
+            ));
+        }
+
+        $setting_names = $this->setting_sources[$section];
+
+        if (!array_key_exists($name, $this->setting_sources[$section])) {
+            throw new SiteException(sprintf(
+                "Setting '%s' does not exist in the section '%s'.",
+                $name,
+                $section
+            ));
+        }
+
+        $valid_sources = [self::SOURCE_DEFAULT, self::SOURCE_FILE, self::SOURCE_DATABASE, self::SOURCE_INSTANCE, self::SOURCE_RUNTIME];
+
+        if (!in_array($source, $valid_sources)) {
+            $source = self::SOURCE_RUNTIME;
+        }
+
+        $this->setting_sources[$section][$name] = $source;
+    }
+
+    /**
+     * Gets a section of this config module.
+     *
+     * @param string $name the name of the config section to get
+     *
+     * @return SiteConfigSection the config section
+     */
+    public function __get($name)
+    {
+        if (!array_key_exists($name, $this->sections)) {
+            throw new SiteException(sprintf(
+                "Section '%s' does not exist in this config module.",
+                $name
+            ));
+        }
+
+        return $this->sections[$name];
+    }
+
+    /**
+     * Checks for existence of a section within this config module.
+     *
+     * @param string $name the name of the section value to check
+     *
+     * @return bool true if the section exists in this config module and
+     *              false if it does not
+     */
+    public function __isset($name)
+    {
+        return array_key_exists($name, $this->sections);
+    }
+
+    /**
+     * Gets a string representation of this config module.
+     *
+     * This gets the loaded config values split into the loaded sections.
+     *
+     * @return string a string representation of this config module
+     */
+    public function __toString(): string
+    {
+        ob_start();
+        foreach ($this->sections as $section) {
+            echo $section, "\n";
+        }
+
+        return (string) ob_get_clean();
+    }
+
+    /**
+     * Loads config setting values from the ini file.
+     */
+    protected function loadFileValues()
+    {
+        $ini_array = parse_ini_file($this->config_filename, true);
+        foreach ($ini_array as $section_name => $section_values) {
+            if (array_key_exists($section_name, $this->definitions)) {
+                // only include values that are defined
+                $defined_section_values = [];
+                foreach ($section_values as $name => $value) {
+                    if (array_key_exists(
+                        $name,
+                        $this->definitions[$section_name]
+                    )) {
+                        $defined_section_values[$name] = $value;
+                    }
+                }
+
+                // merge default fields and values with loaded values
+                $defined_section_values = array_merge(
+                    $this->definitions[$section_name],
+                    $defined_section_values
+                );
+
+                $section = new SiteConfigSection(
+                    $section_name,
+                    $defined_section_values,
+                    $this
+                );
+
+                $this->sections[$section_name] = $section;
+            }
+        }
+    }
+
+    /**
+     * Loads config setting values from the database.
+     *
+     * Setting values are loaded from the <em>ConfigSetting</em> table.
+     */
+    protected function loadDatabaseValues()
+    {
+        // if there is no database module, do nothing
+        if (!$this->app->hasModule('SiteDatabaseModule')) {
+            return;
+        }
+
+        $database = $this->app->getModule('SiteDatabaseModule');
+        $db = $database->getConnection();
+
+        $db->loadModule('Manager');
+        $tables = $db->manager->listTables();
+        if (in_array('configsetting', $tables)) {
+            $sql = 'select * from ConfigSetting';
+            $rows = SwatDB::query($db, $sql);
+            foreach ($rows as $row) {
+                if ($row->value !== null) {
+                    $qualified_name = $row->name;
+
+                    if (mb_strpos($qualified_name, '.') === false) {
+                        throw new SiteException(sprintf(
+                            "Name of configuration setting '%s' must be " .
+                            'fully qualifed and of the form section.name.',
+                            $qualified_name
+                        ));
+                    }
+
+                    [$section, $name] = explode('.', $qualified_name, 2);
+
+                    // skip settings that are not defined
+                    if (array_key_exists($section, $this->definitions)
+                        && array_key_exists($name, $this->definitions[$section])) {
+                        $this->{$section}->{$name} = $row->value;
+                        $this->setSource(
+                            $section,
+                            $name,
+                            self::SOURCE_DATABASE
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Loads instance config setting values from the database.
+     *
+     * Setting values are loaded from the <em>InstanceConfigSetting</em> table.
+     */
+    protected function loadInstanceValues()
+    {
+        $instance = $this->app->getInstance();
+
+        // if there is no instance, do nothing
+        if ($instance === null) {
+            return;
+        }
+
+        foreach ($instance->config_settings as $setting) {
+            if ($setting->value !== null) {
+                $qualified_name = $setting->name;
+
+                if (mb_strpos($qualified_name, '.') === false) {
+                    throw new SiteException(sprintf(
+                        "Name of configuration setting '%s' must be " .
+                        'fully qualifed and of the form section.name.',
+                        $qualified_name
+                    ));
+                }
+
+                [$section, $name] = explode('.', $qualified_name, 2);
+
+                // skip settings that are not defined
+                if (array_key_exists($section, $this->definitions)
+                    && array_key_exists($name, $this->definitions[$section])) {
+                    $this->{$section}->{$name} = $setting->value;
+                    $this->setSource(
+                        $section,
+                        $name,
+                        self::SOURCE_DATABASE
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Saves all configuration values in this config module to the database.
+     *
+     * Values are saved in the <em>ConfigSetting</em> table.
+     *
+     * @param array $settings an array of config settings to save
+     */
+    protected function saveDatabaseValues(array $settings)
+    {
+        // if there is no database module, do nothing
+        if (!$this->app->hasModule('SiteDatabaseModule')) {
+            return;
+        }
+
+        $database = $this->app->getModule('SiteDatabaseModule');
+        $db = $database->getConnection();
+
+        $transaction = new SwatDBTransaction($db);
+
+        try {
+            foreach ($settings as $setting) {
+                $sql = sprintf(
+                    'delete from ConfigSetting
 					where name = %s',
-					$db->quote($setting, 'text'));
+                    $db->quote($setting, 'text')
+                );
 
-				SwatDB::exec($db, $sql);
+                SwatDB::exec($db, $sql);
 
-				list($section, $name) = explode('.', $setting, 2);
-				if ($this->$section->$name != '') {
-					$sql = sprintf('insert into ConfigSetting
+                [$section, $name] = explode('.', $setting, 2);
+                if ($this->{$section}->{$name} != '') {
+                    $sql = sprintf(
+                        'insert into ConfigSetting
 						(name, value) values (%s, %s)',
-						$db->quote($setting, 'text'),
-						$db->quote($this->$section->$name, 'text'));
+                        $db->quote($setting, 'text'),
+                        $db->quote($this->{$section}->{$name}, 'text')
+                    );
 
-					SwatDB::exec($db, $sql);
-				}
-			}
-			$transaction->commit();
-		} catch (SwatDBException $e) {
-			$transaction->rollback();
-			throw $e;
-		}
-	}
+                    SwatDB::exec($db, $sql);
+                }
+            }
+            $transaction->commit();
+        } catch (SwatDBException $e) {
+            $transaction->rollback();
 
-	// }}}
-	// {{{ protected function saveInstanceValues()
+            throw $e;
+        }
+    }
 
-	/**
-	 * Saves all configuration values in this config module to the database
-	 *
-	 * Values are saved in the <em>InstanceConfigSetting</em> table with a
-	 * binding to the current site instance.
-	 *
-	 * @param array $settings An array of config settings to save.
-	 */
-	protected function saveInstanceValues(array $settings)
-	{
-		$instance = $this->app->instance->getId();
+    /**
+     * Saves all configuration values in this config module to the database.
+     *
+     * Values are saved in the <em>InstanceConfigSetting</em> table with a
+     * binding to the current site instance.
+     *
+     * @param array $settings an array of config settings to save
+     */
+    protected function saveInstanceValues(array $settings)
+    {
+        $instance = $this->app->instance->getId();
 
-		$database = $this->app->getModule('SiteDatabaseModule');
-		$db = $database->getConnection();
+        $database = $this->app->getModule('SiteDatabaseModule');
+        $db = $database->getConnection();
 
-		$transaction = new SwatDBTransaction($db);
-		try {
-			foreach ($settings as $setting) {
-				$sql = sprintf('delete from InstanceConfigSetting
+        $transaction = new SwatDBTransaction($db);
+
+        try {
+            foreach ($settings as $setting) {
+                $sql = sprintf(
+                    'delete from InstanceConfigSetting
 					where instance = %s and name = %s and is_default = %s',
-					$db->quote($instance, 'integer'),
-					$db->quote($setting, 'text'),
-					$db->quote(false, 'boolean'));
+                    $db->quote($instance, 'integer'),
+                    $db->quote($setting, 'text'),
+                    $db->quote(false, 'boolean')
+                );
 
-				SwatDB::exec($db, $sql);
+                SwatDB::exec($db, $sql);
 
-				list($section, $name) = explode('.', $setting, 2);
-				if ($this->$section->$name != '') {
-					$sql = sprintf('insert into InstanceConfigSetting
+                [$section, $name] = explode('.', $setting, 2);
+                if ($this->{$section}->{$name} != '') {
+                    $sql = sprintf(
+                        'insert into InstanceConfigSetting
 						(name, value, instance) values (%s, %s, %s)',
-						$db->quote($setting, 'text'),
-						$db->quote($this->$section->$name, 'text'),
-						$db->quote($instance, 'integer'));
+                        $db->quote($setting, 'text'),
+                        $db->quote($this->{$section}->{$name}, 'text'),
+                        $db->quote($instance, 'integer')
+                    );
 
-					SwatDB::exec($db, $sql);
-				}
-			}
+                    SwatDB::exec($db, $sql);
+                }
+            }
 
-			$transaction->commit();
-		} catch (SwatDBException $e) {
-			$transaction->rollback();
-			throw $e;
-		}
-	}
+            $transaction->commit();
+        } catch (SwatDBException $e) {
+            $transaction->rollback();
 
-	// }}}
-	// {{{ private function isValidKey()
+            throw $e;
+        }
+    }
 
-	/**
-	 * Checks whether or not a name is a valid section name or setting name
-	 *
-	 * @param string $name the name to check.
-	 *
-	 * @return boolean true if the name is valid and false if it is not.
-	 */
-	private function isValidKey($name)
-	{
-		$regexp = '/^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*$/';
-		return (preg_match($regexp, $name) == 1);
-	}
+    /**
+     * Checks whether or not a name is a valid section name or setting name.
+     *
+     * @param string $name the name to check
+     *
+     * @return bool true if the name is valid and false if it is not
+     */
+    private function isValidKey($name)
+    {
+        $regexp = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
 
-	// }}}
+        return preg_match($regexp, $name) == 1;
+    }
 }
-
-?>

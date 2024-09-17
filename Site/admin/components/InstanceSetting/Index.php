@@ -3,173 +3,141 @@
 /**
  * Main page used to edit instance configuration settings.
  *
- * @package   Site
  * @copyright 2009-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteInstanceSettingIndex extends AdminDBEdit
 {
-	// {{{ protected properties
+    /**
+     * An array containing each config page that will be linked into the main
+     * user interface.
+     *
+     * @var array
+     */
+    protected $config_pages = [];
 
-	/**
-	 * An array containing each config page that will be linked into the main
-	 * user interface.
-	 *
-	 * @var array
-	 */
-	protected $config_pages = array();
+    // init phase
 
-	// }}}
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// init phase
-	// {{{ protected function initInternal()
+        $this->ui->loadFromXML($this->getUiXml());
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+        if (!$this->app->hasModule('SiteMultipleInstanceModule')) {
+            $text = Site::_(
+                'Only sites with multiple instances can use this component.'
+            );
 
-		$this->ui->loadFromXML($this->getUiXml());
+            throw new AdminNotFoundException($text);
+        }
 
-		if (!$this->app->hasModule('SiteMultipleInstanceModule')) {
-			$text = Site::_(
-				'Only sites with multiple instances can use this component.');
+        // set the id so that the loadDB() method is called
+        $this->id = 1;
+        $this->initConfigPages();
 
-			throw new AdminNotFoundException($text);
-		}
+        // Link all the page UIs into the main UI tree
+        foreach ($this->config_pages as $config_page) {
+            $config_page->initUI();
+            $notebook_page = new SwatNoteBookPage();
+            $notebook_page->title = $config_page->getPageTitle();
+            $notebook_page->addChild($config_page->getUi()->getRoot());
+            $this->ui->getWidget('edit_notebook')->addPage($notebook_page);
+        }
+    }
 
-		// set the id so that the loadDB() method is called
-		$this->id = 1;
-		$this->initConfigPages();
+    protected function initConfigPages()
+    {
+        $this->config_pages[] = new SiteConfigPage();
+    }
 
-		// Link all the page UIs into the main UI tree
-		foreach ($this->config_pages as $config_page) {
-			$config_page->initUI();
-			$notebook_page = new SwatNoteBookPage();
-			$notebook_page->title = $config_page->getPageTitle();
-			$notebook_page->addChild($config_page->getUi()->getRoot());
-			$this->ui->getWidget('edit_notebook')->addPage($notebook_page);
-		}
-	}
+    protected function getUiXml()
+    {
+        return __DIR__ . '/index.xml';
+    }
 
-	// }}}
-	// {{{ protected function initConfigPages()
+    // process phase
 
-	protected function initConfigPages()
-	{
-		$this->config_pages[] = new SiteConfigPage();
-	}
+    protected function saveDBData()
+    {
+        $changed_settings = [];
 
-	// }}}
-	// {{{ protected function getUiXml()
+        if ($this->ui->getWidget('submit_button')->hasBeenClicked()) {
+            foreach ($this->config_pages as $config_page) {
+                $changed_settings = array_merge(
+                    $changed_settings,
+                    $config_page->saveUi($this->app->config)
+                );
+            }
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/index.xml';
-	}
+            if (count($changed_settings > 0)) {
+                $this->app->config->save($changed_settings);
+                $this->app->messages->add($this->getSavedMessage());
+            }
+        } elseif ($this->ui->getWidget('default_button')->hasBeenClicked()) {
+            $instance_id = $this->app->getInstanceId();
 
-	// }}}
-
-	// process phase
-	// {{{ protected function saveDBData()
-
-	protected function saveDBData()
-	{
-		$changed_settings = array();
-
-		if ($this->ui->getWidget('submit_button')->hasBeenClicked()) {
-			foreach ($this->config_pages as $config_page) {
-				$changed_settings = array_merge($changed_settings,
-					$config_page->saveUi($this->app->config));
-			}
-
-			if (count($changed_settings > 0)) {
-				$this->app->config->save($changed_settings);
-				$this->app->messages->add($this->getSavedMessage());
-			}
-		} else if ($this->ui->getWidget('default_button')->hasBeenClicked()) {
-			$instance_id = $this->app->getInstanceId();
-
-			if ($instance_id !== null) {
-				$sql = sprintf('delete from InstanceConfigSetting
+            if ($instance_id !== null) {
+                $sql = sprintf(
+                    'delete from InstanceConfigSetting
 					where instance = %s and is_default = %s',
-					$this->app->db->quote($instance_id, 'integer'),
-					$this->app->db->quote(false, 'boolean'));
+                    $this->app->db->quote($instance_id, 'integer'),
+                    $this->app->db->quote(false, 'boolean')
+                );
 
-				SwatDB::exec($this->app->db, $sql);
+                SwatDB::exec($this->app->db, $sql);
 
-				$this->app->messages->add($this->getRestoredMessage());
-			}
-		}
-	}
+                $this->app->messages->add($this->getRestoredMessage());
+            }
+        }
+    }
 
-	// }}}
-	// {{{ protected function getSavedMessage()
+    protected function getSavedMessage()
+    {
+        return new SwatMessage(
+            Site::_(
+                'Instance configuration settings have been updated.'
+            )
+        );
+    }
 
-	protected function getSavedMessage()
-	{
-		return new SwatMessage(
-			Site::_(
-				'Instance configuration settings have been updated.'
-			)
-		);
-	}
+    protected function getRestoredMessage()
+    {
+        $message = new SwatMessage(
+            Site::_(
+                'Instance configuration settings have been restored to ' .
+                'defaults.'
+            )
+        );
 
-	// }}}
-	// {{{ protected function getRestoredMessage()
+        $message->secondary_content = Site::_(
+            'Reload this page to see your changes.'
+        );
 
-	protected function getRestoredMessage()
-	{
-		$message = new SwatMessage(
-			Site::_(
-				'Instance configuration settings have been restored to '.
-				'defaults.'
-			)
-		);
+        return $message;
+    }
 
-		$message->secondary_content = Site::_(
-			'Reload this page to see your changes.'
-		);
+    protected function relocate()
+    {
+        // We want to stay on the instance config page after processing
+    }
 
-		return $message;
-	}
+    // build phase
 
-	// }}}
-	// {{{ protected function relocate()
+    protected function buildNavBar()
+    {
+        // We don't want to add any extra entries to the nav-bar
+    }
 
-	protected function relocate()
-	{
-		// We want to stay on the instance config page after processing
-	}
+    protected function buildFrame()
+    {
+        // We don't want to alter the frames title.
+    }
 
-	// }}}
-
-	// build phase
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		// We don't want to add any extra entries to the nav-bar
-	}
-
-	// }}}
-	// {{{ protected function buildFrame()
-
-	protected function buildFrame()
-	{
-		// We don't want to alter the frames title.
-	}
-
-	// }}}
-	// {{{ protected function loadDBData()
-
-	protected function loadDBData()
-	{
-		foreach ($this->config_pages as $config_page) {
-			$config_page->loadUi($this->app->config);
-		}
-	}
-
-	// }}}
+    protected function loadDBData()
+    {
+        foreach ($this->config_pages as $config_page) {
+            $config_page->loadUi($this->app->config);
+        }
+    }
 }
-
-?>

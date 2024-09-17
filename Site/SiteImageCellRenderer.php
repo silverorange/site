@@ -1,205 +1,184 @@
 <?php
 
 /**
- * A cell renderer for SiteImages
+ * A cell renderer for SiteImages.
  *
- * @package   Site
  * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteImageCellRenderer extends SwatCellRenderer
 {
-	// {{{ class constants
+    /**
+     * Title length in characters before it gets truncated.
+     */
+    public const MAX_TITLE_LENGTH = 30;
 
-	/**
-	 * Title length in characters before it gets truncated.
-	 */
-	const MAX_TITLE_LENGTH = 30;
+    /**
+     * The image to display.
+     *
+     * @var SiteImage
+     */
+    public $image;
 
-	// }}}
-	// {{{ public properties
+    /**
+     * The shortname of the {@link SiteImageDimension} to display for the
+     * image.
+     *
+     * @var string
+     */
+    public $image_dimension;
 
-	/**
-	 * The image to display
-	 *
-	 * @var SiteImage
-	 */
-	public $image;
+    /**
+     * @var string
+     */
+    public $path_prefix;
 
-	/**
-	 * The shortname of the {@link SiteImageDimension} to display for the
-	 * image
-	 *
-	 * @var string
-	 */
-	public $image_dimension;
+    /**
+     * The href attribute in the XHTML anchor tag.
+     *
+     * Optionally uses vsprintf() syntax, for example:
+     * <code>
+     * $renderer->link = 'MySection/MyPage/%s?id=%s';
+     * </code>
+     *
+     * @var string
+     */
+    public $link;
 
-	/**
-	 * @var string
-	 */
-	public $path_prefix = null;
+    /**
+     * A value or array of values to substitute into the link of this cell. The
+     * value will automatically be url encoded when it is included in the link.
+     *
+     * @var mixed
+     */
+    public $link_value;
 
-	/**
-	 * The href attribute in the XHTML anchor tag
-	 *
-	 * Optionally uses vsprintf() syntax, for example:
-	 * <code>
-	 * $renderer->link = 'MySection/MyPage/%s?id=%s';
-	 * </code>
-	 *
-	 * @var string
-	 */
-	public $link;
+    /**
+     * Whether or not to display the image title.
+     *
+     * If a title is displayed, it is truncated at
+     * {@link SiteImageCellRenderer::MAX_TITLE_LENGTH} characters. If set to
+     * true and the image has no title, an empty span tag is displayed.
+     *
+     * @var bool
+     */
+    public $display_title = true;
 
-	/**
-	 * A value or array of values to substitute into the link of this cell. The
-	 * value will automatically be url encoded when it is included in the link.
-	 *
-	 * @var mixed
-	 */
-	public $link_value = null;
+    /**
+     * Whether or not this cell renderer should occupy a square region.
+     *
+     * If set to true, the region occupied by this cell renderer will be a
+     * square with the same dimensions for every image displayed. This is useful
+     * for displayimg images in a {@link SwatTileView} when the images do not
+     * all have the same dimensions.
+     *
+     * If set to false, this cell renderer will occupy a region of the actual
+     * image dimensions.
+     *
+     * @var bool
+     */
+    public $square = true;
 
-	/**
-	 * Whether or not to display the image title
-	 *
-	 * If a title is displayed, it is truncated at
-	 * {@link SiteImageCellRenderer::MAX_TITLE_LENGTH} characters. If set to
-	 * true and the image has no title, an empty span tag is displayed.
-	 *
-	 * @var boolean
-	 */
-	public $display_title = true;
+    /**
+     * @var SwatImageCellRenderer
+     */
+    protected $image_cell_renderer;
 
-	/**
-	 * Whether or not this cell renderer should occupy a square region
-	 *
-	 * If set to true, the region occupied by this cell renderer will be a
-	 * square with the same dimensions for every image displayed. This is useful
-	 * for displayimg images in a {@link SwatTileView} when the images do not
-	 * all have the same dimensions.
-	 *
-	 * If set to false, this cell renderer will occupy a region of the actual
-	 * image dimensions.
-	 *
-	 * @var boolean
-	 */
-	public $square = true;
+    public function __construct()
+    {
+        parent::__construct();
 
-	// }}}
-	// {{{ protected properties
+        $this->image_cell_renderer = new SwatImageCellRenderer();
+        $this->image_cell_renderer->parent = $this;
+    }
 
-	/**
-	 * @var SwatImageCellRenderer
-	 */
-	protected $image_cell_renderer;
+    public function getHtmlHeadEntrySet()
+    {
+        $set = parent::getHtmlHeadEntrySet();
 
-	// }}}
-	// {{{ public function __construct()
+        $set->addEntry(
+            'packages/site/styles/site-image-cell-renderer.css'
+        );
 
-	public function __construct()
-	{
-		parent::__construct();
+        $set->addEntrySet($this->image_cell_renderer->getHtmlHeadEntrySet());
 
-		$this->image_cell_renderer = new SwatImageCellRenderer();
-		$this->image_cell_renderer->parent = $this;
-	}
+        return $set;
+    }
 
-	// }}}
-	// {{{ public function getHtmlHeadEntrySet()
+    public function render()
+    {
+        if (!$this->visible) {
+            return;
+        }
 
-	public function getHtmlHeadEntrySet()
-	{
-		$set = parent::getHtmlHeadEntrySet();
+        if ($this->link !== null) {
+            $a_tag = new SwatHtmlTag('a');
 
-		$set->addEntry(
-			'packages/site/styles/site-image-cell-renderer.css'
-		);
+            if ($this->link_value === null) {
+                $a_tag->href = $this->link;
+            } elseif (is_array($this->link_value)) {
+                $a_tag->href = vsprintf($this->link, $this->link_value);
+            } else {
+                $a_tag->href = sprintf($this->link, $this->link_value);
+            }
 
-		$set->addEntrySet($this->image_cell_renderer->getHtmlHeadEntrySet());
-		return $set;
-	}
+            $a_tag->open();
+        }
 
-	// }}}
-	// {{{ public function render()
+        $this->buildImageCellRenderer($this->image_cell_renderer);
 
-	public function render()
-	{
-		if (!$this->visible)
-			return;
+        $image_wrapper_tag = new SwatHtmlTag('span');
+        $image_wrapper_tag->class = 'site-image-wrapper';
 
-		if ($this->link !== null) {
-			$a_tag = new SwatHtmlTag('a');
+        $image_wrapper_tag->open();
+        $this->image_cell_renderer->render();
+        $image_wrapper_tag->close();
 
-			if ($this->link_value === null) {
-				$a_tag->href = $this->link;
-			} elseif (is_array($this->link_value)) {
-				$a_tag->href = vsprintf($this->link, $this->link_value);
-			} else {
-				$a_tag->href = sprintf($this->link, $this->link_value);
-			}
+        if ($this->display_title) {
+            $title = $this->image->getTitle();
 
-			$a_tag->open();
-		}
+            if ($title !== null) {
+                $title = SwatString::condense($title, self::MAX_TITLE_LENGTH);
+            }
 
-		$this->buildImageCellRenderer($this->image_cell_renderer);
+            $span_tag = new SwatHtmlTag('span');
+            $span_tag->class = 'title';
 
-		$image_wrapper_tag = new SwatHtmlTag('span');
-		$image_wrapper_tag->class = 'site-image-wrapper';
+            if ($title === null) {
+                $span_tag->setContent(''); // prevent self-closing span tag
+            } else {
+                $span_tag->setContent($title);
+            }
 
-		$image_wrapper_tag->open();
-		$this->image_cell_renderer->render();
-		$image_wrapper_tag->close();
+            if (mb_strlen($title) > self::MAX_TITLE_LENGTH) {
+                $span_tag->title = $title;
+            }
 
-		if ($this->display_title) {
-			$title = $this->image->getTitle();
+            $span_tag->display();
+        }
 
-			if ($title !== null) {
-				$title = SwatString::condense($title, self::MAX_TITLE_LENGTH);
-			}
+        if ($this->link !== null) {
+            $a_tag->close();
+        }
+    }
 
-			$span_tag = new SwatHtmlTag('span');
-			$span_tag->class = 'title';
+    protected function buildImageCellRenderer(SwatImageCellRenderer $renderer)
+    {
+        $renderer->image =
+            $this->image->getUri($this->image_dimension, $this->path_prefix);
 
-			if ($title === null) {
-				$span_tag->setContent(''); // prevent self-closing span tag
-			} else {
-				$span_tag->setContent($title);
-			}
+        $renderer->width = $this->image->getWidth($this->image_dimension);
+        $renderer->height = $this->image->getHeight($this->image_dimension);
+        $renderer->alt = '';
 
-			if (mb_strlen($title) > self::MAX_TITLE_LENGTH) {
-				$span_tag->title = $title;
-			}
+        if ($this->square) {
+            $occupy = max(
+                $this->image->getHeight($this->image_dimension),
+                $this->image->getWidth($this->image_dimension)
+            );
 
-			$span_tag->display();
-		}
-
-		if ($this->link !== null) {
-			$a_tag->close();
-		}
-	}
-
-	// }}}
-	// {{{ protected function buildImageCellRenderer()
-
-	protected function buildImageCellRenderer(SwatImageCellRenderer $renderer)
-	{
-		$renderer->image =
-			$this->image->getUri($this->image_dimension, $this->path_prefix);
-
-		$renderer->width = $this->image->getWidth($this->image_dimension);
-		$renderer->height = $this->image->getHeight($this->image_dimension);
-		$renderer->alt = '';
-
-		if ($this->square) {
-			$occupy = max($this->image->getHeight($this->image_dimension),
-				$this->image->getWidth($this->image_dimension));
-
-			$renderer->occupy_height = $occupy;
-			$renderer->occupy_width = $occupy;
-		}
-	}
-
-	// }}}
+            $renderer->occupy_height = $occupy;
+            $renderer->occupy_width = $occupy;
+        }
+    }
 }
-
-?>

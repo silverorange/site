@@ -1,7 +1,10 @@
 <?php
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggingInterface;
+
 /**
- * Application that does a AMQP task
+ * Application that does a AMQP task.
  *
  * Example:
  * <code>
@@ -16,305 +19,246 @@
  * ?>
  * </code>
  *
- * @package   Site
  * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteAMQPApplication extends SiteApplication
 {
-	// {{{ class constants
+    /**
+     * How long to wait when the queue is empty before checking again.
+     *
+     * In milliseconds.
+     */
+    public const WORK_LOOP_TIMEOUT = 100;
 
-	/**
-	 * How long to wait when the queue is empty before checking again
-	 *
-	 * In milliseconds.
-	 */
-	const WORK_LOOP_TIMEOUT = 100;
+    /**
+     * The AMQP queue name of this application.
+     *
+     * @var string
+     */
+    protected $queue = '';
 
-	// }}}
-	// {{{ protected properties
+    /**
+     * The command-line context of this application.
+     *
+     * @var Console_CommandLine
+     */
+    protected $parser;
 
-	/**
-	 * The AMQP queue name of this application
-	 *
-	 * @var string
-	 */
-	protected $queue = '';
+    /**
+     * The logging interface of this application.
+     *
+     * @var LoggingInterface
+     */
+    protected $logger;
 
-	/**
-	 * The command-line context of this application.
-	 *
-	 * @var Console_CommandLine
-	 */
-	protected $parser = null;
+    /**
+     * @var AMQPExchange
+     */
+    protected $exchange;
 
-	/**
-	 * The logging interface of this application.
-	 *
-	 * @var Psr\Log\LoggingInterface
-	 */
-	protected $logger = null;
+    /**
+     * @var AMQPChannel
+     */
+    protected $channel;
 
-	/**
-	 * @var AMQPExchange
-	 */
-	protected $exchange = null;
+    /**
+     * Creates a new AMQP application.
+     *
+     * @param string              $queue  the AQMP queue name
+     * @param Console_CommandLine $parser the commane-line context
+     * @param LoggerInterface     $logger the logging interface
+     * @param string              $config optional. The filename of the
+     *                                    configuration file. If not
+     *                                    specified, no special
+     *                                    configuration is performed.
+     */
+    public function __construct(
+        $queue,
+        Console_CommandLine $parser,
+        LoggerInterface $logger,
+        $config = null
+    ) {
+        parent::__construct('aqmp-' . $queue, $config);
 
-	/**
-	 * @var AMQPChannel
-	 */
-	protected $channel = null;
+        $this->queue = $queue;
+        $this->logger = $logger;
+        $this->parser = $parser;
+    }
 
-	// }}}
-	// {{{ public function __construct()
+    /**
+     * Runs this application.
+     */
+    public function __invoke()
+    {
+        if (extension_loaded('pcntl')) {
+            pcntl_signal(SIGTERM, $this->handleSignal(...));
+        }
 
-	/**
-	 * Creates a new AMQP application
-	 *
-	 * @param string                  $queue  the AQMP queue name.
-	 * @param Console_CommandLine     $parser the commane-line context.
-	 * @param Psr\Log\LoggerInterface $logger the logging interface.
-	 * @param string                  $config optional. The filename of the
-	 *                                        configuration file. If not
-	 *                                        specified, no special
-	 *                                        configuration is performed.
-	 */
-	public function __construct(
-		$queue,
-		Console_CommandLine $parser,
-		Psr\Log\LoggerInterface $logger,
-		$config = null
-	) {
-		parent::__construct('aqmp-'.$queue, $config);
+        $this->initModules();
 
-		$this->queue  = $queue;
-		$this->logger = $logger;
-		$this->parser = $parser;
-	}
+        try {
+            $this->cli = $this->parser->parse();
+            $this->logger->setLevel($this->cli->options['verbose']);
+            $this->init();
 
-	// }}}
-	// {{{ public function __invoke()
+            $connection = new AMQPConnection();
+            $connection->setHost($this->cli->args['address']);
+            $connection->setPort($this->cli->options['port']);
 
-	/**
-	 * Runs this application
-	 *
-	 * @return void
-	 */
-	public function __invoke()
-	{
-		if (extension_loaded('pcntl')) {
-			pcntl_signal(SIGTERM, array($this, 'handleSignal'));
-		}
+            // re-connection loop if AMQP server goes away
+            while (true) {
+                try {
+                    $this->logger->debug(
+                        Site::_('Connecting worker to AMQP server {address}:{port} ... '),
+                        ['address' => $this->cli->args['address'], 'port' => $this->cli->options['port']]
+                    );
+                    $connection->connect();
+                    $this->channel = new AMQPChannel($connection);
+                    $this->exchange = new AMQPExchange($this->channel);
+                    $this->logger->debug(Site::_('done') . PHP_EOL);
 
-		$this->initModules();
+                    $this->work();
+                } catch (AMQPConnectionException $e) {
+                    $this->logger->debug(Site::_('connection error') . PHP_EOL);
 
-		try {
-			$this->cli = $this->parser->parse();
-			$this->logger->setLevel($this->cli->options['verbose']);
-			$this->init();
+                    if ($e->getMessage() ===
+                        'Socket error: could not connect to host.') {
+                        $this->logger->error(
+                            'Could not connect to AMQP server on host ' .
+                            '{host}.' . PHP_EOL,
+                            ['host' => $this->cli->args['address']]
+                        );
+                    } else {
+                        $this->logger->error($e->getMessage() . PHP_EOL);
+                    }
 
-			$connection = new AMQPConnection();
-			$connection->setHost($this->cli->args['address']);
-			$connection->setPort($this->cli->options['port']);
+                    sleep(10);
+                }
+            }
+        } catch (Console_CommandLine_Exception $e) {
+            $this->logger->error($e->getMessage() . PHP_EOL);
+            exit(1);
+        }
+    }
 
-			// re-connection loop if AMQP server goes away
-			while (true) {
-				try {
-					$this->logger->debug(
-						Site::_('Connecting worker to AMQP server {address}:{port} ... '),
-						array(
-							'address' => $this->cli->args['address'],
-							'port'    => $this->cli->options['port']
-						)
-					);
-					$connection->connect();
-					$this->channel = new AMQPChannel($connection);
-					$this->exchange = new AMQPExchange($this->channel);
-					$this->logger->debug(Site::_('done').PHP_EOL);
+    /**
+     * Runs this application.
+     *
+     * Interface required by SiteApplication.
+     */
+    public function run()
+    {
+        $this();
+    }
 
-					$this->work();
-				} catch (AMQPConnectionException $e) {
-					$this->logger->debug(Site::_('connection error').PHP_EOL);
+    /**
+     * Handles signals sent to this process.
+     *
+     * @param int $signal the sinal that was received (e.g. SIGTERM).
+     */
+    public function handleSignal($signal)
+    {
+        switch ($signal) {
+            case SIGTERM:
+                $this->handleSigTerm();
+                break;
+        }
+    }
 
-					if ($e->getMessage() ===
-						'Socket error: could not connect to host.') {
-						$this->logger->error(
-							'Could not connect to AMQP server on host '.
-							'{host}.'.PHP_EOL,
-							array(
-								'host' => $this->cli->args['address'],
-							)
-						);
-					} else {
-						$this->logger->error($e->getMessage().PHP_EOL);
-					}
+    /**
+     * Completes a job.
+     *
+     * Subclasses must implement this method to perform work.
+     */
+    abstract protected function doWork(SiteAMQPJob $job);
 
-					sleep(10);
-				}
-			}
+    /**
+     * Performs any initilization of this application.
+     *
+     * Subclasses should extend this method to add any required start-up
+     * initialization.
+     */
+    protected function init() {}
 
-		} catch (Console_CommandLine_Exception $e) {
-			$this->logger->error($e->getMessage().PHP_EOL);
-			exit(1);
-		}
-	}
+    /**
+     * Enters this application into the work-listen loop.
+     */
+    protected function work()
+    {
+        // Get namespaced queue name if a default_namespace is set in the
+        // application config. This allows global workers to have no namespace.
+        if ($this->config->amqp->default_namespace != '') {
+            $queue_name = $this->config->amqp->default_namespace .
+                '.' . $this->queue;
+        } else {
+            $queue_name = $this->queue;
+        }
 
-	// }}}
-	// {{{ public function run()
+        $queue = new AMQPQueue($this->channel);
+        $queue->setName($queue_name);
+        $queue->setFlags(AMQP_DURABLE);
+        $queue->declareQueue();
 
-	/**
-	 * Runs this application
-	 *
-	 * Interface required by SiteApplication.
-	 *
-	 * @return void
-	 */
-	public function run()
-	{
-		$this();
-	}
+        $this->logger->debug(
+            '=== ' . Site::_('Ready for work.') . ' ===' .
+            PHP_EOL . PHP_EOL
+        );
 
-	// }}}
-	// {{{ public function handleSignal()
+        while (true) {
+            if (extension_loaded('pcntl')) {
+                pcntl_signal_dispatch();
+            }
 
-	/**
-	 * Handles signals sent to this process
-	 *
-	 * @param integer $signal the sinal that was received (e.g. SIGTERM).
-	 *
-	 * @return void
-	 */
-	public function handleSignal($signal)
-	{
-		switch ($signal) {
-		case SIGTERM:
-			$this->handleSigTerm();
-			break;
-		}
-	}
+            if ($this->canWork()) {
+                $envelope = $queue->get();
+                if ($envelope === false) {
+                    usleep(self::WORK_LOOP_TIMEOUT * 1000);
+                    $this->logger->debug(
+                        '=: ' . Site::_('work loop timeout') . PHP_EOL
+                    );
+                } else {
+                    $this->doWork(
+                        new SiteAMQPJob(
+                            $this->exchange,
+                            $envelope,
+                            $queue
+                        )
+                    );
+                }
+            }
+        }
+    }
 
-	// }}}
-	// {{{ abstract protected function doWork()
+    /**
+     * Provides a place for subclasses to add application-specific timeouts.
+     *
+     * For example, if a database server or another service goes away this
+     * can be used to wait for it to return before continuing to do work.
+     *
+     * If work can not be done, the subclass should take responsibility for
+     * adding a sleep() or wait() call in the canWork() method so as not to
+     * overwhelm the processor.
+     *
+     * @return bool true if work can be done and false if not
+     */
+    protected function canWork()
+    {
+        return true;
+    }
 
-	/**
-	 * Completes a job
-	 *
-	 * Subclasses must implement this method to perform work.
-	 *
-	 * @param SiteAMQPJob $job
-	 */
-	abstract protected function doWork(SiteAMQPJob $job);
-
-	// }}}
-	// {{{ protected function init()
-
-	/**
-	 * Performs any initilization of this application
-	 *
-	 * Subclasses should extend this method to add any required start-up
-	 * initialization.
-	 *
-	 * @return void
-	 */
-	protected function init()
-	{
-	}
-
-	// }}}
-	// {{{ protected function work()
-
-	/**
-	 * Enters this application into the work-listen loop
-	 *
-	 * @return void
-	 */
-	protected function work()
-	{
-		// Get namespaced queue name if a default_namespace is set in the
-		// application config. This allows global workers to have no namespace.
-		if ($this->config->amqp->default_namespace != '') {
-			$queue_name = $this->config->amqp->default_namespace.
-				'.'.$this->queue;
-		} else {
-			$queue_name = $this->queue;
-		}
-
-		$queue = new AMQPQueue($this->channel);
-		$queue->setName($queue_name);
-		$queue->setFlags(AMQP_DURABLE);
-		$queue->declareQueue();
-
-		$this->logger->debug(
-			'=== '.Site::_('Ready for work.').' ==='.
-			PHP_EOL.PHP_EOL
-		);
-
-		while (true) {
-			if (extension_loaded('pcntl')) {
-				pcntl_signal_dispatch();
-			}
-
-			if ($this->canWork()) {
-				$envelope = $queue->get();
-				if ($envelope === false) {
-					usleep(self::WORK_LOOP_TIMEOUT * 1000);
-					$this->logger->debug(
-						'=: '.Site::_('work loop timeout').PHP_EOL
-					);
-				} else {
-					$this->doWork(
-						new SiteAMQPJob(
-							$this->exchange,
-							$envelope,
-							$queue
-						)
-					);
-				}
-			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function canWork()
-
-	/**
-	 * Provides a place for subclasses to add application-specific timeouts
-	 *
-	 * For example, if a database server or another service goes away this
-	 * can be used to wait for it to return before continuing to do work.
-	 *
-	 * If work can not be done, the subclass should take responsibility for
-	 * adding a sleep() or wait() call in the canWork() method so as not to
-	 * overwhelm the processor.
-	 *
-	 * @return boolean true if work can be done and false if not.
-	 */
-	protected function canWork()
-	{
-		return true;
-	}
-
-	// }}}
-	// {{{ protected function handleSigTerm()
-
-	/**
-	 * Provides a safe shutdown function
-	 *
-	 * Jobs are atomic. When this worker is cleanly stopped via a monitoring
-	 * script sending SIGTERM it will not be in the middle of a job.
-	 *
-	 * Subclasses must call exit() or parent::handleSigTerm() to ensure
-	 * the process ends.
-	 *
-	 * @return void
-	 */
-	protected function handleSigTerm()
-	{
-		$this->logger->info(Site::_('Got SIGTERM, shutting down.'.PHP_EOL));
-		exit();
-	}
-
-	// }}}
+    /**
+     * Provides a safe shutdown function.
+     *
+     * Jobs are atomic. When this worker is cleanly stopped via a monitoring
+     * script sending SIGTERM it will not be in the middle of a job.
+     *
+     * Subclasses must call exit() or parent::handleSigTerm() to ensure
+     * the process ends.
+     */
+    protected function handleSigTerm()
+    {
+        $this->logger->info(Site::_('Got SIGTERM, shutting down.' . PHP_EOL));
+        exit;
+    }
 }
-
-?>

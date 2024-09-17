@@ -1,131 +1,99 @@
 <?php
 
 /**
- * Page for editing comments
+ * Page for editing comments.
  *
- * @package   Site
  * @copyright 2009-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteCommentEdit extends AdminDBEdit
 {
-	// {{{ protected properties
+    /**
+     * @var SiteComment
+     */
+    protected $comment;
 
-	/**
-	 * @var SiteComment
-	 */
-	protected $comment;
+    // init phase
 
-	// }}}
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// init phase
-	// {{{ protected function initInternal()
+        $this->ui->loadFromXML($this->getUiXml());
+        $this->initComment();
+    }
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+    protected function getUiXml()
+    {
+        return __DIR__ . '/edit.xml';
+    }
 
-		$this->ui->loadFromXML($this->getUiXml());
-		$this->initComment();
-	}
+    protected function initComment()
+    {
+        $this->comment = $this->getComment();
+        $this->comment->setDatabase($this->app->db);
 
-	// }}}
-	// {{{ protected function getUiXml()
+        if ($this->id !== null) {
+            if (!$this->comment->load($this->id, $this->app->getInstance())) {
+                throw new AdminNotFoundException(
+                    sprintf('Comment with id ‘%s’ not found.', $this->id)
+                );
+            }
+        }
+    }
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/edit.xml';
-	}
+    protected function getComment()
+    {
+        $class_name = SwatDBClassMap::get(SiteComment::class);
 
-	// }}}
-	// {{{ protected function initComment()
+        return new $class_name();
+    }
 
-	protected function initComment()
-	{
-		$this->comment = $this->getComment();
-		$this->comment->setDatabase($this->app->db);
+    // process phase
 
-		if ($this->id !== null) {
-			if (!$this->comment->load($this->id, $this->app->getInstance())) {
-				throw new AdminNotFoundException(
-					sprintf('Comment with id ‘%s’ not found.', $this->id));
-			}
-		}
-	}
+    protected function saveDBData()
+    {
+        $values = $this->ui->getValues(['fullname', 'link', 'email', 'bodytext', 'status']);
 
-	// }}}
-	// {{{ protected function getComment()
+        if ($this->comment->id === null) {
+            $now = new SwatDate();
+            $now->toUTC();
+            $this->comment->createdate = $now;
+        }
 
-	protected function getComment()
-	{
-		$class_name = SwatDBClassMap::get('SiteComment');
-		return new $class_name();
-	}
+        $this->comment->fullname = $values['fullname'];
+        $this->comment->link = $values['link'];
+        $this->comment->email = $values['email'];
+        $this->comment->status = $values['status'];
 
-	// }}}
+        if ($this->comment->status === null) {
+            $this->comment->status = SiteComment::STATUS_PUBLISHED;
+        }
 
-	// process phase
-	// {{{ protected function saveDBData()
+        $this->comment->bodytext = $values['bodytext'];
 
-	protected function saveDBData()
-	{
-		$values = $this->ui->getValues(array(
-			'fullname',
-			'link',
-			'email',
-			'bodytext',
-			'status',
-		));
+        if ($this->comment->isModified()) {
+            $this->comment->save();
+            $this->comment->postSave($this->app);
 
-		if ($this->comment->id === null) {
-			$now = new SwatDate();
-			$now->toUTC();
-			$this->comment->createdate = $now;
-		}
+            $message = new SwatMessage(Site::_('Comment has been saved.'));
 
-		$this->comment->fullname = $values['fullname'];
-		$this->comment->link     = $values['link'];
-		$this->comment->email    = $values['email'];
-		$this->comment->status   = $values['status'];
+            $this->app->messages->add($message);
+        }
+    }
 
-		if ($this->comment->status === null) {
-			$this->comment->status = SiteComment::STATUS_PUBLISHED;
-		}
+    // build phase
 
-		$this->comment->bodytext = $values['bodytext'];
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
-		if ($this->comment->isModified()) {
-			$this->comment->save();
-			$this->comment->postSave($this->app);
+        $statuses = SiteComment::getStatusArray();
+        $this->ui->getWidget('status')->addOptionsByArray($statuses);
+    }
 
-			$message = new SwatMessage(Site::_('Comment has been saved.'));
-
-			$this->app->messages->add($message);
-		}
-	}
-
-	// }}}
-
-	// build phase
-	// {{{ protected function buildInternal()
-
-	protected function buildInternal()
-	{
-		parent::buildInternal();
-
-		$statuses = SiteComment::getStatusArray();
-		$this->ui->getWidget('status')->addOptionsByArray($statuses);
-	}
-
-	// }}}
-	// {{{ protected function loadDBData()
-
-	protected function loadDBData()
-	{
-		$this->ui->setValues($this->comment->getAttributes());
-	}
-
-	// }}}
+    protected function loadDBData()
+    {
+        $this->ui->setValues($this->comment->getAttributes());
+    }
 }
-
-?>

@@ -1,121 +1,109 @@
 <?php
 
 /**
- * A one-time use token used to sign on using the API
+ * A one-time use token used to sign on using the API.
  *
- * @package   Site
  * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteApiSignOnToken extends SwatDBDataObject
 {
-	// {{{ public properties
+    /**
+     * @var int
+     */
+    public $id;
 
-	/**
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * @var string
+     */
+    public $ident;
 
-	/**
-	 * @var string
-	 */
-	public $ident;
+    /**
+     * @var string
+     */
+    public $token;
 
-	/**
-	 * @var string
-	 */
-	public $token;
+    /**
+     * Create date.
+     *
+     * @var SwatDate
+     */
+    public $createdate;
 
-	/**
-	 * Create date
-	 *
-	 * @var SwatDate
-	 */
-	public $createdate;
+    protected function init()
+    {
+        parent::init();
 
-	// }}}
-	// {{{ protected function init()
+        $this->table = 'ApiSignOnToken';
+        $this->id_field = 'integer:id';
 
-	protected function init()
-	{
-		parent::init();
+        $this->registerInternalProperty(
+            'api_credential',
+            SwatDBClassMap::get(SiteApiCredential::class)
+        );
 
-		$this->table = 'ApiSignOnToken';
-		$this->id_field = 'integer:id';
+        $this->registerDateProperty('createdate');
+    }
 
-		$this->registerInternalProperty(
-			'api_credential',
-			SwatDBClassMap::get('SiteApiCredential')
-		);
+    public function loadByIdent($ident, SiteApiCredential $credential)
+    {
+        $this->checkDB();
 
-		$this->registerDateProperty('createdate');
-	}
+        $row = null;
 
-	// }}}
-	// {{{ public function loadByIdent()
-
-	public function loadByIdent($ident, SiteApiCredential $credential)
-	{
-		$this->checkDB();
-
-		$row = null;
-
-		if ($this->table !== null) {
-			$sql = sprintf('select * from %s
+        if ($this->table !== null) {
+            $sql = sprintf(
+                'select * from %s
 				where ident = %s and api_credential = %s',
-				$this->table,
-				$this->db->quote($ident, 'text'),
-				$this->db->quote($credential->id, 'integer'));
+                $this->table,
+                $this->db->quote($ident, 'text'),
+                $this->db->quote($credential->id, 'integer')
+            );
 
-			$rs = SwatDB::query($this->db, $sql, null);
-			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
-		}
+            $rs = SwatDB::query($this->db, $sql, null);
+            $row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+        }
 
-		if ($row === null) {
-			return false;
-		}
+        if ($row === null) {
+            return false;
+        }
 
-		$this->initFromRow($row);
-		$this->generatePropertyHashes();
+        $this->initFromRow($row);
+        $this->generatePropertyHashes();
 
-		return true;
-	}
+        return true;
+    }
 
-	// }}}
-	// {{{ public function loadByIdentAndToken()
+    public function loadByIdentAndToken(
+        $ident,
+        $token,
+        SiteApiCredential $credential
+    ) {
+        $this->checkDB();
 
-	public function loadByIdentAndToken(
-		$ident,
-		$token,
-		SiteApiCredential $credential
-	) {
-		$this->checkDB();
+        $row = null;
 
-		$row = null;
-
-		if ($this->table !== null) {
-			$sql = sprintf('select * from %s
+        if ($this->table !== null) {
+            $sql = sprintf(
+                'select * from %s
 				where ident = %s and token = %s and api_credential = %s',
-				$this->table,
-				$this->db->quote($ident, 'text'),
-				$this->db->quote($token, 'text'),
-				$this->db->quote($credential->id, 'integer'));
+                $this->table,
+                $this->db->quote($ident, 'text'),
+                $this->db->quote($token, 'text'),
+                $this->db->quote($credential->id, 'integer')
+            );
 
-			$rs = SwatDB::query($this->db, $sql, null);
-			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
-		}
+            $rs = SwatDB::query($this->db, $sql, null);
+            $row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+        }
 
-		if ($row === null) {
-			return false;
-		}
+        if ($row === null) {
+            return false;
+        }
 
-		$this->initFromRow($row);
-		$this->generatePropertyHashes();
+        $this->initFromRow($row);
+        $this->generatePropertyHashes();
 
-		return true;
-	}
-
-	// }}}
+        return true;
+    }
 }
-
-?>

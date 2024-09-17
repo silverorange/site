@@ -1,168 +1,142 @@
 <?php
 
 /**
- * @package   Site
  * @copyright 2010-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteConcentrateFileFinder
-	implements Concentrate_DataProvider_FileFinderInterface
+class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderInterface
 {
-	// {{{ public function getDataFiles()
+    public function getDataFiles()
+    {
+        // Load data files from composer module directories and from site
+        // dependency directory.
+        return array_merge(
+            $this->getSiteDataFiles(),
+            $this->getComposerDataFiles()
+        );
+    }
 
-	public function getDataFiles()
-	{
-		// Load data files from composer module directories and from site
-		// dependency directory.
-		return array_merge(
-			$this->getSiteDataFiles(),
-			$this->getComposerDataFiles()
-		);
-	}
+    protected function getWwwPath()
+    {
+        $www_path = realpath('.');
 
-	// }}}
-	// {{{ protected function getWwwPath()
+        while (basename($www_path) !== 'www') {
+            $www_path = dirname($www_path);
+        }
 
-	protected function getWwwPath()
-	{
-		$www_path = realpath('.');
+        return $www_path;
+    }
 
-		while (basename($www_path) !== 'www') {
-			$www_path = dirname($www_path);
-		}
+    protected function getRootPath()
+    {
+        return dirname($this->getWwwPath());
+    }
 
-		return $www_path;
-	}
+    protected function getComposerDataFiles()
+    {
+        $files = [];
 
-	// }}}
-	// {{{ protected function getRootPath()
+        $www_path = $this->getWwwPath();
+        $base_path = dirname($www_path) . DIRECTORY_SEPARATOR . 'vendor';
+        if (is_dir($base_path)) {
+            $base_dir = dir($base_path);
+            $vendor_name = $base_dir->read();
+            while ($vendor_name !== false) {
+                if ($vendor_name === '.'
+                    || $vendor_name === '..'
+                    || $vendor_name === 'bin'
+                    || $vendor_name === 'autoload.php') {
+                    $vendor_name = $base_dir->read();
 
-	protected function getRootPath()
-	{
-		return dirname($this->getWwwPath());
-	}
+                    continue;
+                }
 
-	// }}}
-	// {{{ protected function getComposerDataFiles()
+                $vendor_path = $base_path . DIRECTORY_SEPARATOR . $vendor_name;
+                if (is_dir($vendor_path)) {
+                    $vendor_dir = dir($vendor_path);
+                    $package_name = $vendor_dir->read();
+                    while ($package_name !== false) {
+                        if ($package_name === '.' || $package_name === '..') {
+                            $package_name = $vendor_dir->read();
 
-	protected function getComposerDataFiles()
-	{
-		$files = array();
+                            continue;
+                        }
 
-		$www_path = $this->getWwwPath();
-		$base_path = dirname($www_path).DIRECTORY_SEPARATOR.'vendor';
-		if (is_dir($base_path)) {
-			$base_dir = dir($base_path);
-			$vendor_name = $base_dir->read();
-			while ($vendor_name !== false) {
-				if ($vendor_name === '.' ||
-					$vendor_name === '..' ||
-					$vendor_name === 'bin' ||
-					$vendor_name === 'autoload.php') {
-					$vendor_name = $base_dir->read();
-					continue;
-				}
+                        $finder = new Concentrate_DataProvider_FileFinderDirectory(
+                            $vendor_path . DIRECTORY_SEPARATOR .
+                            $package_name . DIRECTORY_SEPARATOR .
+                            'dependencies'
+                        );
 
-				$vendor_path = $base_path.DIRECTORY_SEPARATOR.$vendor_name;
-				if (is_dir($vendor_path)) {
-					$vendor_dir = dir($vendor_path);
-					$package_name = $vendor_dir->read();
-					while ($package_name !== false) {
-						if ($package_name === '.' || $package_name === '..') {
-							$package_name = $vendor_dir->read();
-							continue;
-						}
+                        $files = array_merge(
+                            $files,
+                            $finder->getDataFiles()
+                        );
+                        $package_name = $vendor_dir->read();
+                    }
+                }
+                $vendor_name = $base_dir->read();
+            }
+        }
 
-						$finder = new Concentrate_DataProvider_FileFinderDirectory(
-							$vendor_path.DIRECTORY_SEPARATOR.
-							$package_name.DIRECTORY_SEPARATOR.
-							'dependencies'
-						);
+        return $files;
+    }
 
-						$files = array_merge(
-							$files,
-							$finder->getDataFiles()
-						);
-						$package_name = $vendor_dir->read();
-					}
-				}
-				$vendor_name = $base_dir->read();
-			}
-		}
+    protected function getSiteDataFiles()
+    {
+        $files = [];
 
-		return $files;
-	}
+        $finder = new Concentrate_DataProvider_FileFinderDirectory(
+            $this->getRootPath() . DIRECTORY_SEPARATOR . 'dependencies'
+        );
 
-	// }}}
-	// {{{ protected function getSiteDataFiles()
+        foreach ($finder->getDataFiles() as $filename) {
+            $files[] = $filename;
+        }
 
-	protected function getSiteDataFiles()
-	{
-		$files = array();
+        return $files;
+    }
 
-		$finder = new Concentrate_DataProvider_FileFinderDirectory(
-			$this->getRootPath().DIRECTORY_SEPARATOR.'dependencies'
-		);
+    protected function getDevelopmentDataFiles($include_dir)
+    {
+        $files = [];
 
-		foreach ($finder->getDataFiles() as $filename) {
-			$files[] = $filename;
-		}
+        $dependency_dir = $include_dir . DIRECTORY_SEPARATOR . 'dependencies';
 
-		return $files;
-	}
+        $finder = new Concentrate_DataProvider_FileFinderDirectory(
+            $dependency_dir
+        );
 
-	// }}}
-	// {{{ protected function getDevelopmentDataFiles()
+        foreach ($finder->getDataFiles() as $filename) {
+            $key = $this->getDevelopmentKey($filename);
+            if (!isset($files[$key])) {
+                $files[$key] = $filename;
+            }
+        }
 
-	protected function getDevelopmentDataFiles($include_dir)
-	{
-		$files = array();
+        return $files;
+    }
 
-		$dependency_dir = $include_dir.DIRECTORY_SEPARATOR.'dependencies';
+    protected function getDevelopmentKey($filename)
+    {
+        $key = $filename;
 
-		$finder = new Concentrate_DataProvider_FileFinderDirectory(
-			$dependency_dir);
+        $matches = [];
+        $expression = '!packages/(.*)?/.*?/dependencies/(.*)?$!';
+        if (preg_match($expression, $filename, $matches) === 1) {
+            $key = mb_strtolower($matches[1]) . '/' . $matches[2];
+        }
 
-		foreach ($finder->getDataFiles() as $filename) {
-			$key = $this->getDevelopmentKey($filename);
-			if (!isset($files[$key])) {
-				$files[$key] = $filename;
-			}
-		}
+        return $key;
+    }
 
-		return $files;
-	}
+    protected function getIncludeDirs()
+    {
+        $include_path = get_include_path();
 
-	// }}}
-	// {{{ protected function getDevelopmentKey()
+        $dirs = explode(PATH_SEPARATOR, $include_path);
+        $dirs[] = '..';
 
-	protected function getDevelopmentKey($filename)
-	{
-		$key = $filename;
-
-		$matches = array();
-		$expression = '!packages/(.*)?/.*?/dependencies/(.*)?$!';
-		if (preg_match($expression, $filename, $matches) === 1) {
-			$key = mb_strtolower($matches[1]).'/'.$matches[2];
-		}
-
-		return $key;
-	}
-
-	// }}}
-	// {{{ protected function getIncludeDirs()
-
-	protected function getIncludeDirs()
-	{
-		$include_path = get_include_path();
-
-		$dirs   = explode(PATH_SEPARATOR, $include_path);
-		$dirs[] = '..';
-
-		return $dirs;
-	}
-
-	// }}}
+        return $dirs;
+    }
 }
-
-?>

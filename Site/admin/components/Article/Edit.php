@@ -1,195 +1,182 @@
 <?php
 
 /**
- * Edit page for Articles
+ * Edit page for Articles.
  *
- * @package   Site
  * @copyright 2005-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteArticleEdit extends AdminDBEdit
 {
-	// {{{ protected properties
+    protected $parent;
+    protected $edit_article;
 
-	protected $parent;
-	protected $edit_article;
+    // init phase
 
-	// }}}
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// init phase
-	// {{{ protected function initInternal()
+        $this->ui->mapClassPrefixToPath('Site', 'Site');
+        $this->ui->loadFromXML($this->getUiXml());
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+        $this->initArticle();
 
-		$this->ui->mapClassPrefixToPath('Site', 'Site');
-		$this->ui->loadFromXML($this->getUiXml());
+        $this->parent = SiteApplication::initVar('parent');
 
-		$this->initArticle();
+        $form = $this->ui->getWidget('edit_form');
+        $form->addHiddenField('parent', $this->parent);
 
-		$this->parent = SiteApplication::initVar('parent');
+        if ($this->id === null) {
+            $this->ui->getWidget('shortname_field')->visible = false;
+        }
+    }
 
-		$form = $this->ui->getWidget('edit_form');
-		$form->addHiddenField('parent', $this->parent);
+    protected function initArticle()
+    {
+        $class_name = SwatDBClassMap::get(SiteArticle::class);
+        $this->edit_article = new $class_name();
+        $this->edit_article->setDatabase($this->app->db);
 
-		if ($this->id === null)
-			$this->ui->getWidget('shortname_field')->visible = false;
-	}
+        if ($this->id !== null) {
+            if (!$this->edit_article->load($this->id)) {
+                throw new AdminNotFoundException(
+                    sprintf(
+                        Site::_('Article with id "%s" not found.'),
+                        $this->id
+                    )
+                );
+            }
+        }
+    }
 
-	// }}}
-	// {{{ protected function initArticle()
+    protected function getUiXml()
+    {
+        return __DIR__ . '/edit.xml';
+    }
 
-	protected function initArticle()
-	{
-		$class_name = SwatDBClassMap::get('SiteArticle');
-		$this->edit_article = new $class_name();
-		$this->edit_article->setDatabase($this->app->db);
+    // process phase
 
-		if ($this->id !== null) {
-			if (!$this->edit_article->load($this->id))
-				throw new AdminNotFoundException(
-					sprintf(Site::_('Article with id "%s" not found.'),
-						$this->id));
-		}
-	}
+    protected function validate()
+    {
+        $shortname = $this->ui->getWidget('shortname');
+        $title = $this->ui->getWidget('title');
 
-	// }}}
-	// {{{ protected function getUiXml()
+        if ($this->id === null && $shortname->value === null) {
+            $new_shortname = $this->generateShortname($title->value);
+            $shortname->value = $new_shortname;
+        } elseif (!$this->validateShortname($shortname->value)) {
+            $message = new SwatMessage(
+                Site::_('Shortname already exists and must be unique.'),
+                'error'
+            );
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/edit.xml';
-	}
+            $shortname->addMessage($message);
+        }
+    }
 
-	// }}}
+    protected function validateShortname($shortname)
+    {
+        $valid = true;
 
-	// process phase
-	// {{{ protected function validate()
+        $class_name = SwatDBClassMap::get(SiteArticle::class);
+        $article = new $class_name();
+        $article->setDatabase($this->app->db);
 
-	protected function validate()
-	{
-		$shortname = $this->ui->getWidget('shortname');
-		$title = $this->ui->getWidget('title');
+        if ($article->loadByShortname($shortname)) {
+            if ($article->id !== $this->edit_article->id
+                && $article->getInternalValue('parent') == $this->parent) {
+                $valid = false;
+            }
+        }
 
-		if ($this->id === null && $shortname->value === null) {
-			$new_shortname = $this->generateShortname($title->value);
-			$shortname->value = $new_shortname;
-		} elseif (!$this->validateShortname($shortname->value)) {
-			$message = new SwatMessage(
-				Site::_('Shortname already exists and must be unique.'),
-				'error');
+        return $valid;
+    }
 
-			$shortname->addMessage($message);
-		}
-	}
+    protected function saveDBData()
+    {
+        $now = new SwatDate();
+        $now->toUTC();
 
-	// }}}
-	// {{{ protected function validateShortname()
+        if ($this->id === null) {
+            $this->edit_article->createdate = $now->getDate();
+        }
 
-	protected function validateShortname($shortname)
-	{
-		$valid = true;
+        $this->edit_article->parent = $this->parent;
+        $this->edit_article->modified_date = $now->getDate();
 
-		$class_name = SwatDBClassMap::get('SiteArticle');
-		$article = new $class_name();
-		$article->setDatabase($this->app->db);
+        $this->saveArticle();
 
-		if ($article->loadByShortname($shortname)) {
-			if ($article->id !== $this->edit_article->id &&
-				$article->getInternalValue('parent') == $this->parent) {
-				$valid = false;
-			}
-		}
+        if (isset($this->app->memcache)) {
+            $this->app->memcache->flushNs('article');
+        }
 
-		return $valid;
-	}
+        $message = new SwatMessage(
+            sprintf(
+                Site::_('“%s” has been saved.'),
+                $this->edit_article->title
+            )
+        );
 
-	// }}}
-	// {{{ protected function saveDBData()
+        $this->app->messages->add($message);
+    }
 
-	protected function saveDBData()
-	{
-		$now = new SwatDate();
-		$now->toUTC();
+    protected function saveArticle()
+    {
+        $values = $this->ui->getValues(['title', 'shortname', 'bodytext', 'description', 'enabled', 'visible', 'searchable']);
 
-		if ($this->id === null)
-			$this->edit_article->createdate = $now->getDate();
+        $this->edit_article->title = $values['title'];
+        $this->edit_article->shortname = $values['shortname'];
+        $this->edit_article->bodytext = $values['bodytext'];
+        $this->edit_article->description = $values['description'];
+        $this->edit_article->enabled = $values['enabled'];
+        $this->edit_article->visible = $values['visible'];
+        $this->edit_article->searchable = $values['searchable'];
 
-		$this->edit_article->parent        = $this->parent;
-		$this->edit_article->modified_date = $now->getDate();
+        $this->edit_article->save();
+    }
 
-		$this->saveArticle();
+    // build phase
 
-		if (isset($this->app->memcache))
-			$this->app->memcache->flushNs('article');
+    protected function loadDBData()
+    {
+        $this->ui->setValues($this->edit_article->getAttributes());
 
-		$message = new SwatMessage(
-			sprintf(Site::_('“%s” has been saved.'),
-				$this->edit_article->title));
+        $this->parent = $this->edit_article->getInternalValue('parent');
+        $form = $this->ui->getWidget('edit_form');
+        $form->addHiddenField('parent', $this->parent);
+    }
 
-		$this->app->messages->add($message);
-	}
+    protected function buildNavBar()
+    {
+        if ($this->id !== null) {
+            $navbar_rs = SwatDB::executeStoredProc(
+                $this->app->db,
+                'getArticleNavBar',
+                [$this->id]
+            );
 
-	// }}}
-	// {{{ protected function saveArticle()
+            foreach ($navbar_rs as $elem) {
+                $this->navbar->addEntry(new SwatNavBarEntry(
+                    $elem->title,
+                    'Article/Index?id=' . $elem->id
+                ));
+            }
+        } elseif ($this->parent !== null) {
+            $navbar_rs = SwatDB::executeStoredProc(
+                $this->app->db,
+                'getArticleNavBar',
+                [$this->parent]
+            );
 
-	protected function saveArticle()
-	{
-		$values = $this->ui->getValues(array('title', 'shortname', 'bodytext',
-			'description', 'enabled', 'visible', 'searchable'));
+            foreach ($navbar_rs as $elem) {
+                $this->navbar->addEntry(new SwatNavBarEntry(
+                    $elem->title,
+                    'Article/Index?id=' . $elem->id
+                ));
+            }
+        }
 
-		$this->edit_article->title         = $values['title'];
-		$this->edit_article->shortname     = $values['shortname'];
-		$this->edit_article->bodytext      = $values['bodytext'];
-		$this->edit_article->description   = $values['description'];
-		$this->edit_article->enabled       = $values['enabled'];
-		$this->edit_article->visible       = $values['visible'];
-		$this->edit_article->searchable    = $values['searchable'];
-
-		$this->edit_article->save();
-	}
-
-	// }}}
-
-	// build phase
-	// {{{ protected function loadDBData()
-
-	protected function loadDBData()
-	{
-		$this->ui->setValues($this->edit_article->getAttributes());
-
-		$this->parent = $this->edit_article->getInternalValue('parent');
-		$form = $this->ui->getWidget('edit_form');
-		$form->addHiddenField('parent', $this->parent);
-	}
-
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		if ($this->id !== null) {
-			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
-				'getArticleNavBar', array($this->id));
-
-			foreach ($navbar_rs as $elem)
-				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,
-					'Article/Index?id='.$elem->id));
-
-		} elseif ($this->parent !== null) {
-			$navbar_rs = SwatDB::executeStoredProc($this->app->db,
-				'getArticleNavBar', array($this->parent));
-
-			foreach ($navbar_rs as $elem)
-				$this->navbar->addEntry(new SwatNavBarEntry($elem->title,
-					'Article/Index?id='.$elem->id));
-		}
-
-		parent::buildNavBar();
-	}
-
-	// }}}
+        parent::buildNavBar();
+    }
 }
-
-?>

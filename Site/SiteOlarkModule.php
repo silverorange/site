@@ -1,68 +1,56 @@
 <?php
 
 /**
- * Module for dislaying Olark live chat
+ * Module for dislaying Olark live chat.
  *
- * @package   Site
  * @copyright 2015-2016 silverorange
- * @link      https://www.olark.com/api
+ *
+ * @see      https://www.olark.com/api
  */
 class SiteOlarkModule extends SiteApplicationModule
 {
-	// {{{ public properties
+    /**
+     * Locale strings.
+     *
+     * @var array
+     *
+     * @see https://www.olark.com/help/languages
+     */
+    public $locale_strings = [];
 
-	/**
-	 * Locale strings
-	 *
-	 * @var array
-	 * @see https://www.olark.com/help/languages
-	 */
-	public $locale_strings = array();
+    /**
+     * Olark site ID.
+     *
+     * @var string
+     */
+    protected $site_id;
 
-	// }}}
-	// {{{ protected properties
+    public function init()
+    {
+        $config = $this->app->getModule('SiteConfigModule');
+        $this->site_id = $config->olark->site_id;
+    }
 
-	/**
-	 * Olark site ID
-	 *
-	 * @var string
-	 */
-	protected $site_id;
+    public function displayScriptTag()
+    {
+        if ($this->site_id == '') {
+            throw new SiteException('Olark site-id is required');
+        }
 
-	// }}}
-	// {{{ public function init()
+        $api_lines = [sprintf(
+            'olark.identify(%s);',
+            SwatString::quoteJavaScriptString($this->site_id)
+        )];
 
-	public function init()
-	{
-		$config = $this->app->getModule('SiteConfigModule');
-		$this->site_id = $config->olark->site_id;
-	}
-
-	// }}}
-	// {{{ public function displayScriptTag()
-
-	public function displayScriptTag()
-	{
-		if ($this->site_id == '') {
-			throw new SiteException('Olark site-id is required');
-		}
-
-		$api_lines = array(
-			sprintf(
-				'olark.identify(%s);',
-				SwatString::quoteJavaScriptString($this->site_id)
-			)
-		);
-
-		foreach ($this->locale_strings as $id => $string) {
-			$api_lines[] = sprintf(
-				'olark.configure(%s, %s);',
-				SwatString::quoteJavaScriptString('locale.'.$id),
-				SwatString::quoteJavaScriptString($string)
-			);
-		}
-		// @codingStandardsIgnoreStart
-		?>
+        foreach ($this->locale_strings as $id => $string) {
+            $api_lines[] = sprintf(
+                'olark.configure(%s, %s);',
+                SwatString::quoteJavaScriptString('locale.' . $id),
+                SwatString::quoteJavaScriptString($string)
+            );
+        }
+        // @codingStandardsIgnoreStart
+        ?>
 		<script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/
 		window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){
 		f[z]=function(){
@@ -83,10 +71,8 @@ class SiteOlarkModule extends SiteApplicationModule
 		<?php echo implode('', $api_lines); ?>
 		/*]]>*/</script>
 		<?php
-		// @codingStandardsIgnoreEnd
-	}
-
-	// }}}
+        // @codingStandardsIgnoreEnd
+    }
 }
 
 ?>

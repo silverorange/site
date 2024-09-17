@@ -3,90 +3,72 @@
 /**
  * Page for displaying a search form above search results.
  *
- * @package   Site
  * @copyright 2007-2016 silverorange
  */
 class SiteSearchPage extends SiteSearchResultsPage
 {
-	// {{{ protected properties
+    /**
+     * The user-interface of the search form.
+     *
+     * @var StoreUI
+     */
+    protected $form_ui;
 
-	/**
-	 * The user-interface of the search form
-	 *
-	 * @var StoreUI
-	 */
-	protected $form_ui;
+    /**
+     * The SwatML file to load the search user-interface from.
+     *
+     * @var string
+     */
+    protected $form_ui_xml = __DIR__ . '/search-form.xml';
 
-	/**
-	 * The SwatML file to load the search user-interface from
-	 *
-	 * @var string
-	 */
-	protected $form_ui_xml = __DIR__.'/search-form.xml';
+    // init phase
 
-	// }}}
+    public function init()
+    {
+        parent::init();
 
-	// init phase
-	// {{{ public function init
+        $this->form_ui = new SwatUI();
+        $this->form_ui->loadFromXML($this->form_ui_xml);
 
-	public function init()
-	{
-		parent::init();
+        $form = $this->form_ui->getWidget('search_form');
+        $form->action = $this->source;
 
-		$this->form_ui = new SwatUI();
-		$this->form_ui->loadFromXML($this->form_ui_xml);
+        $this->form_ui->init();
+    }
 
-		$form = $this->form_ui->getWidget('search_form');
-		$form->action = $this->source;
+    // process phase
 
-		$this->form_ui->init();
-	}
+    public function process()
+    {
+        parent::process();
 
-	// }}}
+        $this->form_ui->process();
 
-	// process phase
-	// {{{ public function process
+        /*
+         * Nothing else to do...
+         * the parent class result page is driven by the GET variables this
+         * form provided.
+         */
+    }
 
-	public function process()
-	{
-		parent::process();
+    // build phase
 
-		$this->form_ui->process();
+    public function build()
+    {
+        $this->layout->startCapture('content');
+        $this->form_ui->display();
+        $this->layout->endCapture();
 
-		/*
-		 * Nothing else to do...
-		 * the parent class result page is driven by the GET variables this
-		 * form provided.
-		 */
-	}
+        parent::build();
+    }
 
-	// }}}
+    // finalize phase
 
-	// build phase
-	// {{{ public function build()
-
-	public function build()
-	{
-		$this->layout->startCapture('content');
-		$this->form_ui->display();
-		$this->layout->endCapture();
-
-		parent::build();
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->form_ui->getRoot()->getHtmlHeadEntrySet());
-	}
-
-	// }}}
+    public function finalize()
+    {
+        parent::finalize();
+        $this->layout->addHtmlHeadEntrySet(
+            $this->form_ui->getRoot()->getHtmlHeadEntrySet()
+        );
+    }
 }
-
-?>

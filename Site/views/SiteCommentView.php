@@ -1,7 +1,7 @@
 <?php
 
 /**
- * View for Site comment objects
+ * View for Site comment objects.
  *
  * By default, this comment view's parts are:
  *
@@ -17,240 +17,206 @@
  *               MODE_NONE. The summary mode displays a condensed, ellipsized
  *               version of the bodytext. Does not link anywhere.
  *
- * @package   Site
  * @copyright 2009-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteCommentView extends SiteView
 {
-	// {{{ protected properties
+    /**
+     * @var int
+     *
+     * @see SiteCommentView::setBodytextSummaryLength()
+     */
+    protected $bodytext_summary_length = 400;
 
-	/**
-	 * @var integer
-	 *
-	 * @see SiteCommentView::setBodytextSummaryLength()
-	 */
-	protected $bodytext_summary_length = 400;
+    public function setBodytextSummaryLength($length)
+    {
+        $this->bodytext_summary_length = (int) $length;
+    }
 
-	// }}}
-	// {{{ public function setBodytextSummaryLength()
+    protected function define()
+    {
+        $this->definePart('author');
+        $this->definePart('link');
+        $this->definePart('permalink');
+        $this->definePart('bodytext');
+    }
 
-	public function setBodytextSummaryLength($length)
-	{
-		$this->bodytext_summary_length = (integer)$length;
-	}
+    // general display methods
 
-	// }}}
-	// {{{ protected function define()
+    public function display($comment)
+    {
+        if (!$comment instanceof SiteComment) {
+            throw new InvalidArgumentException(sprintf(
+                'The view "%s" can ' .
+                'only display SiteComment objects.',
+                static::class
+            ));
+        }
 
-	protected function define()
-	{
-		$this->definePart('author');
-		$this->definePart('link');
-		$this->definePart('permalink');
-		$this->definePart('bodytext');
-	}
+        $div_tag = new SwatHtmlTag('div');
+        $div_tag->id = 'comment' . $comment->id;
+        $div_tag->class = implode(' ', $this->getCSSClassNames($comment));
 
-	// }}}
+        $div_tag->open();
+        $this->displayHeader($comment);
+        $this->displayBody($comment);
+        $div_tag->close();
+    }
 
-	// general display methods
-	// {{{ public function display()
+    protected function displayHeader(SiteComment $comment)
+    {
+        $heading_tag = new SwatHtmlTag('h4');
+        $heading_tag->class = 'comment-title';
 
-	public function display($comment)
-	{
-		if (!($comment instanceof SiteComment)) {
-			throw new InvalidArgumentException(sprintf('The view "%s" can '.
-				'only display SiteComment objects.',
-				get_class($this)));
-		}
+        $heading_tag->open();
 
-		$div_tag = new SwatHtmlTag('div');
-		$div_tag->id = 'comment'.$comment->id;
-		$div_tag->class = implode(' ', $this->getCSSClassNames($comment));
+        ob_start();
+        $this->displayAuthor($comment);
+        $author = ob_get_clean();
 
-		$div_tag->open();
-		$this->displayHeader($comment);
-		$this->displayBody($comment);
-		$div_tag->close();
-	}
+        if ($author != '') {
+            $elements[] = $author;
+        }
 
-	// }}}
-	// {{{ protected function displayHeader()
+        ob_start();
+        $this->displayPermalink($comment);
+        $permalink = ob_get_clean();
 
-	protected function displayHeader(SiteComment $comment)
-	{
-		$heading_tag = new SwatHtmlTag('h4');
-		$heading_tag->class = 'comment-title';
+        if ($permalink != '') {
+            $elements[] = $permalink;
+        }
 
-		$heading_tag->open();
+        echo implode(' - ', $elements);
 
-		ob_start();
-		$this->displayAuthor($comment);
-		$author = ob_get_clean();
+        $heading_tag->close();
 
-		if ($author != '') {
-			$elements[] = $author;
-		}
+        $this->displayLink($comment);
+    }
 
-		ob_start();
-		$this->displayPermalink($comment);
-		$permalink = ob_get_clean();
+    protected function displayBody(SiteComment $comment)
+    {
+        $this->displayBodytext($comment);
+    }
 
-		if ($permalink != '') {
-			$elements[] = $permalink;
-		}
+    protected function getCSSClassNames(SiteComment $comment)
+    {
+        return ['comment'];
+    }
 
-		echo implode(' - ', $elements);
+    // part display methods
 
-		$heading_tag->close();
+    abstract protected function getRelativeUri(SiteComment $comment);
 
-		$this->displayLink($comment);
-	}
+    protected function displayAuthor(SiteComment $comment)
+    {
+        if ($this->getMode('author') > SiteView::MODE_NONE) {
+            $link = $this->getLink('author');
 
-	// }}}
-	// {{{ protected function displayBody()
+            $span_tag = new SwatHtmlTag('span');
+            $span_tag->class = 'comment-author';
+            $span_tag->setContent($comment->fullname);
+            $span_tag->display();
+        }
+    }
 
-	protected function displayBody(SiteComment $comment)
-	{
-		$this->displayBodytext($comment);
-	}
+    protected function displayLink(SiteComment $comment)
+    {
+        if ($this->getMode('link') > SiteView::MODE_NONE) {
+            if ($comment->link != '') {
+                $link = $this->getLink('link');
 
-	// }}}
-	// {{{ protected function getCSSClassNames()
+                $div_tag = new SwatHtmlTag('div');
+                $div_tag->class = 'comment-link';
+                $div_tag->open();
 
-	protected function getCSSClassNames(SiteComment $comment)
-	{
-		return array('comment');
-	}
+                if ($link !== false) {
+                    $anchor_tag = new SwatHtmlTag('a');
+                    if (is_string($link)) {
+                        $anchor_tag->href = $link;
+                    } else {
+                        $anchor_tag->href = $comment->link;
+                    }
+                    $anchor_tag->class = 'comment-link';
+                    $anchor_tag->setContent($comment->link);
+                    $anchor_tag->display();
+                } else {
+                    $span_tag = new SwatHtmlTag('span');
+                    $span_tag->class = 'comment-link';
+                    $span_tag->setContent($comment->link);
+                    $span_tag->display();
+                }
 
-	// }}}
+                $div_tag->close();
+            }
+        }
+    }
 
-	// part display methods
-	// {{{ abstract protected function getRelativeUri()
+    protected function displayPermalink(SiteComment $comment)
+    {
+        if ($this->getMode('permalink') > SiteView::MODE_NONE) {
+            $link = $this->getLink('permalink');
+            if ($link === false) {
+                $permalink_tag = new SwatHtmlTag('span');
+            } else {
+                $permalink_tag = new SwatHtmlTag('a');
+                if ($link === true) {
+                    $permalink_tag->href = $this->getRelativeUri($comment);
+                } else {
+                    $permalink_tag->href = $link;
+                }
+            }
+            $permalink_tag->class = 'permalink';
+            $permalink_tag->open();
 
-	abstract protected function getRelativeUri(SiteComment $comment);
+            // display machine-readable date in UTC
+            $abbr_tag = new SwatHtmlTag('abbr');
+            $abbr_tag->class = 'comment-published';
+            $abbr_tag->title = $comment->createdate->getISO8601();
 
-	// }}}
-	// {{{ protected function displayAuthor()
+            // display human-readable date in local time
+            $date = clone $comment->createdate;
+            $date->convertTZ($this->app->default_time_zone);
+            $abbr_tag->setContent(
+                $date->formatLikeIntl(SwatDate::DF_DATE_TIME)
+            );
 
-	protected function displayAuthor(SiteComment $comment)
-	{
-		if ($this->getMode('author') > SiteView::MODE_NONE) {
-			$link = $this->getLink('author');
+            $abbr_tag->display();
 
-			$span_tag = new SwatHtmlTag('span');
-			$span_tag->class = 'comment-author';
-			$span_tag->setContent($comment->fullname);
-			$span_tag->display();
-		}
-	}
+            $permalink_tag->close();
+        }
+    }
 
-	// }}}
-	// {{{ protected function displayLink()
+    protected function displayBodytext(SiteComment $comment)
+    {
+        switch ($this->getMode('bodytext')) {
+            case SiteView::MODE_ALL:
+                $div_tag = new SwatHtmlTag('div');
+                $div_tag->class = 'comment-content';
+                $div_tag->setContent(
+                    SiteCommentFilter::toXhtml($comment->bodytext),
+                    'text/xml'
+                );
 
-	protected function displayLink(SiteComment $comment)
-	{
-		if ($this->getMode('link') > SiteView::MODE_NONE) {
-			if ($comment->link != '') {
-				$link = $this->getLink('link');
+                $div_tag->display();
+                break;
 
-				$div_tag = new SwatHtmlTag('div');
-				$div_tag->class = 'comment-link';
-				$div_tag->open();
-
-				if ($link !== false) {
-					$anchor_tag = new SwatHtmlTag('a');
-					if (is_string($link)) {
-						$anchor_tag->href = $link;
-					} else {
-						$anchor_tag->href = $comment->link;
-					}
-					$anchor_tag->class = 'comment-link';
-					$anchor_tag->setContent($comment->link);
-					$anchor_tag->display();
-				} else {
-					$span_tag = new SwatHtmlTag('span');
-					$span_tag->class = 'comment-link';
-					$span_tag->setContent($comment->link);
-					$span_tag->display();
-				}
-
-				$div_tag->close();
-			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function displayPermalink()
-
-	protected function displayPermalink(SiteComment $comment)
-	{
-		if ($this->getMode('permalink') > SiteView::MODE_NONE) {
-			$link = $this->getLink('permalink');
-			if ($link === false) {
-				$permalink_tag = new SwatHtmlTag('span');
-			} else {
-				$permalink_tag = new SwatHtmlTag('a');
-				if ($link === true) {
-					$permalink_tag->href = $this->getRelativeUri($comment);
-				} else {
-					$permalink_tag->href = $link;
-				}
-			}
-			$permalink_tag->class = 'permalink';
-			$permalink_tag->open();
-
-			// display machine-readable date in UTC
-			$abbr_tag = new SwatHtmlTag('abbr');
-			$abbr_tag->class = 'comment-published';
-			$abbr_tag->title = $comment->createdate->getISO8601();
-
-			// display human-readable date in local time
-			$date = clone $comment->createdate;
-			$date->convertTZ($this->app->default_time_zone);
-			$abbr_tag->setContent(
-				$date->formatLikeIntl(SwatDate::DF_DATE_TIME));
-
-			$abbr_tag->display();
-
-			$permalink_tag->close();
-		}
-	}
-
-	// }}}
-	// {{{ protected function displayBodytext()
-
-	protected function displayBodytext(SiteComment $comment)
-	{
-		switch ($this->getMode('bodytext')) {
-		case SiteView::MODE_ALL:
-			$div_tag = new SwatHtmlTag('div');
-			$div_tag->class = 'comment-content';
-			$div_tag->setContent(
-				SiteCommentFilter::toXhtml($comment->bodytext), 'text/xml');
-
-			$div_tag->display();
-			break;
-		case SiteView::MODE_SUMMARY:
-			$div_tag = new SwatHtmlTag('div');
-			$div_tag->class = 'comment-content';
-			$div_tag->setContent(
-				SwatString::ellipsizeRight(
-					SwatString::condense(
-						SiteCommentFilter::toXhtml(
-							$comment->bodytext
-						)
-					),
-					$this->bodytext_summary_length
-				),
-				'text/xml'
-			);
-			$div_tag->display();
-			break;
-		}
-	}
-
-	// }}}
+            case SiteView::MODE_SUMMARY:
+                $div_tag = new SwatHtmlTag('div');
+                $div_tag->class = 'comment-content';
+                $div_tag->setContent(
+                    SwatString::ellipsizeRight(
+                        SwatString::condense(
+                            SiteCommentFilter::toXhtml(
+                                $comment->bodytext
+                            )
+                        ),
+                        $this->bodytext_summary_length
+                    ),
+                    'text/xml'
+                );
+                $div_tag->display();
+                break;
+        }
+    }
 }
-
-?>

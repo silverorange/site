@@ -1,134 +1,119 @@
 <?php
 
 /**
- * A generated XML Site Map
+ * A generated XML Site Map.
  *
- * @package   Site
  * @copyright 2007-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
  * @see       http://www.sitemaps.org/
  */
 class SiteXmlSiteMapPage extends SitePageDecorator
 {
-	// {{{ protected properties
+    protected $priority_paths = [];
 
-	protected $priority_paths = array();
+    public function __construct(SiteAbstractPage $page)
+    {
+        parent::__construct($page);
+        $this->setLayout(new SiteXmlSiteMapLayout($this->app));
+    }
 
-	// }}}
-	// {{{ public function __construct()
+    public function build()
+    {
+        $this->layout->startCapture('site_map');
 
-	public function __construct(SiteAbstractPage $page)
-	{
-		parent::__construct($page);
-		$this->setLayout(new SiteXmlSiteMapLayout($this->app));
-	}
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+        $this->displaySiteMap();
+        echo '</urlset>';
 
-	// }}}
-	// {{{ public function build()
+        $this->layout->endCapture();
+    }
 
-	public function build()
-	{
-		$this->layout->startCapture('site_map');
+    protected function displayPath(
+        $path,
+        $last_modified = null,
+        $frequency = null,
+        $priority = null
+    ) {
+        echo "<url>\n";
 
-		echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-		$this->displaySiteMap();
-		echo '</urlset>';
+        printf(
+            "<loc>%s</loc>\n",
+            htmlspecialchars($this->app->getBaseHref() . $path)
+        );
 
-		$this->layout->endCapture();
-	}
+        if ($last_modified !== null) {
+            printf(
+                "<lastmod>%s</lastmod>\n",
+                $last_modified->getISO8601()
+            );
+        }
 
-	// }}}
-	// {{{ protected function displayPath()
+        if ($frequency !== null) {
+            printf(
+                "<changefreq>%s</changefreq>\n",
+                $frequency
+            );
+        }
 
-	protected function displayPath(
-		$path,
-		$last_modified = null,
-		$frequency = null,
-		$priority = null
-	) {
-		echo "<url>\n";
+        if ($priority !== null) {
+            printf(
+                "<priority>%s</priority>\n",
+                $priority
+            );
+        } elseif (array_key_exists($path, $this->priority_paths)) {
+            printf(
+                "<priority>%s</priority>\n",
+                $this->priority_paths[$path]
+            );
+        }
 
-		printf("<loc>%s</loc>\n",
-			htmlspecialchars($this->app->getBaseHref().$path));
+        echo "</url>\n";
+    }
 
-		if ($last_modified !== null)
-			printf("<lastmod>%s</lastmod>\n",
-				$last_modified->getISO8601());
+    protected function addPriorityPath($path, $priority = 1)
+    {
+        $this->priority_paths[$path] = $priority;
+    }
 
-		if ($frequency !== null)
-			printf("<changefreq>%s</changefreq>\n",
-				$frequency);
+    protected function displaySiteMap()
+    {
+        $this->displayPath('', null, 'daily', 1);
 
-		if ($priority !== null)
-			printf("<priority>%s</priority>\n",
-				$priority);
-		elseif (array_key_exists($path, $this->priority_paths))
-			printf("<priority>%s</priority>\n",
-				$this->priority_paths[$path]);
+        $articles = $this->queryArticles();
+        $this->displayArticles($articles);
+    }
 
-		echo "</url>\n";
-	}
+    protected function displayArticles($articles, $path = null)
+    {
+        foreach ($articles as $article) {
+            if ($path === null) {
+                $article_path = $article->shortname;
+            } else {
+                $article_path = $path . '/' . $article->shortname;
+            }
 
-	// }}}
-	// {{{ protected function addPriorityPath()
+            $this->displayPath($article_path, $article->modified_date, 'weekly');
 
-	protected function addPriorityPath($path, $priority = 1)
-	{
-		$this->priority_paths[$path] = $priority;
-	}
+            if (count($article->sub_articles) > 0) {
+                $this->displayArticles($article->sub_articles, $article_path);
+            }
+        }
+    }
 
-	// }}}
-	// {{{ protected function displaySiteMap()
+    protected function queryArticles()
+    {
+        $wrapper = SwatDBClassMap::get(SiteArticleWrapper::class);
 
-	protected function displaySiteMap()
-	{
-		$this->displayPath('', null, 'daily', 1);
-
-		$articles = $this->queryArticles();
-		$this->displayArticles($articles);
-	}
-
-	// }}}
-	// {{{ protected function displayArticles()
-
-	protected function displayArticles($articles, $path = null)
-	{
-		foreach ($articles as $article) {
-			if ($path === null) {
-				$article_path = $article->shortname;
-			} else {
-				$article_path = $path.'/'.$article->shortname;
-			}
-
-			$this->displayPath($article_path, $article->modified_date, 'weekly');
-
-			if (count($article->sub_articles) > 0)
-				$this->displayArticles($article->sub_articles, $article_path);
-		}
-	}
-
-	// }}}
-	// {{{ protected function queryArticles()
-
-	protected function queryArticles()
-	{
-		$wrapper = SwatDBClassMap::get('SiteArticleWrapper');
-
-		$sql = 'select Article.id, shortname, modified_date
+        $sql = 'select Article.id, shortname, modified_date
 			from Article
 			inner join EnabledArticleView on
 				EnabledArticleView.id = Article.id
 			where visible = %s
 			order by displayorder, title';
 
-		$sql = sprintf($sql, $this->app->db->quote(true, 'boolean'));
+        $sql = sprintf($sql, $this->app->db->quote(true, 'boolean'));
 
-		$articles = SwatDB::query($this->app->db, $sql, $wrapper);
-
-		return $articles;
-	}
-
-	// }}}
+        return SwatDB::query($this->app->db, $sql, $wrapper);
+    }
 }
-
-?>

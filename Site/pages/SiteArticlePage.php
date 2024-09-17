@@ -1,303 +1,257 @@
 <?php
 
 /**
- * Article page decorator
+ * Article page decorator.
  *
- * @package   Site
  * @copyright 2004-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
  * @see       SiteArticle
  */
 class SiteArticlePage extends SitePathPage
 {
-	// {{{ protected properties
+    /**
+     * @var SiteArticle
+     *
+     * @see SiteArticlePage::setArticle()
+     */
+    protected $article;
 
-	/**
-	 * @var SiteArticle
-	 *
-	 * @see SiteArticlePage::setArticle()
-	 */
-	protected $article;
+    public function __construct(SiteAbstractPage $page)
+    {
+        parent::__construct($page);
+        $this->article = new SiteArticle();
+        $this->article->setDatabase($this->app->db);
+    }
 
-	// }}}
-	// {{{ public function __construct()
+    /**
+     * Sets the article for this page to display.
+     *
+     * Note: Ideally, the article would be set in the constructor of this
+     * class. A setter method exists here for backwards compatibility.
+     *
+     * @param SiteArticle $article the article to display
+     */
+    public function setArticle(SiteArticle $article)
+    {
+        $this->article = $article;
+    }
 
-	public function __construct(SiteAbstractPage $page)
-	{
-		parent::__construct($page);
-		$this->article = new SiteArticle();
-		$this->article->setDatabase($this->app->db);
-	}
+    // init phase
 
-	// }}}
-	// {{{ public function setArticle()
+    public function init()
+    {
+        parent::init();
+        $this->initArticle();
+    }
 
-	/**
-	 * Sets the article for this page to display
-	 *
-	 * Note: Ideally, the article would be set in the constructor of this
-	 * class. A setter method exists here for backwards compatibility.
-	 *
-	 * @param SiteArticle $article the article to display.
-	 */
-	public function setArticle(SiteArticle $article)
-	{
-		$this->article = $article;
-	}
+    protected function initArticle()
+    {
+        if (!$this->article instanceof SiteArticle) {
+            throw new SiteException('SiteArticlePage must have an article ' .
+                'set.');
+        }
 
-	// }}}
+        $this->layout->selected_article_id = $this->article->id;
+    }
 
-	// init phase
-	// {{{ public function init()
+    // build phase
 
-	public function init()
-	{
-		parent::init();
-		$this->initArticle();
-	}
+    public function build()
+    {
+        $this->buildTitle();
+        $this->buildMetaDescription();
+        $this->buildNavBar();
+        $this->buildContent();
 
-	// }}}
-	// {{{ protected function initArticle()
+        $this->page->build();
+    }
 
-	protected function initArticle()
-	{
-		if (!($this->article instanceof SiteArticle))
-			throw new SiteException('SiteArticlePage must have an article '.
-				'set.');
+    protected function buildTitle()
+    {
+        $this->layout->data->title =
+            SwatString::minimizeEntities((string) $this->article->title);
 
-		$this->layout->selected_article_id = $this->article->id;
-	}
+        // If HTML title is set, set the layout HTML title
+        if ($this->article->html_title != '') {
+            $this->layout->data->html_title = SwatString::minimizeEntities(
+                (string) $this->article->html_title
+            );
+        }
+    }
 
-	// }}}
+    protected function buildMetaDescription()
+    {
+        parent::buildMetaDescription();
 
-	// build phase
-	// {{{ public function build()
+        if ($this->article->description === null) {
+            $this->layout->data->meta_description =
+                SwatString::minimizeEntities(SwatString::condense(
+                    SwatString::stripXHTMLTags($this->article->bodytext)
+                ));
+        } else {
+            $this->layout->data->meta_description =
+                SwatString::minimizeEntities($this->article->description);
+        }
+    }
 
-	public function build()
-	{
-		$this->buildTitle();
-		$this->buildMetaDescription();
-		$this->buildNavBar();
-		$this->buildContent();
+    protected function buildContent()
+    {
+        parent::buildContent();
 
-		$this->page->build();
-	}
+        $this->layout->startCapture('content');
+        $this->displayArticle($this->article);
+        $this->displaySubArticles($this->article->getVisibleSubArticles());
+        $this->layout->endCapture();
+    }
 
-	// }}}
-	// {{{ protected function buildTitle()
+    /**
+     * Displays an article on this page.
+     *
+     * Article boydtext is displayed inside a containing div element. Article
+     * bodytext may contain special markers that are replaced with content
+     * specified by <code>SitePage</code> subclasses.
+     *
+     * Markers are created using the following syntax inside article bodytext:
+     * <code>&lt;!-- [marker] --&gt;</code>
+     *
+     * @param SiteArticle $article the article to display
+     *
+     * @see SitePage::getReplacementMarkerText()
+     * @see SitePage::replaceMarkers()
+     */
+    protected function displayArticle(SiteArticle $article)
+    {
+        if ($article->bodytext != '') {
+            $bodytext = (string) $article->bodytext;
+            $bodytext = $this->replaceMarkers($bodytext);
+            echo '<div id="article_bodytext">', $bodytext, '</div>';
+        }
+    }
 
-	protected function buildTitle()
-	{
-		$this->layout->data->title =
-			SwatString::minimizeEntities((string)$this->article->title);
+    /**
+     * Displays a set of articles as sub-articles.
+     *
+     * @param SiteArticleWrapper $articles the set of articles to display
+     * @param string             $path     an optional string containing the path to the
+     *                                     article being displayed
+     *
+     * @see SitePage::displaySubArticle()
+     */
+    protected function displaySubArticles(
+        SiteArticleWrapper $articles,
+        $path = null
+    ) {
+        if (count($articles) === 0) {
+            return;
+        }
 
-		// If HTML title is set, set the layout HTML title
-		if ($this->article->html_title != '') {
-			$this->layout->data->html_title = SwatString::minimizeEntities(
-				(string)$this->article->html_title
-			);
-		}
-	}
+        echo '<dl class="sub-articles">';
 
-	// }}}
-	// {{{ protected function buildMetaDescription()
+        foreach ($articles as $article) {
+            $this->displaySubArticle($article, $path);
+        }
 
-	protected function buildMetaDescription()
-	{
-		parent::buildMetaDescription();
+        echo '</dl>';
+    }
 
-		if ($this->article->description === null) {
-			$this->layout->data->meta_description =
-				SwatString::minimizeEntities(SwatString::condense(
-				SwatString::stripXHTMLTags($this->article->bodytext, 400)));
-		} else {
-			$this->layout->data->meta_description =
-				SwatString::minimizeEntities($this->article->description);
-		}
-	}
+    /**
+     * Displays an article as a sub-article.
+     *
+     * @param SiteArticle $article the article to display
+     * @param string      $path    an optional string containing the path to the
+     *                             article being displayed. If no path is provided,
+     *                             the path of the current page is used.
+     */
+    protected function displaySubArticle(SiteArticle $article, $path = null)
+    {
+        if ($path === null) {
+            $path = $this->path;
+        }
 
-	// }}}
-	// {{{ protected function buildContent()
+        $anchor_tag = new SwatHtmlTag('a');
+        $anchor_tag->href = $path . '/' . $article->shortname;
+        $anchor_tag->class = 'sub-article';
+        $anchor_tag->setContent($article->title);
 
-	protected function buildContent()
-	{
-		parent::buildContent();
+        $dt_tag = new SwatHtmlTag('dt');
+        $dt_tag->id = sprintf('sub_article_%s', $article->shortname);
 
-		$this->layout->startCapture('content');
-		$this->displayArticle($this->article);
-		$this->displaySubArticles($this->article->getVisibleSubArticles());
-		$this->layout->endCapture();
-	}
+        $dt_tag->open();
+        $anchor_tag->display();
+        $dt_tag->close();
 
-	// }}}
-	// {{{ protected function displayArticle()
+        if ($article->description != '') {
+            echo '<dd>', $article->description, '</dd>';
+        }
+    }
 
-	/**
-	 * Displays an article on this page
-	 *
-	 * Article boydtext is displayed inside a containing div element. Article
-	 * bodytext may contain special markers that are replaced with content
-	 * specified by <code>SitePage</code> subclasses.
-	 *
-	 * Markers are created using the following syntax inside article bodytext:
-	 * <code>&lt;!-- [marker] --&gt;</code>
-	 *
-	 * @param SiteArticle $article the article to display.
-	 *
-	 * @see SitePage::getReplacementMarkerText()
-	 * @see SitePage::replaceMarkers()
-	 */
-	protected function displayArticle(SiteArticle $article)
-	{
-		if ($article->bodytext != '') {
-			$bodytext = (string)$article->bodytext;
-			$bodytext = $this->replaceMarkers($bodytext);
-			echo '<div id="article_bodytext">', $bodytext, '</div>';
-		}
-	}
+    /**
+     * Gets replacement text for a specfied replacement marker identifier.
+     *
+     * @param string $marker_id the id of the marker found in the article
+     *                          bodytext
+     *
+     * @return string the replacement text for the given marker id
+     */
+    protected function getReplacementMarkerText($marker_id)
+    {
+        // by default, always return a blank string as replacement text
+        return '';
+    }
 
-	// }}}
-	// {{{ protected function displaySubArticles()
+    /**
+     * Replaces markers in article with dynamic content.
+     *
+     * @param string $text the bodytext of the article
+     *
+     * @return string the article bodytext with markers replaced by dynamic
+     *                content
+     *
+     * @see SitePage::getReplacementMarkerText()
+     */
+    final protected function replaceMarkers($text)
+    {
+        $marker_pattern = '/<!-- \[(.*?)\] -->/u';
+        $callback = [$this, 'getReplacementMarkerTextByMatches'];
 
-	/**
-	 * Displays a set of articles as sub-articles
-	 *
-	 * @param SiteArticleWrapper $articles the set of articles to display.
-	 * @param string $path an optional string containing the path to the
-	 *                      article being displayed.
-	 *
-	 * @see SitePage::displaySubArticle()
-	 */
-	protected function displaySubArticles(
-		SiteArticleWrapper $articles,
-		$path = null
-	) {
-		if (count($articles) === 0)
-			return;
+        return preg_replace_callback($marker_pattern, $callback, $text);
+    }
 
-		echo '<dl class="sub-articles">';
+    /**
+     * Gets replacement text for a replacement marker from within a matches
+     * array returned from a PERL regular expression.
+     *
+     * @param array $matches the PERL regular expression matches array
+     *
+     * @return string the replacement text for the first parenthesized
+     *                subpattern of the <i>$matches</i> array
+     */
+    private function getReplacementMarkerTextByMatches($matches)
+    {
+        if (isset($matches[1])) {
+            return $this->getReplacementMarkerText($matches[1]);
+        }
 
-		foreach($articles as $article) {
-			$this->displaySubArticle($article, $path);
-		}
+        return '';
+    }
 
-		echo '</dl>';
-	}
+    // finalize phase
 
-	// }}}
-	// {{{ protected function displaySubArticle()
+    public function finalize()
+    {
+        parent::finalize();
+        $this->layout->addBodyClass($this->getBodyClass());
+    }
 
-	/**
-	 * Displays an article as a sub-article
-	 *
-	 * @param SiteArticle $article the article to display.
-	 * @param string $path an optional string containing the path to the
-	 *                      article being displayed. If no path is provided,
-	 *                      the path of the current page is used.
-	 */
-	protected function displaySubArticle(SiteArticle $article, $path = null)
-	{
-		if ($path === null)
-			$path = $this->path;
+    protected function getBodyClass()
+    {
+        $class = [];
+        foreach ($this->getPath() as $element) {
+            $class[] = $element->shortname;
+        }
+        $class = implode('-', $class);
 
-		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = $path.'/'.$article->shortname;
-		$anchor_tag->class = 'sub-article';
-		$anchor_tag->setContent($article->title);
-
-		$dt_tag = new SwatHtmlTag('dt');
-		$dt_tag->id = sprintf('sub_article_%s', $article->shortname);
-
-		$dt_tag->open();
-		$anchor_tag->display();
-		$dt_tag->close();
-
-		if ($article->description != '')
-			echo '<dd>', $article->description, '</dd>';
-	}
-
-	// }}}
-	// {{{ protected function getReplacementMarkerText()
-
-	/**
-	 * Gets replacement text for a specfied replacement marker identifier
-	 *
-	 * @param string $marker_id the id of the marker found in the article
-	 *                           bodytext.
-	 *
-	 * @return string the replacement text for the given marker id.
-	 */
-	protected function getReplacementMarkerText($marker_id)
-	{
-		// by default, always return a blank string as replacement text
-		return '';
-	}
-
-	// }}}
-	// {{{ protected final function replaceMarkers()
-
-	/**
-	 * Replaces markers in article with dynamic content
-	 *
-	 * @param string $text the bodytext of the article.
-	 *
-	 * @return string the article bodytext with markers replaced by dynamic
-	 *                 content.
-	 *
-	 * @see SitePage::getReplacementMarkerText()
-	 */
-	protected final function replaceMarkers($text)
-	{
-		$marker_pattern = '/<!-- \[(.*?)\] -->/u';
-		$callback = array($this, 'getReplacementMarkerTextByMatches');
-		return preg_replace_callback($marker_pattern, $callback, $text);
-	}
-
-	// }}}
-	// {{{ private function getReplacementMarkerTextByMatches()
-
-	/**
-	 * Gets replacement text for a replacement marker from within a matches
-	 * array returned from a PERL regular expression
-	 *
-	 * @param array $matches the PERL regular expression matches array.
-	 *
-	 * @return string the replacement text for the first parenthesized
-	 *                 subpattern of the <i>$matches</i> array.
-	 */
-	private function getReplacementMarkerTextByMatches($matches)
-	{
-		if (isset($matches[1]))
-			return $this->getReplacementMarkerText($matches[1]);
-
-		return '';
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		parent::finalize();
-		$this->layout->addBodyClass($this->getBodyClass());
-	}
-
-	// }}}
-	// {{{ protected function getBodyClass()
-
-	protected function getBodyClass()
-	{
-		$class = array();
-		foreach ($this->getPath() as $element) {
-			$class[] = $element->shortname;
-		}
-		$class = implode('-', $class);
-		return 'article-'.$class;
-	}
-
-	// }}}
+        return 'article-' . $class;
+    }
 }
-
-?>

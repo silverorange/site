@@ -1,90 +1,70 @@
 <?php
 
 /**
- * A page to display exceptions
+ * A page to display exceptions.
  *
- * @package   Site
  * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteXhtmlExceptionPage extends SiteExceptionPage
 {
-	// build phase
-	// {{{ protected function buildTitle()
+    // build phase
 
-	protected function buildTitle()
-	{
-		$this->layout->data->title = $this->getTitle();
-	}
+    protected function buildTitle()
+    {
+        $this->layout->data->title = $this->getTitle();
+    }
 
-	// }}}
-	// {{{ protected function buildContent()
+    protected function buildContent()
+    {
+        $this->layout->startCapture('content');
+        $this->display();
+        $this->layout->endCapture();
+    }
 
-	protected function buildContent()
-	{
-		$this->layout->startCapture('content');
-		$this->display();
-		$this->layout->endCapture();
-	}
+    protected function buildNavBar()
+    {
+        if (isset($this->layout->navbar)) {
+            $this->layout->navbar->createEntry($this->getTitle());
+        }
+    }
 
-	// }}}
-	// {{{ protected function buildNavBar()
+    protected function display()
+    {
+        printf('<p class="exception-summary">%s</p>', $this->getSummary());
 
-	protected function buildNavBar()
-	{
-		if (isset($this->layout->navbar)) {
-			$this->layout->navbar->createEntry($this->getTitle());
-		}
-	}
+        $this->displaySuggestions();
 
-	// }}}
-	// {{{ protected function display()
+        if ($this->exception instanceof SwatException
+            && !($this->exception instanceof SiteNotAuthorizedException)) {
+            $this->exception->processAndContinue();
+        }
+    }
 
-	protected function display()
-	{
-		printf('<p class="exception-summary">%s</p>', $this->getSummary());
+    protected function displaySuggestions()
+    {
+        $suggestions = $this->getSuggestions();
 
-		$this->displaySuggestions();
+        if (count($suggestions) == 0) {
+            return;
+        }
 
-		if ($this->exception instanceof SwatException &&
-			!($this->exception instanceof SiteNotAuthorizedException)) {
-			$this->exception->processAndContinue();
-		}
-	}
+        echo '<ul class="spaced exception-suggestions">';
+        $li_tag = new SwatHtmlTag('li');
 
-	// }}}
-	// {{{ protected function displaySuggestions()
+        foreach ($suggestions as $suggestion) {
+            $li_tag->setContent($suggestion, 'text/xml');
+            $li_tag->display();
+        }
 
-	protected function displaySuggestions()
-	{
-		$suggestions = $this->getSuggestions();
+        echo '</ul>';
+    }
 
-		if (count($suggestions) == 0)
-			return;
+    // finalize phase
 
-		echo '<ul class="spaced exception-suggestions">';
-		$li_tag = new SwatHtmlTag('li');
-
-		foreach ($suggestions as $suggestion) {
-			$li_tag->setContent($suggestion, 'text/xml');
-			$li_tag->display();
-		}
-
-		echo '</ul>';
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		parent::finalize();
-		$this->layout->addBodyClass('exception-page');
-	}
-
-	// }}}
+    public function finalize()
+    {
+        parent::finalize();
+        $this->layout->addBodyClass('exception-page');
+    }
 }
-
-?>

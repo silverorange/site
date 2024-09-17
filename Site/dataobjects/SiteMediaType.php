@@ -1,104 +1,90 @@
 <?php
 
 /**
- * A media type object
+ * A media type object.
  *
- * @package   Site
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteMediaType extends SwatDBDataObject
 {
-	// {{{ public properties
+    /**
+     * Unique identifier.
+     *
+     * @var int
+     */
+    public $id;
 
-	/**
-	 * Unique identifier
-	 *
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * Extension.
+     *
+     * @var string
+     */
+    public $extension;
 
-	/**
-	 * Extension
-	 *
-	 * @var string
-	 */
-	public $extension;
+    /**
+     * Mime type.
+     *
+     * @var string
+     */
+    public $mime_type;
 
-	/**
-	 * Mime type
-	 *
-	 * @var string
-	 */
-	public $mime_type;
+    /**
+     * Alternate mime types.
+     *
+     * A comma-deliminated list of alternate valid mime types to the
+     * default mime type.
+     *
+     * @var string
+     */
+    public $alternate_mime_types;
 
-	/**
-	 * Alternate mime types
-	 *
-	 * A comma-deliminated list of alternate valid mime types to the
-	 * default mime type.
-	 *
-	 * @var string
-	 */
-	public $alternate_mime_types;
+    /**
+     * Loads a media type from the database with a mime-type.
+     *
+     * @param string $mime_type The mime-type of the media type
+     *
+     * @return bool true if a type was successfully loaded and false if
+     *              no set was found with the specified mime-type
+     */
+    public function loadByMimeType($mime_type)
+    {
+        $this->checkDB();
 
-	// }}}
-	// {{{ public function loadByMimeType()
+        $found = false;
 
-	/**
-	 * Loads a media type from the database with a mime-type
-	 *
-	 * @param string $mime_type The mime-type of the media type
-	 *
-	 * @return boolean true if a type was successfully loaded and false if
-	 *                  no set was found with the specified mime-type.
-	 */
-	public function loadByMimeType($mime_type)
-	{
-		$this->checkDB();
+        $sql = 'select * from %s where lower(mime_type) = lower(%s)';
 
-		$found = false;
+        $sql = sprintf(
+            $sql,
+            $this->table,
+            $this->db->quote($mime_type, 'text')
+        );
 
-		$sql = 'select * from %s where lower(mime_type) = lower(%s)';
+        $row = SwatDB::queryRow($this->db, $sql);
 
-		$sql = sprintf($sql,
-			$this->table,
-			$this->db->quote($mime_type, 'text'));
+        if ($row !== null) {
+            $this->initFromRow($row);
+            $this->generatePropertyHashes();
+            $found = true;
+        }
 
-		$row = SwatDB::queryRow($this->db, $sql);
+        return $found;
+    }
 
-		if ($row !== null) {
-			$this->initFromRow($row);
-			$this->generatePropertyHashes();
-			$found = true;
-		}
+    public function getValidMimeTypes()
+    {
+        $mime_types = [$this->mime_type];
+        foreach (explode(',', $this->alternate_mime_types) as $type) {
+            $mime_types[] = trim($type);
+        }
 
-		return $found;
-	}
+        return array_unique($mime_types);
+    }
 
-	// }}}
-	// {{{ public function getValidMimeTypes()
-
-	public function getValidMimeTypes()
-	{
-		$mime_types = array($this->mime_type);
-		foreach (explode(',', $this->alternate_mime_types) as $type) {
-			$mime_types[] = trim($type);
-		}
-
-		return array_unique($mime_types);
-	}
-
-	// }}}
-	// {{{ protected function init()
-
-	protected function init()
-	{
-		$this->table = 'MediaType';
-		$this->id_field = 'integer:id';
-	}
-
-	// }}}
+    protected function init()
+    {
+        $this->table = 'MediaType';
+        $this->id_field = 'integer:id';
+    }
 }
-
-?>

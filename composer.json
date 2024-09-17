@@ -53,10 +53,15 @@
 		"silverorange/concentrate": "^2.0.0",
 		"silverorange/mdb2": "^3.0.0",
 		"silverorange/swat": "^7.1.0",
+		"silverorange/xml_rpc2": "^2.0",
+		"silverorange/xml_rpc_ajax": "^3.1",
 		"symfony/mailer": "^5.4"
 	},
 	"require-dev": {
-		"silverorange/coding-standard": "^1.0.0"
+		"friendsofphp/php-cs-fixer": "^3.64",
+		"phpstan/phpstan": "^1.12",
+		"rector/rector": "^1.2",
+		"silverorange/php-coding-tools": "^1.1"
 	},
 	"suggest": {
 		"ext-amqp": "Allows some operations to use a message queue system.",
@@ -67,13 +72,14 @@
 		"pelago/emogrifier": "Inlines CSS in multipart mail messages.",
 		"psr/log": "Enables logging using the PSR logging interface.",
 		"silverorange/admin": "Enables admin components",
-		"silverorange/jwplayer": "Enables video player support.",
-		"silverorange/xml_rpc2": "Enables XML-RPC server pages."
+		"silverorange/jwplayer": "Enables video player support."
 	},
 	"scripts": {
-		"lint": "./vendor/bin/phpcs",
-		"post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src",
-		"post-update-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src"
+		"lint": "./vendor/bin/php-cs-fixer check -v",
+		"lint:fix": "./vendor/bin/php-cs-fixer fix -v",
+		"phpstan": "./vendor/bin/phpstan",
+		"rector": "./vendor/bin/rector --dry-run",
+		"rector:fix": "./vendor/bin/rector"
 	},
 	"autoload": {
 		"classmap": [ "Site/" ]

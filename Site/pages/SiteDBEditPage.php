@@ -1,71 +1,53 @@
 <?php
 
 /**
- * Base class for database edit pages
+ * Base class for database edit pages.
  *
- * @package   Site
  * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 abstract class SiteDBEditPage extends SiteEditPage
 {
-	// process phase
-	// {{{ protected function save()
+    // process phase
 
-	protected function save(SwatForm $form)
-	{
-		$transaction = new SwatDBTransaction($this->app->db);
-		try {
-			$this->saveData($form);
-			$transaction->commit();
-		} catch (SwatDBException $e) {
-			if ($this->app->hasModule('SiteMessagesModule')) {
-				$messages = $this->app->getModule('SiteMessagesModule');
-				$messages->add($this->getRollbackMessage($form));
-			}
-			$transaction->rollback();
-			$this->handleDBException($e);
-		} catch (Throwable $e) {
-			$this->handleException($transaction, $e);
-		}
-	}
+    protected function save(SwatForm $form)
+    {
+        $transaction = new SwatDBTransaction($this->app->db);
 
-	// }}}
-	// {{{ abstract protected function saveData()
+        try {
+            $this->saveData($form);
+            $transaction->commit();
+        } catch (SwatDBException $e) {
+            if ($this->app->hasModule('SiteMessagesModule')) {
+                $messages = $this->app->getModule('SiteMessagesModule');
+                $messages->add($this->getRollbackMessage($form));
+            }
+            $transaction->rollback();
+            $this->handleDBException($e);
+        } catch (Throwable $e) {
+            $this->handleException($transaction, $e);
+        }
+    }
 
-	abstract protected function saveData(SwatForm $form);
+    abstract protected function saveData(SwatForm $form);
 
-	// }}}
-	// {{{ protected function getRollbackMessage()
+    protected function getRollbackMessage(SwatForm $form)
+    {
+        return new SwatMessage(
+            Site::_('An error has occurred. The item was not saved.'),
+            'system-error'
+        );
+    }
 
-	protected function getRollbackMessage(SwatForm $form)
-	{
-		$message = new SwatMessage(
-			Site::_('An error has occurred. The item was not saved.'),
-			'system-error');
+    protected function handleDBException(SwatDBException $e)
+    {
+        $e->processAndContinue();
+    }
 
-		return $message;
-	}
-
-	// }}}
-	// {{{ protected function handleDBException()
-
-	protected function handleDBException(SwatDBException $e)
-	{
-		$e->processAndContinue();
-	}
-
-	// }}}
-	// {{{ protected function handleException()
-
-	protected function handleException(
-		SwatDBTransaction $transaction,
-		Throwable $e
-	) {
-		throw $e;
-	}
-
-	// }}}
+    protected function handleException(
+        SwatDBTransaction $transaction,
+        Throwable $e
+    ) {
+        throw $e;
+    }
 }
-
-?>

@@ -3,277 +3,243 @@
 use Char0n\FFMpegPHP\Movie;
 
 /**
- * Generates media thumbnails for the video scrubber
+ * Generates media thumbnails for the video scrubber.
  *
- * @package   Site
  * @copyright 2013-2016 silverorange
  */
-class SiteVideoScrubberImageGenerator extends
-	SiteCommandLineApplication
+class SiteVideoScrubberImageGenerator extends SiteCommandLineApplication
 {
-	// {{{ protected properties
+    /**
+     * The directory containing the media hierarchy.
+     *
+     * @var string
+     */
+    protected $media_file_base;
 
-	/**
-	 * The directory containing the media hierarchy
-	 *
-	 * @var string
-	 */
-	protected $media_file_base;
+    /**
+     * The directory containing the image hierarchy.
+     *
+     * @var string
+     */
+    protected $image_file_base;
 
-	/**
-	 * The directory containing the image hierarchy
-	 *
-	 * @var string
-	 */
-	protected $image_file_base;
+    public function setMediaFileBase($media_file_base)
+    {
+        $this->media_file_base = $media_file_base;
+    }
 
-	// }}}
+    public function setImageFileBase($image_file_base)
+    {
+        $this->image_file_base = $image_file_base;
+    }
 
-	// {{{ public function setMediaFileBase()
+    public function run()
+    {
+        $this->initModules();
+        $this->parseCommandLineArguments();
 
-	public function setMediaFileBase($media_file_base)
-	{
-		$this->media_file_base = $media_file_base;
-	}
+        if ($this->image_file_base === null) {
+            throw new SiteCommandLineException('Image file base must be set');
+        }
+        if ($this->media_file_base === null) {
+            throw new SiteCommandLineException('Media file base must be set');
+        }
 
-	// }}}
-	// {{{ public function setImageFileBase()
+        $this->lock();
 
-	public function setImageFileBase($image_file_base)
-	{
-		$this->image_file_base = $image_file_base;
-	}
+        $pending_media = $this->getPendingMedia();
+        $this->debug(count($pending_media) . " pending videos\n\n");
 
-	// }}}
-	// {{{ public function run()
+        if (count($pending_media) > 0) {
+            $encoding_shortname = $this->getMediaEncodingShortname(
+                $pending_media
+            );
 
-	public function run()
-	{
-		$this->initModules();
-		$this->parseCommandLineArguments();
+            foreach ($pending_media as $media) {
+                $this->debug('Media: ' . $media->id . "\n");
+                $media->setFileBase($this->media_file_base);
+                $path = $this->getMediaPath($media, $encoding_shortname);
+                if ($path === null) {
+                    continue;
+                }
 
-		if ($this->image_file_base === null) {
-			throw new SiteCommandLineException('Image file base must be set');
-		} elseif ($this->media_file_base === null) {
-			throw new SiteCommandLineException('Media file base must be set');
-		}
+                $this->processMedia($media, $path);
+            }
+        }
 
-		$this->lock();
+        $this->unlock();
+        $this->debug("done\n");
+    }
 
-		$pending_media = $this->getPendingMedia();
-		$this->debug(count($pending_media)." pending videos\n\n");
-
-		if (count($pending_media) > 0) {
-			$encoding_shortname = $this->getMediaEncodingShortname(
-				$pending_media);
-
-			foreach ($pending_media as $media) {
-				$this->debug("Media: ".$media->id."\n");
-				$media->setFileBase($this->media_file_base);
-				$path = $this->getMediaPath($media, $encoding_shortname);
-				if ($path === null) {
-					continue;
-				}
-
-				$this->processMedia($media, $path);
-			}
-		}
-
-		$this->unlock();
-		$this->debug("done\n");
-	}
-
-	// }}}
-	// {{{ protected function getPendingMedia()
-
-	protected function getPendingMedia()
-	{
-		$sql = sprintf('select Media.*
+    protected function getPendingMedia()
+    {
+        $sql = sprintf(
+            'select Media.*
 			from Media
 			inner join MediaSet on Media.media_set = MediaSet.id
 			where %s
 			order by Media.id',
-			$this->getPendingMediaWhereClause());
+            $this->getPendingMediaWhereClause()
+        );
 
-		$media = SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteVideoMediaWrapper'));
+        return SwatDB::query(
+            $this->db,
+            $sql,
+            SwatDBClassMap::get(SiteVideoMediaWrapper::class)
+        );
+    }
 
-		return $media;
-	}
-
-	// }}}
-	// {{{ protected function getPendingMediaWhereClause()
-
-	protected function getPendingMediaWhereClause()
-	{
-		return 'Media.scrubber_image is null
+    protected function getPendingMediaWhereClause()
+    {
+        return 'Media.scrubber_image is null
 				and Media.id in (select media from MediaEncodingBinding)
 				and MediaSet.id in (select media_set from MediaEncoding
 					where width is not null)';
-	}
+    }
 
-	// }}}
-	// {{{ protected function getMediaEncodingShortname()
+    protected function getMediaEncodingShortname(SiteMediaWrapper $media)
+    {
+        $encoding_shortname = null;
 
-	protected function getMediaEncodingShortname(SiteMediaWrapper $media)
-	{
-		$encoding_shortname = null;
+        // TODO: switch to caching the encoding-shortname per media-set
+        $m = $media->getFirst();
+        if ($m !== null) {
+            foreach ($m->media_set->encodings as $encoding) {
+                if ($encoding->width !== null
+                    && $encoding->width > $m->getScrubberImageWidth()) {
+                    $encoding_shortname = $encoding->shortname;
+                }
+            }
+        }
 
-		// TODO: switch to caching the encoding-shortname per media-set
-		$m = $media->getFirst();
-		if ($m !== null) {
-			foreach ($m->media_set->encodings as $encoding) {
-				if ($encoding->width !== null &&
-					$encoding->width > $m->getScrubberImageWidth()) {
-					$encoding_shortname = $encoding->shortname;
-				}
-			}
-		}
+        if ($encoding_shortname === null) {
+            throw new SiteCommandLineException('No encodings big enough');
+        }
 
-		if ($encoding_shortname === null) {
-			throw new SiteCommandLineException('No encodings big enough');
-		}
+        return $encoding_shortname;
+    }
 
-		return $encoding_shortname;
-	}
+    protected function getMediaPath(SiteMedia $media, $encoding_shortname)
+    {
+        $path = null;
 
-	// }}}
-	// {{{ protected function getMediaPath()
+        if ($media->encodingExists($encoding_shortname)) {
+            $path = $media->getFilePath($encoding_shortname);
 
-	protected function getMediaPath(SiteMedia $media, $encoding_shortname)
-	{
-		$path = null;
+            if (!file_exists($path)) {
+                $message = "'" . $path . "' not found for media " . $media->id;
+                $exception = new SiteCommandLineException($message);
+                $exception->processAndContinue();
+                $this->debug($message . "\n\n");
+                $path = null;
+            }
+        } else {
+            $message = "Encoding '" . $encoding_shortname . "' not found for " .
+                'media ' . $media->id;
 
-		if ($media->encodingExists($encoding_shortname)) {
-			$path = $media->getFilePath($encoding_shortname);
+            $exception = new SiteCommandLineException($message);
+            $exception->processAndContinue();
+            $this->debug($message . "\n\n");
+        }
 
-			if (!file_exists($path)) {
-				$message = "'".$path."' not found for media ".$media->id;
-				$exception = new SiteCommandLineException($message);
-				$exception->processAndContinue();
-				$this->debug($message."\n\n");
-				$path = null;
-			}
-		} else {
-			$message = "Encoding '".$encoding_shortname."' not found for ".
-				"media ".$media->id;
+        return $path;
+    }
 
-			$exception = new SiteCommandLineException($message);
-			$exception->processAndContinue();
-			$this->debug($message."\n\n");
-		}
+    protected function processMedia(SiteMedia $media, $path)
+    {
+        $movie = new Movie($path);
+        $grid = new Imagick();
 
-		return $path;
-	}
+        $position = 0;
+        $count = 0;
 
-	// }}}
-	// {{{ protected function processMedia()
+        $this->debug("Processing Frames:\n");
 
-	protected function processMedia(SiteMedia $media, $path)
-	{
-		$movie = new Movie($path);
-		$grid = new Imagick();
+        while ($position < $movie->getDuration() - 2) {
+            $frame = $movie->getFrameAtTime($position);
+            $img = $frame->toGDImage();
+            ob_start();
+            imagejpeg($img);
+            $thumb = new Imagick();
+            $thumb->readImageBlob(ob_get_clean());
+            $thumb->resizeImage(
+                $media->getScrubberImageWidth(),
+                $media->getScrubberImageWidth(),
+                Imagick::FILTER_LANCZOS,
+                1,
+                true
+            );
 
-		$position = 0;
-		$count = 0;
+            $grid->addImage($thumb);
 
-		$this->debug("Processing Frames:\n");
+            $position += $media->getScrubberImageInterval();
+            $count++;
 
-		while ($position < $movie->getDuration() - 2) {
-			$frame = $movie->getFrameAtTime($position);
-			$img = $frame->toGDImage();
-			ob_start();
-			imagejpeg($img);
-			$thumb = new Imagick();
-			$thumb->readImageBlob(ob_get_clean());
-			$thumb->resizeImage(
-				$media->getScrubberImageWidth(),
-				$media->getScrubberImageWidth(),
-				Imagick::FILTER_LANCZOS,
-				1,
-				true);
+            $this->debug("\033[100D"); // reset the line
+            $this->debug(sprintf(
+                '%d of %d (%d%%)',
+                $count,
+                $media->getDefaultScrubberImageCount(),
+                $count / $media->getDefaultScrubberImageCount() * 100
+            ));
+        }
 
-			$grid->addImage($thumb);
+        $grid->resetIterator();
+        $output = $grid->appendImages(false);
+        $output->setImageFormat('jpeg');
+        $tmp_file = tempnam(sys_get_temp_dir(), 'scrubber-image-');
+        $output->writeImage($tmp_file);
 
-			$position += $media->getScrubberImageInterval();
-			$count++;
+        if ($media->scrubber_image instanceof SiteVideoScrubberImage) {
+            $media->scrubber_image->setFileBase($this->image_file_base);
+            $media->scrubber_image->delete();
+        }
 
-			$this->debug("\033[100D"); // reset the line
-			$this->debug(sprintf('%d of %d (%d%%)',
-				$count,
-				$media->getDefaultScrubberImageCount(),
-				$count / $media->getDefaultScrubberImageCount() * 100));
-		}
+        $image = $this->getImageObject();
+        $image->process($tmp_file);
+        $image->save();
 
-		$grid->resetIterator();
-		$output = $grid->appendImages(false);
-		$output->setImageFormat('jpeg');
-		$tmp_file = tempnam(sys_get_temp_dir(), 'scrubber-image-');
-		$output->writeImage($tmp_file);
+        $media->scrubber_image_count = $media->getDefaultScrubberImageCount();
+        $media->scrubber_image = $image;
+        $media->save();
 
-		if ($media->scrubber_image instanceof SiteVideoScrubberImage) {
-			$media->scrubber_image->setFileBase($this->image_file_base);
-			$media->scrubber_image->delete();
-		}
+        $this->debug("\nComposite Saved!\n\n");
+    }
 
-		$image = $this->getImageObject();
-		$image->process($tmp_file);
-		$image->save();
+    protected function getImageObject()
+    {
+        $class_name = SwatDBClassMap::get(SiteVideoScrubberImage::class);
 
-		$media->scrubber_image_count = $media->getDefaultScrubberImageCount();
-		$media->scrubber_image = $image;
-		$media->save();
+        $image_object = new $class_name();
+        $image_object->setDatabase($this->db);
+        $image_object->setFileBase($this->image_file_base);
 
-		$this->debug("\nComposite Saved!\n\n");
-	}
+        return $image_object;
+    }
 
-	// }}}
-	// {{{ protected function getImageObject()
+    // boilerplate
 
-	protected function getImageObject()
-	{
-		$class_name = SwatDBClassMap::get('SiteVideoScrubberImage');
+    /**
+     * Gets the list of modules to load for this search indexer.
+     *
+     * @return array the list of modules to load for this application
+     *
+     * @see SiteApplication::getDefaultModuleList()
+     */
+    protected function getDefaultModuleList()
+    {
+        return array_merge(
+            parent::getDefaultModuleList(),
+            [
+                'config'   => SiteConfigModule::class,
+                'database' => SiteDatabaseModule::class,
+            ]
+        );
+    }
 
-		$image_object = new $class_name();
-		$image_object->setDatabase($this->db);
-		$image_object->setFileBase($this->image_file_base);
-
-		return $image_object;
-	}
-
-	// }}}
-
-	// boilerplate
-	// {{{ protected function getDefaultModuleList()
-
-	/**
-	 * Gets the list of modules to load for this search indexer
-	 *
-	 * @return array the list of modules to load for this application.
-	 *
-	 * @see SiteApplication::getDefaultModuleList()
-	 */
-	protected function getDefaultModuleList()
-	{
-		return array_merge(
-			parent::getDefaultModuleList(),
-			[
-				'config' => SiteConfigModule::class,
-				'database' => SiteDatabaseModule::class,
-			]
-		);
-	}
-
-	// }}}
-	// {{{ protected function configure()
-
-	protected function configure(SiteConfigModule $config)
-	{
-		parent::configure($config);
-		$this->database->dsn = $config->database->dsn;
-	}
-
-	// }}}
+    protected function configure(SiteConfigModule $config)
+    {
+        parent::configure($config);
+        $this->database->dsn = $config->database->dsn;
+    }
 }
-
-?>

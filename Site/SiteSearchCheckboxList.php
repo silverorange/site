@@ -1,51 +1,39 @@
 <?php
 
 /**
- * A checkbox list widget for search forms
+ * A checkbox list widget for search forms.
  *
- * @package   Site
  * @copyright 2007-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteSearchCheckboxList extends  SwatCheckboxList
+class SiteSearchCheckboxList extends SwatCheckboxList
 {
-	// {{{ public properties
+    public $highlight_values = [];
 
-	public $highlight_values = array();
+    /**
+     * Processes this checkbox list widget.
+     */
+    public function process()
+    {
+        $form = $this->getForm();
 
-	// }}}
-	// {{{ public function process()
+        SwatOptionControl::process();
 
-	/**
-	 * Processes this checkbox list widget
-	 */
-	public function process()
-	{
-		$form = $this->getForm();
+        $this->getCompositeWidget('check_all')->process();
 
-		SwatOptionControl::process();
+        $data = &$form->getFormData();
 
-		$this->getCompositeWidget('check_all')->process();
+        $this->processValues();
+    }
 
-		$data = &$form->getFormData();
+    protected function getLiTag($option)
+    {
+        $tag = parent::getLiTag($option);
 
-		$this->processValues();
-	}
+        if (in_array($option->value, $this->highlight_values)) {
+            $tag->class = 'highlight';
+        }
 
-	// }}}
-	// {{{ protected function getLiTag()
-
-	protected function getLiTag($option)
-	{
-		$tag = parent::getLiTag($option);
-
-		if (in_array($option->value, $this->highlight_values))
-			$tag->class = 'highlight';
-
-		return $tag;
-	}
-
-	// }}}
+        return $tag;
+    }
 }
-
-?>

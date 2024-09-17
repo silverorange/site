@@ -1,282 +1,234 @@
 <?php
 
 /**
- * Recalculates the duration of all media in a media set
+ * Recalculates the duration of all media in a media set.
  *
- * @package   Site
  * @copyright 2015-2016 silverorange
  */
 class SiteAudioMediaDurationUpdater extends SiteCommandLineApplication
 {
-	// {{{ public properties
+    /**
+     * A convenience reference to the database object.
+     *
+     * @var MDB2_Driver
+     */
+    public $db;
 
-	/**
-	 * A convenience reference to the database object
-	 *
-	 * @var MDB2_Driver
-	 */
-	public $db;
+    /**
+     * @var bool
+     */
+    protected $dry_run = false;
 
-	// }}}
-	// {{{ protected properties
+    /**
+     * @var string
+     */
+    protected $media_set_shortname;
 
-	/**
-	 * @var boolean
-	 */
-	protected $dry_run = false;
+    /**
+     * @var string
+     */
+    protected $media_file_base;
 
-	/**
-	 * @var string
-	 */
-	protected $media_set_shortname;
+    /**
+     * Creates a new private data deleter application.
+     *
+     * @param string $id
+     * @param string $config_filename
+     * @param string $title
+     * @param string $documentation
+     *
+     * @see SiteCommandLineApplication::__construct()
+     */
+    public function __construct($id, $config_filename, $title, $documentation)
+    {
+        parent::__construct($id, $config_filename, $title, $documentation);
 
-	/**
-	 * @var string
-	 */
-	protected $media_file_base;
+        $this->addCommandLineArgument(
+            new SiteCommandLineArgument(
+                ['--dry-run'],
+                'setDryRun',
+                Site::_(
+                    'Durations are only calculated but not saved. Use ' .
+                    'with --verbose to see what durations differ.'
+                )
+            )
+        );
 
-	// }}}
-	// {{{ public function __construct()
+        $shortname = new SiteCommandLineArgument(
+            ['-s', '--shortname'],
+            'setMediaSetShortname',
+            Site::_(
+                'Sets the shortname of the media set whose durations we want ' .
+                'to recalculate.'
+            )
+        );
 
-	/**
-	 * Creates a new private data deleter application
-	 *
-	 * @param string $id
-	 * @param string $config_filename
-	 * @param string $title
-	 * @param string $documentation
-	 *
-	 * @see SiteCommandLineApplication::__construct()
-	 */
-	public function __construct($id, $config_filename, $title, $documentation)
-	{
-		parent::__construct($id, $config_filename, $title, $documentation);
+        $shortname->addParameter(
+            'string',
+            'shortname name must be specified.'
+        );
 
-		$this->addCommandLineArgument(
-			new SiteCommandLineArgument(
-				array('--dry-run'),
-				'setDryRun',
-				Site::_(
-					'Durations are only calculated but not saved. Use '.
-					'with --verbose to see what durations differ.'
-				)
-			)
-		);
+        $this->addCommandLineArgument($shortname);
+    }
 
-		$shortname = new SiteCommandLineArgument(
-			array('-s', '--shortname'),
-			'setMediaSetShortname',
-			Site::_(
-				'Sets the shortname of the media set whose durations we want '.
-				'to recalculate.'
-			)
-		);
+    public function run()
+    {
+        $this->initModules();
+        $this->parseCommandLineArguments();
 
-		$shortname->addParameter(
-			'string',
-			'shortname name must be specified.'
-		);
+        $this->lock();
 
-		$this->addCommandLineArgument($shortname);
-	}
+        $now = new SwatDate();
+        $now->toUTC();
 
-	// }}}
-	// {{{ public function run()
+        foreach ($this->getMedia() as $media) {
+            $this->updateDuration($media);
+        }
 
-	public function run()
-	{
-		$this->initModules();
-		$this->parseCommandLineArguments();
+        $this->unlock();
+        $this->debug(Site::_('done') . "\n");
+    }
 
-		$this->lock();
+    public function setDryRun($dry_run)
+    {
+        $this->dry_run = (bool) $dry_run;
+    }
 
-		$now = new SwatDate();
-		$now->toUTC();
+    public function setMediaSetShortname($shortname)
+    {
+        $this->media_set_shortname = $shortname;
+    }
 
-		foreach ($this->getMedia() as $media) {
-			$this->updateDuration($media);
-		}
+    public function setMediaFileBase($media_file_base)
+    {
+        $this->media_file_base = $media_file_base;
+    }
 
-		$this->unlock();
-		$this->debug(Site::_('done')."\n");
-	}
+    protected function getMediaSet()
+    {
+        if ($this->media_set_shortname == '') {
+            throw new SiteException('A media set shortname must be specified.');
+        }
 
-	// }}}
-	// {{{ public function setDryRun()
+        $class_name = SwatDBClassMap::get(SiteMediaSet::class);
 
-	public function setDryRun($dry_run)
-	{
-		$this->dry_run = (boolean)$dry_run;
-	}
+        $media_set = new $class_name();
+        $media_set->setDatabase($this->db);
 
-	// }}}
-	// {{{ public function setMediaSetShortname()
+        if (!$media_set->loadByShortname($this->media_set_shortname)) {
+            throw new SiteException(
+                sprintf(
+                    'Unable to load media set with shortname “%s”.',
+                    $this->media_set_shortname
+                )
+            );
+        }
 
-	public function setMediaSetShortname($shortname)
-	{
-		$this->media_set_shortname = $shortname;
-	}
+        return $media_set;
+    }
 
-	// }}}
-	// {{{ public function setMediaFileBase()
+    protected function getMedia()
+    {
+        $sql = sprintf(
+            'select * from Media where media_set = %s order by id',
+            $this->db->quote($this->getMediaSet()->id, 'integer')
+        );
 
-	public function setMediaFileBase($media_file_base)
-	{
-		$this->media_file_base = $media_file_base;
-	}
+        return SwatDB::query(
+            $this->db,
+            $sql,
+            $this->getAudioMediaWrapperClass()
+        );
+    }
 
-	// }}}
-	// {{{ protected function getMediaSet()
+    protected function getAudioMediaWrapperClass()
+    {
+        return SwatDBClassMap::get(SiteAudioMediaWrapper::class);
+    }
 
-	protected function getMediaSet()
-	{
-		if ($this->media_set_shortname == '') {
-			throw new SiteException('A media set shortname must be specified.');
-		}
+    protected function updateDuration(SiteAudioMedia $media)
+    {
+        if ($this->media_file_base == '') {
+            throw new SiteException('A media file base must be specified.');
+        }
 
-		$class_name = SwatDBClassMap::get('SiteMediaSet');
+        $media->setFileBase($this->media_file_base);
 
-		$media_set = new $class_name();
-		$media_set->setDatabase($this->db);
+        $filename = $media->getFilePath('original');
 
-		if (!$media_set->loadByShortname($this->media_set_shortname)) {
-			throw new SiteException(
-				sprintf(
-					'Unable to load media set with shortname “%s”.',
-					$this->media_set_shortname
-				)
-			);
-		}
+        if (file_exists($filename)) {
+            $old_duration = $media->duration;
+            $new_duration = $media->parseDuration($this, $filename);
 
-		return $media_set;
-	}
+            $this->debug(
+                sprintf(
+                    Site::_('Updating Media %s...'),
+                    $media->id
+                )
+            );
 
-	// }}}
-	// {{{ protected function getMedia()
+            if ($old_duration !== $new_duration) {
+                $this->debug("\n");
+                $this->debug(
+                    sprintf(
+                        "\t" . Site::_('new duration: %s') . "\n",
+                        $new_duration
+                    )
+                );
 
-	protected function getMedia()
-	{
-		$sql = sprintf(
-			'select * from Media where media_set = %s order by id',
-			$this->db->quote($this->getMediaSet()->id, 'integer')
-		);
+                $this->debug(
+                    sprintf(
+                        "\t" . Site::_('old duration: %s') . "\n",
+                        $old_duration
+                    )
+                );
 
-		$audio = SwatDB::query(
-			$this->db,
-			$sql,
-			$this->getAudioMediaWrapperClass()
-		);
+                if (!$this->dry_run) {
+                    $this->saveMedia($media, $new_duration);
+                }
+            } else {
+                $this->debug(Site::_(' existing duration correct.') . "\n");
+            }
+        } else {
+            $this->debug(
+                sprintf(
+                    Site::_('Unable to locate “%s” for duration checking.'),
+                    $filename
+                ) . "\n"
+            );
+        }
+    }
 
-		return $audio;
-	}
+    protected function saveMedia(SiteMedia $media, $duration)
+    {
+        $media->duration = $duration;
+        $media->save();
+    }
 
-	// }}}
-	// {{{ protected function getAudioMediaWrapperClass()
+    // boilerplate
 
-	protected function getAudioMediaWrapperClass()
-	{
-		return SwatDBClassMap::get('SiteAudioMediaWrapper');
-	}
+    /**
+     * Gets the list of modules to load for this search indexer.
+     *
+     * @return array the list of modules to load for this application
+     *
+     * @see SiteApplication::getDefaultModuleList()
+     */
+    protected function getDefaultModuleList()
+    {
+        return array_merge(
+            parent::getDefaultModuleList(),
+            [
+                'config'   => SiteConfigModule::class,
+                'database' => SiteDatabaseModule::class,
+                'amqp'     => SiteAMQPModule::class,
+            ]
+        );
+    }
 
-	// }}}
-	// {{{ protected function updateDuration()
-
-	protected function updateDuration(SiteAudioMedia $media)
-	{
-		if ($this->media_file_base == '') {
-			throw new SiteException('A media file base must be specified.');
-		}
-
-		$media->setFileBase($this->media_file_base);
-
-		$filename = $media->getFilePath('original');
-
-		if (file_exists($filename)) {
-			$old_duration = $media->duration;
-			$new_duration = $media->parseDuration($this, $filename);
-
-			$this->debug(
-				sprintf(
-					Site::_('Updating Media %s...'),
-					$media->id
-				)
-			);
-
-			if ($old_duration !== $new_duration) {
-				$this->debug("\n");
-				$this->debug(
-					sprintf(
-						"\t".Site::_('new duration: %s')."\n",
-						$new_duration
-					)
-				);
-
-				$this->debug(
-					sprintf(
-						"\t".Site::_('old duration: %s')."\n",
-						$old_duration
-					)
-				);
-
-				if (!$this->dry_run) {
-					$this->saveMedia($media, $new_duration);
-				}
-			} else {
-				$this->debug(Site::_(' existing duration correct.')."\n");
-			}
-		} else {
-			$this->debug(
-				sprintf(
-					Site::_('Unable to locate “%s” for duration checking.'),
-					$filename
-				)."\n"
-			);
-		}
-	}
-
-	// }}}
-	// {{{ protected function saveMedia()
-
-	protected function saveMedia(SiteMedia $media, $duration)
-	{
-		$media->duration = $duration;
-		$media->save();
-	}
-
-	// }}}
-
-	// boilerplate
-	// {{{ protected function getDefaultModuleList()
-
-	/**
-	 * Gets the list of modules to load for this search indexer
-	 *
-	 * @return array the list of modules to load for this application.
-	 *
-	 * @see SiteApplication::getDefaultModuleList()
-	 */
-	protected function getDefaultModuleList()
-	{
-		return array_merge(
-			parent::getDefaultModuleList(),
-			[
-				'config' => SiteConfigModule::class,
-				'database' => SiteDatabaseModule::class,
-				'amqp' => SiteAMQPModule::class,
-			]
-		);
-	}
-
-	// }}}
-	// {{{ protected function configure()
-
-	protected function configure(SiteConfigModule $config)
-	{
-		parent::configure($config);
-		$this->database->dsn = $config->database->dsn;
-	}
-
-	// }}}
+    protected function configure(SiteConfigModule $config)
+    {
+        parent::configure($config);
+        $this->database->dsn = $config->database->dsn;
+    }
 }
-
-?>

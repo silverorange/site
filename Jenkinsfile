@@ -17,12 +17,8 @@ pipeline {
             steps {
                 sh '''
                     files=$(git diff-tree --diff-filter=ACRM --no-commit-id --name-only -r HEAD)
-                    if [ -n "$files" ]; then ./vendor/bin/phpcs \
-                    --standard=SilverorangeTransitional \
-                    --tab-width=4 \
-                    --encoding=utf-8 \
-                    --warning-severity=0 \
-                    --extensions=php \
+                    if [ -n "$files" ]; then ./vendor/bin/php-cs-fixer check \
+                    --config ./.php-cs-fixer.php \
                     $files; fi
                 '''
             }
@@ -33,7 +29,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh './vendor/bin/phpcs'
+                sh 'composer run lint'
             }
         }
     }

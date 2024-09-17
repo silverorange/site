@@ -1,230 +1,185 @@
 <?php
 
 /**
- * Page for logging into an account
+ * Page for logging into an account.
  *
- * @package   Site
  * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
  * @see       SiteAccount
  */
 class SiteAccountLoginPage extends SiteUiPage
 {
-	// {{{ protected properties
+    /**
+     * @var string
+     *
+     * @see SiteAccountLoginPage::initRelocateURI();
+     */
+    protected $relocate_uri;
 
-	/**
-	 * @var string
-	 *
-	 * @see SiteAccountLoginPage::initRelocateURI();
-	 */
-	protected $relocate_uri = null;
+    protected function getUiXml()
+    {
+        return __DIR__ . '/account-login.xml';
+    }
 
-	// }}}
-	// {{{ protected function getUiXml()
+    // init phase
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/account-login.xml';
-	}
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// }}}
+        $this->initRelocateURI($this->ui->getWidget('login_form'));
+        $this->loggedInRelocate();
+    }
 
-	// init phase
-	// {{{ protected function initInternal()
+    protected function initRelocateURI(SwatForm $form)
+    {
+        $relocate_uri = null;
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+        $get_uri = SiteApplication::initVar(
+            'relocate',
+            null,
+            SiteApplication::VAR_GET
+        );
 
-		$this->initRelocateURI($this->ui->getWidget('login_form'));
-		$this->loggedInRelocate();
-	}
+        // only use relative URIs
+        if ($get_uri != '' && !preg_match('#^(?:[a-zA-Z]+:)?//#', $get_uri)) {
+            $relocate_uri = $get_uri;
+        }
 
-	// }}}
-	// {{{ protected function initRelocateURI()
+        if ($relocate_uri === null) {
+            $relocate_uri = $form->getHiddenField('relocate_uri');
+        }
 
-	protected function initRelocateURI(SwatForm $form)
-	{
-		$relocate_uri = null;
+        if ($relocate_uri === null) {
+            $this->relocate_uri = $this->getDefaultRelocateURI();
+        } else {
+            $this->relocate_uri = $relocate_uri;
+        }
 
-		$get_uri = SiteApplication::initVar(
-			'relocate',
-			null,
-			SiteApplication::VAR_GET
-		);
+        $form->addHiddenField('relocate_uri', $this->relocate_uri);
+    }
 
-		// only use relative URIs
-		if ($get_uri != '' && !preg_match('#^(?:[a-zA-Z]+:)?//#', $get_uri)) {
-			$relocate_uri = $get_uri;
-		}
+    protected function loggedInRelocate()
+    {
+        if ($this->app->session->isLoggedIn()) {
+            $this->app->relocate($this->relocate_uri);
+        }
+    }
 
-		if ($relocate_uri === null) {
-			$relocate_uri = $form->getHiddenField('relocate_uri');
-		}
+    protected function getDefaultRelocateURI()
+    {
+        return 'account';
+    }
 
-		if ($relocate_uri === null) {
-			$this->relocate_uri = $this->getDefaultRelocateURI();
-		} else {
-			$this->relocate_uri = $relocate_uri;
-		}
+    // process phase
 
-		$form->addHiddenField('relocate_uri', $this->relocate_uri);
-	}
+    protected function processInternal()
+    {
+        parent::processInternal();
 
-	// }}}
-	// {{{ protected function loggedInRelocate()
+        $form = $this->ui->getWidget('login_form');
 
-	protected function loggedInRelocate()
-	{
-		if ($this->app->session->isLoggedIn()) {
-			$this->app->relocate($this->relocate_uri);
-		}
-	}
+        if ($form->isProcessed() && !$form->hasMessage()) {
+            $email = $this->ui->getWidget('email_address')->value;
+            $password = $this->ui->getWidget('password')->value;
 
-	// }}}
-	// {{{ protected function getDefaultRelocateURI()
+            if ($this->app->session->login($email, $password)) {
+                $this->postLoginProcess();
+                $this->app->relocate($this->relocate_uri);
+            } else {
+                $this->handleLoginFailure();
+            }
+        }
+    }
 
-	protected function getDefaultRelocateURI()
-	{
-		return 'account';
-	}
+    protected function postLoginProcess()
+    {
+        // save persistent login if stay-logged-in is checked
+        if ($this->app->config->account->persistent_login_enabled) {
+            $this->app->session->setLoginCookie();
+        }
+    }
 
-	// }}}
+    protected function handleLoginFailure()
+    {
+        $message = new SwatMessage(
+            Site::_('The email or password you entered is not correct'),
+            'warning'
+        );
 
-	// process phase
-	// {{{ protected function processInternal()
+        $message->secondary_content = sprintf(
+            '<ul><li>%s</li><li>%s</li></ul>',
+            Site::_(
+                'Please check the spelling on your email ' .
+                'address or password.'
+            ),
+            sprintf(
+                Site::_(
+                    'Password is case-sensitive. Make sure ' .
+                    'your %sCaps Lock%s key is off.'
+                ),
+                '<kbd>',
+                '</kbd>'
+            )
+        );
 
-	protected function processInternal()
-	{
-		parent::processInternal();
+        $message->content_type = 'text/xml';
+        $this->ui->getWidget('message_display')->add($message);
+    }
 
-		$form = $this->ui->getWidget('login_form');
+    // build phase
 
-		if ($form->isProcessed() && !$form->hasMessage()) {
-			$email = $this->ui->getWidget('email_address')->value;
-			$password = $this->ui->getWidget('password')->value;
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
-			if ($this->app->session->login($email, $password)) {
-				$this->postLoginProcess();
-				$this->app->relocate($this->relocate_uri);
-			} else {
-				$this->handleLoginFailure();
-			}
-		}
-	}
+        $login_form = $this->ui->getWidget('login_form');
+        $login_form->action = $this->source;
 
-	// }}}
-	// {{{ protected function postLoginProcess()
+        $this->buildForgotPasswordLink();
+        $this->buildNewCustomersFrame();
+    }
 
-	protected function postLoginProcess()
-	{
-		// save persistent login if stay-logged-in is checked
-		if ($this->app->config->account->persistent_login_enabled) {
-			$this->app->session->setLoginCookie();
-		}
-	}
+    protected function buildNewCustomersFrame()
+    {
+        $create_form = $this->ui->getWidget('create_account_form');
+        $create_form->action = 'account/edit';
+    }
 
-	// }}}
-	// {{{ protected function handleLoginFailure()
+    protected function buildForgotPasswordLink()
+    {
+        $this->ui->getWidget('forgot_password')->content =
+            $this->getForgotPasswordLink();
+    }
 
-	protected function handleLoginFailure()
-	{
-		$message = new SwatMessage(
-			Site::_('The email or password you entered is not correct'),
-			'warning'
-		);
+    protected function getForgotPasswordLink()
+    {
+        $href = 'account/forgotpassword';
 
-		$message->secondary_content = sprintf(
-			'<ul><li>%s</li><li>%s</li></ul>',
-			Site::_(
-				'Please check the spelling on your email '.
-				'address or password.'
-			),
-			sprintf(
-				Site::_(
-					'Password is case-sensitive. Make sure '.
-					'your %sCaps Lock%s key is off.'
-				),
-				'<kbd>',
-				'</kbd>'
-			)
-		);
+        $email = $this->ui->getWidget('email_address');
+        if (!$email->hasMessage() && $email->value != '') {
+            $href .= '?email=' . urlencode($email->value);
+        }
 
-		$message->content_type = 'text/xml';
-		$this->ui->getWidget('message_display')->add($message);
-	}
+        $link = new SwatHtmlTag('a');
+        $link->setContent(Site::_('Forgot your password?'));
+        $link->href = $href;
+        $link->tabindex = 4;
 
-	// }}}
+        return $link;
+    }
 
-	// build phase
-	// {{{ protected function buildInternal()
+    // finalize phase
 
-	protected function buildInternal()
-	{
-		parent::buildInternal();
+    public function finalize()
+    {
+        parent::finalize();
 
-		$login_form = $this->ui->getWidget('login_form');
-		$login_form->action = $this->source;
+        $this->layout->addBodyClass('account-login-page');
 
-		$this->buildForgotPasswordLink();
-		$this->buildNewCustomersFrame();
-	}
-
-	// }}}
-	// {{{ protected function buildNewCustomersFrame()
-
-	protected function buildNewCustomersFrame()
-	{
-		$create_form = $this->ui->getWidget('create_account_form');
-		$create_form->action = 'account/edit';
-	}
-
-	// }}}
-	// {{{ protected function buildForgotPasswordLink()
-
-	protected function buildForgotPasswordLink()
-	{
-		$this->ui->getWidget('forgot_password')->content =
-			$this->getForgotPasswordLink();
-	}
-
-	// }}}
-	// {{{ protected function getForgotPasswordLink()
-
-	protected function getForgotPasswordLink()
-	{
-		$href = 'account/forgotpassword';
-
-		$email = $this->ui->getWidget('email_address');
-		if (!$email->hasMessage() && $email->value != '') {
-			$href.= '?email='.urlencode($email->value);
-		}
-
-		$link = new SwatHtmlTag('a');
-		$link->setContent(Site::_('Forgot your password?'));
-		$link->href = $href;
-		$link->tabindex = 4;
-
-		return $link;
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		parent::finalize();
-
-		$this->layout->addBodyClass('account-login-page');
-
-		$this->layout->addHtmlHeadEntry(
-			'packages/site/styles/site-account-login-page.css'
-		);
-	}
-
-	// }}}
+        $this->layout->addHtmlHeadEntry(
+            'packages/site/styles/site-account-login-page.css'
+        );
+    }
 }
-
-?>

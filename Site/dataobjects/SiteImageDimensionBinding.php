@@ -1,161 +1,138 @@
 <?php
 
 /**
- * An image dimension binding data object
+ * An image dimension binding data object.
  *
- * @package   Site
  * @copyright 2008-2016 silverorange
  */
 class SiteImageDimensionBinding extends SwatDBDataObject
 {
-	// {{{ public properties
+    /**
+     * Width.
+     *
+     * @var int
+     */
+    public $width;
 
-	/**
-	 * Width
-	 *
-	 * @var integer
-	 */
-	public $width;
+    /**
+     * Height.
+     *
+     * @var int
+     */
+    public $height;
 
-	/**
-	 * Height
-	 *
-	 * @var integer
-	 */
-	public $height;
+    /**
+     * File size in bytes.
+     *
+     * @var int
+     */
+    public $filesize;
 
-	/**
-	 * File size in bytes
-	 *
-	 * @var integer
-	 */
-	public $filesize;
+    /**
+     * Dpi.
+     *
+     * @var int
+     */
+    public $dpi;
 
-	/**
-	 * Dpi
-	 *
-	 * @var integer
-	 */
-	public $dpi;
+    /**
+     * Whether or not this dimension is on a CDN.
+     *
+     * @var bool
+     */
+    public $on_cdn;
 
-	/**
-	 * Whether or not this dimension is on a CDN
-	 *
-	 * @var boolean
-	 */
-	public $on_cdn;
+    /**
+     * Dimension Id.
+     *
+     * This is not an internal property since alternative effiecient methods
+     * are used to load dimensions and dimension bindings.
+     *
+     * @var int
+     */
+    public $dimension;
 
-	/**
-	 * Dimension Id
-	 *
-	 * This is not an internal property since alternative effiecient methods
-	 * are used to load dimensions and dimension bindings.
-	 *
-	 * @var integer
-	 */
-	public $dimension;
+    /**
+     * Image Id.
+     *
+     * This is not an internal property since alternative effiecient methods
+     * are used to load dimensions and dimension bindings.
+     *
+     * @var int
+     */
+    public $image;
 
-	/**
-	 * Image Id
-	 *
-	 * This is not an internal property since alternative effiecient methods
-	 * are used to load dimensions and dimension bindings.
-	 *
-	 * @var integer
-	 */
-	public $image;
+    /**
+     * Image field name.
+     *
+     * @var string
+     */
+    protected $image_field = 'image';
 
-	// }}}
-	// {{{ protected properties
+    private static $image_type_cache = [];
 
-	/**
-	 * Image field name
-	 *
-	 * @var string
-	 */
-	protected $image_field = 'image';
+    protected function init()
+    {
+        $this->table = 'ImageDimensionBinding';
 
-	// }}}
-	// {{{ private properties
+        $this->registerInternalProperty(
+            'image_type',
+            SwatDBClassMap::get(SiteImageType::class)
+        );
+    }
 
-	private static $image_type_cache = array();
+    protected function hasSubDataObject($key)
+    {
+        $found = parent::hasSubDataObject($key);
 
-	// }}}
-	// {{{ protected function init()
+        if ($key === 'image_type' && !$found) {
+            $image_type_id = $this->getInternalValue('image_type');
 
-	protected function init()
-	{
-		$this->table = 'ImageDimensionBinding';
+            if ($image_type_id !== null
+                && array_key_exists($image_type_id, self::$image_type_cache)) {
+                $this->setSubDataObject(
+                    'image_type',
+                    self::$image_type_cache[$image_type_id]
+                );
 
-		$this->registerInternalProperty('image_type',
-			SwatDBClassMap::get('SiteImageType'));
-	}
+                $found = true;
+            }
+        }
 
-	// }}}
-	// {{{ protected function hasSubDataObject()
+        return $found;
+    }
 
-	protected function hasSubDataObject($key)
-	{
-		$found = parent::hasSubDataObject($key);
+    protected function setSubDataObject($name, $value)
+    {
+        if ($name === 'image_type') {
+            self::$image_type_cache[$value->id] = $value;
+        }
 
-		if ($key === 'image_type' && !$found) {
-			$image_type_id = $this->getInternalValue('image_type');
+        parent::setSubDataObject($name, $value);
+    }
 
-			if ($image_type_id !== null &&
-				array_key_exists($image_type_id, self::$image_type_cache)) {
-				$this->setSubDataObject('image_type',
-					self::$image_type_cache[$image_type_id]);
+    /**
+     * Saves this object to the database.
+     *
+     * Only modified properties are updated.
+     */
+    protected function saveInternal()
+    {
+        $sql = sprintf(
+            'delete from %s where dimension = %s and %s = %s',
+            $this->table,
+            $this->db->quote($this->dimension, 'integer'),
+            $this->image_field,
+            $this->db->quote($this->image, 'integer')
+        );
 
-				$found = true;
-			}
-		}
+        SwatDB::exec($this->db, $sql);
 
-		return $found;
-	}
+        parent::saveInternal();
+    }
 
-	// }}}
-	// {{{ protected function setSubDataObject()
-
-	protected function setSubDataObject($name, $value)
-	{
-		if ($name === 'image_type')
-			self::$image_type_cache[$value->id] = $value;
-
-		parent::setSubDataObject($name, $value);
-	}
-
-	// }}}
-	// {{{ protected function saveInternal()
-
-	/**
-	 * Saves this object to the database
-	 *
-	 * Only modified properties are updated.
-	 */
-	protected function saveInternal()
-	{
-		$sql = sprintf('delete from %s where dimension = %s and %s = %s',
-			$this->table,
-			$this->db->quote($this->dimension, 'integer'),
-			$this->image_field,
-			$this->db->quote($this->image, 'integer'));
-
-		SwatDB::exec($this->db, $sql);
-
-		parent::saveInternal();
-	}
-
-	// }}}
-	// {{{ protected function getSerializablePrivateProperties()
-
-	protected function getSerializablePrivateProperties()
-	{
-		return array_merge(parent::getSerializablePrivateProperties(), array(
-			'image_type',
-		));
-	}
-
-	// }}}
+    protected function getSerializablePrivateProperties()
+    {
+        return array_merge(parent::getSerializablePrivateProperties(), ['image_type']);
+    }
 }
-
-?>

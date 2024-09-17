@@ -1,173 +1,140 @@
 <?php
 
 /**
- * Poster frame edit page for SiteVideoMedia
+ * Poster frame edit page for SiteVideoMedia.
  *
- * @package   Site
  * @copyright 2017 silverorange
  */
 class SiteMediaPosterFrame extends AdminDBEdit
 {
-	// {{{ protected properties
+    /**
+     * @var SiteVideoMedia
+     */
+    protected $media;
 
-	/**
-	 * @var SiteVideoMedia
-	 */
-	protected $media;
+    // init phase
 
-	// }}}
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// init phase
-	// {{{ protected function initInternal()
+        $this->ui->loadFromXML($this->getUiXml());
+        $this->initMedia();
+    }
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+    protected function initMedia()
+    {
+        $class_name = SwatDBClassMap::get(SiteVideoMedia::class);
+        $this->media = new $class_name();
+        $this->media->setDatabase($this->app->db);
 
-		$this->ui->loadFromXML($this->getUiXml());
-		$this->initMedia();
-	}
+        if ($this->id == '') {
+            throw new AdminNotFoundException('A media id is required.');
+        }
 
-	// }}}
-	// {{{ protected function initMedia()
+        if (!$this->media->load($this->id)) {
+            throw new AdminNotFoundException(
+                sprintf(
+                    'A media row with the id of ‘%s’ does not exist',
+                    $this->id
+                )
+            );
+        }
 
-	protected function initMedia()
-	{
-		$class_name = SwatDBClassMap::get('SiteVideoMedia');
-		$this->media = new $class_name();
-		$this->media->setDatabase($this->app->db);
+        $instance_id = $this->app->getInstanceId();
+        if ($instance_id != '') {
+            if ($this->getMediaInstanceId() !== $instance_id) {
+                throw new AdminNotFoundException(
+                    sprintf(
+                        'Incorrect instance for media ‘%s’.',
+                        $this->id
+                    )
+                );
+            }
+        }
+    }
 
-		if ($this->id == '') {
-			throw new AdminNotFoundException('A media id is required.');
-		}
+    protected function getUiXml()
+    {
+        return __DIR__ . '/poster-frame.xml';
+    }
 
-		if (!$this->media->load($this->id)) {
-			throw new AdminNotFoundException(
-				sprintf(
-					'A media row with the id of ‘%s’ does not exist',
-					$this->id
-				)
-			);
-		}
+    // process phase
 
-		$instance_id = $this->app->getInstanceId();
-		if ($instance_id != '') {
-			if ($this->getMediaInstanceId() !== $instance_id) {
-				throw new AdminNotFoundException(
-					sprintf(
-						'Incorrect instance for media ‘%s’.', $this->id
-					)
-				);
-			}
-		}
-	}
+    protected function saveDBData()
+    {
+        $image_entry = $this->ui->getWidget('custom_image');
+        if ($image_entry->isUploaded()) {
+            $class_name = SwatDBClassMap::get(SiteVideoImage::class);
+            $image = new $class_name();
 
-	// }}}
-	// {{{ protected function getUiXml()
+            if ($image->hasDateProperty('modified_date')) {
+                $image->modified_date = new SwatDate();
+                $image->modified_date->toUTC();
+            }
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/poster-frame.xml';
-	}
+            $image->setDatabase($this->app->db);
+            $image->setFileBase('../images');
+            $image->process($image_entry->getTempFileName());
 
-	// }}}
+            // Delete the old image. Prevents broswer/CDN caching.
+            if ($this->media->image instanceof SiteImage) {
+                $this->media->image->setFileBase('../images');
+                $this->media->image->delete();
+            }
 
-	// process phase
-	// {{{ protected function saveDBData()
+            $this->media->image = $image;
+            $this->app->messages->add(new SwatMessage('Poster frame updated'));
+            $this->media->save();
+        }
+    }
 
-	protected function saveDBData()
-	{
-		$image_entry = $this->ui->getWidget('custom_image');
-		if ($image_entry->isUploaded()) {
-			$class_name = SwatDBClassMap::get('SiteVideoImage');
-			$image = new $class_name();
+    // build phase
 
-			if ($image->hasDateProperty('modified_date')) {
-				$image->modified_date = new SwatDate();
-				$image->modified_date->toUTC();
-			}
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
-			$image->setDatabase($this->app->db);
-			$image->setFileBase('../images');
-			$image->process($image_entry->getTempFileName());
+        $this->media->setFileBase('media');
+        $player = $this->media->getMediaPlayer($this->app);
+        ob_start();
+        $player->display();
+        $this->ui->getWidget('player')->content = ob_get_clean();
+        $this->layout->addHtmlHeadEntrySet($player->getHtmlHeadEntrySet());
+    }
 
-			// Delete the old image. Prevents broswer/CDN caching.
-			if ($this->media->image instanceof SiteImage) {
-				$this->media->image->setFileBase('../images');
-				$this->media->image->delete();
-			}
+    protected function loadDBData()
+    {
+        $this->ui->setValues($this->media->getAttributes());
+    }
 
-			$this->media->image = $image;
-			$this->app->messages->add(new SwatMessage('Poster frame updated'));
-			$this->media->save();
-		}
-	}
+    protected function getMediaInstance()
+    {
+        return $this->media->media_set->instance;
+    }
 
-	// }}}
+    protected function getMediaInstanceId()
+    {
+        return ($this->getMediaInstance() instanceof SiteInstance)
+            ? $this->getMediaInstance()->id
+            : null;
+    }
 
-	// build phase
-	// {{{ protected function buildInternal()
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
 
-	protected function buildInternal()
-	{
-		parent::buildInternal();
+        $this->navbar->popEntries(2);
 
-		$this->media->setFileBase('media');
-		$player = $this->media->getMediaPlayer($this->app);
-		ob_start();
-		$player->display();
-		$this->ui->getWidget('player')->content = ob_get_clean();
-		$this->layout->addHtmlHeadEntrySet($player->getHtmlHeadEntrySet());
-	}
+        if ($this->app->isMultipleInstanceAdmin()) {
+            $instance = $this->getMediaInstance();
+            $instance_link = sprintf('Instance/Details?id=%s', $instance->id);
+            $this->layout->navbar->createEntry(
+                $instance->title,
+                $instance_link
+            );
+        }
 
-	// }}}
-	// {{{ protected function loadDBData()
-
-	protected function loadDBData()
-	{
-		$this->ui->setValues($this->media->getAttributes());
-	}
-
-	// }}}
-	// {{{ protected function getMediaInstance()
-
-	protected function getMediaInstance()
-	{
-		return $this->media->media_set->instance;
-	}
-
-	// }}}
-	// {{{ protected function getMediaInstanceId()
-
-	protected function getMediaInstanceId()
-	{
-		return ($this->getMediaInstance() instanceof SiteInstance)
-			? $this->getMediaInstance()->id
-			: null;
-	}
-
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-
-		$this->navbar->popEntries(2);
-
-		if ($this->app->isMultipleInstanceAdmin()) {
-			$instance = $this->getMediaInstance();
-			$instance_link = sprintf('Instance/Details?id=%s', $instance->id);
-			$this->layout->navbar->createEntry(
-				$instance->title,
-				$instance_link
-			);
-		}
-
-		$this->navbar->createEntry(Site::_('Edit Poster Frame'));
-	}
-
-	// }}}
+        $this->navbar->createEntry(Site::_('Edit Poster Frame'));
+    }
 }
-
-?>

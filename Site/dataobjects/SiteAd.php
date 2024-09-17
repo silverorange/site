@@ -1,113 +1,105 @@
 <?php
 
 /**
- * Advertisements that are tracked on an applcation
+ * Advertisements that are tracked on an applcation.
  *
  * This class is for tracking advertisements, not for displaying
  * advertisements.
  *
- * @package   Site
  * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
  * @see       SiteAdReferrer
  */
 class SiteAd extends SwatDBDataObject
 {
-	// {{{ public properties
+    /**
+     * Unique identifier for this advertisement.
+     *
+     * @var int
+     */
+    public $id;
 
-	/**
-	 * Unique identifier for this advertisement
-	 *
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * A short, textual identifier for this advertisement.
+     *
+     * @var string
+     */
+    public $shortname;
 
-	/**
-	 * A short, textual identifier for this advertisement
-	 *
-	 * @var string
-	 */
-	public $shortname;
+    /**
+     * A title visible to users for describing this advertisement.
+     *
+     * @var string
+     */
+    public $title;
 
-	/**
-	 * A title visible to users for describing this advertisement
-	 *
-	 * @var string
-	 */
-	public $title;
+    /**
+     * The date this advertisement was created.
+     *
+     * @var SwatDate
+     */
+    public $createdate;
 
-	/**
-	 * The date this advertisement was created
-	 *
-	 * @var SwatDate
-	 */
-	public $createdate;
+    /**
+     * Display order of this advertisement.
+     *
+     * @var int
+     */
+    public $displayorder;
 
-	/**
-	 * Display order of this advertisement
-	 *
-	 * @var integer
-	 */
-	public $displayorder;
+    /**
+     * Total referrals based on this advertisement.
+     *
+     * @var int
+     */
+    public $total_referrers;
 
-	/**
-	 * Total referrals based on this advertisement
-	 *
-	 * @var integer
-	 */
-	public $total_referrers;
+    /**
+     * Total emails sent with the ad tracker.
+     *
+     * @var int
+     */
+    public $emails_sent = 0;
 
-	/**
-	 * Total emails sent with the ad tracker.
-	 *
-	 * @var integer
-	 */
-	public $emails_sent = 0;
+    protected function init()
+    {
+        $this->table = 'Ad';
+        $this->id_field = 'integer:id';
+        $this->registerDateProperty('createdate');
+    }
 
-	// }}}
-	// {{{ protected function init()
+    /**
+     * Loads an ad from the database using the ad shortname.
+     *
+     * @param string $shortname the shortname of the ad
+     *
+     * @return bool true if the loading was successful and false if it was
+     *              not
+     */
+    public function loadFromShortname($shortname)
+    {
+        $this->checkDB();
+        $row = null;
 
-	protected function init()
-	{
-		$this->table = 'Ad';
-		$this->id_field = 'integer:id';
-		$this->registerDateProperty('createdate');
-	}
+        if ($this->table !== null) {
+            $sql = sprintf(
+                'select * from %s where shortname = %s',
+                $this->table,
+                $this->db->quote($shortname, 'text')
+            );
 
-	// }}}
-	// {{{ public function loadFromShortname()
+            $rs = SwatDB::query($this->db, $sql, null);
+            $row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+        }
 
-	/**
-	 * Loads an ad from the database using the ad shortname
-	 *
-	 * @param string $shortname the shortname of the ad.
-	 *
-	 * @return boolean true if the loading was successful and false if it was
-	 *                  not.
-	 */
-	public function loadFromShortname($shortname)
-	{
-		$this->checkDB();
-		$row = null;
+        if ($row === null) {
+            return false;
+        }
 
-		if ($this->table !== null) {
-			$sql = sprintf('select * from %s where shortname = %s',
-				$this->table,
-				$this->db->quote($shortname, 'text'));
+        $this->initFromRow($row);
+        $this->generatePropertyHashes();
 
-			$rs = SwatDB::query($this->db, $sql, null);
-			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
-		}
-
-		if ($row === null)
-			return false;
-
-		$this->initFromRow($row);
-		$this->generatePropertyHashes($row);
-		return true;
-	}
-
-	// }}}
+        return true;
+    }
 }
-
-?>

@@ -1,167 +1,143 @@
 <?php
 
 /**
- * Page for requesting a new password for forgotten account passwords
+ * Page for requesting a new password for forgotten account passwords.
  *
- * @package   Site
  * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
  * @see       SiteAccount
  * @see       SiteAccountResetPasswordPage
  */
 class SiteAccountForgotPasswordPage extends SiteUiPage
 {
-	// {{{ protected properties
+    /**
+     * @var SiteAccount
+     */
+    protected $account;
 
-	/**
-	 * @var SiteAccount
-	 */
-	protected $account;
+    protected function getUiXml()
+    {
+        return __DIR__ . '/account-forgot-password.xml';
+    }
 
-	// }}}
-	// {{{ protected function getUiXml()
+    // init phase
 
-	protected function getUiXml()
-	{
-		return __DIR__.'/account-forgot-password.xml';
-	}
+    public function init()
+    {
+        parent::init();
 
-	// }}}
+        if ($this->app->session instanceof SiteAccountSessionModule
+            && $this->app->session->isLoggedIn()) {
+            $this->ui->getWidget('email')->value =
+                $this->app->session->account->email;
+        }
+    }
 
-	// init phase
-	// {{{ public function init()
+    // process phase
 
-	public function init()
-	{
-		parent::init();
+    public function process()
+    {
+        parent::process();
 
-		if ($this->app->session instanceof SiteAccountSessionModule &&
-			$this->app->session->isLoggedIn()) {
-			$this->ui->getWidget('email')->value =
-				$this->app->session->account->email;
-		}
-	}
+        $form = $this->ui->getWidget('password_form');
 
-	// }}}
+        $form->process();
 
-	// process phase
-	// {{{ public function process()
+        if ($form->isProcessed()) {
+            if (!$form->hasMessage()) {
+                $this->generatePassword();
+            }
 
-	public function process()
-	{
-		parent::process();
+            if (!$form->hasMessage()) {
+                $this->relocate();
+            }
+        }
+    }
 
-		$form = $this->ui->getWidget('password_form');
+    protected function relocate()
+    {
+        $this->app->relocate('account/forgotpassword/sent');
+    }
 
-		$form->process();
+    /**
+     * Gets the account to which to sent the forgot password email.
+     *
+     * @param string $email the email address of the account
+     *
+     * @return SiteAccount the account or null if no such account exists
+     */
+    protected function getAccount($email)
+    {
+        $instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
+            $this->app->instance->getInstance() : null;
 
-		if ($form->isProcessed()) {
-			if (!$form->hasMessage()) {
-				$this->generatePassword();
-			}
+        $class_name = SwatDBClassMap::get(SiteAccount::class);
+        $account = new $class_name();
+        $account->setDatabase($this->app->db);
+        $found = $account->loadWithEmail($email, $instance);
 
-			if (!$form->hasMessage()) {
-				$this->relocate();
-			}
-		}
-	}
+        if ($found === false) {
+            $account = null;
+        }
 
-	// }}}
-	// {{{ protected function relocate()
+        return $account;
+    }
 
-	protected function relocate()
-	{
-		$this->app->relocate('account/forgotpassword/sent');
-	}
+    protected function generatePassword()
+    {
+        $email = $this->ui->getWidget('email')->value;
 
-	// }}}
-	// {{{ protected function getAccount()
+        $this->account = $this->getAccount($email);
 
-	/**
-	 * Gets the account to which to sent the forgot password email
-	 *
-	 * @param string $email the email address of the account.
-	 *
-	 * @return SiteAccount the account or null if no such account exists.
-	 */
-	protected function getAccount($email)
-	{
-		$instance = ($this->app->hasModule('SiteMultipleInstanceModule')) ?
-			$this->app->instance->getInstance() : null;
+        if ($this->account === null) {
+            $message = $this->getAccountNotFoundMessage();
+            $this->ui->getWidget('email')->addMessage($message);
+        } else {
+            $this->account->resetPassword($this->app);
+            $this->sendResetPasswordMailMessage($this->account);
+        }
+    }
 
-		$class_name = SwatDBClassMap::get('SiteAccount');
-		$account = new $class_name();
-		$account->setDatabase($this->app->db);
-		$found = $account->loadWithEmail($email, $instance);
+    protected function getAccountNotFoundMessage()
+    {
+        $message = new SwatMessage(
+            Site::_(
+                'There is no account with this email address.'
+            ),
+            'error'
+        );
 
-		if ($found === false)
-			$account = null;
+        $message->secondary_content = sprintf(
+            Site::_(
+                'Make sure you entered it correctly, or ' .
+                '%screate a New Account%s.'
+            ),
+            '<a href="account/edit">',
+            '</a>'
+        );
 
-		return $account;
-	}
+        $message->content_type = 'text/xml';
 
-	// }}}
-	// {{{ protected function generatePassword()
+        return $message;
+    }
 
-	protected function generatePassword()
-	{
-		$email = $this->ui->getWidget('email')->value;
+    protected function sendResetPasswordMailMessage(SiteAccount $account)
+    {
+        $account->sendResetPasswordMailMessage($this->app);
+    }
 
-		$this->account = $this->getAccount($email);
+    // build phase
 
-		if ($this->account === null) {
-			$message = $this->getAccountNotFoundMessage();
-			$this->ui->getWidget('email')->addMessage($message);
-		} else {
-			$this->account->resetPassword($this->app);
-			$this->sendResetPasswordMailMessage($this->account);
-		}
-	}
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
-	// }}}
-	// {{{ protected function getAccountNotFoundMessage()
+        $this->ui->getWidget('password_form')->action = $this->source;
 
-	protected function getAccountNotFoundMessage()
-	{
-		$message = new SwatMessage(Site::_(
-			'There is no account with this email address.'),
-			'error');
-
-		$message->secondary_content = sprintf(Site::_(
-			'Make sure you entered it correctly, or '.
-			'%screate a New Account%s.'),
-			'<a href="account/edit">', '</a>');
-
-		$message->content_type = 'text/xml';
-		return $message;
-	}
-
-	// }}}
-	// {{{ protected function sendResetPasswordMailMessage()
-
-	protected function sendResetPasswordMailMessage(SiteAccount $account)
-	{
-		$account->sendResetPasswordMailMessage($this->app);
-	}
-
-	// }}}
-
-	// build phase
-	// {{{ protected function buildInternal()
-
-	protected function buildInternal()
-	{
-		parent::buildInternal();
-
-		$this->ui->getWidget('password_form')->action = $this->source;
-
-		$email = SiteApplication::initVar('email');
-		if ($email !== null) {
-			$this->ui->getWidget('email')->value = $email;
-		}
-	}
-
-	// }}}
+        $email = SiteApplication::initVar('email');
+        if ($email !== null) {
+            $this->ui->getWidget('email')->value = $email;
+        }
+    }
 }
-
-?>
