@@ -23,6 +23,11 @@ class Site
     private static $is_initialized = false;
 
     /**
+     * Prevent instantiation of this static class.
+     */
+    private function __construct() {}
+
+    /**
      * Translates a phrase.
      *
      * This is an alias for {@link self::gettext()}.
@@ -92,10 +97,11 @@ class Site
         bind_textdomain_codeset(self::GETTEXT_DOMAIN, 'UTF-8');
     }
 
-	public static function generateRandomHash(): string
-	{
-		return sha1(uniqid(random_int(0, mt_getrandmax()), true));
-	}
+    public static function generateRandomHash(): string
+    {
+        return sha1(uniqid(random_int(0, mt_getrandmax()), true));
+    }
+
     /**
      * Displays the methods of an object.
      *
@@ -328,9 +334,4 @@ class Site
 
         self::$is_initialized = true;
     }
-
-    /**
-     * Prevent instantiation of this static class.
-     */
-    private function __construct() {}
 }

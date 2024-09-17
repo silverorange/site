@@ -12,9 +12,9 @@ class SiteCommentVisibilityCellRenderer extends SwatCellRenderer
     public $spam;
 
     public function render(): void
-	{
-		echo $this->spam
-			? Site::_('Spam')
-			: SiteComment::getStatusTitle($this->status);
+    {
+        echo $this->spam
+            ? Site::_('Spam')
+            : SiteComment::getStatusTitle($this->status);
     }
 }

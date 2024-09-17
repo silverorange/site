@@ -139,33 +139,32 @@ class SiteAttachment extends SwatDBDataObject
      * For MPEG-4 Audio, we use the non-standard but universally accepted m4a
      * extension. See wikipedia for more details
      * {@link https://en.wikipedia.org/wiki/.m4a}.
-	 *
-	 * @returns string The extension of the file.
+     *
+     * @returns string The extension of the file.
      */
     public function getExtension(string $mime_type = ''): string
-	{
+    {
         if ($mime_type === '') {
             $mime_type = $this->mime_type;
         }
 
         $ms_openxml_prefix = 'application/vnd.openxmlformats-officedocument';
 
-        return match($mime_type) {
-			'audio/mp4' => 'm4a',
-			'video/mp4' => 'mp4',
-			'audio/mpeg' => 'mp3',
-			'application/zip' => 'zip',
-			'application/pdf' => 'pdf',
-			'image/jpeg' => 'jpg',
-			'image/png' => 'png',
-			'text/html' => 'html',
-			'application/msword' => 'doc',
-			'application/vnd.ms-excel' => 'xls',
-			$ms_openxml_prefix . '.wordprocessingml.document' => 'docx',
-			$ms_openxml_prefix . '.spreadsheetml.sheet' => 'xlsx',
-			default =>   throw new SiteException(sprintf('Unknown mime type %s', $mime_type))
-		};
-
+        return match ($mime_type) {
+            'audio/mp4'                                       => 'm4a',
+            'video/mp4'                                       => 'mp4',
+            'audio/mpeg'                                      => 'mp3',
+            'application/zip'                                 => 'zip',
+            'application/pdf'                                 => 'pdf',
+            'image/jpeg'                                      => 'jpg',
+            'image/png'                                       => 'png',
+            'text/html'                                       => 'html',
+            'application/msword'                              => 'doc',
+            'application/vnd.ms-excel'                        => 'xls',
+            $ms_openxml_prefix . '.wordprocessingml.document' => 'docx',
+            $ms_openxml_prefix . '.spreadsheetml.sheet'       => 'xlsx',
+            default                                           => throw new SiteException(sprintf('Unknown mime type %s', $mime_type))
+        };
     }
 
     public function getHumanFileType(string $mime_type = '')
@@ -176,21 +175,21 @@ class SiteAttachment extends SwatDBDataObject
 
         $ms_openxml_prefix = 'application/vnd.openxmlformats-officedocument';
 
-        return match($mime_type) {
-			'audio/mp4' => Site::_('M4A'),
-			'video/mp4' => Site::_('MP4'),
-			'audio/mpeg' => Site::_('MP3'),
-			'application/zip' => Site::_('ZIP'),
-			'application/pdf' => Site::_('PDF'),
-			'image/jpeg' => Site::_('JPEG Image'),
-			'image/png' => Site::_('PNG Image'),
-			'text/html' => Site::_('Web Document'),
-			'application/msword' => Site::_('Word Document'),
-			'application/vnd.ms-excel' => Site::_('Excel Document'),
-			$ms_openxml_prefix . '.wordprocessingml.document' => Site::_('Word Document'),
-			$ms_openxml_prefix . '.spreadsheetml.sheet' => Site::_('Excel Document'),
-			default => throw new SiteException(sprintf('Unknown mime type %s', $mime_type))
-		};
+        return match ($mime_type) {
+            'audio/mp4'                                       => Site::_('M4A'),
+            'video/mp4'                                       => Site::_('MP4'),
+            'audio/mpeg'                                      => Site::_('MP3'),
+            'application/zip'                                 => Site::_('ZIP'),
+            'application/pdf'                                 => Site::_('PDF'),
+            'image/jpeg'                                      => Site::_('JPEG Image'),
+            'image/png'                                       => Site::_('PNG Image'),
+            'text/html'                                       => Site::_('Web Document'),
+            'application/msword'                              => Site::_('Word Document'),
+            'application/vnd.ms-excel'                        => Site::_('Excel Document'),
+            $ms_openxml_prefix . '.wordprocessingml.document' => Site::_('Word Document'),
+            $ms_openxml_prefix . '.spreadsheetml.sheet'       => Site::_('Excel Document'),
+            default                                           => throw new SiteException(sprintf('Unknown mime type %s', $mime_type))
+        };
     }
 
     public function getHumanFileTypes(array $mime_types)
@@ -305,7 +304,7 @@ class SiteAttachment extends SwatDBDataObject
         // Format the filename according to the qtext syntax in RFC 822
         $filename = str_replace(
             ['\\', "\r", '"'],
-            ['\\\\', "\\\r", '\\"'],
+            ['\\\\', "\\\r", '\"'],
             $filename
         );
 

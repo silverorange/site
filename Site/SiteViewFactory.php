@@ -52,6 +52,11 @@ class SiteViewFactory extends SwatObject
     private static $search_paths = ['Site/views'];
 
     /**
+     * This class contains only static methods and should not be instantiated.
+     */
+    private function __construct() {}
+
+    /**
      * Gets a view of the specified type.
      *
      * @param SiteApplication $app  the application in which to get the view
@@ -158,9 +163,4 @@ class SiteViewFactory extends SwatObject
             ), 0, $view_class_name);
         }
     }
-
-    /**
-     * This class contains only static methods and should not be instantiated.
-     */
-    private function __construct() {}
 }

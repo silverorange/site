@@ -49,19 +49,19 @@ class SiteMediaEncodingBinding extends SwatDBDataObject
 
     private static $media_type_cache = [];
 
-	/**
-	 * @throws SiteException
-	 */
-	public function getHumanFileType(): string
+    /**
+     * @throws SiteException
+     */
+    public function getHumanFileType(): string
     {
-        return match($this->media_type->mime_type) {
-			'video/mp4'  => Site::_('MP4'),
-			'audio/mp4'  => Site::_('M4A'),
-			'audio/mpeg' => Site::_('MP3'),
-			default      => throw new SiteException(
-				sprintf('Unknown mime type %s', $this->media_type->mime_type)
-			),
-		};
+        return match ($this->media_type->mime_type) {
+            'video/mp4'  => Site::_('MP4'),
+            'audio/mp4'  => Site::_('M4A'),
+            'audio/mpeg' => Site::_('MP3'),
+            default      => throw new SiteException(
+                sprintf('Unknown mime type %s', $this->media_type->mime_type)
+            ),
+        };
     }
 
     public function getFormattedFileSize()

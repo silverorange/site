@@ -79,24 +79,24 @@ abstract class SiteCommentIndex extends AdminPage
 
         // init result message
         $visibility = $this->ui->getWidget('search_visibility')->value;
-		$this->ui->getWidget('results_message')->content = match ($visibility) {
-			self::SHOW_ALL => $pager->getResultsMessage(
-				Site::_('comment'),
-				Site::_('comments')
-			),
-			self::SHOW_ALL_SPAM => $pager->getResultsMessage(
-				Site::_('comment (including spam)'),
-				Site::_('comments (including spam)')
-			),
-			self::SHOW_SPAM => $pager->getResultsMessage(
-				Site::_('spam comment'),
-				Site::_('spam comments')
-			),
-			default => $pager->getResultsMessage(
-				Site::_('pending comment'),
-				Site::_('pending comments')
-			),
-		};
+        $this->ui->getWidget('results_message')->content = match ($visibility) {
+            self::SHOW_ALL => $pager->getResultsMessage(
+                Site::_('comment'),
+                Site::_('comments')
+            ),
+            self::SHOW_ALL_SPAM => $pager->getResultsMessage(
+                Site::_('comment (including spam)'),
+                Site::_('comments (including spam)')
+            ),
+            self::SHOW_SPAM => $pager->getResultsMessage(
+                Site::_('spam comment'),
+                Site::_('spam comments')
+            ),
+            default => $pager->getResultsMessage(
+                Site::_('pending comment'),
+                Site::_('pending comments')
+            ),
+        };
     }
 
     abstract protected function getCommentDisplayWidget();

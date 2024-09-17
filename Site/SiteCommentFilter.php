@@ -36,6 +36,11 @@ class SiteCommentFilter
     protected static $tag_stack = [];
 
     /**
+     * Prevent instantiation of static class.
+     */
+    private function __construct() {}
+
+    /**
      * @param string $comment
      * @param bool   $strip_invalid_tags if true, invalid tags are stripped,
      *                                   and if false, invalid tags are
@@ -237,9 +242,4 @@ class SiteCommentFilter
     {
         return mb_strlen($string, '8bit');
     }
-
-    /**
-     * Prevent instantiation of static class.
-     */
-    private function __construct() {}
 }

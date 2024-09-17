@@ -5,12 +5,12 @@
  */
 class SiteXMLRPCServerFactory extends SitePageFactory
 {
-	/**
-	 * @throws SiteNotFoundException
-	 * @throws SiteClassNotFoundException
-	 */
-	public function resolvePage(string $source, ?SiteLayout $layout = null): SiteAbstractPage
-	{
+    /**
+     * @throws SiteNotFoundException
+     * @throws SiteClassNotFoundException
+     */
+    public function resolvePage(string $source, ?SiteLayout $layout = null): SiteAbstractPage
+    {
         $layout ??= $this->getLayout($source);
         $map = $this->getPageMap();
 
@@ -24,12 +24,12 @@ class SiteXMLRPCServerFactory extends SitePageFactory
     }
 
     protected function getPageMap(): array
-	{
+    {
         return [];
     }
 
     protected function getLayout($source): SiteXMLRPCServerLayout
-	{
+    {
         return new SiteXMLRPCServerLayout($this->app);
     }
 }

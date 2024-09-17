@@ -26,4 +26,4 @@ return RectorConfig::configure()
         RemoveUnusedVariableInCatchRector::class,
     ])
     ->withTypeCoverageLevel(1)
-	->withDeadCodeLevel(1);
+    ->withDeadCodeLevel(1);

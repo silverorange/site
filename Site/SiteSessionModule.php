@@ -179,17 +179,17 @@ class SiteSessionModule extends SiteApplicationModule
      * Note: If an autoloader can be used to automatically load the appropriate
      * class definitions when the session is restored.
      *
-     * @param string $name              the name of the session variable
+     * @param string       $name              the name of the session variable
      * @param class-string $class             the object class name
-     * @param bool $destroy_on_logout whether or not to destroy the object
-     *                                  on logout
+     * @param bool         $destroy_on_logout whether or not to destroy the object
+     *                                        on logout
      */
     public function registerObject(string $name, string $class, bool $destroy_on_logout = true): void
-	{
+    {
         $this->registered_objects[$name] = [
-			'class'   => $class,
-			'destroy' => $destroy_on_logout
-		];
+            'class'   => $class,
+            'destroy' => $destroy_on_logout,
+        ];
     }
 
     /**
@@ -292,11 +292,9 @@ class SiteSessionModule extends SiteApplicationModule
 
     /**
      * Set the session save path.
-     *
-     * @param string $path
      */
     public function setSavePath(string $path): void
-	{
+    {
         session_save_path($path);
     }
 

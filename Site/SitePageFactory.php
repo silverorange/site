@@ -90,8 +90,8 @@ abstract class SitePageFactory
      *
      * This must be either {@link SiteLayout} or a subclass of
      * <code>SiteLayout</code>.
-	 *
-	 * @var class-string<SiteLayout>
+     *
+     * @var class-string<SiteLayout>
      */
     protected string $default_layout_class = SiteLayout::class;
 
@@ -103,7 +103,7 @@ abstract class SitePageFactory
     /**
      * Resolves a page object from a source string.
      *
-     * @param string $source the source string for which to get the page
+     * @param string      $source the source string for which to get the page
      * @param ?SiteLayout $layout optional. The layout to use for the page.
      *
      * @return SiteAbstractPage the page for the given source string
@@ -113,18 +113,17 @@ abstract class SitePageFactory
      */
     abstract public function resolvePage(string $source, ?SiteLayout $layout = null): SiteAbstractPage;
 
-	/**
-	 * Resolves the layout object to use for the instantiated page.
-	 *
-	 * By default, the layout is resolved to {@link SiteLayout}.
-	 *
-	 * @param string $source the source string for which to get the layout
-	 *
-	 * @return SiteLayout
-	 * @throws SiteClassNotFoundException
-	 */
+    /**
+     * Resolves the layout object to use for the instantiated page.
+     *
+     * By default, the layout is resolved to {@link SiteLayout}.
+     *
+     * @param string $source the source string for which to get the layout
+     *
+     * @throws SiteClassNotFoundException
+     */
     protected function resolveLayout(string $source): SiteLayout
-	{
+    {
         return $this->instantiateLayout($this->default_layout_class);
     }
 
@@ -132,11 +131,10 @@ abstract class SitePageFactory
      * Instantiates and returns a page object for the specified page class.
      *
      * @param class-string<SitePage> $class     the name of the page class. This must be either
-     *                          {@link SitePage} or a subclass of
-     *                          <code>SitePage</code>.
-	 * @param SiteLayout $layout
-     * @param array  $arguments optional. An array of parameters to pass as
-     *                          arguments to the page constructor.
+     *                                          {@link SitePage} or a subclass of
+     *                                          <code>SitePage</code>.
+     * @param array                  $arguments optional. An array of parameters to pass as
+     *                                          arguments to the page constructor.
      *
      * @return SitePage the instantiated page object. The returned page should
      *                  be undecorated.
@@ -147,11 +145,10 @@ abstract class SitePageFactory
      *                                    subclass of <code>SitePage</code>
      */
     protected function instantiatePage(
-		string     $class,
-		SiteLayout $layout,
-		array      $arguments = []
-    ): SitePage
-	{
+        string $class,
+        SiteLayout $layout,
+        array $arguments = []
+    ): SitePage {
         if (!$this->isPage($class)) {
             throw new SiteClassNotFoundException(sprintf('The provided page ' .
                 'class ‘%s’ is not a SitePage.', $class), 0, $class);
@@ -164,10 +161,10 @@ abstract class SitePageFactory
      * Instantiates and returns a layout object for the specified layout class.
      *
      * @param class-string<SiteLayout> $class    the name of the layout class. This must be either
-     *                         {@link SiteLayout} or a subclass of
-     *                         <code>SiteLayout</code>.
-     * @param ?string $filename optional. The filename of the XHTML template
-     *                         to use for the given layout.
+     *                                           {@link SiteLayout} or a subclass of
+     *                                           <code>SiteLayout</code>.
+     * @param ?string                  $filename optional. The filename of the XHTML template
+     *                                           to use for the given layout.
      *
      * @return SiteLayout the instantiated layout object
      *
@@ -177,7 +174,7 @@ abstract class SitePageFactory
      *                                    subclass of <code>SiteLayout</code>
      */
     protected function instantiateLayout(string $class, ?string $filename = null): SiteLayout
-	{
+    {
         if (!$this->isLayout($class)) {
             throw new SiteClassNotFoundException(sprintf('The provided layout ' .
                 'class ‘%s’ is not a SiteLayout.', $class), 0, $class);
@@ -197,7 +194,7 @@ abstract class SitePageFactory
      *                                    the specified class
      */
     protected function loadPageClass(string $class): void
-	{
+    {
         $this->loadClass(
             $class,
             $this->page_class_path,
@@ -216,7 +213,7 @@ abstract class SitePageFactory
      *                                    the specified class
      */
     protected function loadLayoutClass(string $class): void
-	{
+    {
         $this->loadClass(
             $class,
             $this->layout_class_path,
@@ -228,17 +225,17 @@ abstract class SitePageFactory
      * This method handles automagically requiring a class definition file.
      *
      * @param class-string $class      the name of the class
-     * @param string $class_path the location in which to look for class
-     *                           definitions
-     * @param array  $class_map  mapping of package prefixes to class definition
-     *                           locations used if the class definition is not
-     *                           found in <i>$class_path</i>
+     * @param string       $class_path the location in which to look for class
+     *                                 definitions
+     * @param array        $class_map  mapping of package prefixes to class definition
+     *                                 locations used if the class definition is not
+     *                                 found in <i>$class_path</i>
      *
      * @throws SiteClassNotFoundException if no class definition is found for
      *                                    the specified class
      */
     protected function loadClass(string $class, string $class_path, array $class_map): void
-	{
+    {
         if (!class_exists($class)) {
             throw new SiteClassNotFoundException(
                 sprintf('No class definition found for class ‘%s’', $class),
@@ -248,21 +245,23 @@ abstract class SitePageFactory
         }
     }
 
-	/**
-	 * @param class-string $class
-	 * @throws SiteClassNotFoundException
-	 */
+    /**
+     * @param class-string $class
+     *
+     * @throws SiteClassNotFoundException
+     */
     protected function isPage(string $class): bool
     {
         $this->loadPageClass($class);
 
-		return is_a($class, SitePage::class, allow_string: true);
+        return is_a($class, SitePage::class, allow_string: true);
     }
 
-	/**
-	 * @param class-string $class
-	 * @throws SiteClassNotFoundException
-	 */
+    /**
+     * @param class-string $class
+     *
+     * @throws SiteClassNotFoundException
+     */
     protected function isDecorator(string $class): bool
     {
         $this->loadPageClass($class);
@@ -270,11 +269,12 @@ abstract class SitePageFactory
         return is_subclass_of($class, SitePageDecorator::class);
     }
 
-	/**
-	 * @param class-string $class
-	 * @throws SiteClassNotFoundException
-	 */
-	protected function isLayout(string $class): bool
+    /**
+     * @param class-string $class
+     *
+     * @throws SiteClassNotFoundException
+     */
+    protected function isLayout(string $class): bool
     {
         $this->loadLayoutClass($class);
 
@@ -284,9 +284,9 @@ abstract class SitePageFactory
     /**
      * Creates and returns a page decorator for the specified decorator class.
      *
-	 * @param SiteAbstractPage $page the page being decorated
-	 * @param class-string<SitePageDecorator> $class the name of the page decorator class to resolve.
-     *                      This must be a {@link SitePageDecorator} subclass.
+     * @param SiteAbstractPage                $page  the page being decorated
+     * @param class-string<SitePageDecorator> $class the name of the page decorator class to resolve.
+     *                                               This must be a {@link SitePageDecorator} subclass.
      *
      * @return SitePageDecorator the decorated page
      *
@@ -295,7 +295,7 @@ abstract class SitePageFactory
      *                                    not a {@link SitePageDecorator}
      */
     protected function decorate(SiteAbstractPage $page, string $class): SitePageDecorator
-	{
+    {
         if (!$this->isDecorator($class)) {
             throw new SiteClassNotFoundException(
                 sprintf('The provided page ' .

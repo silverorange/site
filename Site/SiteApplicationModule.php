@@ -22,11 +22,6 @@ abstract class SiteApplicationModule extends SiteObject
      */
     protected $app;
 
-    public function __construct(SiteApplication $app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * A cache of the provides list for each module used in the application.
      *
@@ -34,6 +29,11 @@ abstract class SiteApplicationModule extends SiteObject
      * dependencies.
      */
     private static $provides_by_module = [];
+
+    public function __construct(SiteApplication $app)
+    {
+        $this->app = $app;
+    }
 
     /**
      * Gets the module features this module depends on.

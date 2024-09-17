@@ -18,18 +18,19 @@ class SiteArticlePageFactory extends SitePageFactory
      */
     protected string $default_article_page = SiteArticlePage::class;
 
-	/**
-	 * Resolves a page object from a source string.
-	 *
-	 * @param string $source the source string for which to get the page
-	 * @param ?SiteLayout $layout optional layout to use with this page
-	 *
-	 * @return SiteAbstractPage the page for the given source string
-	 * @throws SiteClassNotFoundException
-	 * @throws SiteNotFoundException
-	 */
+    /**
+     * Resolves a page object from a source string.
+     *
+     * @param string      $source the source string for which to get the page
+     * @param ?SiteLayout $layout optional layout to use with this page
+     *
+     * @return SiteAbstractPage the page for the given source string
+     *
+     * @throws SiteClassNotFoundException
+     * @throws SiteNotFoundException
+     */
     public function resolvePage(string $source, ?SiteLayout $layout = null): SiteAbstractPage
-	{
+    {
         $layout ??= $this->resolveLayout($source);
 
         $page_info = $this->getPageInfo($source);
@@ -83,56 +84,56 @@ class SiteArticlePageFactory extends SitePageFactory
      * By default, {@link SiteArticlePage} is used.
      *
      * @param class-string<SiteArticlePage> $class the name of the default article page decorator
-     *                      class to use if no article page decorator is
-     *                      specified for the given source string
+     *                                             class to use if no article page decorator is
+     *                                             specified for the given source string
      *
      * @throws SiteClassNotFoundException if the specified class is not
      *                                    {@link SiteArticlePage} or a subclass
      *                                    of <code>SiteArticlePage</code>
      */
     public function setDefaultArticlePage(string $class): void
-	{
+    {
         $this->loadPageClass($class);
 
         if (!is_a($class, SiteArticlePage::class, allow_string: true)) {
             throw new SiteClassNotFoundException(
-				sprintf(
-					'The provided page class ‘%s’ is not a SiteArticlePage.',
-					$class
-				),
-				0,
-				$class
-			);
+                sprintf(
+                    'The provided page class ‘%s’ is not a SiteArticlePage.',
+                    $class
+                ),
+                0,
+                $class
+            );
         }
 
         $this->default_article_page = $class;
     }
 
-	/**
-	 * Applies all decorators to a page.
-	 *
-	 * If there are no {@link SiteArticlePage} or SiteArticlePage subclass
-	 * decorators, one is added automatically. All SiteArticlePage decorators
-	 * are assigned the given article and path.
-	 *
-	 * @param SiteAbstractPage $page the page to which the decorators should be
-	 *                          applied
-	 * @param array $decorators the decorators to apply
-	 * @param SiteArticle $article the current article
-	 * @param SiteArticlePath $path the path of the current article
-	 * @param array $arguments the arguments of the page
-	 *
-	 * @return SiteArticlePage|SiteAbstractPage the decorated page
-	 * @throws SiteClassNotFoundException
-	 */
+    /**
+     * Applies all decorators to a page.
+     *
+     * If there are no {@link SiteArticlePage} or SiteArticlePage subclass
+     * decorators, one is added automatically. All SiteArticlePage decorators
+     * are assigned the given article and path.
+     *
+     * @param SiteAbstractPage $page       the page to which the decorators should be
+     *                                     applied
+     * @param array            $decorators the decorators to apply
+     * @param SiteArticle      $article    the current article
+     * @param SiteArticlePath  $path       the path of the current article
+     * @param array            $arguments  the arguments of the page
+     *
+     * @return SiteAbstractPage|SiteArticlePage the decorated page
+     *
+     * @throws SiteClassNotFoundException
+     */
     protected function applyDecorators(
         SiteAbstractPage $page,
         array $decorators,
         SiteArticle $article,
         SiteArticlePath $path,
         array $arguments
-    ): SiteArticlePage|SiteAbstractPage
-	{
+    ): SiteAbstractPage|SiteArticlePage {
         $has_article_decorator = false;
         $decorators = array_reverse($decorators);
         foreach ($decorators as $decorator) {
@@ -154,24 +155,25 @@ class SiteArticlePageFactory extends SitePageFactory
         return $page;
     }
 
-	/**
-	 * Gets page info for the passed source string.
-	 *
-	 * @param string $source the source string for which to get the page info
-	 *
-	 * @return array{page:class-string, path:string, decorators:array, arguments: array}
-	 *                an array of page info. The array has the index values
-	 *              'page', 'path', 'decorators' and 'arguments'.
-	 * @throws SiteClassNotFoundException
-	 */
+    /**
+     * Gets page info for the passed source string.
+     *
+     * @param string $source the source string for which to get the page info
+     *
+     * @return array{page:class-string, path:string, decorators:array, arguments: array}
+     *                                                                                   an array of page info. The array has the index values
+     *                                                                                   'page', 'path', 'decorators' and 'arguments'.
+     *
+     * @throws SiteClassNotFoundException
+     */
     protected function getPageInfo(string $source): array
-	{
+    {
         $info = [
-			'page' => $this->default_page_class,
-			'path' => $source,
-			'decorators' => [],
-			'arguments' => []
-		];
+            'page'       => $this->default_page_class,
+            'path'       => $source,
+            'decorators' => [],
+            'arguments'  => [],
+        ];
 
         foreach ($this->getPageMap() as $pattern => $class) {
             $regs = [];
@@ -195,11 +197,11 @@ class SiteArticlePageFactory extends SitePageFactory
                     $page = array_pop($class);
                     if ($this->isPage($page)) {
                         $info['page'] = $page;
-					} else {
+                    } else {
                         $class[] = $page;
-					}
-					$info['decorators'] = $class;
-				} else {
+                    }
+                    $info['decorators'] = $class;
+                } else {
                     if ($this->isPage($class)) {
                         $info['page'] = $class;
                     } else {
@@ -249,15 +251,15 @@ class SiteArticlePageFactory extends SitePageFactory
      * @return array<string, class-string> the page mappings of this factory
      */
     protected function getPageMap(): array
-	{
+    {
         return [];
     }
 
-	/**
-	 * @throws SwatDBException
-	 */
-	protected function isVisible(SiteArticle $article, string $source): bool
-	{
+    /**
+     * @throws SwatDBException
+     */
+    protected function isVisible(SiteArticle $article, string $source): bool
+    {
         $sql = sprintf(
             'select count(id) from EnabledArticleView
 			where id = %s',
@@ -279,10 +281,10 @@ class SiteArticlePageFactory extends SitePageFactory
         return $count !== 0;
     }
 
-	/**
-	 * @throws SiteNotFoundException
-	 */
-	protected function getNotVisiblePage(
+    /**
+     * @throws SiteNotFoundException
+     */
+    protected function getNotVisiblePage(
         SiteArticle $article,
         SiteLayout $layout
     ): SiteAbstractPage {
@@ -292,21 +294,19 @@ class SiteArticlePageFactory extends SitePageFactory
         throw new SiteNotFoundException('Article not visible');
     }
 
-	/**
-	 * Gets an article object from the database.
-	 *
-	 * @param string $path
-	 *
-	 * @return SiteArticle the specified article
-	 *
-	 * @throws SiteNotFoundException if no such article exists
-	 * @throws SitePathInvalidUtf8Exception
-	 * @throws SitePathTooLongException
-	 * @throws SwatDBException
-	 * @throws SwatInvalidClassException
-	 */
+    /**
+     * Gets an article object from the database.
+     *
+     * @return SiteArticle the specified article
+     *
+     * @throws SiteNotFoundException        if no such article exists
+     * @throws SitePathInvalidUtf8Exception
+     * @throws SitePathTooLongException
+     * @throws SwatDBException
+     * @throws SwatInvalidClassException
+     */
     protected function getArticle(string $path): SiteArticle
-	{
+    {
         // don't try to resolve articles that are deeper than the max depth
         if (mb_substr_count($path, '/') >= SiteArticle::MAX_DEPTH) {
             throw new SitePathTooLongException(
@@ -342,19 +342,18 @@ class SiteArticlePageFactory extends SitePageFactory
         return $article;
     }
 
-	/**
-	 * Gets an article id from the given article path.
-	 *
-	 * @param string $path
-	 *
-	 * @return ?int the database identifier corresponding to the given
-	 *             article path or null if no such identifier exists
-	 * @throws SitePathInvalidUtf8Exception
-	 * @throws SitePathTooLongException
-	 * @throws SwatDBException
-	 */
+    /**
+     * Gets an article id from the given article path.
+     *
+     * @return ?int the database identifier corresponding to the given
+     *              article path or null if no such identifier exists
+     *
+     * @throws SitePathInvalidUtf8Exception
+     * @throws SitePathTooLongException
+     * @throws SwatDBException
+     */
     protected function getArticleId(string $path): ?int
-	{
+    {
         // don't try to find articles with invalid UTF-8 in the path
         if (!SwatString::validateUtf8($path)) {
             throw new SitePathInvalidUtf8Exception(
@@ -382,7 +381,7 @@ class SiteArticlePageFactory extends SitePageFactory
     }
 
     protected function getArticleSql(int $article_id): string
-	{
+    {
         return sprintf(
             'select * from Article where id = %s',
             $this->app->db->quote($article_id, 'integer')
@@ -390,7 +389,7 @@ class SiteArticlePageFactory extends SitePageFactory
     }
 
     protected function getArticlePath(SiteArticle $article): SiteArticlePath
-	{
+    {
         return new SiteArticlePath($this->app, $article->id);
     }
 }

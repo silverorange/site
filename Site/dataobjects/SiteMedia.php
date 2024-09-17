@@ -703,7 +703,7 @@ class SiteMedia extends SwatDBDataObject
         // Format the filename according to the qtext syntax in RFC 822
         return str_replace(
             ['\\', "\r", '"'],
-            ['\\\\', "\\\r", '\\"'],
+            ['\\\\', "\\\r", '\"'],
             $filename
         );
     }
