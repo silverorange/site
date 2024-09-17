@@ -25,4 +25,5 @@ return RectorConfig::configure()
         NullToStrictStringFuncCallArgRector::class,
         RemoveUnusedVariableInCatchRector::class,
     ])
-    ->withTypeCoverageLevel(1);
+    ->withTypeCoverageLevel(1)
+	->withDeadCodeLevel(1);

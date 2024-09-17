@@ -623,7 +623,7 @@ class SiteSessionModule extends SiteApplicationModule
      */
     protected function checkRegisteredObjectClasses()
     {
-        foreach ($this->registered_objects as $name => $data) {
+        foreach ($this->registered_objects as $data) {
             $class = $data['class'];
             if (!class_exists($class)) {
                 throw new SwatClassNotFoundException(sprintf(
