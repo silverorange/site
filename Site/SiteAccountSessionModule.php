@@ -35,8 +35,8 @@ class SiteAccountSessionModule extends SiteSessionModule
     {
         parent::__construct($app);
 
-        $this->registerLoginCallback([$this, 'setSentryUserContext']);
-        $this->registerLogoutCallback([$this, 'setSentryUserContext']);
+        $this->registerLoginCallback($this->setSentryUserContext(...));
+        $this->registerLogoutCallback($this->setSentryUserContext(...));
     }
 
     /**
