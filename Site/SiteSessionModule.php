@@ -57,21 +57,11 @@ class SiteSessionModule extends SiteApplicationModule
      */
     public function __construct(SiteApplication $app)
     {
-        $this->registerActivateCallback(
-            [$this, 'regenerateAuthenticationToken']
-        );
+        $this->registerActivateCallback($this->regenerateAuthenticationToken(...));
+        $this->registerActivateCallback($this->setSentryUserContext(...));
 
-        $this->registerActivateCallback(
-            [$this, 'setSentryUserContext']
-        );
-
-        $this->registerRegenerateIdCallback(
-            [$this, 'regenerateAuthenticationToken']
-        );
-
-        $this->registerRegenerateIdCallback(
-            [$this, 'setSentryUserContext']
-        );
+        $this->registerRegenerateIdCallback($this->regenerateAuthenticationToken(...));
+        $this->registerRegenerateIdCallback($this->setSentryUserContext(...));
 
         parent::__construct($app);
     }
@@ -186,17 +176,20 @@ class SiteSessionModule extends SiteApplicationModule
      *     SwatDBRecordable.
      *  3. Provides a mechanism to clear a subset of the registered variables.
      *
-     * Note: If a autoloader can be used to automatically load the appropriate
+     * Note: If an autoloader can be used to automatically load the appropriate
      * class definitions when the session is restored.
      *
      * @param string $name              the name of the session variable
-     * @param string $class             the object class name
-     * @param bool   $destroy_on_logout whether or not to destroy the object
+     * @param class-string $class             the object class name
+     * @param bool $destroy_on_logout whether or not to destroy the object
      *                                  on logout
      */
-    public function registerObject($name, $class, $destroy_on_logout = true)
-    {
-        $this->registered_objects[$name] = ['class' => $class, 'destroy' => ($destroy_on_logout) ? true : false];
+    public function registerObject(string $name, string $class, bool $destroy_on_logout = true): void
+	{
+        $this->registered_objects[$name] = [
+			'class'   => $class,
+			'destroy' => $destroy_on_logout
+		];
     }
 
     /**
@@ -300,10 +293,10 @@ class SiteSessionModule extends SiteApplicationModule
     /**
      * Set the session save path.
      *
-     * @param mixed $path
+     * @param string $path
      */
-    public function setSavePath($path)
-    {
+    public function setSavePath(string $path): void
+	{
         session_save_path($path);
     }
 

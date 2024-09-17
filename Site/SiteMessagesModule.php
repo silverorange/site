@@ -140,8 +140,11 @@ class SiteMessagesModule extends SiteApplicationModule implements Countable
     protected function initSession()
     {
         if (!$this->session_is_initialized
-            && (!isset($this->app->session->messages)
-            || $this->app->session->messages::class !== 'ArrayObject')) {
+            && (
+				!isset($this->app->session->messages)
+            	|| $this->app->session->messages instanceof ArrayObject::class
+			)
+		) {
             $this->app->session->messages = new ArrayObject();
             $this->session_is_initialized = true;
         }

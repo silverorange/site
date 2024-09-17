@@ -1451,7 +1451,7 @@ class SiteImage extends SwatDBDataObject
         }
 
         if ($this->filename == '' && $this->getImageSet()->obfuscate_filename) {
-            $this->filename = sha1(uniqid(random_int(0, mt_getrandmax()), true));
+            $this->filename = Site::generateRandomHash();
         }
 
         if (!extension_loaded('imagick') || !class_exists('Imagick')) {

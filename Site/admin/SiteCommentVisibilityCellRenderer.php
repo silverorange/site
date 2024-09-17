@@ -11,31 +11,10 @@ class SiteCommentVisibilityCellRenderer extends SwatCellRenderer
     public $status;
     public $spam;
 
-    public function render()
-    {
-        if ($this->spam) {
-            $color = 'Red';
-            $title = Site::_('Spam');
-        } else {
-            $title = SiteComment::getStatusTitle($this->status);
-
-            switch ($this->status) {
-                case SiteComment::STATUS_UNPUBLISHED:
-                    $color = 'Red';
-                    break;
-
-                case SiteComment::STATUS_PUBLISHED:
-                    $color = 'Green';
-                    break;
-
-                case SiteComment::STATUS_PENDING:
-                    $color = 'Yellow';
-                    break;
-            }
-        }
-
-        // TODO: output the title in the color, or use some sort of visual
-        // representation for the statuses, like a traffic light
-        echo $title;
+    public function render(): void
+	{
+		echo $this->spam
+			? Site::_('Spam')
+			: SiteComment::getStatusTitle($this->status);
     }
 }
