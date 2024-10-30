@@ -94,7 +94,7 @@ abstract class SiteAccountMergeConfirm extends AdminDBConfirmation
 
     // process phase
 
-    protected function processDBData()
+    protected function processDBData(): void
     {
         parent::processDBData();
 
