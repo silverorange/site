@@ -57,7 +57,7 @@ class SiteArticleEdit extends AdminDBEdit
 
     // process phase
 
-    protected function validate()
+    protected function validate(): void
     {
         $shortname = $this->ui->getWidget('shortname');
         $title = $this->ui->getWidget('title');

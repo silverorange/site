@@ -57,7 +57,7 @@ class SiteAccountEdit extends AdminDBEdit
 
     // process phase
 
-    protected function validate()
+    protected function validate(): void
     {
         $email = $this->ui->getWidget('email');
         if ($email->hasMessage()) {
