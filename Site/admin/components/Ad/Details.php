@@ -117,7 +117,7 @@ class SiteAdDetails extends AdminIndex
         }
     }
 
-    protected function getReferrerPeriodTableModel()
+    protected function getReferrerPeriodTableModel(): SwatTableStore
     {
         $sql = sprintf(
             'select * from AdReferrerByPeriodView where ad = %s',

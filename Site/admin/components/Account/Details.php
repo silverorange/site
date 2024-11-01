@@ -101,7 +101,7 @@ class SiteAccountDetails extends AdminIndex
         $details_view->data = $ds;
     }
 
-    protected function getTableModel(SwatView $view)
+    protected function getTableModel(SwatView $view): ?SwatTableModel
     {
         return null;
     }

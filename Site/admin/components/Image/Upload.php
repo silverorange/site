@@ -157,18 +157,17 @@ abstract class SiteImageUpload extends AdminObjectEdit
 
     // process phase
 
-    protected function validate()
+    protected function validate(): void
     {
-        $valid = true;
-
         // If it's a new image, either the original image needs to be uploaded,
         // or all individual dimensions do.
         $automatic = $this->ui->getWidget('upload_widget');
-        if ($this->isNew()
-            && !$automatic->isUploaded()
-            && !$this->validateAllDimensionsAreUploaded()) {
-            $valid = false;
 
+        if (
+            $this->isNew()
+            && !$automatic->isUploaded()
+            && !$this->validateAllDimensionsAreUploaded()
+        ) {
             $message = new SwatMessage(
                 Site::_(
                     'You must either upload a file to be automatically ' .
@@ -180,8 +179,6 @@ abstract class SiteImageUpload extends AdminObjectEdit
 
             $this->ui->getWidget('message')->add($message);
         }
-
-        return $valid;
     }
 
     protected function validateAllDimensionsAreUploaded()
