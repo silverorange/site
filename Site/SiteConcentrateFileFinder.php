@@ -18,7 +18,7 @@ class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderIn
 
     protected function getRootPath(): string
     {
-        return dirname(__DIR__, 3);
+        return dirname(__DIR__, 4);
     }
 
     /**
