@@ -10,10 +10,10 @@ class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderIn
     {
         // Load data files from composer module directories and from site
         // dependency directory.
-        return array_merge(
-            $this->getSiteDataFiles(),
-            $this->getComposerDataFiles()
-        );
+        return [
+            ...$this->getSiteDataFiles(),
+            ...$this->getComposerDataFiles(),
+        ];
     }
 
     protected function getWwwPath(): string
@@ -70,10 +70,10 @@ class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderIn
                             'dependencies'
                         );
 
-                        $files = array_merge(
-                            $files,
-                            $finder->getDataFiles()
-                        );
+                        $files = [
+                            ...$files,
+                            ...$finder->getDataFiles(),
+                        ];
                         $package_name = $vendor_dir->read();
                     }
                 }
