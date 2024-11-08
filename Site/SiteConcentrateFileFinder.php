@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 2010-2016 silverorange
+ * @copyright 2010-2024 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderInterface
@@ -95,48 +95,5 @@ class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderIn
         }
 
         return $files;
-    }
-
-    protected function getDevelopmentDataFiles($include_dir)
-    {
-        $files = [];
-
-        $dependency_dir = $include_dir . DIRECTORY_SEPARATOR . 'dependencies';
-
-        $finder = new Concentrate_DataProvider_FileFinderDirectory(
-            $dependency_dir
-        );
-
-        foreach ($finder->getDataFiles() as $filename) {
-            $key = $this->getDevelopmentKey($filename);
-            if (!isset($files[$key])) {
-                $files[$key] = $filename;
-            }
-        }
-
-        return $files;
-    }
-
-    protected function getDevelopmentKey($filename)
-    {
-        $key = $filename;
-
-        $matches = [];
-        $expression = '!packages/(.*)?/.*?/dependencies/(.*)?$!';
-        if (preg_match($expression, $filename, $matches) === 1) {
-            $key = mb_strtolower($matches[1]) . '/' . $matches[2];
-        }
-
-        return $key;
-    }
-
-    protected function getIncludeDirs()
-    {
-        $include_path = get_include_path();
-
-        $dirs = explode(PATH_SEPARATOR, $include_path);
-        $dirs[] = '..';
-
-        return $dirs;
     }
 }
