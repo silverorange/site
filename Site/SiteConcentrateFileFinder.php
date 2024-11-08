@@ -16,7 +16,7 @@ class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderIn
         );
     }
 
-    protected function getWwwPath()
+    protected function getWwwPath(): string
     {
         $www_path = realpath('.');
 
@@ -27,12 +27,15 @@ class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderIn
         return $www_path;
     }
 
-    protected function getRootPath()
+    protected function getRootPath(): string
     {
         return dirname($this->getWwwPath());
     }
 
-    protected function getComposerDataFiles()
+    /**
+     * @return string[]
+     */
+    protected function getComposerDataFiles(): array
     {
         $files = [];
 
@@ -82,7 +85,10 @@ class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderIn
         return $files;
     }
 
-    protected function getSiteDataFiles()
+    /**
+     * @return string[]
+     */
+    protected function getSiteDataFiles(): array
     {
         $files = [];
 
