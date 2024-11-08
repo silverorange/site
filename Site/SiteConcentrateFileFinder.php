@@ -39,8 +39,7 @@ class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderIn
     {
         $files = [];
 
-        $www_path = $this->getWwwPath();
-        $base_path = dirname($www_path) . DIRECTORY_SEPARATOR . 'vendor';
+        $base_path = $this->getRootPath() . DIRECTORY_SEPARATOR . 'vendor';
         if (is_dir($base_path)) {
             $base_dir = dir($base_path);
             $vendor_name = $base_dir->read();
