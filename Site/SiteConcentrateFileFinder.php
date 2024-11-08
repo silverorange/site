@@ -16,20 +16,9 @@ class SiteConcentrateFileFinder implements Concentrate_DataProvider_FileFinderIn
         ];
     }
 
-    protected function getWwwPath(): string
-    {
-        $www_path = realpath('.');
-
-        while (basename($www_path) !== 'www') {
-            $www_path = dirname($www_path);
-        }
-
-        return $www_path;
-    }
-
     protected function getRootPath(): string
     {
-        return dirname($this->getWwwPath());
+        return dirname(__DIR__, 3);
     }
 
     /**
