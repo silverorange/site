@@ -85,7 +85,7 @@ class SiteAccountIndex extends AdminSearch
         }
     }
 
-    protected function getTableModel(SwatView $view): SwatTableStore
+    protected function getTableModel(SwatView $view): ?SwatTableModel
     {
         $search = $this->getAccountSearch();
 

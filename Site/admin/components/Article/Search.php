@@ -61,7 +61,7 @@ class SiteArticleSearch extends AdminSearch
         );
     }
 
-    protected function getTableModel(SwatView $view): SwatDBDefaultRecordsetWrapper
+    protected function getTableModel(SwatView $view): ?SwatTableModel
     {
         $this->searchArticles();
 

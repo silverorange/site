@@ -37,7 +37,7 @@ class SiteAdIndex extends AdminIndex
 
     // build phase
 
-    protected function getTableModel(SwatView $view): SiteAdWrapper
+    protected function getTableModel(SwatView $view): ?SwatTableModel
     {
         $sql = sprintf(
             'select * from Ad
