@@ -106,15 +106,13 @@ class SiteAdDetails extends AdminIndex
         $help_note->content_type = 'text/xml';
     }
 
-    protected function getTableModel(SwatView $view)
+    protected function getTableModel(SwatView $view): ?SwatTableModel
     {
-        switch ($view->id) {
-            case 'referrer_period_view':
-                return $this->getReferrerPeriodTableModel();
-
-            case 'http_referers_view':
-                return $this->getHttpReferersTableModel();
-        }
+        return match ($view->id) {
+            'referrer_period_view' => $this->getReferrerPeriodTableModel(),
+            'http_referers_view'   => $this->getHttpReferersTableModel(),
+            default                => null,
+        };
     }
 
     protected function getReferrerPeriodTableModel(): SwatTableStore
@@ -138,7 +136,7 @@ class SiteAdDetails extends AdminIndex
         return $store;
     }
 
-    protected function getHttpReferersTableModel()
+    protected function getHttpReferersTableModel(): SwatDBDefaultRecordsetWrapper
     {
         $sql = sprintf(
             'select http_referer as uri, count(id) as referer_count

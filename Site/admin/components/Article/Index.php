@@ -60,7 +60,7 @@ class SiteArticleIndex extends AdminIndex
 
     // build phase
 
-    protected function getTableModel(SwatView $view)
+    protected function getTableModel(SwatView $view): ?SwatTableModel
     {
         $sql = 'select Article.id,
 					Article.title,
