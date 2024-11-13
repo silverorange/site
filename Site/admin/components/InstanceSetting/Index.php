@@ -58,7 +58,7 @@ class SiteInstanceSettingIndex extends AdminDBEdit
 
     // process phase
 
-    protected function saveDBData()
+    protected function saveDBData(): void
     {
         $changed_settings = [];
 

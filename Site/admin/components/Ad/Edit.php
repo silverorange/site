@@ -80,7 +80,7 @@ class SiteAdEdit extends AdminDBEdit
         return count($query) == 0;
     }
 
-    protected function saveDBData()
+    protected function saveDBData(): void
     {
         if ($this->id !== null) {
             throw new AdminNotFoundException(
