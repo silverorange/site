@@ -111,9 +111,8 @@ class SiteAdDetails extends AdminIndex
         return match ($view->id) {
             'referrer_period_view' => $this->getReferrerPeriodTableModel(),
             'http_referers_view'   => $this->getHttpReferersTableModel(),
-            default => null,
+            default                => null,
         };
-
     }
 
     protected function getReferrerPeriodTableModel(): SwatTableStore
