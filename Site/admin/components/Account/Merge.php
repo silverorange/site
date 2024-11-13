@@ -146,7 +146,7 @@ class SiteAccountMerge extends AdminSearch
         $this->title = Site::_('Merge');
     }
 
-    protected function getTableModel(SwatView $view)
+    protected function getTableModel(SwatView $view): SwatTableStore
     {
         $search = $this->getAccountSearch();
 

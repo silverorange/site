@@ -47,7 +47,7 @@ class SiteAccountSuspicious extends AdminIndex
         }
     }
 
-    protected function getTableModel(SwatView $view)
+    protected function getTableModel(SwatView $view): SwatTableStore
     {
         $where_clause = sprintf(
             'Account.delete_date %s %s',
