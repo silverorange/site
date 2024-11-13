@@ -83,7 +83,7 @@ class SiteAccountEdit extends AdminDBEdit
         }
     }
 
-    protected function saveDBData()
+    protected function saveDBData(): void
     {
         $this->updateAccount();
 

@@ -51,7 +51,7 @@ class SiteCommentEdit extends AdminDBEdit
 
     // process phase
 
-    protected function saveDBData()
+    protected function saveDBData(): void
     {
         $values = $this->ui->getValues(['fullname', 'link', 'email', 'bodytext', 'status']);
 

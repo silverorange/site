@@ -93,7 +93,7 @@ class SiteArticleEdit extends AdminDBEdit
         return $valid;
     }
 
-    protected function saveDBData()
+    protected function saveDBData(): void
     {
         $now = new SwatDate();
         $now->toUTC();

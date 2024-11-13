@@ -61,7 +61,7 @@ class SiteMediaPosterFrame extends AdminDBEdit
 
     // process phase
 
-    protected function saveDBData()
+    protected function saveDBData(): void
     {
         $image_entry = $this->ui->getWidget('custom_image');
         if ($image_entry->isUploaded()) {
