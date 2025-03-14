@@ -26,7 +26,7 @@ class SiteDatabaseModule extends SiteApplicationModule
     /**
      * The database connection object.
      *
-     * @var MDB2_Connection
+     * @var MDB2_Driver_Common
      *
      * @see SiteDatabaseModule::getConnection()
      */
@@ -34,7 +34,7 @@ class SiteDatabaseModule extends SiteApplicationModule
 
     public function init()
     {
-        $this->connection = MDB2::connect($this->dsn);
+        $this->connection = SwatDB::connect($this->dsn);
 
         if (MDB2::isError($this->connection)) {
             throw new SwatDBException($this->connection);
@@ -43,6 +43,9 @@ class SiteDatabaseModule extends SiteApplicationModule
         $this->connection->options['portability'] =
             $this->connection->options['portability'] ^
                 MDB2_PORTABILITY_EMPTY_TO_NULL;
+
+
+        $this->setupEnumMapping();
 
         // Set up convenience reference
         $this->app->db = $this->getConnection();
@@ -56,5 +59,11 @@ class SiteDatabaseModule extends SiteApplicationModule
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    protected function setupEnumMapping()
+    {
+        $config = $this->app->getModule('SiteConfigModule');
+        dd($config);
     }
 }
