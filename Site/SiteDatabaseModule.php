@@ -8,7 +8,7 @@
  * you may make database calls using <code>$app->db</code> instead of
  * <code>$app->database->getConnection()</code>.
  *
- * @copyright 2005-2016 silverorange
+ * @copyright 2005-2025 silverorange
  */
 class SiteDatabaseModule extends SiteApplicationModule
 {
@@ -26,7 +26,7 @@ class SiteDatabaseModule extends SiteApplicationModule
     /**
      * The database connection object.
      *
-     * @var MDB2_Connection
+     * @var MDB2_Driver_Common
      *
      * @see SiteDatabaseModule::getConnection()
      */
@@ -34,7 +34,7 @@ class SiteDatabaseModule extends SiteApplicationModule
 
     public function init()
     {
-        $this->connection = MDB2::connect($this->dsn);
+        $this->connection = SwatDB::connect($this->dsn);
 
         if (MDB2::isError($this->connection)) {
             throw new SwatDBException($this->connection);
@@ -44,6 +44,8 @@ class SiteDatabaseModule extends SiteApplicationModule
             $this->connection->options['portability'] ^
                 MDB2_PORTABILITY_EMPTY_TO_NULL;
 
+        $this->setupEnumMapping();
+
         // Set up convenience reference
         $this->app->db = $this->getConnection();
     }
@@ -51,10 +53,29 @@ class SiteDatabaseModule extends SiteApplicationModule
     /**
      * Retrieves the MDB2 connection object.
      *
-     * @return MDB2_Connection the MDB2 connection object of this module
+     * @return MDB2_Driver_Common the MDB2 connection object of this module
      */
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    /**
+     * Configures any enum mapping for SwatDB objects.
+     */
+    protected function setupEnumMapping()
+    {
+        if (!$this->app->hasModule('SiteConfigModule')) {
+            return;
+        }
+
+        $config = $this->app->getModule('SiteConfigModule');
+        $enum_mapping = $config->swatdb->enum_mapping ?? [];
+
+        if (count($enum_mapping) === 0) {
+            return;
+        }
+
+        SwatDBEnumMapper::initialize($this->connection, $enum_mapping);
     }
 }

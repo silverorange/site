@@ -3,7 +3,7 @@
 /**
  * Container for package wide static methods.
  *
- * @copyright 2005-2020 silverorange
+ * @copyright 2005-2025 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class Site
@@ -313,6 +313,8 @@ class Site
             // Sentry error logging
             'sentry.dsn'         => null,
             'sentry.environment' => null,
+            // SwatDB enum mapping
+            'swatdb.enum_mapping' => [],
         ];
     }
 
