@@ -23,11 +23,31 @@ class SiteVideoMedia extends SiteMedia
     public $scrubber_image_count;
 
     /**
-     * Has HLS encodings.
+     * The relative path the the HLS playlist file.
      *
-     * @var bool
+     * @var string
      */
-    public $has_hls;
+    public $hls_playlist_path;
+
+    public function hasHLSPlaylistPath()
+    {
+        try {
+            $this->getHLSPlaylistPath();
+        } catch (Exception) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getHLSPlaylistPath()
+    {
+        if ($this->hls_playlist_path === null) {
+            throw new SwatException('The hls_playlist_path property is null.');
+        }
+
+        return $this->hls_playlist_path;
+    }
 
     public function getHumanFileType($encoding_shortname = null)
     {
@@ -140,7 +160,7 @@ class SiteVideoMedia extends SiteMedia
 
         $expires = ($this->media_set->private) ? '1 day' : null;
 
-        if ($this->has_hls) {
+        if ($this->hasHLSPlaylistPath()) {
             $jwplayer->addSource(
                 $app->cdn->getUri(
                     $this->getHlsFilePath(),
@@ -257,8 +277,8 @@ class SiteVideoMedia extends SiteMedia
 
     public function getScrubberImageInterval()
     {
-        $count = ($this->scrubber_image_count > 0) ?
-            $this->scrubber_image_count : $this->getDefaultScrubberImageCount();
+        $count = ($this->scrubber_image_count > 0)
+            ? $this->scrubber_image_count : $this->getDefaultScrubberImageCount();
 
         return $this->duration / $count;
     }
@@ -279,7 +299,7 @@ class SiteVideoMedia extends SiteMedia
     {
         $directory = parent::getFileDirectory($encoding_shortname);
 
-        if ($this->has_hls) {
+        if ($this->hasHLSPlaylistPath()) {
             $directory = implode(
                 DIRECTORY_SEPARATOR,
                 [$this->getFileBase(), $this->path_key, 'full']
@@ -295,7 +315,7 @@ class SiteVideoMedia extends SiteMedia
 
         if ($this->getMediaSet()->obfuscate_filename) {
             $filename = $this->filename;
-        } elseif ($this->has_hls) {
+        } elseif ($this->hasHLSPlaylistPath()) {
             $filename = $encoding_shortname;
         } else {
             $filename = $this->path_key;
@@ -310,7 +330,7 @@ class SiteVideoMedia extends SiteMedia
 
     public function getHlsFilePath()
     {
-        $items = [$this->getFileBase(), $this->path_key, 'hls', 'index.m3u8'];
+        $items = [$this->getFileBase(), $this->path_key, $this->getHLSPlaylistPath()];
 
         return implode(DIRECTORY_SEPARATOR, $items);
     }
@@ -319,7 +339,7 @@ class SiteVideoMedia extends SiteMedia
     {
         $suffix = parent::getUriSuffix($encoding_shortname);
 
-        if ($this->has_hls) {
+        if ($this->hasHLSPlaylistPath()) {
             $suffix = sprintf(
                 '%s/%s/%s',
                 $this->path_key,
