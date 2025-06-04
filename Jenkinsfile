@@ -8,7 +8,7 @@ pipeline {
             }
         }
 
-        stage('Lint Modified Files') {
+        stage('Check Code Style for Modified Files') {
             when {
                 not {
                     branch 'master'
@@ -17,19 +17,18 @@ pipeline {
             steps {
                 sh '''
                     files=$(git diff-tree --diff-filter=ACRM --no-commit-id --name-only -r HEAD)
-                    if [ -n "$files" ]; then ./vendor/bin/php-cs-fixer check \
-                    --config ./.php-cs-fixer.php \
+                    if [ -n "$files" ]; then composer run phpcs:ci \
                     $files; fi
                 '''
             }
         }
 
-        stage('Lint Entire Project') {
+        stage('Check Code Style for Entire Project') {
             when {
                 branch 'master'
             }
             steps {
-                sh 'composer run lint'
+                sh 'composer run phpcs:ci'
             }
         }
     }

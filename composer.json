@@ -77,7 +77,12 @@
 	"scripts": {
 		"lint": "./vendor/bin/php-cs-fixer check -v",
 		"lint:fix": "./vendor/bin/php-cs-fixer fix -v",
-		"phpstan": "./vendor/bin/phpstan",
+    "phpcs": "./vendor/bin/php-cs-fixer check -v",
+    "phpcs:ci": "./vendor/bin/php-cs-fixer check --no-interaction --show-progress=none --diff --using-cache=no -vvv",
+    "phpcs:write": "./vendor/bin/php-cs-fixer fix -v",
+    "phpstan": "./vendor/bin/phpstan analyze",
+    "phpstan:ci": "./vendor/bin/phpstan analyze -vvv --no-progress --memory-limit 2G",
+    "phpstan:baseline": "./vendor/bin/phpstan analyze --generate-baseline",
 		"rector": "./vendor/bin/rector --dry-run",
 		"rector:fix": "./vendor/bin/rector"
 	},
