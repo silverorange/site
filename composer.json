@@ -1,94 +1,101 @@
 {
-	"name": "silverorange/site",
-	"description": "Framework for building a website.",
-	"type": "library",
-	"keywords": [ "framework" ],
-	"homepage": "https://github.com/silverorange/site",
-	"license": "LGPL-2.1",
-	"authors": [
-		{
-			"name": "Charles Waddell",
-			"email": "charles@silverorange.com"
-		},
-		{
-			"name": "Isaac Grant",
-			"email": "isaac@silverorange.com"
-		},
-		{
-			"name": "Michael Gauthier",
-			"email": "mike@silverorange.com"
-		},
-		{
-			"name": "Nathan Frederikson",
-			"email": "nathan@silverorange.com"
-		},
-		{
-			"name": "Nick Burka",
-			"email": "nick@silverorange.com"
-		},
-		{
-			"name": "Steven Garrity",
-			"email": "steven@silverorange.com"
-		}
-	],
-	"repositories": [
-		{
-			"type": "composer",
-			"url": "https://composer.silverorange.com",
-			"only": ["silverorange/*"]
-		}
-	],
-	"require": {
-		"php": ">=8.1.0",
-		"ext-curl": "*",
-		"ext-iconv": "*",
-		"ext-json": "*",
-		"ext-mbstring": "*",
-		"ext-openssl": "*",
-		"ext-pcre": "*",
-		"aws/aws-sdk-php": "^3.0.0",
-		"codescale/ffmpeg-php": "^3.2.0",
-		"pear/text_password": "^1.1.1",
-		"sentry/sentry": "^4.9",
-		"silverorange/concentrate": "^2.0.0",
-		"silverorange/mdb2": "^3.0.0",
-		"silverorange/swat": "^7.9.0",
-		"silverorange/xml_rpc2": "^2.0",
-		"silverorange/xml_rpc_ajax": "^3.1",
-		"symfony/mailer": "^5.4"
-	},
-	"require-dev": {
-		"friendsofphp/php-cs-fixer": "3.64.0",
-		"phpstan/phpstan": "^1.12",
-		"rector/rector": "^1.2"
-	},
-	"suggest": {
-		"ext-amqp": "Allows some operations to use a message queue system.",
-		"ext-imagick": "Enables SiteImage processing abilities.",
-		"ext-memcached": "Allows caching various resources.",
-		"ext-pnctl": "Process control management for command-line applications.",
-		"ext-redis": "Allow connecting applications to a Redis data store.",
-		"pelago/emogrifier": "Inlines CSS in multipart mail messages.",
-		"psr/log": "Enables logging using the PSR logging interface.",
-		"silverorange/admin": "Enables admin components",
-		"silverorange/jwplayer": "Enables video player support."
-	},
-	"scripts": {
-		"lint": "./vendor/bin/php-cs-fixer check -v",
-		"lint:fix": "./vendor/bin/php-cs-fixer fix -v",
+  "name": "silverorange/site",
+  "description": "Framework for building a website.",
+  "type": "library",
+  "keywords": [
+    "framework"
+  ],
+  "homepage": "https://github.com/silverorange/site",
+  "license": "LGPL-2.1",
+  "authors": [
+    {
+      "name": "Charles Waddell",
+      "email": "charles@silverorange.com"
+    },
+    {
+      "name": "Isaac Grant",
+      "email": "isaac@silverorange.com"
+    },
+    {
+      "name": "Michael Gauthier",
+      "email": "mike@silverorange.com"
+    },
+    {
+      "name": "Nathan Frederikson",
+      "email": "nathan@silverorange.com"
+    },
+    {
+      "name": "Nick Burka",
+      "email": "nick@silverorange.com"
+    },
+    {
+      "name": "Steven Garrity",
+      "email": "steven@silverorange.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://composer.silverorange.com",
+      "only": [
+        "silverorange/*"
+      ]
+    }
+  ],
+  "require": {
+    "php": ">=8.1.0",
+    "ext-curl": "*",
+    "ext-gd": "*",
+    "ext-iconv": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
+    "ext-pcre": "*",
+    "aws/aws-sdk-php": "^3.0.0",
+    "codescale/ffmpeg-php": "^3.2.0",
+    "pear/text_password": "^1.1.1",
+    "sentry/sentry": "^4.9",
+    "silverorange/concentrate": "^2.0.0",
+    "silverorange/mdb2": "^3.0.0",
+    "silverorange/swat": "^7.9.0",
+    "silverorange/xml_rpc2": "^2.0",
+    "silverorange/xml_rpc_ajax": "^3.1",
+    "symfony/mailer": "^5.4"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "3.64.0",
+    "phpstan/phpstan": "^1.12",
+    "rector/rector": "^1.2"
+  },
+  "suggest": {
+    "ext-amqp": "Allows some operations to use a message queue system.",
+    "ext-imagick": "Enables SiteImage processing abilities.",
+    "ext-memcached": "Allows caching various resources.",
+    "ext-pnctl": "Process control management for command-line applications.",
+    "ext-redis": "Allow connecting applications to a Redis data store.",
+    "pelago/emogrifier": "Inlines CSS in multipart mail messages.",
+    "psr/log": "Enables logging using the PSR logging interface.",
+    "silverorange/admin": "Enables admin components",
+    "silverorange/jwplayer": "Enables video player support."
+  },
+  "scripts": {
+    "lint": "./vendor/bin/php-cs-fixer check -v",
+    "lint:fix": "./vendor/bin/php-cs-fixer fix -v",
     "phpcs": "./vendor/bin/php-cs-fixer check -v",
     "phpcs:ci": "./vendor/bin/php-cs-fixer check --config=.php-cs-fixer.php --no-interaction --show-progress=none --diff --using-cache=no -vvv",
     "phpcs:write": "./vendor/bin/php-cs-fixer fix -v",
     "phpstan": "./vendor/bin/phpstan analyze",
     "phpstan:ci": "./vendor/bin/phpstan analyze -vvv --no-progress --memory-limit 2G",
     "phpstan:baseline": "./vendor/bin/phpstan analyze --generate-baseline",
-		"rector": "./vendor/bin/rector --dry-run",
-		"rector:fix": "./vendor/bin/rector"
-	},
-	"autoload": {
-		"classmap": [ "Site/" ]
-	},
-	"config": {
-		"sort-packages": true
-	}
+    "rector": "./vendor/bin/rector --dry-run",
+    "rector:fix": "./vendor/bin/rector"
+  },
+  "autoload": {
+    "classmap": [
+      "Site/"
+    ]
+  },
+  "config": {
+    "sort-packages": true
+  }
 }
