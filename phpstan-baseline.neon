@@ -1,0 +1,356 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Access to an undefined property SiteAMQPApplication\\:\\:\\$cli\\.$#"
+			count: 1
+			path: Site/SiteAMQPApplication.php
+
+		-
+			message: "#^Access to an undefined property SiteAMQPApplication\\:\\:\\$config\\.$#"
+			count: 2
+			path: Site/SiteAMQPApplication.php
+
+		-
+			message: "#^Access to an undefined property SiteAccountLoginSessionCleaner\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteAccountLoginSessionCleaner.php
+
+		-
+			message: "#^Access to an undefined property SiteAccountLoginSessionCleaner\\:\\:\\$db\\.$#"
+			count: 2
+			path: Site/SiteAccountLoginSessionCleaner.php
+
+		-
+			message: "#^Access to an undefined property SiteAccountLoginSessionCleaner\\:\\:\\$session\\.$#"
+			count: 1
+			path: Site/SiteAccountLoginSessionCleaner.php
+
+		-
+			message: "#^Access to an undefined property SiteAccountSessionModule\\:\\:\\$account\\.$#"
+			count: 11
+			path: Site/SiteAccountSessionModule.php
+
+		-
+			message: "#^Access to an undefined property SiteAmazonCdnUpdater\\:\\:\\$cdn\\.$#"
+			count: 4
+			path: Site/SiteAmazonCdnUpdater.php
+
+		-
+			message: "#^Access to an undefined property SiteApplication\\:\\:\\$config\\.$#"
+			count: 1
+			path: Site/SiteApplication.php
+
+		-
+			message: "#^Access to an undefined property SiteApplication\\:\\:\\$db\\.$#"
+			count: 3
+			path: Site/SiteApplication.php
+
+		-
+			message: "#^Access to an undefined property SiteAudioMediaDurationUpdater\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteAudioMediaDurationUpdater.php
+
+		-
+			message: "#^Access to an undefined property SiteCdnUpdater\\:\\:\\$cdn\\.$#"
+			count: 1
+			path: Site/SiteCdnUpdater.php
+
+		-
+			message: "#^Access to an undefined property SiteCdnUpdater\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteCdnUpdater.php
+
+		-
+			message: "#^Access to an undefined property SiteCommandLineConfigModule\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteCommandLineConfigModule.php
+
+		-
+			message: "#^Access to an undefined property SiteCommandLineConfigModule\\:\\:\\$date\\.$#"
+			count: 2
+			path: Site/SiteCommandLineConfigModule.php
+
+		-
+			message: "#^Access to an undefined property SiteCommandLineConfigModule\\:\\:\\$i18n\\.$#"
+			count: 2
+			path: Site/SiteCommandLineConfigModule.php
+
+		-
+			message: "#^Access to an undefined property SiteContactMailer\\:\\:\\$config\\.$#"
+			count: 12
+			path: Site/SiteContactMailer.php
+
+		-
+			message: "#^Access to an undefined property SiteContactMailer\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteContactMailer.php
+
+		-
+			message: "#^Access to an undefined property SiteContactMailer\\:\\:\\$instance\\.$#"
+			count: 1
+			path: Site/SiteContactMailer.php
+
+		-
+			message: "#^Access to an undefined property SiteHLSIndexGenerator\\:\\:\\$config\\.$#"
+			count: 3
+			path: Site/SiteHLSIndexGenerator.php
+
+		-
+			message: "#^Access to an undefined property SiteHLSIndexGenerator\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteHLSIndexGenerator.php
+
+		-
+			message: "#^Variable \\$a_tag might not be defined\\.$#"
+			count: 1
+			path: Site/SiteImageCellRenderer.php
+
+		-
+			message: "#^Constructor of class SiteJwPlayerMediaDisplay has an unused parameter \\$id\\.$#"
+			count: 1
+			path: Site/SiteJwPlayerMediaDisplay.php
+
+		-
+			message: "#^Access to an undefined property SiteMediaCdnMetadataUpdater\\:\\:\\$config\\.$#"
+			count: 1
+			path: Site/SiteMediaCdnMetadataUpdater.php
+
+		-
+			message: "#^Access to an undefined property SiteMediaCdnMetadataUpdater\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteMediaCdnMetadataUpdater.php
+
+		-
+			message: "#^Access to an undefined property SiteMediaCdnMetadataUpdater\\:\\:\\$instance\\.$#"
+			count: 1
+			path: Site/SiteMediaCdnMetadataUpdater.php
+
+		-
+			message: "#^Variable \\$link might not be defined\\.$#"
+			count: 1
+			path: Site/SitePath.php
+
+		-
+			message: "#^Access to an undefined property SitePrivateDataDeleterApplication\\:\\:\\$config\\.$#"
+			count: 1
+			path: Site/SitePrivateDataDeleterApplication.php
+
+		-
+			message: "#^Access to an undefined property SitePrivateDataDeleterApplication\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SitePrivateDataDeleterApplication.php
+
+		-
+			message: "#^Access to an undefined property SitePrivateDataDeleterApplication\\:\\:\\$instance\\.$#"
+			count: 1
+			path: Site/SitePrivateDataDeleterApplication.php
+
+		-
+			message: "#^Variable \\$key might not be defined\\.$#"
+			count: 2
+			path: Site/SiteSearchEngine.php
+
+		-
+			message: "#^Variable \\$ns might not be defined\\.$#"
+			count: 2
+			path: Site/SiteSearchEngine.php
+
+		-
+			message: "#^Access to an undefined property SiteSearchIndexer\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteSearchIndexer.php
+
+		-
+			message: "#^Access to an undefined property SiteSessionModule\\:\\:\\$_authentication_token\\.$#"
+			count: 1
+			path: Site/SiteSessionModule.php
+
+		-
+			message: "#^Access to an undefined property SiteSessionModule\\:\\:\\$_user_agent\\.$#"
+			count: 1
+			path: Site/SiteSessionModule.php
+
+		-
+			message: "#^Access to an undefined property SiteVideoMediaMover\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteVideoMediaMover.php
+
+		-
+			message: "#^Access to an undefined property SiteVideoMediaS3Mover\\:\\:\\$config\\.$#"
+			count: 1
+			path: Site/SiteVideoMediaS3Mover.php
+
+		-
+			message: "#^Access to an undefined property SiteVideoScrubberImageGenerator\\:\\:\\$database\\.$#"
+			count: 1
+			path: Site/SiteVideoScrubberImageGenerator.php
+
+		-
+			message: "#^Access to an undefined property SiteVideoScrubberImageGenerator\\:\\:\\$db\\.$#"
+			count: 2
+			path: Site/SiteVideoScrubberImageGenerator.php
+
+		-
+			message: "#^Access to an undefined property SiteWebApplication\\:\\:\\$app\\.$#"
+			count: 1
+			path: Site/SiteWebApplication.php
+
+		-
+			message: "#^Access to an undefined property SiteWebApplication\\:\\:\\$config\\.$#"
+			count: 5
+			path: Site/SiteWebApplication.php
+
+		-
+			message: "#^Variable \\$memcache might not be defined\\.$#"
+			count: 1
+			path: Site/SiteWebApplication.php
+
+		-
+			message: "#^Access to an undefined property SiteAttachment\\:\\:\\$attachment_set\\.$#"
+			count: 2
+			path: Site/dataobjects/SiteAttachment.php
+
+		-
+			message: "#^Access to an undefined property SiteAttachmentCdnTask\\:\\:\\$attachment\\.$#"
+			count: 9
+			path: Site/dataobjects/SiteAttachmentCdnTask.php
+
+		-
+			message: "#^Access to an undefined property SiteAudioMedia\\:\\:\\$encoding_bindings\\.$#"
+			count: 1
+			path: Site/dataobjects/SiteAudioMedia.php
+
+		-
+			message: "#^Variable \\$transaction might not be defined\\.$#"
+			count: 1
+			path: Site/dataobjects/SiteAudioMedia.php
+
+		-
+			message: "#^Variable \\$transaction might not be defined\\.$#"
+			count: 2
+			path: Site/dataobjects/SiteCdnTask.php
+
+		-
+			message: "#^Access to an undefined property SiteImage\\:\\:\\$dimension_bindings\\.$#"
+			count: 3
+			path: Site/dataobjects/SiteImage.php
+
+		-
+			message: "#^Access to an undefined property SiteImage\\:\\:\\$image_set\\.$#"
+			count: 14
+			path: Site/dataobjects/SiteImage.php
+
+		-
+			message: "#^Access to an undefined property SiteImage\\:\\:\\$mime_type\\.$#"
+			count: 1
+			path: Site/dataobjects/SiteImage.php
+
+		-
+			message: "#^Variable \\$new_height might not be defined\\.$#"
+			count: 3
+			path: Site/dataobjects/SiteImage.php
+
+		-
+			message: "#^Variable \\$new_width might not be defined\\.$#"
+			count: 3
+			path: Site/dataobjects/SiteImage.php
+
+		-
+			message: "#^Variable \\$transaction might not be defined\\.$#"
+			count: 2
+			path: Site/dataobjects/SiteImage.php
+
+		-
+			message: "#^Access to an undefined property SiteImageCdnTask\\:\\:\\$dimension\\.$#"
+			count: 5
+			path: Site/dataobjects/SiteImageCdnTask.php
+
+		-
+			message: "#^Access to an undefined property SiteImageCdnTask\\:\\:\\$image\\.$#"
+			count: 8
+			path: Site/dataobjects/SiteImageCdnTask.php
+
+		-
+			message: "#^Access to an undefined property SiteImageSet\\:\\:\\$dimensions\\.$#"
+			count: 2
+			path: Site/dataobjects/SiteImageSet.php
+
+		-
+			message: "#^Variable \\$wrapper might not be defined\\.$#"
+			count: 5
+			path: Site/dataobjects/SiteImageWrapper.php
+
+		-
+			message: "#^Access to an undefined property SiteMedia\\:\\:\\$encoding_bindings\\.$#"
+			count: 3
+			path: Site/dataobjects/SiteMedia.php
+
+		-
+			message: "#^Access to an undefined property SiteMedia\\:\\:\\$media_set\\.$#"
+			count: 8
+			path: Site/dataobjects/SiteMedia.php
+
+		-
+			message: "#^Access to an undefined property SiteMediaCdnTask\\:\\:\\$encoding\\.$#"
+			count: 5
+			path: Site/dataobjects/SiteMediaCdnTask.php
+
+		-
+			message: "#^Access to an undefined property SiteMediaCdnTask\\:\\:\\$media\\.$#"
+			count: 9
+			path: Site/dataobjects/SiteMediaCdnTask.php
+
+		-
+			message: "#^Access to an undefined property SiteMediaEncodingBinding\\:\\:\\$media_type\\.$#"
+			count: 2
+			path: Site/dataobjects/SiteMediaEncodingBinding.php
+
+		-
+			message: "#^Access to an undefined property SiteMediaSet\\:\\:\\$encodings\\.$#"
+			count: 3
+			path: Site/dataobjects/SiteMediaSet.php
+
+		-
+			message: "#^Variable \\$wrapper might not be defined\\.$#"
+			count: 5
+			path: Site/dataobjects/SiteMediaWrapper.php
+
+		-
+			message: "#^Access to an undefined property SiteVideoMedia\\:\\:\\$encoding_bindings\\.$#"
+			count: 4
+			path: Site/dataobjects/SiteVideoMedia.php
+
+		-
+			message: "#^Access to an undefined property SiteVideoMedia\\:\\:\\$image\\.$#"
+			count: 1
+			path: Site/dataobjects/SiteVideoMedia.php
+
+		-
+			message: "#^Access to an undefined property SiteVideoMedia\\:\\:\\$media_set\\.$#"
+			count: 2
+			path: Site/dataobjects/SiteVideoMedia.php
+
+		-
+			message: "#^Constructor of class SiteXMLRPCServerLayout has an unused parameter \\$template_name\\.$#"
+			count: 1
+			path: Site/layouts/SiteXMLRPCServerLayout.php
+
+		-
+			message: "#^Constructor of class SiteXmlSiteMapLayout has an unused parameter \\$template_class\\.$#"
+			count: 1
+			path: Site/layouts/SiteXmlSiteMapLayout.php
+
+		-
+			message: "#^Variable \\$status might not be defined\\.$#"
+			count: 1
+			path: Site/pages/SiteCommentAddPage.php
+
+		-
+			message: "#^Variable \\$elements might not be defined\\.$#"
+			count: 1
+			path: Site/views/SiteCommentView.php
+
+		-
+			message: "#^Access to an undefined property AMQPTestClient\\:\\:\\$amqp\\.$#"
+			count: 2
+			path: tests/amqp/AMQPTestClient.php

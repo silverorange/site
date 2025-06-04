@@ -1,9 +1,9 @@
-#includes:
-#  - phpstan-baseline.neon
+includes:
+  - phpstan-baseline.neon
 
 parameters:
   phpVersion: 80200
-  level: 0
+  level: 1
   paths:
     - po
     - Site

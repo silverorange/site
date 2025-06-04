@@ -58,10 +58,9 @@
 		"symfony/mailer": "^5.4"
 	},
 	"require-dev": {
-		"friendsofphp/php-cs-fixer": "^3.64",
+		"friendsofphp/php-cs-fixer": "3.64.0",
 		"phpstan/phpstan": "^1.12",
-		"rector/rector": "^1.2",
-		"silverorange/php-coding-tools": "^1.1"
+		"rector/rector": "^1.2"
 	},
 	"suggest": {
 		"ext-amqp": "Allows some operations to use a message queue system.",
