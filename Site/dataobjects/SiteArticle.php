@@ -11,6 +11,22 @@
  *
  * @copyright 2006-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property int                $id
+ * @property string             $title
+ * @property string             $html_title
+ * @property string             $description
+ * @property string             $bodytext
+ * @property SwatDate           $createdate
+ * @property SwatDate           $modified_date
+ * @property int                $displayorder
+ * @property bool               $enabled
+ * @property bool               $visible
+ * @property bool               $searchable
+ * @property string             $shortname
+ * @property SiteArticle        $parent
+ * @property SiteArticleWrapper $sub_articles
+ * @property string             $path
  */
 class SiteArticle extends SwatDBDataObject
 {
