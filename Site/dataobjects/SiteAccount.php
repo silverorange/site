@@ -70,6 +70,30 @@
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
  * @see       SiteAccountWrapper
+ *
+ * @phpstan-type TSuspiciousActivity object{
+ *     account: int,
+ *     first_suspicious_login: SwatDate,
+ *     last_suspicious_login: SwatDate,
+ *     login_count: int,
+ *     user_agent_count: int,
+ *     ip_address_count: int
+ * }
+ *
+ * @property int                            $id
+ * @property string                         $password_salt
+ * @property string                         $password_tag
+ * @property SwatDate                       $createdate
+ * @property SwatDate                       $last_login
+ * @property SwatDate                       $delete_date
+ * @property string                         $unencrypted_password
+ * @property string                         $fullname
+ * @property string                         $email
+ * @property string                         $password
+ * @property ?TSuspiciousActivity           $suspicious_activity
+ * @property SiteInstance                   $instance
+ * @property SiteAccountLoginHistoryWrapper $login_history
+ * @property SiteAccountLoginSessionWrapper $login_sessions
  */
 class SiteAccount extends SwatDBDataObject
 {
@@ -80,6 +104,8 @@ class SiteAccount extends SwatDBDataObject
      * called, a new account is inserted in the database.
      *
      * @var string
+     *
+     * @todo Should be int to match DB field
      */
     public $id;
 
@@ -93,7 +119,7 @@ class SiteAccount extends SwatDBDataObject
     /**
      * Hashed password tag for reseting the account password.
      *
-     * @var text
+     * @var string
      */
     public $password_tag;
 
