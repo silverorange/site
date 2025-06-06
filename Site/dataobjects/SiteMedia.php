@@ -7,6 +7,21 @@
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
  * @todo      Support MediaSet.obfuscate_filename on process/save.
+ *
+ * @property static                          $cdn_base
+ * @property int                             $id
+ * @property string                          $path_key
+ * @property string                          $title
+ * @property string                          $filename
+ * @property string                          $original_filename
+ * @property string                          $description
+ * @property bool                            $downloadable
+ * @property int                             $duration
+ * @property SwatDate                        $createdate
+ * @property string                          $file_base
+ * @property string                          $media_set_shortname
+ * @property SiteMediaSet                    $media_set
+ * @property SiteMediaEncodingBindingWrapper $encoding_bindings
  */
 class SiteMedia extends SwatDBDataObject
 {
