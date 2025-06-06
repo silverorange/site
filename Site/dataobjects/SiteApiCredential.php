@@ -5,6 +5,13 @@
  *
  * @copyright 2013-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property int          $id
+ * @property string       $title
+ * @property string       $api_key
+ * @property string       $api_shared_secret
+ * @property SwatDate     $createdate
+ * @property SiteInstance $siteInstance
  */
 class SiteApiCredential extends SwatDBDataObject
 {
