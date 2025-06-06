@@ -10,6 +10,13 @@
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
  * @see       SiteAdReferrer
+ *
+ * @property int      $id
+ * @property string   $shortname
+ * @property string   $title
+ * @property SwatDate $createdate
+ * @property int      $displayorder
+ * @property int      $total_referrers
  */
 class SiteAd extends SwatDBDataObject
 {
@@ -57,10 +64,8 @@ class SiteAd extends SwatDBDataObject
 
     /**
      * Total emails sent with the ad tracker.
-     *
-     * @var int
      */
-    public $emails_sent = 0;
+    public int $emails_sent = 0;
 
     protected function init()
     {
