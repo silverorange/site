@@ -5,6 +5,18 @@
  *
  * @copyright 2010-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property int           $id
+ * @property class-string  $class_name
+ * @property string        $email
+ * @property string        $subject
+ * @property string        $message
+ * @property ?string       $ip_address
+ * @property ?string       $user_agent
+ * @property SwatDate      $createdate
+ * @property ?SwatDate     $sent_date
+ * @property ?SwatDate     $error_date
+ * @property ?SiteInstance $instance
  */
 class SiteContactMessage extends SwatDBDataObject
 {
@@ -49,10 +61,8 @@ class SiteContactMessage extends SwatDBDataObject
 
     /**
      * Whether or not this contact message is spam.
-     *
-     * @var bool
      */
-    public $spam = false;
+    public bool $spam = false;
 
     /**
      * IP Address of the contact.
