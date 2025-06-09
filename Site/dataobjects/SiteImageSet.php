@@ -4,6 +4,12 @@
  * An image set data object.
  *
  * @copyright 2008-2016 silverorange
+ *
+ * @property int                       $id
+ * @property string                    $shortname
+ * @property bool                      $obfuscate_filename
+ * @property bool                      $use_cdn
+ * @property SiteImageDimensionWrapper $dimensions
  */
 class SiteImageSet extends SwatDBDataObject
 {

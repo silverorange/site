@@ -4,6 +4,21 @@
  * An image dimension data object.
  *
  * @copyright 2008-2016 silverorange
+ *
+ * @property int           $id
+ * @property ?string       $shortname
+ * @property ?string       $title
+ * @property ?int          $max_width
+ * @property ?int          $max_height
+ * @property bool          $crop
+ * @property int           $dpi
+ * @property int           $quality
+ * @property bool          $strip
+ * @property bool          $interlace
+ * @property ?string       $resize_filter
+ * @property bool          $upscale
+ * @property SiteImageSet  $image_set
+ * @property SiteImageType $image_type
  */
 class SiteImageDimension extends SwatDBDataObject
 {
