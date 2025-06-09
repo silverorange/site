@@ -5,6 +5,14 @@
  *
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property int                      $id
+ * @property string                   $shortname
+ * @property bool                     $obfuscate_filename
+ * @property bool                     $use_cdn
+ * @property bool                     $private
+ * @property SiteInstance             $instance
+ * @property SiteMediaEncodingWrapper $encodings
  */
 class SiteMediaSet extends SwatDBDataObject
 {

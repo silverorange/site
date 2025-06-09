@@ -5,6 +5,11 @@
  *
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property int    $id
+ * @property string $extension
+ * @property string $mime_type
+ * @property string $alternate_mime_types
  */
 class SiteMediaType extends SwatDBDataObject
 {
