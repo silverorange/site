@@ -79,8 +79,6 @@
     "silverorange/jwplayer": "Enables video player support."
   },
   "scripts": {
-    "lint": "./vendor/bin/php-cs-fixer check -v",
-    "lint:fix": "./vendor/bin/php-cs-fixer fix -v",
     "phpcs": "./vendor/bin/php-cs-fixer check -v",
     "phpcs:ci": "./vendor/bin/php-cs-fixer check --config=.php-cs-fixer.php --no-interaction --show-progress=none --diff --using-cache=no -vvv",
     "phpcs:write": "./vendor/bin/php-cs-fixer fix -v",
