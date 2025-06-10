@@ -8,7 +8,6 @@
  *
  * @todo      Support MediaSet.obfuscate_filename on process/save.
  *
- * @property static                          $cdn_base
  * @property int                             $id
  * @property string                          $path_key
  * @property string                          $title

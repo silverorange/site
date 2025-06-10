@@ -12,6 +12,7 @@
  * @property SiteVideoImage                       $image
  * @property SiteVideoMediaSet                    $media_set
  * @property SiteVideoScrubberImage               $scrubber_image
+ * @property SiteVideoMediaEncodingBindingWrapper $encoding_bindings
  * @property SiteVideoMediaEncodingBindingWrapper $video_encoding_bindings
  */
 class SiteVideoMedia extends SiteMedia

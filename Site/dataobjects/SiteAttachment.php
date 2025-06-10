@@ -15,7 +15,6 @@
  * @property float             $file_size
  * @property bool              $on_cdn
  * @property SwatDate          $createdate
- * @property string            $cdn_base
  * @property string            $attachment_set_shortname
  * @property string            $file_base
  * @property SiteAttachmentSet $attachment_set
