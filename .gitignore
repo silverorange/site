@@ -17,3 +17,6 @@ yarn-error.log*
 # dependency lock file
 composer.lock
 yarn.lock
+
+# overrides for local tooling
+/phpstan.neon
