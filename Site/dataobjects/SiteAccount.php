@@ -81,17 +81,17 @@
  * }
  *
  * @property int                            $id
- * @property string                         $password_salt
- * @property string                         $password_tag
- * @property SwatDate                       $createdate
- * @property SwatDate                       $last_login
- * @property SwatDate                       $delete_date
- * @property string                         $unencrypted_password
- * @property string                         $fullname
- * @property string                         $email
- * @property string                         $password
+ * @property ?string                        $password_salt
+ * @property ?string                        $password_tag
+ * @property ?SwatDate                      $createdate
+ * @property ?SwatDate                      $last_login
+ * @property ?SwatDate                      $delete_date
+ * @property ?string                        $unencrypted_password
+ * @property ?string                        $fullname
+ * @property ?string                        $email
+ * @property ?string                        $password
  * @property ?TSuspiciousActivity           $suspicious_activity
- * @property SiteInstance                   $instance
+ * @property ?SiteInstance                  $instance
  * @property SiteAccountLoginHistoryWrapper $login_history
  * @property SiteAccountLoginSessionWrapper $login_sessions
  */

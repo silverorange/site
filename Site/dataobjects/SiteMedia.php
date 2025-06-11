@@ -9,14 +9,14 @@
  * @todo      Support MediaSet.obfuscate_filename on process/save.
  *
  * @property int                             $id
- * @property string                          $path_key
- * @property string                          $title
- * @property string                          $filename
- * @property string                          $original_filename
- * @property string                          $description
+ * @property ?string                         $path_key
+ * @property ?string                         $title
+ * @property ?string                         $filename
+ * @property ?string                         $original_filename
+ * @property ?string                         $description
  * @property bool                            $downloadable
- * @property int                             $duration
- * @property SwatDate                        $createdate
+ * @property ?int                            $duration
+ * @property ?SwatDate                       $createdate
  * @property string                          $file_base
  * @property string                          $media_set_shortname
  * @property SiteMediaSet                    $media_set

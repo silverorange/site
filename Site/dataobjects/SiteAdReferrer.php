@@ -8,10 +8,10 @@
  *
  * @see       SiteAd
  *
- * @property int      $id
- * @property SwatDate $createdate
- * @property string   $http_referer
- * @property SiteAd   $ad
+ * @property int       $id
+ * @property ?SwatDate $createdate
+ * @property ?string   $http_referer
+ * @property SiteAd    $ad
  */
 class SiteAdReferrer extends SwatDBDataObject
 {

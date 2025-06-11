@@ -6,8 +6,8 @@
  * @copyright 2010-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
- * @property SiteImage          $image
- * @property SiteImageDimension $dimension
+ * @property ?SiteImage          $image
+ * @property ?SiteImageDimension $dimension
  */
 class SiteImageCdnTask extends SiteCdnTask
 {

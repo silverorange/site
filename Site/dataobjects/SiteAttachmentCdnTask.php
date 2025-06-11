@@ -6,7 +6,7 @@
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
- * @property SiteAttachment $attachment
+ * @property ?SiteAttachment $attachment
  */
 class SiteAttachmentCdnTask extends SiteCdnTask
 {

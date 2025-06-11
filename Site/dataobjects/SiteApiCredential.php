@@ -8,8 +8,8 @@
  *
  * @property int          $id
  * @property string       $title
- * @property string       $api_key
- * @property string       $api_shared_secret
+ * @property ?string      $api_key
+ * @property ?string      $api_shared_secret
  * @property SwatDate     $createdate
  * @property SiteInstance $siteInstance
  */

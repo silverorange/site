@@ -7,7 +7,7 @@
  *
  * @property int           $width
  * @property int           $height
- * @property int           $filesize
+ * @property ?int          $filesize
  * @property int           $dpi
  * @property bool          $on_cdn
  * @property int           $dimension

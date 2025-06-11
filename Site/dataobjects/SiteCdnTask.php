@@ -6,11 +6,11 @@
  * @copyright 2010-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
- * @property int      $id
- * @property string   $operation
- * @property string   $override_http_headers
- * @property string   $file_path
- * @property SwatDate $error_date
+ * @property int       $id
+ * @property ?string   $operation
+ * @property ?string   $override_http_headers
+ * @property ?string   $file_path
+ * @property ?SwatDate $error_date
  */
 abstract class SiteCdnTask extends SwatDBDataObject
 {

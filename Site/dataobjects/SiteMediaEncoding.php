@@ -11,12 +11,12 @@
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
- * @property int           $id
- * @property string        $shortname
- * @property string        $title
- * @property bool          $default_encoding
- * @property SiteMediaSet  $media_set
- * @property SiteMediaType $default_type
+ * @property int            $id
+ * @property ?string        $shortname
+ * @property ?string        $title
+ * @property bool           $default_encoding
+ * @property SiteMediaSet   $media_set
+ * @property ?SiteMediaType $default_type
  */
 class SiteMediaEncoding extends SwatDBDataObject
 {

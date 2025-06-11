@@ -9,7 +9,7 @@
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
- * @property float         $filesize
+ * @property ?float        $filesize
  * @property bool          $on_cdn
  * @property int           $media_encoding
  * @property int           $media

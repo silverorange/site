@@ -9,8 +9,8 @@
  * @see       SiteMultipleInstanceModule
  *
  * @property int                              $id
- * @property string                           $shortname
- * @property string                           $title
+ * @property ?string                          $shortname
+ * @property ?string                          $title
  * @property SiteInstanceConfigSettingWrapper $config_settings
  */
 class SiteInstance extends SwatDBDataObject

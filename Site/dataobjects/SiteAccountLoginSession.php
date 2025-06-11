@@ -10,8 +10,8 @@
  * @property SwatDate    $createdate
  * @property SwatDate    $login_date
  * @property string      $ip_address
- * @property string      $user_agent
- * @property string      $tag
+ * @property ?string     $user_agent
+ * @property ?string     $tag
  * @property string      $session_id
  * @property SiteAccount $account
  */

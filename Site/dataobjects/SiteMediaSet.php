@@ -11,7 +11,7 @@
  * @property bool                     $obfuscate_filename
  * @property bool                     $use_cdn
  * @property bool                     $private
- * @property SiteInstance             $instance
+ * @property ?SiteInstance            $instance
  * @property SiteMediaEncodingWrapper $encodings
  */
 class SiteMediaSet extends SwatDBDataObject

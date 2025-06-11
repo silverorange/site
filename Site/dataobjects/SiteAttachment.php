@@ -7,14 +7,14 @@
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
  * @property int               $id
- * @property string            $obfuscated_id
+ * @property ?string           $obfuscated_id
  * @property string            $title
- * @property string            $original_filename
- * @property string            $human_filename
+ * @property ?string           $original_filename
+ * @property ?string           $human_filename
  * @property string            $mime_type
  * @property float             $file_size
  * @property bool              $on_cdn
- * @property SwatDate          $createdate
+ * @property ?SwatDate         $createdate
  * @property string            $attachment_set_shortname
  * @property string            $file_base
  * @property SiteAttachmentSet $attachment_set

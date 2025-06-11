@@ -11,12 +11,12 @@
  *
  * @see       SiteAdReferrer
  *
- * @property int      $id
- * @property string   $shortname
- * @property string   $title
- * @property SwatDate $createdate
- * @property int      $displayorder
- * @property int      $total_referrers
+ * @property int       $id
+ * @property ?string   $shortname
+ * @property ?string   $title
+ * @property ?SwatDate $createdate
+ * @property int       $displayorder
+ * @property int       $total_referrers
  */
 class SiteAd extends SwatDBDataObject
 {

@@ -5,8 +5,8 @@
  *
  * @property int         $id
  * @property SwatDate    $login_date
- * @property string      $ip_address
- * @property string      $user_agent
+ * @property ?string     $ip_address
+ * @property ?string     $user_agent
  * @property SiteAccount $account
  */
 class SiteAccountLoginHistory extends SwatDBDataObject
