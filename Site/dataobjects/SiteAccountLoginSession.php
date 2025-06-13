@@ -5,6 +5,15 @@
  * and to track and display active sessions to the user.
  *
  * @copyright 2012-2016 silverorange
+ *
+ * @property int         $id
+ * @property SwatDate    $createdate
+ * @property SwatDate    $login_date
+ * @property string      $ip_address
+ * @property ?string     $user_agent
+ * @property ?string     $tag
+ * @property string      $session_id
+ * @property SiteAccount $account
  */
 class SiteAccountLoginSession extends SwatDBDataObject
 {
@@ -47,10 +56,8 @@ class SiteAccountLoginSession extends SwatDBDataObject
 
     /**
      * Whether or not the account of this session needs to be reloaded.
-     *
-     * @var bool
      */
-    public $dirty = false;
+    public bool $dirty = false;
 
     /**
      * Flags this session as needing to be reloaded.

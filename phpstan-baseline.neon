@@ -206,21 +206,6 @@ parameters:
 			path: Site/SiteWebApplication.php
 
 		-
-			message: "#^Access to an undefined property SiteAttachment\\:\\:\\$attachment_set\\.$#"
-			count: 2
-			path: Site/dataobjects/SiteAttachment.php
-
-		-
-			message: "#^Access to an undefined property SiteAttachmentCdnTask\\:\\:\\$attachment\\.$#"
-			count: 9
-			path: Site/dataobjects/SiteAttachmentCdnTask.php
-
-		-
-			message: "#^Access to an undefined property SiteAudioMedia\\:\\:\\$encoding_bindings\\.$#"
-			count: 1
-			path: Site/dataobjects/SiteAudioMedia.php
-
-		-
 			message: "#^Variable \\$transaction might not be defined\\.$#"
 			count: 1
 			path: Site/dataobjects/SiteAudioMedia.php
@@ -229,11 +214,6 @@ parameters:
 			message: "#^Variable \\$transaction might not be defined\\.$#"
 			count: 2
 			path: Site/dataobjects/SiteCdnTask.php
-
-		-
-			message: "#^Access to an undefined property SiteImage\\:\\:\\$dimension_bindings\\.$#"
-			count: 3
-			path: Site/dataobjects/SiteImage.php
 
 		-
 			message: "#^Access to an undefined property SiteImage\\:\\:\\$image_set\\.$#"
@@ -261,74 +241,14 @@ parameters:
 			path: Site/dataobjects/SiteImage.php
 
 		-
-			message: "#^Access to an undefined property SiteImageCdnTask\\:\\:\\$dimension\\.$#"
-			count: 5
-			path: Site/dataobjects/SiteImageCdnTask.php
-
-		-
-			message: "#^Access to an undefined property SiteImageCdnTask\\:\\:\\$image\\.$#"
-			count: 8
-			path: Site/dataobjects/SiteImageCdnTask.php
-
-		-
-			message: "#^Access to an undefined property SiteImageSet\\:\\:\\$dimensions\\.$#"
-			count: 2
-			path: Site/dataobjects/SiteImageSet.php
-
-		-
 			message: "#^Variable \\$wrapper might not be defined\\.$#"
 			count: 5
 			path: Site/dataobjects/SiteImageWrapper.php
 
 		-
-			message: "#^Access to an undefined property SiteMedia\\:\\:\\$encoding_bindings\\.$#"
-			count: 3
-			path: Site/dataobjects/SiteMedia.php
-
-		-
-			message: "#^Access to an undefined property SiteMedia\\:\\:\\$media_set\\.$#"
-			count: 8
-			path: Site/dataobjects/SiteMedia.php
-
-		-
-			message: "#^Access to an undefined property SiteMediaCdnTask\\:\\:\\$encoding\\.$#"
-			count: 5
-			path: Site/dataobjects/SiteMediaCdnTask.php
-
-		-
-			message: "#^Access to an undefined property SiteMediaCdnTask\\:\\:\\$media\\.$#"
-			count: 9
-			path: Site/dataobjects/SiteMediaCdnTask.php
-
-		-
-			message: "#^Access to an undefined property SiteMediaEncodingBinding\\:\\:\\$media_type\\.$#"
-			count: 2
-			path: Site/dataobjects/SiteMediaEncodingBinding.php
-
-		-
-			message: "#^Access to an undefined property SiteMediaSet\\:\\:\\$encodings\\.$#"
-			count: 3
-			path: Site/dataobjects/SiteMediaSet.php
-
-		-
 			message: "#^Variable \\$wrapper might not be defined\\.$#"
 			count: 5
 			path: Site/dataobjects/SiteMediaWrapper.php
-
-		-
-			message: "#^Access to an undefined property SiteVideoMedia\\:\\:\\$encoding_bindings\\.$#"
-			count: 4
-			path: Site/dataobjects/SiteVideoMedia.php
-
-		-
-			message: "#^Access to an undefined property SiteVideoMedia\\:\\:\\$image\\.$#"
-			count: 1
-			path: Site/dataobjects/SiteVideoMedia.php
-
-		-
-			message: "#^Access to an undefined property SiteVideoMedia\\:\\:\\$media_set\\.$#"
-			count: 2
-			path: Site/dataobjects/SiteVideoMedia.php
 
 		-
 			message: "#^Constructor of class SiteXMLRPCServerLayout has an unused parameter \\$template_name\\.$#"

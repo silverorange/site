@@ -5,6 +5,17 @@
  *
  * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property int                 $id
+ * @property ?string             $fullname
+ * @property ?string             $link
+ * @property ?string             $email
+ * @property string              $bodytext
+ * @property int<self::STATUS_*> $status
+ * @property ?string             $ip_address
+ * @property ?string             $user_agent
+ * @property SwatDate            $createdate
+ * @property ?SiteInstance       $instance
  */
 class SiteComment extends SwatDBDataObject
 {
@@ -61,10 +72,8 @@ class SiteComment extends SwatDBDataObject
 
     /**
      * Whether or not this comment is spam.
-     *
-     * @var bool
      */
-    public $spam = false;
+    public bool $spam = false;
 
     /**
      * IP Address of the person commenting.

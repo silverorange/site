@@ -5,6 +5,9 @@
  *
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property ?SiteMedia         $media
+ * @property ?SiteMediaEncoding $encoding
  */
 class SiteMediaCdnTask extends SiteCdnTask
 {

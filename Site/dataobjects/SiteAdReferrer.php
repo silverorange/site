@@ -7,6 +7,11 @@
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
  * @see       SiteAd
+ *
+ * @property int       $id
+ * @property ?SwatDate $createdate
+ * @property ?string   $http_referer
+ * @property SiteAd    $ad
  */
 class SiteAdReferrer extends SwatDBDataObject
 {

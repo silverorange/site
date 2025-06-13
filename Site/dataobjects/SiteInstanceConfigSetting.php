@@ -7,6 +7,11 @@
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
  * @see       SiteConfigModule
+ *
+ * @property string       $name
+ * @property ?string      $value
+ * @property bool         $is_default
+ * @property SiteInstance $instance
  */
 class SiteInstanceConfigSetting extends SwatDBDataObject
 {

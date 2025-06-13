@@ -5,6 +5,12 @@
  *
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property int    $id
+ * @property string $title
+ * @property string $shortname
+ * @property bool   $use_cdn
+ * @property bool   $obfuscate_filename
  */
 class SiteAttachmentSet extends SwatDBDataObject
 {

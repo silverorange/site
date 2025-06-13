@@ -5,6 +5,16 @@
  *
  * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property int                              $id
+ * @property ?string                          $filename
+ * @property ?string                          $original_filename
+ * @property ?string                          $title
+ * @property ?string                          $description
+ * @property SiteImageDimensionBindingWrapper $dimension_bindings
+ * @property string                           $image_set_shortname
+ * @property bool                             $automatically_save
+ * @property array<string,Imagick>            $imagick_instances
  */
 class SiteImage extends SwatDBDataObject
 {
@@ -55,8 +65,8 @@ class SiteImage extends SwatDBDataObject
     public $description;
 
     protected $image_set_shortname;
-    protected $automatically_save = true;
-    protected $imagick_instances = [];
+    protected bool $automatically_save = true;
+    protected array $imagick_instances = [];
 
     private static $image_set_cache = [];
     private $file_base;

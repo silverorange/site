@@ -4,6 +4,10 @@
  * An image type data object.
  *
  * @copyright 2008-2016 silverorange
+ *
+ * @property int    $id
+ * @property string $extension
+ * @property string $mime_type
  */
 class SiteImageType extends SwatDBDataObject
 {

@@ -4,6 +4,15 @@
  * An image dimension binding data object.
  *
  * @copyright 2008-2016 silverorange
+ *
+ * @property int           $width
+ * @property int           $height
+ * @property ?int          $filesize
+ * @property int           $dpi
+ * @property bool          $on_cdn
+ * @property int           $dimension
+ * @property int           $image
+ * @property SiteImageType $image_type
  */
 class SiteImageDimensionBinding extends SwatDBDataObject
 {
@@ -64,10 +73,8 @@ class SiteImageDimensionBinding extends SwatDBDataObject
 
     /**
      * Image field name.
-     *
-     * @var string
      */
-    protected $image_field = 'image';
+    protected string $image_field = 'image';
 
     private static $image_type_cache = [];
 

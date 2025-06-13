@@ -2,6 +2,12 @@
 
 /**
  * @copyright 2011-2016 silverorange
+ *
+ * @property int         $id
+ * @property SwatDate    $login_date
+ * @property ?string     $ip_address
+ * @property ?string     $user_agent
+ * @property SiteAccount $account
  */
 class SiteAccountLoginHistory extends SwatDBDataObject
 {

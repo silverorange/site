@@ -5,6 +5,15 @@
  *
  * @copyright 2011-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ *
+ * @property ?string                              $key
+ * @property int                                  $scrubber_image_count
+ * @property bool                                 $has_hls
+ * @property ?SiteVideoImage                      $image
+ * @property SiteVideoMediaSet                    $media_set
+ * @property ?SiteVideoScrubberImage              $scrubber_image
+ * @property SiteVideoMediaEncodingBindingWrapper $encoding_bindings
+ * @property SiteVideoMediaEncodingBindingWrapper $video_encoding_bindings
  */
 class SiteVideoMedia extends SiteMedia
 {
