@@ -8,27 +8,15 @@ pipeline {
             }
         }
 
-        stage('Check Code Style for Modified Files') {
-            when {
-                not {
-                    branch 'master'
-                }
-            }
+        stage('Check PHP Coding Style') {
             steps {
-                sh '''
-                    files=$(git diff-tree --diff-filter=ACRM --no-commit-id --name-only -r HEAD)
-                    if [ -n "$files" ]; then composer run phpcs:ci \
-                    $files; fi
-                '''
+                sh 'composer run phpcs:ci'
             }
         }
 
-        stage('Check Code Style for Entire Project') {
-            when {
-                branch 'master'
-            }
+        stage('Check PHP Static Analysis') {
             steps {
-                sh 'composer run phpcs:ci'
+                sh 'composer run phpstan:ci'
             }
         }
     }
