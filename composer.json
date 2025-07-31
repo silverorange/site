@@ -56,9 +56,9 @@
     "pear/text_password": "^1.1.1",
     "sentry/sentry": "^4.9",
     "silverorange/concentrate": "^2.0.0",
-    "silverorange/mdb2": "^3.0.0",
-    "silverorange/swat": "^7.9.0",
-    "silverorange/xml_rpc2": "^2.0",
+    "silverorange/mdb2": "^3.1.2",
+    "silverorange/swat": "^7.9.2",
+    "silverorange/xml_rpc2": "^2.0.5",
     "silverorange/xml_rpc_ajax": "^3.1",
     "symfony/mailer": "^5.4"
   },
