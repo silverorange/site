@@ -359,6 +359,11 @@ SiteJwPlayerMediaDisplay.prototype.recordEndPoint = function()
 	var interval = SiteJwPlayerMediaDisplay.record_interval;
 	var current_position = 0;
 	var old_position = 0;
+	
+	var throttle_timeout = null;
+	var last_execution_time = 0;
+	var pending_execution = null;
+	var throttle_delay = 2000; // 2 seconds
 
 	function recordEndPoint() {
 		function callback(response) {
@@ -372,17 +377,51 @@ SiteJwPlayerMediaDisplay.prototype.recordEndPoint = function()
 		old_position = current_position;
 	}
 
-	function autoRecordEndPoint(ev) {
+	function throttledRecordEndPoint() {
+		var now = Date.now();
+		var time_since_last_execution = now - last_execution_time;
+
+		// Clear any pending execution - only execute 
+		// the most recent event in the throttle period
+		if (throttle_timeout) {
+			clearTimeout(throttle_timeout);
+			throttle_timeout = null;
+		}
+
+		if (time_since_last_execution >= throttle_delay) {
+			last_execution_time = now;
+			recordEndPoint();
+			pending_execution = null;
+		} else {
+			// Still in throttle period, store this execution for later
+			pending_execution = function() {
+				last_execution_time = Date.now();
+				recordEndPoint();
+				pending_execution = null;
+			};
+
+			// Schedule execution after the remaining throttle time
+			var remaining_delay = throttle_delay - time_since_last_execution;
+			throttle_timeout = setTimeout(function() {
+				if (pending_execution) {
+					pending_execution();
+				}
+				throttle_timeout = null;
+			}, remaining_delay);
+		}
+	}
+
+	function autoRecordEndPoint(ev) { 
 		current_position = ev.position;
 
 		if (current_position > old_position + interval) {
-			recordEndPoint();
+			throttledRecordEndPoint();
 		}
 	}
 
 	this.player.on('time', autoRecordEndPoint);
-	this.player.on('pause', recordEndPoint);
-	this.player.on('seek', recordEndPoint);
+	this.player.on('pause', throttledRecordEndPoint);
+	this.player.on('seek', throttledRecordEndPoint);
 };
 
 // }}}
