@@ -209,6 +209,7 @@ class Site
             'analytics.enabled'         => true,
             'analytics.google_account'  => null,
             'analytics.google4_account' => null,
+            'analytics.google_tag_manager_account' => null,
             // Google analytics account id (XXXXXXXX)
             'analytics.google_account_id'                => null,
             'analytics.google_enhanced_link_attribution' => true,

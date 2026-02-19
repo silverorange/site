@@ -42,6 +42,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
     protected $google4_account;
 
     /**
+     * Google Tag Manager Account.
+     *
+     * @var string
+     */
+    protected $google_tag_manager_account;
+
+    /**
      * Flag to tell whether analytics are enabled on this site.
      *
      * @var bool
@@ -158,12 +165,13 @@ class SiteAnalyticsModule extends SiteApplicationModule
         $config = $this->app->getModule('SiteConfigModule');
 
         $this->google_account = $config->analytics->google_account;
+
         $this->enhanced_link_attribution =
             $config->analytics->google_enhanced_link_attribution;
 
         $this->google4_account = $config->analytics->google4_account;
-        $this->enhanced_link_attribution =
-            $config->analytics->google_enhanced_link_attribution;
+
+        $this->google_tag_manager_account = $config->analytics->google_tag_manager_account;
 
         $this->display_advertising =
             $config->analytics->google_display_advertising;
@@ -196,6 +204,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
         return
             $this->hasGoogleAnalytics()
             || $this->hasGoogleAnalytics4()
+            || $this->hasGoogleTagManager()
             || $this->hasFacebookPixel()
             || $this->hasTwitterPixel()
             || $this->hasBingUET();
@@ -226,6 +235,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         if ($this->hasGoogleAnalytics4()) {
             $js .= $this->getGoogleAnalytics4InlineJavascript();
+        }
+
+        if ($this->hasGoogleTagManager()) {
+            $js .= $this->getGoogleTagManagerInlineJavascript();
         }
 
         if ($this->hasTwitterPixel()) {
@@ -301,6 +314,14 @@ class SiteAnalyticsModule extends SiteApplicationModule
     {
         return
             $this->google4_account != ''
+            && !$this->analytics_opt_out
+            && $this->analytics_enabled;
+    }
+
+    public function hasGoogleTagManager(): bool
+    {
+        return
+            $this->google_tag_manager_account != ''
             && !$this->analytics_opt_out
             && $this->analytics_enabled;
     }
@@ -458,6 +479,35 @@ class SiteAnalyticsModule extends SiteApplicationModule
         return $javascript;
     }
 
+    public function getGoogleTagManagerInlineJavascript(): ?string
+    {
+        $javascript = null;
+
+        if ($this->hasGoogleTagManager()) {
+            $javascript = <<<'JS'
+                (function() {
+                    var gtm = document.createElement('script');
+                    gtm.type = 'text/javascript';
+                    gtm.async = true;
+                    gtm.src = %s;
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(gtm, s);
+                })();
+                JS;
+
+            $javascript = sprintf(
+                $javascript,
+                SwatString::quoteJavaScriptString(
+                    $this->getGoogleTagManagerCodeSource(
+                        $this->google_tag_manager_account
+                    )
+                )
+            );
+        }
+
+        return $javascript;
+    }
+
     public function getGoogleAnalytics4TrackerInlineJavascript(): ?string
     {
         $javascript = null;
@@ -509,6 +559,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
     protected function getGoogleAnalytics4TrackingCodeSource(string $id)
     {
         return "https://www.googletagmanager.com/gtag/js?id={$id}";
+    }
+
+    protected function getGoogleTagManagerCodeSource(string $id)
+    {
+        return "https://www.googletagmanager.com/gtm.js?id={$id}";
     }
 
     protected function getGoogleAnalyticsCommand($command)
