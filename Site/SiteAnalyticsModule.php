@@ -47,15 +47,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
     protected $analytics_opt_out = false;
 
     /**
-     * Flag to tell whether to load the enchanced link attribution plugin.
-     *
-     * @var bool
-     *
-     * @see https://support.google.com/analytics/answer/2558867
-     */
-    protected $enhanced_link_attribution = false;
-
-    /**
      * Flag to tell whether to use the display advertisor features.
      *
      * These are used for demographic and interest reports on GA, as well as
@@ -88,13 +79,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
     {
         $config = $this->app->getModule('SiteConfigModule');
 
-        $this->enhanced_link_attribution =
-            $config->analytics->google_enhanced_link_attribution;
-
-        $this->google_tag_manager_account = $config->analytics->google_tag_manager_account;
-
         $this->display_advertising =
             $config->analytics->google_display_advertising;
+
+        $this->google_tag_manager_account = $config->analytics->google_tag_manager_account;
 
         $this->facebook_pixel_id = $config->analytics->facebook_pixel_id;
 
