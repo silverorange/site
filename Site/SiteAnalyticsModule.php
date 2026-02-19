@@ -3,15 +3,13 @@
 /**
  * Web application module for handling site analytics.
  *
- * Currently has support for Google Analytics, Facebook Pixels,
- * and Bing Universal Event Tracking.
+ * Currently has support for Google Tag Manager and Meta/Facebook Pixel Event Tracking.
  *
- * @copyright 2007-2023 silverorange
+ * @copyright 2007-2026 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
- * @see      https://developers.google.com/analytics/devguides/collection/gajs/
- * @see      https://developers.facebook.com/docs/facebook-pixel/api-reference
- * @see      https://help.bingads.microsoft.com/apex/index/3/en-ca/n5012
+ * @see      https://developers.google.com/tag-platform/tag-manager
+ * @see      https://developers.facebook.com/docs/meta-pixel/
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
@@ -26,20 +24,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
     public const CUSTOM_VARIABLE_SCOPE_VISITOR = 1;
     public const CUSTOM_VARIABLE_SCOPE_SESSION = 2;
     public const CUSTOM_VARIABLE_SCOPE_PAGE = 3;
-
-    /**
-     * Google Analytics Account.
-     *
-     * @var string
-     */
-    protected $google_account;
-
-    /**
-     * Google Analytics 4 Account.
-     *
-     * @var string
-     */
-    protected $google4_account;
 
     /**
      * Google Tag Manager Account.
@@ -82,26 +66,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
      * @see https://support.google.com/analytics/answer/2444872
      */
     protected $display_advertising = false;
-
-    /**
-     * Stack of commands to send to google analytics.
-     *
-     * Each entry is an array where the first value is the google analytics
-     * command, and any following values are optional command parameters.
-     *
-     * @var array
-     */
-    protected $ga_commands = [];
-
-    /**
-     * Stack of commands to send to google analytics 4.
-     *
-     * Each entry is an array where the first value is the google analytics
-     * command, and any following values are optional command parameters.
-     *
-     * @var array
-     */
-    protected $ga4_commands = [];
 
     /**
      * Facebook Pixel Account.
@@ -164,12 +128,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
     {
         $config = $this->app->getModule('SiteConfigModule');
 
-        $this->google_account = $config->analytics->google_account;
-
         $this->enhanced_link_attribution =
             $config->analytics->google_enhanced_link_attribution;
-
-        $this->google4_account = $config->analytics->google4_account;
 
         $this->google_tag_manager_account = $config->analytics->google_tag_manager_account;
 
@@ -193,7 +153,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         // skip init of the commands if we're opted out.
         if (!$this->analytics_opt_out) {
-            $this->initGoogleAnalyticsCommands();
             $this->initFacebookPixelCommands();
             $this->initBingUETCommands();
         }
@@ -202,9 +161,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
     public function hasAnalytics()
     {
         return
-            $this->hasGoogleAnalytics()
-            || $this->hasGoogleAnalytics4()
-            || $this->hasGoogleTagManager()
+            $this->hasGoogleTagManager()
             || $this->hasFacebookPixel()
             || $this->hasTwitterPixel()
             || $this->hasBingUET();
@@ -227,14 +184,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         if ($this->hasBingUET()) {
             $js .= $this->getBingUETInlineJavascript();
-        }
-
-        if ($this->hasGoogleAnalytics()) {
-            $js .= $this->getGoogleAnalyticsInlineJavascript();
-        }
-
-        if ($this->hasGoogleAnalytics4()) {
-            $js .= $this->getGoogleAnalytics4InlineJavascript();
         }
 
         if ($this->hasGoogleTagManager()) {
@@ -298,185 +247,14 @@ class SiteAnalyticsModule extends SiteApplicationModule
         }
     }
 
-    // Google Analytics
-
-    public function hasGoogleAnalytics()
-    {
-        return
-            $this->google_account != ''
-            && !$this->analytics_opt_out
-            && $this->analytics_enabled;
-    }
-
-    // Google Analytics
-
-    public function hasGoogleAnalytics4(): bool
-    {
-        return
-            $this->google4_account != ''
-            && !$this->analytics_opt_out
-            && $this->analytics_enabled;
-    }
-
+    // Google
+    
     public function hasGoogleTagManager(): bool
     {
         return
             $this->google_tag_manager_account != ''
             && !$this->analytics_opt_out
             && $this->analytics_enabled;
-    }
-
-    public function pushGoogleAnalyticsCommands(array $commands)
-    {
-        foreach ($commands as $command) {
-            $this->ga_commands[] = $command;
-        }
-    }
-
-    public function pushGoogleAnalytics4Commands(array $commands): void
-    {
-        foreach ($commands as $command) {
-            $this->ga4_commands[] = $command;
-        }
-    }
-
-    public function prependGoogleAnalyticsCommands(array $commands)
-    {
-        $comands = array_reverse($commands);
-        foreach ($commands as $command) {
-            array_unshift($this->ga_commands, $command);
-        }
-    }
-
-    public function prependGoogleAnalytics4Commands(array $commands): void
-    {
-        $comands = array_reverse($commands);
-        foreach ($commands as $command) {
-            array_unshift($this->ga4_commands, $command);
-        }
-    }
-
-    public function getGoogleAnalyticsInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasGoogleAnalytics() && count($this->ga_commands) > 0) {
-            $javascript = $this->getGoogleAnalyticsCommandsInlineJavascript();
-            $javascript .= "\n";
-            $javascript .= $this->getGoogleAnalyticsTrackerInlineJavascript();
-        }
-
-        return $javascript;
-    }
-
-    public function getGoogleAnalytics4InlineJavascript(): ?string
-    {
-        $javascript = null;
-
-        if ($this->hasGoogleAnalytics4()) {
-            // Script head insert
-            $javascript = $this->getGoogleAnalytics4TrackerInlineJavascript();
-            $javascript .= "\n";
-
-            // Default API config call and any commands
-            $javascript .= $this->getGoogleAnalytics4CommandsInlineJavascript();
-        }
-
-        return $javascript;
-    }
-
-    public function getGoogleAnalyticsCommandsInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasGoogleAnalytics() && count($this->ga_commands) > 0) {
-            $commands = '';
-
-            if ($this->enhanced_link_attribution) {
-                // Enhanced link attribution plugin comes before _setAccount in
-                // Google documentation, so put it first. Note: the plugin URI
-                // doesn't load properly from https://ssl.google-analytics.com/.
-                $plugin_uri = '//www.google-analytics.com/plugins/ga/' .
-                    'inpage_linkid.js';
-
-                $commands .= $this->getGoogleAnalyticsCommand(
-                    ['_require', 'inpage_linkid', $plugin_uri]
-                );
-            }
-
-            // Always set the account before any further commands.
-            $commands .= $this->getGoogleAnalyticsCommand(
-                ['_setAccount', $this->google_account]
-            );
-
-            foreach ($this->ga_commands as $command) {
-                $commands .= $this->getGoogleAnalyticsCommand($command);
-            }
-
-            $javascript = <<<'JS'
-                var _gaq = _gaq || [];
-                %s
-                JS;
-
-            $javascript = sprintf(
-                $javascript,
-                $commands
-            );
-        }
-
-        return $javascript;
-    }
-
-    public function getGoogleAnalytics4CommandsInlineJavascript(): string
-    {
-        $commands = '';
-
-        // Event commands
-        foreach ($this->ga4_commands as $command) {
-            $commands .= $this->getGoogleAnalytics4CommandEvent(
-                $command['event'],
-                $command['event_params']
-            );
-        }
-
-        $javascript = <<<'JS'
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', %s);
-            %s
-            JS;
-
-        return sprintf(
-            $javascript,
-            SwatString::quoteJavaScriptString($this->google4_account),
-            $commands
-        );
-    }
-
-    public function getGoogleAnalyticsTrackerInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasGoogleAnalytics()) {
-            $javascript = <<<'JS'
-                (function() {
-                	var ga = document.createElement('script');
-                	ga.type = 'text/javascript';
-                	ga.async = true;
-                	ga.src = '%s';
-                	var s = document.getElementsByTagName('script')[0];
-                	s.parentNode.insertBefore(ga, s);
-                })();
-                JS;
-
-            $javascript = sprintf(
-                $javascript,
-                $this->getGoogleAnalyticsTrackingCodeSource()
-            );
-        }
-
-        return $javascript;
     }
 
     public function getGoogleTagManagerInlineJavascript(): ?string
@@ -508,100 +286,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
         return $javascript;
     }
 
-    public function getGoogleAnalytics4TrackerInlineJavascript(): ?string
-    {
-        $javascript = null;
-
-        if ($this->hasGoogleAnalytics4()) {
-            $javascript = <<<'JS'
-                (function() {
-                	var ga = document.createElement('script');
-                	ga.type = 'text/javascript';
-                	ga.async = true;
-                	ga.src = %s;
-                	var s = document.getElementsByTagName('script')[0];
-                	s.parentNode.insertBefore(ga, s);
-                })();
-                JS;
-
-            $javascript = sprintf(
-                $javascript,
-                SwatString::quoteJavaScriptString(
-                    $this->getGoogleAnalytics4TrackingCodeSource(
-                        $this->google4_account
-                    )
-                )
-            );
-        }
-
-        return $javascript;
-    }
-
-    protected function initGoogleAnalyticsCommands()
-    {
-        // Default commands for all sites:
-        // * Speed sampling 100% of the time.
-        // * Track the page view.
-        $this->ga_commands = [['_setSiteSpeedSampleRate', 100], '_trackPageview'];
-    }
-
-    protected function getGoogleAnalyticsTrackingCodeSource()
-    {
-        if ($this->display_advertising) {
-            $source = 'https://stats.g.doubleclick.net/dc.js';
-        } else {
-            $source = 'https://ssl.google-analytics.com/ga.js';
-        }
-
-        return $source;
-    }
-
-    protected function getGoogleAnalytics4TrackingCodeSource(string $id)
-    {
-        return "https://www.googletagmanager.com/gtag/js?id={$id}";
-    }
-
     protected function getGoogleTagManagerCodeSource(string $id)
     {
         return "https://www.googletagmanager.com/gtm.js?id={$id}";
     }
 
-    protected function getGoogleAnalyticsCommand($command)
-    {
-        $method = '';
-        $options = '';
-
-        if (is_array($command)) {
-            $method = array_shift($command);
-
-            foreach ($command as $part) {
-                $quoted_part = (is_float($part) || is_int($part))
-                    ? $part
-                    : SwatString::quoteJavaScriptString($part);
-
-                $options .= ', ' . $quoted_part;
-            }
-        } else {
-            $method = $command;
-        }
-
-        return sprintf(
-            '_gaq.push([%s%s]);',
-            SwatString::quoteJavaScriptString($method),
-            $options
-        );
-    }
-
-    protected function getGoogleAnalytics4CommandEvent(
-        string $event_name,
-        array $event_params
-    ): string {
-        return sprintf(
-            'gtag(\'event\', %s, %s);',
-            SwatString::quoteJavaScriptString($event_name),
-            json_encode($event_params)
-        );
-    }
 
     // Facebook
 
