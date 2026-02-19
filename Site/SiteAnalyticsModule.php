@@ -101,29 +101,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
      */
     protected $bing_uet_commands = [];
 
-    /**
-     * Twitter Pixel User-Tracking Tag.
-     *
-     * @var string
-     */
-    protected $twitter_track_pixel_id;
-
-    /**
-     * Twitter Pixel Purchase Tag.
-     *
-     * @var string
-     */
-    protected $twitter_purchase_pixel_id;
-
-    /**
-     * Stack of commands to send to twitter pixels.
-     *
-     * Commands are key-value pairs.
-     *
-     * @var array
-     */
-    protected $twitter_pixel_commands = [];
-
     public function init()
     {
         $config = $this->app->getModule('SiteConfigModule');
@@ -138,12 +115,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         $this->facebook_pixel_id = $config->analytics->facebook_pixel_id;
         $this->bing_uet_id = $config->analytics->bing_uet_id;
-
-        $this->twitter_track_pixel_id =
-            $config->analytics->twitter_track_pixel_id;
-
-        $this->twitter_purchase_pixel_id =
-            $config->analytics->twitter_purchase_pixel_id;
 
         if (!$config->analytics->enabled) {
             $this->analytics_enabled = false;
@@ -163,14 +134,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
         return
             $this->hasGoogleTagManager()
             || $this->hasFacebookPixel()
-            || $this->hasTwitterPixel()
             || $this->hasBingUET();
     }
 
     public function displayNoScriptContent()
     {
         $this->displayFacebookPixelImage();
-        $this->displayTwitterPixelImages();
         $this->displayBingUETImage();
     }
 
@@ -188,10 +157,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         if ($this->hasGoogleTagManager()) {
             $js .= $this->getGoogleTagManagerInlineJavascript();
-        }
-
-        if ($this->hasTwitterPixel()) {
-            $js .= $this->getTwitterPixelInlineJavascript();
         }
 
         if ($js != '') {
@@ -409,134 +374,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
             'fbq(%s);',
             implode(', ', array_map('json_encode', $command))
         );
-    }
-
-    // Twitter
-
-    public function hasTwitterPixel()
-    {
-        return
-            $this->twitter_track_pixel_id != ''
-            && !$this->analytics_opt_out
-            && $this->analytics_enabled;
-    }
-
-    public function pushTwitterPixelCommands(array $commands)
-    {
-        foreach ($commands as $name => $value) {
-            $this->twitter_pixel_commands[$name] = $value;
-        }
-    }
-
-    public function getTwitterPixelImages()
-    {
-        // @codingStandardsIgnoreStart
-        $xhtml = <<<'XHTML'
-            <noscript>
-            <img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
-            <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
-            </noscript>
-            XHTML;
-        // @codingStandardsIgnoreEnd
-        if (count($this->twitter_pixel_commands) > 0) {
-            // @codingStandardsIgnoreStart
-            $xhtml .= <<<'XHTML'
-                <noscript>
-                <img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
-                <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
-                </noscript>
-                XHTML;
-            // @codingStandardsIgnoreEnd
-        }
-
-        $track_pixel = rawurlencode($this->twitter_track_pixel_id);
-        $purchase_pixel = rawurlencode($this->twitter_purchase_pixel_id);
-
-        $query_vars = [];
-        foreach ($this->twitter_pixel_commands as $name => $value) {
-            $query_vars[$name] = sprintf(
-                '%s=%s',
-                SwatString::minimizeEntities(rawurlencode($name)),
-                SwatString::minimizeEntities(rawurlencode($value))
-            );
-        }
-
-        return sprintf(
-            $xhtml,
-            SwatString::minimizeEntities($track_pixel),
-            SwatString::minimizeEntities($purchase_pixel),
-            implode('&amp;', $query_vars)
-        );
-    }
-
-    public function getTwitterPixelInlineJavascript()
-    {
-        $javascript = '';
-
-        if ($this->hasTwitterPixel()) {
-            $javascript = $this->getTwitterPixelTrackerInlineJavascript();
-        }
-
-        return $javascript;
-    }
-
-    public function getTwitterPixelTrackerInlineJavascript()
-    {
-        $twitter_functions = sprintf(
-            "\ntwttr.conversion.trackPid(%s);\n",
-            SwatString::quoteJavaScriptString($this->twitter_track_pixel_id)
-        );
-
-        if (count($this->twitter_pixel_commands) > 0) {
-            $twitter_functions .= "\n";
-            $twitter_functions .= sprintf(
-                "twttr.conversion.trackPid(%s, %s);\n",
-                SwatString::quoteJavaScriptString(
-                    $this->twitter_purchase_pixel_id
-                ),
-                json_encode($this->twitter_pixel_commands)
-            );
-        }
-
-        $javascript = <<<'JS'
-            (function() {
-            var twitter_script = document.createElement('script');
-            twitter_script.type = 'text/javascript';
-            twitter_script.src = '//platform.twitter.com/oct.js';
-
-            var onload = function() { %s };
-
-            if (typeof document.attachEvent === 'object') {
-            	// Support IE8
-            	twitter_script.onreadystatechange = function() {
-            		if (['loaded', 'complete'].contains(twitter_script.readyState)) {
-            			twitter_script.onreadystatechange = null;
-            			onload();
-            		}
-            	};
-            } else {
-            	twitter_script.onload = onload;
-            }
-
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(twitter_script, s);
-            })();
-            JS;
-
-        return sprintf(
-            $javascript,
-            $twitter_functions
-        );
-    }
-
-    protected function displayTwitterPixelImages()
-    {
-        if ($this->hasTwitterPixel()) {
-            $images = $this->getTwitterPixelImages();
-            if ($images != '') {
-                echo $images;
-            }
-        }
     }
 
     // Bing
