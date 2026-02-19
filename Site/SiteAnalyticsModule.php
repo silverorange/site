@@ -84,23 +84,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
      */
     protected $facebook_pixel_commands = [];
 
-    /**
-     * Bing UET Account.
-     *
-     * @var string
-     */
-    protected $bing_uet_id;
-
-    /**
-     * Stack of commands to send to bing UET.
-     *
-     * Each entry is an array where the first value is the bing UET
-     * command, and any following values are optional command parameters.
-     *
-     * @var array
-     */
-    protected $bing_uet_commands = [];
-
     public function init()
     {
         $config = $this->app->getModule('SiteConfigModule');
@@ -114,7 +97,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
             $config->analytics->google_display_advertising;
 
         $this->facebook_pixel_id = $config->analytics->facebook_pixel_id;
-        $this->bing_uet_id = $config->analytics->bing_uet_id;
 
         if (!$config->analytics->enabled) {
             $this->analytics_enabled = false;
@@ -125,7 +107,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
         // skip init of the commands if we're opted out.
         if (!$this->analytics_opt_out) {
             $this->initFacebookPixelCommands();
-            $this->initBingUETCommands();
         }
     }
 
@@ -133,14 +114,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
     {
         return
             $this->hasGoogleTagManager()
-            || $this->hasFacebookPixel()
-            || $this->hasBingUET();
+            || $this->hasFacebookPixel();
     }
 
     public function displayNoScriptContent()
     {
         $this->displayFacebookPixelImage();
-        $this->displayBingUETImage();
     }
 
     public function displayScriptContent()
@@ -149,10 +128,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         if ($this->hasFacebookPixel()) {
             $js .= $this->getFacebookPixelInlineJavascript();
-        }
-
-        if ($this->hasBingUET()) {
-            $js .= $this->getBingUETInlineJavascript();
         }
 
         if ($this->hasGoogleTagManager()) {
@@ -374,125 +349,5 @@ class SiteAnalyticsModule extends SiteApplicationModule
             'fbq(%s);',
             implode(', ', array_map('json_encode', $command))
         );
-    }
-
-    // Bing
-
-    public function hasBingUET()
-    {
-        return
-            $this->bing_uet_id != ''
-            && !$this->analytics_opt_out
-            && $this->analytics_enabled;
-    }
-
-    public function pushBingUETCommands(array $commands)
-    {
-        foreach ($commands as $command) {
-            $this->bing_uet_commands[] = $command;
-        }
-    }
-
-    public function prependBingUETCommands(array $commands)
-    {
-        $comands = array_reverse($commands);
-        foreach ($commands as $command) {
-            array_unshift($this->bing_uet_commands, $command);
-        }
-    }
-
-    public function getBingUETImage()
-    {
-        // @codingStandardsIgnoreStart
-        $xhtml = <<<'XHTML'
-            <noscript><img src="//bat.bing.com/action/0?ti=%s&Ver=2" height="0" width="0" style="display:none; visibility: hidden;" /></noscript>
-            XHTML;
-
-        // @codingStandardsIgnoreEnd
-        return sprintf(
-            $xhtml,
-            SwatString::minimizeEntities(rawurlencode($this->bing_uet_id))
-        );
-    }
-
-    public function getBingUETInlineJavascript()
-    {
-        $javascript = null;
-
-        // Bing UET doens't have an init command, and the initial tracker setup
-        // happens as part of the code in
-        // SiteAnalyticsModule::getBingUETTrackerInlineJavascript().
-        // This is different that the other trackers in SiteAnalyticsModule.
-        if ($this->hasBingUET()) {
-            $javascript = $this->getBingUETTrackerInlineJavascript();
-            if (count($this->bing_uet_commands) > 0) {
-                $javascript .= "\n";
-                $javascript .= $this->getBingUETCommandsInlineJavascript();
-            }
-        }
-
-        return $javascript;
-    }
-
-    public function getBingUETTrackerInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasBingUET()) {
-            // @codingStandardsIgnoreStart
-            $javascript = <<<'JS'
-                (function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"%s"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
-                window.uetq = window.uetq || [];
-                JS;
-            // @codingStandardsIgnoreEnd
-        }
-
-        return sprintf(
-            $javascript,
-            SwatString::quoteJavaScriptString($this->bing_uet_id)
-        );
-    }
-
-    public function getBingUETCommandsInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasBingUET()
-            && count($this->bing_uet_commands) > 0) {
-            foreach ($this->bing_uet_commands as $command) {
-                $javascript .= $this->getBingUETCommand($command);
-            }
-        }
-
-        return $javascript;
-    }
-
-    protected function initBingUETCommands()
-    {
-        // No default commands to init, as the basic track page view happens
-        // in the tracker setup javascript in
-        // SiteAnalyticsModule::getBingUETTrackerInlineJavascript().
-    }
-
-    protected function getBingUETCommand($command)
-    {
-        if (!is_array($command)) {
-            $command = [$command];
-        }
-
-        return sprintf(
-            'window.uetq.push(%s);',
-            json_encode($command)
-        );
-    }
-
-    protected function displayBingUETImage()
-    {
-        if ($this->hasBingUET()) {
-            $image = $this->getBingUETImage();
-            if ($image != '') {
-                echo $image;
-            }
-        }
     }
 }
