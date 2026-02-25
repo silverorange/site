@@ -33,6 +33,16 @@ class SiteAnalyticsModule extends SiteApplicationModule
     protected $google_tag_manager_account;
 
     /**
+     * Stack of commands to send to google tag manager.
+     *
+     * Each entry is an array where the first value is the google tag manager command,
+     * and any following values are optional command parameters.
+     *
+     * @var array<int, string>
+     */
+    protected $google_tag_manager_commands = [];
+
+    /**
      * Flag to tell whether analytics are enabled on this site.
      *
      * @var bool
@@ -185,40 +195,90 @@ class SiteAnalyticsModule extends SiteApplicationModule
             && $this->analytics_enabled;
     }
 
+    public function getGoogleTagManagerTrackerInlineJavascript(): ?string
+    {
+        if (!$this->hasGoogleTagManager()) {
+            return null;
+        }
+
+        return sprintf(
+            <<<'JS'
+            (function(w, d, s, l, i){
+                w[l] = w[l] || [];
+                w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer' ? '&l=' + l : '';
+                    j.async = true;
+                    j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                    f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', %s);
+            JS
+            ,
+            SwatString::quoteJavaScriptString(
+                $this->google_tag_manager_account,
+            ),
+        );
+    }
+
+    /**
+     * @param list<string> $commands are data structures destined to be a JSON parameter for dataLayer.push()
+     */
+    public function pushGoogleTagManagerCommands(array $commands): void
+    {
+        $ecommerce_cleared = false;
+        foreach ($commands as $command) {
+            if (isset($command['ecommerce']) && !$ecommerce_cleared) {
+                // An ecommerce data structure - send a clear object command
+                // per GTM documentation
+                $this->google_tag_manager_commands[] = ['ecommerce' => null];
+                $ecommerce_cleared = true;
+            }
+            $this->google_tag_manager_commands[] = $command;
+        }
+    }
+
     public function getGoogleTagManagerInlineJavascript(): ?string
     {
-        $javascript = null;
+        if (!$this->hasGoogleTagManager()) {
+            return null;
+        }
 
-        if ($this->hasGoogleTagManager()) {
-            $javascript = <<<'JS'
-                (function() {
-                    var gtm = document.createElement('script');
-                    gtm.type = 'text/javascript';
-                    gtm.async = true;
-                    gtm.src = %s;
-                    var s = document.getElementsByTagName('script')[0];
-                    s.parentNode.insertBefore(gtm, s);
-                })();
-                JS;
+        // SEE https://developers.google.com/tag-platform/tag-manager/datalayer#persist_data_layer_variables
+        // Call and any commands via dataLayer (which must happen before GTM snippet is initiated),
+        // then init GTM snippet (script head insert)
+        return ($this->getGoogleTagManagerCommandsInlineJavascript() ?? '') .
+            "\n" .
+            ($this->getGoogleTagManagerTrackerInlineJavascript() ?? '');
+    }
 
-            $javascript = sprintf(
-                $javascript,
-                SwatString::quoteJavaScriptString(
-                    $this->getGoogleTagManagerCodeSource(
-                        $this->google_tag_manager_account
-                    )
-                )
+    public function getGoogleTagManagerCommandsInlineJavascript(): ?string
+    {
+        if (!$this->hasGoogleTagManager()) {
+            return null;
+        }
+
+        // Event commands
+        $pushes = [];
+        foreach ($this->google_tag_manager_commands as $command) {
+            $pushes[] = sprintf(
+                <<<'JS'
+                dataLayer.push(%s);
+                JS
+                ,
+                json_encode($command),
             );
         }
 
-        return $javascript;
+        return sprintf(
+            <<<'JS'
+            window.dataLayer = window.dataLayer || [];
+            %s
+            JS
+            ,
+            implode("\n", $pushes),
+        );
     }
-
-    protected function getGoogleTagManagerCodeSource(string $id)
-    {
-        return "https://www.googletagmanager.com/gtm.js?id={$id}";
-    }
-
 
     // Facebook
 
