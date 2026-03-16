@@ -206,9 +206,10 @@ class Site
             'errors.fatal_severity'   => null,
             // Analytics
             // Google
-            'analytics.enabled'         => true,
+            'analytics.enabled'                    => true,
+            'analytics.google4_account'            => null,
             'analytics.google_tag_manager_account' => null,
-            'analytics.google_display_advertising'       => false,
+            'analytics.google_display_advertising' => false,
             // Facebook Pixel id
             'analytics.facebook_pixel_id' => null,
             // Ads

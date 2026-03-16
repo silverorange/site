@@ -26,11 +26,14 @@ class SiteAnalyticsModule extends SiteApplicationModule
     public const CUSTOM_VARIABLE_SCOPE_PAGE = 3;
 
     /**
-     * Google Tag Manager Account.
-     *
-     * @var string
+     * Google Analytics 4 Account.
      */
-    protected $google_tag_manager_account;
+    protected ?string $google4_account = null;
+
+    /**
+     * Google Tag Manager Account.
+     */
+    protected ?string $google_tag_manager_account = null;
 
     /**
      * Stack of commands to send to google tag manager.
@@ -69,6 +72,16 @@ class SiteAnalyticsModule extends SiteApplicationModule
     protected $display_advertising = false;
 
     /**
+     * Stack of commands to send to google analytics 4.
+     *
+     * Each entry is an array where the first value is the google analytics
+     * command, and any following values are optional command parameters.
+     *
+     * @var array<int, string>
+     */
+    protected array $ga4_commands = [];
+
+    /**
      * Facebook Pixel Account.
      *
      * @var string
@@ -81,7 +94,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
      * Each entry is an array where the first value is the facebook pixel
      * command, and any following values are optional command parameters.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $facebook_pixel_commands = [];
 
@@ -91,6 +104,8 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         $this->display_advertising =
             $config->analytics->google_display_advertising;
+
+        $this->google4_account = $config->analytics->google4_account;
 
         $this->google_tag_manager_account = $config->analytics->google_tag_manager_account;
 
@@ -110,8 +125,15 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
     public function hasAnalytics()
     {
+        $hasGoogleAnalytics4 = $this->hasGoogleAnalytics4();
+        $hasGoogleTagManager = $this->hasGoogleTagManager();
+        if ($hasGoogleAnalytics4 && $hasGoogleTagManager) {
+            throw new Exception('Google Analytics 4 (GA4) and Google Tag Manager (GTM) are both active in config ini. It is best practice is to configure GA4 in GTM, not implement them both.');
+        }
+
         return
-            $this->hasGoogleTagManager()
+            $hasGoogleAnalytics4
+            || $hasGoogleTagManager
             || $this->hasFacebookPixel();
     }
 
@@ -126,6 +148,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         if ($this->hasFacebookPixel()) {
             $js .= $this->getFacebookPixelInlineJavascript();
+        }
+
+        if ($this->hasGoogleAnalytics4()) {
+            $js .= $this->getGoogleAnalytics4InlineJavascript();
         }
 
         if ($this->hasGoogleTagManager()) {
@@ -186,13 +212,98 @@ class SiteAnalyticsModule extends SiteApplicationModule
     }
 
     // Google
-    
+
+    public function hasGoogleAnalytics4(): bool
+    {
+        return
+            $this->google4_account != ''
+            && !$this->analytics_opt_out
+            && $this->analytics_enabled;
+    }
+
     public function hasGoogleTagManager(): bool
     {
         return
             $this->google_tag_manager_account != ''
             && !$this->analytics_opt_out
             && $this->analytics_enabled;
+    }
+
+    public function getGoogleAnalytics4InlineJavascript(): ?string
+    {
+        $javascript = null;
+
+        if ($this->hasGoogleAnalytics4()) {
+            // Script head insert
+            $javascript = $this->getGoogleAnalytics4TrackerInlineJavascript();
+            $javascript .= "\n";
+
+            // Default API config call and any commands
+            $javascript .= $this->getGoogleAnalytics4CommandsInlineJavascript();
+        }
+
+        return $javascript;
+    }
+
+    public function getGoogleAnalytics4CommandsInlineJavascript(): string
+    {
+        $commands = '';
+
+        // Event commands
+        foreach ($this->ga4_commands as $command) {
+            $commands .= $this->getGoogleAnalytics4CommandEvent(
+                $command['event'],
+                $command['event_params']
+            );
+        }
+
+        $javascript = <<<'JS'
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', %s);
+            %s
+            JS;
+
+        return sprintf(
+            $javascript,
+            SwatString::quoteJavaScriptString($this->google4_account),
+            $commands
+        );
+    }
+
+    public function getGoogleAnalytics4TrackerInlineJavascript(): ?string
+    {
+        $javascript = null;
+
+        if ($this->hasGoogleAnalytics4()) {
+            $javascript = <<<'JS'
+                (function() {
+                    var ga = document.createElement('script');
+                    ga.type = 'text/javascript';
+                    ga.async = true;
+                    ga.src = %s;
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(ga, s);
+                })();
+                JS;
+
+            $javascript = sprintf(
+                $javascript,
+                SwatString::quoteJavaScriptString(
+                    $this->getGoogleAnalytics4TrackingCodeSource(
+                        $this->google4_account
+                    )
+                )
+            );
+        }
+
+        return $javascript;
+    }
+
+    protected function getGoogleAnalytics4TrackingCodeSource(string $id)
+    {
+        return "https://www.googletagmanager.com/gtag/js?id={$id}";
     }
 
     public function getGoogleTagManagerTrackerInlineJavascript(): ?string
@@ -203,22 +314,28 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         return sprintf(
             <<<'JS'
-            (function(w, d, s, l, i){
-                w[l] = w[l] || [];
-                w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-                var f = d.getElementsByTagName(s)[0],
-                    j = d.createElement(s),
-                    dl = l != 'dataLayer' ? '&l=' + l : '';
-                    j.async = true;
-                    j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-                    f.parentNode.insertBefore(j, f);
-            })(window, document, 'script', 'dataLayer', %s);
-            JS
-            ,
+                (function(w, d, s, l, i){
+                    w[l] = w[l] || [];
+                    w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+                    var f = d.getElementsByTagName(s)[0],
+                        j = d.createElement(s),
+                        dl = l != 'dataLayer' ? '&l=' + l : '';
+                        j.async = true;
+                        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                        f.parentNode.insertBefore(j, f);
+                })(window, document, 'script', 'dataLayer', %s);
+                JS,
             SwatString::quoteJavaScriptString(
                 $this->google_tag_manager_account,
             ),
         );
+    }
+
+    public function pushGoogleAnalytics4Commands(array $commands): void
+    {
+        foreach ($commands as $command) {
+            $this->ga4_commands[] = $command;
+        }
     }
 
     /**
@@ -263,20 +380,29 @@ class SiteAnalyticsModule extends SiteApplicationModule
         foreach ($this->google_tag_manager_commands as $command) {
             $pushes[] = sprintf(
                 <<<'JS'
-                dataLayer.push(%s);
-                JS
-                ,
+                    dataLayer.push(%s);
+                    JS,
                 json_encode($command),
             );
         }
 
         return sprintf(
             <<<'JS'
-            window.dataLayer = window.dataLayer || [];
-            %s
-            JS
-            ,
+                window.dataLayer = window.dataLayer || [];
+                %s
+                JS,
             implode("\n", $pushes),
+        );
+    }
+
+    protected function getGoogleAnalytics4CommandEvent(
+        string $event_name,
+        array $event_params
+    ): string {
+        return sprintf(
+            'gtag(\'event\', %s, %s);',
+            SwatString::quoteJavaScriptString($event_name),
+            json_encode($event_params)
         );
     }
 
