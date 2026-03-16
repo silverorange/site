@@ -3,15 +3,13 @@
 /**
  * Web application module for handling site analytics.
  *
- * Currently has support for Google Analytics, Facebook Pixels,
- * and Bing Universal Event Tracking.
+ * Currently has support for Google Tag Manager and Meta/Facebook Pixel Event Tracking.
  *
- * @copyright 2007-2023 silverorange
+ * @copyright 2007-2026 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  *
- * @see      https://developers.google.com/analytics/devguides/collection/gajs/
- * @see      https://developers.facebook.com/docs/facebook-pixel/api-reference
- * @see      https://help.bingads.microsoft.com/apex/index/3/en-ca/n5012
+ * @see      https://developers.google.com/tag-platform/tag-manager
+ * @see      https://developers.facebook.com/docs/meta-pixel/
  */
 class SiteAnalyticsModule extends SiteApplicationModule
 {
@@ -28,18 +26,24 @@ class SiteAnalyticsModule extends SiteApplicationModule
     public const CUSTOM_VARIABLE_SCOPE_PAGE = 3;
 
     /**
-     * Google Analytics Account.
-     *
-     * @var string
+     * Google Analytics 4 Account.
      */
-    protected $google_account;
+    protected ?string $google4_account = null;
 
     /**
-     * Google Analytics 4 Account.
-     *
-     * @var string
+     * Google Tag Manager Account.
      */
-    protected $google4_account;
+    protected ?string $google_tag_manager_account = null;
+
+    /**
+     * Stack of commands to send to google tag manager.
+     *
+     * Each entry is an array where the first value is the google tag manager command,
+     * and any following values are optional command parameters.
+     *
+     * @var array<int, string>
+     */
+    protected $google_tag_manager_commands = [];
 
     /**
      * Flag to tell whether analytics are enabled on this site.
@@ -56,15 +60,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
     protected $analytics_opt_out = false;
 
     /**
-     * Flag to tell whether to load the enchanced link attribution plugin.
-     *
-     * @var bool
-     *
-     * @see https://support.google.com/analytics/answer/2558867
-     */
-    protected $enhanced_link_attribution = false;
-
-    /**
      * Flag to tell whether to use the display advertisor features.
      *
      * These are used for demographic and interest reports on GA, as well as
@@ -77,24 +72,14 @@ class SiteAnalyticsModule extends SiteApplicationModule
     protected $display_advertising = false;
 
     /**
-     * Stack of commands to send to google analytics.
-     *
-     * Each entry is an array where the first value is the google analytics
-     * command, and any following values are optional command parameters.
-     *
-     * @var array
-     */
-    protected $ga_commands = [];
-
-    /**
      * Stack of commands to send to google analytics 4.
      *
      * Each entry is an array where the first value is the google analytics
      * command, and any following values are optional command parameters.
      *
-     * @var array
+     * @var array<int, string>
      */
-    protected $ga4_commands = [];
+    protected array $ga4_commands = [];
 
     /**
      * Facebook Pixel Account.
@@ -109,73 +94,22 @@ class SiteAnalyticsModule extends SiteApplicationModule
      * Each entry is an array where the first value is the facebook pixel
      * command, and any following values are optional command parameters.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $facebook_pixel_commands = [];
-
-    /**
-     * Bing UET Account.
-     *
-     * @var string
-     */
-    protected $bing_uet_id;
-
-    /**
-     * Stack of commands to send to bing UET.
-     *
-     * Each entry is an array where the first value is the bing UET
-     * command, and any following values are optional command parameters.
-     *
-     * @var array
-     */
-    protected $bing_uet_commands = [];
-
-    /**
-     * Twitter Pixel User-Tracking Tag.
-     *
-     * @var string
-     */
-    protected $twitter_track_pixel_id;
-
-    /**
-     * Twitter Pixel Purchase Tag.
-     *
-     * @var string
-     */
-    protected $twitter_purchase_pixel_id;
-
-    /**
-     * Stack of commands to send to twitter pixels.
-     *
-     * Commands are key-value pairs.
-     *
-     * @var array
-     */
-    protected $twitter_pixel_commands = [];
 
     public function init()
     {
         $config = $this->app->getModule('SiteConfigModule');
 
-        $this->google_account = $config->analytics->google_account;
-        $this->enhanced_link_attribution =
-            $config->analytics->google_enhanced_link_attribution;
-
-        $this->google4_account = $config->analytics->google4_account;
-        $this->enhanced_link_attribution =
-            $config->analytics->google_enhanced_link_attribution;
-
         $this->display_advertising =
             $config->analytics->google_display_advertising;
 
+        $this->google4_account = $config->analytics->google4_account;
+
+        $this->google_tag_manager_account = $config->analytics->google_tag_manager_account;
+
         $this->facebook_pixel_id = $config->analytics->facebook_pixel_id;
-        $this->bing_uet_id = $config->analytics->bing_uet_id;
-
-        $this->twitter_track_pixel_id =
-            $config->analytics->twitter_track_pixel_id;
-
-        $this->twitter_purchase_pixel_id =
-            $config->analytics->twitter_purchase_pixel_id;
 
         if (!$config->analytics->enabled) {
             $this->analytics_enabled = false;
@@ -185,27 +119,27 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
         // skip init of the commands if we're opted out.
         if (!$this->analytics_opt_out) {
-            $this->initGoogleAnalyticsCommands();
             $this->initFacebookPixelCommands();
-            $this->initBingUETCommands();
         }
     }
 
     public function hasAnalytics()
     {
+        $hasGoogleAnalytics4 = $this->hasGoogleAnalytics4();
+        $hasGoogleTagManager = $this->hasGoogleTagManager();
+        if ($hasGoogleAnalytics4 && $hasGoogleTagManager) {
+            throw new Exception('Google Analytics 4 (GA4) and Google Tag Manager (GTM) are both active in config ini. It is best practice is to configure GA4 in GTM, not implement them both.');
+        }
+
         return
-            $this->hasGoogleAnalytics()
-            || $this->hasGoogleAnalytics4()
-            || $this->hasFacebookPixel()
-            || $this->hasTwitterPixel()
-            || $this->hasBingUET();
+            $hasGoogleAnalytics4
+            || $hasGoogleTagManager
+            || $this->hasFacebookPixel();
     }
 
     public function displayNoScriptContent()
     {
         $this->displayFacebookPixelImage();
-        $this->displayTwitterPixelImages();
-        $this->displayBingUETImage();
     }
 
     public function displayScriptContent()
@@ -216,20 +150,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
             $js .= $this->getFacebookPixelInlineJavascript();
         }
 
-        if ($this->hasBingUET()) {
-            $js .= $this->getBingUETInlineJavascript();
-        }
-
-        if ($this->hasGoogleAnalytics()) {
-            $js .= $this->getGoogleAnalyticsInlineJavascript();
-        }
-
         if ($this->hasGoogleAnalytics4()) {
             $js .= $this->getGoogleAnalytics4InlineJavascript();
         }
 
-        if ($this->hasTwitterPixel()) {
-            $js .= $this->getTwitterPixelInlineJavascript();
+        if ($this->hasGoogleTagManager()) {
+            $js .= $this->getGoogleTagManagerInlineJavascript();
         }
 
         if ($js != '') {
@@ -285,17 +211,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
         }
     }
 
-    // Google Analytics
-
-    public function hasGoogleAnalytics()
-    {
-        return
-            $this->google_account != ''
-            && !$this->analytics_opt_out
-            && $this->analytics_enabled;
-    }
-
-    // Google Analytics
+    // Google
 
     public function hasGoogleAnalytics4(): bool
     {
@@ -305,47 +221,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
             && $this->analytics_enabled;
     }
 
-    public function pushGoogleAnalyticsCommands(array $commands)
+    public function hasGoogleTagManager(): bool
     {
-        foreach ($commands as $command) {
-            $this->ga_commands[] = $command;
-        }
-    }
-
-    public function pushGoogleAnalytics4Commands(array $commands): void
-    {
-        foreach ($commands as $command) {
-            $this->ga4_commands[] = $command;
-        }
-    }
-
-    public function prependGoogleAnalyticsCommands(array $commands)
-    {
-        $comands = array_reverse($commands);
-        foreach ($commands as $command) {
-            array_unshift($this->ga_commands, $command);
-        }
-    }
-
-    public function prependGoogleAnalytics4Commands(array $commands): void
-    {
-        $comands = array_reverse($commands);
-        foreach ($commands as $command) {
-            array_unshift($this->ga4_commands, $command);
-        }
-    }
-
-    public function getGoogleAnalyticsInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasGoogleAnalytics() && count($this->ga_commands) > 0) {
-            $javascript = $this->getGoogleAnalyticsCommandsInlineJavascript();
-            $javascript .= "\n";
-            $javascript .= $this->getGoogleAnalyticsTrackerInlineJavascript();
-        }
-
-        return $javascript;
+        return
+            $this->google_tag_manager_account != ''
+            && !$this->analytics_opt_out
+            && $this->analytics_enabled;
     }
 
     public function getGoogleAnalytics4InlineJavascript(): ?string
@@ -359,48 +240,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
             // Default API config call and any commands
             $javascript .= $this->getGoogleAnalytics4CommandsInlineJavascript();
-        }
-
-        return $javascript;
-    }
-
-    public function getGoogleAnalyticsCommandsInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasGoogleAnalytics() && count($this->ga_commands) > 0) {
-            $commands = '';
-
-            if ($this->enhanced_link_attribution) {
-                // Enhanced link attribution plugin comes before _setAccount in
-                // Google documentation, so put it first. Note: the plugin URI
-                // doesn't load properly from https://ssl.google-analytics.com/.
-                $plugin_uri = '//www.google-analytics.com/plugins/ga/' .
-                    'inpage_linkid.js';
-
-                $commands .= $this->getGoogleAnalyticsCommand(
-                    ['_require', 'inpage_linkid', $plugin_uri]
-                );
-            }
-
-            // Always set the account before any further commands.
-            $commands .= $this->getGoogleAnalyticsCommand(
-                ['_setAccount', $this->google_account]
-            );
-
-            foreach ($this->ga_commands as $command) {
-                $commands .= $this->getGoogleAnalyticsCommand($command);
-            }
-
-            $javascript = <<<'JS'
-                var _gaq = _gaq || [];
-                %s
-                JS;
-
-            $javascript = sprintf(
-                $javascript,
-                $commands
-            );
         }
 
         return $javascript;
@@ -433,31 +272,6 @@ class SiteAnalyticsModule extends SiteApplicationModule
         );
     }
 
-    public function getGoogleAnalyticsTrackerInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasGoogleAnalytics()) {
-            $javascript = <<<'JS'
-                (function() {
-                	var ga = document.createElement('script');
-                	ga.type = 'text/javascript';
-                	ga.async = true;
-                	ga.src = '%s';
-                	var s = document.getElementsByTagName('script')[0];
-                	s.parentNode.insertBefore(ga, s);
-                })();
-                JS;
-
-            $javascript = sprintf(
-                $javascript,
-                $this->getGoogleAnalyticsTrackingCodeSource()
-            );
-        }
-
-        return $javascript;
-    }
-
     public function getGoogleAnalytics4TrackerInlineJavascript(): ?string
     {
         $javascript = null;
@@ -465,12 +279,12 @@ class SiteAnalyticsModule extends SiteApplicationModule
         if ($this->hasGoogleAnalytics4()) {
             $javascript = <<<'JS'
                 (function() {
-                	var ga = document.createElement('script');
-                	ga.type = 'text/javascript';
-                	ga.async = true;
-                	ga.src = %s;
-                	var s = document.getElementsByTagName('script')[0];
-                	s.parentNode.insertBefore(ga, s);
+                    var ga = document.createElement('script');
+                    ga.type = 'text/javascript';
+                    ga.async = true;
+                    ga.src = %s;
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(ga, s);
                 })();
                 JS;
 
@@ -487,53 +301,97 @@ class SiteAnalyticsModule extends SiteApplicationModule
         return $javascript;
     }
 
-    protected function initGoogleAnalyticsCommands()
-    {
-        // Default commands for all sites:
-        // * Speed sampling 100% of the time.
-        // * Track the page view.
-        $this->ga_commands = [['_setSiteSpeedSampleRate', 100], '_trackPageview'];
-    }
-
-    protected function getGoogleAnalyticsTrackingCodeSource()
-    {
-        if ($this->display_advertising) {
-            $source = 'https://stats.g.doubleclick.net/dc.js';
-        } else {
-            $source = 'https://ssl.google-analytics.com/ga.js';
-        }
-
-        return $source;
-    }
-
     protected function getGoogleAnalytics4TrackingCodeSource(string $id)
     {
         return "https://www.googletagmanager.com/gtag/js?id={$id}";
     }
 
-    protected function getGoogleAnalyticsCommand($command)
+    public function getGoogleTagManagerTrackerInlineJavascript(): ?string
     {
-        $method = '';
-        $options = '';
-
-        if (is_array($command)) {
-            $method = array_shift($command);
-
-            foreach ($command as $part) {
-                $quoted_part = (is_float($part) || is_int($part))
-                    ? $part
-                    : SwatString::quoteJavaScriptString($part);
-
-                $options .= ', ' . $quoted_part;
-            }
-        } else {
-            $method = $command;
+        if (!$this->hasGoogleTagManager()) {
+            return null;
         }
 
         return sprintf(
-            '_gaq.push([%s%s]);',
-            SwatString::quoteJavaScriptString($method),
-            $options
+            <<<'JS'
+                (function(w, d, s, l, i){
+                    w[l] = w[l] || [];
+                    w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+                    var f = d.getElementsByTagName(s)[0],
+                        j = d.createElement(s),
+                        dl = l != 'dataLayer' ? '&l=' + l : '';
+                        j.async = true;
+                        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                        f.parentNode.insertBefore(j, f);
+                })(window, document, 'script', 'dataLayer', %s);
+                JS,
+            SwatString::quoteJavaScriptString(
+                $this->google_tag_manager_account,
+            ),
+        );
+    }
+
+    public function pushGoogleAnalytics4Commands(array $commands): void
+    {
+        foreach ($commands as $command) {
+            $this->ga4_commands[] = $command;
+        }
+    }
+
+    /**
+     * @param list<string> $commands are data structures destined to be a JSON parameter for dataLayer.push()
+     */
+    public function pushGoogleTagManagerCommands(array $commands): void
+    {
+        $ecommerce_cleared = false;
+        foreach ($commands as $command) {
+            if (isset($command['ecommerce']) && !$ecommerce_cleared) {
+                // An ecommerce data structure - send a clear object command
+                // per GTM documentation
+                $this->google_tag_manager_commands[] = ['ecommerce' => null];
+                $ecommerce_cleared = true;
+            }
+            $this->google_tag_manager_commands[] = $command;
+        }
+    }
+
+    public function getGoogleTagManagerInlineJavascript(): ?string
+    {
+        if (!$this->hasGoogleTagManager()) {
+            return null;
+        }
+
+        // SEE https://developers.google.com/tag-platform/tag-manager/datalayer#persist_data_layer_variables
+        // Call and any commands via dataLayer (which must happen before GTM snippet is initiated),
+        // then init GTM snippet (script head insert)
+        return ($this->getGoogleTagManagerCommandsInlineJavascript() ?? '') .
+            "\n" .
+            ($this->getGoogleTagManagerTrackerInlineJavascript() ?? '');
+    }
+
+    public function getGoogleTagManagerCommandsInlineJavascript(): ?string
+    {
+        if (!$this->hasGoogleTagManager()) {
+            return null;
+        }
+
+        // Event commands
+        $pushes = [];
+        foreach ($this->google_tag_manager_commands as $command) {
+            $pushes[] = sprintf(
+                <<<'JS'
+                    dataLayer.push(%s);
+                    JS,
+                json_encode($command),
+            );
+        }
+
+        return sprintf(
+            <<<'JS'
+                window.dataLayer = window.dataLayer || [];
+                %s
+                JS,
+            implode("\n", $pushes),
         );
     }
 
@@ -665,253 +523,5 @@ class SiteAnalyticsModule extends SiteApplicationModule
             'fbq(%s);',
             implode(', ', array_map('json_encode', $command))
         );
-    }
-
-    // Twitter
-
-    public function hasTwitterPixel()
-    {
-        return
-            $this->twitter_track_pixel_id != ''
-            && !$this->analytics_opt_out
-            && $this->analytics_enabled;
-    }
-
-    public function pushTwitterPixelCommands(array $commands)
-    {
-        foreach ($commands as $name => $value) {
-            $this->twitter_pixel_commands[$name] = $value;
-        }
-    }
-
-    public function getTwitterPixelImages()
-    {
-        // @codingStandardsIgnoreStart
-        $xhtml = <<<'XHTML'
-            <noscript>
-            <img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
-            <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%1$s&amp;p_id=Twitter" />
-            </noscript>
-            XHTML;
-        // @codingStandardsIgnoreEnd
-        if (count($this->twitter_pixel_commands) > 0) {
-            // @codingStandardsIgnoreStart
-            $xhtml .= <<<'XHTML'
-                <noscript>
-                <img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
-                <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=%2$s&amp;p_id=Twitter&amp;%3$s" />
-                </noscript>
-                XHTML;
-            // @codingStandardsIgnoreEnd
-        }
-
-        $track_pixel = rawurlencode($this->twitter_track_pixel_id);
-        $purchase_pixel = rawurlencode($this->twitter_purchase_pixel_id);
-
-        $query_vars = [];
-        foreach ($this->twitter_pixel_commands as $name => $value) {
-            $query_vars[$name] = sprintf(
-                '%s=%s',
-                SwatString::minimizeEntities(rawurlencode($name)),
-                SwatString::minimizeEntities(rawurlencode($value))
-            );
-        }
-
-        return sprintf(
-            $xhtml,
-            SwatString::minimizeEntities($track_pixel),
-            SwatString::minimizeEntities($purchase_pixel),
-            implode('&amp;', $query_vars)
-        );
-    }
-
-    public function getTwitterPixelInlineJavascript()
-    {
-        $javascript = '';
-
-        if ($this->hasTwitterPixel()) {
-            $javascript = $this->getTwitterPixelTrackerInlineJavascript();
-        }
-
-        return $javascript;
-    }
-
-    public function getTwitterPixelTrackerInlineJavascript()
-    {
-        $twitter_functions = sprintf(
-            "\ntwttr.conversion.trackPid(%s);\n",
-            SwatString::quoteJavaScriptString($this->twitter_track_pixel_id)
-        );
-
-        if (count($this->twitter_pixel_commands) > 0) {
-            $twitter_functions .= "\n";
-            $twitter_functions .= sprintf(
-                "twttr.conversion.trackPid(%s, %s);\n",
-                SwatString::quoteJavaScriptString(
-                    $this->twitter_purchase_pixel_id
-                ),
-                json_encode($this->twitter_pixel_commands)
-            );
-        }
-
-        $javascript = <<<'JS'
-            (function() {
-            var twitter_script = document.createElement('script');
-            twitter_script.type = 'text/javascript';
-            twitter_script.src = '//platform.twitter.com/oct.js';
-
-            var onload = function() { %s };
-
-            if (typeof document.attachEvent === 'object') {
-            	// Support IE8
-            	twitter_script.onreadystatechange = function() {
-            		if (['loaded', 'complete'].contains(twitter_script.readyState)) {
-            			twitter_script.onreadystatechange = null;
-            			onload();
-            		}
-            	};
-            } else {
-            	twitter_script.onload = onload;
-            }
-
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(twitter_script, s);
-            })();
-            JS;
-
-        return sprintf(
-            $javascript,
-            $twitter_functions
-        );
-    }
-
-    protected function displayTwitterPixelImages()
-    {
-        if ($this->hasTwitterPixel()) {
-            $images = $this->getTwitterPixelImages();
-            if ($images != '') {
-                echo $images;
-            }
-        }
-    }
-
-    // Bing
-
-    public function hasBingUET()
-    {
-        return
-            $this->bing_uet_id != ''
-            && !$this->analytics_opt_out
-            && $this->analytics_enabled;
-    }
-
-    public function pushBingUETCommands(array $commands)
-    {
-        foreach ($commands as $command) {
-            $this->bing_uet_commands[] = $command;
-        }
-    }
-
-    public function prependBingUETCommands(array $commands)
-    {
-        $comands = array_reverse($commands);
-        foreach ($commands as $command) {
-            array_unshift($this->bing_uet_commands, $command);
-        }
-    }
-
-    public function getBingUETImage()
-    {
-        // @codingStandardsIgnoreStart
-        $xhtml = <<<'XHTML'
-            <noscript><img src="//bat.bing.com/action/0?ti=%s&Ver=2" height="0" width="0" style="display:none; visibility: hidden;" /></noscript>
-            XHTML;
-
-        // @codingStandardsIgnoreEnd
-        return sprintf(
-            $xhtml,
-            SwatString::minimizeEntities(rawurlencode($this->bing_uet_id))
-        );
-    }
-
-    public function getBingUETInlineJavascript()
-    {
-        $javascript = null;
-
-        // Bing UET doens't have an init command, and the initial tracker setup
-        // happens as part of the code in
-        // SiteAnalyticsModule::getBingUETTrackerInlineJavascript().
-        // This is different that the other trackers in SiteAnalyticsModule.
-        if ($this->hasBingUET()) {
-            $javascript = $this->getBingUETTrackerInlineJavascript();
-            if (count($this->bing_uet_commands) > 0) {
-                $javascript .= "\n";
-                $javascript .= $this->getBingUETCommandsInlineJavascript();
-            }
-        }
-
-        return $javascript;
-    }
-
-    public function getBingUETTrackerInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasBingUET()) {
-            // @codingStandardsIgnoreStart
-            $javascript = <<<'JS'
-                (function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"%s"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
-                window.uetq = window.uetq || [];
-                JS;
-            // @codingStandardsIgnoreEnd
-        }
-
-        return sprintf(
-            $javascript,
-            SwatString::quoteJavaScriptString($this->bing_uet_id)
-        );
-    }
-
-    public function getBingUETCommandsInlineJavascript()
-    {
-        $javascript = null;
-
-        if ($this->hasBingUET()
-            && count($this->bing_uet_commands) > 0) {
-            foreach ($this->bing_uet_commands as $command) {
-                $javascript .= $this->getBingUETCommand($command);
-            }
-        }
-
-        return $javascript;
-    }
-
-    protected function initBingUETCommands()
-    {
-        // No default commands to init, as the basic track page view happens
-        // in the tracker setup javascript in
-        // SiteAnalyticsModule::getBingUETTrackerInlineJavascript().
-    }
-
-    protected function getBingUETCommand($command)
-    {
-        if (!is_array($command)) {
-            $command = [$command];
-        }
-
-        return sprintf(
-            'window.uetq.push(%s);',
-            json_encode($command)
-        );
-    }
-
-    protected function displayBingUETImage()
-    {
-        if ($this->hasBingUET()) {
-            $image = $this->getBingUETImage();
-            if ($image != '') {
-                echo $image;
-            }
-        }
     }
 }

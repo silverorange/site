@@ -205,21 +205,13 @@ class Site
             'errors.unix_group'       => null,
             'errors.fatal_severity'   => null,
             // Analytics
-            // Google analytics website property id (UA-XXXXX-XXX)
-            'analytics.enabled'         => true,
-            'analytics.google_account'  => null,
-            'analytics.google4_account' => null,
-            // Google analytics account id (XXXXXXXX)
-            'analytics.google_account_id'                => null,
-            'analytics.google_enhanced_link_attribution' => true,
-            'analytics.google_display_advertising'       => false,
+            // Google
+            'analytics.enabled'                    => true,
+            'analytics.google4_account'            => null,
+            'analytics.google_tag_manager_account' => null,
+            'analytics.google_display_advertising' => false,
             // Facebook Pixel id
             'analytics.facebook_pixel_id' => null,
-            // Twitter Pixel ids
-            'analytics.twitter_track_pixel_id'    => null,
-            'analytics.twitter_purchase_pixel_id' => null,
-            // Bing Universal Event Tracker id
-            'analytics.bing_uet_id' => null,
             // Ads
             // Tracking id in URIs
             'ads.tracking_id'  => 'utm_source',
