@@ -215,6 +215,17 @@ class SiteAnalyticsModule extends SiteApplicationModule
 
     public function hasGoogleAnalytics4(): bool
     {
+        if ($this->hasGoogleTagManager()) {
+            /**
+             * If GTM is active then don't use GA4 and continue without alert.
+             * There's an issue where on production the AOA site is treating
+             * hasGoogleAnaltyics4() as true even though google4_account in production
+             * ini config is not set. On stage there's no such unexcepted behaviour
+             * (the cause of the issue on prod is not discovered yet).
+             */
+            return false;
+        }
+
         return
             $this->google4_account != ''
             && !$this->analytics_opt_out
