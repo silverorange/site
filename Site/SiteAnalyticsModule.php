@@ -180,7 +180,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
             if (!$cookie_module instanceof SiteCookieModule) {
                 $e = new SiteException(
                     'Attempting to remove Analytics Opt ' .
-                    'Out Cookie with no SiteCookieModule available.'
+                        'Out Cookie with no SiteCookieModule available.'
                 );
 
                 $e->processAndContinue();
@@ -196,7 +196,7 @@ class SiteAnalyticsModule extends SiteApplicationModule
             if (!$cookie_module instanceof SiteCookieModule) {
                 $e = new SiteException(
                     'Attempting to set Analytics Opt Out ' .
-                    'Cookie with no SiteCookieModule available.'
+                        'Cookie with no SiteCookieModule available.'
                 );
 
                 $e->processAndContinue();
@@ -216,11 +216,11 @@ class SiteAnalyticsModule extends SiteApplicationModule
     public function hasGoogleAnalytics4(): bool
     {
         if ($this->hasGoogleTagManager()) {
-            /**
+            /*
              * If GTM is active then don't use GA4 and continue without alert.
              * There's an issue where on production the AOA site is treating
              * hasGoogleAnaltyics4() as true even though google4_account in production
-             * ini config is not set. On stage there's no such unexcepted behaviour
+             * ini config is not set. On stage there's no such unexpected behaviour
              * (the cause of the issue on prod is not discovered yet).
              */
             return false;
@@ -460,8 +460,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
     {
         $javascript = null;
 
-        if ($this->hasFacebookPixel()
-            && count($this->facebook_pixel_commands) > 0) {
+        if (
+            $this->hasFacebookPixel()
+            && count($this->facebook_pixel_commands) > 0
+        ) {
             $javascript = $this->getFacebookPixelTrackerInlineJavascript();
             $javascript .= "\n";
             $javascript .= $this->getFacebookPixelCommandsInlineJavascript();
@@ -491,8 +493,10 @@ class SiteAnalyticsModule extends SiteApplicationModule
     {
         $javascript = null;
 
-        if ($this->hasFacebookPixel()
-            && count($this->facebook_pixel_commands) > 0) {
+        if (
+            $this->hasFacebookPixel()
+            && count($this->facebook_pixel_commands) > 0
+        ) {
             // Always init with the account and track the pageview before any
             // further commands.
             $javascript = $this->getFacebookPixelCommand(
