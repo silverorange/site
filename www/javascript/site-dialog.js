@@ -1,8 +1,4 @@
 const SiteDialog = (() => {
-  const Dom = YAHOO.util.Dom;
-  const Event = YAHOO.util.Event;
-  const Anim = YAHOO.util.Anim;
-
   const DEFAULT_CONFIG = {
     USE_OVERLAY: {
       key: 'use_overlay',
@@ -69,6 +65,8 @@ const SiteDialog = (() => {
     static RESIZE_FILL = 1;
     static RESIZE_CENTER = 2;
 
+    static id_counter = 0;
+
     constructor(el, user_config) {
       this.constructor.addSentinel();
 
@@ -80,28 +78,19 @@ const SiteDialog = (() => {
 
     static updateLayout() {
       if (this.constructor.opened_dialog_stack.length === 0) {
-        for (i = 0; i < document.body.childNodes.length; i++) {
-          YAHOO.util.Dom.removeClass(
-            document.body.childNodes[i],
-            'site-dialog-hidden'
-          );
-        }
+        document.body.children.forEach(childEl => {
+          childEl.classList.removeClass('site-dialog-hidden');
+        });
 
         // Also re-show all dialogs. Needed because relatively positioned
         // dialogs may not be children of the body element when updateLayout()
         // is called.
-        for (j = 0; j < this.constructor.dialogs.length; j++) {
-          YAHOO.util.Dom.removeClass(
-            this.constructor.dialogs[j].dialog,
-            'site-dialog-hidden'
-          );
-          if (this.constructor.dialogs[j].overlay) {
-            YAHOO.util.Dom.removeClass(
-              this.constructor.dialogs[j].overlay,
-              'site-dialog-hidden'
-            );
+        this.constructor.dialogs.forEach(dialog => {
+          dialog.classList.remove('site-dialog-hidden');
+          if (dialog.overlay) {
+            dialog.overlay.classList.remove('site-dialog-hidden');
           }
-        }
+        });
 
         if (this.constructor.scroll_top !== null) {
           window.scrollTo(0, this.constructor.scroll_top);
@@ -109,7 +98,7 @@ const SiteDialog = (() => {
         }
       } else {
         // save scroll position
-        this.constructor.scroll_top = YAHOO.util.Dom.getDocumentScrollTop();
+        this.constructor.scroll_top = window.scrollY;
 
         window.scrollTo(0, 0);
 
@@ -118,13 +107,12 @@ const SiteDialog = (() => {
         for (i = 0; i < document.body.childNodes.length; i++) {
           var node = document.body.childNodes[i];
 
-          // don't hide the top-level opened dialog
           if (node === top_dialog.dialog) {
-            YAHOO.util.Dom.removeClass(node, 'site-dialog-hidden');
-
-            // don't hide sentinel
+            // don't hide the top-level opened dialog
+            node.classList.remove('site-dialog-hidden');
           } else if (node !== this.constructor.desktop_sentinel) {
-            YAHOO.util.Dom.addClass(node, 'site-dialog-hidden');
+            // don't hide sentinel
+            node.classList.add('site-dialog-hidden');
           }
         }
       }
@@ -171,11 +159,10 @@ const SiteDialog = (() => {
 
         var timeout = null;
 
-        var checkSentinel = function() {
-          var display = YAHOO.util.Dom.getComputedStyle(
-            this.constructor.desktop_sentinel,
-            'display'
-          );
+        var checkSentinel = () => {
+          var display = window.getComputedStyle(
+            this.constructor.desktop_sentinel
+          ).display;
 
           if (display === 'none' && !this.constructor.is_desktop) {
             // changing from mobile to desktop
@@ -189,13 +176,11 @@ const SiteDialog = (() => {
         };
 
         var handleResize = () => {
-          for (var i = 0; i < this.constructor.dialogs.length; i++) {
-            this.constructor.dialogs[i].handleResize();
-          }
+          this.constructor.dialogs.forEach(dialog => dialog.handleResize());
         };
 
         // Initialize layout state
-        if (YAHOO.util.Dom.hasClass(document.documentElement, 'ie8')) {
+        if (document.documentElement.classList.contains('ie8')) {
           // Give IE8 time to load responsive styles before initializing
           // mode. It needs to re-download and parse all the CSS. Respond.js
           // does not provide an event for this. To do so, we add an element
@@ -205,11 +190,8 @@ const SiteDialog = (() => {
           var mq_detect_el = document.createElement('div');
           mq_detect_el.className = 'site-dialog-mq-detect';
           document.body.appendChild(mq_detect_el);
-          var mq_detect_interval = setInterval(function() {
-            var display = YAHOO.util.Dom.getComputedStyle(
-              mq_detect_el,
-              'display'
-            );
+          var mq_detect_interval = setInterval(() => {
+            var display = window.getComputedStyle(mq_detect_el).display;
             if (display === 'none') {
               mq_detect_el.parentNode.removeChild(mq_detect_el);
               checkSentinel();
@@ -222,7 +204,7 @@ const SiteDialog = (() => {
           checkSentinel();
         }
 
-        YAHOO.util.Event.on(window, 'resize', function(e) {
+        window.addEventListener('resize', () => {
           // Debounce resize updates so they only fire every at most
           // every this.constructor.resize_debounce_delay ms.
           if (timeout) {
@@ -238,9 +220,15 @@ const SiteDialog = (() => {
     }
 
     static handleLayoutChange() {
-      for (var i = 0; i < this.constructor.dialogs.length; i++) {
-        this.constructor.dialogs[i].handleLayoutChange();
+      this.constructor.dialogs.forEach(dialog => dialog.handleLayoutChange());
+    }
+
+    static generateId(el) {
+      if (!el.id) {
+        this.constructor.id_counter++;
+        el.id = 'site-dialog' + this.constructor.id_counter;
       }
+      return el.id;
     }
 
     initDefaultConfig() {
@@ -318,14 +306,13 @@ const SiteDialog = (() => {
       }
 
       if (this.config.dismissable) {
-        Event.on(document.body, 'click', this.handleDocumentClick, this, true);
-
-        Event.on(
-          document.body,
+        document.body.addEventListener(
+          'click',
+          this.handleDocumentClick.bind(this)
+        );
+        document.body.addEventListener(
           'keydown',
-          this.handleDocumentKeyDown,
-          this,
-          true
+          this.handleDocumentKeyDown.bind(this)
         );
       }
 
@@ -336,7 +323,7 @@ const SiteDialog = (() => {
       }
 
       if (this.constructor.has_push_state && this.config.use_push_state) {
-        Event.on(window, 'popstate', this.handlePopState, this, true);
+        window.addEventListener('popstate', this.handlePopState.bind(this));
       }
     }
 
@@ -354,7 +341,7 @@ const SiteDialog = (() => {
       var dialog;
 
       if (el) {
-        dialog = Dom.get(el);
+        dialog = document.getElementById(el);
         if (!dialog) {
           dialog = document.createElement('div');
           dialog.id = el;
@@ -363,14 +350,14 @@ const SiteDialog = (() => {
         dialog = document.createElement('div');
       }
 
-      Dom.generateId(dialog, 'site-dialog');
+      this.constructor.generateId(dialog);
 
-      Dom.addClass(dialog, 'site-dialog-dialog');
+      dialog.classList.add('site-dialog-dialog');
       if (this.config.relative_container) {
-        Dom.addClass(dialog, 'site-dialog-relative');
+        dialog.classList.add('site-dialog-relative');
       }
       if (this.config.class_name + '' !== '') {
-        Dom.addClass(dialog, this.config.class_name);
+        dialog.classList.add(this.config.class_name);
       }
 
       dialog.appendChild(container);
@@ -423,8 +410,8 @@ const SiteDialog = (() => {
 
       this.raise();
 
-      Dom.removeClass(this.overlay, 'site-dialog-closed');
-      Dom.removeClass(this.dialog, 'site-dialog-closed');
+      this.overlay.classList.remove('site-dialog-closed');
+      this.dialog.classList.remove('site-dialog-closed');
 
       // need to set state before doing initial positioning
       this.state = this.constructor.STATE_OPENED;
@@ -450,8 +437,8 @@ const SiteDialog = (() => {
       // remove from opened stack
       this.constructor.lowerDialog(this);
 
-      Dom.addClass(this.overlay, 'site-dialog-closed');
-      Dom.addClass(this.dialog, 'site-dialog-closed');
+      this.overlay.classList.add('site-dialog-closed');
+      this.dialog.classList.add('site-dialog-closed');
 
       this.state = this.constructor.STATE_CLOSED;
     }
@@ -559,35 +546,37 @@ const SiteDialog = (() => {
         return;
       }
 
+      var container_style = window.getComputedStyle(this.container);
+
       if (
         this.config.resize_mode === this.constructor.RESIZE_FILL ||
         !this.constructor.is_desktop
       ) {
-        var footer_region = Dom.getRegion(this.footer);
+        var footer_region = this.footer.getBoundingClientRect();
 
         var margin =
-          parseInt(Dom.getStyle(this.container, 'marginTop')) +
-          parseInt(Dom.getStyle(this.container, 'marginBottom'));
+          Math.parseInt(container_style.marginTop) +
+          Math.parseInt(container_style.marginBottom);
 
         margin = isNaN(margin) ? 0 : margin;
 
         this.scroll.style.height =
-          Dom.getViewportHeight() - footer_region.height - margin + 'px';
+          window.innerHeight - footer_region.height - margin + 'px';
 
-        this.dialog.style.height = Dom.getViewportHeight() + 'px';
+        this.dialog.style.height = window.innerHeight + 'px';
         this.dialog.style.top = null;
       } else if (this.config.resize_mode === this.constructor.RESIZE_CENTER) {
         this.dialog.style.height = 'auto';
         this.scroll.style.height = 'auto';
 
         var margin =
-          parseInt(Dom.getStyle(this.container, 'marginTop')) +
-          parseInt(Dom.getStyle(this.container, 'marginBottom'));
+          Math.parseInt(container_style.marginTop) +
+          Math.parseInt(container_style.marginBottom);
 
         margin = isNaN(margin) ? 0 : margin;
 
-        var region = Dom.getRegion(this.container);
-        var viewport = Dom.getViewportHeight();
+        var region = this.container.getBoundingClientRect();
+        var viewport = window.innerHeight;
 
         // center vertically in viewport
         this.dialog.style.top = (viewport - region.height - margin) / 2 + 'px';
@@ -600,7 +589,7 @@ const SiteDialog = (() => {
     handleDocumentClick(e) {
       if (this.isOpened()) {
         var prevent_close = false;
-        var target = Event.getTarget(e);
+        var target = e.target;
         while (target.parentNode && !prevent_close) {
           if (target === this.dialog || target === this.config.toggle_element) {
             prevent_close = true;
