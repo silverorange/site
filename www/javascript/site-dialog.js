@@ -1,55 +1,4 @@
 const SiteDialog = (() => {
-  const DEFAULT_CONFIG = {
-    USE_OVERLAY: {
-      key: 'use_overlay',
-      value: true,
-      validator: YAHOO.lang.isBoolean
-    },
-    /**
-     * Allow clicking outside the dialog to close the dialog.
-     */
-    DISMISSABLE: {
-      key: 'dismissable',
-      value: true,
-      validator: YAHOO.lang.isBoolean
-    },
-    /**
-     * Only show dialog in mobile layout. If switching back to desktop, the
-     * dialog is automatically closed.
-     */
-    MOBILE_ONLY: {
-      key: 'mobile_only',
-      value: false,
-      validator: YAHOO.lang.isBoolean
-    },
-    /**
-     * Use pushState API if available to control opening and closing the
-     * dialog.
-     */
-    USE_PUSH_STATE: {
-      key: 'use_push_state',
-      value: true,
-      validator: YAHOO.lang.isBoolean
-    },
-    CLASS_NAME: {
-      key: 'class_name',
-      value: ''
-    },
-    TOGGLE_ELEMENT: {
-      key: 'toggle_element',
-      value: null
-    },
-    RELATIVE_CONTAINER: {
-      key: 'relative_container',
-      value: null
-    },
-    RESIZE_MODE: {
-      key: 'resize_mode',
-      value: SiteDialog.RESIZE_FILL, // TODO
-      validator: YAHOO.lang.isNumber
-    }
-  };
-
   return class {
     static STATE_OPENED = 1;
     static STATE_CLOSED = 2;
@@ -191,61 +140,34 @@ const SiteDialog = (() => {
       this.constructor.dialogs.forEach(dialog => dialog.handleLayoutChange());
     }
 
-    static generateId(el) {
+    static generateId() {
       this.constructor.id_counter++;
       return 'site-dialog' + this.constructor.id_counter;
     }
 
-    initDefaultConfig() {
-      this.config.addProperty(DEFAULT_CONFIG.USE_OVERLAY.key, {
-        value: DEFAULT_CONFIG.USE_OVERLAY.value,
-        validator: DEFAULT_CONFIG.USE_OVERLAY.validator
-      });
-
-      this.config.addProperty(DEFAULT_CONFIG.DISMISSABLE.key, {
-        value: DEFAULT_CONFIG.DISMISSABLE.value,
-        validator: DEFAULT_CONFIG.DISMISSABLE.validator
-      });
-
-      this.config.addProperty(DEFAULT_CONFIG.MOBILE_ONLY.key, {
-        value: DEFAULT_CONFIG.MOBILE_ONLY.value,
-        validator: DEFAULT_CONFIG.MOBILE_ONLY.validator
-      });
-
-      this.config.addProperty(DEFAULT_CONFIG.USE_PUSH_STATE.key, {
-        value: DEFAULT_CONFIG.USE_PUSH_STATE.value,
-        validator: DEFAULT_CONFIG.USE_PUSH_STATE.validator
-      });
-
-      this.config.addProperty(DEFAULT_CONFIG.CLASS_NAME.key, {
-        value: DEFAULT_CONFIG.CLASS_NAME.value
-      });
-
-      this.config.addProperty(DEFAULT_CONFIG.TOGGLE_ELEMENT.key, {
-        value: DEFAULT_CONFIG.TOGGLE_ELEMENT.value
-      });
-
-      this.config.addProperty(DEFAULT_CONFIG.RESIZE_MODE.key, {
-        value: DEFAULT_CONFIG.RESIZE_MODE.value,
-        validator: DEFAULT_CONFIG.RESIZE_MODE.validator
-      });
-
-      this.config.addProperty(DEFAULT_CONFIG.RELATIVE_CONTAINER.key, {
-        value: DEFAULT_CONFIG.RELATIVE_CONTAINER.value
-      });
-    }
-
     initConfig(user_config) {
-      this.config = new YAHOO.util.Config(this);
-      this.initDefaultConfig();
-
-      // Merge user and default config values.
-      if (user_config) {
-        this.config.applyConfig(user_config, true);
-      }
-
-      // Flatten config object. We're not using events.
-      this.config = this.config.getConfig();
+      this.config = {
+        use_overlay: true,
+        /**
+         * Allow clicking outside the dialog to close the dialog.
+         */
+        dismissable: true,
+        /**
+         * Only show dialog in mobile layout. If switching back to desktop, the
+         * dialog is automatically closed.
+         */
+        mobile_only: false,
+        /**
+         * Use pushState API if available to control opening and closing the
+         * dialog.
+         */
+        use_push_state: true,
+        class_name: '',
+        toggle_element: null,
+        relative_container: null,
+        resize_mode: SiteDialog.RESIZE_FILL,
+        ...user_config
+      };
     }
 
     initElements(el) {
