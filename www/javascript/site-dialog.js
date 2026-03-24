@@ -102,11 +102,9 @@ const SiteDialog = (() => {
 
         window.scrollTo(0, 0);
 
-        var top_index = this.constructor.opened_dialog_stack.length - 1;
-        var top_dialog = this.constructor.opened_dialog_stack[top_index];
-        for (i = 0; i < document.body.childNodes.length; i++) {
-          var node = document.body.childNodes[i];
-
+        const top_index = this.constructor.opened_dialog_stack.length - 1;
+        const top_dialog = this.constructor.opened_dialog_stack[top_index];
+        document.body.childNodes.forEach(node => {
           if (node === top_dialog.dialog) {
             // don't hide the top-level opened dialog
             node.classList.remove('site-dialog-hidden');
@@ -114,20 +112,16 @@ const SiteDialog = (() => {
             // don't hide sentinel
             node.classList.add('site-dialog-hidden');
           }
-        }
+        });
       }
     }
 
     static raiseDialog(dialog) {
-      var index = null;
-      for (var i = 0; i < this.constructor.opened_dialog_stack.length; i++) {
-        if (this.constructor.opened_dialog_stack[i] === dialog) {
-          index = i;
-          break;
-        }
-      }
+      const index = this.constructor.opened_dialog_stack.findIndex(
+        opened_dialog => opened_dialog === dialog
+      );
 
-      if (index !== null) {
+      if (index !== -1) {
         this.constructor.opened_dialog_stack.splice(index, 1);
       }
 
@@ -136,15 +130,11 @@ const SiteDialog = (() => {
     }
 
     static lowerDialog(dialog) {
-      var index = null;
-      for (var i = 0; i < this.constructor.opened_dialog_stack.length; i++) {
-        if (this.constructor.opened_dialog_stack[i] === dialog) {
-          index = i;
-          break;
-        }
-      }
+      const index = this.constructor.opened_dialog_stack.findIndex(
+        opened_dialog => opened_dialog === dialog
+      );
 
-      if (index !== null) {
+      if (index !== -1) {
         this.constructor.opened_dialog_stack.splice(index, 1);
       }
 
@@ -157,10 +147,10 @@ const SiteDialog = (() => {
         this.constructor.desktop_sentinel.className = 'site-dialog-sentinel';
         document.body.appendChild(this.constructor.desktop_sentinel);
 
-        var timeout = null;
+        let timeout = null;
 
-        var checkSentinel = () => {
-          var display = window.getComputedStyle(
+        const checkSentinel = () => {
+          const display = window.getComputedStyle(
             this.constructor.desktop_sentinel
           ).display;
 
@@ -175,7 +165,7 @@ const SiteDialog = (() => {
           }
         };
 
-        var handleResize = () => {
+        const handleResize = () => {
           this.constructor.dialogs.forEach(dialog => dialog.handleResize());
         };
 
@@ -187,11 +177,11 @@ const SiteDialog = (() => {
           // to the DOM that has a media query style that sets its display
           // to 'none'. We check if the media query has been loaded on a
           // short interval.
-          var mq_detect_el = document.createElement('div');
+          const mq_detect_el = document.createElement('div');
           mq_detect_el.className = 'site-dialog-mq-detect';
           document.body.appendChild(mq_detect_el);
-          var mq_detect_interval = setInterval(() => {
-            var display = window.getComputedStyle(mq_detect_el).display;
+          const mq_detect_interval = setInterval(() => {
+            const display = window.getComputedStyle(mq_detect_el).display;
             if (display === 'none') {
               mq_detect_el.parentNode.removeChild(mq_detect_el);
               checkSentinel();
@@ -224,11 +214,8 @@ const SiteDialog = (() => {
     }
 
     static generateId(el) {
-      if (!el.id) {
-        this.constructor.id_counter++;
-        el.id = 'site-dialog' + this.constructor.id_counter;
-      }
-      return el.id;
+      this.constructor.id_counter++;
+      return 'site-dialog' + this.constructor.id_counter;
     }
 
     initDefaultConfig() {
@@ -332,25 +319,19 @@ const SiteDialog = (() => {
     }
 
     drawOverlay() {
-      var overlay = document.createElement('div');
+      const overlay = document.createElement('div');
       overlay.className = 'site-dialog-overlay';
       return overlay;
     }
 
     drawDialog(container, el) {
-      var dialog;
+      const dialog_id = el === null ? this.constructor.generateId() : el;
 
-      if (el) {
-        dialog = document.getElementById(el);
-        if (!dialog) {
-          dialog = document.createElement('div');
-          dialog.id = el;
-        }
-      } else {
-        dialog = document.createElement('div');
-      }
-
-      this.constructor.generateId(dialog);
+      // If el is null or not found, create a dialog element. Otherwise use the
+      // element by id.
+      const dialog =
+        (el === null ? null : document.getElementById(el)) ??
+        Object.assign(document.createElement('div'), { id: dialog_id });
 
       dialog.classList.add('site-dialog-dialog');
       if (this.config.relative_container) {
@@ -366,7 +347,7 @@ const SiteDialog = (() => {
     }
 
     drawScroll(header, body) {
-      var scroll = document.createElement('div');
+      const scroll = document.createElement('div');
       scroll.className = 'site-dialog-scroll';
 
       scroll.appendChild(header);
@@ -376,7 +357,7 @@ const SiteDialog = (() => {
     }
 
     drawContainer(scroll, footer) {
-      var container = document.createElement('div');
+      const container = document.createElement('div');
       container.className = 'site-dialog-container';
 
       container.appendChild(scroll);
@@ -386,19 +367,19 @@ const SiteDialog = (() => {
     }
 
     drawHeader() {
-      var header = document.createElement('div');
+      const header = document.createElement('div');
       header.className = 'site-dialog-header';
       return header;
     }
 
     drawBody() {
-      var body = document.createElement('div');
+      const body = document.createElement('div');
       body.className = 'site-dialog-body';
       return body;
     }
 
     drawFooter() {
-      var footer = document.createElement('div');
+      const footer = document.createElement('div');
       footer.className = 'site-dialog-footer';
       return footer;
     }
@@ -546,15 +527,15 @@ const SiteDialog = (() => {
         return;
       }
 
-      var container_style = window.getComputedStyle(this.container);
+      const container_style = window.getComputedStyle(this.container);
 
       if (
         this.config.resize_mode === this.constructor.RESIZE_FILL ||
         !this.constructor.is_desktop
       ) {
-        var footer_region = this.footer.getBoundingClientRect();
+        const footer_region = this.footer.getBoundingClientRect();
 
-        var margin =
+        let margin =
           Math.parseInt(container_style.marginTop) +
           Math.parseInt(container_style.marginBottom);
 
@@ -569,14 +550,14 @@ const SiteDialog = (() => {
         this.dialog.style.height = 'auto';
         this.scroll.style.height = 'auto';
 
-        var margin =
+        let margin =
           Math.parseInt(container_style.marginTop) +
           Math.parseInt(container_style.marginBottom);
 
         margin = isNaN(margin) ? 0 : margin;
 
-        var region = this.container.getBoundingClientRect();
-        var viewport = window.innerHeight;
+        const region = this.container.getBoundingClientRect();
+        const viewport = window.innerHeight;
 
         // center vertically in viewport
         this.dialog.style.top = (viewport - region.height - margin) / 2 + 'px';
@@ -588,8 +569,8 @@ const SiteDialog = (() => {
 
     handleDocumentClick(e) {
       if (this.isOpened()) {
-        var prevent_close = false;
-        var target = e.target;
+        const prevent_close = false;
+        let target = e.target;
         while (target.parentNode && !prevent_close) {
           if (target === this.dialog || target === this.config.toggle_element) {
             prevent_close = true;
