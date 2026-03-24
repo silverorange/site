@@ -170,29 +170,7 @@ const SiteDialog = (() => {
         };
 
         // Initialize layout state
-        if (document.documentElement.classList.contains('ie8')) {
-          // Give IE8 time to load responsive styles before initializing
-          // mode. It needs to re-download and parse all the CSS. Respond.js
-          // does not provide an event for this. To do so, we add an element
-          // to the DOM that has a media query style that sets its display
-          // to 'none'. We check if the media query has been loaded on a
-          // short interval.
-          const mq_detect_el = document.createElement('div');
-          mq_detect_el.className = 'site-dialog-mq-detect';
-          document.body.appendChild(mq_detect_el);
-          const mq_detect_interval = setInterval(() => {
-            const display = window.getComputedStyle(mq_detect_el).display;
-            if (display === 'none') {
-              mq_detect_el.parentNode.removeChild(mq_detect_el);
-              checkSentinel();
-              clearInterval(mq_detect_interval);
-              mq_detect_interval = null;
-            }
-          }, 10);
-          setTimeout(checkSentinel, 1000);
-        } else {
-          checkSentinel();
-        }
+        checkSentinel();
 
         window.addEventListener('resize', () => {
           // Debounce resize updates so they only fire every at most
