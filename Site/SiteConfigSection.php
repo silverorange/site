@@ -3,47 +3,47 @@
 /**
  * Configuration section for the configuration module.
  *
- * @copyright 2007-2016 silverorange
+ * @copyright 2007-2026 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class SiteConfigSection extends SwatObject implements Iterator
 {
     /**
      * The name of this configuration section.
-     *
-     * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * Settings of this configuration section.
+     *
+     * @var array<string,mixed>
      */
-    private $values = [];
+    private array $values = [];
 
     /**
      * The config module of this section.
-     *
-     * @var SiteConfigModule
      */
-    private $config;
+    private SiteConfigModule $config;
 
     /**
      * Creates a new configuration section.
      *
-     * @param string           $name   the name of this configuration section
-     * @param array            $values an associative array containing values as parsed
-     *                                 from an ini file
-     * @param SiteConfigModule $config the config module of this section
-     * @param int              $source optional. The setting source of the
-     *                                 <code>$values</code> array.
+     * @param string              $name   the name of this configuration section
+     * @param array<string,mixed> $values an associative array
+     *                                    containing
+     *                                    values as parsed
+     *                                    from an ini file
+     * @param SiteConfigModule    $config the config module of this section
+     * @param int                 $source optional. The setting source of the
+     *                                    <code>$values</code> array.
      */
     public function __construct(
-        $name,
+        string $name,
         array $values,
         SiteConfigModule $config,
-        $source = SiteConfigModule::SOURCE_FILE
+        int $source = SiteConfigModule::SOURCE_FILE
     ) {
-        $this->name = (string) $name;
+        $this->name = $name;
         $this->values = $values;
         $this->config = $config;
 
@@ -65,7 +65,7 @@ class SiteConfigSection extends SwatObject implements Iterator
         ob_start();
 
         $is_empty = true;
-        foreach ($this->values as $name => $value) {
+        foreach ($this->values as $value) {
             if ($value !== null) {
                 $is_empty = false;
             }
@@ -146,7 +146,7 @@ class SiteConfigSection extends SwatObject implements Iterator
      * @throws SiteException if the name of the setting being set does not
      *                       exist in this section
      */
-    public function __set($name, $value)
+    public function __set(string $name, mixed $value): void
     {
         if (!array_key_exists($name, $this->values)) {
             throw new SiteException(
@@ -178,7 +178,7 @@ class SiteConfigSection extends SwatObject implements Iterator
      * @throws SiteException if the setting being set does not exist in this
      *                       section
      */
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         if (!array_key_exists($name, $this->values)) {
             throw new SiteException(
@@ -202,7 +202,7 @@ class SiteConfigSection extends SwatObject implements Iterator
      * @return bool true if the configuration setting exists and false if it
      *              does not
      */
-    public function __isset($name)
+    public function __isset(string $name): bool
     {
         return isset($this->values[$name]);
     }
