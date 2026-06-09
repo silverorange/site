@@ -103,9 +103,9 @@ class SiteConfigSection extends SwatObject implements Iterator
     /**
      * Returns the key of the current value.
      *
-     * @return int the key of the current value
+     * @return string the key of the current value
      */
-    public function key(): int
+    public function key(): string
     {
         return key($this->values);
     }
