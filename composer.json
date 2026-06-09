@@ -64,7 +64,10 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "3.64.0",
+    "mockery/mockery": "^1.6",
     "phpstan/phpstan": "^1.12",
+    "phpstan/phpstan-mockery": "^1.1",
+    "phpunit/phpunit": "^10.5",
     "rector/rector": "^1.2"
   },
   "suggest": {
@@ -86,11 +89,13 @@
     "phpstan:ci": "./vendor/bin/phpstan analyze -vvv --no-progress --memory-limit 2G",
     "phpstan:baseline": "./vendor/bin/phpstan analyze --generate-baseline",
     "rector": "./vendor/bin/rector --dry-run",
-    "rector:fix": "./vendor/bin/rector"
+    "rector:fix": "./vendor/bin/rector",
+    "test": "phpunit"
   },
   "autoload": {
     "classmap": [
-      "Site/"
+      "Site/",
+      "tests/Site/"
     ]
   },
   "config": {

@@ -20,3 +20,6 @@ yarn.lock
 
 # overrides for local tooling
 /phpstan.neon
+
+# tests
+.phpunit.cache/
