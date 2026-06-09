@@ -552,7 +552,24 @@ class SiteConfigModule extends SiteApplicationModule
         }
     }
 
-    protected function loadEnvValues(): void {}
+    protected function loadEnvValues(): void
+    {
+        $env = getenv();
+
+        foreach ($this->sections as $section_name => $section) {
+            foreach ($section as $value_name => $value) {
+                $env_var_name = mb_strtoupper(
+                    $section_name . '_' . $value_name
+                );
+
+                if (array_key_exists($env_var_name, $env)) {
+                    $this->{$section_name}->{$value_name} = $env[$env_var_name];
+                    $this->setting_sources[$section_name][$value_name]
+                        = self::SOURCE_ENV;
+                }
+            }
+        }
+    }
 
     /**
      * Loads config setting values from the database.
