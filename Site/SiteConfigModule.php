@@ -177,7 +177,7 @@ class SiteConfigModule extends SiteApplicationModule
      * ?>
      * </code>
      *
-     * @var array<string,array<string,int>>
+     * @var array<string,array<string,self::SOURCE_*>>
      */
     private array $setting_sources = [];
 
@@ -236,9 +236,10 @@ class SiteConfigModule extends SiteApplicationModule
      * If there is no database module, the settings values of this config
      * module can not be saved.
      *
-     * @param array $settings an array of config settings to save
+     * @param string[] $settings an array of qualified names of config
+     *                           settings to save
      */
-    public function save(array $settings)
+    public function save(array $settings): void
     {
         // if there is no database module, do nothing
         if (!$this->app->hasModule('SiteDatabaseModule')) {
@@ -299,7 +300,7 @@ class SiteConfigModule extends SiteApplicationModule
      *
      * @param string $section       the section the setting belongs to
      * @param string $name          the name of the setting
-     * @param string $default_value optional. The default value of the setting.
+     * @param mixed  $default_value optional. The default value of the setting.
      *                              Used if the setting does exist in the
      *                              loaded ini file.
      *
@@ -390,11 +391,7 @@ class SiteConfigModule extends SiteApplicationModule
      * @param string $section the config setting section
      * @param string $name    the config setting name
      *
-     * @return int either {@link SiteConfigModule::SOURCE_DEFAULT},
-     *             {@link SiteConfigModule::SOURCE_FILE},
-     *             {@link SiteConfigModule::SOURCE_DATABASE},
-     *             {@link SiteConfigModule::SOURCE_INSTANCE} or
-     *             {@link SiteConfigModule::SOURCE_RUNTIME}
+     * @return self::SOURCE_*
      *
      * @throws SiteException if there is no config setting defined for the
      *                       given section and name
@@ -424,14 +421,9 @@ class SiteConfigModule extends SiteApplicationModule
     /**
      * Sets the source of a config setting value.
      *
-     * @param string $section the config setting section
-     * @param string $name    the config setting name
-     * @param int    $source  either {@link SiteConfigModule::SOURCE_DEFAULT},
-     *                        {@link SiteConfigModule::SOURCE_FILE},
-     *                        {@link SiteConfigModule::SOURCE_DATABASE},
-     *                        {@link SiteConfigModule::SOURCE_INSTANCE} or
-     *                        {@link SiteConfigModule::SOURCE_RUNTIME}
-     * @param mixed  $name
+     * @param string         $section the config setting section
+     * @param string         $name    the config setting name
+     * @param self::SOURCE_* $source
      *
      * @throws SiteException if there is no config setting defined for the
      *                       given section and name
@@ -658,9 +650,10 @@ class SiteConfigModule extends SiteApplicationModule
      *
      * Values are saved in the <em>ConfigSetting</em> table.
      *
-     * @param array $settings an array of config settings to save
+     * @param string[] $settings an array of qualified names of config
+     *                           settings to save
      */
-    protected function saveDatabaseValues(array $settings)
+    protected function saveDatabaseValues(array $settings): void
     {
         // if there is no database module, do nothing
         if (!$this->app->hasModule('SiteDatabaseModule')) {
@@ -708,9 +701,10 @@ class SiteConfigModule extends SiteApplicationModule
      * Values are saved in the <em>InstanceConfigSetting</em> table with a
      * binding to the current site instance.
      *
-     * @param array $settings an array of config settings to save
+     * @param string[] $settings an array of qualified names of config
+     *                           settings to save
      */
-    protected function saveInstanceValues(array $settings)
+    protected function saveInstanceValues(array $settings): void
     {
         $instance = $this->app->instance->getId();
 
