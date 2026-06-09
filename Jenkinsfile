@@ -19,5 +19,11 @@ pipeline {
                 sh 'composer run phpstan:ci'
             }
         }
+
+        stage('Run unit tests') {
+            steps {
+                sh 'composer run test'
+            }
+        }
     }
 }
