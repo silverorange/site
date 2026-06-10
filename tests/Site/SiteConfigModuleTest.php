@@ -26,6 +26,36 @@ class SiteConfigModuleTest extends TestCase
     /** @var array<string,string> */
     private array $original_env = [];
 
+    #[Before]
+    public function setOriginalEnv(): void
+    {
+        $this->original_env = getenv() ?: [];
+    }
+
+    #[After]
+    public function cleanUpEnvVars(): void
+    {
+        foreach ($this->modified_env_vars as $name) {
+            if (array_key_exists($name, $this->original_env)) {
+                putenv("{$name}={$this->original_env[$name]}");
+            } else {
+                putenv($name);
+            }
+        }
+    }
+
+    #[After]
+    public function cleanUpTempFiles(): void
+    {
+        foreach ($this->temp_ini_files as $filename) {
+            if (file_exists($filename)) {
+                unlink($filename);
+            }
+        }
+
+        $this->temp_ini_files = [];
+    }
+
     #[Test]
     public function usesDefaultsWhenConfigFileIsEmpty(): void
     {
@@ -116,36 +146,6 @@ class SiteConfigModuleTest extends TestCase
         ]);
         $this->setEnvVar('SITE_EMAILS', 'bar@example.com');
         $module->load($this->getTempIniFile(''));
-    }
-
-    #[After]
-    public function cleanUpTempFiles(): void
-    {
-        foreach ($this->temp_ini_files as $filename) {
-            if (file_exists($filename)) {
-                unlink($filename);
-            }
-        }
-
-        $this->temp_ini_files = [];
-    }
-
-    #[Before]
-    public function setOriginalEnv(): void
-    {
-        $this->original_env = getenv() ?: [];
-    }
-
-    #[After]
-    public function cleanUpEnvVars(): void
-    {
-        foreach ($this->modified_env_vars as $name) {
-            if (array_key_exists($name, $this->original_env)) {
-                putenv("{$name}={$this->original_env[$name]}");
-            } else {
-                putenv($name);
-            }
-        }
     }
 
     private function setEnvVar(string $name, string $value): void
