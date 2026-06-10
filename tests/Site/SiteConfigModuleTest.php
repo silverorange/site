@@ -40,10 +40,10 @@ class SiteConfigModuleTest extends TestCase
         ]);
         $module->load($this->getTempIniFile(''));
 
-        self::assertEquals(2419200, $module->account->persistent_login_time);
+        self::assertSame(2419200, $module->account->persistent_login_time);
         self::assertFalse($module->account->persistent_login_enabled);
-        self::assertEquals(null, $module->site->meta_description);
-        self::assertEquals('Default title', $module->site->title);
+        self::assertSame(null, $module->site->meta_description);
+        self::assertSame('Default title', $module->site->title);
     }
 
     #[Test]
@@ -70,13 +70,13 @@ class SiteConfigModuleTest extends TestCase
                 INI
         ));
 
-        self::assertEquals(123456, $module->account->persistent_login_time);
-        self::assertEquals('1', $module->account->persistent_login_enabled);
-        self::assertEquals(
+        self::assertSame('123456', $module->account->persistent_login_time);
+        self::assertSame('1', $module->account->persistent_login_enabled);
+        self::assertSame(
             'Ini meta description',
             $module->site->meta_description
         );
-        self::assertEquals('Ini title', $module->site->title);
+        self::assertSame('Ini title', $module->site->title);
     }
 
     #[Test]
@@ -96,7 +96,7 @@ class SiteConfigModuleTest extends TestCase
                 INI
         ));
 
-        self::assertEquals('Environment title', $module->site->title);
+        self::assertSame('Environment title', $module->site->title);
     }
 
     #[Test]
