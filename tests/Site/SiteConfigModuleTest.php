@@ -99,6 +99,25 @@ class SiteConfigModuleTest extends TestCase
         self::assertEquals('Environment title', $module->site->title);
     }
 
+    #[Test]
+    public function throwsErrorWhenOverridingArrayWithEnvVar(): void
+    {
+        $this->expectException(SiteException::class);
+        $this->expectExceptionMessage(
+            'Environment variables can only override scalar or null config '
+            . 'values. Defined config for "site.emails" is array.'
+        );
+
+        $app = Mockery::mock(SiteApplication::class);
+
+        $module = new SiteConfigModule($app);
+        $module->addDefinitions([
+            'site.emails' => ['test@example.com', 'foo@example.com'],
+        ]);
+        $this->setEnvVar('SITE_EMAILS', 'bar@example.com');
+        $module->load($this->getTempIniFile(''));
+    }
+
     #[After]
     public function cleanUpTempFiles(): void
     {

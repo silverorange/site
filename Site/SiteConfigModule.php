@@ -552,6 +552,10 @@ class SiteConfigModule extends SiteApplicationModule
         }
     }
 
+    /**
+     * @throws SiteException when trying to override a config value that is
+     *                       non-scalar and non-null
+     */
     protected function loadEnvValues(): void
     {
         $env = getenv();
@@ -563,6 +567,20 @@ class SiteConfigModule extends SiteApplicationModule
                 );
 
                 if (array_key_exists($env_var_name, $env)) {
+                    $default_value =
+                        $this->definitions[$section_name][$value_name] ?? null;
+
+                    if (!is_scalar($default_value) && !is_null($default_value)) {
+                        $default_type = gettype($default_value);
+
+                        throw new SiteException(
+                            'Environment variables can only override scalar '
+                            . 'or null config values. Defined config for '
+                            . "\"{$section_name}.{$value_name}\" "
+                            . "is {$default_type}."
+                        );
+                    }
+
                     $this->{$section_name}->{$value_name} = $env[$env_var_name];
                     $this->setting_sources[$section_name][$value_name]
                         = self::SOURCE_ENV;
