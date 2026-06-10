@@ -40,7 +40,7 @@
  * tagline = Supercool
  * </pre>
  *
- * <strong>2. environment variables:</strong>
+ * <strong>2. Environment Variables:</strong>
  *
  * Environment variables may be set to override values from an ini file, or
  * to provide values that are omitted from an ini file. Variables are uppercase
