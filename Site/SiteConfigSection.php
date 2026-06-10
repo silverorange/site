@@ -28,14 +28,15 @@ class SiteConfigSection extends SwatObject implements Iterator
     /**
      * Creates a new configuration section.
      *
-     * @param string              $name   the name of this configuration section
-     * @param array<string,mixed> $values an associative array
-     *                                    containing
-     *                                    values as parsed
-     *                                    from an ini file
-     * @param SiteConfigModule    $config the config module of this section
-     * @param int                 $source optional. The setting source of the
-     *                                    <code>$values</code> array.
+     * @param string                     $name   the name of this configuration section
+     * @param array<string,mixed>        $values an associative array
+     *                                           containing
+     *                                           values as parsed
+     *                                           from an ini file
+     * @param SiteConfigModule           $config the config module of this section
+     * @param SiteConfigModule::SOURCE_* $source optional. The setting
+     *                                           source of the
+     *                                           <code>$values</code> array.
      */
     public function __construct(
         string $name,
