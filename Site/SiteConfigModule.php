@@ -44,10 +44,11 @@
  *
  * Environment variables may be set to override values from an ini file, or
  * to provide values that are omitted from an ini file. Variables are uppercase
- * in the form `SECTION_NAME_VALUE_NAME`
+ * in the form `SECTION_NAME__VALUE_NAME`. Section names are separated from
+ * value names using double underscores.
  *
  * <pre>
- * SITE_TITLE="My Cool Website" SITE_TAGLINE="Supercool" php index.php
+ * SITE__TITLE="My Cool Website" SITE__TAGLINE="Supercool" php index.php
  * </pre>
  *
  * <strong>3. ConfigSetting Table:</strong>
@@ -563,7 +564,7 @@ class SiteConfigModule extends SiteApplicationModule
         foreach ($this->sections as $section_name => $section) {
             foreach ($section as $value_name => $value) {
                 $env_var_name = mb_strtoupper(
-                    $section_name . '_' . $value_name
+                    $section_name . '__' . $value_name
                 );
 
                 if (array_key_exists($env_var_name, $env)) {

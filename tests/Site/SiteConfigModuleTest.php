@@ -118,7 +118,7 @@ class SiteConfigModuleTest extends TestCase
         $module->addDefinitions([
             'site.title' => 'Default title',
         ]);
-        $this->setEnvVar('SITE_TITLE', 'Environment title');
+        $this->setEnvVar('SITE__TITLE', 'Environment title');
         $module->load($this->getTempIniFile(
             <<<'INI'
                 [site]
@@ -144,7 +144,7 @@ class SiteConfigModuleTest extends TestCase
         $module->addDefinitions([
             'site.emails' => ['test@example.com', 'foo@example.com'],
         ]);
-        $this->setEnvVar('SITE_EMAILS', 'bar@example.com');
+        $this->setEnvVar('SITE__EMAILS', 'bar@example.com');
         $module->load($this->getTempIniFile(''));
     }
 
