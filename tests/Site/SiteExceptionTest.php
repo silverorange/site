@@ -50,13 +50,13 @@ class SiteExceptionTest extends TestCase
         $this->exception
             ->withContext('order', ['id' => 123])
             ->withContext('customer', ['id' => 456])
-            ->withContext('paid', true);
+            ->withContext('status', ['paid' => true]);
 
         $this->assertSame(
             [
                 'order'    => ['id' => 123],
                 'customer' => ['id' => 456],
-                'paid'     => true,
+                'status'   => ['paid' => true],
             ],
             $this->exception->getContext(),
         );
