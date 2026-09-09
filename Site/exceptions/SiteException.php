@@ -20,7 +20,7 @@ class SiteException extends SwatException
      * This can be used (for example) to log info to Sentry without
      * displaying it on the exception page, etc..
      *
-     * @var array<string, mixed>
+     * @var array<string, array>
      */
     private array $context = [];
 
@@ -46,7 +46,7 @@ class SiteException extends SwatException
         parent::__construct($message, $code);
     }
 
-    final public function withContext(string $key, mixed $value): static
+    final public function withContext(string $key, array $value): static
     {
         $this->context[$key] = $value;
 
